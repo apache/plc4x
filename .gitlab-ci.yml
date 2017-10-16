@@ -33,6 +33,7 @@ build:
 pages:
   stage: stage-site
   script:
+  - apt install unzip
   - mkdir static
   - cp -r target/staging/* static
   artifacts:
