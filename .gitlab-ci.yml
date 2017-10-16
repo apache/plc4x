@@ -18,14 +18,18 @@
 image: maven:3-jdk-8
 
 build:
-  script: "mvn clean package site:site"
+  script: "mvn clean package"
 
 # Enable gitlab pages integration
 pages:
+  stage: deploy
   script:
-  - "mvn site:site site:stage"
+  - mvn site:site site:stage
+  - mkdir static
+  - cp target/staging/* static
+  - echo 'Website updated on $(date)'
   artifacts:
     paths:
-    - target/staging
+    - static
   only:
   - master
