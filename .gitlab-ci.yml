@@ -17,6 +17,10 @@
 
 image: maven:3-jdk-8
 
+stages:
+  - build
+  - stage-site
+
 build:
   stage: build
   script:
@@ -27,7 +31,7 @@ build:
 
 # Enable gitlab pages integration
 pages:
-  stage: staging
+  stage: stage-site
   script:
   - mkdir static
   - cp -r target/staging/* static
