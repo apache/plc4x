@@ -22,7 +22,6 @@ build:
 
 # Enable gitlab pages integration
 pages:
-  stage: deploy
   script:
   - mvn site:site site:stage
   - mkdir static
