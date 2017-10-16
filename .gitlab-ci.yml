@@ -29,12 +29,13 @@ build:
     paths:
     - target/staging
 
-# Enable gitlab pages integration
+# Have gitlab publish the content of the target/staging directory as gitlab pages website
+# NOTE: Don't ask me why I have to rename it that way ...
 pages:
   stage: stage-site
   script:
   - mkdir public
-  - mv target/staging/ public/
+  - mv target/staging/* public/*
   artifacts:
     paths:
     - public
