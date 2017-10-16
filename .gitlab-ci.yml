@@ -33,11 +33,10 @@ build:
 pages:
   stage: stage-site
   script:
-  - apt install unzip
-  - mkdir static
-  - cp -r target/staging/* static
+  - mkdir public
+  - mv target/staging/ public/
   artifacts:
     paths:
-    - static
+    - public
   only:
   - master
