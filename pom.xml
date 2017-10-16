@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>18</version>
+  </parent>
+
+  <groupId>org.apache.plx4x</groupId>
+  <artifactId>plc4x-parent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>PLC4X</name>
+  <description>PLC4X is an effort to create a universal library for accessing industrial programmable logic controllers using a variety of protocols using a uniform API.</description>
+  <url>https://plc4x.apache.org</url>
+  <inceptionYear>2017</inceptionYear>
+
+  <scm>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-plc4x.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-plc4x.git</developerConnection>
+    <url>https://github.com/apache/incubator-plc4x</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <!-- Only configure the site distribution as the rest is handled by the apache parent -->
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-plc4x.git</url>
+    </site>
+  </distributionManagement>
+
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://issues.apache.org/jira/browse/PLC4X</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Apache PLC4X Developer List</name>
+      <subscribe>dev-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>dev@plc4x.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <properties>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
+    <maven.version>3.3.1</maven.version>
+
+    <!-- URL of the ASF SonarQube server -->
+    <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
+    <!-- Exclude all generated code -->
+    <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
+    <!-- Tell sonar where the coverage reports are located -->
+    <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+    <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+  </properties>
+
+  <modules>
+    <module>plc4c</module>
+    <module>plc4j</module>
+    <module>plc4s</module>
+
+    <module>integrations</module>
+  </modules>
+
+  <dependencies>
+  </dependencies>
+
+  <dependencyManagement>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <!-- Check if all source files have the required apache license headers -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>license-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <!-- Git related files -->
+            <exclude>**/.git/**</exclude>
+            <exclude>**/.gitignore</exclude>
+
+            <!-- Maven related files -->
+            <exclude>**/target/**</exclude>
+
+            <!-- Eclipse related files -->
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.classpath</exclude>
+
+            <!-- IntelliJ related files -->
+            <exclude>**/.idea/**</exclude>
+            <exclude>**/*.iml</exclude>
+
+            <!-- Asciidoctor generated files -->
+            <exclude>**/.asciidoctor/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <!--
+        This plugin doesn't really do much, it makes sure the jacoco agent
+        is downloaded and that the path to this is saved in an environment
+        variable so we can access this later on in the build.
+      -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <!--
+              Prepares the property pointing to the JaCoCo runtime agent which
+              is passed as VM argument when Maven the Surefire plugin is executed.
+          -->
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!--
+                  Sets the name of the property containing the settings
+                  for JaCoCo runtime agent.
+              -->
+              <propertyName>surefireArgLine</propertyName>
+            </configuration>
+          </execution>
+          <!--
+              Prepares the property pointing to the JaCoCo runtime agent which
+              is passed as VM argument when Maven the Failsafe plugin is executed.
+          -->
+          <execution>
+            <id>pre-integration-test</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!--
+                  Sets the name of the property containing the settings
+                  for JaCoCo runtime agent.
+              -->
+              <propertyName>failsafeArgLine</propertyName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+        Make the surefire execute all unit-tests
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!--
+                Notice the @ instead of the $ as prefix? That's late evaluation.
+          -->
+          <argLine>@{surefireArgLine}</argLine>
+        </configuration>
+      </plugin>
+
+      <!--
+        Make the failsafe execute all integration-tests
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!--
+                Notice the @ instead of the $ as prefix? That's late evaluation.
+          -->
+          <argLine>@{failsafeArgLine}</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- Generate the legally required text files in the jars -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>process-resource-bundles</id>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <resourceBundles>
+                <!-- Will generate META-INF/{DEPENDENCIES,LICENSE,NOTICE} -->
+                <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
+                <!-- Will generate META-INF/DISCLAIMER  -->
+                <resourceBundle>org.apache:apache-incubator-disclaimer-resource-bundle:1.1</resourceBundle>
+              </resourceBundles>
+              <!-- Content in this directory will be appended to generated resources -->
+              <appendedResourcesDirectory>${remote-resources-maven-plugin.remote-resources.dir}</appendedResourcesDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.12</version>
+          <configuration>
+            <!--
+                Make rat output the files with missing licensed directly into the
+                build output (This way we don't have to look into the rat.txt to find
+                out which ones)
+            -->
+            <consoleOutput>true</consoleOutput>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-core</artifactId>
+              <version>1.6</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>xerces</groupId>
+                  <artifactId>xercesImpl</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.7.9</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.1</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+            <testSource>${java.version}</testSource>
+            <testTarget>${java.version}</testTarget>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.20</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.20</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+          <dependencies>
+            <!-- Try to get rid of out of heap errors on travis. -->
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-archiver</artifactId>
+              <version>3.3</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.4</version>
+          <configuration>
+            <failOnError>false</failOnError>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+
+        <!-- Make sure the DISCLAIMER contains the incubator version -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.5</version><!--$NO-MVN-MAN-VER$-->
+        </plugin>
+
+        <!--
+          Inject the "incubating" into the output filename
+          N.B. this finalName config spec is currently ignored/overridden
+          by the "apache-release" profile based configuration
+          in this pom. See that config for the finalName.
+          Retain this for now in case we get to the point where
+          that "apache-release" config is no longer needed.
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.5.3</version>
+          <configuration>
+            <finalName>apache-plc4x-incubating-${project.version}</finalName>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.3.0.603</version>
+        </plugin>
+
+        <!-- Configure the Site generation -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <!-- get errors with site:site task when using the default (3.6) version -->
+          <version>3.4</version><!--$NO-MVN-MAN-VER$-->
+          <configuration>
+            <generateReports>true</generateReports>
+            <generateSitemap>true</generateSitemap>
+            <relativizeDecorationLinks>false</relativizeDecorationLinks>
+            <locales>en</locales>
+            <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+            <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
+            <!--
+              IntelliJ can't find the asciidoc config option in the site plugin, which is correct.
+              However this config section is used by the asciidoctor site plugin extension. So plead
+              ignore this error, it's actually ok.
+            -->
+            <asciidoc>
+              <attributes>
+                <source-highlighter>prettify</source-highlighter>
+                <!-- Tells asciidoctor what base urls to use for referencing urls -->
+                <!-- TODO: I need to fix this somehow -->
+                <imagesdir>../../img</imagesdir>
+                <!-- Tells asciidoctor where to put the generated files -->
+                <imagesoutdir>${project.build.directory}/site/img</imagesoutdir>
+              </attributes>
+              <requires>
+                <require>asciidoctor-diagram</require>
+              </requires>
+            </asciidoc>
+          </configuration>
+          <dependencies>
+            <!-- All dependencies needed by the reflow skin -->
+            <dependency>
+              <groupId>lt.velykis.maven.skins</groupId>
+              <artifactId>reflow-velocity-tools</artifactId>
+              <version>1.1.1</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.velocity</groupId>
+              <artifactId>velocity</artifactId>
+              <version>1.7</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-core</artifactId>
+              <version>1.6</version>
+            </dependency>
+            <!-- add support for scm/git site deployment -->
+            <dependency>
+              <groupId>org.apache.maven.wagon</groupId>
+              <artifactId>wagon-scm</artifactId>
+              <version>2.12</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.scm</groupId>
+              <artifactId>maven-scm-api</artifactId>
+              <version>1.9.5</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.scm</groupId>
+              <artifactId>maven-scm-manager-plexus</artifactId>
+              <version>1.9.5</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.scm</groupId>
+              <artifactId>maven-scm-provider-gitexe</artifactId>
+              <version>1.9.5</version>
+            </dependency>
+            <!-- Add support for asciidoctor -->
+            <dependency>
+              <groupId>org.asciidoctor</groupId>
+              <artifactId>asciidoctor-maven-plugin</artifactId>
+              <version>1.5.6</version>
+            </dependency>
+            <dependency>
+              <groupId>org.jruby</groupId>
+              <artifactId>jruby-complete</artifactId>
+              <version>9.1.13.0</version>
+            </dependency>
+            <dependency>
+              <groupId>org.asciidoctor</groupId>
+              <artifactId>asciidoctorj</artifactId>
+              <version>1.5.6</version>
+            </dependency>
+            <dependency>
+              <groupId>org.asciidoctor</groupId>
+              <artifactId>asciidoctorj-diagram</artifactId>
+              <version>1.5.4.1</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

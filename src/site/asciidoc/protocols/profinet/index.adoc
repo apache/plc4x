@@ -1,0 +1,89 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+= Profinet
+
+== Overview of the Protocols
+
+[ditaa,protocols-profinet-osi]
+....
+                              PROFINET              PROFINET-IO
+                            Client/Server               P2P
+- - - - - - - - - - - - - -+------+------+ - - - -+------+------+ - -
+                           |c0B0  |c050  |        |c0B0  |c050  |
+ Application               |      |      |        |      |      |
+ Layer                     |      |      |        |      |      |
+                           |      |      |        |      |      |
+                           |      |      |        |      |      |
+- - - - - - - - - - - - - -|      |      | - - - -|      |      | - -
+                           |      |      |        |      |      |
+ Presentation              |  S7  |  S7  |        |  S7  |  S7  |
+ Layer                     |Proto |Proto |        |Proto |Proto |
+                           | col  | col  |        | col  | col  |
+                           |      |      |        |      |      |
+- - - - - - - - - - - - - -| 0x32 | 0x72 | - - - -| 0x32 | 0x72 | - -
+                           |      |      |        |      |      |
+ Session                   |      |      |        |      |      |
+ Layer                     |      |      |        |      |      |
+                           |      |      |        |      |      |
+                           |      |      |        |      |      |
+- - - - - - - - - - +----+-+------+------+ -+-----+------+------+ - -
+                    |cAAA|c0B0           |  |c0AF               |
+ Transport          |    |RFC 1006       |  |                   |
+ Layer              |TCP |               |  |                   |
+                    |    +---------------+  |                   |
+                    |                    |  |                   |
+- - - - - - - - - - +--------------------+ -|        ISO        | - -
+                    |cAAA                |  |      RFC 905      |
+ Network            |                    |  |                   |
+ Layer              |         IP         |  |                   |
+                    |                    |  |                   |
+                    |                    |  |                   |
+- - - - - - - - - - +--------------------+--+-------------------+ - -
+                    |cAAA                                       |
+ Data Link          |                                           |
+ Layer              |                                           |
+                    |                                           |
+                    |                  Industrial               |
+- - - - - - - - - - |                   Ethernet                | - -
+                    |                                           |
+ Physical           |                                           |
+ Layer              |                                           |
+                    |                                           |
+                    |                                           |
+- - - - - - - - - - +-------------------------------------------+ - -
+....
+
+Legend:
+
+- Light Green: Standard Protocol / Implemented in Java
+- Dark Green: New/Extended Protocol (Undocumented) / Implemented in Java
+- Light Blue: Implemented in C using the Java Native Interface
+- Grey: Provided by the OS
+
+== Links
+
+- High Level description: http://snap7.sourceforge.net/siemens_comm.html
+- ISO TCP (RFC1006) Spec: https://tools.ietf.org/html/rfc1006
+- ISO DP 8073 Spec: https://tools.ietf.org/html/rfc905
+- S7 Protocol: http://gmiru.com/article/s7comm/
+- Wireshark Documentation: https://wiki.wireshark.org/S7comm
+- Some more reverse engineered documentation on the protocol: https://media.defcon.org/DEF%20CON%2025/DEF%20CON%2025%20presentations/Cheng%20Lei/DEFCON-25-Cheng-Lei-The-Spear-to-Break-the-Security-Wall-of-S7CommPlus-WP.pdf
+- https://support.industry.siemens.com/cs/document/26483647/welche-eigenschaften-vorteile-und-besonderheiten-bietet-das-s7-protokoll-?dti=0&lc=de-WW
+- Protocol Diagram: https://cache.industry.siemens.com/dl/files/647/26483647/img_44602/v1/net_s7_protokoll_01.gif
+- Interesting presentation mentioning a new protocol flavor 0x72 instead of the old 0x32: https://www.research.ibm.com/haifa/Workshops/security2014/present/Avishai_Wool_AccurateModelingoftheSiemensS7SCADAProtocol-v5.pdf
+- 0x72 Protocol decoded: https://sourceforge.net/p/s7commwireshark/code/HEAD/tree/trunk/src/s7comm_plus/packet-s7comm_plus.c
