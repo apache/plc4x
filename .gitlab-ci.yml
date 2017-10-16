@@ -27,7 +27,7 @@ build:
 
 # Enable gitlab pages integration
 pages:
-  stage: deploy
+  stage: staging
   script:
   - mkdir static
   - cp -r target/staging/* static
