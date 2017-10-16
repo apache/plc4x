@@ -23,7 +23,7 @@ build:
 # Enable gitlab pages integration
 pages:
   script:
-  - "mvn site:stage"
+  - "mvn site:site site:stage"
   artifacts:
     paths:
     - target/staging
