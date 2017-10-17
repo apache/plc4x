@@ -1,8 +1,7 @@
 = Features
 :icons: font
 
-The following table contains a list op operations and the protocols that support them:
-
+The following table contains a list of operations and the protocols that support them:
 
 |===
 |Protocol |Read Address Value |Write Address Value |List Resources |Telegrams/Broadcased Values
