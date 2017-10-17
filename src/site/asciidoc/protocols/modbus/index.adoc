@@ -18,3 +18,9 @@
 = Modbus
 
 Introduction
+
+== Links
+
+- Main Landing Page: http://www.modbus.org/tech.php
+- Modbus Protocol Spec: http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf
+- Modbus TCP Protocol Spec: http://www.modbus.org/docs/Modbus_Messaging_Implementation_Guide_V1_0b.pdf

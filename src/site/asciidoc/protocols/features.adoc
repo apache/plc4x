@@ -1,0 +1,33 @@
+= Features
+:icons: font
+
+The following table contains a list op operations and the protocols that support them:
+
+
+|===
+|Protocol |Read Address Value |Write Address Value |List Resources |Telegrams/Broadcased Values
+
+|Profinet
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:times[role="red"]
+|icon:check[role="green"]
+
+|Modbus
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:question[role="yellow"]
+
+|OPC-UA
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+
+|IEC 60870-5-104
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:question[role="yellow"]
+|icon:question[role="yellow"]
+|===

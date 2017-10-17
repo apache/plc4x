@@ -19,81 +19,82 @@
  -->
 <project name="Edgent">
 
-    <skin>
-        <groupId>lt.velykis.maven.skins</groupId>
-        <artifactId>reflow-maven-skin</artifactId>
-        <version>1.1.1</version>
-    </skin>
+  <skin>
+    <groupId>lt.velykis.maven.skins</groupId>
+    <artifactId>reflow-maven-skin</artifactId>
+    <version>1.1.1</version>
+  </skin>
 
-    <!--
-        Details on how to configure the reflow skin:
-        http://andriusvelykis.github.io/reflow-maven-skin/skin/
-    -->
-    <custom>
-        <reflowSkin>
-            <localResources>true</localResources>
-            <theme>bootswatch-flatly</theme>
-            <titleTemplate>Apache PLC4X® (Incubating) - %2$s</titleTemplate>
-            <slogan position="bannerRight">Connecting the future</slogan>
-            <toc>top</toc>
-            <bottomNav maxSpan="9">
-                <column>reports</column>
-                <!--column>parent</column-->
-                <column>Infrastructure</column>
-                <column>Protocols</column>
-                <column>modules</column>
-            </bottomNav>
-            <bottomDescription>
-                <![CDATA[
+  <!--
+      Details on how to configure the reflow skin:
+      http://andriusvelykis.github.io/reflow-maven-skin/skin/
+  -->
+  <custom>
+    <reflowSkin>
+      <localResources>true</localResources>
+      <theme>bootswatch-flatly</theme>
+      <titleTemplate>Apache PLC4X® (Incubating) - %2$s</titleTemplate>
+      <slogan position="bannerRight">Connecting the future</slogan>
+      <toc>top</toc>
+      <bottomNav maxSpan="9">
+        <column>reports</column>
+        <!--column>parent</column-->
+        <column>Infrastructure</column>
+        <column>Protocols</column>
+        <column>modules</column>
+      </bottomNav>
+      <bottomDescription>
+        <![CDATA[
           <span class="color-highlight">Reflow</span> is an Apache Maven site skin built on
           <a href="http://getbootstrap.com" title="Bootstrap">Bootstrap</a>.
           It allows various structural and stylistic customizations to create a
           modern-looking Maven-generated website.
                 ]]>
-            </bottomDescription>
-            <brand>
-                <name>Apache PLC4X (Incubating)</name>
-                <href>https://plc4x.apache.org/</href>
-            </brand>
-            <bottomDescription>
-            </bottomDescription>
-            <breadcrumbs>true</breadcrumbs>
-            <highlightJs>true</highlightJs>
-            <pages>
-                <developer-info>
-                    <toc>sidebar</toc>
-                </developer-info>
-            </pages>
-        </reflowSkin>
-    </custom>
-
-    <!--bannerLeft>
-        <name>Apache PLC4X (incubating)</name>
-        <src>https://plc4x.apache.org/img/apache_logo.png</src>
+      </bottomDescription>
+      <brand>
+        <name>Apache PLC4X (Incubating)</name>
         <href>https://plc4x.apache.org/</href>
-    </bannerLeft-->
+      </brand>
+      <bottomDescription>
+      </bottomDescription>
+      <breadcrumbs>true</breadcrumbs>
+      <highlightJs>true</highlightJs>
+      <pages>
+        <developer-info>
+          <toc>sidebar</toc>
+        </developer-info>
+      </pages>
+    </reflowSkin>
+  </custom>
 
-    <bannerRight>
-        <name>Apache Incubator</name>
-        <src>https://incubator.apache.org/images/incubator_feather_egg_logo_sm.png</src>
-        <href>http://incubator.apache.org/</href>
-    </bannerRight>
+  <!--bannerLeft>
+      <name>Apache PLC4X (incubating)</name>
+      <src>https://plc4x.apache.org/img/apache_logo.png</src>
+      <href>https://plc4x.apache.org/</href>
+  </bannerLeft-->
 
-    <body>
-        <menu ref="reports" inherit="top"/>
-        <menu ref="parent" inherit="top"/>
-        <menu name="Infrastructure">
-            <item name="Wiki" href="https://cwiki.apache.org/confluence/display/PLC4X"/>
-            <item name="Issues" href="https://issues.apache.org/jira/projects/PLC4X"/>
-            <item name="CI" href="https://builds.apache.org/view/P/view/PLC4X/"/>
-            <item name="SonarQube" href="https://builds.apache.org/analysis/PLC4X/"/>
-        </menu>
-        <menu name="Protocols">
-            <item name="Modbus" href="protocols/modbus/index.html"/>
-            <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
-            <item name="Profinet" href="protocols/profinet/index.html"/>
-        </menu>
-        <menu ref="modules" inherit="top"/>
-    </body>
+  <bannerRight>
+    <name>Apache Incubator</name>
+    <src>https://incubator.apache.org/images/incubator_feather_egg_logo_sm.png</src>
+    <href>http://incubator.apache.org/</href>
+  </bannerRight>
+
+  <body>
+    <menu ref="reports" inherit="top"/>
+    <menu ref="parent" inherit="top"/>
+    <menu name="Infrastructure">
+      <item name="Wiki" href="https://cwiki.apache.org/confluence/display/PLC4X"/>
+      <item name="Issues" href="https://issues.apache.org/jira/projects/PLC4X"/>
+      <item name="CI" href="https://builds.apache.org/view/P/view/PLC4X/"/>
+      <item name="SonarQube" href="https://builds.apache.org/analysis/PLC4X/"/>
+    </menu>
+    <menu name="Protocols">
+      <item name="Features" href="protocols/features.html"/>
+      <item name="Modbus" href="protocols/modbus/index.html"/>
+      <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
+      <item name="Profinet" href="protocols/profinet/index.html"/>
+    </menu>
+    <menu ref="modules" inherit="top"/>
+  </body>
 
 </project>
