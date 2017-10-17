@@ -113,6 +113,7 @@
           </execution>
         </executions>
         <configuration>
+          <skip>true</skip>
           <excludes>
             <!-- Git related files -->
             <exclude>**/.git/**</exclude>
@@ -315,6 +316,18 @@
               <outputFileName>bootstrap.min.css</outputFileName>
             </configuration>
           </execution>
+          <execution>
+            <id>get-fontawesome</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>http://fontawesome.io/assets/font-awesome-4.7.0.zip</url>
+              <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+              <unpack>true</unpack>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -337,6 +350,17 @@
                 <resource>
                   <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/1.9.1</directory>
                   <targetPath>${project.build.directory}/site/js</targetPath>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/font-awesome-4.7.0/css</directory>
+                  <includes>
+                    <include>font-awesome.min.css</include>
+                  </includes>
+                  <targetPath>${project.build.directory}/site/css</targetPath>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/font-awesome-4.7.0/fonts</directory>
+                  <targetPath>${project.build.directory}/site/fonts</targetPath>
                 </resource>
               </resources>
             </configuration>

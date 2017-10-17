@@ -10,7 +10,7 @@ The following table contains a list op operations and the protocols that support
 |Profinet
 |icon:check[role="green"]
 |icon:check[role="green"]
-|icon:times[role="red"]
+|icon:remove[role="red"]
 |icon:check[role="green"]
 
 |Modbus

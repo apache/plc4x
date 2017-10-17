@@ -80,6 +80,10 @@
   </bannerRight>
 
   <body>
+    <head>
+      <link rel="stylesheet" href="$resourcePath/css/font-awesome.min.css"/>
+    </head>
+
     <menu ref="reports" inherit="top"/>
     <menu ref="parent" inherit="top"/>
     <menu name="Infrastructure">
