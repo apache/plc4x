@@ -1,4 +1,25 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 = About PLC4X
+:imagesdir: img/
+
+.https://commons.wikimedia.org/wiki/User:Ulli1105[Image provided by Ulli1105]
+image::S7300.png[float=right]
 
 We are currently probably experiencing the greatest advances in the way we process information in human history.
 
@@ -10,7 +31,7 @@ Relying on so-called Programmable Logic Controllers (PLCs) each communicating in
 
 Having a closed market has always been bad for (technological) evolution.
 
-While there have been several approaches to create gateways and bridges between the technologies, these are usually expensive hard and/or software solutions that don't provide the level of integration we are looking for.
+While there have been several approaches to create gateways and bridges between the technologies, these are usually expensive hardware and/or software solutions that don't provide the level of integration we are looking for.
 
 Most open-source libraries for accessing PLCs usually lack great parts of functionality and/or are licensed in a way that it is impossible to use them for building commercial applications.
 
@@ -19,9 +40,11 @@ Each of these being implemented from the specs in order to be Apache 2.0 license
 
 At first we will be concentrating on providing adapters for the most widely used protocol such as:
 
-- Profinet
-- Modbus (TCP)
-- OPC-UA
+[width=100%]
+|===
+a|image::protocol_profinet.png[width=80%] a|image::protocol_modbus.png[width=80%] a|image::protocol_opc_ua.png[width=80%]
+|Profinet |Modbus (TCP) |OPC-UA
+|===
 
 We are planning on providing support for the following programming languages:
 
@@ -31,8 +54,10 @@ We are planning on providing support for the following programming languages:
 
 Beyond implementing the pure adapters we are also planning on implementing integration modules to popular projects in the Apache IoT world such as:
 
-- https://edgent.apache.org[Apache Edgent (Incubating)]
-- https://mynewt.apache.org[Apache Mynewt]
-- https://brooklyn.apache.org[Apache Brooklyn]
+[width=100%]
+|===
+a|image::apache_edgent_logo.png[width=80%] a|image::apache_mynewt_logo.png[width=80%] a|image::apache_brooklyn_logo.png[width=80%]
+|https://edgent.apache.org[Apache Edgent (Incubating)] |https://mynewt.apache.org[Apache Mynewt] |https://brooklyn.apache.org[Apache Brooklyn]
+|===
 
 Hereby greatly reducing the barriers and the learning curve for creating industrial IoT applications.

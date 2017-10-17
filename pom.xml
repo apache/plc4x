@@ -113,7 +113,6 @@
           </execution>
         </executions>
         <configuration>
-          <skip>true</skip>
           <excludes>
             <!-- Git related files -->
             <exclude>**/.git/**</exclude>
@@ -529,9 +528,6 @@
             <asciidoc>
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
-                <!-- Tells asciidoctor what base urls to use for referencing urls -->
-                <!-- TODO: I need to fix this somehow -->
-                <imagesdir>../../img</imagesdir>
                 <!-- Tells asciidoctor where to put the generated files -->
                 <imagesoutdir>${project.build.directory}/site/img</imagesoutdir>
               </attributes>

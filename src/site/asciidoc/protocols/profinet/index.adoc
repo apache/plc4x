@@ -16,6 +16,7 @@
 //
 
 = Profinet
+:imagesdir: ../../img/
 
 == Overview of the Protocols
 
