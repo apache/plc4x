@@ -34,7 +34,7 @@
       <localResources>true</localResources>
       <theme>bootswatch-flatly</theme>
       <titleTemplate>Apache PLC4X® (Incubating) - %2$s</titleTemplate>
-      <slogan position="bannerRight">Connecting the future</slogan>
+      <slogan position="bannerRight">The industrial IoT adapter</slogan>
       <toc>top</toc>
       <bottomNav maxSpan="9">
         <column>reports</column>

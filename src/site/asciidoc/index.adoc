@@ -1,0 +1,38 @@
+= About PLC4X
+
+We are currently probably experiencing the greatest advances in the way we process information in human history.
+
+While these advances are taking over more and more parts of our world, it seems one large segment has been continuously been missing out all the fun.
+
+As everyone is talking about IoT, virtualization, BigData, FastData and machine-learning, the manufacturing industry has seemed to been stuck in a closed-source proprietary world.
+
+Relying on so-called Programmable Logic Controllers (PLCs) each communicating in different protocols, some of them not even publicly specified, has made it difficult to create applications that integrate these systems with the new world.
+
+Having a closed market has always been bad for (technological) evolution.
+
+While there have been several approaches to create gateways and bridges between the technologies, these are usually expensive hard and/or software solutions that don't provide the level of integration we are looking for.
+
+Most open-source libraries for accessing PLCs usually lack great parts of functionality and/or are licensed in a way that it is impossible to use them for building commercial applications.
+
+This is where PLC4X comes in: It is our goal to create a set of libraries, that allow unified access to PLC using a wide range of protocols.
+Each of these being implemented from the specs in order to be Apache 2.0 licensed.
+
+At first we will be concentrating on providing adapters for the most widely used protocol such as:
+
+- Profinet
+- Modbus (TCP)
+- OPC-UA
+
+We are planning on providing support for the following programming languages:
+
+- Java
+- Scala
+- C/C++
+
+Beyond implementing the pure adapters we are also planning on implementing integration modules to popular projects in the Apache IoT world such as:
+
+- https://edgent.apache.org[Apache Edgent (Incubating)]
+- https://mynewt.apache.org[Apache Mynewt]
+- https://brooklyn.apache.org[Apache Brooklyn]
+
+Hereby greatly reducing the barriers and the learning curve for creating industrial IoT applications.
