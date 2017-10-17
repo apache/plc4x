@@ -247,6 +247,80 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
       </plugin>
+
+      <!--
+          The reflow maven skin used for the site-generation requires some static resources.
+          The following plugins configure the acquisition and location of these resources.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>unpack-js-deps</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <!--  Bundle these dependencies in the war.
+
+                  You must maintain the corresponding info if you
+                  add/remove artifacts or change their versions:
+                    - entry in src/main/webapp/META-INF/LICENSE
+                    - entry in src/main/webapp/META-INF/NOTICE when appropriate
+
+                  You must maintain the info in the corresponding
+                  console/server files because it bundles this war.
+
+                  You must maintain the info in this project's
+                  corresponding platforms/java7 files.
+               -->
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars</groupId>
+                  <artifactId>bootstrap</artifactId>
+                  <version>2.3.2</version>
+                  <includes>META-INF/resources/webjars/**/*.min.*</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.webjars</groupId>
+                  <artifactId>jquery</artifactId>
+                  <version>1.9.1</version>
+                  <includes>META-INF/resources/webjars/**/jquery.min.js</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>copy-site-resources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2</directory>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/1.9.1</directory>
+                  <targetPath>${project.build.directory}/site/js</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
     <pluginManagement>
