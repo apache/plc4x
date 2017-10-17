@@ -18,3 +18,11 @@
 = OPC-UA
 
 Introduction
+
+== Links
+
+https://opcfoundation.org/developer-tools/specifications-unified-architecture/part-1-overview-and-concepts
+
+https://opcfoundation.org/developer-tools/certification-specifications (Seems you have to become a OPC foundation member to access the Spec details)
+
+OPC-UA Membership: https://opcfoundation.org/membership/benefits/
