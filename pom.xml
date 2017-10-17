@@ -283,6 +283,7 @@
                   <artifactId>bootstrap</artifactId>
                   <version>2.3.2</version>
                   <includes>META-INF/resources/webjars/**/*.min.*</includes>
+                  <excludes>META-INF/resources/webjars/**/bootstrap.min.css</excludes>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.webjars</groupId>
@@ -291,6 +292,27 @@
                   <includes>META-INF/resources/webjars/**/jquery.min.js</includes>
                 </artifactItem>
               </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Replace the bootstrap css with the version of the theme -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>get-flatly-bootstrap-theme</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>http://netdna.bootstrapcdn.com/bootswatch/2.3.2/flatly/bootstrap.min.css</url>
+              <outputDirectory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2/css/</outputDirectory>
+              <outputFileName>bootstrap.min.css</outputFileName>
             </configuration>
           </execution>
         </executions>
