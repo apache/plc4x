@@ -255,7 +255,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>unpack-js-deps</id>
@@ -301,7 +300,6 @@
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
         <version>1.2.1</version>
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>get-flatly-bootstrap-theme</id>
@@ -332,7 +330,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>copy-site-resources</id>
