@@ -20,7 +20,7 @@ package org.apache.plc4x.java;
 
 import org.apache.plc4x.java.authentication.PlcAuthentication;
 import org.apache.plc4x.java.connection.PlcConnection;
-import org.apache.plc4x.java.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.exception.PlcConnectionException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,21 +30,15 @@ import java.util.ServiceLoader;
 
 public class PlcDriverManager {
 
-    private static PlcDriverManager instance = null;
-
-    private static PlcDriverManager getInstance() {
-        if(instance == null) {
-            instance = new PlcDriverManager();
-        }
-        return instance;
-    }
-
-
     private Map<String, PlcDriver> driverMap = null;
 
-    private PlcDriverManager() {
+    public PlcDriverManager() {
+        this(Thread.currentThread().getContextClassLoader());
+    }
+
+    public PlcDriverManager(ClassLoader classLoader) {
         driverMap = new HashMap<>();
-        ServiceLoader<PlcDriver> plcDriverLoader = ServiceLoader.load(PlcDriver.class);
+        ServiceLoader<PlcDriver> plcDriverLoader = ServiceLoader.load(PlcDriver.class, classLoader);
         for (PlcDriver driver : plcDriverLoader) {
             if (driverMap.containsKey(driver.getProtocolCode())) {
                 throw new IllegalStateException(
@@ -75,8 +69,8 @@ public class PlcDriverManager {
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    public static PlcConnection getConnection(String url) throws PlcConnectionException {
-        PlcDriver driver = getInstance().getDriver(url);
+    public PlcConnection getConnection(String url) throws PlcConnectionException {
+        PlcDriver driver = getDriver(url);
         return driver.connect(url);
     }
 
@@ -87,8 +81,8 @@ public class PlcDriverManager {
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    public static PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        PlcDriver driver = getInstance().getDriver(url);
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
+        PlcDriver driver = getDriver(url);
         return driver.connect(url, authentication);
     }
 

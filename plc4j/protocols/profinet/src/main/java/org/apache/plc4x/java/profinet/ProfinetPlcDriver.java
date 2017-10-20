@@ -21,7 +21,7 @@ package org.apache.plc4x.java.profinet;
 import org.apache.plc4x.java.PlcDriver;
 import org.apache.plc4x.java.authentication.PlcAuthentication;
 import org.apache.plc4x.java.connection.PlcConnection;
-import org.apache.plc4x.java.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.exception.PlcConnectionException;
 import org.apache.plc4x.java.profinet.connection.ProfinetPlcConnection;
 
 import java.util.regex.Matcher;
@@ -47,7 +47,7 @@ public class ProfinetPlcDriver implements PlcDriver {
         Matcher matcher = pattern.matcher(url);
         if(!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 'profinet://{host|ip}/{rack}/{slot}");
+                "Connection url doesn't match the format 'profinet://{host|ip}/{rack}/{slot}'");
         }
         String host = matcher.group(1);
         int rack = Integer.valueOf(matcher.group(2));
