@@ -16,12 +16,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exceptions;
+package org.apache.plc4x.java.exception;
 
 public class PlcException extends Exception {
-
-    public PlcException() {
-    }
 
     public PlcException(String message) {
         super(message);

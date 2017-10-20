@@ -22,9 +22,9 @@ import org.apache.plc4x.java.connection.PlcConnection;
 
 public class ProfinetPlcConnection implements PlcConnection {
 
-    private String hostName;
-    private int rack;
-    private int slot;
+    private final String hostName;
+    private final int rack;
+    private final int slot;
 
     public ProfinetPlcConnection(String hostName, int rack, int slot) {
         this.hostName = hostName;

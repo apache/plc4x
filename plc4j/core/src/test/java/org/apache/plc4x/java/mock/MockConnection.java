@@ -23,7 +23,7 @@ import org.apache.plc4x.java.connection.PlcConnection;
 
 public class MockConnection implements PlcConnection {
 
-    private PlcAuthentication authentication;
+    private final PlcAuthentication authentication;
 
     public MockConnection(PlcAuthentication authentication) {
         this.authentication = authentication;

@@ -21,9 +21,8 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.authentication.PlcUsernamePasswordAuthentication;
-import org.apache.plc4x.java.connection.PlcConnection;
-import org.apache.plc4x.java.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.exceptions.PlcException;
+import org.apache.plc4x.java.exception.PlcConnectionException;
+import org.apache.plc4x.java.exception.PlcException;
 import org.apache.plc4x.java.profinet.connection.ProfinetPlcConnection;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -32,10 +31,8 @@ public class ProfinetPlcDriverTest {
 
     @Test(groups = { "fast" })
     public void getConnectionTest() throws PlcException{
-        PlcConnection connection = PlcDriverManager.getConnection("profinet://localhost/1/2");
-        Assert.assertNotNull(connection);
-        Assert.assertTrue(connection instanceof ProfinetPlcConnection);
-        ProfinetPlcConnection profinetConnection = (ProfinetPlcConnection) connection;
+        ProfinetPlcConnection profinetConnection = (ProfinetPlcConnection)
+            new PlcDriverManager().getConnection("profinet://localhost/1/2");
         Assert.assertEquals(profinetConnection.getHostName(), "localhost");
         Assert.assertEquals(profinetConnection.getRack(), 1);
         Assert.assertEquals(profinetConnection.getSlot(), 2);
@@ -47,8 +44,7 @@ public class ProfinetPlcDriverTest {
      */
     @Test(groups = { "fast" }, expectedExceptions = {PlcConnectionException.class})
     public void getConnectionInvalidUrlTest() throws PlcException {
-        PlcConnection connection = PlcDriverManager.getConnection("profinet://localhost/hurz/2");
-        Assert.assertNotNull(connection);
+        new PlcDriverManager().getConnection("profinet://localhost/hurz/2");
     }
 
     /**
@@ -58,9 +54,8 @@ public class ProfinetPlcDriverTest {
      */
     @Test(groups = { "fast" }, expectedExceptions = {PlcConnectionException.class})
     public void getConnectionWithAuthenticationTest() throws PlcException {
-        PlcConnection connection = PlcDriverManager.getConnection("profinet://localhost/1/2",
+        new PlcDriverManager().getConnection("profinet://localhost/1/2",
             new PlcUsernamePasswordAuthentication("user", "pass"));
-        Assert.assertNotNull(connection);
     }
 
 }

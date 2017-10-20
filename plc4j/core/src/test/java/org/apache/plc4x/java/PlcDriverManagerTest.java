@@ -19,9 +19,8 @@ under the License.
 package org.apache.plc4x.java;
 
 import org.apache.plc4x.java.authentication.PlcUsernamePasswordAuthentication;
-import org.apache.plc4x.java.connection.PlcConnection;
-import org.apache.plc4x.java.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.exceptions.PlcException;
+import org.apache.plc4x.java.exception.PlcConnectionException;
+import org.apache.plc4x.java.exception.PlcException;
 import org.apache.plc4x.java.mock.MockConnection;
 import org.junit.Assert;
 import org.testng.annotations.Test;
@@ -38,10 +37,7 @@ public class PlcDriverManagerTest {
      */
     @Test(groups = { "fast" })
     public void getExistingDriverTest() throws PlcException {
-        PlcConnection connection = PlcDriverManager.getConnection("mock://some-cool-url");
-        Assert.assertNotNull(connection);
-        Assert.assertTrue(connection instanceof MockConnection);
-        MockConnection mockConnection = (MockConnection) connection;
+        MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
         Assert.assertNull(mockConnection.getAuthentication());
     }
 
@@ -52,10 +48,7 @@ public class PlcDriverManagerTest {
     public void getExistingDriverWithAuthenticationTest() throws PlcException {
         PlcUsernamePasswordAuthentication authentication =
             new PlcUsernamePasswordAuthentication("user", "pass");
-        PlcConnection connection = PlcDriverManager.getConnection("mock://some-cool-url", authentication);
-        Assert.assertNotNull(connection);
-        Assert.assertTrue(connection instanceof MockConnection);
-        MockConnection mockConnection = (MockConnection) connection;
+        MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url", authentication);
         Assert.assertNotNull(mockConnection.getAuthentication());
         Assert.assertTrue(mockConnection.getAuthentication() instanceof PlcUsernamePasswordAuthentication);
     }
@@ -65,7 +58,7 @@ public class PlcDriverManagerTest {
      */
     @Test(groups = { "fast" }, expectedExceptions = {PlcConnectionException.class})
     public void getNotExistingDriverTest() throws PlcException {
-        PlcDriverManager.getConnection("spock://some-cool-url");
+        new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url");
     }
 
     /**
@@ -73,7 +66,7 @@ public class PlcDriverManagerTest {
      */
     @Test(groups = { "fast" }, expectedExceptions = {PlcConnectionException.class})
     public void getInvalidUriTest() throws PlcException {
-        PlcDriverManager.getConnection("The quick brown fox jumps over the lazy dog");
+        new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog");
     }
 
     /**
@@ -89,12 +82,7 @@ public class PlcDriverManagerTest {
         URL[] urls = new URL[1];
         urls[0] = new File("src/test/resources/test").toURI().toURL();
         ClassLoader fakeClassLoader = new URLClassLoader(urls, originalClassloader);
-        Thread.currentThread().setContextClassLoader(fakeClassLoader);
-        try {
-            PlcDriverManager.getConnection("mock://some-cool-url");
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassloader);
-        }
+        new PlcDriverManager(fakeClassLoader).getConnection("mock://some-cool-url");
     }
 
 }
