@@ -24,22 +24,29 @@
 
   <parent>
     <groupId>org.apache.plx4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4j-protocols</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>integrations</artifactId>
+  <artifactId>plc4j-protocol-profinet</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
 
-  <name>Integrations</name>
-  <description>Parent of all product specific integration modules.</description>
+  <name>PLC4J: Protocol: Profinet</name>
+  <description>Implementation of the core PLC4J system containing the DriverManger.</description>
 
-  <modules>
-    <module>apache-brooklyn</module>
-    <module>apache-camel</module>
-    <module>apache-edgent</module>
-    <module>apache-mynewt</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plx4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plx4x</groupId>
+      <artifactId>plc4j-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>

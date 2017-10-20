@@ -24,22 +24,14 @@
 
   <parent>
     <groupId>org.apache.plx4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4j</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>integrations</artifactId>
+  <artifactId>plc4j-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
 
-  <name>Integrations</name>
-  <description>Parent of all product specific integration modules.</description>
-
-  <modules>
-    <module>apache-brooklyn</module>
-    <module>apache-camel</module>
-    <module>apache-edgent</module>
-    <module>apache-mynewt</module>
-  </modules>
+  <name>PLC4J: API</name>
+  <description>Central API Module.</description>
 
 </project>

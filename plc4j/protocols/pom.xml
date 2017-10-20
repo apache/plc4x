@@ -24,22 +24,19 @@
 
   <parent>
     <groupId>org.apache.plx4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4j</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>integrations</artifactId>
+  <artifactId>plc4j-protocols</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Integrations</name>
-  <description>Parent of all product specific integration modules.</description>
+  <name>PLC4J: Protocols</name>
+  <description>Wrapper project for all PLC4J protocol implementations.</description>
 
   <modules>
-    <module>apache-brooklyn</module>
-    <module>apache-camel</module>
-    <module>apache-edgent</module>
-    <module>apache-mynewt</module>
+    <module>profinet</module>
   </modules>
 
 </project>

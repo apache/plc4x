@@ -91,12 +91,6 @@
     <module>integrations</module>
   </modules>
 
-  <dependencies>
-  </dependencies>
-
-  <dependencyManagement>
-  </dependencyManagement>
-
   <build>
     <plugins>
       <!-- Check if all source files have the required apache license headers -->
@@ -243,11 +237,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-      </plugin>
-
       <!--
           The reflow maven skin used for the site-generation requires some static resources.
           The following plugins configure the acquisition and location of these resources.
@@ -258,7 +247,7 @@
         <executions>
           <execution>
             <id>unpack-js-deps</id>
-            <phase>generate-resources</phase>
+            <phase>pre-site</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -303,7 +292,7 @@
         <executions>
           <execution>
             <id>get-flatly-bootstrap-theme</id>
-            <phase>generate-resources</phase>
+            <phase>pre-site</phase>
             <goals>
               <goal>wget</goal>
             </goals>
@@ -315,7 +304,7 @@
           </execution>
           <execution>
             <id>get-fontawesome</id>
-            <phase>generate-resources</phase>
+            <phase>pre-site</phase>
             <goals>
               <goal>wget</goal>
             </goals>
@@ -333,7 +322,7 @@
         <executions>
           <execution>
             <id>copy-site-resources</id>
-            <phase>generate-resources</phase>
+            <phase>pre-site</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -436,15 +425,6 @@
               <version>3.3</version>
             </dependency>
           </dependencies>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.4</version>
-          <configuration>
-            <failOnError>false</failOnError>
-          </configuration>
         </plugin>
 
         <plugin>
@@ -594,8 +574,94 @@
             </dependency>
           </dependencies>
         </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.4</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changelog-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
+
+  <reporting>
+    <plugins>
+      <!-- Generate the unit- and integration-test reports -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.20.1</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report-only</report>
+              <report>failsafe-report-only</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <!-- Generate a code coverage report -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+              <report>report-integration</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>report-aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <!-- Add html friendly version of source files with line-numbers -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+
+      <!-- Generate javadoc documentation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>javadoc-no-fork</report>
+              <report>test-javadoc-no-fork</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <failOnError>true</failOnError>
+        </configuration>
+      </plugin>
+
+      <!-- Generates a changelog report from GIT commits -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <configuration>
+          <!-- Automatically link Jira issues -->
+          <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>

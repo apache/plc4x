@@ -24,22 +24,19 @@
 
   <parent>
     <groupId>org.apache.plx4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>integrations</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>integrations</artifactId>
+  <artifactId>apache-camel</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Integrations</name>
-  <description>Parent of all product specific integration modules.</description>
+  <name>Integrations: Apache Camel</name>
+  <description>Integration module for integrating PLC4X into Apache Camel.</description>
 
   <modules>
-    <module>apache-brooklyn</module>
-    <module>apache-camel</module>
-    <module>apache-edgent</module>
-    <module>apache-mynewt</module>
+    
   </modules>
 
 </project>
