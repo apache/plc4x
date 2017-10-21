@@ -24,7 +24,7 @@ stages:
 build:
   stage: build
   script:
-  - mvn clean package site:site site:stage
+  - mvn clean package site site:stage
   artifacts:
     paths:
     - target/staging
