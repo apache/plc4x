@@ -27,6 +27,13 @@ import org.apache.plc4x.java.profinet.connection.ProfinetPlcConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Implementation of the PROFINET protocol, based on:
+ * - S7 Protocol
+ * - ISO Transport Protocol (Class 0) (https://tools.ietf.org/html/rfc905)
+ * - ISO on TCP (https://tools.ietf.org/html/rfc1006)
+ * - TCP
+ */
 public class ProfinetPlcDriver implements PlcDriver {
 
     private static final String PROFINET_URI_PATTERN = "^profinet://(.*?)/(\\d{1,4})/(\\d{1,4})";
