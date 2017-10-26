@@ -24,20 +24,22 @@
 
   <parent>
     <groupId>org.apache.plx4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4j-protocols</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-protocols</artifactId>
+  <artifactId>plc4j-protocol-profinet-utils</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
 
-  <name>PLC4J: Protocols</name>
-  <description>Wrapper project for all PLC4J protocol implementations.</description>
+  <name>PLC4J: Protocol: Profinet-Utils</name>
+  <description>Some utils used for helping to document the format.</description>
 
-  <modules>
-    <module>profinet</module>
-    <module>profinet-utils</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
+  </dependencies>
 
 </project>

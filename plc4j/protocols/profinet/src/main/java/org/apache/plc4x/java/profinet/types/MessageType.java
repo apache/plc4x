@@ -18,11 +18,14 @@ under the License.
 */
 package org.apache.plc4x.java.profinet.types;
 
+/**
+ * (Values determined by evaluating generated ".pcapng" files)
+ */
 public enum MessageType {
-    JOB_REQUEST((byte) 0x01),
+    JOB((byte) 0x01),
     ACK((byte) 0x02),
     ACK_DATA((byte) 0x03),
-    USER_DATA((byte) 0x04);
+    USER_DATA((byte) 0x07); /* Renamed from "Userdata" */
 
     private byte code;
 

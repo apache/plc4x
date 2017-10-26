@@ -18,6 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.profinet.types;
 
+/**
+ * (Values determined by evaluating generated ".pcapng" files)
+ */
 public enum SpecificationType {
     VARIABLE_SPECIFICATION((byte) 0x12);
 

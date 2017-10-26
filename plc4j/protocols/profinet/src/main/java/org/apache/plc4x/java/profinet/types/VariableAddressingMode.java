@@ -18,11 +18,22 @@ under the License.
 */
 package org.apache.plc4x.java.profinet.types;
 
+/**
+ * (Values determined by evaluating generated ".pcapng" files)
+ * Renamed from "SyntaxId".
+ */
 public enum VariableAddressingMode {
-    ANY_POINTER((byte) 0x10),
-    DRIVE_ES_ANY((byte) 0xa2),
-    SYMBOLIC_ADDRESSING_MODE((byte) 0xb2),
-    SPECIAL_DB_ADDRESSING_FOR_S400((byte) 0xb0);
+    S7ANY((byte) 0x10),
+    PBC_R_ID((byte) 0x13),
+    ALARM_LOCKFREE((byte) 0x15),
+    ALARM_IND((byte) 0x16),
+    ALARM_ACK((byte) 0x19),
+    ALARM_QUERYREQ((byte) 0x1a),
+    NOTIFY_IND((byte) 0x1c),
+    NIC((byte) 0x82),
+    DRIVEESANY((byte) 0xa2),
+    DBREAD((byte) 0xb0),
+    SYM1200((byte) 0xb2); /* Renamed from "1200SYM" */
 
     private byte code;
 

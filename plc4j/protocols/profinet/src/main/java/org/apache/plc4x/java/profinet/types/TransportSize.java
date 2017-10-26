@@ -18,7 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.profinet.types;
 
-public enum VariableType {
+/**
+ * (Values determined by evaluating generated ".pcapng" files)
+ */
+public enum TransportSize {
     BIT((byte) 0x01),
     BYTE((byte) 0x02),
     CHAR((byte) 0x03),
@@ -40,7 +43,7 @@ public enum VariableType {
 
     private byte code;
 
-    VariableType(byte code) {
+    TransportSize(byte code) {
         this.code = code;
     }
 

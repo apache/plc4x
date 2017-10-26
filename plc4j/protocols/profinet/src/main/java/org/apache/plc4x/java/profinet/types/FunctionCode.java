@@ -18,19 +18,22 @@ under the License.
 */
 package org.apache.plc4x.java.profinet.types;
 
+/**
+ * (Values determined by evaluating generated ".pcapng" files)
+ */
 public enum FunctionCode {
     CPU_SERVICES((byte) 0x00),
-    SETUP_COMMUNICATION((byte) 0xF0),
-    READ_VARIABLE((byte) 0x04),
-    WRITE_VARIABLE((byte) 0x05),
+    READ_VAR((byte) 0x04),
+    WRITE_VAR((byte) 0x05),
     REQUEST_DOWNLOAD((byte) 0x1A),
     DOWNLOAD_BLOCK((byte) 0x1B),
     DOWNLOAD_ENDED((byte) 0x1C),
     START_UPLOAD((byte) 0x1D),
     UPLOAD((byte) 0x1E),
     END_UPLOAD((byte) 0x1F),
-    PLC_CONTROL((byte) 0x28),
-    PLC_STOP((byte) 0x29);
+    PLC_SERVICE((byte) 0x28), /* Renamed from PI_SERVICE */
+    PLC_STOP((byte) 0x29),
+    SETUP_COMMUNICATION((byte) 0xF0);
 
     private byte code;
 
