@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.profinet.requests;
 
-import org.apache.plc4x.java.profinet.types.FunctionCode;
+import org.apache.plc4x.java.profinet.types.Function;
 import org.apache.plc4x.java.profinet.types.MessageType;
 
 public class NegotiatePduRequest {
@@ -55,7 +55,7 @@ public class NegotiatePduRequest {
 
         ///////////////////////////////////
         // Parameter field
-        FunctionCode.SETUP_COMMUNICATION.getCode(),
+        Function.SETUP_COMMUNICATION.getCode(),
         (byte) 0x00,                // Reserved
         (byte) 0x00, (byte) 0x08,   // Max AMQ Caller (0x0008 = 8)
         (byte) 0x00, (byte) 0x08,   // Max AMQ Callee (0x0008 = 8)

@@ -30,7 +30,6 @@ public enum TransportSize {
     DWORD((byte) 0x06),
     DINT((byte) 0x07),
     REAL((byte) 0x08),
-    DATE((byte) 0x09),
     TOD((byte) 0x0A),
     TIME((byte) 0x0B),
     S5TIME((byte) 0x0C),

@@ -77,7 +77,7 @@ public class ReadRequest {
 
             ///////////////////////////////////
             // Parameter field
-            FunctionCode.READ_VAR.getCode(),
+            Function.READ_VAR.getCode(),
             (byte) 0x01,                // Item count (Read one variable at a time)
             // Item 1
             SpecificationType.VARIABLE_SPECIFICATION.getCode(),

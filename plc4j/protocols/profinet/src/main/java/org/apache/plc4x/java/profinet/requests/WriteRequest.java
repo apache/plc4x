@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.profinet.requests;
 
-import org.apache.plc4x.java.profinet.types.FunctionCode;
+import org.apache.plc4x.java.profinet.types.Function;
 import org.apache.plc4x.java.profinet.types.MessageType;
 
 public class WriteRequest {
@@ -57,7 +57,7 @@ public class WriteRequest {
 
         ///////////////////////////////////
         // Parameter field
-        FunctionCode.WRITE_VAR.getCode(),
+        Function.WRITE_VAR.getCode(),
         (byte) 0x01,                // Item count (Read one variable at a time)
         // Item 1
     };

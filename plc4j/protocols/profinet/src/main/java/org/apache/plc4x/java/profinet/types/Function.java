@@ -21,7 +21,7 @@ package org.apache.plc4x.java.profinet.types;
 /**
  * (Values determined by evaluating generated ".pcapng" files)
  */
-public enum FunctionCode {
+public enum Function {
     CPU_SERVICES((byte) 0x00),
     READ_VAR((byte) 0x04),
     WRITE_VAR((byte) 0x05),
@@ -31,13 +31,13 @@ public enum FunctionCode {
     START_UPLOAD((byte) 0x1D),
     UPLOAD((byte) 0x1E),
     END_UPLOAD((byte) 0x1F),
-    PLC_SERVICE((byte) 0x28), /* Renamed from PI_SERVICE */
+    PI_SERVICE((byte) 0x28),
     PLC_STOP((byte) 0x29),
     SETUP_COMMUNICATION((byte) 0xF0);
 
     private byte code;
 
-    FunctionCode(byte code) {
+    Function(byte code) {
         this.code = code;
     }
 

@@ -19,9 +19,16 @@ under the License.
 package org.apache.plc4x.java.profinet.utils;
 
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
-import java.io.File;
-import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+import java.io.*;
 import java.util.Arrays;
 
 /**
@@ -87,17 +94,23 @@ public class PcapGenerator {
         (byte) 0x00, (byte) 0x00
     };
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         File outputDir = new File("target/out");
         System.out.println("Outputting to: " + outputDir.getAbsolutePath());
 
         // Read variable generation
-        generateFiles(outputDir, "read/message-type", READ_VARIABLE_MESSAGE_TYPE_BYTE, READ_VARIABLE_TEMPLATE);
-        generateFiles(outputDir, "read/function-code", READ_VARIABLE_FUNCTION_CODE_BYTE, READ_VARIABLE_TEMPLATE);
-        generateFiles(outputDir, "read/specification-type", READ_VARIABLE_SPECIFICATION_TYPE_BYTE, READ_VARIABLE_TEMPLATE);
-        generateFiles(outputDir, "read/syntax-id", READ_VARIABLE_SYNTAX_ID_BYTE, READ_VARIABLE_TEMPLATE);
-        generateFiles(outputDir, "read/transport-size", READ_VARIABLE_TRANSPORT_SIZE_BYTE, READ_VARIABLE_TEMPLATE);
-        generateFiles(outputDir, "read/memory-area", READ_VARIABLE_MEMORY_AREA, READ_VARIABLE_TEMPLATE);
+        generateFiles(outputDir, "read/message-type", READ_VARIABLE_MESSAGE_TYPE_BYTE, READ_VARIABLE_TEMPLATE,
+            "//field[@name='s7comm.header.rosctr' and not(contains(@showname, 'Unknown'))]");
+        generateFiles(outputDir, "read/function-code", READ_VARIABLE_FUNCTION_CODE_BYTE, READ_VARIABLE_TEMPLATE,
+            "//field[@name='s7comm.param.func' and not(contains(@showname, 'Unknown'))]");
+        generateFiles(outputDir, "read/specification-type", READ_VARIABLE_SPECIFICATION_TYPE_BYTE, READ_VARIABLE_TEMPLATE,
+            "//field[@name='s7comm.param.item.varspec' and not(contains(../@showname, 'Unknown'))]");
+        generateFiles(outputDir, "read/syntax-id", READ_VARIABLE_SYNTAX_ID_BYTE, READ_VARIABLE_TEMPLATE,
+            "//field[@name='s7comm.param.item.syntaxid' and not(contains(@showname, 'Unknown'))]");
+        generateFiles(outputDir, "read/transport-size", READ_VARIABLE_TRANSPORT_SIZE_BYTE, READ_VARIABLE_TEMPLATE,
+            "//field[@name='s7comm.param.item.transp_size' and not(contains(@showname, 'Unknown'))]");
+        generateFiles(outputDir, "read/memory-area", READ_VARIABLE_MEMORY_AREA, READ_VARIABLE_TEMPLATE,
+            "//field[@name='s7comm.param.item.area' and not(contains(@showname, 'Unknown'))]");
 
         // Read Ack variable generation
 
@@ -106,16 +119,46 @@ public class PcapGenerator {
         // Write Ack variable generation
     }
 
-    private static void generateFiles(File parentDir, String testName, int byteIndex, byte[] template) throws IOException {
+    private static void generateFiles(File parentDir, String testName, int byteIndex, byte[] template, String matchXPath) throws Exception {
         File testDir = new File(parentDir, testName);
-        if(!testDir.mkdirs()) {
+        if(!testDir.exists() && !testDir.mkdirs()) {
             throw new RuntimeException("Error creating directory " + testDir.getAbsolutePath());
         }
+
+        // Initialize the heavy weight XML stuff.
+        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+        domFactory.setNamespaceAware(true);
+        DocumentBuilder builder = domFactory.newDocumentBuilder();
+        XPathFactory factory = XPathFactory.newInstance();
+        XPath xpath = factory.newXPath();
+        XPathExpression expr = xpath.compile(matchXPath);
+
+        // Iterate over all possible value the current byte could have.
         for(int i = 0; i <= 255; i++) {
+
+            // Generate a packet.
             byte[] copy = Arrays.copyOf(template, template.length);
             copy[byteIndex] = (byte) i;
             File output = new File(testDir, i + ".pcapng");
             FileUtils.writeByteArrayToFile(output, copy);
+
+            // Use WireShark to decode the packet to an xml form.
+            File decodedOutput = new File(testDir, i + ".xml");
+            ProcessBuilder pb = new ProcessBuilder("tshark", "-T", "pdml", "-r", output.getAbsolutePath());
+            pb.redirectOutput(ProcessBuilder.Redirect.to(decodedOutput));
+            Process process = pb.start();
+            process.waitFor();
+
+            // Check if a given XPath is found -> A valid parameter was found.
+            Document document = builder.parse(decodedOutput);
+            NodeList list= (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+
+            // If a valid parameter is found, output that to the console.
+            if(list.getLength() > 0) {
+                String name = list.item(0).getAttributes().getNamedItem("showname").getNodeValue();
+                String value = list.item(0).getAttributes().getNamedItem("value").getNodeValue();
+                System.out.println("found option for " + testName + ": " + name + " = 0x" + value);
+            }
         }
     }
 
