@@ -39,6 +39,65 @@ import java.util.Arrays;
  */
 public class PcapGenerator {
 
+    private static final int CONNECT_TPDU_CODE = 99;
+    private static final int CONNECT_TPDU_CLASS = 104;
+    private static final int CONNECT_TPDU_PARAMETER_CODE = 105;
+
+    private static final byte[] CONNECT_TEMPLATE = {
+        // PCAP header
+        // Global Header:
+        //  magic number
+        (byte) 0xD4, (byte) 0xC3, (byte) 0xB2, (byte) 0xA1,
+        //  Version(major / minor)
+        (byte) 0x02, (byte) 0x00, (byte) 0x04, (byte) 0x00,
+        //  Timezone
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        // 0
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        //  Snapshot length
+        (byte) 0xFF, (byte) 0xFF, (byte) 0x00, (byte) 0x00,
+        //  Network
+        (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        // Packet header
+        //  Timestamp (seconds)
+        (byte) 0x8F, (byte) 0x46, (byte) 0x4E, (byte) 0x53,
+        //  Timestamp (microseconds)
+        (byte) 0x1B, (byte) 0x0C, (byte) 0x0C, (byte) 0x00,
+        // Packet length (in file)
+        (byte) 0x44, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        // Packet length (real)
+        (byte) 0x44, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        ///////////////////////////////////////////////////
+        // Packet content
+        // Ethernet packet
+        (byte) 0x00, (byte) 0x1B, (byte) 0x1B, (byte) 0x1A,
+        (byte) 0xD6, (byte) 0xE0, (byte) 0xB8, (byte) 0x70,
+        (byte) 0xF4, (byte) 0x6D, (byte) 0x2F, (byte) 0x58,
+        (byte) 0x08, (byte) 0x00,
+        // IP packet
+        (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x36,
+        (byte) 0x6B, (byte) 0x6E, (byte) 0x40, (byte) 0x00,
+        (byte) 0x40, (byte) 0x06, (byte) 0x44, (byte) 0xDF,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        // TCP packet
+        (byte) 0xCC, (byte) 0xDE, (byte) 0x00, (byte) 0x66,
+        (byte) 0x8B, (byte) 0x9F, (byte) 0x0B, (byte) 0x76,
+        (byte) 0x00, (byte) 0x1A, (byte) 0x4D, (byte) 0x96,
+        (byte) 0x50, (byte) 0x18, (byte) 0x72, (byte) 0x10,
+        (byte) 0x1D, (byte) 0x43, (byte) 0x00, (byte) 0x00,
+        // TPKT packet
+        (byte) 0x03, (byte) 0x00, (byte) 0x00, (byte) 0x0E, // 68
+        // 98
+        (byte) 0x09,
+        (byte) 0xE0 /* TPDU Code */,
+        (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00,
+        (byte) 0x00 /* TPDU Class */,
+        (byte) 0xFF /* TPDU Parameter Code */,
+        (byte) 0x01, (byte) 0x0a
+    };
+
     private static final int READ_VARIABLE_MESSAGE_TYPE_BYTE = 102;
     private static final int READ_VARIABLE_FUNCTION_CODE_BYTE = 111;
     private static final int READ_VARIABLE_SPECIFICATION_TYPE_BYTE = 113;
@@ -68,8 +127,8 @@ public class PcapGenerator {
         (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x47,
         (byte) 0x6B, (byte) 0x6E, (byte) 0x40, (byte) 0x00,
         (byte) 0x40, (byte) 0x06, (byte) 0x44, (byte) 0xDF,
-        (byte) 0x86, (byte) 0xF9, (byte) 0x3E, (byte) 0xCE,
-        (byte) 0x86, (byte) 0xF9, (byte) 0x3D, (byte) 0xA3,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
         // TCP packet
         (byte) 0xCC, (byte) 0xDE, (byte) 0x00, (byte) 0x66,
         (byte) 0x8B, (byte) 0x9F, (byte) 0x0B, (byte) 0x76,
@@ -97,6 +156,15 @@ public class PcapGenerator {
     public static void main(String[] args) throws Exception {
         File outputDir = new File("target/out");
         System.out.println("Outputting to: " + outputDir.getAbsolutePath());
+
+        // Connect variable generation
+        // FIXME: Not all codes are output probably due to errors in the rest package structure
+        generateFiles(outputDir, "connect/tpdu-code", CONNECT_TPDU_CODE, CONNECT_TEMPLATE,
+            "//field[@name='cotp.type' and (substring(@value, 2, 1) = '0')]");
+        generateFiles(outputDir, "connect/tpdu-class", CONNECT_TPDU_CLASS, CONNECT_TEMPLATE,
+            "//field[@name='cotp.class' and (substring(@unmaskedvalue, 2, 1) = '0')]");
+        generateFiles(outputDir, "connect/tpdu-parameter-code", CONNECT_TPDU_PARAMETER_CODE, CONNECT_TEMPLATE,
+            "//field[@name='cotp.parameter_code' and not(contains(@showname, 'Unknown'))]");
 
         // Read variable generation
         generateFiles(outputDir, "read/message-type", READ_VARIABLE_MESSAGE_TYPE_BYTE, READ_VARIABLE_TEMPLATE,
