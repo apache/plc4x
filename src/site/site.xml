@@ -96,7 +96,7 @@
       <item name="Features" href="protocols/features.html"/>
       <item name="Modbus" href="protocols/modbus/index.html"/>
       <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
-      <item name="Profinet" href="protocols/profinet/index.html"/>
+      <item name="S7" href="protocols/s7/index.html"/>
     </menu>
     <menu ref="modules" inherit="top"/>
   </body>

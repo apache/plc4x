@@ -33,7 +33,7 @@ import java.util.Arrays;
 
 /**
  * Little helper class used to generate pcapng files for usage in Wireshark.
- * As I can't use the WireShark code to define the constant values for the profinet protocol as
+ * As I can't use the WireShark code to define the constant values for the s7 protocol as
  * this code is licensed under GPL, with this tool, I'll simply generate loads of pcapng files
  * each with slightly different values and hereby find out the constant values.
  */

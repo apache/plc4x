@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.profinet;
+package org.apache.plc4x.java.s7;
 
 
 import org.apache.plc4x.java.PlcDriverManager;
@@ -31,11 +31,11 @@ public class S7PlcDriverTest {
 
     @Test(groups = { "fast" })
     public void getConnectionTest() throws PlcException{
-        S7PlcConnection profinetConnection = (S7PlcConnection)
+        S7PlcConnection s7Connection = (S7PlcConnection)
             new PlcDriverManager().getConnection("s7://localhost/1/2");
-        Assert.assertEquals(profinetConnection.getHostName(), "localhost");
-        Assert.assertEquals(profinetConnection.getRack(), 1);
-        Assert.assertEquals(profinetConnection.getSlot(), 2);
+        Assert.assertEquals(s7Connection.getHostName(), "localhost");
+        Assert.assertEquals(s7Connection.getRack(), 1);
+        Assert.assertEquals(s7Connection.getSlot(), 2);
     }
 
     /**

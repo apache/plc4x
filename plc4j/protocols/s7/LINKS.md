@@ -16,7 +16,7 @@
   limitations under the License.
 
 -->
-Features Profinet IO: https://kb.hilscher.com/display/PNS3V5/Features+-+V4 
+Features S7 IO: https://kb.hilscher.com/display/PNS3V5/Features+-+V4 
 
 MIT Licensed Node.JS Library: https://github.com/plcpeople/nodeS7/blob/master/nodeS7.js
 

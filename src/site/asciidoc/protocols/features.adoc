@@ -23,7 +23,7 @@ The following table contains a list of operations and the protocols that support
 |===
 |Protocol |Read Address Value |Write Address Value |List Resources |Telegrams/Broadcased Values
 
-|Profinet
+|S7
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:remove[role="red"]

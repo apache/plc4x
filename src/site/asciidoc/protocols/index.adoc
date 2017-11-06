@@ -19,4 +19,4 @@
 
 - link:modbus/index.html[Modbus]
 - link:opc-ua/index.html[OPC-UA]
-- link:profinet/index.html[Profinet]
+- link:s7/index.html[S7]
