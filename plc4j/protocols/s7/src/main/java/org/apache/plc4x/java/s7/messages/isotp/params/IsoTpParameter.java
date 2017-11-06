@@ -16,24 +16,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages.isotp.params;
 
-public class PlcIoException extends PlcException {
+import org.apache.plc4x.java.exception.PlcException;
 
-    public PlcIoException(String message) {
-        super(message);
-    }
+import java.io.DataOutputStream;
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public interface IsoTpParameter {
 
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
+    void serialize(DataOutputStream dos) throws PlcException;
 
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+    short getLength();
 
 }

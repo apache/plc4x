@@ -16,24 +16,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages.s7.types;
 
-public class PlcIoException extends PlcException {
+public enum HeaderErrorClass {
+    NO_ERROR((byte) 0x00),
+    APPLICATION_RELATIONSHIP_ERROR((byte) 0x81),
+    OBJECT_DEFINITION_ERROR((byte) 0x82),
+    NO_RESSOURCES_AVAILABLE_ERROR((byte) 0x83),
+    ERROR_ON_SERVICE_PROCESSING((byte) 0x84),
+    ERROR_ON_SUPPLIES((byte) 0x85),
+    ACCESS_ERROR((byte) 0x87);
 
-    public PlcIoException(String message) {
-        super(message);
+    private byte code;
+
+    HeaderErrorClass(byte code) {
+        this.code = code;
     }
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
-
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public byte getCode() {
+        return code;
     }
 
 }

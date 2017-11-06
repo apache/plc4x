@@ -16,24 +16,33 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages.s7.types;
 
-public class PlcIoException extends PlcException {
+/**
+ * (Values determined by evaluating generated ".pcapng" files)
+ * Renamed from "SyntaxId".
+ */
+public enum VariableAddressingMode {
+    S7ANY((byte) 0x10),
+    PBC_R_ID((byte) 0x13),
+    ALARM_LOCKFREE((byte) 0x15),
+    ALARM_IND((byte) 0x16),
+    ALARM_ACK((byte) 0x19),
+    ALARM_QUERYREQ((byte) 0x1a),
+    NOTIFY_IND((byte) 0x1c),
+    NIC((byte) 0x82),
+    DRIVEESANY((byte) 0xa2),
+    DBREAD((byte) 0xb0),
+    SYM1200((byte) 0xb2); /* Renamed from "1200SYM" */
 
-    public PlcIoException(String message) {
-        super(message);
+    private byte code;
+
+    VariableAddressingMode(byte code) {
+        this.code = code;
     }
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
-
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public byte getCode() {
+        return code;
     }
 
 }

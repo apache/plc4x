@@ -16,24 +16,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages.isotp.types;
 
-public class PlcIoException extends PlcException {
+import java.util.HashMap;
+import java.util.Map;
 
-    public PlcIoException(String message) {
-        super(message);
+public enum TpduSize {
+    SIZE_8192((byte) 0x0d),
+    SIZE_4096((byte) 0x0c),
+    SIZE_2048((byte) 0x0b),
+    SIZE_1024((byte) 0x0a),
+    SIZE_512((byte) 0x09),
+    SIZE_256((byte) 0x08),
+    SIZE_128((byte) 0x07);
+
+    private byte code;
+
+    TpduSize(byte code) {
+        this.code = code;
     }
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
+    public byte getCode() {
+        return code;
     }
 
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
+    private static Map<Byte, TpduSize> map = null;
 
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public static TpduSize valueOf(byte code) {
+        if(map == null) {
+            map = new HashMap<>();
+            for (TpduSize tpduSize : TpduSize.values()) {
+                map.put(tpduSize.code, tpduSize);
+            }
+        }
+        return map.get(code);
     }
 
 }

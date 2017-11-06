@@ -16,24 +16,38 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages.isotp.types;
 
-public class PlcIoException extends PlcException {
+import java.util.HashMap;
+import java.util.Map;
 
-    public PlcIoException(String message) {
-        super(message);
+public enum ProtocolClass {
+    CLASS_0((byte) 0x00),
+    CLASS_1((byte) 0x10),
+    CLASS_2((byte) 0x20),
+    CLASS_3((byte) 0x30),
+    CLASS_4((byte) 0x40);
+
+    private byte code;
+
+    ProtocolClass(byte code) {
+        this.code = code;
     }
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
+    public byte getCode() {
+        return code;
     }
 
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
+    private static Map<Byte, ProtocolClass> map = null;
 
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public static ProtocolClass valueOf(byte code) {
+        if(map == null) {
+            map = new HashMap<>();
+            for (ProtocolClass protocolClass : ProtocolClass.values()) {
+                map.put(protocolClass.code, protocolClass);
+            }
+        }
+        return map.get(code);
     }
 
 }

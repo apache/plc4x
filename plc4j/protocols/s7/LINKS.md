@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
   Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,27 +16,10 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+Features Profinet IO: https://kb.hilscher.com/display/PNS3V5/Features+-+V4 
 
-  <modelVersion>4.0.0</modelVersion>
+MIT Licensed Node.JS Library: https://github.com/plcpeople/nodeS7/blob/master/nodeS7.js
 
-  <parent>
-    <groupId>org.apache.plx4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
+https://github.com/plcpeople
 
-  <artifactId>plc4j-protocols</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: Protocols</name>
-  <description>Wrapper project for all PLC4J protocol implementations.</description>
-
-  <modules>
-    <module>s7</module>
-    <module>s7-utils</module>
-  </modules>
-
-</project>
+https://www.google.de/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwioq4K64IjXAhWsLMAKHRLDAcYQFgg-MAA&url=https%3A%2F%2Fprofibusgroup.files.wordpress.com%2F2013%2F01%2Fw4-profinet-frame-analysis-peter-thomas.pdf&usg=AOvVaw1f_sW5_I6I5x1nnvv1jX83

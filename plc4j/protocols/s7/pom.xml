@@ -24,20 +24,34 @@
 
   <parent>
     <groupId>org.apache.plx4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4j-protocols</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-protocols</artifactId>
+  <artifactId>plc4j-protocol-s7</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
 
-  <name>PLC4J: Protocols</name>
-  <description>Wrapper project for all PLC4J protocol implementations.</description>
+  <name>PLC4J: Protocol: S7</name>
+  <description>Implementation of a PLC4X driver able to speak with S7 devices using the S7 protocol.</description>
 
-  <modules>
-    <module>s7</module>
-    <module>s7-utils</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plx4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plx4x</groupId>
+      <artifactId>plc4j-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>

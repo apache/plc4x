@@ -16,24 +16,23 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages;
 
-public class PlcIoException extends PlcException {
+import org.apache.plc4x.java.s7.messages.s7.messages.S7RequestMessage;
+import org.apache.plc4x.java.s7.messages.s7.params.SetupCommunicationParameter;
+import org.apache.plc4x.java.s7.messages.s7.types.MessageType;
 
-    public PlcIoException(String message) {
-        super(message);
+import java.util.Collections;
+
+public class NegotiatePduRequest extends S7RequestMessage {
+
+    public NegotiatePduRequest(short pduLength) {
+        this((short) 0x0008, (short) 0x0008, pduLength);
     }
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
-
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public NegotiatePduRequest(short maxAmqCaller, short maxAmqCallee, short pduLength) {
+        super(MessageType.JOB, Collections.singletonList(
+            new SetupCommunicationParameter(maxAmqCaller, maxAmqCallee, pduLength)), null);
     }
 
 }

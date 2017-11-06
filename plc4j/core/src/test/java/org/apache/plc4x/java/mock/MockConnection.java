@@ -20,6 +20,7 @@ package org.apache.plc4x.java.mock;
 
 import org.apache.plc4x.java.authentication.PlcAuthentication;
 import org.apache.plc4x.java.connection.PlcConnection;
+import org.apache.plc4x.java.exception.PlcException;
 
 public class MockConnection implements PlcConnection {
 
@@ -31,6 +32,11 @@ public class MockConnection implements PlcConnection {
 
     public PlcAuthentication getAuthentication() {
         return authentication;
+    }
+
+    @Override
+    public void connect() throws PlcException {
+
     }
 
 }

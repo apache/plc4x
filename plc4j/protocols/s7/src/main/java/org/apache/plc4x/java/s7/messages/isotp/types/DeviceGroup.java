@@ -16,24 +16,36 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages.isotp.types;
 
-public class PlcIoException extends PlcException {
+import java.util.HashMap;
+import java.util.Map;
 
-    public PlcIoException(String message) {
-        super(message);
+public enum DeviceGroup {
+    PG_OR_PC((byte) 0x01),
+    OS((byte) 0x02),
+    OTHERS((byte) 0x03);
+
+    private byte code;
+
+    DeviceGroup(byte code) {
+        this.code = code;
     }
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
+    public byte getCode() {
+        return code;
     }
 
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
+    private static Map<Byte, DeviceGroup> map = null;
 
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public static DeviceGroup valueOf(byte code) {
+        if(map == null) {
+            map = new HashMap<>();
+            for (DeviceGroup deviceGroup : DeviceGroup.values()) {
+                map.put(deviceGroup.code, deviceGroup);
+            }
+        }
+        return map.get(code);
     }
 
 }

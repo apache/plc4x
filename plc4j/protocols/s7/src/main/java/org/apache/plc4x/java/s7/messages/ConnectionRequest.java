@@ -16,24 +16,22 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages;
 
-public class PlcIoException extends PlcException {
+import org.apache.plc4x.java.s7.messages.isotp.messages.AbstractConnectionMessage;
+import org.apache.plc4x.java.s7.messages.isotp.types.TpduCode;
 
-    public PlcIoException(String message) {
-        super(message);
+/**
+ * The only difference between a connection request and a response is the different tpdu code.
+ */
+public class ConnectionRequest extends AbstractConnectionMessage {
+
+    public ConnectionRequest() {
+        super(TpduCode.CONNECTION_REQUEST);
     }
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
-
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public ConnectionRequest(short connectionId, byte rackNumber, byte slotNumber) {
+        super(TpduCode.CONNECTION_REQUEST, connectionId, rackNumber, slotNumber);
     }
 
 }

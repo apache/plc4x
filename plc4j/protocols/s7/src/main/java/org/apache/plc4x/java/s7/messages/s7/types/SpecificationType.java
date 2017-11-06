@@ -16,24 +16,22 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages.s7.types;
 
-public class PlcIoException extends PlcException {
+/**
+ * (Values determined by evaluating generated ".pcapng" files)
+ */
+public enum SpecificationType {
+    VARIABLE_SPECIFICATION((byte) 0x12);
 
-    public PlcIoException(String message) {
-        super(message);
+    private byte code;
+
+    SpecificationType(byte code) {
+        this.code = code;
     }
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
-
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public byte getCode() {
+        return code;
     }
 
 }

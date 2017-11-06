@@ -16,24 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.exception;
+package org.apache.plc4x.java.s7.messages.s7.messages;
 
-public class PlcIoException extends PlcException {
+import org.apache.plc4x.java.s7.messages.isotp.types.TpduCode;
+import org.apache.plc4x.java.s7.messages.s7.params.S7Parameter;
+import org.apache.plc4x.java.s7.messages.s7.payload.S7Payload;
+import org.apache.plc4x.java.s7.messages.s7.types.MessageType;
 
-    public PlcIoException(String message) {
-        super(message);
-    }
+import java.util.List;
 
-    public PlcIoException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public class S7RequestMessage extends AbstractS7Message {
 
-    public PlcIoException(Throwable cause) {
-        super(cause);
-    }
-
-    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public S7RequestMessage(MessageType messageType, List<S7Parameter> s7Parameters, List<S7Payload> s7Payloads) {
+        super(TpduCode.DATA, messageType, s7Parameters, s7Payloads);
     }
 
 }
