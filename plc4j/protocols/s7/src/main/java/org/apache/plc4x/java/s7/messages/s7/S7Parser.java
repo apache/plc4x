@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.s7.messages.s7;
 
-import org.apache.plc4x.java.exception.PlcException;
-import org.apache.plc4x.java.exception.PlcIoException;
-import org.apache.plc4x.java.exception.PlcProtocolException;
+import org.apache.plc4x.java.exceptions.PlcException;
+import org.apache.plc4x.java.exceptions.PlcIoException;
+import org.apache.plc4x.java.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.s7.messages.*;
 import org.apache.plc4x.java.s7.messages.isotp.messages.AbstractConnectionMessage;
 import org.apache.plc4x.java.s7.messages.isotp.params.CalledTsapIsoTpParameter;

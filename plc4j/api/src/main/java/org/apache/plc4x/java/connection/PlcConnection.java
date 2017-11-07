@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.connection;
 
-import org.apache.plc4x.java.exception.PlcException;
+import org.apache.plc4x.java.exceptions.PlcException;
 
 public interface PlcConnection {
 

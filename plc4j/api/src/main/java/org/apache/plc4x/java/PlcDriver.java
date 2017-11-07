@@ -20,7 +20,7 @@ package org.apache.plc4x.java;
 
 import org.apache.plc4x.java.authentication.PlcAuthentication;
 import org.apache.plc4x.java.connection.PlcConnection;
-import org.apache.plc4x.java.exception.PlcConnectionException;
+import org.apache.plc4x.java.exceptions.PlcConnectionException;
 
 /**
  * General interface defining the minimal methods required for adding a new type of driver to the PLC4J system.

@@ -16,14 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.messages;
+package org.apache.plc4x.java.operations;
 
-import org.apache.plc4x.java.exceptions.PlcException;
-
-import java.io.DataInputStream;
-
-public interface Parser {
-
-    Message parse(DataInputStream dis) throws PlcException;
-
+public interface PlcLister {
 }

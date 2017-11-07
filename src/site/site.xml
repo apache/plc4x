@@ -49,7 +49,7 @@
           <a href="http://getbootstrap.com" title="Bootstrap">Bootstrap</a>.
           It allows various structural and stylistic customizations to create a
           modern-looking Maven-generated website.
-                ]]>
+        ]]>
       </bottomDescription>
       <brand>
         <name>Apache PLC4X (Incubating)</name>
@@ -67,11 +67,11 @@
     </reflowSkin>
   </custom>
 
-  <!--bannerLeft>
+  <bannerLeft>
       <name>Apache PLC4X (incubating)</name>
-      <src>https://plc4x.apache.org/img/apache_logo.png</src>
-      <href>https://plc4x.apache.org/</href>
-  </bannerLeft-->
+      <src>https://iot.gitlab.codecentric.de/plc4x/img/apache_plc4x_logo.png</src>
+      <href>https://iot.gitlab.codecentric.de/plc4x/</href>
+  </bannerLeft>
 
   <bannerRight>
     <name>Apache Incubator</name>

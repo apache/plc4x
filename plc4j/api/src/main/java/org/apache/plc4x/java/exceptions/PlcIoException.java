@@ -16,7 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.event;
+package org.apache.plc4x.java.exceptions;
 
-public interface PlcEvent {
+public class PlcIoException extends PlcException {
+
+    public PlcIoException(String message) {
+        super(message);
+    }
+
+    public PlcIoException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public PlcIoException(Throwable cause) {
+        super(cause);
+    }
+
+    public PlcIoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+
 }

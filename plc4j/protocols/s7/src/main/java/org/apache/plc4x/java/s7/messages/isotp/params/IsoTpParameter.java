@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.messages.isotp.params;
 
-import org.apache.plc4x.java.exception.PlcException;
+import org.apache.plc4x.java.exceptions.PlcException;
 
 import java.io.DataOutputStream;
 

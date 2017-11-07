@@ -16,14 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.messages;
+package org.apache.plc4x.java.exceptions;
 
-import org.apache.plc4x.java.exceptions.PlcException;
+public class PlcProtocolException extends PlcException {
 
-import java.io.DataInputStream;
+    public PlcProtocolException(String message) {
+        super(message);
+    }
 
-public interface Parser {
+    public PlcProtocolException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    Message parse(DataInputStream dis) throws PlcException;
+    public PlcProtocolException(Throwable cause) {
+        super(cause);
+    }
+
+    public PlcProtocolException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 
 }

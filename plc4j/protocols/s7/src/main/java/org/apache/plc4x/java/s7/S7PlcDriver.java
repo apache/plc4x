@@ -21,7 +21,7 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriver;
 import org.apache.plc4x.java.authentication.PlcAuthentication;
 import org.apache.plc4x.java.connection.PlcConnection;
-import org.apache.plc4x.java.exception.PlcConnectionException;
+import org.apache.plc4x.java.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
 import org.apache.plc4x.java.s7.messages.Message;
 import org.apache.plc4x.java.s7.messages.ReadRequest;

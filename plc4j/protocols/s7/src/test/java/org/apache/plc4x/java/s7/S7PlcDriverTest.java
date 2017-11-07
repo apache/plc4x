@@ -21,8 +21,8 @@ package org.apache.plc4x.java.s7;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.authentication.PlcUsernamePasswordAuthentication;
-import org.apache.plc4x.java.exception.PlcConnectionException;
-import org.apache.plc4x.java.exception.PlcException;
+import org.apache.plc4x.java.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.exceptions.PlcException;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
 import org.testng.Assert;
 import org.testng.annotations.Test;
