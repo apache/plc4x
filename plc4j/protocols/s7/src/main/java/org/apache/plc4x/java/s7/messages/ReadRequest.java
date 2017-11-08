@@ -28,11 +28,13 @@ import java.util.Collections;
 
 /**
  * Related Links:
- * - S7 Protocol (http://gmiru.com/article/s7comm/)
- * - ISO Transport Protocol (Class 0) (https://tools.ietf.org/html/rfc905)
- * - ISO on TCP (https://tools.ietf.org/html/rfc1006)
- * - Structure and some constants of a variable read/write request:
- *      https://support.industry.siemens.com/tf/ww/en/posts/classic-style-any-pounter-to-variant-type/126024/?page=0&pageSize=10
+ * <ul>
+ *  <li>@see <a href="http://gmiru.com/article/s7comm/">S7 Protocol</a></li>
+ *  <li>@see <a href="https://tools.ietf.org/html/rfc905">ISO Transport Protocol (Class 0)</a></li>
+ *  <li>@see <a href="https://tools.ietf.org/html/rfc1006">ISO on TCP</a></li>
+ *  <li>@see <a href="https://www.tanindustrie.de/fr/Help/ConfigClient/tsap_s7.htm">Reference to calculating the TSAP ids</a>
+ *  <li>@see <a href="https://support.industry.siemens.com/tf/ww/en/posts/classic-style-any-pounter-to-variant-type/126024/?page=0&pageSize=10">Structure and some constants of a variable read/write request</a></li>
+ * </ul>
  */
 public class ReadRequest extends S7RequestMessage {
 
