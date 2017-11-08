@@ -648,7 +648,7 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <failOnError>false</failOnError>
+          <failOnError>true</failOnError>
         </configuration>
       </plugin>
 
