@@ -42,8 +42,7 @@ At first we will be concentrating on providing adapters for the most widely used
 
 [width=100%]
 |===
-a|image::protocol_profinet.png[width=80%] a|image::protocol_modbus.png[width=80%] a|image::protocol_opc_ua.png[width=80%]
-|link:protocols/profinet/index.html[Profinet] |link:protocols/modbus/index.html[Modbus (TCP)] |link:protocols/opc-ua/index.html[OPC-UA]
+|link:protocols/s7/index.html[S7] |link:protocols/modbus/index.html[Modbus (TCP)] |link:protocols/opc-ua/index.html[OPC-UA]
 |===
 
 We are planning on providing support for the following programming languages:
