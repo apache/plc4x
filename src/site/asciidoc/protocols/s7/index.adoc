@@ -155,7 +155,7 @@
     // ISO TP Header (Fixed Part)
     * Destination Reference [len = 16, color = "#53599A"]
     * Source Reference [len = 16, color = "#53599A"]
-    * Protocol Class/n(Class 0 = 0x00) [len = 8, color = "#53599A"]
+    * Protocol Class\n(Class 0 = 0x00) [len = 8, color = "#53599A"]
 
     // ISO TP Header (Variable Part / Parameters)
     * Parameter Code\n(TPDU Size = 0xC0) [len = 8, color = "#53599A"]
@@ -177,10 +177,10 @@
 
 Legend:
 
-- [protocolIsoOnTcp] ISO on TCP Packet Header
-- [protocolIsoTP] ISO Transport Protocol Packet Header
-- [protocolId] Part of the packet that identifies the type of request
-- [protocolParameter] Variable Parts of the ISO Transport Protocol Packet Header
+- [protocolIsoOnTcp]#ISO on TCP Packet Header#
+- [protocolIsoTP]#ISO Transport Protocol Packet Header#
+- [protocolId]#Part of the packet that identifies the type of request#
+- [protocolParameter]#Variable Parts of the ISO Transport Protocol Packet Header#
 
 === Structure of a Connection Response
 
@@ -205,7 +205,7 @@ The `Connection Response` is identical to the `Connection Request` with the only
     // ISO TP Header (Fixed Part)
     * Destination Reference (0x??)[len = 16, color = "#53599A"]
     * Source Reference (0x??)[len = 16, color = "#53599A"]
-    * Protocol Class/n(Class 0 = 0x00) [len = 8, color = "#53599A"]
+    * Protocol Class\n(Class 0 = 0x00) [len = 8, color = "#53599A"]
 
     // S7
     96-103: S7 Protocol Magic Byte (0x32) [color = "#6D9DC5"]
@@ -228,11 +228,11 @@ The `Connection Response` is identical to the `Connection Request` with the only
 
 Legend:
 
-- [protocolIsoOnTcp] ISO on TCP Packet Header
-- [protocolIsoTP] ISO Transport Protocol Packet Header
-- [protocolS7] S7 Protocol
-- [protocolId] Part of the packet that identifies the type of request
-- [protocolParameter] Variable Parts of the ISO Transport Protocol Packet Header
+- [protocolIsoOnTcp]#ISO on TCP Packet Header#
+- [protocolIsoTP]#ISO Transport Protocol Packet Header#
+- [protocolS7]#S7 Protocol#
+- [protocolId]#Part of the packet that identifies the type of request#
+- [protocolParameter]#Variable Parts of the ISO Transport Protocol Packet Header#
 
 === Structure of a Setup Communication Response
 

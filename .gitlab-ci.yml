@@ -17,6 +17,7 @@
 
 image: maven:3-jdk-8
 
+# Asciidoctor requires some tools for generating the documentation
 before_script:
   - apt-get update
   - apt-get install -y python-seqdiag python-nwdiag
