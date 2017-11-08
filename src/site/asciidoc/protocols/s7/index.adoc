@@ -242,7 +242,11 @@ Also does the response eventually provide different values for `Max AMQ Caller`,
 
 The values might be lower than in the request, but never higher.
 
-This is actually strange as usually S7 Response messages have additional `error class` and `error code` fields, which this type of response doesn't seem to have.
+[NOTE]
+.A Note on Setup Communication Responses
+=====================================================================
+One thing about `Setup Communication Responses` which is kind of strange, is that usually S7 response messages have additional `error class` and `error code` fields, which this type of response doesn't seem to have.
+=====================================================================
 
 == Links
 
