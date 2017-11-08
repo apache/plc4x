@@ -18,8 +18,8 @@
 image: maven:3-jdk-8
 
 before_script:
-  - sudo apt-get update
-  - sudo apt-get install python-seqdiag python-packetdiag
+  - apt-get update
+  - apt-get install python-seqdiag python-packetdiag
 
 stages:
   - build
