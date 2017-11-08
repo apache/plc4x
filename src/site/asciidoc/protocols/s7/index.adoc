@@ -99,28 +99,28 @@
         S7;
     }
 
-    ... Connect ...
+    === Connect ===
 
-    Client ->  "ISO TP" [label = "Connect"]
-    Client <-- "ISO TP"
-    Client ->  "ISO TP" [label = "Setup Communication"]
-               "ISO TP" ->  S7 [label = "Setup Communication"]
-               "ISO TP" <-- S7
-    Client <-- "ISO TP"
+    Client -> "ISO TP" [label = "Connection Request"]
+    Client <- "ISO TP" [label = "Connection Response"]
+    Client -> "ISO TP" [label = "Setup Communication Request"]
+              "ISO TP" ->  S7 [label = "Setup Communication"]
+              "ISO TP" <-- S7
+    Client <- "ISO TP" [label = "Setup Communication Response"]
 
     === Read ===
 
-    Client ->  "ISO TP" [label = "Read"]
-               "ISO TP" ->  S7 [label = "Read"]
-               "ISO TP" <-- S7
-    Client <-- "ISO TP"
+    Client -> "ISO TP" [label = "Read Request"]
+              "ISO TP" ->  S7 [label = "Read"]
+              "ISO TP" <-- S7
+    Client <- "ISO TP" [label = "Read Response"]
 
     === Write ===
 
-    Client ->  "ISO TP" [label = "Write"]
-               "ISO TP" ->  S7 [label = "Write"]
-               "ISO TP" <-- S7
-    Client <-- "ISO TP"
+    Client -> "ISO TP" [label = "Write Request"]
+              "ISO TP" ->  S7 [label = "Write"]
+              "ISO TP" <-- S7
+    Client <- "ISO TP" [label = "Write Response"]
 }
 ....
 
@@ -142,39 +142,107 @@
 ....
 {
     colwidth = 32
-    //node_height = 72
 
     // ISO on TCP
-    * ISO on TCP Magic Number (0x03) [len = 8, color = "pink"]
-    * Reserved (0x00) [len = 8, color = "pink"]
-    * Packet Length (including ISO on TCP header) [len = 16, color = "pink"]
+    * ISO on TCP Magic Number (0x03) [len = 8, color = "#068D9D"]
+    * Reserved (0x00) [len = 8, color = "#068D9D"]
+    * Packet Length (including ISO on TCP header) [len = 16, color = "#068D9D"]
 
     // ISO Transport Protocol
-    * ISO TP Header Length\n(excluding length byte) [len = 8, color = "lightblue"]
-    * TPDU-Code\n(CR = 0xE0) [len = 4, color = "lightblue"]
-    * Signal CDT\n(0x00) [len = 4, color = "lightblue"]
+    * ISO TP Header Length\n(excluding length byte) [len = 8, color = "#53599A"]
+    * TPDU-Code\n(CR = 0xE0) [len = 4, color = "#AEECEF"]
+    * Signal CDT\n(0x00) [len = 4, color = "#53599A"]
     // ISO TP Header (Fixed Part)
-    * Destination Reference [len = 16, color = "lightblue"]
-    * Source Reference [len = 16, color = "lightblue"]
-    * Protocol Class (Class 0 = 0x00) [len = 8, color = "lightblue"]
+    * Destination Reference [len = 16, color = "#53599A"]
+    * Source Reference [len = 16, color = "#53599A"]
+    * Protocol Class/n(Class 0 = 0x00) [len = 8, color = "#53599A"]
 
     // ISO TP Header (Variable Part / Parameters)
-    * Parameter Code\n(TPDU Size = 0xC0) [len = 8, color = "lightblue"]
-    * Parameter Length\n(1 = 0x01) [len = 8, color = "lightblue"]
-    * Parameter Value\n(TPDU Size 1024 = 0x0A) [len = 8, color = "lightblue"]
+    * Parameter Code\n(TPDU Size = 0xC0) [len = 8, color = "#53599A"]
+    * Parameter Length\n(1 = 0x01) [len = 8, color = "#53599A"]
+    * Parameter Value\n(TPDU Size 1024 = 0x0A) [len = 8, color = "#53599A"]
 
-    * Parameter Code\n(Calling TSAP = 0xC1) [len = 8, color = "lightblue"]
-    * Parameter Length (2 = 0x02) [len = 8, color = "lightblue"]
-    * Device Group:\nPG/PC (0x01) [len = 8, color = "lightblue"]
-    * TSAP Id (0x00) [len = 8, color = "lightblue"]
+    * Parameter Code\n(Calling TSAP = 0xC1) [len = 8, color = "#53599A"]
+    * Parameter Length (2 = 0x02) [len = 8, color = "#53599A"]
+    * Device Group\n(PG/PC = 0x01) [len = 8, color = "#53599A"]
+    * TSAP Id (0x00) [len = 8, color = "#53599A"]
 
-    * Parameter Code\n(Called TSAP = 0xC2) [len = 8, color = "lightblue"]
-    * Parameter Length (2 = 0x02) [len = 8, color = "lightblue"]
-    * Device Group:\nOthers (0x03) [len = 8, color = "lightblue"]
-    * Rack Number\n[len = 4, color = "green"]
-    * Slot Number\n[len = 4, color = "green"]
+    * Parameter Code\n(Called TSAP = 0xC2) [len = 8, color = "#53599A"]
+    * Parameter Length (2 = 0x02) [len = 8, color = "#53599A"]
+    * Device Group\n(Others = 0x03) [len = 8, color = "#53599A"]
+    * Rack Number[len = 4, color = "#80DED9"]
+    * Slot Number[len = 4, color = "#80DED9"]
 }
 ....
+
+Legend:
+
+- [protocolIsoOnTcp] ISO on TCP Packet Header
+- [protocolIsoTP] ISO Transport Protocol Packet Header
+- [protocolId] Part of the packet that identifies the type of request
+- [protocolParameter] Variable Parts of the ISO Transport Protocol Packet Header
+
+=== Structure of a Connection Response
+
+The `Connection Response` is identical to the `Connection Request` with the only difference that the `TPDU-Code` has a code of `0xD0`.
+
+=== Structure of a Setup Communication Request
+
+[packetdiag,s7-setup-communication-request,svg]
+....
+{
+    colwidth = 32
+
+    // ISO on TCP
+    * ISO on TCP Magic Number (0x03) [len = 8, color = "#068D9D"]
+    * Reserved (0x00) [len = 8, color = "#068D9D"]
+    * Packet Length (including ISO on TCP header) [len = 16, color = "#068D9D"]
+
+    // ISO Transport Protocol
+    * ISO TP Header Length\n(excluding length byte) [len = 8, color = "#53599A"]
+    * TPDU-Code\n(Data = 0xF0) [len = 4, color = "#AEECEF"]
+    * Signal CDT\n(0x00) [len = 4, color = "#53599A"]
+    // ISO TP Header (Fixed Part)
+    * Destination Reference (0x??)[len = 16, color = "#53599A"]
+    * Source Reference (0x??)[len = 16, color = "#53599A"]
+    * Protocol Class/n(Class 0 = 0x00) [len = 8, color = "#53599A"]
+
+    // S7
+    96-103: S7 Protocol Magic Byte (0x32) [color = "#6D9DC5"]
+    * Message Type (JOB = 0x01) [len = 8, color = "#AEECEF"]
+    * Reserved (0x0000) [len = 16, color = "#6D9DC5"]
+    * PDU Reference (0x??)[len = 16, color = "#6D9DC5"]
+    * S7 Parameters Length  (8 = 0x08) [len = 16, color = "#6D9DC5"]
+    * S7 Data Length (0 = 0x00) [len = 16, color = "#6D9DC5"]
+
+    // S7 Parameters
+    * Function\n(Setup Communication = 0xF0) [len = 8, color = "#AEECEF"]
+    * Reserved (0x00) [len = 8, color = "#6D9DC5"]
+    * Max AMQ Caller [len = 16, color = "#80DED9"]
+    * Max AMQ Callee [len = 16, color = "#80DED9"]
+    * PDU Size [len = 16, color = "#80DED9"]
+
+    // S7 Data
+}
+....
+
+Legend:
+
+- [protocolIsoOnTcp] ISO on TCP Packet Header
+- [protocolIsoTP] ISO Transport Protocol Packet Header
+- [protocolS7] S7 Protocol
+- [protocolId] Part of the packet that identifies the type of request
+- [protocolParameter] Variable Parts of the ISO Transport Protocol Packet Header
+
+=== Structure of a Setup Communication Response
+
+The `Setup Communication Response` is identical to the `Setup Communication Request` with the only difference that the `Message Type` has an ACK_DATA code of `0x03`.
+
+Also does the response eventually provide different values for `Max AMQ Caller`, `Max AMQ Callee` and `PDU Size`.
+
+The values might be lower than in the request, but never higher.
+
+This is actually strange as usually S7 Response messages have additional `error class` and `error code` fields, which this type of response doesn't seem to have.
 
 == Links
 

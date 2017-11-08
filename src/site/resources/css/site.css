@@ -28,3 +28,23 @@ under the License.
 .red {
     color: #ff0000;
 }
+
+.protocolIsoOnTcp {
+    background-color: #068D9D;
+}
+
+.protocolIsoTP {
+    background-color: #53599A;
+}
+
+.protocolS7 {
+    background-color: #6D9DC5;
+}
+
+.protocolId {
+    background-color: #AEECEF;
+}
+
+.protocolParameter {
+    background-color: #80DED9;
+}
