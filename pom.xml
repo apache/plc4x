@@ -84,11 +84,16 @@
   </properties>
 
   <modules>
+    <!-- Core PLC4X modules -->
     <module>plc4c</module>
     <module>plc4j</module>
     <module>plc4s</module>
 
+    <!-- Integration modules for other frameworks -->
     <module>integrations</module>
+
+    <!-- Example applications -->
+    <module>applications</module>
   </modules>
 
   <build>
