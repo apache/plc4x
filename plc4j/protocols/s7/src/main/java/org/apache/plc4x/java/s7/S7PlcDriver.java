@@ -22,15 +22,19 @@ import org.apache.plc4x.java.PlcDriver;
 import org.apache.plc4x.java.authentication.PlcAuthentication;
 import org.apache.plc4x.java.connection.PlcConnection;
 import org.apache.plc4x.java.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.model.PlcReadRequest;
+import org.apache.plc4x.java.model.PlcReadResponse;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
-import org.apache.plc4x.java.s7.messages.Message;
-import org.apache.plc4x.java.s7.messages.ReadRequest;
-import org.apache.plc4x.java.s7.messages.s7.messages.S7ResponseMessage;
-import org.apache.plc4x.java.s7.messages.s7.payload.ReadVarPayload;
-import org.apache.plc4x.java.s7.messages.s7.types.MemoryArea;
-import org.apache.plc4x.java.s7.messages.s7.types.TransportSize;
+import org.apache.plc4x.java.s7.mina.model.params.ReadVarParameter;
+import org.apache.plc4x.java.s7.mina.model.params.items.S7AnyReadVarRequestItem;
+import org.apache.plc4x.java.s7.mina.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.mina.model.types.SpecificationType;
+import org.apache.plc4x.java.s7.mina.model.types.TransportSize;
+import org.apache.plc4x.java.model.Address;
+import org.apache.plc4x.java.types.Datatype;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +63,7 @@ public class S7PlcDriver implements PlcDriver {
     public PlcConnection connect(String url) throws PlcConnectionException {
         Pattern pattern = Pattern.compile(S7_URI_PATTERN);
         Matcher matcher = pattern.matcher(url);
-        if(!matcher.matches()) {
+        if (!matcher.matches()) {
             throw new PlcConnectionException(
                 "Connection url doesn't match the format 's7://{host|ip}/{rack}/{slot}'");
         }
@@ -78,17 +82,30 @@ public class S7PlcDriver implements PlcDriver {
         S7PlcConnection connection = new S7PlcConnection("192.168.0.1", 0, 0);
         connection.connect();
 
-        while(true) {
-            ReadRequest readRequest = new ReadRequest(MemoryArea.INPUTS, TransportSize.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0);
-            Message response = connection.sendMessage(readRequest);
-            if(response instanceof S7ResponseMessage) {
+        while (true) {
+            Address address = connection.parseAddress("INPUTS/0");
+            PlcReadRequest readRequest = new PlcReadRequest(Datatype.BYTE, address);
+            PlcReadResponse readResponse = connection.read(readRequest).get();
+            byte[] data = (byte[]) readResponse.getValue();
+            System.out.println(Arrays.toString(data));
+
+            /*
+            ReadVarParameter readVarParameter = new ReadVarParameter();
+            readVarParameter.addRequestItem(new S7AnyReadVarRequestItem(
+                SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.INPUTS, TransportSize.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0));
+
+            S7RequestMessage readRequest = new S7RequestMessage(MessageType.JOB, (short) 0,
+                Collections.singletonList(readVarParameter), Collections.emptyList());*/
+
+            /*
+            if (response instanceof S7ResponseMessage) {
                 S7ResponseMessage s7ResponseMessage = (S7ResponseMessage) response;
-                ReadVarPayload readVarPayload = s7ResponseMessage.getS7Payload(ReadVarPayload.class);
-                if(readVarPayload != null) {
+                S7AnyReadVarPayload readVarPayload = s7ResponseMessage.getS7Payload(S7AnyReadVarPayload.class);
+                if (readVarPayload != null) {
                     System.out.println(Arrays.toString(readVarPayload.getData()));
                 }
-            }
-            Thread.sleep(500);
+            }*/
+            Thread.sleep(10);
         }
     }
 

@@ -21,6 +21,7 @@ package org.apache.plc4x.java.mock;
 import org.apache.plc4x.java.authentication.PlcAuthentication;
 import org.apache.plc4x.java.connection.PlcConnection;
 import org.apache.plc4x.java.exceptions.PlcException;
+import org.apache.plc4x.java.model.Address;
 
 public class MockConnection implements PlcConnection {
 
@@ -37,6 +38,11 @@ public class MockConnection implements PlcConnection {
     @Override
     public void connect() throws PlcException {
 
+    }
+
+    @Override
+    public Address parseAddress(String addressString) throws PlcException {
+        return null;
     }
 
 }

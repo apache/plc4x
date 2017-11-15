@@ -18,8 +18,13 @@ under the License.
 */
 package org.apache.plc4x.java.operations;
 
+import org.apache.plc4x.java.model.PlcReadRequest;
+import org.apache.plc4x.java.model.PlcReadResponse;
+
+import java.util.concurrent.CompletableFuture;
+
 public interface PlcReader {
 
-
+    CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
 
 }

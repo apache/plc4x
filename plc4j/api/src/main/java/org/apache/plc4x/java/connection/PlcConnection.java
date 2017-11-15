@@ -19,9 +19,12 @@ under the License.
 package org.apache.plc4x.java.connection;
 
 import org.apache.plc4x.java.exceptions.PlcException;
+import org.apache.plc4x.java.model.Address;
 
 public interface PlcConnection {
 
     void connect() throws PlcException;
+
+    Address parseAddress(String addressString) throws PlcException;
 
 }

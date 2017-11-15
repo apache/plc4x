@@ -18,5 +18,14 @@ under the License.
 */
 package org.apache.plc4x.java.operations;
 
+
+import org.apache.plc4x.java.model.PlcWriteRequest;
+import org.apache.plc4x.java.model.PlcWriteResponse;
+
+import java.util.concurrent.CompletableFuture;
+
 public interface PlcWriter {
+
+    CompletableFuture<PlcWriteResponse> read(PlcWriteRequest writeRequest);
+
 }

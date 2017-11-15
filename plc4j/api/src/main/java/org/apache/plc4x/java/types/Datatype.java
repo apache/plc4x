@@ -25,6 +25,7 @@ public enum Datatype {
     INTEGER,
     FLOAT,
     STRING,
+    TIME,
     DATE,
     TIMESTAMP
 

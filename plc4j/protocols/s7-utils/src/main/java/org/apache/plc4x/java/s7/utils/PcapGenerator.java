@@ -237,7 +237,7 @@ public class PcapGenerator {
         System.out.println("Outputting to: " + outputDir.getAbsolutePath());
 
         //
-        /*generateFiles(outputDir, "read-response/transport-size", READ_VARIABLE_RESPONSE_TRANSPORT_SIZE, READ_VARIABLE_RESPONSE_TEMPLATE,
+        generateFiles(outputDir, "read-response/transport-size", READ_VARIABLE_RESPONSE_TRANSPORT_SIZE, READ_VARIABLE_RESPONSE_TEMPLATE,
             "//field[@name='s7comm.data.transportsize' and not(contains(@showname, 'Unknown'))]");
 
         // Connect variable generation
@@ -257,12 +257,12 @@ public class PcapGenerator {
         generateFiles(outputDir, "read/specification-type", READ_VARIABLE_SPECIFICATION_TYPE_BYTE, READ_VARIABLE_TEMPLATE,
             "//field[@name='s7comm.param.item.varspec' and not(contains(../@showname, 'Unknown'))]");
         generateFiles(outputDir, "read/syntax-id", READ_VARIABLE_SYNTAX_ID_BYTE, READ_VARIABLE_TEMPLATE,
-            "//field[@name='s7comm.param.item.syntaxid' and not(contains(@showname, 'Unknown'))]");*/
+            "//field[@name='s7comm.param.item.syntaxid' and not(contains(@showname, 'Unknown'))]");
         generateFiles(outputDir, "read/transport-size", READ_VARIABLE_TRANSPORT_SIZE_BYTE, READ_VARIABLE_TEMPLATE,
             "//field[@name='s7comm.param.item.transp_size' and not(contains(@showname, 'Unknown'))]");
-/*        generateFiles(outputDir, "read/memory-area", READ_VARIABLE_MEMORY_AREA, READ_VARIABLE_TEMPLATE,
+        generateFiles(outputDir, "read/memory-area", READ_VARIABLE_MEMORY_AREA, READ_VARIABLE_TEMPLATE,
             "//field[@name='s7comm.param.item.area' and not(contains(@showname, 'Unknown'))]");
-*/
+
         // Read Ack variable generation
 
         // Write variable generation

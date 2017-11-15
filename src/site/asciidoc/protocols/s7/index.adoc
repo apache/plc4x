@@ -82,7 +82,7 @@
 |Transmission Control Protocol (TCP) |- | RFC 793 |https://tools.ietf.org/html/rfc793
 |ISO Transport Protocol (Class 4) |ISO DP 8073 | RFC 905 |https://tools.ietf.org/html/rfc905
 |ISO on TCP |- | RFC 1006| https://tools.ietf.org/html/rfc1006
-|S7 Protocol |- |- |http://gmiru.com/article/s7comm/
+|S7 Protocol |- |- |http://gmiru.com/article/s7comm/ http://gmiru.com/article/s7comm-part2/
 |===
 
 While a lot of information was available on the general structure of S7 communication, only little information was available on the constant values this protocol uses.
