@@ -28,10 +28,10 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>app-ed-edgent-logger</artifactId>
+  <artifactId>es-edgent-logger</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <name>Applications: Elastic-Search Edgent Logger</name>
+  <name>Applications: Elastic-Search Edgent Data Logger</name>
   <description>Application using Edgent and Elastic-Search to implement a PLC data logger.</description>
 
   <modules>
