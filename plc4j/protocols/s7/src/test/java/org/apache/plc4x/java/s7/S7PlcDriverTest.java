@@ -30,7 +30,6 @@ import org.apache.plc4x.java.model.PlcReadRequest;
 import org.apache.plc4x.java.model.PlcReadResponse;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
 import org.apache.plc4x.java.types.ByteType;
-import org.apache.plc4x.java.types.Type;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -92,16 +91,14 @@ public class S7PlcDriverTest {
 
                 //////////////////////////////////////////////////////////
                 // Read synchronously ...
-                PlcReadResponse<? extends Type> plcReadResponse = plcReader.read(new PlcReadRequest<>(ByteType.class, inputs)).get();
-                if (plcReadResponse.getValue() instanceof ByteType) {
-                    ByteType data = (ByteType) plcReadResponse.getValue();
-                    System.out.println("Inputs: " + data.getValue());
-                }
+                PlcReadResponse<ByteType> plcReadResponse = plcReader.read(new PlcReadRequest<>(ByteType.class, inputs)).get();
+                ByteType data = plcReadResponse.getValue();
+                System.out.println("Inputs: " + data.getValue());
 
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...
                 Calendar start = Calendar.getInstance();
-                CompletableFuture<PlcReadResponse<? extends Type>> asyncResponse = plcReader.read(
+                CompletableFuture<PlcReadResponse<ByteType>> asyncResponse = plcReader.read(
                     new PlcReadRequest<>(ByteType.class, outputs));
                 // Simulate doing something else ...
                 System.out.println("Processing: ");
@@ -115,10 +112,8 @@ public class S7PlcDriverTest {
                 System.out.println();
                 Calendar end = Calendar.getInstance();
                 plcReadResponse = asyncResponse.get();
-                if (plcReadResponse.getValue() instanceof ByteType) {
-                    ByteType data = (ByteType) plcReadResponse.getValue();
-                    System.out.println("Outputs: " + data.getValue() + " (in " + (end.getTimeInMillis() - start.getTimeInMillis()) + "ms)");
-                }
+                data = plcReadResponse.getValue();
+                System.out.println("Outputs: " + data.getValue() + " (in " + (end.getTimeInMillis() - start.getTimeInMillis()) + "ms)");
             }
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.

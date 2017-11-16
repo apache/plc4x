@@ -21,6 +21,7 @@ package org.apache.plc4x.java.connection;
 
 import org.apache.plc4x.java.model.PlcWriteRequest;
 import org.apache.plc4x.java.model.PlcWriteResponse;
+import org.apache.plc4x.java.types.Type;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -29,6 +30,6 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface PlcWriter {
 
-    CompletableFuture<PlcWriteResponse> read(PlcWriteRequest writeRequest);
+    <T extends Type> CompletableFuture<PlcWriteResponse<T>> read(PlcWriteRequest<T> writeRequest);
 
 }

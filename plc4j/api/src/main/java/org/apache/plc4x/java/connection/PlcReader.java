@@ -34,6 +34,6 @@ public interface PlcReader {
      * @param readRequest
      * @return
      */
-    CompletableFuture<PlcReadResponse<? extends Type>> read(PlcReadRequest<? extends Type> readRequest);
+    <T extends Type> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest);
 
 }
