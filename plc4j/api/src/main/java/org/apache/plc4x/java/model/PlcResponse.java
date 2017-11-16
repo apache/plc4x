@@ -20,6 +20,4 @@ package org.apache.plc4x.java.model;
 
 public interface PlcResponse extends PlcMessage {
 
-    Object getValue();
-
 }

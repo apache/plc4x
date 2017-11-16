@@ -16,7 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.events;
+package org.apache.plc4x.java.connection;
 
-public class PlcFailureEvent implements PlcEvent {
+import org.apache.plc4x.java.model.PlcReadRequest;
+import org.apache.plc4x.java.model.PlcReadResponse;
+import org.apache.plc4x.java.types.Type;
+
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * Interface implemented by all PlcConnections that are able to read from remote resources.
+ */
+public interface PlcReader {
+
+    /**
+     *
+     * @param readRequest
+     * @return
+     */
+    CompletableFuture<PlcReadResponse<? extends Type>> read(PlcReadRequest<? extends Type> readRequest);
+
 }

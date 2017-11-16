@@ -22,19 +22,19 @@ import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.apache.plc4x.java.connection.PlcConnection;
+import org.apache.plc4x.java.connection.PlcReader;
 import org.apache.plc4x.java.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.exceptions.PlcException;
 import org.apache.plc4x.java.exceptions.PlcIoException;
 import org.apache.plc4x.java.isoontcp.mina.IsoOnTcpFilterAdapter;
 import org.apache.plc4x.java.isotp.mina.IsoTPFilterAdapter;
 import org.apache.plc4x.java.mina.PlcRequestContainer;
-import org.apache.plc4x.java.operations.PlcReader;
+import org.apache.plc4x.java.model.Address;
 import org.apache.plc4x.java.model.PlcReadRequest;
 import org.apache.plc4x.java.model.PlcReadResponse;
 import org.apache.plc4x.java.s7.mina.Plc4XS7FilterAdapter;
 import org.apache.plc4x.java.s7.mina.S7FilterAdapter;
 import org.apache.plc4x.java.s7.mina.S7Handler;
-import org.apache.plc4x.java.model.Address;
 import org.apache.plc4x.java.s7.mina.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
@@ -141,7 +141,7 @@ public class S7PlcConnection implements PlcConnection, PlcReader {
     @Override
     public Address parseAddress(String addressString) throws PlcException {
         Matcher datablockAddressMatcher = Pattern.compile(S7_DATABLOCK_ADDRESS_PATTERN).matcher(addressString);
-        if(datablockAddressMatcher.matches()) {
+        if (datablockAddressMatcher.matches()) {
             int datablockNumber = Integer.valueOf(datablockAddressMatcher.group(1));
             int datablockByteOffset = Integer.valueOf(datablockAddressMatcher.group(2));
             return new S7DataBlockAddress((short) datablockNumber, (short) datablockByteOffset);
@@ -153,7 +153,7 @@ public class S7PlcConnection implements PlcConnection, PlcReader {
         }
         MemoryArea memoryArea = MemoryArea.valueOf(addressMatcher.group(1));
         int byteOffset = Integer.valueOf(addressMatcher.group(2));
-        if(addressMatcher.groupCount() == 4) {
+        if (addressMatcher.groupCount() == 4) {
             int bitOffset = Integer.valueOf(addressMatcher.group(3));
             return new S7BitAddress(memoryArea, (short) byteOffset, (byte) bitOffset);
         }

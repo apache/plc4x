@@ -16,25 +16,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.model;
+package org.apache.plc4x.java.types;
 
-import org.apache.plc4x.java.types.Type;
-
-public class PlcReadResponse<T extends Type> extends AbstractPlcResourceMessage<T> implements PlcResponse {
-
-    private final T value;
-
-    public PlcReadResponse(Class<T> datatype, Address address, T value) {
-        this(datatype, address, 1, value);
-    }
-
-    public PlcReadResponse(Class<T> datatype, Address address, int size, T value) {
-        super(datatype, address, size);
-        this.value = value;
-    }
-
-    public T getValue() {
-        return value;
-    }
+public class IntegerType extends AbstractType<Integer> {
 
 }

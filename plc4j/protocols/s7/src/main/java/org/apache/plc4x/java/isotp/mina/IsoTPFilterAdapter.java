@@ -48,14 +48,14 @@ public class IsoTPFilterAdapter extends IoFilterAdapter {
         // Get parameters from the session.
         byte rackNo;
         Object attr = session.getAttribute(RACK_NO);
-        if((attr != null) && (attr instanceof Byte)) {
+        if ((attr != null) && (attr instanceof Byte)) {
             rackNo = (byte) attr;
         } else {
             throw new PlcConnectionException("Required session parameter " + RACK_NO + " not specified.");
         }
         byte slotNo;
         attr = session.getAttribute(SLOT_NO);
-        if((attr != null) && (attr instanceof Byte)) {
+        if ((attr != null) && (attr instanceof Byte)) {
             slotNo = (byte) attr;
         } else {
             throw new PlcConnectionException("Required session parameter " + SLOT_NO + " not specified.");
@@ -215,13 +215,13 @@ public class IsoTPFilterAdapter extends IoFilterAdapter {
                 // in the process of establishing a connection with the PLC, so
                 // Save some of the information in the session and tell the next
                 // layer to negotiate the connection parameters.
-                if(tpdu instanceof ConnectionConfirmTpdu) {
+                if (tpdu instanceof ConnectionConfirmTpdu) {
                     CalledTsapParameter calledTsapParameter = tpdu.getParameter(CalledTsapParameter.class);
-                    if(calledTsapParameter != null) {
+                    if (calledTsapParameter != null) {
                         session.setAttribute("ISO_TP_CALLED_TSAP", calledTsapParameter);
                     }
                     TpduSizeParameter tpduSizeParameter = tpdu.getParameter(TpduSizeParameter.class);
-                    if(tpduSizeParameter != null) {
+                    if (tpduSizeParameter != null) {
                         session.setAttribute("ISO_TP_TPDU_SIZE", tpduSizeParameter.getTpduSize().name());
                     }
                     nextFilter.sessionOpened(session);

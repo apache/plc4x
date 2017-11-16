@@ -18,21 +18,16 @@ under the License.
 */
 package org.apache.plc4x.java.model;
 
-import org.apache.plc4x.java.types.Datatype;
+import org.apache.plc4x.java.types.Type;
 
-public class PlcWriteResponse extends AbstractPlcMessage implements PlcResponse {
+public class PlcWriteResponse<T extends Type> extends AbstractPlcResourceMessage<T> implements PlcResponse {
 
-    public PlcWriteResponse(Datatype datatype, Address address) {
+    public PlcWriteResponse(Class<T> datatype, Address address) {
         super(datatype, address);
     }
 
-    public PlcWriteResponse(Datatype datatype, Address address, int size) {
+    public PlcWriteResponse(Class<T> datatype, Address address, int size) {
         super(datatype, address, size);
-    }
-
-    @Override
-    public Object getValue() {
-        return null;
     }
 
 }

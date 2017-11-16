@@ -18,14 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.model;
 
-import org.apache.plc4x.java.types.Datatype;
-
 public interface PlcMessage {
-
-    Datatype getDatatype();
-
-    Address getAddress();
-
-    int getSize();
 
 }

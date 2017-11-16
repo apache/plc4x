@@ -18,12 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.mina.model.params;
 
-import org.apache.plc4x.java.exceptions.PlcException;
-import org.apache.plc4x.java.exceptions.PlcIoException;
 import org.apache.plc4x.java.s7.mina.model.types.ParameterType;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 public class SetupCommunicationParameter implements S7Parameter {
 

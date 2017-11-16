@@ -18,5 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.types;
 
-public interface Type {
+public interface Type<T> {
+
+    T getValue();
+
 }

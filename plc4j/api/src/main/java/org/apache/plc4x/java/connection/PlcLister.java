@@ -16,7 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.events;
+package org.apache.plc4x.java.connection;
 
-public interface PlcEvent {
+/**
+ * Interface implemented by any PlcConnection that is able to list resources.
+ */
+public interface PlcLister {
 }

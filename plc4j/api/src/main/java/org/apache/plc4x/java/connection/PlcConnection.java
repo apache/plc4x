@@ -23,8 +23,20 @@ import org.apache.plc4x.java.model.Address;
 
 public interface PlcConnection {
 
+    /**
+     * Established the connection to the remote PLC.
+     *
+     * @throws PlcException an exception if the connection attempt failed.
+     */
     void connect() throws PlcException;
 
+    /**
+     * Parses a PLC/protocol dependent address string into an Address object.
+     *
+     * @param addressString String representation of an address for the current type of PLC/protocol.
+     * @return Address object identifying an address for the current type of PLC/protocol.
+     * @throws PlcException an exception if there was a problem parsing the address string.
+     */
     Address parseAddress(String addressString) throws PlcException;
 
 }

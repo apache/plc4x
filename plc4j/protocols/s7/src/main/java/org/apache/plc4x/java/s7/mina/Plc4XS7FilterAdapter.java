@@ -24,7 +24,10 @@ import org.apache.mina.core.write.WriteRequest;
 import org.apache.mina.core.write.WriteRequestWrapper;
 import org.apache.plc4x.java.exceptions.PlcException;
 import org.apache.plc4x.java.mina.PlcRequestContainer;
-import org.apache.plc4x.java.model.*;
+import org.apache.plc4x.java.model.PlcReadRequest;
+import org.apache.plc4x.java.model.PlcReadResponse;
+import org.apache.plc4x.java.model.PlcResponse;
+import org.apache.plc4x.java.model.PlcWriteRequest;
 import org.apache.plc4x.java.s7.mina.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.mina.model.messages.S7ResponseMessage;
 import org.apache.plc4x.java.s7.mina.model.params.ReadVarParameter;
@@ -36,7 +39,7 @@ import org.apache.plc4x.java.s7.mina.model.types.TransportSize;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
 import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
-import org.apache.plc4x.java.types.Datatype;
+import org.apache.plc4x.java.types.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,56 +58,59 @@ public class Plc4XS7FilterAdapter extends IoFilterAdapter {
 
     @Override
     public void filterWrite(NextFilter nextFilter, IoSession session, WriteRequest writeRequest) throws Exception {
-        if(writeRequest.getMessage() instanceof PlcRequestContainer) {
+        if (writeRequest.getMessage() instanceof PlcRequestContainer) {
             PlcRequestContainer readRequestContainer = (PlcRequestContainer) writeRequest.getMessage();
-            PlcRequest readRequest = readRequestContainer.getRequest();
 
-            // Try to get the correct S7 transport size for the given data type.
-            // (Map PLC4X data type to S7 data type)
-            TransportSize transportSize = getTransportSize(readRequest.getDatatype());
-            if(transportSize == null) {
-                throw new PlcException("Unknown transport size for datatype " + readRequest.getDatatype());
-            }
+            if (readRequestContainer.getRequest() instanceof PlcReadRequest) {
+                PlcReadRequest readRequest = (PlcReadRequest) readRequestContainer.getRequest();
 
-            // Depending on the address type, generate the corresponding type of request item.
-            ReadVarParameter readVarParameter = new ReadVarParameter();
-            S7Address s7Address = (S7Address) readRequest.getAddress();
-            if(!(readRequest.getAddress() instanceof S7Address)) {
-                throw new PlcException("Can only use S7Address types on S7 connection");
-            }
-            if(s7Address instanceof S7DataBlockAddress) {
-                S7DataBlockAddress s7DataBlockAddress = (S7DataBlockAddress) s7Address;
-                readVarParameter.addRequestItem(new S7AnyReadVarRequestItem(
-                    SpecificationType.VARIABLE_SPECIFICATION, s7Address.getMemoryArea(),
-                    transportSize, (short) readRequest.getSize(),
-                    s7DataBlockAddress.getDataBlockNumber(), s7DataBlockAddress.getByteOffset(), (byte) 0));
-            } else if(s7Address instanceof S7BitAddress) {
-                S7BitAddress s7BitAddress = (S7BitAddress) s7Address;
-                readVarParameter.addRequestItem(new S7AnyReadVarRequestItem(
-                    SpecificationType.VARIABLE_SPECIFICATION, s7Address.getMemoryArea(),
-                    transportSize, (short) readRequest.getSize(), (short) 0,
-                    s7Address.getByteOffset(), s7BitAddress.getBitOffset()));
-            } else {
-                readVarParameter.addRequestItem(new S7AnyReadVarRequestItem(
-                    SpecificationType.VARIABLE_SPECIFICATION, s7Address.getMemoryArea(),
-                    transportSize, (short) readRequest.getSize(), (short) 0,
-                    s7Address.getByteOffset(), (byte) 0));
-            }
-
-            // Assemble the request.
-            S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.JOB,
-                (short) tpduGenerator.getAndIncrement(), Collections.singletonList(readVarParameter),
-                Collections.emptyList());
-
-            // Replace the writeRequest with the updated one.
-            writeRequest = new WriteRequestWrapper(writeRequest) {
-                @Override
-                public Object getMessage() {
-                    return s7ReadRequest;
+                // Try to get the correct S7 transport size for the given data type.
+                // (Map PLC4X data type to S7 data type)
+                TransportSize transportSize = getTransportSize(readRequest.getDatatype());
+                if (transportSize == null) {
+                    throw new PlcException("Unknown transport size for datatype " + readRequest.getDatatype());
                 }
-            };
 
-            requests.put(s7ReadRequest.getTpduReference(), readRequestContainer);
+                // Depending on the address type, generate the corresponding type of request item.
+                ReadVarParameter readVarParameter = new ReadVarParameter();
+                S7Address s7Address = (S7Address) readRequest.getAddress();
+                if (!(readRequest.getAddress() instanceof S7Address)) {
+                    throw new PlcException("Can only use S7Address types on S7 connection");
+                }
+                if (s7Address instanceof S7DataBlockAddress) {
+                    S7DataBlockAddress s7DataBlockAddress = (S7DataBlockAddress) s7Address;
+                    readVarParameter.addRequestItem(new S7AnyReadVarRequestItem(
+                        SpecificationType.VARIABLE_SPECIFICATION, s7Address.getMemoryArea(),
+                        transportSize, (short) readRequest.getSize(),
+                        s7DataBlockAddress.getDataBlockNumber(), s7DataBlockAddress.getByteOffset(), (byte) 0));
+                } else if (s7Address instanceof S7BitAddress) {
+                    S7BitAddress s7BitAddress = (S7BitAddress) s7Address;
+                    readVarParameter.addRequestItem(new S7AnyReadVarRequestItem(
+                        SpecificationType.VARIABLE_SPECIFICATION, s7Address.getMemoryArea(),
+                        transportSize, (short) readRequest.getSize(), (short) 0,
+                        s7Address.getByteOffset(), s7BitAddress.getBitOffset()));
+                } else {
+                    readVarParameter.addRequestItem(new S7AnyReadVarRequestItem(
+                        SpecificationType.VARIABLE_SPECIFICATION, s7Address.getMemoryArea(),
+                        transportSize, (short) readRequest.getSize(), (short) 0,
+                        s7Address.getByteOffset(), (byte) 0));
+                }
+
+                // Assemble the request.
+                S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.JOB,
+                    (short) tpduGenerator.getAndIncrement(), Collections.singletonList(readVarParameter),
+                    Collections.emptyList());
+
+                // Replace the writeRequest with the updated one.
+                writeRequest = new WriteRequestWrapper(writeRequest) {
+                    @Override
+                    public Object getMessage() {
+                        return s7ReadRequest;
+                    }
+                };
+
+                requests.put(s7ReadRequest.getTpduReference(), readRequestContainer);
+            }
         }/* else if(writeRequest.getMessage() instanceof PlcWriteRequest) {
             // TODO: To be implemented.
         }*/
@@ -113,47 +119,73 @@ public class Plc4XS7FilterAdapter extends IoFilterAdapter {
 
     @Override
     public void messageReceived(NextFilter nextFilter, IoSession session, Object message) throws Exception {
-        if(message instanceof S7ResponseMessage) {
+        if (message instanceof S7ResponseMessage) {
             S7ResponseMessage responseMessage = (S7ResponseMessage) message;
             short tpduReference = responseMessage.getTpduReference();
-            if(requests.containsKey(tpduReference)) {
+            if (requests.containsKey(tpduReference)) {
                 PlcRequestContainer requestContainer = requests.remove(tpduReference);
                 PlcResponse response = null;
-                if(requestContainer.getRequest() instanceof PlcReadRequest) {
+                if (requestContainer.getRequest() instanceof PlcReadRequest) {
                     PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
                     S7AnyReadVarPayload payload = responseMessage.getPayload(S7AnyReadVarPayload.class);
                     byte[] data = payload.getData();
+                    Type<?> value = fromS7Data(plcReadRequest.getDatatype(), data);
                     response = new PlcReadResponse(plcReadRequest.getDatatype(), plcReadRequest.getAddress(),
-                        plcReadRequest.getSize(), data);
-                } else if(requestContainer.getRequest() instanceof PlcWriteRequest) {
+                        plcReadRequest.getSize(), value);
+                } else if (requestContainer.getRequest() instanceof PlcWriteRequest) {
                     PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
                 }
-                if(response != null) {
+                if (response != null) {
                     requestContainer.getResponseFuture().complete(response);
                 }
             }
         }
-        super.messageReceived(nextFilter, session, message);
+        nextFilter.messageReceived(session, message);
     }
 
-    private TransportSize getTransportSize(Datatype datatype) {
-        switch (datatype) {
-            case BIT:
-                return TransportSize.BIT;
-            case BYTE:
-                return TransportSize.BYTE;
-            case INTEGER:
-                return TransportSize.INT;
-            case FLOAT:
-                return TransportSize.REAL;
-            case STRING:
-                return TransportSize.CHAR;
-            case TIME:
-                return TransportSize.TIME;
-            case DATE:
-                return TransportSize.DATE_AND_TIME;
-            case TIMESTAMP:
-                return TransportSize.DATE_AND_TIME;
+    private TransportSize getTransportSize(Class<?> datatype) {
+        if (datatype == BooleanType.class) {
+            return TransportSize.BIT;
+        } else if (datatype == ByteType.class) {
+            return TransportSize.BYTE;
+        } else if (datatype == CalendarType.class) {
+            return TransportSize.DATE_AND_TIME;
+        } else if (datatype == FloatType.class) {
+            return TransportSize.REAL;
+        } else if (datatype == IntegerType.class) {
+            return TransportSize.INT;
+        } else if (datatype == StringType.class) {
+            return TransportSize.CHAR;
+        }
+        return null;
+    }
+
+    private Type<?> fromS7Data(Class<? extends Type> datatype, byte[] s7Data) {
+        if (datatype == BooleanType.class) {
+            BooleanType booleanType = new BooleanType();
+            booleanType.setValue((s7Data[0] & 0x01) == 0x01);
+            return booleanType;
+        } else if (datatype == ByteType.class) {
+            ByteType byteType = new ByteType();
+            byteType.setValue(s7Data[0]);
+            return byteType;
+        }
+        return null;
+    }
+
+    private byte[] toS7Data(Type<?> datatype) {
+        if (datatype.getClass() == BooleanType.class) {
+            return new byte[]{(byte) (((BooleanType) datatype).getValue() ? 0x01 : 0x00)};
+        } else if (datatype.getClass() == ByteType.class) {
+            return new byte[]{((ByteType) datatype).getValue()};
+        } else if (datatype.getClass() == CalendarType.class) {
+
+        } else if (datatype.getClass() == FloatType.class) {
+
+        } else if (datatype.getClass() == IntegerType.class) {
+
+        } else if (datatype.getClass() == StringType.class) {
+
         }
         return null;
     }

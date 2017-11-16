@@ -18,15 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.types;
 
-public enum Datatype {
-
-    BIT,
-    BYTE,
-    INTEGER,
-    FLOAT,
-    STRING,
-    TIME,
-    DATE,
-    TIMESTAMP
+public class ByteType extends AbstractType<Byte> {
 
 }

@@ -16,15 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.operations;
+package org.apache.plc4x.java.types;
 
-import org.apache.plc4x.java.model.PlcReadRequest;
-import org.apache.plc4x.java.model.PlcReadResponse;
+import java.util.Calendar;
 
-import java.util.concurrent.CompletableFuture;
-
-public interface PlcReader {
-
-    CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
+public class CalendarType extends AbstractType<Calendar> {
 
 }

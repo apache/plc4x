@@ -25,15 +25,15 @@ import org.apache.mina.core.write.WriteRequest;
 import org.apache.mina.core.write.WriteRequestWrapper;
 import org.apache.plc4x.java.isotp.mina.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.mina.model.tpdus.DataTpdu;
-import org.apache.plc4x.java.s7.mina.model.messages.SetupCommunicationRequestMessage;
-import org.apache.plc4x.java.s7.mina.model.params.items.ReadVarRequestItem;
-import org.apache.plc4x.java.s7.mina.model.params.items.S7AnyReadVarRequestItem;
 import org.apache.plc4x.java.s7.mina.model.messages.S7Message;
 import org.apache.plc4x.java.s7.mina.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.mina.model.messages.S7ResponseMessage;
+import org.apache.plc4x.java.s7.mina.model.messages.SetupCommunicationRequestMessage;
 import org.apache.plc4x.java.s7.mina.model.params.ReadVarParameter;
 import org.apache.plc4x.java.s7.mina.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.mina.model.params.SetupCommunicationParameter;
+import org.apache.plc4x.java.s7.mina.model.params.items.ReadVarRequestItem;
+import org.apache.plc4x.java.s7.mina.model.params.items.S7AnyReadVarRequestItem;
 import org.apache.plc4x.java.s7.mina.model.payloads.S7AnyReadVarPayload;
 import org.apache.plc4x.java.s7.mina.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.mina.model.types.*;
@@ -59,17 +59,17 @@ public class S7FilterAdapter extends IoFilterAdapter {
         // Get parameters from the session.
         short maxAmqCaller = 8;
         Object attr = session.getAttribute(REQUESTED_MAX_AMQ_CALLER_SIZE_CALLER);
-        if((attr != null) && (attr instanceof Short)) {
+        if ((attr != null) && (attr instanceof Short)) {
             maxAmqCaller = (short) attr;
         }
         short maxAmqCallee = 8;
         attr = session.getAttribute(REQUESTED_MAX_AMQ_CALLEE_SIZE_CALLER);
-        if((attr != null) && (attr instanceof Short)) {
+        if ((attr != null) && (attr instanceof Short)) {
             maxAmqCallee = (short) attr;
         }
         short pduSize = (byte) 1024;
         attr = session.getAttribute(REQUESTED_PDU_SIZE);
-        if((attr != null) && (attr instanceof Short)) {
+        if ((attr != null) && (attr instanceof Short)) {
             pduSize = (short) attr;
         }
 
@@ -99,7 +99,7 @@ public class S7FilterAdapter extends IoFilterAdapter {
             buffer.putShort(getParametersLength(s7Message.getParameters()));
             // Data field length
             buffer.putShort(getPayloadsLength(s7Message.getPayloads()));
-            if(s7Message instanceof S7ResponseMessage) {
+            if (s7Message instanceof S7ResponseMessage) {
                 S7ResponseMessage s7ResponseMessage = (S7ResponseMessage) s7Message;
                 buffer.put(s7ResponseMessage.getErrorClass());
                 buffer.put(s7ResponseMessage.getErrorCode());
@@ -195,7 +195,7 @@ public class S7FilterAdapter extends IoFilterAdapter {
             short userDataLength = buffer.getShort();
             byte errorClass = 0;
             byte errorCode = 0;
-            if(messageType == MessageType.ACK_DATA) {
+            if (messageType == MessageType.ACK_DATA) {
                 errorClass = buffer.get();
                 errorCode = buffer.get();
             }
@@ -204,13 +204,13 @@ public class S7FilterAdapter extends IoFilterAdapter {
             for (int i = 0; i < headerParametersLength; ) {
                 S7Parameter parameter = parseParameter(buffer, isResponse);
                 s7Parameters.add(parameter);
-                if(parameter instanceof SetupCommunicationParameter) {
+                if (parameter instanceof SetupCommunicationParameter) {
                     setupCommunicationParameter = (SetupCommunicationParameter) parameter;
                 }
                 i += getParameterLength(parameter);
             }
             List<S7Payload> s7Payloads = new LinkedList<>();
-            for(int i = 0; i < userDataLength; ) {
+            for (int i = 0; i < userDataLength; ) {
                 DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(buffer.get());
                 DataTransportSize dataTransportSize = DataTransportSize.valueOf(buffer.get());
                 short length = (dataTransportSize.isSizeInBits()) ?
@@ -223,12 +223,12 @@ public class S7FilterAdapter extends IoFilterAdapter {
                 i += getPayloadLength(payload);
             }
 
-            if(messageType == MessageType.ACK_DATA) {
+            if (messageType == MessageType.ACK_DATA) {
                 // If we got a SetupCommunicationParameter as part of the response
                 // we are currently in the process of establishing a connection with
                 // the PLC, so save some of the information in the session and tell
                 // the next layer to negotiate the connection parameters.
-                if(setupCommunicationParameter != null) {
+                if (setupCommunicationParameter != null) {
                     session.setAttribute("S7_MAX_AMQ_CALLEE", setupCommunicationParameter.getMaxAmqCallee());
                     session.setAttribute("S7_MAX_AMQ_CALLER", setupCommunicationParameter.getMaxAmqCaller());
                     session.setAttribute("S7_PDU_LENGTH", setupCommunicationParameter.getPduLength());
@@ -253,12 +253,12 @@ public class S7FilterAdapter extends IoFilterAdapter {
             case READ_VAR: {
                 ReadVarParameter readVarParameter = new ReadVarParameter();
                 byte numItems = buffer.get();
-                for(int i = 0; i < numItems; i++) {
+                for (int i = 0; i < numItems; i++) {
                     if (!isResponse) {
                         SpecificationType specificationType = SpecificationType.valueOf(buffer.get());
                         // Length of the rest of this item.
                         byte itemLength = buffer.get();
-                        if(itemLength != 0x0a) {
+                        if (itemLength != 0x0a) {
                             logger.warn("Expecting a length of 10 here.");
                             return null;
                         }
@@ -322,7 +322,7 @@ public class S7FilterAdapter extends IoFilterAdapter {
     }
 
     private short getParameterLength(S7Parameter parameter) {
-        if(parameter != null) {
+        if (parameter != null) {
             switch (parameter.getType()) {
                 case READ_VAR: {
                     ReadVarParameter readVarParameter = (ReadVarParameter) parameter;
@@ -350,7 +350,7 @@ public class S7FilterAdapter extends IoFilterAdapter {
     }
 
     private short getPayloadLength(S7Payload payload) {
-        if(payload != null) {
+        if (payload != null) {
             switch (payload.getType()) {
                 case READ_VAR: {
                     S7AnyReadVarPayload readVarPayload = (S7AnyReadVarPayload) payload;

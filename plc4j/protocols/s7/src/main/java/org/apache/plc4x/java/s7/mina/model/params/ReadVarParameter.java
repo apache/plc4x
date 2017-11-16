@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.s7.mina.model.params;
 
 import org.apache.plc4x.java.s7.mina.model.params.items.ReadVarRequestItem;
-import org.apache.plc4x.java.s7.mina.model.types.*;
+import org.apache.plc4x.java.s7.mina.model.types.ParameterType;
 
 import java.util.LinkedList;
 import java.util.List;

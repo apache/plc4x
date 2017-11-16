@@ -19,4 +19,5 @@ under the License.
 package org.apache.plc4x.java.model;
 
 public interface Address {
+
 }

@@ -20,7 +20,6 @@ package org.apache.plc4x.java.isotp.mina.model.tpdus;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.plc4x.java.isotp.mina.model.params.Parameter;
-import org.apache.plc4x.java.isotp.mina.model.types.ParameterCode;
 import org.apache.plc4x.java.isotp.mina.model.types.TpduCode;
 import org.apache.plc4x.java.mina.Message;
 
@@ -46,9 +45,9 @@ public abstract class Tpdu extends Message {
     }
 
     public <T extends Parameter> T getParameter(Class<? extends T> parameterClass) {
-        if(parameters != null) {
+        if (parameters != null) {
             for (Parameter parameter : parameters) {
-                if(parameter.getClass() == parameterClass) {
+                if (parameter.getClass() == parameterClass) {
                     return (T) parameter;
                 }
             }

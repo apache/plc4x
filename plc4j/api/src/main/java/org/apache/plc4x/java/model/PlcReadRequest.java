@@ -18,15 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.model;
 
-import org.apache.plc4x.java.types.Datatype;
+import org.apache.plc4x.java.types.Type;
 
-public class PlcReadRequest extends AbstractPlcMessage implements PlcRequest {
+public class PlcReadRequest<T extends Type> extends AbstractPlcResourceMessage<T> implements PlcRequest {
 
-    public PlcReadRequest(Datatype datatype, Address address) {
+    public PlcReadRequest(Class<T> datatype, Address address) {
         super(datatype, address);
     }
 
-    public PlcReadRequest(Datatype datatype, Address address, int size) {
+    public PlcReadRequest(Class<T> datatype, Address address, int size) {
         super(datatype, address, size);
     }
 

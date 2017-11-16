@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.operations;
+package org.apache.plc4x.java.connection;
 
 
 import org.apache.plc4x.java.model.PlcWriteRequest;
@@ -24,6 +24,9 @@ import org.apache.plc4x.java.model.PlcWriteResponse;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Interface implemented by all PlcConnections that are able to write to remote resources.
+ */
 public interface PlcWriter {
 
     CompletableFuture<PlcWriteResponse> read(PlcWriteRequest writeRequest);

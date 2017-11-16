@@ -18,16 +18,23 @@ under the License.
 */
 package org.apache.plc4x.java.model;
 
-import org.apache.plc4x.java.types.Datatype;
+import org.apache.plc4x.java.types.Type;
 
-public class PlcWriteRequest extends AbstractPlcMessage implements PlcRequest {
+public class PlcWriteRequest<T extends Type> extends AbstractPlcResourceMessage<T> implements PlcRequest {
 
-    public PlcWriteRequest(Datatype datatype, Address address) {
-        super(datatype, address);
+    private final T value;
+
+    public PlcWriteRequest(Class<T> datatype, Address address, T value) {
+        this(datatype, address, 1, value);
     }
 
-    public PlcWriteRequest(Datatype datatype, Address address, int size) {
+    public PlcWriteRequest(Class<T> datatype, Address address, int size, T value) {
         super(datatype, address, size);
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
     }
 
 }
