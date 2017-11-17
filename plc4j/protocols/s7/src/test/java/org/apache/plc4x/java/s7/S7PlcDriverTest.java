@@ -30,21 +30,23 @@ import org.apache.plc4x.java.messages.PlcSimpleReadRequest;
 import org.apache.plc4x.java.messages.PlcSimpleReadResponse;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
 import org.apache.plc4x.java.types.ByteValue;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 import java.util.concurrent.CompletableFuture;
 
-public class S7PlcDriverTest {
+class S7PlcDriverTest {
 
-    @Test(groups = {"fast"})
-    public void getConnectionTest() throws PlcException {
+    @Test
+    @Tag("fast")
+    void getConnectionTest() throws PlcException {
         S7PlcConnection s7Connection = (S7PlcConnection)
             new PlcDriverManager().getConnection("s7://localhost/1/2");
-        Assert.assertEquals(s7Connection.getHostName(), "localhost");
-        Assert.assertEquals(s7Connection.getRack(), 1);
-        Assert.assertEquals(s7Connection.getSlot(), 2);
+        Assertions.assertEquals(s7Connection.getHostName(), "localhost");
+        Assertions.assertEquals(s7Connection.getRack(), 1);
+        Assertions.assertEquals(s7Connection.getSlot(), 2);
     }
 
     /**
@@ -52,9 +54,11 @@ public class S7PlcDriverTest {
      *
      * @throws PlcException something went wrong
      */
-    @Test(groups = {"fast"}, expectedExceptions = {PlcConnectionException.class})
-    public void getConnectionInvalidUrlTest() throws PlcException {
-        new PlcDriverManager().getConnection("s7://localhost/hurz/2");
+    @Test
+    @Tag("fast")
+    void getConnectionInvalidUrlTest() throws PlcException {
+        Assertions.assertThrows(PlcConnectionException.class,
+            () -> new PlcDriverManager().getConnection("s7://localhost/hurz/2"));
     }
 
     /**
@@ -63,10 +67,12 @@ public class S7PlcDriverTest {
      *
      * @throws PlcException something went wrong
      */
-    @Test(groups = {"fast"}, expectedExceptions = {PlcConnectionException.class})
-    public void getConnectionWithAuthenticationTest() throws PlcException {
-        new PlcDriverManager().getConnection("s7://localhost/1/2",
-            new PlcUsernamePasswordAuthentication("user", "pass"));
+    @Test
+    @Tag("fast")
+    void getConnectionWithAuthenticationTest() throws PlcException {
+        Assertions.assertThrows(PlcConnectionException.class,
+            () -> new PlcDriverManager().getConnection("s7://localhost/1/2",
+                new PlcUsernamePasswordAuthentication("user", "pass")));
     }
 
     /**
