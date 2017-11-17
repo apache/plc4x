@@ -81,6 +81,9 @@
     <!-- Tell sonar where the coverage reports are located -->
     <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
     <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+
+    <junit-platform.version>1.0.2</junit-platform.version>
+    <junit-jupiter.version>5.0.2</junit-jupiter.version>
   </properties>
 
   <modules>
@@ -212,6 +215,18 @@
           -->
           <argLine>@{surefireArgLine}</argLine>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>${junit-platform.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <!--
