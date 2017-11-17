@@ -77,7 +77,7 @@ public class S7PlcDriverTest {
      */
     public static void main(String[] args) throws Exception {
         try {
-            // Create a connection to the S7 PLC.
+            // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
             PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0");
             plcConnection.connect();
 
@@ -86,12 +86,17 @@ public class S7PlcDriverTest {
                 PlcReader plcReader = (PlcReader) plcConnection;
 
                 // Prepare some address object for accessing fields in the PLC.
+                // ({memory-area}/{byte-offset}[/{bit-offset}]
+                // "bit-offset is only specified if the requested type is "bit"
                 Address inputs = plcConnection.parseAddress("INPUTS/0");
                 Address outputs = plcConnection.parseAddress("OUTPUTS/0");
 
                 //////////////////////////////////////////////////////////
                 // Read synchronously ...
-                PlcSimpleReadResponse<ByteValue> plcReadResponse = plcReader.read(new PlcSimpleReadRequest<>(ByteValue.class, inputs)).get();
+                // Notice the ".get()" which immediately lets this thread pause till
+                // the response is processed and available?
+                PlcSimpleReadResponse<ByteValue> plcReadResponse = plcReader.read(
+                    new PlcSimpleReadRequest<>(ByteValue.class, inputs)).get();
                 ByteValue data = plcReadResponse.getValue();
                 System.out.println("Inputs: " + data.getValue());
 
@@ -100,9 +105,12 @@ public class S7PlcDriverTest {
                 Calendar start = Calendar.getInstance();
                 CompletableFuture<PlcSimpleReadResponse<ByteValue>> asyncResponse = plcReader.read(
                     new PlcSimpleReadRequest<>(ByteValue.class, outputs));
+
                 // Simulate doing something else ...
                 System.out.println("Processing: ");
                 while (true) {
+                    // I had to make sleep this small or it would have printed only one "."
+                    // On my system the average response time with a siemens s7-1200 was 5ms.
                     Thread.sleep(1);
                     System.out.print(".");
                     if (asyncResponse.isDone()) {
@@ -110,6 +118,7 @@ public class S7PlcDriverTest {
                     }
                 }
                 System.out.println();
+
                 Calendar end = Calendar.getInstance();
                 plcReadResponse = asyncResponse.get();
                 data = plcReadResponse.getValue();
