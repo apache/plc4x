@@ -16,8 +16,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.types;
+package org.apache.plc4x.java.messages;
 
-public class FloatType extends AbstractType<Float> {
+/**
+ * Base type for all response messages sent as response for a prior request
+ * from a plc to the plc4x system.
+ */
+public interface PlcResponse extends PlcMessage {
 
 }

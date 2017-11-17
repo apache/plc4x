@@ -18,6 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.types;
 
-public class ByteType extends AbstractType<Byte> {
+public class BooleanValue extends AbstractValue<Boolean> {
 
 }

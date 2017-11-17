@@ -18,8 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.mina;
 
-import org.apache.plc4x.java.model.PlcRequest;
-import org.apache.plc4x.java.model.PlcResponse;
+import org.apache.plc4x.java.messages.PlcRequest;
+import org.apache.plc4x.java.messages.PlcResponse;
 
 import java.util.concurrent.CompletableFuture;
 

@@ -18,6 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.types;
 
-public class IntegerType extends AbstractType<Integer> {
+public class FloatValue extends AbstractValue<Float> {
 
 }

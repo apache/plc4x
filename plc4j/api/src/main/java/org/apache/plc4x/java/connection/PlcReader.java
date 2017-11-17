@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.connection;
 
-import org.apache.plc4x.java.model.PlcReadRequest;
-import org.apache.plc4x.java.model.PlcReadResponse;
-import org.apache.plc4x.java.types.Type;
+import org.apache.plc4x.java.messages.PlcSimpleReadRequest;
+import org.apache.plc4x.java.messages.PlcSimpleReadResponse;
+import org.apache.plc4x.java.types.Value;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -30,10 +30,12 @@ import java.util.concurrent.CompletableFuture;
 public interface PlcReader {
 
     /**
+     * Reads a requested value from a PLC.
      *
-     * @param readRequest
-     * @return
+     * @param readRequest object describing the type and location of the value.
+     * @param <T> The value type that should be used.
+     * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    <T extends Type> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest);
+    <T extends Value> CompletableFuture<PlcSimpleReadResponse<T>> read(PlcSimpleReadRequest<T> readRequest);
 
 }

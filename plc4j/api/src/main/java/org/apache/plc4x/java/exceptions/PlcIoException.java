@@ -18,6 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.exceptions;
 
+/**
+ * Base exception for all IO related exceptions.
+ */
 public class PlcIoException extends PlcException {
 
     public PlcIoException(String message) {

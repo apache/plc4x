@@ -16,25 +16,36 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.model;
+package org.apache.plc4x.java.messages;
 
-import org.apache.plc4x.java.types.Type;
+import org.apache.plc4x.java.types.Value;
 
-public class PlcReadResponse<T extends Type> extends AbstractPlcResourceMessage<T> implements PlcResponse {
+public abstract class AbstractPlcSimpleResourceMessage<T extends Value> implements PlcMessage {
 
-    private final T value;
+    private Address address;
+    private Class<T> datatype;
+    private int size;
 
-    public PlcReadResponse(Class<T> datatype, Address address, T value) {
-        this(datatype, address, 1, value);
+    AbstractPlcSimpleResourceMessage(Class<T> datatype, Address address) {
+        this(datatype, address, 1);
     }
 
-    public PlcReadResponse(Class<T> datatype, Address address, int size, T value) {
-        super(datatype, address, size);
-        this.value = value;
+    AbstractPlcSimpleResourceMessage(Class<T> datatype, Address address, int size) {
+        this.address = address;
+        this.datatype = datatype;
+        this.size = size;
     }
 
-    public T getValue() {
-        return value;
+    public Class<? extends T> getDatatype() {
+        return datatype;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public int getSize() {
+        return size;
     }
 
 }

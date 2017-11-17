@@ -25,11 +25,11 @@ import org.apache.plc4x.java.connection.PlcConnection;
 import org.apache.plc4x.java.connection.PlcReader;
 import org.apache.plc4x.java.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.exceptions.PlcException;
-import org.apache.plc4x.java.model.Address;
-import org.apache.plc4x.java.model.PlcReadRequest;
-import org.apache.plc4x.java.model.PlcReadResponse;
+import org.apache.plc4x.java.messages.Address;
+import org.apache.plc4x.java.messages.PlcSimpleReadRequest;
+import org.apache.plc4x.java.messages.PlcSimpleReadResponse;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
-import org.apache.plc4x.java.types.ByteType;
+import org.apache.plc4x.java.types.ByteValue;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -91,15 +91,15 @@ public class S7PlcDriverTest {
 
                 //////////////////////////////////////////////////////////
                 // Read synchronously ...
-                PlcReadResponse<ByteType> plcReadResponse = plcReader.read(new PlcReadRequest<>(ByteType.class, inputs)).get();
-                ByteType data = plcReadResponse.getValue();
+                PlcSimpleReadResponse<ByteValue> plcReadResponse = plcReader.read(new PlcSimpleReadRequest<>(ByteValue.class, inputs)).get();
+                ByteValue data = plcReadResponse.getValue();
                 System.out.println("Inputs: " + data.getValue());
 
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...
                 Calendar start = Calendar.getInstance();
-                CompletableFuture<PlcReadResponse<ByteType>> asyncResponse = plcReader.read(
-                    new PlcReadRequest<>(ByteType.class, outputs));
+                CompletableFuture<PlcSimpleReadResponse<ByteValue>> asyncResponse = plcReader.read(
+                    new PlcSimpleReadRequest<>(ByteValue.class, outputs));
                 // Simulate doing something else ...
                 System.out.println("Processing: ");
                 while (true) {

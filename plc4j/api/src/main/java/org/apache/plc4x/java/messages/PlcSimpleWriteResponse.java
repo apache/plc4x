@@ -16,8 +16,23 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.types;
+package org.apache.plc4x.java.messages;
 
-public class BooleanType extends AbstractType<Boolean> {
+import org.apache.plc4x.java.types.Value;
+
+/**
+ * A response for a simple write request.
+ *
+ * @param <T> the type of variable being written.
+ */
+public class PlcSimpleWriteResponse<T extends Value> extends AbstractPlcSimpleResourceMessage<T> implements PlcResponse {
+
+    public PlcSimpleWriteResponse(Class<T> datatype, Address address) {
+        super(datatype, address);
+    }
+
+    public PlcSimpleWriteResponse(Class<T> datatype, Address address, int size) {
+        super(datatype, address, size);
+    }
 
 }

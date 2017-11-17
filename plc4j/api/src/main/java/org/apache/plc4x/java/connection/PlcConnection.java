@@ -19,8 +19,15 @@ under the License.
 package org.apache.plc4x.java.connection;
 
 import org.apache.plc4x.java.exceptions.PlcException;
-import org.apache.plc4x.java.model.Address;
+import org.apache.plc4x.java.messages.Address;
 
+/**
+ * Interface defining the most basic methods a PLC4X connection should support.
+ * This generally handles the connection establishment itself and the parsing of
+ * address strings to the platform dependent Address instances.
+ *
+ * The individual operations are then defined by other interfaces within this package.
+ */
 public interface PlcConnection {
 
     /**

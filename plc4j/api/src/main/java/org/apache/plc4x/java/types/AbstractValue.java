@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.types;
 
-public abstract class AbstractType<T> implements Type<T> {
+public abstract class AbstractValue<T> implements Value<T> {
 
     private T value;
 

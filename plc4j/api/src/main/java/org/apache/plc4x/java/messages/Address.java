@@ -16,8 +16,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.model;
+package org.apache.plc4x.java.messages;
 
-public interface PlcMessage {
+/**
+ * Base type for all address types.
+ * Typically every driver provides an implementation of this interface in order
+ * to be able to describe the address of a resource. As this is completely tied to
+ * the implemented protocol, this base interface makes absolutely no assumption to
+ * any information it should provide.
+ *
+ * In order to stay platform and protocol independent every driver connection implementation
+ * provides a parseAddress(String) method that is able to parse a string representation of
+ * a resource into it's individual address type. Manually constructing Address objects
+ * manually makes the solution less independent from the protocol, but might be faster.
+ */
+public interface Address {
 
 }

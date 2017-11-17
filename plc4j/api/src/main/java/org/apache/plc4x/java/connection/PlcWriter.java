@@ -19,9 +19,9 @@ under the License.
 package org.apache.plc4x.java.connection;
 
 
-import org.apache.plc4x.java.model.PlcWriteRequest;
-import org.apache.plc4x.java.model.PlcWriteResponse;
-import org.apache.plc4x.java.types.Type;
+import org.apache.plc4x.java.messages.PlcSimpleWriteRequest;
+import org.apache.plc4x.java.messages.PlcSimpleWriteResponse;
+import org.apache.plc4x.java.types.Value;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -30,6 +30,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface PlcWriter {
 
-    <T extends Type> CompletableFuture<PlcWriteResponse<T>> read(PlcWriteRequest<T> writeRequest);
+    /**
+     * Writes a given value to a PLC.
+     *
+     * @param writeRequest object describing the type, location and value that whould be written.
+     * @param <T> The value type that should be used.
+     * @return a {@link CompletableFuture} giving async access to the response of the write operation.
+     */
+    <T extends Value> CompletableFuture<PlcSimpleWriteResponse<T>> write(PlcSimpleWriteRequest<T> writeRequest);
 
 }

@@ -18,6 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.exceptions;
 
+/**
+ * Base exception for all protocol related exceptions.
+ * This is usually if the messages themselves are malformed, contain incorrect information or
+ * any other problems occur which are related to the protocol being implemented.
+ */
 public class PlcProtocolException extends PlcException {
 
     public PlcProtocolException(String message) {

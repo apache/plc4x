@@ -16,8 +16,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.model;
+package org.apache.plc4x.java.messages;
 
+/**
+ * Base type for all messages sent from the plc4x system to a connected plc.
+ */
 public interface PlcRequest extends PlcMessage {
 
 }

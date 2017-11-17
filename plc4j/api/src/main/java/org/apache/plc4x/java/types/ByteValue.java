@@ -16,8 +16,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.model;
+package org.apache.plc4x.java.types;
 
-public interface PlcResponse extends PlcMessage {
+public class ByteValue extends AbstractValue<Byte> {
 
 }

@@ -28,10 +28,10 @@ import org.apache.plc4x.java.exceptions.PlcException;
 import org.apache.plc4x.java.exceptions.PlcIoException;
 import org.apache.plc4x.java.isoontcp.mina.IsoOnTcpFilterAdapter;
 import org.apache.plc4x.java.isotp.mina.IsoTPFilterAdapter;
+import org.apache.plc4x.java.messages.PlcSimpleReadResponse;
 import org.apache.plc4x.java.mina.PlcRequestContainer;
-import org.apache.plc4x.java.model.Address;
-import org.apache.plc4x.java.model.PlcReadRequest;
-import org.apache.plc4x.java.model.PlcReadResponse;
+import org.apache.plc4x.java.messages.Address;
+import org.apache.plc4x.java.messages.PlcSimpleReadRequest;
 import org.apache.plc4x.java.s7.mina.Plc4XS7FilterAdapter;
 import org.apache.plc4x.java.s7.mina.S7FilterAdapter;
 import org.apache.plc4x.java.s7.mina.S7Handler;
@@ -161,9 +161,9 @@ public class S7PlcConnection implements PlcConnection, PlcReader {
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
+    public CompletableFuture<PlcSimpleReadResponse> read(PlcSimpleReadRequest readRequest) {
+        CompletableFuture<PlcSimpleReadResponse> readFuture = new CompletableFuture<>();
+        PlcRequestContainer<PlcSimpleReadRequest, PlcSimpleReadResponse> container =
             new PlcRequestContainer<>(readRequest, readFuture);
         session.write(container);
         return readFuture;

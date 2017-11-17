@@ -16,18 +16,31 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.model;
+package org.apache.plc4x.java.messages;
 
-import org.apache.plc4x.java.types.Type;
+import org.apache.plc4x.java.types.Value;
 
-public class PlcWriteResponse<T extends Type> extends AbstractPlcResourceMessage<T> implements PlcResponse {
+/**
+ * A simple write request tries to write only one variable/array to the plc.
+ * Its API is therefore a lot simpler than that of a BatchWriteRequest.
+ *
+ * @param <T> the type of variable being requested.
+ */
+public class PlcSimpleWriteRequest<T extends Value> extends AbstractPlcSimpleResourceMessage<T> implements PlcRequest {
 
-    public PlcWriteResponse(Class<T> datatype, Address address) {
-        super(datatype, address);
+    private final T value;
+
+    public PlcSimpleWriteRequest(Class<T> datatype, Address address, T value) {
+        this(datatype, address, 1, value);
     }
 
-    public PlcWriteResponse(Class<T> datatype, Address address, int size) {
+    public PlcSimpleWriteRequest(Class<T> datatype, Address address, int size, T value) {
         super(datatype, address, size);
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
     }
 
 }

@@ -122,7 +122,7 @@ public class IsoTPFilterAdapter extends IoFilterAdapter {
                     outputParameters(buffer, tpdu.getParameters());
                 }
                 default: {
-                    logger.error("TDPU Type {} not implemented yet", new Object[]{tpdu.getTpduCode().name()});
+                    logger.error("TDPU Value {} not implemented yet", new Object[]{tpdu.getTpduCode().name()});
                     return;
                 }
             }

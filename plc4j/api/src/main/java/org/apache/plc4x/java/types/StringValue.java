@@ -18,8 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.types;
 
-import java.util.Calendar;
-
-public class CalendarType extends AbstractType<Calendar> {
+public class StringValue extends AbstractValue<String> {
 
 }

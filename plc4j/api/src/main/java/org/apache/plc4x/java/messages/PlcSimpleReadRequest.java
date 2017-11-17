@@ -16,17 +16,23 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.model;
+package org.apache.plc4x.java.messages;
 
-import org.apache.plc4x.java.types.Type;
+import org.apache.plc4x.java.types.Value;
 
-public class PlcReadRequest<T extends Type> extends AbstractPlcResourceMessage<T> implements PlcRequest {
+/**
+ * A simple read request tries to read only one variable/array from the plc.
+ * Its API is therefore a lot simpler than that of a BatchReadRequest.
+ *
+ * @param <T> the type of variable being requested.
+ */
+public class PlcSimpleReadRequest<T extends Value> extends AbstractPlcSimpleResourceMessage<T> implements PlcRequest {
 
-    public PlcReadRequest(Class<T> datatype, Address address) {
+    public PlcSimpleReadRequest(Class<T> datatype, Address address) {
         super(datatype, address);
     }
 
-    public PlcReadRequest(Class<T> datatype, Address address, int size) {
+    public PlcSimpleReadRequest(Class<T> datatype, Address address, int size) {
         super(datatype, address, size);
     }
 

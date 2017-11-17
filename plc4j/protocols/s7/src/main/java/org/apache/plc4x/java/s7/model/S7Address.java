@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.model;
 
-import org.apache.plc4x.java.model.Address;
+import org.apache.plc4x.java.messages.Address;
 import org.apache.plc4x.java.s7.mina.model.types.MemoryArea;
 
 public class S7Address implements Address {

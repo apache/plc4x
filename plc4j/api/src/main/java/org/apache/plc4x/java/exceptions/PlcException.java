@@ -18,6 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.exceptions;
 
+/**
+ * Most generic type of plc4x exception. All plc4x exceptions are derived from
+ * PlcException.
+ */
 public class PlcException extends Exception {
 
     public PlcException(String message) {

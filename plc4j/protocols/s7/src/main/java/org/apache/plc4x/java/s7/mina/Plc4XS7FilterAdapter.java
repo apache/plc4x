@@ -23,11 +23,10 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.core.write.WriteRequest;
 import org.apache.mina.core.write.WriteRequestWrapper;
 import org.apache.plc4x.java.exceptions.PlcException;
+import org.apache.plc4x.java.messages.*;
 import org.apache.plc4x.java.mina.PlcRequestContainer;
-import org.apache.plc4x.java.model.PlcReadRequest;
-import org.apache.plc4x.java.model.PlcReadResponse;
-import org.apache.plc4x.java.model.PlcResponse;
-import org.apache.plc4x.java.model.PlcWriteRequest;
+import org.apache.plc4x.java.messages.PlcSimpleReadRequest;
+import org.apache.plc4x.java.messages.PlcSimpleWriteRequest;
 import org.apache.plc4x.java.s7.mina.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.mina.model.messages.S7ResponseMessage;
 import org.apache.plc4x.java.s7.mina.model.params.ReadVarParameter;
@@ -61,8 +60,8 @@ public class Plc4XS7FilterAdapter extends IoFilterAdapter {
         if (writeRequest.getMessage() instanceof PlcRequestContainer) {
             PlcRequestContainer readRequestContainer = (PlcRequestContainer) writeRequest.getMessage();
 
-            if (readRequestContainer.getRequest() instanceof PlcReadRequest) {
-                PlcReadRequest readRequest = (PlcReadRequest) readRequestContainer.getRequest();
+            if (readRequestContainer.getRequest() instanceof PlcSimpleReadRequest) {
+                PlcSimpleReadRequest readRequest = (PlcSimpleReadRequest) readRequestContainer.getRequest();
 
                 // Try to get the correct S7 transport size for the given data type.
                 // (Map PLC4X data type to S7 data type)
@@ -111,7 +110,7 @@ public class Plc4XS7FilterAdapter extends IoFilterAdapter {
 
                 requests.put(s7ReadRequest.getTpduReference(), readRequestContainer);
             }
-        }/* else if(writeRequest.getMessage() instanceof PlcWriteRequest) {
+        }/* else if(writeRequest.getMessage() instanceof PlcSimpleWriteRequest) {
             // TODO: To be implemented.
         }*/
         nextFilter.filterWrite(session, writeRequest);
@@ -125,15 +124,15 @@ public class Plc4XS7FilterAdapter extends IoFilterAdapter {
             if (requests.containsKey(tpduReference)) {
                 PlcRequestContainer requestContainer = requests.remove(tpduReference);
                 PlcResponse response = null;
-                if (requestContainer.getRequest() instanceof PlcReadRequest) {
-                    PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
+                if (requestContainer.getRequest() instanceof PlcSimpleReadRequest) {
+                    PlcSimpleReadRequest plcReadRequest = (PlcSimpleReadRequest) requestContainer.getRequest();
                     S7AnyReadVarPayload payload = responseMessage.getPayload(S7AnyReadVarPayload.class);
                     byte[] data = payload.getData();
-                    Type<?> value = fromS7Data(plcReadRequest.getDatatype(), data);
-                    response = new PlcReadResponse(plcReadRequest.getDatatype(), plcReadRequest.getAddress(),
+                    Value<?> value = fromS7Data(plcReadRequest.getDatatype(), data);
+                    response = new PlcSimpleReadResponse(plcReadRequest.getDatatype(), plcReadRequest.getAddress(),
                         plcReadRequest.getSize(), value);
-                } else if (requestContainer.getRequest() instanceof PlcWriteRequest) {
-                    PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
+                } else if (requestContainer.getRequest() instanceof PlcSimpleWriteRequest) {
+                    PlcSimpleWriteRequest plcWriteRequest = (PlcSimpleWriteRequest) requestContainer.getRequest();
                 }
                 if (response != null) {
                     requestContainer.getResponseFuture().complete(response);
@@ -144,47 +143,47 @@ public class Plc4XS7FilterAdapter extends IoFilterAdapter {
     }
 
     private TransportSize getTransportSize(Class<?> datatype) {
-        if (datatype == BooleanType.class) {
+        if (datatype == BooleanValue.class) {
             return TransportSize.BIT;
-        } else if (datatype == ByteType.class) {
+        } else if (datatype == ByteValue.class) {
             return TransportSize.BYTE;
-        } else if (datatype == CalendarType.class) {
+        } else if (datatype == CalendarValue.class) {
             return TransportSize.DATE_AND_TIME;
-        } else if (datatype == FloatType.class) {
+        } else if (datatype == FloatValue.class) {
             return TransportSize.REAL;
-        } else if (datatype == IntegerType.class) {
+        } else if (datatype == IntegerValue.class) {
             return TransportSize.INT;
-        } else if (datatype == StringType.class) {
+        } else if (datatype == StringValue.class) {
             return TransportSize.CHAR;
         }
         return null;
     }
 
-    private Type<?> fromS7Data(Class<? extends Type> datatype, byte[] s7Data) {
-        if (datatype == BooleanType.class) {
-            BooleanType booleanType = new BooleanType();
+    private Value<?> fromS7Data(Class<? extends Value> datatype, byte[] s7Data) {
+        if (datatype == BooleanValue.class) {
+            BooleanValue booleanType = new BooleanValue();
             booleanType.setValue((s7Data[0] & 0x01) == 0x01);
             return booleanType;
-        } else if (datatype == ByteType.class) {
-            ByteType byteType = new ByteType();
+        } else if (datatype == ByteValue.class) {
+            ByteValue byteType = new ByteValue();
             byteType.setValue(s7Data[0]);
             return byteType;
         }
         return null;
     }
 
-    private byte[] toS7Data(Type<?> datatype) {
-        if (datatype.getClass() == BooleanType.class) {
-            return new byte[]{(byte) (((BooleanType) datatype).getValue() ? 0x01 : 0x00)};
-        } else if (datatype.getClass() == ByteType.class) {
-            return new byte[]{((ByteType) datatype).getValue()};
-        } else if (datatype.getClass() == CalendarType.class) {
+    private byte[] toS7Data(Value<?> datatype) {
+        if (datatype.getClass() == BooleanValue.class) {
+            return new byte[]{(byte) (((BooleanValue) datatype).getValue() ? 0x01 : 0x00)};
+        } else if (datatype.getClass() == ByteValue.class) {
+            return new byte[]{((ByteValue) datatype).getValue()};
+        } else if (datatype.getClass() == CalendarValue.class) {
 
-        } else if (datatype.getClass() == FloatType.class) {
+        } else if (datatype.getClass() == FloatValue.class) {
 
-        } else if (datatype.getClass() == IntegerType.class) {
+        } else if (datatype.getClass() == IntegerValue.class) {
 
-        } else if (datatype.getClass() == StringType.class) {
+        } else if (datatype.getClass() == StringValue.class) {
 
         }
         return null;

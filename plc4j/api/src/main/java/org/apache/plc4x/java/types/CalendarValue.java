@@ -16,8 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.model;
+package org.apache.plc4x.java.types;
 
-public interface Address {
+import java.util.Calendar;
+
+public class CalendarValue extends AbstractValue<Calendar> {
 
 }
