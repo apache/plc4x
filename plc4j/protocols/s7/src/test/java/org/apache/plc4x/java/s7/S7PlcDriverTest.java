@@ -88,13 +88,14 @@ public class S7PlcDriverTest {
                 // Prepare some address object for accessing fields in the PLC.
                 // ({memory-area}/{byte-offset}[/{bit-offset}]
                 // "bit-offset is only specified if the requested type is "bit"
+                // NOTICE: This format is probably only valid when using a S7 connection.
                 Address inputs = plcConnection.parseAddress("INPUTS/0");
                 Address outputs = plcConnection.parseAddress("OUTPUTS/0");
 
                 //////////////////////////////////////////////////////////
                 // Read synchronously ...
-                // Notice the ".get()" which immediately lets this thread pause till
-                // the response is processed and available?
+                // NOTICE: the ".get()" immediately lets this thread pause till
+                // the response is processed and available.
                 PlcSimpleReadResponse<ByteValue> plcReadResponse = plcReader.read(
                     new PlcSimpleReadRequest<>(ByteValue.class, inputs)).get();
                 ByteValue data = plcReadResponse.getValue();
