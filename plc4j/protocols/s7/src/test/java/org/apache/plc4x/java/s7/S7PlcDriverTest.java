@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Calendar;
 import java.util.concurrent.CompletableFuture;
 
-class S7PlcDriverTest {
+public class S7PlcDriverTest {
 
     @Test
     @Tag("fast")
