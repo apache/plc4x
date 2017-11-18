@@ -161,13 +161,9 @@ public class Plc4XS7FilterAdapter extends IoFilterAdapter {
 
     private Value<?> fromS7Data(Class<? extends Value> datatype, byte[] s7Data) {
         if (datatype == BooleanValue.class) {
-            BooleanValue booleanType = new BooleanValue();
-            booleanType.setValue((s7Data[0] & 0x01) == 0x01);
-            return booleanType;
+            return new BooleanValue((s7Data[0] & 0x01) == 0x01);
         } else if (datatype == ByteValue.class) {
-            ByteValue byteType = new ByteValue();
-            byteType.setValue(s7Data[0]);
-            return byteType;
+            return new ByteValue(s7Data[0]);
         }
         return null;
     }

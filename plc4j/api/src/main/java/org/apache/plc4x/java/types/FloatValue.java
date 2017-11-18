@@ -20,4 +20,8 @@ package org.apache.plc4x.java.types;
 
 public class FloatValue extends AbstractValue<Float> {
 
+    public FloatValue(Float value) {
+        super(value);
+    }
+
 }

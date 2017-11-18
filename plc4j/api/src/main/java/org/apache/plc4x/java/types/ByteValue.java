@@ -20,4 +20,8 @@ package org.apache.plc4x.java.types;
 
 public class ByteValue extends AbstractValue<Byte> {
 
+    public ByteValue(Byte value) {
+        super(value);
+    }
+
 }

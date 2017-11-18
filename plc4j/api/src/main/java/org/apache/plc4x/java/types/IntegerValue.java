@@ -20,4 +20,8 @@ package org.apache.plc4x.java.types;
 
 public class IntegerValue extends AbstractValue<Integer> {
 
+    public IntegerValue(Integer value) {
+        super(value);
+    }
+
 }

@@ -22,4 +22,8 @@ import java.util.Calendar;
 
 public class CalendarValue extends AbstractValue<Calendar> {
 
+    public CalendarValue(Calendar value) {
+        super(value);
+    }
+
 }
