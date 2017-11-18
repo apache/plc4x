@@ -25,7 +25,7 @@ public abstract class AbstractValue<T> implements Value<T> {
     private T value;
 
     public AbstractValue(T value) {
-        this.value = value;
+        this.value = Objects.requireNonNull(value, "Parameter 'value' must not be null");
     }
 
     @Override
