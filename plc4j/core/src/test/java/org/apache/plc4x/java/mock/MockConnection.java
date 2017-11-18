@@ -41,6 +41,11 @@ public class MockConnection implements PlcConnection {
     }
 
     @Override
+    public void close() throws Exception {
+
+    }
+
+    @Override
     public Address parseAddress(String addressString) throws PlcException {
         return null;
     }
