@@ -329,10 +329,10 @@ public class IsoTPFilterAdapter extends IoFilterAdapter {
                     headerLength = 3;
                     break;
                 case DISCONNECT_REQUEST:
-                    headerLength = 6;
+                    headerLength = 7;
                     break;
                 case DISCONNECT_CONFIRM:
-                    headerLength = 7;
+                    headerLength = 8;
                     break;
                 case TPDU_ERROR:
                     headerLength = 5;
