@@ -20,4 +20,8 @@ package org.apache.plc4x.java.types;
 
 public class BooleanValue extends AbstractValue<Boolean> {
 
+    public BooleanValue(Boolean value) {
+        super(value);
+    }
+
 }

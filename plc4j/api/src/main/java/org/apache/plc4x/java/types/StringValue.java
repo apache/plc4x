@@ -20,4 +20,8 @@ package org.apache.plc4x.java.types;
 
 public class StringValue extends AbstractValue<String> {
 
+    public StringValue(String value) {
+        super(value);
+    }
+
 }

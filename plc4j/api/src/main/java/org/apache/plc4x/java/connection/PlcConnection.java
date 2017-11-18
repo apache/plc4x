@@ -28,7 +28,7 @@ import org.apache.plc4x.java.messages.Address;
  *
  * The individual operations are then defined by other interfaces within this package.
  */
-public interface PlcConnection {
+public interface PlcConnection extends AutoCloseable {
 
     /**
      * Established the connection to the remote PLC.

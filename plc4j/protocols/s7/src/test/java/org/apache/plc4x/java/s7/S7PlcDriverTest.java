@@ -82,9 +82,8 @@ public class S7PlcDriverTest {
      * @throws Exception something went wrong.
      */
     public static void main(String[] args) throws Exception {
-        try {
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")){
             // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
-            PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0");
             plcConnection.connect();
 
             // Check if this connection support reading of data.
