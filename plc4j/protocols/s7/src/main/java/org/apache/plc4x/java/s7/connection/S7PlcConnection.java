@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.connection;
 
+import org.apache.mina.core.future.CloseFuture;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
@@ -136,6 +137,12 @@ public class S7PlcConnection implements PlcConnection, PlcReader {
         } catch (InterruptedException | ExecutionException e) {
             throw new PlcIoException(e);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        CloseFuture closeFuture = session.closeNow();
+        closeFuture.awaitUninterruptibly();
     }
 
     @Override
