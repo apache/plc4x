@@ -135,6 +135,7 @@ public class S7PlcDriverTest {
         catch (Exception e) {
             e.printStackTrace();
         }
+        // The application would cleanly terminate after several seconds ... this just speeds things up.
         System.exit(0);
     }
 

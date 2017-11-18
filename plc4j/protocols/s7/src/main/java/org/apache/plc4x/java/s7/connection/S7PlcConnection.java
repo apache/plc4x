@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.connection;
 
+import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.future.CloseFuture;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.session.IoSession;
@@ -29,6 +30,8 @@ import org.apache.plc4x.java.exceptions.PlcException;
 import org.apache.plc4x.java.exceptions.PlcIoException;
 import org.apache.plc4x.java.isoontcp.mina.IsoOnTcpFilterAdapter;
 import org.apache.plc4x.java.isotp.mina.IsoTPFilterAdapter;
+import org.apache.plc4x.java.isotp.mina.model.tpdus.DisconnectRequestTpdu;
+import org.apache.plc4x.java.isotp.mina.model.types.DisconnectReason;
 import org.apache.plc4x.java.messages.PlcSimpleReadResponse;
 import org.apache.plc4x.java.mina.PlcRequestContainer;
 import org.apache.plc4x.java.messages.Address;
@@ -46,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -141,7 +145,14 @@ public class S7PlcConnection implements PlcConnection, PlcReader {
 
     @Override
     public void close() throws Exception {
-        CloseFuture closeFuture = session.closeNow();
+        // Send the PLC a message that the connection is being closed.
+        DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
+            (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
+            IoBuffer.allocate(0).setAutoExpand(true));
+        session.write(disconnectRequest);
+
+        // Close the session itself.
+        CloseFuture closeFuture = session.closeOnFlush();
         closeFuture.awaitUninterruptibly();
     }
 
