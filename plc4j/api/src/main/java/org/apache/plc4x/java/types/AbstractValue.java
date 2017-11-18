@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.types;
 
+import java.util.Objects;
+
 public abstract class AbstractValue<T> implements Value<T> {
 
     private T value;
@@ -31,4 +33,23 @@ public abstract class AbstractValue<T> implements Value<T> {
         this.value = value;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final AbstractValue<?> that = (AbstractValue<?>) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+            "value=" + value +
+            '}';
+    }
 }
