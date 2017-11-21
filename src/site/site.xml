@@ -43,19 +43,17 @@
         <column>Protocols</column>
         <column>modules</column>
       </bottomNav>
-      <bottomDescription>
-        <![CDATA[
-          <span class="color-highlight">Reflow</span> is an Apache Maven site skin built on
-          <a href="http://getbootstrap.com" title="Bootstrap">Bootstrap</a>.
-          It allows various structural and stylistic customizations to create a
-          modern-looking Maven-generated website.
-        ]]>
-      </bottomDescription>
       <brand>
         <name>Apache PLC4X (Incubating)</name>
         <href>https://plc4x.apache.org/</href>
       </brand>
       <bottomDescription>
+        <![CDATA[
+          <p id="bottomNote">Bottom Note: This site is currently a draft, we are not yet officially in the Apache Incubator</p>
+          <div id="watermark">
+            <p id="watermark-text">This is a draft. See bottom note.</p>
+	        </div>
+        ]]>
       </bottomDescription>
       <breadcrumbs>true</breadcrumbs>
       <highlightJs>true</highlightJs>
