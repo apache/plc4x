@@ -22,45 +22,48 @@
 
 [ditaa,protocols-s7-osi]
 ....
-                    :                                  |                                                 :
-                    :                                  |                                                 :
-                    :                           :      V      :             : Profinet RT : Profinet IRT:
-- - - - - - - - - - +-------------+-------------+-------------+-------------+-------------+-------------+ - -
-                    |c0B0         |c0B0         |c0B0         |c0B0         |c0B0         |c0B0         |
+                    :                                                       : implemented               :
+                    :                                                       :      |                    :
+                    :                       Profinet                        :      | S7 Protocol        :
+                    :                                                       :      V                    :
+- - - - - - - - - - +-------------+-------------+-------------+-------------+-------------+-------------+
+                    |c0B0         |c0B0         |c0B0         |c0B0         |c0BA         |c0BA         |
  Application        |             |             |             |             |             |             |
  Layer              |             |             |             |             |             |             |
                     |             |             |             |             |             |             |
-                    |             |             |             |             |             |             |
-- - - - - - - - - - |             |             |             |             |             |             | - -
+                    | Profinet IO | Profinet IO | Profinet CBA| Profinet CBA|             |             |
+- - - - - - - - - - |   RT / IRT  |             |             |      RT     |             |             | - -
                     |             |             |             |             |             |             |
  Presentation       |             |             |             |             |             |             |
- Layer              |             |             |     S7      |             |             |             |
-                    |             |             |Communication|             |  Profinet   |  Profinet   |
+ Layer              |             |             |             |             |     S7      |     S7      |
+                    |             |             |             |             |Communication|Communication|
                     |             |             |             |             |             |             |
-- - - - - - - - - - |             |             |             |             |             |             | - -
-                    |             |             |             |             |             |             |
+- - - - - - - - - - |             +-------------+-------------+             |             |             | - -
+                    |             |cAAA         |cAAA         |             |             |             |
  Session            |             |             |             |             |             |             |
- Layer              |             |             |             |             |             |             |
+ Layer              |             |     RPC     |    DCOM     |             |             |             |
                     |             |             |             |             |             |             |
                     |             |             |             |             |             |             |
-- - - - - - - - - - +-------------+-------------+-------------+-------------+-------------+-------------+ - -
-                    |cAAA         |cAAA         |cF6F                       |c0AF         |cA0F         |
-                    |             |             |  ISO Transport Protocol   |             |             |
-                    |             |             |          RFC 905          |             |             |
-                    |             |             | (Class 0)                 |             |             |
-                    |             |             +-------------+             |             |             |
-                    |             |             |cFF6         |             |             |             |
- Transport          |             |             | ISO on TCP  |             |             |             |
- Layer              |     UDP     |     TCP     |  RFC 1006   |             |             |             |
-                    |             |             +-------------+             |             |             |
-                    |             |                           |     ISO     |             |             |
-- - - - - - - - - - +-------------+---------------------------+   Transport |             |             | - -
-                    |cAAA                                     |   Protocol  |             |             |
- Network            |                                         |   RFC 905   |             |             |
- Layer              |                    IP                   |   (Class 4) |             |             |
-                    |                                         |             |             |             |
-                    |                                         |             |             |             |
-- - - - - - - - - - +-----------------------------------------+-------------+-------------+-------------+ - -
+- - - - - - - - - - |             +-------------+-------------+             +-------------+-------------+ - -
+                    |             |cAAA         |cAAA         |             |cF6F                       |
+                    |             |             |             |             |  ISO Transport Protocol   |
+                    |             |             |             |             |          RFC 905          |
+                    |             |             |             |             | (Class 0)                 |
+                    |             |             |             |             +-------------+             |
+                    |             |             |             |             |cFF6         |             |
+ Transport          |             |             |             |             | ISO on TCP  |             |
+ Layer              |             |     UDP     |     TCP     |             |  RFC 1006   |             |
+                    |             |             |             |             +-------------+             |
+                    |             |             |             |             |cAAA         |             |
+                    |             |             |             |             |     TCP     |             |
+                    |             |             |             |             |             |     ISO     |
+- - - - - - - - - - |             +-------------+-------------+             +-------------+   Transport | - -
+                    |             | cAAA                      |             |cAAA         |   Protocol  |
+ Network            |             |                           |             |             |   RFC 905   |
+ Layer              |             |            IP             |             |     IP      |   (Class 4) |
+                    |             |                           |             |             |             |
+                    |             |                           |             |             |             |
+- - - - - - - - - - +-------------+---------------------------+-------------+-------------+-------------+ - -
                     |cAAA                                                                               |
  Data Link          |                                                                                   |
  Layer              |                                                                                   |
@@ -83,6 +86,8 @@
 |ISO Transport Protocol (Class 4) |ISO DP 8073 | RFC 905 |https://tools.ietf.org/html/rfc905
 |ISO on TCP |- | RFC 1006| https://tools.ietf.org/html/rfc1006
 |S7 Protocol |- |- |http://gmiru.com/article/s7comm/ http://gmiru.com/article/s7comm-part2/
+|RPC |- | RFC 1057 & RFC 5531 |https://tools.ietf.org/html/rfc1057 https://tools.ietf.org/html/rfc5531
+|DCOM |- |- | https://msdn.microsoft.com/library/cc201989.aspx
 |===
 
 While a lot of information was available on the general structure of S7 communication, only little information was available on the constant values this protocol uses.
