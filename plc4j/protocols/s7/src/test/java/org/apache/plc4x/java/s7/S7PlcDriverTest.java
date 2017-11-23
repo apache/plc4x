@@ -20,16 +20,16 @@ package org.apache.plc4x.java.s7;
 
 
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.authentication.PlcUsernamePasswordAuthentication;
-import org.apache.plc4x.java.connection.PlcConnection;
-import org.apache.plc4x.java.connection.PlcReader;
-import org.apache.plc4x.java.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.exceptions.PlcException;
-import org.apache.plc4x.java.messages.Address;
-import org.apache.plc4x.java.messages.PlcSimpleReadRequest;
-import org.apache.plc4x.java.messages.PlcSimpleReadResponse;
+import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
+import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.messages.Address;
+import org.apache.plc4x.java.api.messages.PlcSimpleReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSimpleReadResponse;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
-import org.apache.plc4x.java.types.ByteValue;
+import org.apache.plc4x.java.api.types.ByteValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java;
 
-import org.apache.plc4x.java.authentication.PlcUsernamePasswordAuthentication;
-import org.apache.plc4x.java.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.exceptions.PlcException;
+import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.mock.MockConnection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;

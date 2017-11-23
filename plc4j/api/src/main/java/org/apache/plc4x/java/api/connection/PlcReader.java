@@ -16,29 +16,26 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.mina;
+package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.messages.PlcRequest;
-import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.PlcSimpleReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSimpleReadResponse;
+import org.apache.plc4x.java.api.types.Value;
 
 import java.util.concurrent.CompletableFuture;
 
-public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
+/**
+ * Interface implemented by all PlcConnections that are able to read from remote resources.
+ */
+public interface PlcReader {
 
-    private T request;
-    private CompletableFuture<R> responseFuture;
-
-    public PlcRequestContainer(T request, CompletableFuture<R> responseFuture) {
-        this.request = request;
-        this.responseFuture = responseFuture;
-    }
-
-    public T getRequest() {
-        return request;
-    }
-
-    public CompletableFuture<R> getResponseFuture() {
-        return responseFuture;
-    }
+    /**
+     * Reads a requested value from a PLC.
+     *
+     * @param readRequest object describing the type and location of the value.
+     * @param <T> The value type that should be used.
+     * @return a {@link CompletableFuture} giving async access to the returned value.
+     */
+    <T extends Value> CompletableFuture<PlcSimpleReadResponse<T>> read(PlcSimpleReadRequest<T> readRequest);
 
 }

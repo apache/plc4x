@@ -18,9 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java;
 
-import org.apache.plc4x.java.authentication.PlcAuthentication;
-import org.apache.plc4x.java.connection.PlcConnection;
-import org.apache.plc4x.java.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 import java.net.URI;
 import java.net.URISyntaxException;

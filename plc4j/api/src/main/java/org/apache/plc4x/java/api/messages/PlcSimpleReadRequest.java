@@ -16,27 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.mina.model.types.MemoryArea;
+import org.apache.plc4x.java.api.types.Value;
 
-public class S7Address implements Address {
+/**
+ * A simple read request tries to read only one variable/array from the plc.
+ * Its API is therefore a lot simpler than that of a BatchReadRequest.
+ *
+ * @param <T> the type of variable being requested.
+ */
+public class PlcSimpleReadRequest<T extends Value> extends AbstractPlcSimpleResourceMessage<T> implements PlcRequest {
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
-
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    public PlcSimpleReadRequest(Class<T> datatype, Address address) {
+        super(datatype, address);
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
-    }
-
-    public short getByteOffset() {
-        return byteOffset;
+    public PlcSimpleReadRequest(Class<T> datatype, Address address, int size) {
+        super(datatype, address, size);
     }
 
 }

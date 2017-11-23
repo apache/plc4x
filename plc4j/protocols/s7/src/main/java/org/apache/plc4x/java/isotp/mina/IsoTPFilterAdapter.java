@@ -23,8 +23,7 @@ import org.apache.mina.core.filterchain.IoFilterAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.core.write.WriteRequest;
 import org.apache.mina.core.write.WriteRequestWrapper;
-import org.apache.plc4x.java.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.isoontcp.mina.IsoOnTcpFilterAdapter;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.isotp.mina.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.mina.model.params.*;
 import org.apache.plc4x.java.isotp.mina.model.tpdus.*;
@@ -41,7 +40,7 @@ public class IsoTPFilterAdapter extends IoFilterAdapter {
     public final static String RACK_NO = "ISO_TP_RACK_NO";
     public final static String SLOT_NO = "ISO_TP_SLOT_NO";
 
-    private final static Logger logger = LoggerFactory.getLogger(IsoOnTcpFilterAdapter.class);
+    private final static Logger logger = LoggerFactory.getLogger(IsoTPFilterAdapter.class);
 
     @Override
     public void sessionOpened(NextFilter nextFilter, IoSession session) throws Exception {

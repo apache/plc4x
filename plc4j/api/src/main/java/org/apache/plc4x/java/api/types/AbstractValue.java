@@ -16,33 +16,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.mock;
+package org.apache.plc4x.java.api.types;
 
-import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import java.util.Objects;
 
-public class DoubleMockDriver implements PlcDriver {
+public abstract class AbstractValue<T> implements Value<T> {
 
-    @Override
-    public String getProtocolCode() {
-        return "mock";
+    private T value;
+
+    public AbstractValue(T value) {
+        this.value = Objects.requireNonNull(value, "Parameter 'value' must not be null");
     }
 
     @Override
-    public String getProtocolName() {
-        return "Mock Protocol Implementation";
+    public T getValue() {
+        return value;
     }
 
     @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
-        return new MockConnection(null);
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final AbstractValue<?> that = (AbstractValue<?>) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        return new MockConnection(authentication);
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+            "value=" + value +
+            '}';
+    }
 }
