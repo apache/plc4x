@@ -37,7 +37,7 @@
   <description>Parent of all application example modules.</description>
 
   <modules>
-    <module>es-edgent-logger</module>
+    <module>plclogger</module>
   </modules>
 
 </project>

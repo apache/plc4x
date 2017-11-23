@@ -28,13 +28,31 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>es-edgent-logger</artifactId>
+  <artifactId>plclogger</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <name>Applications: Elastic-Search Edgent Data Logger</name>
+  <name>Applications: PLC Data Logger</name>
   <description>Application using Edgent and Elastic-Search to implement a PLC data logger.</description>
 
-  <modules>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plx4x</groupId>
+      <artifactId>plc4j-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.edgent</groupId>
+      <artifactId>edgent-providers-direct</artifactId>
+      <version>1.2.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Required driver implementation -->
+    <dependency>
+      <groupId>org.apache.plx4x</groupId>
+      <artifactId>plc4j-protocol-s7</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
 
 </project>
