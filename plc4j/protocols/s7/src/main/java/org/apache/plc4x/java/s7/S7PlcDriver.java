@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class S7PlcDriver implements PlcDriver {
 
-    private static final String S7_URI_PATTERN = "^s7://(.*?)/(\\d{1,4})/(\\d{1,4})";
+    private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7://(.*?)/(\\d{1,4})/(\\d{1,4})");
 
     @Override
     public String getProtocolCode() {
@@ -50,8 +50,7 @@ public class S7PlcDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
-        Pattern pattern = Pattern.compile(S7_URI_PATTERN);
-        Matcher matcher = pattern.matcher(url);
+        Matcher matcher = S7_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
                 "Connection url doesn't match the format 's7://{host|ip}/{rack}/{slot}'");

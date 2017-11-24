@@ -59,8 +59,8 @@ public class S7PlcConnection implements PlcConnection, PlcReader {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
-    private static final String S7_DATABLOCK_ADDRESS_PATTERN = "^DATABLOCK/(\\d{1,4})/(\\d{1,4})";
-    private static final String S7_ADDRESS_PATTERN = "^(.*?)/(\\d{1,4})(?:/(\\d))?";
+    private static final Pattern S7_DATABLOCK_ADDRESS_PATTERN = Pattern.compile("^DATABLOCK/(\\d{1,4})/(\\d{1,4})");
+    private static final Pattern S7_ADDRESS_PATTERN = Pattern.compile("^(.*?)/(\\d{1,4})(?:/(\\d))?");
 
     private final static Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
 
@@ -158,13 +158,13 @@ public class S7PlcConnection implements PlcConnection, PlcReader {
 
     @Override
     public Address parseAddress(String addressString) throws PlcException {
-        Matcher datablockAddressMatcher = Pattern.compile(S7_DATABLOCK_ADDRESS_PATTERN).matcher(addressString);
+        Matcher datablockAddressMatcher = S7_DATABLOCK_ADDRESS_PATTERN.matcher(addressString);
         if (datablockAddressMatcher.matches()) {
             int datablockNumber = Integer.valueOf(datablockAddressMatcher.group(1));
             int datablockByteOffset = Integer.valueOf(datablockAddressMatcher.group(2));
             return new S7DataBlockAddress((short) datablockNumber, (short) datablockByteOffset);
         }
-        Matcher addressMatcher = Pattern.compile(S7_ADDRESS_PATTERN).matcher(addressString);
+        Matcher addressMatcher = S7_ADDRESS_PATTERN.matcher(addressString);
         if (!addressMatcher.matches()) {
             throw new PlcConnectionException(
                 "Address string doesn't match the format '{area}/{offset}[/{bit-offset}]'");
