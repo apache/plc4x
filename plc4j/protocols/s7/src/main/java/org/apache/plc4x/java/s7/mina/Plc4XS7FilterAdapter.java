@@ -72,10 +72,10 @@ public class Plc4XS7FilterAdapter extends IoFilterAdapter {
 
                 // Depending on the address type, generate the corresponding type of request item.
                 ReadVarParameter readVarParameter = new ReadVarParameter();
-                S7Address s7Address = (S7Address) readRequest.getAddress();
                 if (!(readRequest.getAddress() instanceof S7Address)) {
                     throw new PlcException("Can only use S7Address types on S7 connection");
                 }
+                S7Address s7Address = (S7Address) readRequest.getAddress();
                 if (s7Address instanceof S7DataBlockAddress) {
                     S7DataBlockAddress s7DataBlockAddress = (S7DataBlockAddress) s7Address;
                     readVarParameter.addRequestItem(new S7AnyReadVarRequestItem(
