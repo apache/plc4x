@@ -30,6 +30,7 @@ import org.apache.plc4x.java.api.messages.PlcSimpleReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSimpleReadResponse;
 import org.apache.plc4x.java.api.types.ByteValue;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +41,8 @@ public class PlcLogger {
     private final int interval;
 
     private PlcLogger(PlcConnection plcConnection, String addressString, int interval) throws Exception {
-        if(!(plcConnection instanceof PlcReader)) {
+        Optional<PlcReader> readerCheck = plcConnection.getReader();
+        if(!readerCheck.isPresent()) {
             throw new Exception("PlcConnection must be a PlcReader");
         }
         plcReader = (PlcReader) plcConnection;
