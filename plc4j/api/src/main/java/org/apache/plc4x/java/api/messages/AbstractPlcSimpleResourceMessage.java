@@ -24,6 +24,7 @@ public abstract class AbstractPlcSimpleResourceMessage<T extends Value> implemen
 
     private Address address;
     private Class<T> datatype;
+    private Object value;
     private int size;
 
     AbstractPlcSimpleResourceMessage(Class<T> datatype, Address address) {
@@ -48,4 +49,7 @@ public abstract class AbstractPlcSimpleResourceMessage<T extends Value> implemen
         return size;
     }
 
+    public Object getValue() {
+        return value;
+    }
 }

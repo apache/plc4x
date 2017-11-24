@@ -1,0 +1,1 @@
+class=org.apache.plc4x.camel.opcua.OpcUaComponent
