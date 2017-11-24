@@ -1,0 +1,51 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+= Design principals
+
+While designing the API for PLC4X the following ideas were important to us:
+
+- It should be possible to write a piece of software to interact with a PLC regardless of it's type or protocol.
+- Communication should utilize non-blocking principles where possible.
+
+== Protocol and PLC independence
+
+In order to address a resource on a PLC the following information is required:
+
+- Addressing the PLC itself
+- Addressing resources on the PLC
+- The type of the resource
+
+Hereby the following parts are PLC and protocol dependent:
+
+- Addressing the PLC itself
+- Addressing resources on the PLC
+
+A driver implementation for a given protocol should therefore be able to parse a connection string and establish a connection to the corresponding PLC.
+
+The required information for addressing a resource is highly dependent on the used protocol and PLC type, therefore the connection - which should know what type of plc it's connected to - then should be able to parse an address string.
+
+As parsing a string can be expensive, the connection should provide a method for parsing a resource address string into an Address instance that can then be re-used by subsequent requests.
+
+Last, not least, the driver should be able to translate the data types defined in PLC4X into ones the protocol and PLC can understand.
+
+== Non blocking communication
+
+As the protocols involved may include some consisting of multiple layers of protocols, designing a framework for supporting clean protocol layering and async communication, we decided to use an existing io framework instead.
+
+Currently PLC4X uses Apache Mina, but we are currently experimenting with Netty as this has been reported to have a simple architecture and provide better performance.
+
