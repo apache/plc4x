@@ -21,6 +21,8 @@ package org.apache.plc4x.java.api.connection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.Address;
 
+import java.util.Optional;
+
 /**
  * Interface defining the most basic methods a PLC4X connection should support.
  * This generally handles the connection establishment itself and the parsing of
@@ -36,6 +38,12 @@ public interface PlcConnection extends AutoCloseable {
      * @throws PlcException an exception if the connection attempt failed.
      */
     void connect() throws PlcException;
+
+    Optional<PlcLister> getLister();
+
+    Optional<PlcReader> getReader();
+
+    Optional<PlcWriter> getWriter();
 
     /**
      * Parses a PLC/protocol dependent address string into an Address object.

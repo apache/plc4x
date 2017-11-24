@@ -16,38 +16,34 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.mock;
+package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.Address;
+import java.util.Optional;
 
-public class MockConnection extends AbstractPlcConnection {
+public abstract class AbstractPlcConnection implements PlcConnection {
 
-    private final PlcAuthentication authentication;
-
-    public MockConnection(PlcAuthentication authentication) {
-        this.authentication = authentication;
-    }
-
-    public PlcAuthentication getAuthentication() {
-        return authentication;
+    @Override
+    public Optional<PlcLister> getLister() {
+        if(this instanceof PlcLister) {
+            return Optional.of((PlcLister) this);
+        }
+        return Optional.empty();
     }
 
     @Override
-    public void connect() throws PlcException {
-
+    public Optional<PlcReader> getReader() {
+        if(this instanceof PlcReader) {
+            return Optional.of((PlcReader) this);
+        }
+        return Optional.empty();
     }
 
     @Override
-    public void close() throws Exception {
-
-    }
-
-    @Override
-    public Address parseAddress(String addressString) throws PlcException {
-        return null;
+    public Optional<PlcWriter> getWriter() {
+        if(this instanceof PlcWriter) {
+            return Optional.of((PlcWriter) this);
+        }
+        return Optional.empty();
     }
 
 }

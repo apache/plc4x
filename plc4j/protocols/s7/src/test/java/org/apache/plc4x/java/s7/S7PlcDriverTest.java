@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class S7PlcDriverTest {
@@ -86,9 +87,10 @@ public class S7PlcDriverTest {
             // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
             plcConnection.connect();
 
+            Optional<PlcReader> reader = plcConnection.getReader();
             // Check if this connection support reading of data.
-            if (plcConnection instanceof PlcReader) {
-                PlcReader plcReader = (PlcReader) plcConnection;
+            if (reader.isPresent()) {
+                PlcReader plcReader = reader.get();
 
                 // Prepare some address object for accessing fields in the PLC.
                 // ({memory-area}/{byte-offset}[/{bit-offset}]
