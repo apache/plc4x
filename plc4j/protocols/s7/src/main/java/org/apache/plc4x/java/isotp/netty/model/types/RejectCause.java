@@ -16,27 +16,37 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.isotp.netty.model.types;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import java.util.HashMap;
+import java.util.Map;
 
-public class S7Address implements Address {
+public enum RejectCause {
+    REASON_NOT_SPECIFIED((byte) 0x00),
+    INVALID_PARAMETER_CODE((byte) 0x01),
+    INVALID_TPDU_TYPE((byte) 0x02),
+    INVALID_PARAMETER_TYPE((byte) 0x03);
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+    private byte code;
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    RejectCause(byte code) {
+        this.code = code;
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
+    public byte getCode() {
+        return code;
     }
 
-    public short getByteOffset() {
-        return byteOffset;
+    private static Map<Byte, RejectCause> map = null;
+
+    public static RejectCause valueOf(byte code) {
+        if (map == null) {
+            map = new HashMap<>();
+            for (RejectCause rejectCause : RejectCause.values()) {
+                map.put(rejectCause.code, rejectCause);
+            }
+        }
+        return map.get(code);
     }
 
 }

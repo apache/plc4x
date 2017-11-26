@@ -16,27 +16,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.isoontcp.netty.model;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.netty.Message;
 
-public class S7Address implements Address {
+public class IsoOnTcpMessage extends Message {
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
-
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
-    }
-
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
-    }
-
-    public short getByteOffset() {
-        return byteOffset;
+    public IsoOnTcpMessage(ByteBuf userData) {
+        super(userData);
     }
 
 }

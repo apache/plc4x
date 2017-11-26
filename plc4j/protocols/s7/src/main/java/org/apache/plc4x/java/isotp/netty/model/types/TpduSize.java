@@ -16,27 +16,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.isotp.netty.model.types;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import java.util.HashMap;
+import java.util.Map;
 
-public class S7Address implements Address {
+public enum TpduSize {
+    SIZE_8192((byte) 0x0d),
+    SIZE_4096((byte) 0x0c),
+    SIZE_2048((byte) 0x0b),
+    SIZE_1024((byte) 0x0a),
+    SIZE_512((byte) 0x09),
+    SIZE_256((byte) 0x08),
+    SIZE_128((byte) 0x07);
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+    private byte code;
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    TpduSize(byte code) {
+        this.code = code;
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
+    public byte getCode() {
+        return code;
     }
 
-    public short getByteOffset() {
-        return byteOffset;
+    private static Map<Byte, TpduSize> map = null;
+
+    public static TpduSize valueOf(byte code) {
+        if (map == null) {
+            map = new HashMap<>();
+            for (TpduSize tpduSize : TpduSize.values()) {
+                map.put(tpduSize.code, tpduSize);
+            }
+        }
+        return map.get(code);
     }
 
 }

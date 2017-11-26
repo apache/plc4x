@@ -16,27 +16,36 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.s7.netty.model.types;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import java.util.HashMap;
+import java.util.Map;
 
-public class S7Address implements Address {
+public enum DataTransportErrorCode {
+    RESERVED((byte) 0x00),
+    NOT_FOUND((byte) 0x0A),
+    OK((byte) 0xFF);
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+    private byte code;
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    DataTransportErrorCode(byte code) {
+        this.code = code;
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
+    public byte getCode() {
+        return code;
     }
 
-    public short getByteOffset() {
-        return byteOffset;
+    private static Map<Byte, DataTransportErrorCode> map = null;
+
+    public static DataTransportErrorCode valueOf(byte code) {
+        if (map == null) {
+            map = new HashMap<>();
+            for (DataTransportErrorCode dataTransportErrorCode : DataTransportErrorCode.values()) {
+                map.put(dataTransportErrorCode.code, dataTransportErrorCode);
+            }
+        }
+        return map.get(code);
     }
 
 }

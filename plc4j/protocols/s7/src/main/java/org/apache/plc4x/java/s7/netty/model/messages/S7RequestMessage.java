@@ -16,27 +16,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.s7.netty.model.messages;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
+import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
+import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 
-public class S7Address implements Address {
+import java.util.List;
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+public class S7RequestMessage extends S7Message {
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
-    }
-
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
-    }
-
-    public short getByteOffset() {
-        return byteOffset;
+    public S7RequestMessage(MessageType messageType, short tpduReference, List<S7Parameter> s7Parameters, List<S7Payload> s7Payloads) {
+        super(messageType, tpduReference, s7Parameters, s7Payloads);
     }
 
 }

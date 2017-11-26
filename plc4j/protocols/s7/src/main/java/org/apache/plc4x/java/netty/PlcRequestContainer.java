@@ -16,27 +16,29 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.netty;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcResponse;
 
-public class S7Address implements Address {
+import java.util.concurrent.CompletableFuture;
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    private T request;
+    private CompletableFuture<R> responseFuture;
+
+    public PlcRequestContainer(T request, CompletableFuture<R> responseFuture) {
+        this.request = request;
+        this.responseFuture = responseFuture;
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
+    public T getRequest() {
+        return request;
     }
 
-    public short getByteOffset() {
-        return byteOffset;
+    public CompletableFuture<R> getResponseFuture() {
+        return responseFuture;
     }
 
 }

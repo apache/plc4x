@@ -16,27 +16,33 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.s7.netty.model.params;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.netty.model.params.items.ReadVarRequestItem;
+import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
-public class S7Address implements Address {
+import java.util.LinkedList;
+import java.util.List;
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+public class ReadVarParameter implements S7Parameter {
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    private final List<ReadVarRequestItem> items;
+
+    public ReadVarParameter() {
+        items = new LinkedList<>();
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
+    @Override
+    public ParameterType getType() {
+        return ParameterType.READ_VAR;
     }
 
-    public short getByteOffset() {
-        return byteOffset;
+    public List<ReadVarRequestItem> getItems() {
+        return items;
+    }
+
+    public void addRequestItem(ReadVarRequestItem item) {
+        items.add(item);
     }
 
 }

@@ -16,27 +16,38 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.isotp.netty.model.types;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import java.util.HashMap;
+import java.util.Map;
 
-public class S7Address implements Address {
+public enum ProtocolClass {
+    CLASS_0((byte) 0x00),
+    CLASS_1((byte) 0x10),
+    CLASS_2((byte) 0x20),
+    CLASS_3((byte) 0x30),
+    CLASS_4((byte) 0x40);
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+    private byte code;
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    ProtocolClass(byte code) {
+        this.code = code;
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
+    public byte getCode() {
+        return code;
     }
 
-    public short getByteOffset() {
-        return byteOffset;
+    private static Map<Byte, ProtocolClass> map = null;
+
+    public static ProtocolClass valueOf(byte code) {
+        if (map == null) {
+            map = new HashMap<>();
+            for (ProtocolClass protocolClass : ProtocolClass.values()) {
+                map.put(protocolClass.code, protocolClass);
+            }
+        }
+        return map.get(code);
     }
 
 }

@@ -16,27 +16,26 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.isotp.netty.model.params;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 
-public class S7Address implements Address {
+import org.apache.plc4x.java.isotp.netty.model.types.ParameterCode;
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+public class DisconnectAdditionalInformationParameter implements Parameter {
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    private final byte[] data;
+
+    public DisconnectAdditionalInformationParameter(byte[] data) {
+        this.data = data;
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
+    @Override
+    public ParameterCode getType() {
+        return ParameterCode.DISCONNECT_ADDITIONAL_INFORMATION;
     }
 
-    public short getByteOffset() {
-        return byteOffset;
+    public byte[] getData() {
+        return data;
     }
 
 }

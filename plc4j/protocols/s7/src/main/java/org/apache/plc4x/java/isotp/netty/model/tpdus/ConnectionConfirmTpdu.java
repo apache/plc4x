@@ -16,27 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.isotp.netty.model.tpdus;
 
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.isotp.netty.model.params.Parameter;
+import org.apache.plc4x.java.isotp.netty.model.types.ProtocolClass;
+import org.apache.plc4x.java.isotp.netty.model.types.TpduCode;
 
-public class S7Address implements Address {
+import java.util.List;
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+public class ConnectionConfirmTpdu extends ConnectionTpdu {
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
-    }
-
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
-    }
-
-    public short getByteOffset() {
-        return byteOffset;
+    public ConnectionConfirmTpdu(short destinationReference, short sourceReference, ProtocolClass protocolClass, List<Parameter> parameters, ByteBuf userData) {
+        super(TpduCode.CONNECTION_CONFIRM, destinationReference, sourceReference, protocolClass, parameters, userData);
     }
 
 }
