@@ -14,7 +14,23 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
+:imagesdir: ./img/
 
 = S7 Protocol Java Implementation
 
+The current version of the S7 protocol java driver is based upon Netty 4 (http://netty.io/).
+
+As the S7 protocol running on TCP is a hierarchy of protocols, the S7 driver is implemented by providig several MessageToMessageCodec implementations, each encoding one layer of the protocol stack.
+
+[rackdiag,s7-netty-layers]
+....
+{
+4U
+
+1: PLC4X Layer (Plc4XS7Protocol)
+2: S7 Layer (S7Protocol)
+3: ISO Transport Protocol Layer (IsoTPProtocol)
+4: ISO on TCP Layer (IsoOnTcpProtocol)
+}
+....
 
