@@ -187,7 +187,7 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
         List<S7Parameter> s7Parameters = new LinkedList<>();
         SetupCommunicationParameter setupCommunicationParameter = null;
         for (int i = 0; i < headerParametersLength; ) {
-            S7Parameter parameter = parseParameter(userData, isResponse);
+            S7Parameter parameter = parseParameter(userData, isResponse, headerParametersLength - i);
             s7Parameters.add(parameter);
             if (parameter instanceof SetupCommunicationParameter) {
                 setupCommunicationParameter = (SetupCommunicationParameter) parameter;
@@ -229,13 +229,20 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
         }
     }
 
-    private S7Parameter parseParameter(ByteBuf in, boolean isResponse) {
+    private S7Parameter parseParameter(ByteBuf in, boolean isResponse, int restLength) {
         ParameterType parameterType = ParameterType.valueOf(in.readByte());
         if (parameterType == null) {
             logger.error("Could not find parameter type");
             return null;
         }
         switch (parameterType) {
+            case CPU_SERVICES: {
+                // Just read in the rest of the header as content of this parameter.
+                // Will have to do a lot more investigation on how this parameter is
+                // constructed.
+                byte[] cpuServices = new byte[restLength - 1];
+                in.readBytes(cpuServices);
+            }
             case READ_VAR: {
                 ReadVarParameter readVarParameter = new ReadVarParameter();
                 byte numItems = in.readByte();
@@ -282,6 +289,9 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 short calledMaxAmq = in.readShort();
                 short pduLength = in.readShort();
                 return new SetupCommunicationParameter(callingMaxAmq, calledMaxAmq, pduLength);
+            }
+            default: {
+                System.out.println("Unimplemented parameter type: " + parameterType.name());
             }
         }
         return null;

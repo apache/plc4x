@@ -30,9 +30,12 @@ import org.apache.plc4x.java.api.messages.PlcSimpleReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSimpleReadResponse;
 import org.apache.plc4x.java.api.types.ByteValue;
 
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class PlcLogger {
 
@@ -58,11 +61,21 @@ public class PlcLogger {
     }
 
     private void run() throws Exception {
+        AtomicInteger counter = new AtomicInteger(0);
+        AtomicLong totalTime = new AtomicLong(0);
         DirectProvider dp = new DirectProvider();
         Topology top = dp.newTopology();
         TStream<Byte> source = top.poll(() -> {
                 try {
-                    return getPlcValue();
+                    long start = Calendar.getInstance().getTimeInMillis();
+                    Byte value = getPlcValue();
+                    long end = Calendar.getInstance().getTimeInMillis();
+                    long time = end - start;
+                    System.out.println("Time: " + time);
+                    int curCounter = counter.incrementAndGet();
+                    long curTotalTime = totalTime.addAndGet(time);
+                    System.out.println("Avg:  " + (curTotalTime / curCounter));
+                    return value;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

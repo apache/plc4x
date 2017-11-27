@@ -110,11 +110,12 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
 
             InetAddress serverInetAddress = InetAddress.getByName(hostName);
 
-            Bootstrap b = new Bootstrap();
-            b.group(workerGroup);
-            b.channel(NioSocketChannel.class);
-            b.option(ChannelOption.SO_KEEPALIVE, true);
-            b.handler(new ChannelInitializer() {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(workerGroup);
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+            bootstrap.option(ChannelOption.TCP_NODELAY, true);
+            bootstrap.handler(new ChannelInitializer() {
                 @Override
                 protected void initChannel(Channel channel) throws Exception {
                     // Build the protocol stack for communicating with the s7 protocol.
@@ -137,9 +138,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
                 }
             });
             // Start the client.
-            ChannelFuture f = b.connect(serverInetAddress, ISO_ON_TCP_PORT).sync();
+            ChannelFuture f = bootstrap.connect(serverInetAddress, ISO_ON_TCP_PORT).sync();
+            f.awaitUninterruptibly();
             // Wait till the session is finished initializing.
-            Thread.sleep(1000);
             channel = f.channel();
 
             // Send an event to the pipeline telling the Protocol filters what's going on.
@@ -155,19 +156,21 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
 
     @Override
     public void close() throws Exception {
-        if(channel.isOpen()) {
+        if((channel != null) && channel.isOpen()) {
             // Send the PLC a message that the connection is being closed.
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
                 (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
                 null);
-            channel.write(disconnectRequest);
-
-            // Close the session itself.
-            channel.closeFuture().await();
+            ChannelFuture sendDisconnectRequestFuture = channel.writeAndFlush(disconnectRequest);
+            sendDisconnectRequestFuture.addListener((ChannelFutureListener) future -> {
+                // Close the session itself.
+                channel.closeFuture().await();
+                workerGroup.shutdownGracefully();
+            });
+            sendDisconnectRequestFuture.awaitUninterruptibly();
+        } else {
+            workerGroup.shutdownGracefully();
         }
-
-        workerGroup.shutdownGracefully();
-
     }
 
     @Override

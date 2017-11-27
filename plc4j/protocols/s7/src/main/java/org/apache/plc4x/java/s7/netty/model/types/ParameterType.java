@@ -57,6 +57,9 @@ public enum ParameterType {
                 map.put(parameterType.code, parameterType);
             }
         }
+        if(!map.containsKey(code)) {
+            System.out.println("ParameterType for code " + code + " not found");
+        }
         return map.get(code);
     }
 
