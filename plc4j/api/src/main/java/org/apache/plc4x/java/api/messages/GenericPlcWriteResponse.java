@@ -20,10 +20,10 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.Address;
 
-public class BooleanPlcWriteResponse extends GenericPlcResourceMessage<Boolean> implements PlcWriteResponse<Boolean> {
+public class GenericPlcWriteResponse<T> extends GenericPlcResourceMessage<T> implements PlcWriteResponse<T> {
 
-    public BooleanPlcWriteResponse(Address address) {
-        super(Boolean.class, address);
+    public GenericPlcWriteResponse(Class<T> type, Address address) {
+        super(type, address);
     }
     
 }

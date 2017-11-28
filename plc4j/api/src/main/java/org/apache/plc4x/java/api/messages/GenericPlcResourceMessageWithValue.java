@@ -20,7 +20,7 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.Address;
 
-abstract class GenericPlcResourceMessageWithValue<T> extends GenericPlcResourceMessage<T> {
+public class GenericPlcResourceMessageWithValue<T> extends GenericPlcResourceMessage<T> {
 
     private final T value;
 
