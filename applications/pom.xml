@@ -40,4 +40,59 @@
     <module>plclogger</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>build-executable-jars</id>
+      <properties>
+        <app.main.class>override-this-property-in-application-pom</app.main.class>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              <execution>
+                <id>create-no-deps-jar</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
+                  <archive>
+                    <manifest>
+                      <mainClass>${app.main.class}</mainClass>
+                    </manifest>
+                  </archive>
+                  <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                  </descriptorRefs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+        <!--
+          We don't want to build an assembly of this module, so we make sure "skipAssembly" is
+          set to "true", but this configuration is not inherited.
+        -->
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>3.1.0</version>
+              <inherited>false</inherited>
+              <configuration>
+                <skipAssembly>true</skipAssembly>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+
 </project>

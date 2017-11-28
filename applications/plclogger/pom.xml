@@ -34,6 +34,10 @@
   <name>Applications: PLC Data Logger</name>
   <description>Application using Edgent and Elastic-Search to implement a PLC data logger.</description>
 
+  <properties>
+    <app.main.class>org.apache.plc4x.java.applications.plclogger.PlcLogger</app.main.class>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plx4x</groupId>
