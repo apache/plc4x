@@ -23,7 +23,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plx4x</groupId>
+    <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>

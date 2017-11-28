@@ -25,14 +25,16 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.api.messages.PlcSimpleReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSimpleReadResponse;
-import org.apache.plc4x.java.api.types.ByteValue;
+import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.BytePlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class PlcLogger {
 
@@ -51,18 +53,27 @@ public class PlcLogger {
     }
 
     private Byte getPlcValue() throws PlcException, ExecutionException, InterruptedException {
-        PlcSimpleReadResponse<ByteValue> plcReadResponse = plcReader.read(
-            new PlcSimpleReadRequest<>(ByteValue.class, resourceAddress)).get();
-        ByteValue data = plcReadResponse.getValue();
-        return data.getValue();
+        PlcReadResponse<Byte> plcReadResponse = plcReader.read(
+            new BytePlcReadRequest(resourceAddress)).get();
+        return plcReadResponse.getValue();
     }
 
     private void run() throws Exception {
+        AtomicInteger counter = new AtomicInteger(0);
+        AtomicLong totalTime = new AtomicLong(0);
         DirectProvider dp = new DirectProvider();
         Topology top = dp.newTopology();
         TStream<Byte> source = top.poll(() -> {
                 try {
-                    return getPlcValue();
+                    long start = Calendar.getInstance().getTimeInMillis();
+                    Byte value = getPlcValue();
+                    long end = Calendar.getInstance().getTimeInMillis();
+                    long time = end - start;
+                    System.out.println("Time: " + time);
+                    int curCounter = counter.incrementAndGet();
+                    long curTotalTime = totalTime.addAndGet(time);
+                    System.out.println("Avg:  " + (curTotalTime / curCounter));
+                    return value;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -83,8 +94,6 @@ public class PlcLogger {
         String addressString = args[1];
         Integer interval = Integer.valueOf(args[2]);
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
-            // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
-            plcConnection.connect();
 
             // Initialize the logger itself
             PlcLogger logger = new PlcLogger(plcConnection, addressString, interval);

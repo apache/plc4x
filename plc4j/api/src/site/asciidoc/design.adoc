@@ -15,14 +15,14 @@
 //  limitations under the License.
 //
 
-= Design principals
+== Design principals
 
 While designing the API for PLC4X the following ideas were important to us:
 
 - It should be possible to write a piece of software to interact with a PLC regardless of it's type or protocol.
 - Communication should utilize non-blocking principles where possible.
 
-== Protocol and PLC independence
+=== Protocol and PLC independence
 
 In order to address a resource on a PLC the following information is required:
 
@@ -43,7 +43,7 @@ As parsing a string can be expensive, the connection should provide a method for
 
 Last, not least, the driver should be able to translate the data types defined in PLC4X into ones the protocol and PLC can understand.
 
-== Non blocking communication
+=== Non blocking communication
 
 As the protocols involved may include some consisting of multiple layers of protocols, designing a framework for supporting clean protocol layering and async communication, we decided to use an existing io framework instead.
 

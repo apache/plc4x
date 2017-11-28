@@ -18,9 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.messages.PlcSimpleReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSimpleReadResponse;
-import org.apache.plc4x.java.api.types.Value;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -36,6 +35,6 @@ public interface PlcReader {
      * @param <T> The value type that should be used.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    <T extends Value> CompletableFuture<PlcSimpleReadResponse<T>> read(PlcSimpleReadRequest<T> readRequest);
+    <T> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest);
 
 }

@@ -14,7 +14,41 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
+:imagesdir: ./img/
 
-= S7 Protocol Java Implementation
+== S7 Protocol Java Implementation
 
+The current version of the S7 protocol java driver is based upon Netty 4 (http://netty.io/).
 
+As the S7 protocol running on TCP is a hierarchy of protocols, the S7 driver is implemented by providing several Protocol implementations, each encoding one layer of the protocol stack.
+
+The complete pipeline for the S7 protocol looks like this:
+
+[seqdiag,s7-netty-pipeline]
+....
+{
+    === Send Request ===
+
+    Application -> Plc4XS7Protocol [label = "Sends PLC4X Message"]
+    Plc4XS7Protocol -> S7Protocol [label = "Sends S7 Message"]
+    S7Protocol -> IsoTPProtocol [label = "Sends ISO TP Message"]
+    IsoTPProtocol -> IsoOnTcpProtocol [label = "Sends ISO on TCP Message"]
+    IsoOnTcpProtocol -> PLC [label = "Sends TCP Message"]
+
+    === Read Response ===
+
+    PLC -> IsoOnTcpProtocol [label = "Receives TCP Message"]
+    IsoOnTcpProtocol -> IsoTPProtocol [label = "Receives ISO on TCP Message"]
+    IsoTPProtocol -> S7Protocol [label = "Receives ISO TP Message"]
+    S7Protocol -> Plc4XS7Protocol [label = "Receives S7 Message"]
+    Plc4XS7Protocol -> Application [label = "Receives PLC4X Message"]
+}
+....
+
+Each protocol layer implementation extends MessageToMessageCodec and is configured to consume/encode messages in the current format into messages of the next lower layer.
+
+The highest layer hereby consumes PLC4X messages, which are defined in the plc4j-api module, and the lowest layer produces a simple byte output.
+
+Each protocol defines an `encode` and a `decode` method which implements the actual encoding or decoding.
+
+In parallel to this, Netty provides an event mechanism in which every pipeline member can send and react on events.

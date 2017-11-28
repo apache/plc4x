@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.model;
 
-import org.apache.plc4x.java.s7.mina.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 
 public class S7BitAddress extends S7Address {
 

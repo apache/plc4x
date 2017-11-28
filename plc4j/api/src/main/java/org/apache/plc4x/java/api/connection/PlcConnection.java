@@ -18,8 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.api.connection;
 
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.Address;
+import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Optional;
 
@@ -35,9 +36,9 @@ public interface PlcConnection extends AutoCloseable {
     /**
      * Established the connection to the remote PLC.
      *
-     * @throws PlcException an exception if the connection attempt failed.
+     * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    void connect() throws PlcException;
+    void connect() throws PlcConnectionException;
 
     Optional<PlcLister> getLister();
 

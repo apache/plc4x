@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-= Features
+== Features
 :icons: font
 
 The following table contains a list of operations and the protocols that support them:

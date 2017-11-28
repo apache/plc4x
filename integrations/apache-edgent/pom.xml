@@ -23,20 +23,19 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plx4x</groupId>
+    <groupId>org.apache.plc4x</groupId>
     <artifactId>integrations</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>apache-edgent</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
 
-  <name>Integrations: Apache Edgnet</name>
+  <name>Integrations: Apache Edgent</name>
   <description>Integration module for integrating PLC4X into Apache Edgent.</description>
 
   <modules>
-    
+
   </modules>
 
 </project>

@@ -15,11 +15,11 @@
 //  limitations under the License.
 //
 
-= Modbus
+== Modbus
 
 Introduction
 
-== Links
+=== Links
 
 - Main Landing Page: http://www.modbus.org/tech.php
 - Modbus Protocol Spec: http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf
