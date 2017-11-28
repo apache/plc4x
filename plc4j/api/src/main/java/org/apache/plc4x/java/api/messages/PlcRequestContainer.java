@@ -18,28 +18,24 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.types.Value;
+import java.util.concurrent.CompletableFuture;
 
-/**
- * A response for a simple read request.
- *
- * @param <T> the type of variable being requested.
- */
-public class PlcSimpleReadResponse<T extends Value> extends AbstractPlcSimpleResourceMessage<T> implements PlcResponse {
+public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
 
-    private final T value;
+    private T request;
+    private CompletableFuture<R> responseFuture;
 
-    public PlcSimpleReadResponse(Class<T> datatype, Address address, T value) {
-        this(datatype, address, 1, value);
+    public PlcRequestContainer(T request, CompletableFuture<R> responseFuture) {
+        this.request = request;
+        this.responseFuture = responseFuture;
     }
 
-    public PlcSimpleReadResponse(Class<T> datatype, Address address, int size, T value) {
-        super(datatype, address, size);
-        this.value = value;
+    public T getRequest() {
+        return request;
     }
 
-    public T getValue() {
-        return value;
+    public CompletableFuture<R> getResponseFuture() {
+        return responseFuture;
     }
 
 }

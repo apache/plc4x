@@ -26,24 +26,23 @@ import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.exceptions.PlcIoException;
+import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcRequestContainer;
 import org.apache.plc4x.java.isoontcp.netty.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DisconnectRequestTpdu;
 import org.apache.plc4x.java.isotp.netty.model.types.DisconnectReason;
-import org.apache.plc4x.java.api.messages.PlcSimpleReadResponse;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
-import org.apache.plc4x.java.netty.PlcRequestContainer;
-import org.apache.plc4x.java.api.messages.Address;
-import org.apache.plc4x.java.api.messages.PlcSimpleReadRequest;
 import org.apache.plc4x.java.netty.events.S7ConnectionEvent;
 import org.apache.plc4x.java.netty.events.S7ConnectionState;
-import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
-import org.apache.plc4x.java.s7.netty.S7Protocol;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
 import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
+import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
+import org.apache.plc4x.java.s7.netty.S7Protocol;
+import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +98,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
     }
 
     @Override
-    public void connect() throws PlcException {
+    public void connect() throws PlcConnectionException {
         workerGroup = new NioEventLoopGroup();
 
         try {
@@ -148,9 +147,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
 
             sessionSetupCompleteFuture.get();
         } catch (UnknownHostException e) {
-            throw new PlcIoException("Unknown Host " + hostName, e);
+            throw new PlcConnectionException("Unknown Host " + hostName, e);
         } catch (InterruptedException | ExecutionException e) {
-            throw new PlcIoException(e);
+            throw new PlcConnectionException(e);
         }
     }
 
@@ -168,7 +167,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
                 workerGroup.shutdownGracefully();
             });
             sendDisconnectRequestFuture.awaitUninterruptibly();
-        } else {
+        } else if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
     }
@@ -196,9 +195,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
     }
 
     @Override
-    public CompletableFuture<PlcSimpleReadResponse> read(PlcSimpleReadRequest readRequest) {
-        CompletableFuture<PlcSimpleReadResponse> readFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcSimpleReadRequest, PlcSimpleReadResponse> container =
+    public <T> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest) {
+        CompletableFuture<PlcReadResponse<T>> readFuture = new CompletableFuture<>();
+        PlcRequestContainer<PlcReadRequest<T>, PlcReadResponse<T>> container =
             new PlcRequestContainer<>(readRequest, readFuture);
         channel.writeAndFlush(container);
         return readFuture;

@@ -18,34 +18,17 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.types.Value;
+import org.apache.plc4x.java.api.model.Address;
 
-public abstract class AbstractPlcSimpleResourceMessage<T extends Value> implements PlcMessage {
+public class IntegerPlcWriteRequest extends GenericPlcResourceMessageWithValue<Integer> implements PlcWriteRequest<Integer> {
 
-    private Address address;
-    private Class<T> datatype;
-    private int size;
-
-    AbstractPlcSimpleResourceMessage(Class<T> datatype, Address address) {
-        this(datatype, address, 1);
+    public IntegerPlcWriteRequest(Address address, Integer value) {
+        super(Integer.class, address, value);
     }
 
-    AbstractPlcSimpleResourceMessage(Class<T> datatype, Address address, int size) {
-        this.address = address;
-        this.datatype = datatype;
-        this.size = size;
-    }
-
-    public Class<? extends T> getDatatype() {
-        return datatype;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public int getSize() {
-        return size;
+    @Override
+    public PlcWriteResponse<Integer> createResponse() {
+        return new IntegerPlcWriteResponse(getAddress());
     }
 
 }

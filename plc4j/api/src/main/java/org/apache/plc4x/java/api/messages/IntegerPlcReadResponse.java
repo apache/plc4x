@@ -16,12 +16,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.types;
+package org.apache.plc4x.java.api.messages;
 
-public class StringValue extends AbstractValue<String> {
+import org.apache.plc4x.java.api.model.Address;
 
-    public StringValue(String value) {
-        super(value);
+public class IntegerPlcReadResponse extends GenericPlcResourceMessageWithValue<Integer> implements PlcReadResponse<Integer> {
+
+    public IntegerPlcReadResponse(Address address, Integer value) {
+        super(Integer.class, address, value);
     }
 
 }

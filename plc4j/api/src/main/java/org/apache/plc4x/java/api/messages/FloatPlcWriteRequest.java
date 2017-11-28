@@ -18,18 +18,17 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-/**
- * Base type for all address types.
- * Typically every driver provides an implementation of this interface in order
- * to be able to describe the address of a resource. As this is completely tied to
- * the implemented protocol, this base interface makes absolutely no assumption to
- * any information it should provide.
- *
- * In order to stay platform and protocol independent every driver connection implementation
- * provides a parseAddress(String) method that is able to parse a string representation of
- * a resource into it's individual address type. Manually constructing Address objects
- * manually makes the solution less independent from the protocol, but might be faster.
- */
-public interface Address {
+import org.apache.plc4x.java.api.model.Address;
+
+public class FloatPlcWriteRequest extends GenericPlcResourceMessageWithValue<Float> implements PlcWriteRequest<Float> {
+
+    public FloatPlcWriteRequest(Address address, Float value) {
+        super(Float.class, address, value);
+    }
+
+    @Override
+    public PlcWriteResponse<Float> createResponse() {
+        return new FloatPlcWriteResponse(getAddress());
+    }
 
 }

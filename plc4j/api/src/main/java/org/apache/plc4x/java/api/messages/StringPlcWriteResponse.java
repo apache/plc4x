@@ -18,29 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.types.Value;
+import org.apache.plc4x.java.api.model.Address;
 
-/**
- * A simple write request tries to write only one variable/array to the plc.
- * Its API is therefore a lot simpler than that of a BatchWriteRequest.
- *
- * @param <T> the type of variable being requested.
- */
-public class PlcSimpleWriteRequest<T extends Value> extends AbstractPlcSimpleResourceMessage<T> implements PlcRequest {
+public class StringPlcWriteResponse extends GenericPlcResourceMessage<String> implements PlcWriteResponse<String> {
 
-    private final T value;
-
-    public PlcSimpleWriteRequest(Class<T> datatype, Address address, T value) {
-        this(datatype, address, 1, value);
+    public StringPlcWriteResponse(Address address) {
+        super(String.class, address);
     }
-
-    public PlcSimpleWriteRequest(Class<T> datatype, Address address, int size, T value) {
-        super(datatype, address, size);
-        this.value = value;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
+    
 }

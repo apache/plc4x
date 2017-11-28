@@ -16,27 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 
-public class S7Address implements Address {
+public class BooleanPlcWriteRequest extends GenericPlcResourceMessageWithValue<Boolean> implements PlcWriteRequest<Boolean> {
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
-
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    public BooleanPlcWriteRequest(Address address, Boolean value) {
+        super(Boolean.class, address, value);
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
-    }
-
-    public short getByteOffset() {
-        return byteOffset;
+    @Override
+    public PlcWriteResponse<Boolean> createResponse() {
+        return new BooleanPlcWriteResponse(getAddress());
     }
 
 }

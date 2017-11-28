@@ -16,40 +16,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.types;
+package org.apache.plc4x.java.api.messages;
 
-import java.util.Objects;
+import org.apache.plc4x.java.api.model.Address;
 
-public abstract class AbstractValue<T> implements Value<T> {
+abstract class GenericPlcResourceMessageWithValue<T> extends GenericPlcResourceMessage<T> {
 
-    private T value;
+    private final T value;
 
-    public AbstractValue(T value) {
-        this.value = Objects.requireNonNull(value, "Parameter 'value' must not be null");
+    GenericPlcResourceMessageWithValue(Class<T> datatype, Address address, T value) {
+        super(datatype, address);
+        this.value = value;
     }
 
-    @Override
     public T getValue() {
         return value;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final AbstractValue<?> that = (AbstractValue<?>) o;
-        return Objects.equals(value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" +
-            "value=" + value +
-            '}';
-    }
 }

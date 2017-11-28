@@ -16,27 +16,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 
-public class S7Address implements Address {
+public interface PlcWriteRequest<T> extends PlcResponse {
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+    Class<T> getDatatype();
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
-    }
+    Address getAddress();
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
-    }
+    T getValue();
 
-    public short getByteOffset() {
-        return byteOffset;
-    }
+    PlcWriteResponse<T> createResponse();
 
 }

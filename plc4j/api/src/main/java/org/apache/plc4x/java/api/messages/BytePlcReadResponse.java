@@ -18,21 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.types.Value;
+import org.apache.plc4x.java.api.model.Address;
 
-/**
- * A response for a simple write request.
- *
- * @param <T> the type of variable being written.
- */
-public class PlcSimpleWriteResponse<T extends Value> extends AbstractPlcSimpleResourceMessage<T> implements PlcResponse {
+public class BytePlcReadResponse extends GenericPlcResourceMessageWithValue<Byte> implements PlcReadResponse<Byte> {
 
-    public PlcSimpleWriteResponse(Class<T> datatype, Address address) {
-        super(datatype, address);
-    }
-
-    public PlcSimpleWriteResponse(Class<T> datatype, Address address, int size) {
-        super(datatype, address, size);
+    public BytePlcReadResponse(Address address, Byte value) {
+        super(Byte.class, address, value);
     }
 
 }

@@ -16,10 +16,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.types;
+package org.apache.plc4x.java.api.messages;
 
-public interface Value<T> {
+import org.apache.plc4x.java.api.model.Address;
 
-    T getValue();
+import java.util.Calendar;
+
+public class CalendarPlcReadRequest extends GenericPlcResourceMessage<Calendar> implements PlcReadRequest<Calendar> {
+
+    public CalendarPlcReadRequest(Address address) {
+        super(Calendar.class, address);
+    }
+
+    @Override
+    public PlcReadResponse<Calendar> createResponse(Calendar value) {
+        return new CalendarPlcReadResponse(getAddress(), value);
+    }
 
 }

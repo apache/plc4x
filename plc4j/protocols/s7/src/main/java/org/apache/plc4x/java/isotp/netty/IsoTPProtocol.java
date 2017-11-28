@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.isotp.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.isoontcp.netty.model.IsoOnTcpMessage;
@@ -68,10 +68,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                     new CallingTsapParameter(DeviceGroup.OTHERS, rackNo, slotNo),
                     new TpduSizeParameter(tpduSize)),
                 Unpooled.buffer());
-
-            ctx.channel().writeAndFlush(connectionRequest).addListener(
-                (ChannelFutureListener) future -> ctx.channel().pipeline().fireUserEventTriggered(
-                    new S7ConnectionEvent(S7ConnectionState.ISO_TP_CONNECTION_REQUEST_SENT)));
+            ctx.channel().writeAndFlush(connectionRequest);
         } else {
             super.userEventTriggered(ctx, evt);
         }
@@ -136,6 +133,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
 
     @Override
     protected void decode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) throws Exception {
+        if(logger.isTraceEnabled()) {
+            logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
+        }
         logger.debug("ISO TP Message received");
 
         ByteBuf userData = in.getUserData();
@@ -143,7 +143,6 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         byte headerLength = userData.readByte();
         int headerEnd = packetStart + headerLength;
         TpduCode tpduCode = TpduCode.valueOf(userData.readByte());
-
         // Read fixed header part.
         Tpdu tpdu = null;
         List<Parameter> parameters = new LinkedList<>();
@@ -159,6 +158,8 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                         break;
                     case CONNECTION_CONFIRM:
                         tpdu = new ConnectionConfirmTpdu(destinationReference, sourceReference, protocolClass, parameters, userData);
+                        ctx.channel().pipeline().fireUserEventTriggered(
+                            new S7ConnectionEvent(S7ConnectionState.ISO_TP_CONNECTION_RESPONSE_RECEIVED));
                         break;
                 }
                 break;

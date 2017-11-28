@@ -16,29 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.netty;
+package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.PlcRequest;
-import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.model.Address;
 
-import java.util.concurrent.CompletableFuture;
+public class BooleanPlcReadRequest extends GenericPlcResourceMessage<Boolean> implements PlcReadRequest<Boolean> {
 
-public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
-
-    private T request;
-    private CompletableFuture<R> responseFuture;
-
-    public PlcRequestContainer(T request, CompletableFuture<R> responseFuture) {
-        this.request = request;
-        this.responseFuture = responseFuture;
+    public BooleanPlcReadRequest(Address address) {
+        super(Boolean.class, address);
     }
 
-    public T getRequest() {
-        return request;
-    }
-
-    public CompletableFuture<R> getResponseFuture() {
-        return responseFuture;
+    @Override
+    public PlcReadResponse<Boolean> createResponse(Boolean value) {
+        return new BooleanPlcReadResponse(getAddress(), value);
     }
 
 }

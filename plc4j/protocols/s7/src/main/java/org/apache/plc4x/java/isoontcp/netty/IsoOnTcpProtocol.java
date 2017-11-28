@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.isoontcp.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
@@ -37,7 +38,6 @@ public class IsoOnTcpProtocol extends MessageToMessageCodec<ByteBuf, IsoOnTcpMes
     @Override
     protected void encode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) throws Exception {
         logger.debug("ISO on TCP Message sent");
-
         // At this point of processing all higher levels have already serialized their payload.
         // This data is passed to the lower levels in form of an IoBuffer.
         final ByteBuf userData = in.getUserData();
@@ -64,6 +64,9 @@ public class IsoOnTcpProtocol extends MessageToMessageCodec<ByteBuf, IsoOnTcpMes
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        if(logger.isTraceEnabled()) {
+            logger.trace("Got Data: {}", ByteBufUtil.hexDump(in));
+        }
         // If at least 4 bytes are readable, peek into them (without changing the read position)
         // and get the packet length. Only if the available amount of readable bytes is larger or
         // equal to this, continue processing the rest.
@@ -74,15 +77,17 @@ public class IsoOnTcpProtocol extends MessageToMessageCodec<ByteBuf, IsoOnTcpMes
             // So we just gobble up the header and continue reading in higher levels.
             if (in.getByte(0) != ISO_ON_TCP_MAGIC_NUMBER) {
                 logger.warn("Expecting ISO on TCP magic number: {}", ISO_ON_TCP_MAGIC_NUMBER);
+                logger.debug("Got Data: " + ByteBufUtil.hexDump(in));
                 return;
             }
             // We don't really care about the payload length.
             short packetLength = in.getShort(2);
-            if(in.readableBytes() <= packetLength) {
+            if(in.readableBytes() >= packetLength) {
                 // Skip the 4 bytes we peeked into manually.
                 in.skipBytes(4);
                 // Simply place the current buffer to the output ... the next handler will continue.
-                out.add(new IsoOnTcpMessage(in.retain()));
+                ByteBuf payload = in.readBytes(packetLength - 4);
+                out.add(new IsoOnTcpMessage(payload));
             }
         }
     }

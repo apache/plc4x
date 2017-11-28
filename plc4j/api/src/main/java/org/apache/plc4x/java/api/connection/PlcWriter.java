@@ -19,9 +19,8 @@ under the License.
 package org.apache.plc4x.java.api.connection;
 
 
-import org.apache.plc4x.java.api.messages.PlcSimpleWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcSimpleWriteResponse;
-import org.apache.plc4x.java.api.types.Value;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -37,6 +36,6 @@ public interface PlcWriter {
      * @param <T> The value type that should be used.
      * @return a {@link CompletableFuture} giving async access to the response of the write operation.
      */
-    <T extends Value> CompletableFuture<PlcSimpleWriteResponse<T>> write(PlcSimpleWriteRequest<T> writeRequest);
+    <T> CompletableFuture<PlcWriteResponse<T>> write(PlcWriteRequest<T> writeRequest);
 
 }

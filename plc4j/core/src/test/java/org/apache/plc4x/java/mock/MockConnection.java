@@ -20,8 +20,9 @@ package org.apache.plc4x.java.mock;
 
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.Address;
+import org.apache.plc4x.java.api.model.Address;
 
 public class MockConnection extends AbstractPlcConnection {
 
@@ -36,7 +37,7 @@ public class MockConnection extends AbstractPlcConnection {
     }
 
     @Override
-    public void connect() throws PlcException {
+    public void connect() throws PlcConnectionException {
 
     }
 

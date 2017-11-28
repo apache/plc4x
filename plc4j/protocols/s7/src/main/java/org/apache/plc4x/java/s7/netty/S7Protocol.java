@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
@@ -65,14 +65,12 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof S7ConnectionEvent &&
-            ((S7ConnectionEvent) evt).getState() == S7ConnectionState.ISO_TP_CONNECTION_REQUEST_SENT) {
+            ((S7ConnectionEvent) evt).getState() == S7ConnectionState.ISO_TP_CONNECTION_RESPONSE_RECEIVED) {
             // Setup Communication
             SetupCommunicationRequestMessage setupCommunicationRequest =
                 new SetupCommunicationRequestMessage((short) 7, maxAmqCaller, maxAmqCallee, pduSize);
 
-            ctx.channel().writeAndFlush(setupCommunicationRequest).addListener(
-                (ChannelFutureListener) future -> ctx.channel().pipeline().fireUserEventTriggered(
-                    new S7ConnectionEvent(S7ConnectionState.S7_SETUP_COMMUNICATION_SENT)));
+            ctx.channel().writeAndFlush(setupCommunicationRequest);
         } else {
             super.userEventTriggered(ctx, evt);
         }
@@ -162,70 +160,75 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) throws Exception {
-        logger.debug("S7 Message received");
-
+        if(logger.isTraceEnabled()) {
+            logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
+        }
         ByteBuf userData = in.getUserData();
+        if(userData.readableBytes() > 0) {
+            logger.debug("S7 Message received");
 
-        if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
-            logger.warn("Expecting S7 protocol magic number.");
-            return;
-        }
-
-        MessageType messageType = MessageType.valueOf(userData.readByte());
-        boolean isResponse = messageType == MessageType.ACK_DATA;
-        // Reserved (is always constant 0x0000)
-        userData.readShort();
-        short tpduReference = userData.readShort();
-        short headerParametersLength = userData.readShort();
-        short userDataLength = userData.readShort();
-        byte errorClass = 0;
-        byte errorCode = 0;
-        if (messageType == MessageType.ACK_DATA) {
-            errorClass = userData.readByte();
-            errorCode = userData.readByte();
-        }
-        List<S7Parameter> s7Parameters = new LinkedList<>();
-        SetupCommunicationParameter setupCommunicationParameter = null;
-        for (int i = 0; i < headerParametersLength; ) {
-            S7Parameter parameter = parseParameter(userData, isResponse, headerParametersLength - i);
-            s7Parameters.add(parameter);
-            if (parameter instanceof SetupCommunicationParameter) {
-                setupCommunicationParameter = (SetupCommunicationParameter) parameter;
+            if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
+                logger.warn("Expecting S7 protocol magic number.");
+                logger.debug("Got Data: {}", ByteBufUtil.hexDump(userData));
+                return;
             }
-            i += getParameterLength(parameter);
-        }
-        List<S7Payload> s7Payloads = new LinkedList<>();
-        for (int i = 0; i < userDataLength; ) {
-            DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
-            DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-            short length = (dataTransportSize.isSizeInBits()) ?
-                (short) Math.ceil(userData.readShort() / 8) : userData.readShort();
-            byte[] data = new byte[length];
-            userData.readBytes(data);
-            S7AnyReadVarPayload payload = new S7AnyReadVarPayload(
-                null, dataTransportErrorCode, dataTransportSize, data);
-            s7Payloads.add(payload);
-            i += getPayloadLength(payload);
-        }
 
-        if (messageType == MessageType.ACK_DATA) {
-            // If we got a SetupCommunicationParameter as part of the response
-            // we are currently in the process of establishing a connection with
-            // the PLC, so save some of the information in the session and tell
-            // the next layer to negotiate the connection parameters.
-            if (setupCommunicationParameter != null) {
-                maxAmqCaller = setupCommunicationParameter.getMaxAmqCaller();
-                maxAmqCallee = setupCommunicationParameter.getMaxAmqCallee();
-                pduSize = setupCommunicationParameter.getPduLength();
-
-                // Send an event that setup is complete.
-                ctx.channel().pipeline().fireUserEventTriggered(
-                    new S7ConnectionEvent(S7ConnectionState.SETUP_COMPLETE));
+            MessageType messageType = MessageType.valueOf(userData.readByte());
+            boolean isResponse = messageType == MessageType.ACK_DATA;
+            // Reserved (is always constant 0x0000)
+            userData.readShort();
+            short tpduReference = userData.readShort();
+            short headerParametersLength = userData.readShort();
+            short userDataLength = userData.readShort();
+            byte errorClass = 0;
+            byte errorCode = 0;
+            if (messageType == MessageType.ACK_DATA) {
+                errorClass = userData.readByte();
+                errorCode = userData.readByte();
             }
-            out.add(new S7ResponseMessage(
-                messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode));
-        } else {
-            out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads));
+            List<S7Parameter> s7Parameters = new LinkedList<>();
+            SetupCommunicationParameter setupCommunicationParameter = null;
+            for (int i = 0; i < headerParametersLength; ) {
+                S7Parameter parameter = parseParameter(userData, isResponse, headerParametersLength - i);
+                s7Parameters.add(parameter);
+                if (parameter instanceof SetupCommunicationParameter) {
+                    setupCommunicationParameter = (SetupCommunicationParameter) parameter;
+                }
+                i += getParameterLength(parameter);
+            }
+            List<S7Payload> s7Payloads = new LinkedList<>();
+            for (int i = 0; i < userDataLength; ) {
+                DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
+                DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+                short length = (dataTransportSize.isSizeInBits()) ?
+                    (short) Math.ceil(userData.readShort() / 8) : userData.readShort();
+                byte[] data = new byte[length];
+                userData.readBytes(data);
+                S7AnyReadVarPayload payload = new S7AnyReadVarPayload(
+                    null, dataTransportErrorCode, dataTransportSize, data);
+                s7Payloads.add(payload);
+                i += getPayloadLength(payload);
+            }
+
+            if (messageType == MessageType.ACK_DATA) {
+                // If we got a SetupCommunicationParameter as part of the response
+                // we are currently in the process of establishing a connection with
+                // the PLC, so save some of the information in the session and tell
+                // the next layer to negotiate the connection parameters.
+                if (setupCommunicationParameter != null) {
+                    maxAmqCaller = setupCommunicationParameter.getMaxAmqCaller();
+                    maxAmqCallee = setupCommunicationParameter.getMaxAmqCallee();
+                    pduSize = setupCommunicationParameter.getPduLength();
+
+                    // Send an event that setup is complete.
+                    ctx.channel().pipeline().fireUserEventTriggered(
+                        new S7ConnectionEvent(S7ConnectionState.SETUP_COMPLETE));
+                }
+                out.add(new S7ResponseMessage(
+                    messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode));
+            } else {
+                out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads));
+            }
         }
     }
 

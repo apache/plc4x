@@ -16,12 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.types;
+package org.apache.plc4x.java.api.messages;
 
-public class IntegerValue extends AbstractValue<Integer> {
+import org.apache.plc4x.java.api.model.Address;
 
-    public IntegerValue(Integer value) {
-        super(value);
+public class BytePlcWriteRequest extends GenericPlcResourceMessageWithValue<Byte> implements PlcWriteRequest<Byte> {
+
+    public BytePlcWriteRequest(Address address, Byte value) {
+        super(Byte.class, address, value);
+    }
+
+    @Override
+    public PlcWriteResponse<Byte> createResponse() {
+        return new BytePlcWriteResponse(getAddress());
     }
 
 }

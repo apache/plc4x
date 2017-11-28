@@ -21,8 +21,7 @@ package org.apache.plc4x.java.netty.events;
 public enum S7ConnectionState {
 
     INITIAL,
-    ISO_TP_CONNECTION_REQUEST_SENT,
-    S7_SETUP_COMMUNICATION_SENT,
+    ISO_TP_CONNECTION_RESPONSE_RECEIVED,
     SETUP_COMPLETE
 
 }

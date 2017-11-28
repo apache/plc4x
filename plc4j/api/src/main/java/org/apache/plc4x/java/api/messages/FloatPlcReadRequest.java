@@ -16,12 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.types;
+package org.apache.plc4x.java.api.messages;
 
-public class BooleanValue extends AbstractValue<Boolean> {
+import org.apache.plc4x.java.api.model.Address;
 
-    public BooleanValue(Boolean value) {
-        super(value);
+public class FloatPlcReadRequest extends GenericPlcResourceMessage<Float> implements PlcReadRequest<Float> {
+
+    public FloatPlcReadRequest(Address address) {
+        super(Float.class, address);
+    }
+
+    @Override
+    public PlcReadResponse<Float> createResponse(Float value) {
+        return new FloatPlcReadResponse(getAddress(), value);
     }
 
 }

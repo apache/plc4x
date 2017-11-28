@@ -214,9 +214,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!--
-                Notice the @ instead of the $ as prefix? That's late evaluation.
+            We have to slightly increase the heap-size or some tests will fail.
+            Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>@{surefireArgLine}</argLine>
+          <argLine>-Xmx128m @{surefireArgLine}</argLine>
         </configuration>
         <dependencies>
           <dependency>

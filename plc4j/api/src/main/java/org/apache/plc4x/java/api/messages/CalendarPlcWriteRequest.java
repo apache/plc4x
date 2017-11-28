@@ -16,27 +16,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.model;
+package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 
-public class S7Address implements Address {
+import java.util.Calendar;
 
-    private final MemoryArea memoryArea;
-    private final short byteOffset;
+public class CalendarPlcWriteRequest extends GenericPlcResourceMessageWithValue<Calendar> implements PlcWriteRequest<Calendar> {
 
-    public S7Address(MemoryArea memoryArea, short byteOffset) {
-        this.memoryArea = memoryArea;
-        this.byteOffset = byteOffset;
+    public CalendarPlcWriteRequest(Address address, Calendar value) {
+        super(Calendar.class, address, value);
     }
 
-    public MemoryArea getMemoryArea() {
-        return memoryArea;
-    }
-
-    public short getByteOffset() {
-        return byteOffset;
+    @Override
+    public PlcWriteResponse<Calendar> createResponse() {
+        return new CalendarPlcWriteResponse(getAddress());
     }
 
 }

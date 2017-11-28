@@ -16,15 +16,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.netty;
+package org.apache.plc4x.java.api.messages;
 
-import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.MessageToByteEncoder;
+import org.apache.plc4x.java.api.model.Address;
 
-public interface Protocol {
+public class BooleanPlcReadResponse extends GenericPlcResourceMessageWithValue<Boolean> implements PlcReadResponse<Boolean> {
 
-    ByteToMessageDecoder getDecoder();
-
-    MessageToByteEncoder<? extends Message> getEncoder();
+    public BooleanPlcReadResponse(Address address, Boolean value) {
+        super(Boolean.class, address, value);
+    }
 
 }

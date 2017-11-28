@@ -18,22 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.types.Value;
+import org.apache.plc4x.java.api.model.Address;
 
-/**
- * A simple read request tries to read only one variable/array from the plc.
- * Its API is therefore a lot simpler than that of a BatchReadRequest.
- *
- * @param <T> the type of variable being requested.
- */
-public class PlcSimpleReadRequest<T extends Value> extends AbstractPlcSimpleResourceMessage<T> implements PlcRequest {
+public class BytePlcWriteResponse extends GenericPlcResourceMessage<Byte> implements PlcWriteResponse<Byte> {
 
-    public PlcSimpleReadRequest(Class<T> datatype, Address address) {
-        super(datatype, address);
+    public BytePlcWriteResponse(Address address) {
+        super(Byte.class, address);
     }
-
-    public PlcSimpleReadRequest(Class<T> datatype, Address address, int size) {
-        super(datatype, address, size);
-    }
-
+    
 }
