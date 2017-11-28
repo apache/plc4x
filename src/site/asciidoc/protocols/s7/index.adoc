@@ -16,9 +16,9 @@
 //
 :imagesdir: ../../img/
 
-= S7
+== S7
 
-== Overview of the Protocols
+=== Overview of the Protocols
 
 [ditaa,protocols-s7-osi]
 ....
@@ -78,7 +78,7 @@
 - - - - - - - - - - +-----------------------------------------------------------------------------------+ - -
 ....
 
-== Protocol Descriptions
+=== Protocol Descriptions
 
 |===
 |Name |ISO |RFC |Link
@@ -100,7 +100,7 @@ As soon as a valid value was found the tool then output the detected constant va
 
 The tool for generating this is located in the `plc4j/protocols/s7-utils` project.
 
-== Interaction with an S7 PLC
+=== Interaction with an S7 PLC
 
 [seqdiag,s7-interaction]
 ....
@@ -139,7 +139,7 @@ The tool for generating this is located in the `plc4j/protocols/s7-utils` projec
 }
 ....
 
-=== Structure of a Connection Request
+==== Structure of a Connection Request
 
 // len (length of bits - use instead of explicit byte count - requires "*" as first element)
 // label
@@ -197,11 +197,11 @@ Legend:
 - [protocolId]#Part of the packet that identifies the type of request#
 - [protocolParameter]#Variable Parts of the ISO Transport Protocol Packet Header#
 
-=== Structure of a Connection Response
+==== Structure of a Connection Response
 
 The `Connection Response` is identical to the `Connection Request` with the only difference that the `TPDU-Code` has a code of `0xD0`.
 
-=== Structure of a Setup Communication Request
+==== Structure of a Setup Communication Request
 
 [packetdiag,s7-setup-communication-request,svg]
 ....
@@ -249,7 +249,7 @@ Legend:
 - [protocolId]#Part of the packet that identifies the type of request#
 - [protocolParameter]#Variable Parts of the ISO Transport Protocol Packet Header#
 
-=== Structure of a Setup Communication Response
+==== Structure of a Setup Communication Response
 
 The `Setup Communication Response` is identical to the `Setup Communication Request` with the only difference that the `Message Type` has an ACK_DATA code of `0x03`.
 
@@ -259,7 +259,7 @@ The values might be lower than in the request, but never higher.
 
 TIP: One thing about `Setup Communication Responses` which is kind of strange, is that usually S7 response messages have additional `error class` and `error code` fields, which this type of response doesn't seem to have.
 
-== Links
+==N= Links
 
 - High Level description: http://snap7.sourceforge.net/siemens_comm.html
 - Wireshark Documentation: https://wiki.wireshark.org/S7comm

@@ -15,11 +15,11 @@
 //  limitations under the License.
 //
 
-= OPC-UA
+== OPC-UA
 
 Introduction
 
-== Links
+=== Links
 
 https://opcfoundation.org/developer-tools/specifications-unified-architecture/part-1-overview-and-concepts
 

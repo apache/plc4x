@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-= About PLC4X
+== About PLC4X
 :imagesdir: img/
 
 .https://commons.wikimedia.org/wiki/User:Ulli1105[Image provided by Ulli1105]

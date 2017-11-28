@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-= Protocols
+== Protocols
 
 - link:modbus/index.html[Modbus]
 - link:opc-ua/index.html[OPC-UA]
