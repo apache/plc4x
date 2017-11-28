@@ -28,7 +28,7 @@
     <version>18</version>
   </parent>
 
-  <groupId>org.apache.plx4x</groupId>
+  <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>

@@ -23,7 +23,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plx4x.applications</groupId>
+    <groupId>org.apache.plc4x.applications</groupId>
     <artifactId>applications</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
@@ -40,7 +40,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.plx4x</groupId>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
@@ -52,7 +52,7 @@
 
     <!-- Required driver implementation -->
     <dependency>
-      <groupId>org.apache.plx4x</groupId>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-s7</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>runtime</scope>
