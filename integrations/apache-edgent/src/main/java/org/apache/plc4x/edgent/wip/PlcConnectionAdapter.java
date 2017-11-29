@@ -93,7 +93,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
     }
   }
 
-  <T> Supplier<T> newSupplier(String addressStr, Class<T> datatype) {
+  <T> Supplier<T> newSupplier(Class<T> datatype, String addressStr) {
     PlcConnectionAdapter.checkDatatype(datatype);
     return new Supplier<T>() {
       private static final long serialVersionUID = 1L;
@@ -119,7 +119,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
     };
   }
 
-  <T> Consumer<T> newConsumer(String addressStr, Class<T> datatype) {
+  <T> Consumer<T> newConsumer(Class<T> datatype, String addressStr) {
     PlcConnectionAdapter.checkDatatype(datatype);
     return new Consumer<T>() {
       private static final long serialVersionUID = 1L;
@@ -144,6 +144,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
   }
   
   <T> Consumer<JsonObject> newConsumer(Class<T> datatype, Function<JsonObject,String> addressFn, Function<JsonObject,T> valueFn) {
+    PlcConnectionAdapter.checkDatatype(datatype);
     return new Consumer<JsonObject>() {
       private static final long serialVersionUID = 1L;
 
@@ -168,7 +169,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
     };
   }
 
-  private static void checkDatatype(Class<?> cls) {
+  static void checkDatatype(Class<?> cls) {
     if (cls == Boolean.class
         || cls == Byte.class
         || cls == Integer.class
@@ -180,7 +181,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
   }
 
   @SuppressWarnings("unchecked")
-  private static <T> PlcWriteRequest<T> newPlcWriteRequest(Address address, T value) {
+  static <T> PlcWriteRequest<T> newPlcWriteRequest(Address address, T value) {
     Class<?> cls = value.getClass();
     if (cls == Boolean.class)
       return (PlcWriteRequest<T>) new BooleanPlcWriteRequest(address, (Boolean)value);
@@ -192,14 +193,14 @@ public class PlcConnectionAdapter implements AutoCloseable{
       return (PlcWriteRequest<T>) new FloatPlcWriteRequest(address, (Float)value);
     else if (cls == String.class)
       return (PlcWriteRequest<T>) new StringPlcWriteRequest(address, (String)value);
-    else if (cls == Calendar.class)
+    else if (Calendar.class.isAssignableFrom(cls))
       return (PlcWriteRequest<T>) new CalendarPlcWriteRequest(address, (Calendar)value);
     else
       throw new IllegalArgumentException("Not a legal plc data type: "+cls.getSimpleName());
   }
 
   @SuppressWarnings("unchecked")
-  private static <T> PlcReadRequest<T> newPlcReadRequest(Class<T> datatype, Address address) {
+  static <T> PlcReadRequest<T> newPlcReadRequest(Class<T> datatype, Address address) {
     if (datatype == Boolean.class)
       return (PlcReadRequest<T>) new BooleanPlcReadRequest(address);
     else if (datatype == Byte.class)

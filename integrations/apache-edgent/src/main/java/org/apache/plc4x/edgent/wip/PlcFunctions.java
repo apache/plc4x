@@ -62,8 +62,8 @@ public class PlcFunctions {
    * <p>
    * 
    * @param adapter the @{link PlcConnectionAdapter}
-   * @param addressStr the plc device address string
    * @param datatype Class<T>
+   * @param addressStr the plc device address string
    * @param address memory address on the device
    * @return the {@code Supplier<T>}
    * 
@@ -71,27 +71,27 @@ public class PlcFunctions {
    * 
    * @see org.apache.edgent.topology.Topology#poll(Supplier, long, java.util.concurrent.TimeUnit)
    */
-  private static <T> Supplier<T> supplier(PlcConnectionAdapter adapter, String addressStr, Class<T> datatype) {
-    return adapter.newSupplier(addressStr, datatype);
+  private static <T> Supplier<T> supplier(PlcConnectionAdapter adapter, Class<T> datatype, String addressStr) {
+    return adapter.newSupplier(datatype, addressStr);
   }
 
   public static Supplier<Boolean> booleanSupplier(PlcConnectionAdapter adapter, String addressStr) {
-    return supplier(adapter, addressStr, Boolean.class);
+    return supplier(adapter, Boolean.class, addressStr);
   }
   public static Supplier<Byte> byteSupplier(PlcConnectionAdapter adapter, String addressStr) {
-    return supplier(adapter, addressStr, Byte.class);
+    return supplier(adapter, Byte.class, addressStr);
   }
   public static Supplier<Integer> integerSupplier(PlcConnectionAdapter adapter, String addressStr) {
-    return supplier(adapter, addressStr, Integer.class);
+    return supplier(adapter, Integer.class, addressStr);
   }
   public static Supplier<Float> floatSupplier(PlcConnectionAdapter adapter, String addressStr) {
-    return supplier(adapter, addressStr, Float.class);
+    return supplier(adapter, Float.class, addressStr);
   }
   public static Supplier<String> stringSupplier(PlcConnectionAdapter adapter, String addressStr) {
-    return supplier(adapter, addressStr, String.class);
+    return supplier(adapter, String.class, addressStr);
   }
   public static Supplier<Calendar> calendarSupplier(PlcConnectionAdapter adapter, String addressStr) {
-    return supplier(adapter, addressStr, Calendar.class);
+    return supplier(adapter, Calendar.class, addressStr);
   }
 
   /**
@@ -119,27 +119,27 @@ public class PlcFunctions {
    * 
    * @see org.apache.edgent.topology.TStream#sink(Consumer)
    */
-  private static <T> Consumer<T> consumer(PlcConnectionAdapter adapter, String addressStr, Class<T> datatype) {
-    return adapter.newConsumer(addressStr, datatype);
+  private static <T> Consumer<T> consumer(PlcConnectionAdapter adapter, Class<T> datatype, String addressStr) {
+    return adapter.newConsumer(datatype, addressStr);
   }
 
   public static Consumer<Boolean> booleanConsumer(PlcConnectionAdapter adapter, String addressStr) {
-    return consumer(adapter, addressStr, Boolean.class);
+    return consumer(adapter, Boolean.class, addressStr);
   }
   public static Consumer<Byte> byteConsumer(PlcConnectionAdapter adapter, String addressStr) {
-    return consumer(adapter, addressStr, Byte.class);
+    return consumer(adapter, Byte.class, addressStr);
   }
   public static Consumer<Integer> integerConsumer(PlcConnectionAdapter adapter, String addressStr) {
-    return consumer(adapter, addressStr, Integer.class);
+    return consumer(adapter, Integer.class, addressStr);
   }
   public static Consumer<Float> floatConsumer(PlcConnectionAdapter adapter, String addressStr) {
-    return consumer(adapter, addressStr, Float.class);
+    return consumer(adapter, Float.class, addressStr);
   }
   public static Consumer<String> stringConsumer(PlcConnectionAdapter adapter, String addressStr) {
-    return consumer(adapter, addressStr, String.class);
+    return consumer(adapter, String.class, addressStr);
   }
   public static Consumer<Calendar> calendarConsumer(PlcConnectionAdapter adapter, String addressStr) {
-    return consumer(adapter, addressStr, Calendar.class);
+    return consumer(adapter, Calendar.class, addressStr);
   }
 
   /**

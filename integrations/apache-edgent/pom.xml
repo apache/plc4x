@@ -57,6 +57,14 @@
       <version>1.7.12</version>
       <scope>provided</scope>
     </dependency>
+    
+    <!--  test -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>
