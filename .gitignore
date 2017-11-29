@@ -60,6 +60,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+.project
+.classpath
 
 # Locally stored "Eclipse launch configurations"
 *.launch
@@ -72,3 +74,5 @@ local.properties
 .scala_dependencies
 .worksheet
 
+# Emacs backup files
+*~
