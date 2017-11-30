@@ -17,7 +17,9 @@ specific language governing permissions and limitations
 under the License.
 */
 /**
- * @author dlaboss
- *
+ * Apache Edgent connector to plc4x.
+ * 
+ * The conneector enables creating Apache Edgent topology's
+ * that source and sink data from and to plc4x devices respectively.
  */
 package org.apache.plc4x.edgent.wip;
