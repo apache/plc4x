@@ -35,12 +35,23 @@ import org.apache.camel.spi.UriPath;
 @Getter
 public class S7Endpoint extends DefaultEndpoint {
 
+    /**
+     * The ip address of the S7 device
+     */
     @UriPath
     @Metadata(required = "true")
     String address;
+
+    /**
+     * The rack of the S7 device
+     */
     @UriPath
     @Metadata(required = "true")
     int rack;
+
+    /**
+     * The slot of the S7 device
+     */
     @UriPath
     @Metadata(required = "true")
     int slot;
