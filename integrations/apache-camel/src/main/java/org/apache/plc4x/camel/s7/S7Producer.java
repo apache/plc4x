@@ -37,9 +37,6 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-/**
- * The Awesome producer.
- */
 public class S7Producer extends DefaultAsyncProducer implements ShutdownAware {
     private static final Logger LOG = LoggerFactory.getLogger(S7Producer.class);
     private S7Endpoint endpoint;

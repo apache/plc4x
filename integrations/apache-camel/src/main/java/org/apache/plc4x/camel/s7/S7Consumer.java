@@ -23,9 +23,6 @@ import org.apache.camel.Processor;
 import org.apache.camel.impl.ScheduledPollConsumer;
 import org.apache.plc4x.java.api.messages.BytePlcWriteRequest;
 
-/**
- * The Awesome consumer.
- */
 public class S7Consumer extends ScheduledPollConsumer {
     private final S7Endpoint endpoint;
 
@@ -38,6 +35,7 @@ public class S7Consumer extends ScheduledPollConsumer {
     protected int poll() throws Exception {
         Exchange exchange = endpoint.createExchange();
 
+        // TODO: this is just a mock request. Polling/Consuming still needs to be implemented
         exchange.getIn().setBody(new BytePlcWriteRequest(null, (byte) 0xa0));
 
         try {
