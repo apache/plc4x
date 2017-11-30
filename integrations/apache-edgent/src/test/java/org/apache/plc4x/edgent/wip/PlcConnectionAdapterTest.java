@@ -52,12 +52,12 @@ import org.junit.jupiter.api.Test;
 
 import com.google.gson.JsonObject;
 
-public class PlcConcectionAdapterTest {
+public class PlcConnectionAdapterTest {
   
   // TODO figure out how to get these run via Eclipse (org.junit.jupiter.api?) and remove this
   // Ah... Junit 5... needs newer Eclipse (newer than neon 1.a)
   public static void main(String[] args) throws Exception {
-    PlcConcectionAdapterTest t = new PlcConcectionAdapterTest();
+    PlcConnectionAdapterTest t = new PlcConnectionAdapterTest();
     t.testCtor1();
     t.testCtor2();
     t.testCheckDatatype();
@@ -302,10 +302,10 @@ public class PlcConcectionAdapterTest {
     adapter.close();
   }
   
-  private <T> void checkSupplier(MockConnection connection, Address address, Supplier<T> supplier, Object ... values) throws Exception {
+  static <T> void checkSupplier(MockConnection connection, Address address, Supplier<T> supplier, Object ... values) throws Exception {
     checkSupplier(0, connection, address, supplier, values);
   }
-  private <T> void checkSupplier(int readFailureCountTrigger, MockConnection connection, Address address, Supplier<T> supplier, Object ... values) throws Exception {
+  private static <T> void checkSupplier(int readFailureCountTrigger, MockConnection connection, Address address, Supplier<T> supplier, Object ... values) throws Exception {
     // verify that a read failure doesn't kill the consumer
     // it logs (not verified) but returns null (as designed) and keeps working for the subsequent reads
     connection.setReadException(readFailureCountTrigger, "This is a mock read exception");
@@ -378,11 +378,11 @@ public class PlcConcectionAdapterTest {
     adapter.close();
   }
   
-  private <T> void checkConsumer(MockConnection connection, Address address, Consumer<T> consumer, Object ... values) throws Exception {
+  static <T> void checkConsumer(MockConnection connection, Address address, Consumer<T> consumer, Object ... values) throws Exception {
     checkConsumer(0, connection, address, consumer, values);
   }
   @SuppressWarnings("unchecked")
-  private <T> void checkConsumer(int writeFailureCountTrigger, MockConnection connection, Address address, Consumer<T> consumer, Object ... values) throws Exception {
+  private static <T> void checkConsumer(int writeFailureCountTrigger, MockConnection connection, Address address, Consumer<T> consumer, Object ... values) throws Exception {
     // verify that a write failure doesn't kill the consumer
     // it logs (not verified) but keeps working for the subsequent writes
     connection.setWriteException(writeFailureCountTrigger, "This is a mock write exception");
@@ -458,10 +458,10 @@ public class PlcConcectionAdapterTest {
     adapter.close();
   }
   
-  private <T> void checkConsumerJson(MockConnection connection, MockAddress address, Consumer<JsonObject> consumer, Object ... values) throws Exception {
+  static <T> void checkConsumerJson(MockConnection connection, MockAddress address, Consumer<JsonObject> consumer, Object ... values) throws Exception {
     checkConsumerJson(0, connection, address, consumer, values);
   }
-  private <T> void checkConsumerJson(int writeFailureCountTrigger, MockConnection connection, MockAddress address, Consumer<JsonObject> consumer, Object ... values) throws Exception {
+  private static <T> void checkConsumerJson(int writeFailureCountTrigger, MockConnection connection, MockAddress address, Consumer<JsonObject> consumer, Object ... values) throws Exception {
     if (writeFailureCountTrigger > 0)
       connection.setWriteException(writeFailureCountTrigger, "This is a mock write exception");
     int writeCount = 0;
