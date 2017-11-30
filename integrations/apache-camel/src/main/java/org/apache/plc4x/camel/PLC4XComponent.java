@@ -16,19 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.camel.s7;
+package org.apache.plc4x.camel;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
 
 import java.util.Map;
 
-public class S7Component extends DefaultComponent {
+public class PLC4XComponent extends DefaultComponent {
 
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        S7Endpoint s7Endpoint = new S7Endpoint(uri, this);
-        setProperties(s7Endpoint, parameters);
-        return s7Endpoint;
+        Endpoint endpoint = new PLC4XEndpoint(uri, this);
+        setProperties(endpoint, parameters);
+        return endpoint;
     }
 }

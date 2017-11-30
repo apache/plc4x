@@ -1,22 +1,4 @@
-/*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
-package org.apache.plc4x.camel.s7;
+package org.apache.plc4x.camel;
 
 import org.apache.camel.AsyncCallback;
 import org.apache.camel.Exchange;
@@ -37,16 +19,16 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class S7Producer extends DefaultAsyncProducer implements ShutdownAware {
-    private static final Logger LOG = LoggerFactory.getLogger(S7Producer.class);
-    private S7Endpoint endpoint;
+public class PLC4XProducer extends DefaultAsyncProducer implements ShutdownAware {
+    private static final Logger LOG = LoggerFactory.getLogger(PLC4XProducer.class);
+    private PLC4XEndpoint endpoint;
     private PlcConnection plcConnection;
 
-    public S7Producer(S7Endpoint endpoint) {
+    public PLC4XProducer(PLC4XEndpoint endpoint) {
         super(endpoint);
         this.endpoint = endpoint;
         try {
-            plcConnection = new PlcDriverManager().getConnection(endpoint.getEndpointUri());
+            plcConnection = new PlcDriverManager().getConnection(endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", ""));
             plcConnection.connect();
         } catch (PlcException e) {
             throw new RuntimeException(e);
@@ -67,9 +49,13 @@ public class S7Producer extends DefaultAsyncProducer implements ShutdownAware {
                     // FIXME: If I omit the cast to CompletableFuture the java compiler complains
                     GenericPlcWriteResponse response = (GenericPlcWriteResponse)
                         ((CompletableFuture) plcWriteResponseCompletableFuture).get();
-                    in.setHeader(Constants.DATATYPE_HEADER, datatype);
-                    in.setHeader(Constants.ADDRESS_HEADER, address);
-                    in.setBody(response);
+                    if (exchange.getPattern().isOutCapable()) {
+                        Message out = exchange.getOut();
+                        out.copyFrom(exchange.getIn());
+                        out.setBody(response);
+                    } else {
+                        in.setBody(response);
+                    }
                 } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }

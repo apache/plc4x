@@ -16,19 +16,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.camel.s7;
+package org.apache.plc4x.camel;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class S7ComponentTest extends CamelTestSupport {
+public class PLC4XComponentTest extends CamelTestSupport {
 
-    @Ignore("for this test to work we need a tcp mock")
     @Test
     public void testSimpleRouting() throws Exception {
         MockEndpoint mock = getMockEndpoint("mock:result");
@@ -41,11 +39,11 @@ public class S7ComponentTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() throws Exception {
         return new RouteBuilder() {
             public void configure() {
-                from("s7://10.10.10.1/0/1")
+                from("plc4x:mock:10.10.10.1/0/1")
                     .setHeader(Constants.ADDRESS_HEADER, constant(new S7Address(MemoryArea.INPUTS, (short) 0x44)))
                     .setHeader(Constants.DATATYPE_HEADER, constant(Byte.class))
                     .setBody(constant(0x0))
-                    .to("s7://10.10.10.1/1/1")
+                    .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
             }
         };
