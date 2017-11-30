@@ -16,26 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.camel;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.camel.Endpoint;
+import org.apache.camel.impl.DefaultComponent;
 
-public class GenericPlcResourceMessage<T> implements PlcMessage {
+import java.util.Map;
 
-    private final Address address;
-    private final Class<T> datatype;
+public class PLC4XComponent extends DefaultComponent {
 
-    GenericPlcResourceMessage(Class<T> datatype, Address address) {
-        this.address = address;
-        this.datatype = datatype;
+    @Override
+    protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
+        Endpoint endpoint = new PLC4XEndpoint(uri, this);
+        setProperties(endpoint, parameters);
+        return endpoint;
     }
-
-    public Class<T> getDatatype() {
-        return datatype;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
 }

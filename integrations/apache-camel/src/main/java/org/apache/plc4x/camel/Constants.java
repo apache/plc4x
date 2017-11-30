@@ -16,26 +16,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.camel;
 
-import org.apache.plc4x.java.api.model.Address;
-
-public class GenericPlcResourceMessage<T> implements PlcMessage {
-
-    private final Address address;
-    private final Class<T> datatype;
-
-    GenericPlcResourceMessage(Class<T> datatype, Address address) {
-        this.address = address;
-        this.datatype = datatype;
-    }
-
-    public Class<T> getDatatype() {
-        return datatype;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
+public class Constants {
+    public static final String ADDRESS_HEADER = "address";
+    public static final String DATATYPE_HEADER = "datatype";
 }

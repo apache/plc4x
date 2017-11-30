@@ -20,22 +20,18 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.Address;
 
-public class GenericPlcResourceMessage<T> implements PlcMessage {
+public class GenericPlcReadRequest<T> extends GenericPlcResourceMessage<T> implements PlcReadRequest<T> {
 
-    private final Address address;
-    private final Class<T> datatype;
+    private Class<T> type;
 
-    GenericPlcResourceMessage(Class<T> datatype, Address address) {
-        this.address = address;
-        this.datatype = datatype;
+    public GenericPlcReadRequest(Class<T> type, Address address) {
+        super(type, address);
+        this.type = type;
     }
 
-    public Class<T> getDatatype() {
-        return datatype;
-    }
-
-    public Address getAddress() {
-        return address;
+    @Override
+    public PlcReadResponse<T> createResponse(T value) {
+        return new GenericPlcReadResponse<>(type, getAddress(), value);
     }
 
 }

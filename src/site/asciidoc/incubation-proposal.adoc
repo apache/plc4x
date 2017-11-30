@@ -81,6 +81,7 @@ The main reason for using a private repo instead of a public one, is that we wer
 - Lukas Friedrichsen (Hochschule Bochum)
 - Mark Keinhörster (codecentric)
 - Rolf Felker (codecentric)
+- Sebastian Rühl (codecentric)
 
 === Alignment
 
@@ -182,6 +183,7 @@ To be able to provide help, documentation, faq etc, a wiki is needed.
 - Lukas Friedrichsen (External)
 - Mark Keinhörster (codecentric)
 - Rolf Felker (codecentric)
+- Sebastian Rühl (codecentric)
 
 == Sponsors
 
