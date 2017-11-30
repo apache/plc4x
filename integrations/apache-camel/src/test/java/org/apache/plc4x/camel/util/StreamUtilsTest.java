@@ -18,21 +18,25 @@ under the License.
 */
 package org.apache.plc4x.camel.util;
 
+import co.unruly.matchers.StreamMatchers;
+import org.junit.Test;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class StreamUtils {
+import static org.junit.Assert.assertThat;
 
-    /**
-     * Returns a {@link Stream} of the supplied {@link Optional}. Obsolete with Java > 9.
-     *
-     * @param optional the {@link Optional} which should be converted to a {@link Stream}.
-     * @param <T>      the type contained by the {@link Optional}.
-     * @return the {@link Stream} of zero or one elements.
-     */
-    public static <T> Stream<T> streamOf(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<T> optional) {
-        return Stream.of(optional)
-            .filter(Optional::isPresent)
-            .map(Optional::get);
+public class StreamUtilsTest {
+    @Test
+    public void streamOf_One_element_should_exaclty_contains_one_element() throws Exception {
+        Stream<String> stringStream = StreamUtils.streamOf(Optional.of("String"));
+        assertThat(stringStream, StreamMatchers.equalTo(Stream.of("String")));
     }
+
+    @Test
+    public void streamOf_should_be_empty() throws Exception {
+        Stream<String> stringStream = StreamUtils.streamOf(Optional.empty());
+        assertThat(stringStream, StreamMatchers.empty());
+    }
+
 }
