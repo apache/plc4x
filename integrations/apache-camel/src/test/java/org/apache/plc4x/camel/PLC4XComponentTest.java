@@ -32,6 +32,8 @@ public class PLC4XComponentTest extends CamelTestSupport {
         MockEndpoint mock = getMockEndpoint("mock:result");
         mock.expectedMinimumMessageCount(1);
 
+        template.sendBody("direct:plc4x", 3);
+
         assertMockEndpointsSatisfied();
     }
 
@@ -39,7 +41,7 @@ public class PLC4XComponentTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() throws Exception {
         return new RouteBuilder() {
             public void configure() {
-                from("plc4x:mock:10.10.10.1/0/1")
+                from("direct:plc4x")
                     .setHeader(Constants.ADDRESS_HEADER, constant(new S7Address(MemoryArea.INPUTS, (short) 0x44)))
                     .setHeader(Constants.DATATYPE_HEADER, constant(Byte.class))
                     .setBody(constant(0x0))

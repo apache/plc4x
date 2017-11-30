@@ -21,7 +21,12 @@ package org.apache.plc4x.camel;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 public class MockDriver implements PlcDriver {
 
@@ -37,12 +42,14 @@ public class MockDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
-        return new MockConnection(null);
+        PlcConnection plcConnectionMock = mock(PlcConnection.class);
+        when(plcConnectionMock.getWriter()).thenReturn(Optional.of(mock(PlcWriter.class, RETURNS_DEEP_STUBS)));
+        return plcConnectionMock;
     }
 
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        return new MockConnection(authentication);
+        return connect(null);
     }
 
 }
