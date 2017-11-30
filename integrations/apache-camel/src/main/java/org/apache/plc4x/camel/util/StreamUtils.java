@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class StreamUtils {
 
     /**
-     * Returns a {@link Stream} of the supplied {@link Optional}. Obsolete with Java > 9.
+     * Returns a {@link Stream} of the supplied {@link Optional}. Obsolete with Java &gt; 9.
      *
      * @param optional the {@link Optional} which should be converted to a {@link Stream}.
      * @param <T>      the type contained by the {@link Optional}.
