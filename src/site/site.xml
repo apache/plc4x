@@ -17,7 +17,7 @@
  limitations under the License.
  
  -->
-<project name="Edgent">
+<project name="PLC4X">
 
   <skin>
     <groupId>lt.velykis.maven.skins</groupId>
