@@ -195,7 +195,7 @@ To be able to provide help, documentation, faq etc, a wiki is needed.
 - Justin McLean (jmclean@apache.org)
 - Kai Herings (kai.herings@codecentric.de)
 - Lukas Friedrichsen (friedrichsen.luk@googlemail.com)
-- Mark Keinhörster (mark.keinhörster@codecentric.de)
+- Mark Keinhörster (mark.keinhoerster@codecentric.de)
 - Rolf Felker (rolf.felker@codecentric.de)
 - Sebastian Rühl (sebastian.ruehl@codecentric.de)
 
