@@ -36,7 +36,7 @@ There are multiple rationales behind this project:
 1. By providing libraries with Apache license, it will be possible to create commercial applications which access PLCs
 2. By providing a universal API for different protocols, it reduces the vendor lock-in when creating software
 3. Most of the proprietary commercial solutions are based on Windows systems, especially the Siemens solutions, sometimes require maintaining un-patched versions of older Windows version in order to run, this is a huge security risk (See Stuxnet)
-4. Most of the proprietary commercial solutions don't scale. Running them un public/private clouds and/or in containers ist completely out of the question.
+4. Most of the proprietary commercial solutions don't scale. Running them in public/private clouds and/or in containers is completely out of the question.
 
 As a result of above, it would be possible to start writing secure, scalable and reliable software using the full stack of open-source solutions and hereby open a complete new market for developers. In order to make this even easier, we are planning on directly providing adapters and examples for using PLC4X together with other Apache frameworks.
 
@@ -91,7 +91,7 @@ But we don't see any problems to arise from this. If there would be problems, we
 
 === Orphaned projects
 
-PLC4X is a new Project, which has just been started. The feedback from the industry has been overwhelming so there is no risk of the project being orphaned is minimal.
+PLC4X is a new Project, which has just been started. The feedback from the industry has been overwhelming so the risk of the project being orphaned is minimal.
 
 === Inexperience with Open Source
 
@@ -117,15 +117,15 @@ Currently there is no competing project at the Apache Software Foundation.
 
 === An Excessive Fascination with the Apache Brand
 
-We are certain that PLC4X itself will profit from being an official Apache project, in terms of attracting a community and establishing a solid group of developers and users, but also the ease the interaction with other Apache projects, used in PLC4X or project PLC4X provides adapters for as all will share the same base. Also, we are hoping go profit from the Apache Foundation having as some sort of shield against legal bullying.
+We are certain that PLC4X itself will profit from being an official Apache project, in terms of attracting a community and establishing a solid group of developers and users, but also to ease the interaction with other Apache projects, used in PLC4X or project PLC4X provides adapters for as all will share the same base.
 
 Our general belief in the Apache way as well as the reasons mentioned above are the main reasons for us to send this proposal. We think that a good community is needed to build and maintain good software, such as PLC4X. Also do we need a big community to support a big variety of systems. However, even if PLC4X would not be accepted, development would definitely continue elsewhere. Apache is just our primary foundation of choice. As such, there is no need to, or reason to, "abuse" the Apache Brand.
 
-=== Possibility of legal attacks
+=== Possibility of legal actions
 
-As this library and a wide usage of this could endanger part of the revenue of the vendors providing the closed-source PLC software, we expect at least threats of legal actions by some of these vendors. In the past, some of these companies have shown this sort of behavior. Especially with the first libraries evolving, there was a history of lawsuits or threats of lawsuits. However, I can't recall any of these being successful and knowledge of the protocol details have become publicly known information in the last few years.
+As this library and a wide usage of this could endanger part of the revenue of the vendors providing the closed-source PLC software, we expect some of these vendors to not be particularly happy about this project. In the past, some of these companies have shown a behavior of trying to intimidate others by threatening legal actions, no matter if justified or not. Especially with the first libraries evolving, there was a history of lawsuits, or threats of lawsuits. However, I can't recall any of these being successful and knowledge of the protocol details have become publicly known information in the last few years.
 
-The only problem that could occur, would be that we could be accused of having used GLP licensed information to implement the drivers. Therefore, from the beginning we have made sure the license of information used to implement PLC4X are compatible with the Apache license and added references to these sources in the code comments to prove this. We are therefore not expecting any real problems on this side.
+The only problem that could occur, would be that we could be accused of having used GPL licensed information to implement the drivers. Therefore, from the beginning we have made sure the license of information used to implement PLC4X are compatible with the Apache license and added references to these sources in the code comments to prove this. We are therefore not expecting any real problems on this side.
 
 === Test setup could require hardware
 
@@ -173,7 +173,7 @@ We think that a separate user list is advisable, as this project targets a secto
 
 === Git Repository
 
-https://.apache.org/repos/asf/incubator/celix
+https://git-wip-us.apache.org/repos/asf/incubator-plc4x.git
 
 === Issue Tracking
 
