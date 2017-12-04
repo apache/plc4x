@@ -123,9 +123,7 @@ Our general belief in the Apache way as well as the reasons mentioned above are 
 
 === Possibility of legal actions
 
-As this library and a wide usage of this could endanger part of the revenue of the vendors providing the closed-source PLC software, we expect some of these vendors to not be particularly happy about this project. In the past, some of these companies have shown a behavior of trying to intimidate others by threatening legal actions, no matter if justified or not. Especially with the first libraries evolving, there was a history of lawsuits, or threats of lawsuits. However, I can't recall any of these being successful and knowledge of the protocol details have become publicly known information in the last few years.
-
-The only problem that could occur, would be that we could be accused of having used GPL licensed information to implement the drivers. Therefore, from the beginning we have made sure the license of information used to implement PLC4X are compatible with the Apache license and added references to these sources in the code comments to prove this. We are therefore not expecting any real problems on this side.
+Some of the protocols are not publicly defined. Existing open-source implementations contain licensing restrictions. To avoid licensing issues we made sure the license of information used to implement drivers in PLC4X are compatible with the Apache license and added references to these sources in the project documentation to prove this. This documentation is part of the codebase. We are therefore not expecting any real problems on this side.
 
 === Test setup could require hardware
 
