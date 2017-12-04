@@ -22,4 +22,4 @@ under the License.
  * The conneector enables creating Apache Edgent topology's
  * that source and sink data from and to plc4x devices respectively.
  */
-package org.apache.plc4x.edgent.wip;
+package org.apache.plc4x.edgent;

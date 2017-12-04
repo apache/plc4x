@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.edgent.wip;
+package org.apache.plc4x.edgent;
 
 import java.util.Calendar;
 

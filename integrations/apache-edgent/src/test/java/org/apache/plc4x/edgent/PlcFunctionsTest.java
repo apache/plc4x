@@ -16,11 +16,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.edgent.wip;
+package org.apache.plc4x.edgent;
 
 import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
+import org.apache.plc4x.edgent.PlcConnectionAdapter;
+import org.apache.plc4x.edgent.PlcFunctions;
 import org.apache.plc4x.edgent.mock.MockAddress;
 import org.apache.plc4x.edgent.mock.MockConnection;
 import org.apache.plc4x.java.PlcDriverManager;
