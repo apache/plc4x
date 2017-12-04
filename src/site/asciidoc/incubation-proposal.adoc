@@ -50,13 +50,6 @@ As soon as a C version exists, we are planning on providing an Apache Mynewt ada
 
 == Current Status
 
-=== Project Name
-
-As we know that renaming a codebase can be a huge pain, we have invested quite a lot of time into finding a suitable name. In the end, we came up with a list of about 20 project names, which we did the fully required background checks for. On the options surviving these checks, we internally voted on the name. It was a pretty close tie between PLC4J and PLC4X, but we decided to go for the later as we are planning on providing libraries for multiple languages beyond Java.
-
-PLC4X has no registered trademarks that we could find and the only potential problem would be a hardware LPT Breakout Board by a Russian Company called Purelogic (https://purelogic.ru/doc/PDF/Controller/PLC4x.pdf) English version (http://www.zappautomation.co.uk/productattachments/index/download?id=99)
-But we don't see any problems to arise from this. If there would be problems, we would probably fallback to using PLC4J, which had no conflicts at all and would eventually name our sub-products PLC4S (Scala) and PLC4C (C/C++).
-
 === Meritocracy
 
 PLC4X was initially created by Christofer Dutz. He is an Apache Member and also involved in a variety of Apache and Non-Apache Open-Source projects. Being PMC of the Apache Flex, Apache Kibble and the Apache Travel Assistance he definitely knows how Apache works and is a strong advocate of the Apache Way. He is also currently helping the Apache Edgent project as member of the PPMC. However, the team working on PLC4X also includes a diverse set of additional Apache Committers and Members as well as people, that are not yet affiliated with any Apache project. The team working on PLC4X are both working for codecentric as well as other entities, such as commercial companies as well as universities.
@@ -87,6 +80,13 @@ The main reason for using a private repo instead of a public one, is that we wer
 
 The build system is based on Apache Maven. Also, it uses Apache Edgent (incubating) and Apache Camel libraries for providing adapters to these systems. Being a full-blown Apache enthusiast, for Christofer there hasn't been any thought in bringing this project into any other collaboration platform or foundation. This idea is shared by a big majority of the core contributors.
 
+=== Project Name
+
+As we know that renaming a codebase can be a huge pain, we have invested quite a lot of time into finding a suitable name. In the end, we came up with a list of about 20 project names, which we did the fully required background checks for. On the options surviving these checks, we internally voted on the name. It was a pretty close tie between PLC4J and PLC4X, but we decided to go for the later as we are planning on providing libraries for multiple languages beyond Java.
+
+PLC4X has no registered trademarks that we could find and the only potential problem would be a hardware LPT Breakout Board by a Russian Company called Purelogic (https://purelogic.ru/doc/PDF/Controller/PLC4x.pdf) English version (http://www.zappautomation.co.uk/productattachments/index/download?id=99)
+But we don't see any problems to arise from this. If there would be problems, we would probably fallback to using PLC4J, which had no conflicts at all and would eventually name our sub-products PLC4S (Scala) and PLC4C (C/C++).
+
 == Known Risks
 
 === Orphaned projects
@@ -104,6 +104,16 @@ Even if a big part of the projects initial committer team is affiliated with cod
 === Reliance on Salaried Developers
 
 Currently only Christofer Dutz is being paid to work on this project exclusively.
+
+=== Relationships with Other Apache Products
+
+PLC4X makes great used of Apache Maven for the build system and Apache Commons for providing a lot of basic functionality.
+
+Also does it currently have direct relations to the Apache Camel and Apache Edgent projects as it provides modules for direct integration of PLC4X into these frameworks.
+
+In the future we are planning on also adding such modules for Apache Brooklyn and as soon as a C-based version of PLC4X is available Apache Mynewt.
+
+Currently there is no competing project at the Apache Software Foundation.
 
 === An Excessive Fascination with the Apache Brand
 
@@ -156,8 +166,10 @@ Not applicable.
 === Mailing Lists
 
 - plc4x-dev
-- plc4x-users
+- plc4x-user
 - plc4x-private
+
+We think that a separate user list is advisable, as this project targets a sector in software development where we are expecting questions from non-typical software developers. The world of PLCs and the production industry differs greatly from the world we usually work in, therefore we don't want to distract and confuse these new community members with implementation details and keep the vetting of these new members from the developer discussions.
 
 === Git Repository
 
@@ -173,17 +185,25 @@ To be able to provide help, documentation, faq etc, a wiki is needed.
 
 == Initial Committers
 
-- Benedikt Ritter (codecentric)
+(In alphabetical order)
+
+- Benedikt Ritter (britter@apache.org)
 - Christofer Dutz (cdutz@apache.org)
-- Dale LaBossiere (External)
-- Frank Stibane (codecentric)
-- Greg Trasuk (External)
-- Justin McLean (External)
-- Kai Herings (codecentric)
-- Lukas Friedrichsen (External)
-- Mark Keinhörster (codecentric)
-- Rolf Felker (codecentric)
-- Sebastian Rühl (codecentric)
+- Dale LaBossiere (dlaboss@apache.org)
+- Frank Stibane (frank.stibane@codecentric.de)
+- Greg Trasuk (gtrasuk@apache.org)
+- Justin McLean (jmclean@apache.org)
+- Kai Herings (kai.herings@codecentric.de)
+- Lukas Friedrichsen (friedrichsen.luk@googlemail.com)
+- Mark Keinhörster (mark.keinhörster@codecentric.de)
+- Rolf Felker (rolf.felker@codecentric.de)
+- Sebastian Rühl (sebastian.ruehl@codecentric.de)
+
+== Affiliations
+
+Currently most of the initial committers are employees of codecentric. Currently Christofer Dutz is the only contributor paid to work on PLC4X full-time. The others participate as part of their so-called "+1 time" (At codecentric employees get to spend 20% of their time to work on open-source, education, etc. and they invest a lot of this time on the project).
+
+Besides these we also have contributors from companies other than codecentric (Dale, Greg, Justin) as well as universities (Lukas).
 
 == Sponsors
 
@@ -193,8 +213,11 @@ To be able to provide help, documentation, faq etc, a wiki is needed.
 
 === Nominated Mentors
 
-- Justin McLean
+(In alphabetical order)
+
 - Greg Trasuk
+- Justin McLean
+- Luciano Resende
 - Stefan Bodewig
 
 === Sponsoring Entity
