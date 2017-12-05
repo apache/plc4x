@@ -18,44 +18,28 @@ under the License.
 */
 package org.apache.plc4x.java.applications.plclogger;
 
-import org.apache.edgent.providers.direct.DirectProvider;
-import org.apache.edgent.topology.TStream;
-import org.apache.edgent.topology.Topology;
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.messages.BytePlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-
 import java.util.Calendar;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.edgent.function.Supplier;
+import org.apache.edgent.providers.direct.DirectProvider;
+import org.apache.edgent.topology.TStream;
+import org.apache.edgent.topology.Topology;
+import org.apache.plc4x.edgent.PlcConnectionAdapter;
+import org.apache.plc4x.edgent.PlcFunctions;
+
 public class PlcLogger {
 
-    private final PlcReader plcReader;
-    private final Address resourceAddress;
+    private final PlcConnectionAdapter plcAdapter;
+    private final String addressStr;
     private final int interval;
 
-    private PlcLogger(PlcConnection plcConnection, String addressString, int interval) throws Exception {
-        Optional<PlcReader> readerCheck = plcConnection.getReader();
-        if(!readerCheck.isPresent()) {
-            throw new Exception("PlcConnection must be a PlcReader");
-        }
-        plcReader = (PlcReader) plcConnection;
-        resourceAddress = plcConnection.parseAddress(addressString);
+    private PlcLogger(PlcConnectionAdapter plcAdapter, String addressString, int interval) throws Exception {
+        this.plcAdapter = plcAdapter;
+        this.addressStr = addressString;
         this.interval = interval;
-    }
-
-    private Byte getPlcValue() throws PlcException, ExecutionException, InterruptedException {
-        PlcReadResponse<Byte> plcReadResponse = plcReader.read(
-            new BytePlcReadRequest(resourceAddress)).get();
-        return plcReadResponse.getValue();
     }
 
     private void run() throws Exception {
@@ -63,23 +47,24 @@ public class PlcLogger {
         AtomicLong totalTime = new AtomicLong(0);
         DirectProvider dp = new DirectProvider();
         Topology top = dp.newTopology();
+        // normally would just do the following
+        //   TStream<Byte> source = top.poll(
+        //       PlcFunctions.byteSupplier(adapter, addressStr),
+        //       interval, TimeUnit.MILLISECONDS);
+        // but in this case we want to make some timing measurements
+        Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, addressStr);
         TStream<Byte> source = top.poll(() -> {
-                try {
-                    long start = Calendar.getInstance().getTimeInMillis();
-                    Byte value = getPlcValue();
-                    long end = Calendar.getInstance().getTimeInMillis();
-                    long time = end - start;
-                    System.out.println("Time: " + time);
-                    int curCounter = counter.incrementAndGet();
-                    long curTotalTime = totalTime.addAndGet(time);
-                    System.out.println("Avg:  " + (curTotalTime / curCounter));
-                    return value;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            },
-            interval, TimeUnit.MILLISECONDS);
+            long start = Calendar.getInstance().getTimeInMillis();
+            Byte value = plcSupplier.get();
+            long end = Calendar.getInstance().getTimeInMillis();
+            long time = end - start;
+            System.out.println("Time: " + time);
+            int curCounter = counter.incrementAndGet();
+            long curTotalTime = totalTime.addAndGet(time);
+            System.out.println("Avg:  " + (curTotalTime / curCounter));
+            return value;
+          },
+          interval, TimeUnit.MILLISECONDS);
         source.print();
         dp.submit(top);
     }
@@ -93,10 +78,10 @@ public class PlcLogger {
         String connectionString = args[0];
         String addressString = args[1];
         Integer interval = Integer.valueOf(args[2]);
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
+        try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter(connectionString)) {
 
             // Initialize the logger itself
-            PlcLogger logger = new PlcLogger(plcConnection, addressString, interval);
+            PlcLogger logger = new PlcLogger(plcAdapter, addressString, interval);
 
             // Start the logging ...
             logger.run();
