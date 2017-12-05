@@ -74,23 +74,19 @@ public class S7PlcDriverSample {
                 CompletableFuture<PlcReadResponse<Byte>> asyncResponse = plcReader.read(
                     new BytePlcReadRequest(outputs));
 
+                asyncResponse.thenAccept(bytePlcReadResponse -> {
+                    Calendar end = Calendar.getInstance();
+                    Byte dataAsync = bytePlcReadResponse.getValue();
+                    System.out.println("Outputs: " + dataAsync + " (in " + (end.getTimeInMillis() - start.getTimeInMillis()) + "ms)");
+                });
+
                 // Simulate doing something else ...
-                System.out.println("Processing: ");
                 while (true) {
-                    // I had to make sleep this small or it would have printed only one "."
-                    // On my system the average response time with a siemens s7-1200 was 5ms.
                     Thread.sleep(1);
-                    System.out.print(".");
                     if (asyncResponse.isDone()) {
                         break;
                     }
                 }
-                System.out.println();
-
-                Calendar end = Calendar.getInstance();
-                plcReadResponse = asyncResponse.get();
-                data = plcReadResponse.getValue();
-                System.out.println("Outputs: " + data + " (in " + (end.getTimeInMillis() - start.getTimeInMillis()) + "ms)");
             }
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.
