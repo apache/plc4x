@@ -40,11 +40,13 @@ public interface PlcConnection extends AutoCloseable {
      */
     void connect() throws PlcConnectionException;
 
-    Optional<PlcLister> getLister();
-
-    Optional<PlcReader> getReader();
-
-    Optional<PlcWriter> getWriter();
+    /**
+     * Closes the connection to the remote PLC.
+     *
+     * @throws Exception an exception if shutting down the connection failed.
+     */
+    @Override
+    void close() throws Exception;
 
     /**
      * Parses a PLC/protocol dependent address string into an Address object.
@@ -54,5 +56,11 @@ public interface PlcConnection extends AutoCloseable {
      * @throws PlcException an exception if there was a problem parsing the address string.
      */
     Address parseAddress(String addressString) throws PlcException;
+
+    Optional<PlcLister> getLister();
+
+    Optional<PlcReader> getReader();
+
+    Optional<PlcWriter> getWriter();
 
 }
