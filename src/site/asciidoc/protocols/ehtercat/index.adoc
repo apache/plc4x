@@ -15,15 +15,14 @@
 //  limitations under the License.
 //
 
-== Protocols
+== EtherCAT
 
-- link:modbus/index.html[Modbus]
-- link:opc-ua/index.html[OPC-UA]
-- link:s7/index.html[S7]
+Introduction
 
 === Links
 
-Apache 2.0 licensed JNI library for accessing raw IPv4 and IPv6 sockets. Might be the ideal starting point for implementing protocols below TCP & UDP.
-https://www.savarese.org/software/rocksaw/
-
-
+https://www.ethercat.org/default.htm
+https://www.ethercat.org/download/documents/EtherCAT_EAP_EN.pdf
+https://www.ethercat.org/pdf/english/EtherCAT_Introduction_0905.pdf
+https://download.beckhoff.com/download/document/io/ethercat-terminals/ethercatsystem_en.pdf
+https://www.megatech.ro/doc/699/FZM1%20EtherCAT%20Communications%20Manual%20EN.pdf
