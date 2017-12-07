@@ -41,6 +41,7 @@ import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -115,9 +116,13 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 if (requestContainer.getRequest() instanceof PlcReadRequest) {
                     PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
                     S7AnyReadVarPayload payload = responseMessage.getPayload(S7AnyReadVarPayload.class);
-                    byte[] data = payload.getData();
-                    Object value = fromS7Data(plcReadRequest.getDatatype(), data);
-                    response = plcReadRequest.createResponse(value);
+                    if(payload.getDataTransportErrorCode().getCode() == 0xA) {
+                        response = plcReadRequest.createResponse(null);
+                    } else {
+                        byte[] data = payload.getData();
+                        Object value = fromS7Data(plcReadRequest.getDatatype(), data);
+                        response = plcReadRequest.createResponse(value);
+                    }
                 } else if (requestContainer.getRequest() instanceof PlcWriteRequest) {
                     PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
                 }
@@ -133,12 +138,14 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             return TransportSize.BIT;
         } else if (datatype == Byte.class) {
             return TransportSize.BYTE;
+        } else if (datatype == Short.class) {
+            return TransportSize.WORD;
         } else if (datatype == Calendar.class) {
             return TransportSize.DATE_AND_TIME;
         } else if (datatype == Float.class) {
             return TransportSize.REAL;
         } else if (datatype == Integer.class) {
-            return TransportSize.INT;
+            return TransportSize.DWORD;
         } else if (datatype == String.class) {
             return TransportSize.CHAR;
         }
@@ -146,10 +153,17 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
     }
 
     private Object fromS7Data(Class<?> datatype, byte[] s7Data) {
+        if(s7Data.length == 0) {
+            return null;
+        }
         if (datatype == Boolean.class) {
             return (s7Data[0] & 0x01) == 0x01;
         } else if (datatype == Byte.class) {
             return s7Data[0];
+        } else if (datatype == Short.class) {
+            return Short.valueOf((short) (((s7Data[0] & 0xff) << 8) | (s7Data[1] & 0xff)));
+        } else if (datatype == Integer.class) {
+            return ByteBuffer.wrap(s7Data).getInt();
         }
         return null;
     }
@@ -159,11 +173,16 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             return new byte[]{(byte) (((Boolean) datatype) ? 0x01 : 0x00)};
         } else if (datatype.getClass() == Byte.class) {
             return new byte[]{((Byte) datatype)};
+        } else if (datatype.getClass() == Short.class) {
+            short intValue = (short) datatype;
+            return new byte[]{(byte) ((intValue & 0xff00) >> 8), (byte) (intValue & 0xff)};
+        } else if (datatype.getClass() == Integer.class) {
+            int intValue = (int) datatype;
+            // TODO: An int should be 4 bytes ...
+            return new byte[]{(byte) ((intValue & 0xff00) >> 8), (byte) (intValue & 0xff)};
         } else if (datatype.getClass() == Calendar.class) {
 
         } else if (datatype.getClass() == Float.class) {
-
-        } else if (datatype.getClass() == Integer.class) {
 
         } else if (datatype.getClass() == String.class) {
 

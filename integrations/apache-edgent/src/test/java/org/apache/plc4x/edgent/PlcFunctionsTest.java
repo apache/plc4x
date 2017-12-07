@@ -67,7 +67,10 @@ public class PlcFunctionsTest {
     
     supplier = PlcFunctions.byteSupplier(adapter, addressStr);
     PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Byte>)supplier, (byte)0x1, (byte)0x2, (byte)0x3);
-    
+
+    supplier = PlcFunctions.shortSupplier(adapter, addressStr);
+    PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Short>)supplier, (short)1, (short)2, (short)3);
+
     supplier = PlcFunctions.integerSupplier(adapter, addressStr);
     PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Integer>)supplier, 1000, 1001, 1002);
     
@@ -100,6 +103,9 @@ public class PlcFunctionsTest {
     consumer = PlcFunctions.byteConsumer(adapter, addressStr);
     PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<Byte>)consumer, (byte)0x1, (byte)0x2, (byte)0x3);
     
+    consumer = PlcFunctions.shortConsumer(adapter, addressStr);
+    PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<Short>)consumer, (short)1, (short)2, (short)3);
+
     consumer = PlcFunctions.integerConsumer(adapter, addressStr);
     PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<Integer>)consumer, 1000, 1001, 1002);
     
@@ -132,7 +138,10 @@ public class PlcFunctionsTest {
     
     consumer = PlcFunctions.byteConsumer(adapter, addressFn, t -> t.get("value").getAsByte());
     PlcConnectionAdapterTest.checkConsumerJson(connection, address, consumer, (byte)0x1, (byte)0x2, (byte)0x3);
-    
+
+    consumer = PlcFunctions.shortConsumer(adapter, addressFn, t -> t.get("value").getAsShort());
+    PlcConnectionAdapterTest.checkConsumerJson(connection, address, consumer, (short)1, (short)2, (short)3);
+
     consumer = PlcFunctions.integerConsumer(adapter, addressFn, t -> t.get("value").getAsInt());
     PlcConnectionAdapterTest.checkConsumerJson(connection, address, consumer, 1000, 1001, 1002);
     

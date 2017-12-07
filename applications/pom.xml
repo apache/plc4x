@@ -37,6 +37,7 @@
   <description>Parent of all application example modules.</description>
 
   <modules>
+    <module>iotree</module>
     <module>plclogger</module>
   </modules>
 

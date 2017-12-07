@@ -28,20 +28,7 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.BooleanPlcReadRequest;
-import org.apache.plc4x.java.api.messages.BooleanPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.BytePlcReadRequest;
-import org.apache.plc4x.java.api.messages.BytePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.CalendarPlcReadRequest;
-import org.apache.plc4x.java.api.messages.CalendarPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.FloatPlcReadRequest;
-import org.apache.plc4x.java.api.messages.FloatPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.IntegerPlcReadRequest;
-import org.apache.plc4x.java.api.messages.IntegerPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.StringPlcReadRequest;
-import org.apache.plc4x.java.api.messages.StringPlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +51,7 @@ import com.google.gson.JsonObject;
  * Multiple PlcConnectionAdaptor instances, hence multiple PlcConnection instances,
  * can be created for a single plc device subject to the underlying device's protocol's
  * support for multiple connections from a single client.
- * <p 
+ * <p>
  * A single PlcConnectionAdapter can be used by multiple threads concurrently
  * (e.g., used by multiple PlcFunctions Consumers for {@code Topology.poll()} and/or 
  * multiple Suppliers for {@code TStream.sink()}). 
@@ -190,6 +177,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
   static void checkDatatype(Class<?> cls) {
     if (cls == Boolean.class
         || cls == Byte.class
+        || cls == Short.class
         || cls == Integer.class
         || cls == Float.class
         || cls == String.class
@@ -205,6 +193,8 @@ public class PlcConnectionAdapter implements AutoCloseable{
       return (PlcWriteRequest<T>) new BooleanPlcWriteRequest(address, (Boolean)value);
     else if (cls == Byte.class)
       return (PlcWriteRequest<T>) new BytePlcWriteRequest(address, (Byte)value);
+    else if (cls == Short.class)
+      return (PlcWriteRequest<T>) new ShortPlcWriteRequest(address, (Short) value);
     else if (cls == Integer.class)
       return (PlcWriteRequest<T>) new IntegerPlcWriteRequest(address, (Integer)value);
     else if (cls == Float.class)
@@ -223,6 +213,8 @@ public class PlcConnectionAdapter implements AutoCloseable{
       return (PlcReadRequest<T>) new BooleanPlcReadRequest(address);
     else if (datatype == Byte.class)
       return (PlcReadRequest<T>) new BytePlcReadRequest(address);
+    else if (datatype == Short.class)
+      return (PlcReadRequest<T>) new ShortPlcReadRequest(address);
     else if (datatype == Integer.class)
       return (PlcReadRequest<T>) new IntegerPlcReadRequest(address);
     else if (datatype == Float.class)

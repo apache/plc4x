@@ -30,22 +30,7 @@ import org.apache.plc4x.edgent.mock.MockAddress;
 import org.apache.plc4x.edgent.mock.MockConnection;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.messages.BooleanPlcReadRequest;
-import org.apache.plc4x.java.api.messages.BooleanPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.BytePlcReadRequest;
-import org.apache.plc4x.java.api.messages.BytePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.CalendarPlcReadRequest;
-import org.apache.plc4x.java.api.messages.CalendarPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.FloatPlcReadRequest;
-import org.apache.plc4x.java.api.messages.FloatPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.IntegerPlcReadRequest;
-import org.apache.plc4x.java.api.messages.IntegerPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.StringPlcReadRequest;
-import org.apache.plc4x.java.api.messages.StringPlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
@@ -112,12 +97,11 @@ public class PlcConnectionAdapterTest {
   public void testCheckDatatype() throws Exception {
     PlcConnectionAdapter.checkDatatype(Boolean.class);
     PlcConnectionAdapter.checkDatatype(Byte.class);
+    PlcConnectionAdapter.checkDatatype(Short.class);
     PlcConnectionAdapter.checkDatatype(Integer.class);
     PlcConnectionAdapter.checkDatatype(Float.class);
     PlcConnectionAdapter.checkDatatype(String.class);
     PlcConnectionAdapter.checkDatatype(Calendar.class);
-    Assertions.assertThrows(IllegalArgumentException.class,
-        () -> PlcConnectionAdapter.checkDatatype(Short.class));
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> PlcConnectionAdapter.checkDatatype(Long.class));
     Assertions.assertThrows(IllegalArgumentException.class,
@@ -175,6 +159,12 @@ public class PlcConnectionAdapterTest {
     checkRead(connection, (PlcReadRequest<Byte>)request, (byte)0x13);
     checkRead(connection, (PlcReadRequest<Byte>)request, (byte)0x23);
     
+    request = PlcConnectionAdapter.newPlcReadRequest(Short.class, address);
+    Assertions.assertTrue(request instanceof ShortPlcReadRequest, "class:"+request.getClass());
+    Assertions.assertSame(address, request.getAddress());
+    checkRead(connection, (PlcReadRequest<Short>)request, (short)13);
+    checkRead(connection, (PlcReadRequest<Short>)request, (short)23);
+
     request = PlcConnectionAdapter.newPlcReadRequest(Integer.class, address);
     Assertions.assertTrue(request instanceof IntegerPlcReadRequest, "class:"+request.getClass());
     Assertions.assertSame(address, request.getAddress());
@@ -226,6 +216,11 @@ public class PlcConnectionAdapterTest {
     Assertions.assertSame(address, request.getAddress());
     checkWrite(connection, (PlcWriteRequest<Byte>)request, (byte)0x113);
     
+    request = PlcConnectionAdapter.newPlcWriteRequest(address, (short)113);
+    Assertions.assertTrue(request instanceof ShortPlcWriteRequest, "class:"+request.getClass());
+    Assertions.assertSame(address, request.getAddress());
+    checkWrite(connection, (PlcWriteRequest<Short>)request, (short)113);
+
     request = PlcConnectionAdapter.newPlcWriteRequest(address, 1033);
     Assertions.assertTrue(request instanceof IntegerPlcWriteRequest, "class:"+request.getClass());
     Assertions.assertSame(address, request.getAddress());
@@ -271,6 +266,9 @@ public class PlcConnectionAdapterTest {
     supplier = adapter.newSupplier(Byte.class, addressStr);
     checkSupplier(connection, address, (Supplier<Byte>)supplier, (byte)0x1, (byte)0x2, (byte)0x3);
     
+    supplier = adapter.newSupplier(Short.class, addressStr);
+    checkSupplier(connection, address, (Supplier<Short>)supplier, (short)1, (short)2, (short)3);
+
     supplier = adapter.newSupplier(Integer.class, addressStr);
     checkSupplier(connection, address, (Supplier<Integer>)supplier, 1000, 1001, 1002);
     
@@ -347,6 +345,9 @@ public class PlcConnectionAdapterTest {
     consumer = adapter.newConsumer(Byte.class, addressStr);
     checkConsumer(connection, address, (Consumer<Byte>)consumer, (byte)0x1, (byte)0x2, (byte)0x3);
     
+    consumer = adapter.newConsumer(Short.class, addressStr);
+    checkConsumer(connection, address, (Consumer<Short>)consumer, (short)1, (short)2, (short)3);
+
     consumer = adapter.newConsumer(Integer.class, addressStr);
     checkConsumer(connection, address, (Consumer<Integer>)consumer, 1000, 1001, 1002);
     
@@ -426,6 +427,9 @@ public class PlcConnectionAdapterTest {
     consumer = adapter.newConsumer(Byte.class, addressFn, t -> t.get("value").getAsByte());
     checkConsumerJson(connection, address, consumer, (byte)0x1, (byte)0x2, (byte)0x3);
     
+    consumer = adapter.newConsumer(Short.class, addressFn, t -> t.get("value").getAsShort());
+    checkConsumerJson(connection, address, consumer, (short)1, (short)2, (short)3);
+
     consumer = adapter.newConsumer(Integer.class, addressFn, t -> t.get("value").getAsInt());
     checkConsumerJson(connection, address, consumer, 1000, 1001, 1002);
     

@@ -23,6 +23,7 @@ import java.util.Map;
 
 public enum DataTransportErrorCode {
     RESERVED((byte) 0x00),
+    INVALID_ADDRESS((byte) 0x05),
     NOT_FOUND((byte) 0x0A),
     OK((byte) 0xFF);
 
@@ -44,6 +45,9 @@ public enum DataTransportErrorCode {
             for (DataTransportErrorCode dataTransportErrorCode : DataTransportErrorCode.values()) {
                 map.put(dataTransportErrorCode.code, dataTransportErrorCode);
             }
+        }
+        if(!map.containsKey(code)) {
+            System.out.println("No DataTransportErrorCode for code " + code);
         }
         return map.get(code);
     }

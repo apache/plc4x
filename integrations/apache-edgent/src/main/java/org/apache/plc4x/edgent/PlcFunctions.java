@@ -90,6 +90,9 @@ public class PlcFunctions {
   public static Supplier<Byte> byteSupplier(PlcConnectionAdapter adapter, String addressStr) {
     return adapter.newSupplier(Byte.class, addressStr);
   }
+  public static Supplier<Short> shortSupplier(PlcConnectionAdapter adapter, String addressStr) {
+    return adapter.newSupplier(Short.class, addressStr);
+  }
   public static Supplier<Integer> integerSupplier(PlcConnectionAdapter adapter, String addressStr) {
     return adapter.newSupplier(Integer.class, addressStr);
   }
@@ -107,7 +110,7 @@ public class PlcFunctions {
    * Create a new Edgent {@link Consumer} to write data to the 
    * plc device.
    * <p>
-   * Every call to the returned {@link Consumer<T>#accept(T)} 
+   * Every call to the returned {@link Consumer#accept(Object)}
    * writes the value to the the device address and connection
    * associated with the {@code PlcConnectionAdapter}.
    * 
@@ -122,6 +125,9 @@ public class PlcFunctions {
   }
   public static Consumer<Byte> byteConsumer(PlcConnectionAdapter adapter, String addressStr) {
     return adapter.newConsumer(Byte.class, addressStr);
+  }
+  public static Consumer<Short> shortConsumer(PlcConnectionAdapter adapter, String addressStr) {
+    return adapter.newConsumer(Short.class, addressStr);
   }
   public static Consumer<Integer> integerConsumer(PlcConnectionAdapter adapter, String addressStr) {
     return adapter.newConsumer(Integer.class, addressStr);
@@ -142,7 +148,7 @@ public class PlcFunctions {
    * <p>
    * TODO: Is it premature to supply this?
    * <p>
-   * Every call to the returned {@link Consumer<JsonObject>#accept(JsonObject)}
+   * Every call to the returned {@link Consumer#accept(Object)}
    * <ul>
    * <li>calls {@code addressFn} to get the device address string</li>
    * <li>calls {@code valueFn} to get the {@code T} to write</li>
@@ -162,6 +168,9 @@ public class PlcFunctions {
   }
   public static Consumer<JsonObject> byteConsumer(PlcConnectionAdapter adapter, Function<JsonObject,String> addressFn, Function<JsonObject,Byte> valueFn) {
     return adapter.newConsumer(Byte.class, addressFn, valueFn);
+  }
+  public static Consumer<JsonObject> shortConsumer(PlcConnectionAdapter adapter, Function<JsonObject,String> addressFn, Function<JsonObject,Short> valueFn) {
+    return adapter.newConsumer(Short.class, addressFn, valueFn);
   }
   public static Consumer<JsonObject> integerConsumer(PlcConnectionAdapter adapter, Function<JsonObject,String> addressFn, Function<JsonObject,Integer> valueFn) {
     return adapter.newConsumer(Integer.class, addressFn, valueFn);

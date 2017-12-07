@@ -59,7 +59,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
     private static final int ISO_ON_TCP_PORT = 102;
 
     private static final Pattern S7_DATABLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^DATABLOCK/(?<blockNumber>\\d{1,4})/(?<byteOffset>\\d{1,4})");
+        Pattern.compile("^DATA_BLOCKS/(?<blockNumber>\\d{1,4})/(?<byteOffset>\\d{1,4})");
     private static final Pattern S7_ADDRESS_PATTERN =
         Pattern.compile("^(?<memoryArea>.*?)/(?<byteOffset>\\d{1,4})(?:/(?<bitOffset>\\d))?");
 

@@ -118,8 +118,15 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                                 buf.writeShort(s7AnyRequestItem.getNumElements());
                                 buf.writeShort(s7AnyRequestItem.getDataBlockNumber());
                                 buf.writeByte(s7AnyRequestItem.getMemoryArea().getCode());
-                                buf.writeShort(s7AnyRequestItem.getByteOffset());
-                                buf.writeByte(s7AnyRequestItem.getBitOffset());
+                                // A S7 address is 3 bytes long. Unfortunately the byte-offset is NOT located in
+                                // byte 1 and byte 2 and the bit offset in byte 3. Siemens used the last 3 bits of
+                                // byte 3 for the bit-offset and the remaining 5 bits of byte 3 to contain the lowest
+                                // 5 bits of the byte-offset. The highest 5 bits of byte 1 are probably left unused
+                                // for future extensions.
+                                buf.writeShort((short) (s7AnyRequestItem.getByteOffset() >> 5));
+                                buf.writeByte((byte) ((
+                                    (s7AnyRequestItem.getByteOffset() & 0x1F) << 3)
+                                    | (s7AnyRequestItem.getBitOffset() & 0x07)));
                                 break;
                             }
                             default:
@@ -160,11 +167,11 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) throws Exception {
-        if(logger.isTraceEnabled()) {
+        if (logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
         }
         ByteBuf userData = in.getUserData();
-        if(userData.readableBytes() > 0) {
+        if (userData.readableBytes() > 0) {
             logger.debug("S7 Message received");
 
             if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
