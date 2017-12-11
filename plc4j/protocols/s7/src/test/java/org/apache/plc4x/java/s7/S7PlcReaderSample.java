@@ -31,9 +31,9 @@ import java.util.Calendar;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class S7PlcDriverSample {
+public class S7PlcReaderSample {
 
-    private final static Logger logger = LoggerFactory.getLogger(S7PlcDriverSample.class);
+    private final static Logger logger = LoggerFactory.getLogger(S7PlcReaderSample.class);
 
     /**
      * Example code do demonstrate using the S7 Plc Driver.

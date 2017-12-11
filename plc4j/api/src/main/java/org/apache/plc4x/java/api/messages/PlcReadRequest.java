@@ -26,6 +26,7 @@ public interface PlcReadRequest<T> extends PlcRequest {
 
     Address getAddress();
 
+    // TODO: Seems the "value" parameter only makes sense for ReadVal responses ...
     PlcReadResponse<T> createResponse(T value);
 
 }

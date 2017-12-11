@@ -62,8 +62,8 @@ public class IoTree {
         TStream<Short> analogInputStream = top.poll(PlcFunctions.shortSupplier(plcAdapter, "INPUTS/66"), 10, TimeUnit.MILLISECONDS);
         analogInputStream.sink((Consumer<Short>) inputs -> analogInput.set(inputs));
         // Automatically update the amplification ...
-        TStream<Integer> amplificationStream = top.poll(PlcFunctions.integerSupplier(plcAdapter, "DATA_BLOCKS/1/0"), 10, TimeUnit.MILLISECONDS);
-        amplificationStream.sink((Consumer<Integer>) inputs -> amplification.set(inputs));
+        TStream<Float> amplificationStream = top.poll(PlcFunctions.floatSupplier(plcAdapter, "DATA_BLOCKS/1/0"), 10, TimeUnit.MILLISECONDS);
+        amplificationStream.sink((Consumer<Float>) inputs -> amplification.set(inputs.intValue()));
         // Automatically update the maxValue ...
         TStream<Integer> maxValueStream = top.poll(PlcFunctions.integerSupplier(plcAdapter, "DATA_BLOCKS/1/4"), 10, TimeUnit.MILLISECONDS);
         maxValueStream.sink((Consumer<Integer>) inputs -> maxValue.set(inputs));

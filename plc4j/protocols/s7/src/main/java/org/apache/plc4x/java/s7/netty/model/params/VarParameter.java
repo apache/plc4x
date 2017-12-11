@@ -18,30 +18,32 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.params;
 
-import org.apache.plc4x.java.s7.netty.model.params.items.ReadVarRequestItem;
+import org.apache.plc4x.java.s7.netty.model.params.items.VarItem;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ReadVarParameter implements S7Parameter {
+public class VarParameter implements S7Parameter {
 
-    private final List<ReadVarRequestItem> items;
+    private final ParameterType type;
+    private final List<VarItem> items;
 
-    public ReadVarParameter() {
+    public VarParameter(ParameterType type) {
+        this.type = type;
         items = new LinkedList<>();
     }
 
     @Override
     public ParameterType getType() {
-        return ParameterType.READ_VAR;
+        return type;
     }
 
-    public List<ReadVarRequestItem> getItems() {
+    public List<VarItem> getItems() {
         return items;
     }
 
-    public void addRequestItem(ReadVarRequestItem item) {
+    public void addRequestItem(VarItem item) {
         items.add(item);
     }
 

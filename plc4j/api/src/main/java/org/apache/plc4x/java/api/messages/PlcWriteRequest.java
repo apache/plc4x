@@ -20,7 +20,7 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.Address;
 
-public interface PlcWriteRequest<T> extends PlcResponse {
+public interface PlcWriteRequest<T> extends PlcRequest {
 
     Class<T> getDatatype();
 

@@ -18,18 +18,25 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import org.apache.plc4x.java.s7.netty.model.params.items.ReadVarRequestItem;
+import org.apache.plc4x.java.s7.netty.model.params.items.VarItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
+import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
-public class S7AnyReadVarPayload extends ReadVarPayload {
+public class S7AnyVarPayload extends VarPayload {
 
     private final DataTransportSize dataTransportSize;
     private final byte[] data;
 
-    public S7AnyReadVarPayload(ReadVarRequestItem readVarRequestItem, DataTransportErrorCode dataTransportErrorCode,
-                               DataTransportSize dataTransportSize, byte[] data) {
-        super(readVarRequestItem, dataTransportErrorCode);
+    public S7AnyVarPayload(ParameterType parameterType, VarItem varItem, DataTransportSize dataTransportSize, byte[] data) {
+        super(parameterType, varItem, DataTransportErrorCode.OK);
+        this.dataTransportSize = dataTransportSize;
+        this.data = data;
+    }
+
+    public S7AnyVarPayload(ParameterType parameterType, VarItem varItem, DataTransportErrorCode dataTransportErrorCode,
+                           DataTransportSize dataTransportSize, byte[] data) {
+        super(parameterType, varItem, dataTransportErrorCode);
         this.dataTransportSize = dataTransportSize;
         this.data = data;
     }

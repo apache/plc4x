@@ -24,12 +24,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcRequestContainer;
 import org.apache.plc4x.java.isoontcp.netty.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DisconnectRequestTpdu;
@@ -54,7 +53,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class S7PlcConnection extends AbstractPlcConnection implements PlcReader {
+public class S7PlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
@@ -201,6 +200,15 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader 
             new PlcRequestContainer<>(readRequest, readFuture);
         channel.writeAndFlush(container);
         return readFuture;
+    }
+
+    @Override
+    public <T> CompletableFuture<PlcWriteResponse<T>> write(PlcWriteRequest<T> writeRequest) {
+        CompletableFuture<PlcWriteResponse<T>> writeFuture = new CompletableFuture<>();
+        PlcRequestContainer<PlcWriteRequest<T>, PlcWriteResponse<T>> container =
+            new PlcRequestContainer<>(writeRequest, writeFuture);
+        channel.writeAndFlush(container);
+        return writeFuture;
     }
 
 }

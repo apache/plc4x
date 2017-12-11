@@ -18,27 +18,29 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import org.apache.plc4x.java.s7.netty.model.params.items.ReadVarRequestItem;
+import org.apache.plc4x.java.s7.netty.model.params.items.VarItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
-public abstract class ReadVarPayload implements S7Payload {
+public abstract class VarPayload implements S7Payload {
 
-    private final ReadVarRequestItem readVarRequestItem;
+    private final ParameterType parameterType;
+    private final VarItem varItem;
     private final DataTransportErrorCode dataTransportErrorCode;
 
-    public ReadVarPayload(ReadVarRequestItem readVarRequestItem, DataTransportErrorCode dataTransportErrorCode) {
-        this.readVarRequestItem = readVarRequestItem;
+    public VarPayload(ParameterType parameterType, VarItem varItem, DataTransportErrorCode dataTransportErrorCode) {
+        this.parameterType = parameterType;
+        this.varItem = varItem;
         this.dataTransportErrorCode = dataTransportErrorCode;
     }
 
     @Override
     public ParameterType getType() {
-        return ParameterType.READ_VAR;
+        return parameterType;
     }
 
-    public ReadVarRequestItem getReadVarRequestItem() {
-        return readVarRequestItem;
+    public VarItem getVarItem() {
+        return varItem;
     }
 
     public DataTransportErrorCode getDataTransportErrorCode() {

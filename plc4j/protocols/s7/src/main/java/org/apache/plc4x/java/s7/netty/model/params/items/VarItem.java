@@ -20,7 +20,7 @@ package org.apache.plc4x.java.s7.netty.model.params.items;
 
 import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 
-public interface ReadVarRequestItem {
+public interface VarItem {
 
     VariableAddressingMode getAddressingMode();
 
