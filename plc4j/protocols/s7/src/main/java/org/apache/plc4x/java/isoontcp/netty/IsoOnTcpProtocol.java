@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.isoontcp.netty.model.IsoOnTcpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class IsoOnTcpProtocol extends MessageToMessageCodec<ByteBuf, IsoOnTcpMessage> {
 
-    private final static byte ISO_ON_TCP_MAGIC_NUMBER = 0x03;
+    public final static byte ISO_ON_TCP_MAGIC_NUMBER = 0x03;
 
     private final static Logger logger = LoggerFactory.getLogger(IsoOnTcpProtocol.class);
 
@@ -78,9 +79,11 @@ public class IsoOnTcpProtocol extends MessageToMessageCodec<ByteBuf, IsoOnTcpMes
             if (in.getByte(0) != ISO_ON_TCP_MAGIC_NUMBER) {
                 logger.warn("Expecting ISO on TCP magic number: {}", ISO_ON_TCP_MAGIC_NUMBER);
                 logger.debug("Got Data: " + ByteBufUtil.hexDump(in));
+                exceptionCaught(ctx, new PlcProtocolException(
+                    String.format("Expecting ISO on TCP magic number: %02X", ISO_ON_TCP_MAGIC_NUMBER)));
                 return;
             }
-            // We don't really care about the payload length.
+            // Byte 1 is a reserved byte set to 0x00
             short packetLength = in.getShort(2);
             if(in.readableBytes() >= packetLength) {
                 // Skip the 4 bytes we peeked into manually.
