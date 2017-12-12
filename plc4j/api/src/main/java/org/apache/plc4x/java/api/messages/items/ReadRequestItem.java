@@ -16,19 +16,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-public class ShortPlcReadRequest extends GenericPlcResourceMessage<Short> implements PlcReadRequest<Short> {
+public class ReadRequestItem {
 
-    public ShortPlcReadRequest(Address address) {
-        super(Short.class, address);
+    private final Class datatype;
+
+    private final Address address;
+
+    private final int size;
+
+    public ReadRequestItem(Class datatype, Address address) {
+        this.datatype = datatype;
+        this.address = address;
+        this.size = 1;
     }
 
-    @Override
-    public PlcReadResponse<Short> createResponse(Short value) {
-        return new ShortPlcReadResponse(getAddress(), value);
+    public ReadRequestItem(Class datatype, Address address, int size) {
+        this.datatype = datatype;
+        this.address = address;
+        this.size = size;
+    }
+
+    public Class getDatatype() {
+        return datatype;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public int getSize() {
+        return size;
     }
 
 }

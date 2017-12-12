@@ -20,16 +20,13 @@ package org.apache.plc4x.java.s7;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class S7PlcWriterSample {
 
@@ -51,14 +48,14 @@ public class S7PlcWriterSample {
             // Check if this connection support reading of data.
             if (writer.isPresent()) {
                 PlcWriter plcWriter = writer.get();
-                Address inputs = plcConnection.parseAddress("DATA_BLOCKS/1/0");
+                Address inputs = plcConnection.parseAddress("DATA_BLOCKS/1/2");
                 //////////////////////////////////////////////////////////
                 // Write synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
-                PlcWriteResponse<Float> plcWriteResponse = plcWriter.write(
-                    new FloatPlcWriteRequest(inputs, 2.0f)).get();
-                System.out.println("Written: " + plcWriteResponse.toString());
+                PlcWriteResponse plcWriteResponse = plcWriter.write(
+                    new PlcWriteRequest(Float.class, inputs, 2.0f)).get();
+                System.out.println("Written: " + plcWriteResponse.getResponseItems().get(0).getResponseCode().name());
             }
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.

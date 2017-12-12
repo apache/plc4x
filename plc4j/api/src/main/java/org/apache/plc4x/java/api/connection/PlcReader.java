@@ -32,9 +32,8 @@ public interface PlcReader {
      * Reads a requested value from a PLC.
      *
      * @param readRequest object describing the type and location of the value.
-     * @param <T> The value type that should be used.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    <T> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest);
+    CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
 
 }

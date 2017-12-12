@@ -16,14 +16,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.types.ResponseCode;
 
-public class BooleanPlcWriteResponse extends GenericPlcResourceMessage<Boolean> implements PlcWriteResponse<Boolean> {
+public class WriteResponseItem {
 
-    public BooleanPlcWriteResponse(Address address) {
-        super(Boolean.class, address);
+    private final WriteRequestItem requestItem;
+
+    private final ResponseCode responseCode;
+
+    public WriteResponseItem(WriteRequestItem requestItem, ResponseCode responseCode) {
+        this.requestItem = requestItem;
+        this.responseCode = responseCode;
     }
-    
+
+    public WriteRequestItem getRequestItem() {
+        return requestItem;
+    }
+
+    public ResponseCode getResponseCode() {
+        return responseCode;
+    }
+
 }

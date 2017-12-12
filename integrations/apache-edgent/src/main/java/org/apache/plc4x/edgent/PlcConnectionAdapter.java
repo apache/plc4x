@@ -111,8 +111,8 @@ public class PlcConnectionAdapter implements AutoCloseable{
           connection = getConnection();
           address = connection.parseAddress(addressStr);
           PlcReader reader = connection.getReader().get();
-          PlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
-          T value = reader.read(readRequest).get().getValue();
+          PlcReadRequest readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
+          T value = (T) reader.read(readRequest).get().getResponseItems().get(0).getValues().get(0);
           return value;
         }
         catch (Exception e) {
@@ -137,7 +137,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
           connection = getConnection();
           address = connection.parseAddress(addressStr);
           PlcWriter writer = connection.getWriter().get();
-          PlcWriteRequest<T> writeReq = PlcConnectionAdapter.newPlcWriteRequest(address, arg0);
+          PlcWriteRequest writeReq = PlcConnectionAdapter.newPlcWriteRequest(address, arg0);
           writer.write(writeReq).get();
         }
         catch (Exception e) {
@@ -163,7 +163,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
           address = connection.parseAddress(addressStr);
           T value = valueFn.apply(jo);
           PlcWriter writer = connection.getWriter().get();
-          PlcWriteRequest<T> writeReq = newPlcWriteRequest(address, value);
+          PlcWriteRequest writeReq = newPlcWriteRequest(address, value);
           writer.write(writeReq).get();
         }
         catch (Exception e) {
@@ -187,44 +187,14 @@ public class PlcConnectionAdapter implements AutoCloseable{
   }
 
   @SuppressWarnings("unchecked")
-  static <T> PlcWriteRequest<T> newPlcWriteRequest(Address address, T value) {
+  static <T> PlcWriteRequest newPlcWriteRequest(Address address, T value) {
     Class<?> cls = value.getClass();
-    if (cls == Boolean.class)
-      return (PlcWriteRequest<T>) new BooleanPlcWriteRequest(address, (Boolean)value);
-    else if (cls == Byte.class)
-      return (PlcWriteRequest<T>) new BytePlcWriteRequest(address, (Byte)value);
-    else if (cls == Short.class)
-      return (PlcWriteRequest<T>) new ShortPlcWriteRequest(address, (Short) value);
-    else if (cls == Integer.class)
-      return (PlcWriteRequest<T>) new IntegerPlcWriteRequest(address, (Integer)value);
-    else if (cls == Float.class)
-      return (PlcWriteRequest<T>) new FloatPlcWriteRequest(address, (Float)value);
-    else if (cls == String.class)
-      return (PlcWriteRequest<T>) new StringPlcWriteRequest(address, (String)value);
-    else if (Calendar.class.isAssignableFrom(cls))
-      return (PlcWriteRequest<T>) new CalendarPlcWriteRequest(address, (Calendar)value);
-    else
-      throw new IllegalArgumentException("Not a legal plc data type: "+cls.getSimpleName());
+    return new PlcWriteRequest(cls, address, value);
   }
 
   @SuppressWarnings("unchecked")
-  static <T> PlcReadRequest<T> newPlcReadRequest(Class<T> datatype, Address address) {
-    if (datatype == Boolean.class)
-      return (PlcReadRequest<T>) new BooleanPlcReadRequest(address);
-    else if (datatype == Byte.class)
-      return (PlcReadRequest<T>) new BytePlcReadRequest(address);
-    else if (datatype == Short.class)
-      return (PlcReadRequest<T>) new ShortPlcReadRequest(address);
-    else if (datatype == Integer.class)
-      return (PlcReadRequest<T>) new IntegerPlcReadRequest(address);
-    else if (datatype == Float.class)
-      return (PlcReadRequest<T>) new FloatPlcReadRequest(address);
-    else if (datatype == String.class)
-      return (PlcReadRequest<T>) new StringPlcReadRequest(address);
-    else if (datatype == Calendar.class)
-      return (PlcReadRequest<T>) new CalendarPlcReadRequest(address);
-    else
-      throw new IllegalArgumentException("Not a legal plc data type: "+datatype.getSimpleName());
+  static <T> PlcReadRequest newPlcReadRequest(Class<T> datatype, Address address) {
+      return new PlcReadRequest(datatype, address);
   }
 
 }

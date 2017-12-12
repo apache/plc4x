@@ -16,29 +16,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.netty.model.payloads;
+package org.apache.plc4x.java.s7.netty.model.payloads.items;
 
-import org.apache.plc4x.java.s7.netty.model.params.items.VarItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
-import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
-public class S7AnyVarPayload extends VarPayload {
+public class VarPayloadItem {
 
+    private final DataTransportErrorCode returnCode;
     private final DataTransportSize dataTransportSize;
     private final byte[] data;
 
-    public S7AnyVarPayload(ParameterType parameterType, VarItem varItem, DataTransportSize dataTransportSize, byte[] data) {
-        super(parameterType, varItem, DataTransportErrorCode.OK);
+    public VarPayloadItem(DataTransportErrorCode returnCode, DataTransportSize dataTransportSize, byte[] data) {
+        this.returnCode = returnCode;
         this.dataTransportSize = dataTransportSize;
         this.data = data;
     }
 
-    public S7AnyVarPayload(ParameterType parameterType, VarItem varItem, DataTransportErrorCode dataTransportErrorCode,
-                           DataTransportSize dataTransportSize, byte[] data) {
-        super(parameterType, varItem, dataTransportErrorCode);
-        this.dataTransportSize = dataTransportSize;
-        this.data = data;
+    public DataTransportErrorCode getReturnCode() {
+        return returnCode;
     }
 
     public DataTransportSize getDataTransportSize() {

@@ -194,18 +194,18 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public <T> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest) {
-        CompletableFuture<PlcReadResponse<T>> readFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcReadRequest<T>, PlcReadResponse<T>> container =
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
+        PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
             new PlcRequestContainer<>(readRequest, readFuture);
         channel.writeAndFlush(container);
         return readFuture;
     }
 
     @Override
-    public <T> CompletableFuture<PlcWriteResponse<T>> write(PlcWriteRequest<T> writeRequest) {
-        CompletableFuture<PlcWriteResponse<T>> writeFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcWriteRequest<T>, PlcWriteResponse<T>> container =
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
+        PlcRequestContainer<PlcWriteRequest, PlcWriteResponse> container =
             new PlcRequestContainer<>(writeRequest, writeFuture);
         channel.writeAndFlush(container);
         return writeFuture;

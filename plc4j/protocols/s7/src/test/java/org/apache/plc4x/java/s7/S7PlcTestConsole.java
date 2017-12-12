@@ -21,13 +21,15 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.BytePlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -57,10 +59,9 @@ public class S7PlcTestConsole {
                 while(!"exit".equalsIgnoreCase(line = scanner.next())) {
                     try {
                         Address address = plcConnection.parseAddress(line);
-                        PlcReadResponse<Byte> plcReadResponse = plcReader.read(
-                            new BytePlcReadRequest(address)).get();
-                        Byte data = plcReadResponse.getValue();
-                        System.out.println("Response: " + data);
+                        PlcReadResponse plcReadResponse = plcReader.read(new PlcReadRequest(Byte.class, address)).get();
+                        List<Object> data = plcReadResponse.getResponseItems().get(0).getValues();
+                        System.out.println("Response: " + data.get(0));
                     } catch(Exception e) {
                         e.printStackTrace();
                     }

@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.edgent;
 
+import java.lang.reflect.Array;
 import java.util.Calendar;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -25,12 +26,13 @@ import java.util.concurrent.ExecutionException;
 import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
-import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.mock.MockAddress;
 import org.apache.plc4x.edgent.mock.MockConnection;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
@@ -108,29 +110,33 @@ public class PlcConnectionAdapterTest {
         () -> PlcConnectionAdapter.checkDatatype(Double.class));
   }
   
-  private <T> void checkRead(MockConnection connection, PlcReadRequest<T> request, T value) throws InterruptedException, ExecutionException {
+  private <T> void checkRead(MockConnection connection, PlcReadRequest request, T value) throws InterruptedException, ExecutionException {
     // this is really a tests of our mock tooling but knowing it's behaving as expected
     // will help identify problems in the adapter/supplier/consumer
-    connection.setDataValue(request.getAddress(), value);
+    connection.setDataValue(request.getReadRequestItems().get(0).getAddress(), value);
     
-    CompletableFuture<PlcReadResponse<T>> cf = connection.read(request);
+    CompletableFuture<PlcReadResponse> cf = connection.read(request);
     
     Assertions.assertTrue(cf.isDone());
-    PlcReadResponse<T> response = cf.get();
-    Assertions.assertEquals(value, response.getValue());
+    PlcReadResponse response = cf.get();
+    Assertions.assertEquals(value, response.getResponseItems().get(0).getValues().get(0));
   }
   
-  private <T> void checkWrite(MockConnection connection, PlcWriteRequest<T> request, T value) throws InterruptedException, ExecutionException {
+  private <T> void checkWrite(MockConnection connection, PlcWriteRequest request, T value) throws InterruptedException, ExecutionException {
     // this is really a tests of our mock tooling but knowing it's behaving as expected
     // will help identify problems in the adapter/supplier/consumer
-    connection.setDataValue(request.getAddress(), value);
+    connection.setDataValue(request.getRequestItems().get(0).getAddress(), value);
     
-    CompletableFuture<PlcWriteResponse<T>> cf = connection.write(request);
+    CompletableFuture<PlcWriteResponse> cf = connection.write(request);
     
     Assertions.assertTrue(cf.isDone());
-    PlcWriteResponse<T> response = cf.get();
+    PlcWriteResponse response = cf.get();
     Assertions.assertNotNull(response);
-    Assertions.assertEquals(value, connection.getDataValue(request.getAddress()));
+    T writtenData = (T) connection.getDataValue(request.getRequestItems().get(0).getAddress());
+    if(writtenData.getClass().isArray()) {
+      writtenData = (T) Array.get(writtenData, 0);
+    }
+    Assertions.assertEquals(value, writtenData);
   }
   
   /*
@@ -145,48 +151,62 @@ public class PlcConnectionAdapterTest {
     PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
     MockConnection connection = (MockConnection) adapter.getConnection();
 
-    PlcReadRequest<?> request;
+    PlcReadRequest request;
     
     request = PlcConnectionAdapter.newPlcReadRequest(Boolean.class, address);
-    Assertions.assertTrue(request instanceof BooleanPlcReadRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkRead(connection, (PlcReadRequest<Boolean>)request, true);
-    checkRead(connection, (PlcReadRequest<Boolean>)request, false);
+    ReadRequestItem requestItem = request.getReadRequestItems().get(0);
+    Class dataType = requestItem.getDatatype();
+    Assertions.assertTrue(dataType == Boolean.class, "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkRead(connection, request, true);
+    checkRead(connection, request, false);
     
     request = PlcConnectionAdapter.newPlcReadRequest(Byte.class, address);
-    Assertions.assertTrue(request instanceof BytePlcReadRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkRead(connection, (PlcReadRequest<Byte>)request, (byte)0x13);
-    checkRead(connection, (PlcReadRequest<Byte>)request, (byte)0x23);
+    requestItem = request.getReadRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(dataType == Byte.class, "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkRead(connection, request, (byte)0x13);
+    checkRead(connection, request, (byte)0x23);
     
     request = PlcConnectionAdapter.newPlcReadRequest(Short.class, address);
-    Assertions.assertTrue(request instanceof ShortPlcReadRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkRead(connection, (PlcReadRequest<Short>)request, (short)13);
-    checkRead(connection, (PlcReadRequest<Short>)request, (short)23);
+    requestItem = request.getReadRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(dataType == Short.class, "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkRead(connection, request, (short)13);
+    checkRead(connection, request, (short)23);
 
     request = PlcConnectionAdapter.newPlcReadRequest(Integer.class, address);
-    Assertions.assertTrue(request instanceof IntegerPlcReadRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkRead(connection, (PlcReadRequest<Integer>)request, 33);
-    checkRead(connection, (PlcReadRequest<Integer>)request, -133);
+    requestItem = request.getReadRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(dataType == Integer.class, "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkRead(connection, request, 33);
+    checkRead(connection, request, -133);
     
     request = PlcConnectionAdapter.newPlcReadRequest(Float.class, address);
-    Assertions.assertTrue(request instanceof FloatPlcReadRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkRead(connection, (PlcReadRequest<Float>)request, 43.5f);
-    checkRead(connection, (PlcReadRequest<Float>)request, -143.5f);
+    requestItem = request.getReadRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(dataType == Float.class, "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkRead(connection, request, 43.5f);
+    checkRead(connection, request, -143.5f);
     
     request = PlcConnectionAdapter.newPlcReadRequest(String.class, address);
-    Assertions.assertTrue(request instanceof StringPlcReadRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkRead(connection, (PlcReadRequest<String>)request, "ReadySetGo");
-    checkRead(connection, (PlcReadRequest<String>)request, "OneMoreTime");
+    requestItem = request.getReadRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(dataType == String.class, "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkRead(connection, request, "ReadySetGo");
+    checkRead(connection, request, "OneMoreTime");
     
     request = PlcConnectionAdapter.newPlcReadRequest(Calendar.class, address);
-    Assertions.assertTrue(request instanceof CalendarPlcReadRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkRead(connection, (PlcReadRequest<Calendar>)request, Calendar.getInstance());
+    requestItem = request.getReadRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(dataType == Calendar.class, "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkRead(connection, request, Calendar.getInstance());
     
     adapter.close();
   }
@@ -204,43 +224,58 @@ public class PlcConnectionAdapterTest {
     PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
     MockConnection connection = (MockConnection) adapter.getConnection();
 
-    PlcWriteRequest<?> request;
+    PlcWriteRequest request;
     
     request = PlcConnectionAdapter.newPlcWriteRequest(address, true);
-    Assertions.assertTrue(request instanceof BooleanPlcWriteRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkWrite(connection, (PlcWriteRequest<Boolean>)request, true);
+    WriteRequestItem requestItem = request.getRequestItems().get(0);
+    Class dataType = requestItem.getDatatype();
+    Assertions.assertTrue(Boolean.class.isAssignableFrom(dataType), "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkWrite(connection, request, true);
     
     request = PlcConnectionAdapter.newPlcWriteRequest(address, (byte)0x113);
-    Assertions.assertTrue(request instanceof BytePlcWriteRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkWrite(connection, (PlcWriteRequest<Byte>)request, (byte)0x113);
+    requestItem = request.getRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(Byte.class.isAssignableFrom(dataType), "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkWrite(connection, request, (byte)0x113);
     
     request = PlcConnectionAdapter.newPlcWriteRequest(address, (short)113);
-    Assertions.assertTrue(request instanceof ShortPlcWriteRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkWrite(connection, (PlcWriteRequest<Short>)request, (short)113);
+    requestItem = request.getRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(Short.class.isAssignableFrom(dataType), "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkWrite(connection, request, (short)113);
 
     request = PlcConnectionAdapter.newPlcWriteRequest(address, 1033);
-    Assertions.assertTrue(request instanceof IntegerPlcWriteRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkWrite(connection, (PlcWriteRequest<Integer>)request, 1033);
+    requestItem = request.getRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(Integer.class.isAssignableFrom(dataType), "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkWrite(connection, request, 1033);
     
     request = PlcConnectionAdapter.newPlcWriteRequest(address, 1043.5f);
-    Assertions.assertTrue(request instanceof FloatPlcWriteRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkWrite(connection, (PlcWriteRequest<Float>)request, 1043.5f);
+    requestItem = request.getRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(Float.class.isAssignableFrom(dataType), "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkWrite(connection, request, 1043.5f);
     
     request = PlcConnectionAdapter.newPlcWriteRequest(address, "A written value");
-    Assertions.assertTrue(request instanceof StringPlcWriteRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkWrite(connection, (PlcWriteRequest<String>)request, "A written value");
+    requestItem = request.getRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    Assertions.assertTrue(String.class.isAssignableFrom(dataType), "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkWrite(connection, request, "A written value");
     
     Calendar calValue = Calendar.getInstance();
     request = PlcConnectionAdapter.newPlcWriteRequest(address, calValue);
-    Assertions.assertTrue(request instanceof CalendarPlcWriteRequest, "class:"+request.getClass());
-    Assertions.assertSame(address, request.getAddress());
-    checkWrite(connection, (PlcWriteRequest<Calendar>)request, calValue);
+    requestItem = request.getRequestItems().get(0);
+    dataType = requestItem.getDatatype();
+    request = PlcConnectionAdapter.newPlcWriteRequest(address, calValue);
+    Assertions.assertTrue(Calendar.class.isAssignableFrom(dataType), "class:"+request.getClass());
+    Assertions.assertSame(address, requestItem.getAddress());
+    checkWrite(connection, request, calValue);
     
     adapter.close();
   }
@@ -340,22 +375,22 @@ public class PlcConnectionAdapterTest {
     
     consumer = adapter.newConsumer(Boolean.class, addressStr);
     Assertions.assertNotSame(consumer, adapter.newConsumer(Boolean.class, addressStr));
-    checkConsumer(connection, address, (Consumer<Boolean>)consumer, true, false);
+    checkConsumer(connection, address, consumer, true, false);
     
     consumer = adapter.newConsumer(Byte.class, addressStr);
-    checkConsumer(connection, address, (Consumer<Byte>)consumer, (byte)0x1, (byte)0x2, (byte)0x3);
+    checkConsumer(connection, address, consumer, (byte)0x1, (byte)0x2, (byte)0x3);
     
     consumer = adapter.newConsumer(Short.class, addressStr);
-    checkConsumer(connection, address, (Consumer<Short>)consumer, (short)1, (short)2, (short)3);
+    checkConsumer(connection, address, consumer, (short)1, (short)2, (short)3);
 
     consumer = adapter.newConsumer(Integer.class, addressStr);
-    checkConsumer(connection, address, (Consumer<Integer>)consumer, 1000, 1001, 1002);
+    checkConsumer(connection, address, consumer, 1000, 1001, 1002);
     
     consumer = adapter.newConsumer(Float.class, addressStr);
-    checkConsumer(connection, address, (Consumer<Float>)consumer, 1000.5f, 1001.5f, 1002.5f);
+    checkConsumer(connection, address, consumer, 1000.5f, 1001.5f, 1002.5f);
     
     consumer = adapter.newConsumer(String.class, addressStr);
-    checkConsumer(connection, address, (Consumer<String>)consumer, "one", "two", "three");
+    checkConsumer(connection, address, consumer, "one", "two", "three");
     
     adapter.close();
   }
@@ -393,6 +428,9 @@ public class PlcConnectionAdapterTest {
     for (Object value : values) {
       consumer.accept((T)value);
       T writtenData = (T) connection.getDataValue(address);
+      if(writtenData.getClass().isArray()) {
+        writtenData = (T) Array.get(writtenData, 0);
+      }
       // System.out.println("checkConsumer"+(writeFailureCountTrigger > 0 ? "NEG" : "")+": value:"+value+" writtenData:"+writtenData);
       if (writeFailureCountTrigger <= 0)
         Assertions.assertEquals(value, writtenData);
@@ -487,6 +525,9 @@ public class PlcConnectionAdapterTest {
       
       @SuppressWarnings("unchecked")
       T writtenData = (T) connection.getDataValue(address);
+      if(writtenData.getClass().isArray()) {
+        writtenData = (T) Array.get(writtenData, 0);
+      }
       // System.out.println("checkConsumerJson"+(writeFailureCountTrigger > 0 ? "NEG" : "")+": value:"+value+" writtenData:"+writtenData);
       if (writeFailureCountTrigger <= 0)
         Assertions.assertEquals(value, writtenData);

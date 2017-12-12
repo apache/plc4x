@@ -18,16 +18,45 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
-public interface PlcReadRequest<T> extends PlcRequest {
+import java.util.LinkedList;
+import java.util.List;
 
-    Class<T> getDatatype();
+public class PlcReadRequest implements PlcRequest {
 
-    Address getAddress();
+    private final List<ReadRequestItem> readRequestItems;
 
-    // TODO: Seems the "value" parameter only makes sense for ReadVal responses ...
-    PlcReadResponse<T> createResponse(T value);
+    public PlcReadRequest() {
+        this.readRequestItems = new LinkedList<>();
+    }
+
+    public PlcReadRequest(Class dataType, Address address) {
+        this();
+        addItem(new ReadRequestItem(dataType, address));
+    }
+
+    public PlcReadRequest(Class dataType, Address address, int size) {
+        this();
+        addItem(new ReadRequestItem(dataType, address, size));
+    }
+
+    public PlcReadRequest(List<ReadRequestItem> readRequestItems) {
+        this.readRequestItems = readRequestItems;
+    }
+
+    public void addItem(ReadRequestItem readRequestItem) {
+        readRequestItems.add(readRequestItem);
+    }
+
+    public List<ReadRequestItem> getReadRequestItems() {
+        return readRequestItems;
+    }
+
+    public int getNumItems() {
+        return readRequestItems.size();
+    }
 
 }
 

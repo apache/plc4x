@@ -16,14 +16,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.types;
 
-import org.apache.plc4x.java.api.model.Address;
-
-public class StringPlcWriteResponse extends GenericPlcResourceMessage<String> implements PlcWriteResponse<String> {
-
-    public StringPlcWriteResponse(Address address) {
-        super(String.class, address);
-    }
-    
+public enum ResponseCode {
+    OK,
+    NOT_FOUND,
+    INVALID_ADDRESS,
+    INTERNAL_ERROR
 }

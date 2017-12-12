@@ -18,12 +18,26 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
-public interface PlcWriteResponse<T> extends PlcResponse {
+import java.util.List;
 
-    Class<T> getDatatype();
+public class PlcWriteResponse implements PlcResponse {
 
-    Address getAddress();
+    private final PlcWriteRequest request;
+    private final List<WriteResponseItem> responseItems;
+
+    public PlcWriteResponse(PlcWriteRequest request, List<WriteResponseItem> responseItems) {
+        this.request = request;
+        this.responseItems = responseItems;
+    }
+
+    public PlcWriteRequest getRequest() {
+        return request;
+    }
+
+    public List<WriteResponseItem> getResponseItems() {
+        return responseItems;
+    }
 
 }

@@ -18,8 +18,7 @@ under the License.
 */
 package org.apache.plc4x.edgent.mock;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -33,7 +32,12 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.types.ResponseCode;
 
 public class MockConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
@@ -81,31 +85,41 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest) {
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
       curReadCnt++;
       if (readExceptionTriggerCount > 0 && curReadCnt == readExceptionTriggerCount) {
         curReadCnt = 0;
-        CompletableFuture<PlcReadResponse<T>> cf = new CompletableFuture<>();
+        CompletableFuture<PlcReadResponse> cf = new CompletableFuture<>();
         cf.completeExceptionally(new PlcIoException(readExceptionMsg));
         return cf;
       }
-      PlcReadResponse<T> response = readRequest.createResponse((T)getDataValue(readRequest.getAddress()));
-      CompletableFuture<PlcReadResponse<T>> cf = CompletableFuture.completedFuture(response);
-      return cf;
+      List<ReadResponseItem> responseItems = new LinkedList<>();
+      for (ReadRequestItem requestItem : readRequest.getReadRequestItems()) {
+        ReadResponseItem responseItem = new ReadResponseItem(requestItem, ResponseCode.OK,
+          Collections.singletonList(getDataValue(requestItem.getAddress())));
+        responseItems.add(responseItem);
+      }
+      PlcReadResponse response = new PlcReadResponse(readRequest, responseItems);
+      return CompletableFuture.completedFuture(response);
     }
 
     @Override
-    public <T> CompletableFuture<PlcWriteResponse<T>> write(PlcWriteRequest<T> writeRequest) {
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
       curWriteCnt++;
       if (writeExceptionTriggerCount > 0 && curWriteCnt == writeExceptionTriggerCount) {
         curWriteCnt = 0;
-        CompletableFuture<PlcWriteResponse<T>> cf = new CompletableFuture<>();
+        CompletableFuture<PlcWriteResponse> cf = new CompletableFuture<>();
         cf.completeExceptionally(new PlcIoException(writeExceptionMsg));
         return cf;
       }
-      setDataValue(writeRequest.getAddress(), writeRequest.getValue());
-      CompletableFuture<PlcWriteResponse<T>> cf = CompletableFuture.completedFuture(writeRequest.createResponse());
-      return cf;
+       List<WriteResponseItem> responseItems = new LinkedList<>();
+        for (WriteRequestItem requestItem : writeRequest.getRequestItems()) {
+            setDataValue(requestItem.getAddress(), requestItem.getValues());
+            WriteResponseItem responseItem = new WriteResponseItem(requestItem, ResponseCode.OK);
+          responseItems.add(responseItem);
+        }
+      PlcWriteResponse response = new PlcWriteResponse(writeRequest, responseItems);
+      return CompletableFuture.completedFuture(response);
     }
 
     public void setDataValue(Address address, Object o) {

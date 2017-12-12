@@ -18,20 +18,20 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import org.apache.plc4x.java.s7.netty.model.params.items.VarItem;
-import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
-public abstract class VarPayload implements S7Payload {
+import java.util.List;
+
+public class VarPayload implements S7Payload {
 
     private final ParameterType parameterType;
-    private final VarItem varItem;
-    private final DataTransportErrorCode dataTransportErrorCode;
 
-    public VarPayload(ParameterType parameterType, VarItem varItem, DataTransportErrorCode dataTransportErrorCode) {
+    private final List<VarPayloadItem> payloadItems;
+
+    public VarPayload(ParameterType parameterType, List<VarPayloadItem> payloadItems) {
         this.parameterType = parameterType;
-        this.varItem = varItem;
-        this.dataTransportErrorCode = dataTransportErrorCode;
+        this.payloadItems = payloadItems;
     }
 
     @Override
@@ -39,12 +39,8 @@ public abstract class VarPayload implements S7Payload {
         return parameterType;
     }
 
-    public VarItem getVarItem() {
-        return varItem;
-    }
-
-    public DataTransportErrorCode getDataTransportErrorCode() {
-        return dataTransportErrorCode;
+    public List<VarPayloadItem> getPayloadItems() {
+        return payloadItems;
     }
 
 }

@@ -23,7 +23,7 @@ import org.apache.plc4x.java.s7.netty.model.types.SpecificationType;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 
-public class S7AnyVarItem implements VarItem {
+public class S7AnyVarParameterItem implements VarParameterItem {
 
     private final SpecificationType specificationType;
     private final MemoryArea memoryArea;
@@ -33,7 +33,7 @@ public class S7AnyVarItem implements VarItem {
     private final short byteOffset;
     private final byte bitOffset;
 
-    public S7AnyVarItem(SpecificationType specificationType, MemoryArea memoryArea, TransportSize transportSize, short numElements, short dataBlockNumber, short byteOffset, byte bitOffset) {
+    public S7AnyVarParameterItem(SpecificationType specificationType, MemoryArea memoryArea, TransportSize transportSize, short numElements, short dataBlockNumber, short byteOffset, byte bitOffset) {
         this.specificationType = specificationType;
         this.memoryArea = memoryArea;
         this.transportSize = transportSize;

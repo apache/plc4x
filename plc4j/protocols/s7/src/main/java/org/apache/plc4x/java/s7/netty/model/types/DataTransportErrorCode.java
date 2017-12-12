@@ -23,6 +23,7 @@ import java.util.Map;
 
 public enum DataTransportErrorCode {
     RESERVED((byte) 0x00),
+    ACCESS_DENIED((byte) 0x03),
     INVALID_ADDRESS((byte) 0x05),
     NOT_FOUND((byte) 0x0A),
     OK((byte) 0xFF);

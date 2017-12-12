@@ -21,15 +21,15 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.messages.BytePlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class S7PlcReaderSample {
 
@@ -63,14 +63,13 @@ public class S7PlcReaderSample {
                 // Read synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
-                PlcReadResponse<Byte> plcReadResponse = plcReader.read(
-                    new BytePlcReadRequest(inputs)).get();
-                Byte data = plcReadResponse.getValue();
-                System.out.println("Inputs: " + data);
+                PlcReadResponse plcReadResponse = plcReader.read(new PlcReadRequest(Byte.class, inputs)).get();
+                List<ReadResponseItem> responseItems = plcReadResponse.getResponseItems();
+                System.out.println("Inputs: " + responseItems.get(0).getValues().get(0));
 
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...
-                Calendar start = Calendar.getInstance();
+                /*Calendar start = Calendar.getInstance();
                 CompletableFuture<PlcReadResponse<Byte>> asyncResponse = plcReader.read(
                     new BytePlcReadRequest(outputs));
 
@@ -86,7 +85,7 @@ public class S7PlcReaderSample {
                     if (asyncResponse.isDone()) {
                         break;
                     }
-                }
+                }*/
             }
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.

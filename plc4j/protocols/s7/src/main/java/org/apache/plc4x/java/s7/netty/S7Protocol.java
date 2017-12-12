@@ -34,10 +34,11 @@ import org.apache.plc4x.java.s7.netty.model.messages.SetupCommunicationRequestMe
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.SetupCommunicationParameter;
-import org.apache.plc4x.java.s7.netty.model.params.items.VarItem;
-import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarItem;
-import org.apache.plc4x.java.s7.netty.model.payloads.S7AnyVarPayload;
+import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
+import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,13 +105,13 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 case READ_VAR:
                 case WRITE_VAR: {
                     VarParameter varParameter = (VarParameter) s7Parameter;
-                    List<VarItem> items = varParameter.getItems();
-                    // Item count (Read one variable at a time)
+                    List<VarParameterItem> items = varParameter.getItems();
+                    // ReadRequestItem count (Read one variable at a time)
                     buf.writeByte((byte) items.size());
-                    for (VarItem item : items) {
+                    for (VarParameterItem item : items) {
                         switch (item.getAddressingMode()) {
                             case S7ANY: {
-                                S7AnyVarItem s7AnyRequestItem = (S7AnyVarItem) item;
+                                S7AnyVarParameterItem s7AnyRequestItem = (S7AnyVarParameterItem) item;
                                 buf.writeByte(s7AnyRequestItem.getSpecificationType().getCode());
                                 // Length of this item (excluding spec type and length)
                                 buf.writeByte((byte) 0x0a);
@@ -154,11 +155,13 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 switch (payload.getType()) {
                     case READ_VAR:
                     case WRITE_VAR: {
-                        S7AnyVarPayload varPayload = (S7AnyVarPayload) payload;
-                        buf.writeByte(0x00);
-                        buf.writeByte(varPayload.getDataTransportSize().getCode());
-                        buf.writeShort(varPayload.getData().length);
-                        buf.writeBytes(varPayload.getData());
+                        VarPayload varPayload = (VarPayload) payload;
+                        for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
+                            buf.writeByte(payloadItem.getReturnCode().getCode());
+                            buf.writeByte(payloadItem.getDataTransportSize().getCode());
+                            buf.writeShort(payloadItem.getData().length);
+                            buf.writeBytes(payloadItem.getData());
+                        }
                         break;
                     }
                 }
@@ -217,33 +220,35 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 i += getParameterLength(parameter);
             }
             List<S7Payload> s7Payloads = new LinkedList<>();
-            for (int i = 0; i < userDataLength; ) {
-                DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
-                // This is a response to a WRITE_VAR request (It only contains the return code for every sent item.
-                if((readWriteVarParameter != null) && (readWriteVarParameter.getType() == ParameterType.WRITE_VAR) &&
-                    (messageType == MessageType.ACK_DATA)) {
-                    // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
-                    S7AnyVarPayload payload = new S7AnyVarPayload(null,
-                        null, dataTransportErrorCode, null, null);
-                    s7Payloads.add(payload);
-                    i += 1;
+            if(readWriteVarParameter != null) {
+                List<VarPayloadItem> payloadItems = new LinkedList<>();
+                for (int i = 0; i < userDataLength; ) {
+                    DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
+                    // This is a response to a WRITE_VAR request (It only contains the return code for every sent item.
+                    if ((readWriteVarParameter.getType() == ParameterType.WRITE_VAR) &&
+                        (messageType == MessageType.ACK_DATA)) {
+                        // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
+                        VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, null, null);
+                        payloadItems.add(payload);
+                        i += 1;
+                    }
+                    // This is a response to a READ_VAR request.
+                    else if ((readWriteVarParameter.getType() == ParameterType.READ_VAR) &&
+                        (messageType == MessageType.ACK_DATA)) {
+                        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+                        short length = (dataTransportSize.isSizeInBits()) ?
+                            (short) Math.ceil(userData.readShort() / 8) : userData.readShort();
+                        byte[] data = new byte[length];
+                        userData.readBytes(data);
+                        // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
+                        VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, dataTransportSize, data);
+                        payloadItems.add(payload);
+                        i += getPayloadLength(payload);
+                    }
                 }
-                // This is a response to a READ_VAR request.
-                else if((readWriteVarParameter != null) &&
-                    (readWriteVarParameter.getType() == ParameterType.READ_VAR) &&
-                    (messageType == MessageType.ACK_DATA)) {
-                    DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-                    short length = (dataTransportSize.isSizeInBits()) ?
-                        (short) Math.ceil(userData.readShort() / 8) : userData.readShort();
-                    byte[] data = new byte[length];
-                    userData.readBytes(data);
-                    ParameterType parameterType = readWriteVarParameter.getType();
-                    // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
-                    S7AnyVarPayload payload = new S7AnyVarPayload(parameterType,
-                        null, dataTransportErrorCode, dataTransportSize, data);
-                    s7Payloads.add(payload);
-                    i += getPayloadLength(payload);
-                }
+
+                VarPayload varPayload = new VarPayload(readWriteVarParameter.getType(), payloadItems);
+                s7Payloads.add(varPayload);
             }
 
             if (messageType == MessageType.ACK_DATA) {
@@ -285,7 +290,7 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             }
             case READ_VAR:
             case WRITE_VAR: {
-                VarParameter varParameter = new VarParameter(parameterType);
+                List<VarParameterItem> items = new LinkedList<>();
                 byte numItems = in.readByte();
                 if (!isResponse) {
                     for (int i = 0; i < numItems; i++) {
@@ -309,10 +314,11 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                                 byte bitAddress = (byte) (tmp & 0x07);
                                 // Bits 4-8 belong to the byte address
                                 byteAddress = (short) (byteAddress | (tmp >> 3));
-                                S7AnyVarItem item = new S7AnyVarItem(
+                                S7AnyVarParameterItem item = new S7AnyVarParameterItem(
                                     specificationType, memoryArea, transportSize,
                                     length, dbNumber, byteAddress, bitAddress);
-                                varParameter.addRequestItem(item);
+                                items.add(item);
+                                break;
                             }
                             default: {
                                 logger.error("Error parsing item type");
@@ -321,7 +327,7 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                         }
                     }
                 }
-                return varParameter;
+                return new VarParameter(parameterType, items);
             }
             case SETUP_COMMUNICATION: {
                 // Reserved (is always constant 0x00)
@@ -352,7 +358,12 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
         short l = 0;
         if (payloads != null) {
             for (S7Payload payload : payloads) {
-                l += getPayloadLength(payload);
+                if(payload instanceof VarPayload) {
+                    VarPayload varPayload = (VarPayload) payload;
+                    for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
+                        l += getPayloadLength(payloadItem);
+                    }
+                }
             }
         }
         return l;
@@ -365,8 +376,8 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 case WRITE_VAR: {
                     VarParameter varParameter = (VarParameter) parameter;
                     short length = 2;
-                    for (VarItem varItem : varParameter.getItems()) {
-                        switch (varItem.getAddressingMode()) {
+                    for (VarParameterItem varParameterItem : varParameter.getItems()) {
+                        switch (varParameterItem.getAddressingMode()) {
                             case S7ANY: {
                                 length += 12;
                                 break;
@@ -387,18 +398,9 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
         return 0;
     }
 
-    private short getPayloadLength(S7Payload payload) {
-        if (payload != null) {
-            switch (payload.getType()) {
-                case READ_VAR:
-                case WRITE_VAR: {
-                    S7AnyVarPayload varPayload = (S7AnyVarPayload) payload;
-                    return (short) (4 + varPayload.getData().length);
-                }
-                default: {
-                    logger.error("Not implemented");
-                }
-            }
+    private short getPayloadLength(VarPayloadItem payloadItem) {
+        if (payloadItem != null) {
+            return (short) (4 + payloadItem.getData().length);
         }
         return 0;
     }

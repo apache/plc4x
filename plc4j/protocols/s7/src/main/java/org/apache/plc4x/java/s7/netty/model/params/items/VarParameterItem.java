@@ -16,19 +16,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.s7.netty.model.params.items;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 
-public class ShortPlcWriteRequest extends GenericPlcResourceMessageWithValue<Short> implements PlcWriteRequest<Short> {
+public interface VarParameterItem {
 
-    public ShortPlcWriteRequest(Address address, Short value) {
-        super(Short.class, address, value);
-    }
-
-    @Override
-    public PlcWriteResponse<Short> createResponse() {
-        return new ShortPlcWriteResponse(getAddress());
-    }
+    VariableAddressingMode getAddressingMode();
 
 }

@@ -18,14 +18,26 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
-public interface PlcReadResponse<T> extends PlcResponse {
+import java.util.List;
 
-    Class<T> getDatatype();
+public class PlcReadResponse implements PlcResponse {
 
-    Address getAddress();
+    private final PlcReadRequest request;
+    private final List<ReadResponseItem> responseItems;
 
-    T getValue();
+    public PlcReadResponse(PlcReadRequest request, List<ReadResponseItem> responseItems) {
+        this.request = request;
+        this.responseItems = responseItems;
+    }
+
+    public PlcReadRequest getRequest() {
+        return request;
+    }
+
+    public List<ReadResponseItem> getResponseItems() {
+        return responseItems;
+    }
 
 }

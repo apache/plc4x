@@ -18,16 +18,44 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
-public interface PlcWriteRequest<T> extends PlcRequest {
+import java.util.LinkedList;
+import java.util.List;
 
-    Class<T> getDatatype();
+public class PlcWriteRequest implements PlcRequest {
 
-    Address getAddress();
+    private final List<WriteRequestItem> requestItems;
 
-    T getValue();
+    public PlcWriteRequest() {
+        this.requestItems = new LinkedList<>();
+    }
 
-    PlcWriteResponse<T> createResponse();
+    public PlcWriteRequest(Class dataType, Address address, Object value) {
+        this();
+        addItem(new WriteRequestItem(dataType, address, value));
+    }
+
+    public PlcWriteRequest(Class dataType, Address address, Object[] values) {
+        this();
+        addItem(new WriteRequestItem(dataType, address, values));
+    }
+
+    public PlcWriteRequest(List<WriteRequestItem> requestItems) {
+        this.requestItems = requestItems;
+    }
+
+    public void addItem(WriteRequestItem requestItem) {
+        requestItems.add(requestItem);
+    }
+
+    public List<WriteRequestItem> getRequestItems() {
+        return requestItems;
+    }
+
+    public int getNumItems() {
+        return requestItems.size();
+    }
 
 }

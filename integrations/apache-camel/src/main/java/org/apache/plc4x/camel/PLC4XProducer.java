@@ -27,10 +27,13 @@ import org.apache.camel.spi.ShutdownAware;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.GenericPlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
 
 public class PLC4XProducer extends DefaultAsyncProducer implements ShutdownAware {
     private static final Logger LOG = LoggerFactory.getLogger(PLC4XProducer.class);
@@ -55,7 +58,7 @@ public class PLC4XProducer extends DefaultAsyncProducer implements ShutdownAware
         Address address = in.getHeader(Constants.ADDRESS_HEADER, Address.class);
         Class<?> datatype = in.getHeader(Constants.DATATYPE_HEADER, Class.class);
         Object value = in.getBody(Object.class);
-        GenericPlcWriteRequest plcSimpleWriteRequest = new GenericPlcWriteRequest(datatype, address, value);
+        PlcWriteRequest plcSimpleWriteRequest = new PlcWriteRequest(datatype, address, value);
         PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
         Object response = plcWriter.write(plcSimpleWriteRequest).get();
         if (exchange.getPattern().isOutCapable()) {

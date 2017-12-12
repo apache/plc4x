@@ -16,19 +16,36 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.types.ResponseCode;
 
-public class FloatPlcReadRequest extends GenericPlcResourceMessage<Float> implements PlcReadRequest<Float> {
+import java.util.List;
 
-    public FloatPlcReadRequest(Address address) {
-        super(Float.class, address);
+public class ReadResponseItem {
+
+    private final ReadRequestItem requestItem;
+
+    private final ResponseCode responseCode;
+
+    private final List<Object> values;
+
+    public ReadResponseItem(ReadRequestItem requestItem, ResponseCode responseCode, List<Object> values) {
+        this.requestItem = requestItem;
+        this.responseCode = responseCode;
+        this.values = values;
     }
 
-    @Override
-    public PlcReadResponse<Float> createResponse(Float value) {
-        return new FloatPlcReadResponse(getAddress(), value);
+    public ReadRequestItem getRequestItem() {
+        return requestItem;
+    }
+
+    public ResponseCode getResponseCode() {
+        return responseCode;
+    }
+
+    public List<Object> getValues() {
+        return values;
     }
 
 }

@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.params;
 
-import org.apache.plc4x.java.s7.netty.model.params.items.VarItem;
+import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
 import java.util.LinkedList;
@@ -27,11 +27,11 @@ import java.util.List;
 public class VarParameter implements S7Parameter {
 
     private final ParameterType type;
-    private final List<VarItem> items;
+    private final List<VarParameterItem> items;
 
-    public VarParameter(ParameterType type) {
+    public VarParameter(ParameterType type, List<VarParameterItem> items) {
         this.type = type;
-        items = new LinkedList<>();
+        this.items = items;
     }
 
     @Override
@@ -39,12 +39,8 @@ public class VarParameter implements S7Parameter {
         return type;
     }
 
-    public List<VarItem> getItems() {
+    public List<VarParameterItem> getItems() {
         return items;
-    }
-
-    public void addRequestItem(VarItem item) {
-        items.add(item);
     }
 
 }
