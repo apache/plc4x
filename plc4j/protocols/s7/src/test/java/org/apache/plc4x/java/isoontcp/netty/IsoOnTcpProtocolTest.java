@@ -20,7 +20,12 @@ package org.apache.plc4x.java.isoontcp.netty;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -29,6 +34,7 @@ import org.apache.plc4x.java.isoontcp.netty.model.IsoOnTcpMessage;
 import org.apache.plc4x.java.netty.NettyTestBase;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
 
 public class IsoOnTcpProtocolTest extends NettyTestBase {
@@ -114,5 +120,42 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
         Object obj = channel.readInbound();
         assertNull(obj, "Nothing should have been decoded");
     }
+
+    /**
+     * If logging is set to `DEBUG` then a hexdump of the entire captured packet
+     * should be logged
+     */
+    @Test
+    @Tag("fast")
+    public void decodeLogPacketIfTraceLogging() {
+        // Setup the mock logger.
+        Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        Appender mockAppender = mock(Appender.class);
+        when(mockAppender.getName()).thenReturn("MOCK");
+        root.addAppender(mockAppender);
+        // Save the current default logging level
+        Level defaultLevel = root.getLevel();
+        try {
+            // Change the logging to TRACE.
+            root.setLevel(Level.TRACE);
+
+            // Do some deserialization
+            EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
+            channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER,
+                (byte) 0x00, (byte) 0x00, (byte) 0x0D,
+                (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, (byte) 0x08, (byte) 0x09}));
+            channel.checkException();
+            Object obj = channel.readInbound();
+            assertNotNull(obj, "Something should have been decoded");
+
+            // Check that the packet dump was logged.
+            verify(mockAppender).doAppend(argThat(argument ->
+                ((LoggingEvent) argument).getFormattedMessage().contains("Got Data: 0300000d010203040506070809")));
+        } finally {
+            // Reset the log level to the default.
+            root.setLevel(defaultLevel);
+        }
+    }
+
 
 }
