@@ -155,6 +155,9 @@
 
             <!-- Asciidoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>
+
+            <!-- Jenkins build related files -->
+            <exclude>.repository/**</exclude>
           </excludes>
         </configuration>
       </plugin>
