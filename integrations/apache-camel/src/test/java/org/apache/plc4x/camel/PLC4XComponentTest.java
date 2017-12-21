@@ -25,6 +25,8 @@ import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
 public class PLC4XComponentTest extends CamelTestSupport {
 
     @Test
@@ -32,9 +34,9 @@ public class PLC4XComponentTest extends CamelTestSupport {
         MockEndpoint mock = getMockEndpoint("mock:result");
         mock.expectedMinimumMessageCount(1);
 
-        template.sendBody("direct:plc4x", 3);
+        template.asyncSendBody("direct:plc4x", "irrelevant");
 
-        assertMockEndpointsSatisfied();
+        assertMockEndpointsSatisfied(2, TimeUnit.SECONDS);
     }
 
     @Override

@@ -32,10 +32,19 @@ import org.apache.plc4x.java.PlcDriverManager;
 public class PLC4XEndpoint extends DefaultEndpoint {
 
     /**
+     * The name 0f the PLC4X driver
+     */
+    @UriPath
+    @Metadata(required = "true")
+    @SuppressWarnings("unused")
+    String driver;
+
+    /**
      * The address for the PLC4X driver
      */
     @UriPath
     @Metadata(required = "true")
+    @SuppressWarnings("unused")
     String address;
 
     final PlcDriverManager plcDriverManager;
