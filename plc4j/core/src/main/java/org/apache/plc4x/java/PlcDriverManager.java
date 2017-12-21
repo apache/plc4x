@@ -52,6 +52,7 @@ public class PlcDriverManager {
 
     /**
      * Connects to a PLC using the given plc connection string.
+     *
      * @param url plc connection string.
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
@@ -65,14 +66,17 @@ public class PlcDriverManager {
 
     /**
      * Connects to a PLC using the given plc connection string using given authentication credentials.
-     * @param url plc connection string.
+     *
+     * @param url            plc connection string.
      * @param authentication authentication credentials.
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         PlcDriver driver = getDriver(url);
-        return driver.connect(url, authentication);
+        PlcConnection connection = driver.connect(url, authentication);
+        connection.connect();
+        return connection;
     }
 
     private PlcDriver getDriver(String url) throws PlcConnectionException {
@@ -80,7 +84,7 @@ public class PlcDriverManager {
             URI connectionUri = new URI(url);
             String protocol = connectionUri.getScheme();
             PlcDriver driver = driverMap.get(protocol);
-            if(driver ==  null) {
+            if (driver == null) {
                 throw new PlcConnectionException("Unable to find driver for protocol '" + protocol + "'");
             }
             return driver;
