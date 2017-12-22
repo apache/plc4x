@@ -64,8 +64,8 @@
 
   <bannerLeft>
       <name>Apache PLC4X (incubating)</name>
-      <src>https://iot.gitlab.codecentric.de/plc4x/img/apache_plc4x_logo.png</src>
-      <href>https://iot.gitlab.codecentric.de/plc4x/</href>
+      <src>https://plc4x.apache.org/img/apache_plc4x_logo.png</src>
+      <href>https://plc4x.apache.org/</href>
   </bannerLeft>
 
   <bannerRight>
