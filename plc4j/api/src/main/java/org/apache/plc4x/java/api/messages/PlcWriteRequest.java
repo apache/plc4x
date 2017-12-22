@@ -24,33 +24,33 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PlcWriteRequest implements PlcRequest {
+public class PlcWriteRequest<T> implements PlcRequest {
 
-    private final List<WriteRequestItem> requestItems;
+    private final List<WriteRequestItem<T>> requestItems;
 
     public PlcWriteRequest() {
         this.requestItems = new LinkedList<>();
     }
 
-    public PlcWriteRequest(Class dataType, Address address, Object value) {
+    public PlcWriteRequest(Class<T> dataType, Address address, T value) {
         this();
-        addItem(new WriteRequestItem(dataType, address, value));
+        addItem(new WriteRequestItem<>(dataType, address, value));
     }
 
-    public PlcWriteRequest(Class dataType, Address address, Object[] values) {
+    public PlcWriteRequest(Class<T> dataType, Address address, T[] values) {
         this();
-        addItem(new WriteRequestItem(dataType, address, values));
+        addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
-    public PlcWriteRequest(List<WriteRequestItem> requestItems) {
+    public PlcWriteRequest(List<WriteRequestItem<T>> requestItems) {
         this.requestItems = requestItems;
     }
 
-    public void addItem(WriteRequestItem requestItem) {
+    public void addItem(WriteRequestItem<T> requestItem) {
         requestItems.add(requestItem);
     }
 
-    public List<WriteRequestItem> getRequestItems() {
+    public List<WriteRequestItem<T>> getRequestItems() {
         return requestItems;
     }
 

@@ -24,33 +24,33 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PlcReadRequest implements PlcRequest {
+public class PlcReadRequest<T> implements PlcRequest {
 
-    private final List<ReadRequestItem> readRequestItems;
+    private final List<ReadRequestItem<T>> readRequestItems;
 
     public PlcReadRequest() {
         this.readRequestItems = new LinkedList<>();
     }
 
-    public PlcReadRequest(Class dataType, Address address) {
+    public PlcReadRequest(Class<T> dataType, Address address) {
         this();
-        addItem(new ReadRequestItem(dataType, address));
+        addItem(new ReadRequestItem<>(dataType, address));
     }
 
-    public PlcReadRequest(Class dataType, Address address, int size) {
+    public PlcReadRequest(Class<T> dataType, Address address, int size) {
         this();
-        addItem(new ReadRequestItem(dataType, address, size));
+        addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
-    public PlcReadRequest(List<ReadRequestItem> readRequestItems) {
+    public PlcReadRequest(List<ReadRequestItem<T>> readRequestItems) {
         this.readRequestItems = readRequestItems;
     }
 
-    public void addItem(ReadRequestItem readRequestItem) {
+    public void addItem(ReadRequestItem<T> readRequestItem) {
         readRequestItems.add(readRequestItem);
     }
 
-    public List<ReadRequestItem> getReadRequestItems() {
+    public List<ReadRequestItem<T>> getReadRequestItems() {
         return readRequestItems;
     }
 

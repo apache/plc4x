@@ -22,15 +22,15 @@ import org.apache.plc4x.java.api.types.ResponseCode;
 
 import java.util.List;
 
-public class ReadResponseItem {
+public class ReadResponseItem<T> {
 
-    private final ReadRequestItem requestItem;
+    private final ReadRequestItem<T> requestItem;
 
     private final ResponseCode responseCode;
 
-    private final List<Object> values;
+    private final List<T> values;
 
-    public ReadResponseItem(ReadRequestItem requestItem, ResponseCode responseCode, List<Object> values) {
+    public ReadResponseItem(ReadRequestItem<T> requestItem, ResponseCode responseCode, List<T> values) {
         this.requestItem = requestItem;
         this.responseCode = responseCode;
         this.values = values;
@@ -44,7 +44,7 @@ public class ReadResponseItem {
         return responseCode;
     }
 
-    public List<Object> getValues() {
+    public List<T> getValues() {
         return values;
     }
 

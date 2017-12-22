@@ -33,8 +33,9 @@ public interface PlcWriter {
      * Writes a given value to a PLC.
      *
      * @param writeRequest object describing the type, location and value that whould be written.
+     * @param <T>          type that is being requested.
      * @return a {@link CompletableFuture} giving async access to the response of the write operation.
      */
-    CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest);
+    <T> CompletableFuture<PlcWriteResponse<T>> write(PlcWriteRequest<T> writeRequest);
 
 }

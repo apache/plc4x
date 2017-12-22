@@ -28,12 +28,14 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface PlcReader {
 
+
     /**
      * Reads a requested value from a PLC.
      *
      * @param readRequest object describing the type and location of the value.
+     * @param <T>         type that is being requested.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
+    <T> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest);
 
 }

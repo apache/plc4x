@@ -20,27 +20,31 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-public class WriteRequestItem {
+import java.lang.reflect.Array;
 
-    private final Class datatype;
+public class WriteRequestItem<T> {
+
+    private final Class<T> datatype;
 
     private final Address address;
 
-    private final Object[] values;
+    private final T[] values;
 
-    public WriteRequestItem(Class datatype, Address address, Object value) {
+    @SuppressWarnings("unchecked")
+    public WriteRequestItem(Class<T> datatype, Address address, T value) {
         this.datatype = datatype;
         this.address = address;
-        this.values = new Object[]{value};
+        this.values = (T[]) Array.newInstance(datatype, 1);
+        this.values[0] = value;
     }
 
-    public WriteRequestItem(Class datatype, Address address, Object[] values) {
+    public WriteRequestItem(Class<T> datatype, Address address, T[] values) {
         this.datatype = datatype;
         this.address = address;
         this.values = values;
     }
 
-    public Class getDatatype() {
+    public Class<T> getDatatype() {
         return datatype;
     }
 
@@ -48,7 +52,7 @@ public class WriteRequestItem {
         return address;
     }
 
-    public Object[] getValues() {
+    public T[] getValues() {
         return values;
     }
 

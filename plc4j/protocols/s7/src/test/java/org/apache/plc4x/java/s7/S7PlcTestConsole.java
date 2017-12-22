@@ -44,7 +44,7 @@ public class S7PlcTestConsole {
     public static void main(String[] args) throws Exception {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")){
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
             logger.info("Connected");
 
             Optional<PlcReader> reader = plcConnection.getReader();
@@ -54,13 +54,13 @@ public class S7PlcTestConsole {
 
                 Scanner scanner = new Scanner(System.in);
                 String line;
-                while(!"exit".equalsIgnoreCase(line = scanner.next())) {
+                while (!"exit".equalsIgnoreCase(line = scanner.next())) {
                     try {
                         Address address = plcConnection.parseAddress(line);
-                        PlcReadResponse plcReadResponse = plcReader.read(new PlcReadRequest(Byte.class, address)).get();
-                        List<Object> data = plcReadResponse.getResponseItems().get(0).getValues();
+                        PlcReadResponse<Byte> plcReadResponse = plcReader.read(new PlcReadRequest<>(Byte.class, address)).get();
+                        List<Byte> data = plcReadResponse.getResponseItems().get(0).getValues();
                         System.out.println("Response: " + data.get(0));
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

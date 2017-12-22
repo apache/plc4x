@@ -22,9 +22,9 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class S7PlcReaderSample {
     public static void main(String[] args) throws Exception {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")){
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
             logger.info("Connected");
 
             Optional<PlcReader> reader = plcConnection.getReader();
@@ -63,8 +63,8 @@ public class S7PlcReaderSample {
                 // Read synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
-                PlcReadResponse plcReadResponse = plcReader.read(new PlcReadRequest(Byte.class, inputs)).get();
-                List<ReadResponseItem> responseItems = plcReadResponse.getResponseItems();
+                PlcReadResponse<Byte> plcReadResponse = plcReader.read(new PlcReadRequest<>(Byte.class, inputs)).get();
+                List<ReadResponseItem<Byte>> responseItems = plcReadResponse.getResponseItems();
                 System.out.println("Inputs: " + responseItems.get(0).getValues().get(0));
 
                 //////////////////////////////////////////////////////////

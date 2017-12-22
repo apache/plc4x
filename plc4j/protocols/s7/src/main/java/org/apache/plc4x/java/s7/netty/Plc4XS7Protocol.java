@@ -65,7 +65,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         if (msg.getRequest() instanceof PlcReadRequest) {
             List<VarParameterItem> parameterItems = new LinkedList<>();
 
-            PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
+            PlcReadRequest<?> readRequest = (PlcReadRequest<?>) msg.getRequest();
             for (ReadRequestItem requestItem : readRequest.getReadRequestItems()) {
                 // Try to get the correct S7 transport size for the given data type.
                 // (Map PLC4X data type to S7 data type)
@@ -78,7 +78,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 VarParameterItem varParameterItem = encodeVarParameterItem(requestItem.getAddress(), transportSize, requestItem.getSize());
                 parameterItems.add(varParameterItem);
             }
-            VarParameter readVarParameter =  new VarParameter(ParameterType.READ_VAR, parameterItems);
+            VarParameter readVarParameter = new VarParameter(ParameterType.READ_VAR, parameterItems);
 
             // Assemble the request.
             S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.JOB,
@@ -88,11 +88,11 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             requests.put(s7ReadRequest.getTpduReference(), msg);
 
             out.add(s7ReadRequest);
-        } else if(msg.getRequest() instanceof PlcWriteRequest) {
+        } else if (msg.getRequest() instanceof PlcWriteRequest) {
             List<VarParameterItem> parameterItems = new LinkedList<>();
             List<VarPayloadItem> payloadItems = new LinkedList<>();
 
-            PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
+            PlcWriteRequest<?> writeRequest = (PlcWriteRequest<?>) msg.getRequest();
             for (WriteRequestItem requestItem : writeRequest.getRequestItems()) {
                 // Try to get the correct S7 transport size for the given data type.
                 // (Map PLC4X data type to S7 data type)
@@ -116,7 +116,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
 
                 payloadItems.add(varPayloadItem);
             }
-            VarParameter writeVarParameter =  new VarParameter(ParameterType.WRITE_VAR, parameterItems);
+            VarParameter writeVarParameter = new VarParameter(ParameterType.WRITE_VAR, parameterItems);
             VarPayload writeVarPayload = new VarPayload(ParameterType.WRITE_VAR, payloadItems);
 
             // Assemble the request.
@@ -130,9 +130,10 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws Exception {
-        if(msg instanceof S7ResponseMessage) {
+        if (msg instanceof S7ResponseMessage) {
             S7ResponseMessage responseMessage = (S7ResponseMessage) msg;
             short tpduReference = responseMessage.getTpduReference();
             if (requests.containsKey(tpduReference)) {
@@ -142,14 +143,14 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
 
                 // Handle the response to a read request.
                 if (requestContainer.getRequest() instanceof PlcReadRequest) {
-                    PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
+                    PlcReadRequest<?> plcReadRequest = (PlcReadRequest<?>) requestContainer.getRequest();
 
                     List<ReadResponseItem> responseItems = new LinkedList<>();
                     VarPayload payload = responseMessage.getPayload(VarPayload.class);
                     // If the numbers of items don't match, we're in big trouble as the only
                     // way to know how to interpret the responses is by aligning them with the
                     // items from the request as this information is not returned by the PLC.
-                    if(plcReadRequest.getReadRequestItems().size() != payload.getPayloadItems().size()) {
+                    if (plcReadRequest.getReadRequestItems().size() != payload.getPayloadItems().size()) {
                         throw new PlcProtocolException(
                             "The number of requested items doesn't match the number of returned items");
                     }
@@ -158,20 +159,20 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                         VarPayloadItem payloadItem = payloadItems.get(i);
 
                         // Get the request item for this payload item
-                        ReadRequestItem requestItem = plcReadRequest.getReadRequestItems().get(i);
+                        ReadRequestItem<?> requestItem = plcReadRequest.getReadRequestItems().get(i);
 
                         ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
 
-                        ReadResponseItem responseItem;
+                        ReadResponseItem<?> responseItem;
                         // Something went wrong.
-                        if(responseCode != ResponseCode.OK) {
-                            responseItem = new ReadResponseItem(requestItem, responseCode, null);
+                        if (responseCode != ResponseCode.OK) {
+                            responseItem = new ReadResponseItem<>(requestItem, responseCode, null);
                         }
                         // All Ok.
                         else {
                             byte[] data = payloadItem.getData();
                             Class<?> datatype = requestItem.getDatatype();
-                            List<Object> value = decodeData(datatype, data);
+                            List<?> value = decodeData(datatype, data);
                             responseItem = new ReadResponseItem(requestItem, responseCode, value);
                         }
                         responseItems.add(responseItem);
@@ -181,13 +182,13 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
 
                 // Handle the response to a write request.
                 else if (requestContainer.getRequest() instanceof PlcWriteRequest) {
-                    PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
+                    PlcWriteRequest<?> plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
                     List<WriteResponseItem> responseItems = new LinkedList<>();
                     VarPayload payload = responseMessage.getPayload(VarPayload.class);
                     // If the numbers of items don't match, we're in big trouble as the only
                     // way to know how to interpret the responses is by aligning them with the
                     // items from the request as this information is not returned by the PLC.
-                    if(plcWriteRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
+                    if (plcWriteRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
                         throw new PlcProtocolException(
                             "The number of requested items doesn't match the number of returned items");
                     }
@@ -286,7 +287,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
     }
 
     private byte[] encodeData(Object[] values) {
-        if(values.length == 0) {
+        if (values.length == 0) {
             return null;
         }
         byte[] result = null;
@@ -294,24 +295,24 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         if (valueType == Boolean.class) {
             // TODO: Check if this is true and the result is not Math.ceil(values.lenght / 8)
             result = new byte[values.length * 1];
-            for(int i = 0; i < values.length; i++) {
+            for (int i = 0; i < values.length; i++) {
                 result[i] = (byte) (((Boolean) values[i]) ? 0x01 : 0x00);
             }
         } else if (valueType == Byte[].class) {
             result = new byte[values.length * 1];
-            for(int i = 0; i < values.length; i++) {
+            for (int i = 0; i < values.length; i++) {
                 result[i] = (byte) values[i];
             }
         } else if (valueType == Short.class) {
             result = new byte[values.length * 2];
-            for(int i = 0; i < values.length; i++) {
+            for (int i = 0; i < values.length; i++) {
                 short intValue = (short) values[i];
                 result[i * 2] = (byte) ((intValue & 0xff00) >> 8);
                 result[(i * 2) + 1] = (byte) (intValue & 0xff);
             }
         } else if (valueType == Integer.class) {
             result = new byte[values.length * 4];
-            for(int i = 0; i < values.length; i++) {
+            for (int i = 0; i < values.length; i++) {
                 int intValue = (int) values[i];
                 result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
                 result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
@@ -322,7 +323,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             result = null;
         } else if (valueType == Float.class) {
             result = new byte[values.length * 4];
-            for(int i = 0; i < values.length; i++) {
+            for (int i = 0; i < values.length; i++) {
                 float floatValue = (float) values[i];
                 int intValue = Float.floatToIntBits(floatValue);
                 result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
@@ -341,7 +342,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
     ////////////////////////////////////////////////////////////////////////////////
 
     private ResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
-        if(dataTransportErrorCode != null) {
+        if (dataTransportErrorCode != null) {
             switch (dataTransportErrorCode) {
                 case OK:
                     return ResponseCode.OK;
@@ -354,25 +355,26 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         return ResponseCode.INTERNAL_ERROR;
     }
 
-    private List<Object> decodeData(Class<?> datatype, byte[] s7Data) {
-        if(s7Data.length == 0) {
+    @SuppressWarnings("unchecked")
+    private <T> List<T> decodeData(Class<T> datatype, byte[] s7Data) {
+        if (s7Data.length == 0) {
             return null;
         }
         List<Object> result = new LinkedList<>();
-        for(int i = 0; i < s7Data.length; i++) {
+        for (int i = 0; i < s7Data.length; i++) {
             if (datatype == Boolean.class) {
                 result.add((s7Data[i] & 0x01) == 0x01);
-                i+=1;
+                i += 1;
             } else if (datatype == Byte.class) {
                 result.add(s7Data[i]);
-                i+=1;
+                i += 1;
             } else if (datatype == Short.class) {
-                result.add((short) (((s7Data[i] & 0xff) << 8) | (s7Data[i+1] & 0xff)));
-                i+=2;
+                result.add((short) (((s7Data[i] & 0xff) << 8) | (s7Data[i + 1] & 0xff)));
+                i += 2;
             } else if (datatype == Integer.class) {
                 result.add((((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
                     ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff)));
-                i+=4;
+                i += 4;
             } else if (datatype == Float.class) {
                 // Description of the Real number format:
                 // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
@@ -380,10 +382,10 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 int intValue = (((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
                     ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff));
                 result.add(Float.intBitsToFloat(intValue));
-                i+=4;
+                i += 4;
             }
         }
-        return result;
+        return (List<T>) result;
     }
 
 }
