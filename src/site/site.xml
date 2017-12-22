@@ -82,13 +82,13 @@
     <menu ref="reports" inherit="top"/>
     <menu ref="parent" inherit="top"/>
     <menu name="Project">
-      <item name="Incubation-Proposal" href="incubation-proposal.html"/>
+      <!--item name="Incubation-Proposal" href="incubation-proposal.html"/-->
     </menu>
     <menu name="Infrastructure">
       <item name="Wiki" href="https://cwiki.apache.org/confluence/display/PLC4X"/>
       <item name="Issues" href="https://issues.apache.org/jira/projects/PLC4X"/>
       <item name="CI" href="https://builds.apache.org/view/P/view/PLC4X/"/>
-      <item name="SonarQube" href="https://builds.apache.org/analysis/PLC4X/"/>
+      <item name="SonarQube" href="https://builds.apache.org/analysis/overview?id=55410"/>
     </menu>
     <menu name="Protocols">
       <item name="Features" href="protocols/features.html"/>
