@@ -47,30 +47,3 @@ under the License.
 .protocolParameter {
     background-color: #80DED9;
 }
-
-#watermark {
-    position: fixed;
-    top: 150px;
-    right: -150px;
-    width: 500px;
-    height:140px;
-    padding-left: 150px;
-    z-index: 1;
-    display: block;
-    background-color: red;
-    color: red;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-}
-
-#watermark-text {
-    color: white;
-    font-size: 50px;
-    width: 380px;
-    text-align: center;
-}
-
-#bottomNote {
-    color: red;
-    font-size: 20px;
-}

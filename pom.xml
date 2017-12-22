@@ -42,8 +42,8 @@
   <inceptionYear>2017</inceptionYear>
 
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-plc4x.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-plc4x.git</developerConnection>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</developerConnection>
     <url>https://github.com/apache/incubator-plc4x</url>
     <tag>HEAD</tag>
   </scm>
@@ -52,7 +52,7 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-plc4x.git</url>
+      <url>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</url>
     </site>
   </distributionManagement>
 
@@ -329,7 +329,10 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Replace the bootstrap css with the version of the theme -->
+
+      <!--
+        Replace the bootstrap css with the version of the theme
+      -->
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
@@ -361,6 +364,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -446,6 +450,31 @@
             <version>1.5.4.1</version>
           </dependency>
         </dependencies>
+      </plugin>
+
+      <!--
+        Make the maven-site-plugin stage the output in the "asf-site" branch
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <id>scm-publish</id>
+            <phase>site-deploy</phase>
+            <!-- deploy site with maven-scm-publish-plugin -->
+            <goals>
+              <goal>publish-scm</goal>
+            </goals>
+            <configuration>
+              <!-- mono-module doesn't require site:stage -->
+              <content>${project.build.directory}/site</content>
+              <!-- branch where to deploy -->
+              <scmBranch>asf-site</scmBranch>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
 

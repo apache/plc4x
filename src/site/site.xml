@@ -49,10 +49,7 @@
       </brand>
       <bottomDescription>
         <![CDATA[
-          <p id="bottomNote">Bottom Note: This site is currently a draft, we are currently in the process of preparing the project for incubation at Apache but are not yet finished with that yet. Hopefully within the next few weeks we will be an official Apache Incubator project.</p>
-          <div id="watermark">
-            <p id="watermark-text">This is a draft. See bottom note.</p>
-	        </div>
+          <p id="bottomNote"></p>
         ]]>
       </bottomDescription>
       <breadcrumbs>true</breadcrumbs>
