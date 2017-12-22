@@ -459,22 +459,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-scm-publish-plugin</artifactId>
         <version>1.1</version>
-        <executions>
-          <execution>
-            <id>scm-publish</id>
-            <phase>site-deploy</phase>
-            <!-- deploy site with maven-scm-publish-plugin -->
-            <goals>
-              <goal>publish-scm</goal>
-            </goals>
-            <configuration>
-              <!-- mono-module doesn't require site:stage -->
-              <content>${project.build.directory}/site</content>
-              <!-- branch where to deploy -->
-              <scmBranch>asf-site</scmBranch>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <!-- mono-module doesn't require site:stage -->
+          <content>${project.build.directory}/site</content>
+          <!-- branch where to deploy -->
+          <scmBranch>asf-site</scmBranch>
+        </configuration>
       </plugin>
     </plugins>
 
