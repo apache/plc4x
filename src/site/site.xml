@@ -81,8 +81,8 @@
 
     <menu ref="reports" inherit="top"/>
     <menu ref="parent" inherit="top"/>
-    <menu name="Project">
-      <!--item name="Incubation-Proposal" href="incubation-proposal.html"/-->
+    <menu name="Development">
+      <item name="Website" href="development/website.html"/>
     </menu>
     <menu name="Infrastructure">
       <item name="Wiki" href="https://cwiki.apache.org/confluence/display/PLC4X"/>
