@@ -168,10 +168,10 @@ The content in this branch is generated and maintained during the `Maven` build 
 
 The build system needs to check-in content to the `asf-site` branch and usually ASF Jenkins nodes don't have the permissions to do that.
 
-In order to be able to push to the `asf-site` GIT branch, a http://[dedicated build job] is configured to build on nodes with the Jenkins label `git-websites`.
+In order to be able to push to the `asf-site` GIT branch, a dedicated build job is configured to build on nodes with the Jenkins label `git-websites`.
 
 Only on these machines are jobs allowed to push changes to a Git repo and here only to a branch named `asf-site`.
 
-See https://builds.apache.org/view/M-R/job/PLC4X/job/PLC4X%20Site/ for details on the PLC4X Jenkins build job.
+See https://builds.apache.org/view/M-R/job/PLC4X/job/PLC4X%20Site/ for details on the PLC4X Jenkins Website build job.
 
 As soon as content is updated in the `asf-site` the `gitpubsub` mechanism will make those changes available at https://plc4x.apache.org
