@@ -34,7 +34,7 @@ public class S7PlcDriverTest {
     @Disabled("We first have to find/build some tool to help test these connections.")
     @Test
     @Tag("fast")
-    void getConnectionTest() throws PlcException {
+    void getConnection() throws PlcException {
         S7PlcConnection s7Connection = (S7PlcConnection)
             new PlcDriverManager().getConnection("s7://localhost/1/2");
         Assertions.assertEquals(s7Connection.getHostName(), "localhost");
@@ -49,7 +49,7 @@ public class S7PlcDriverTest {
      */
     @Test
     @Tag("fast")
-    void getConnectionInvalidUrlTest() throws PlcException {
+    void getConnectionInvalidUrl() throws PlcException {
         Assertions.assertThrows(PlcConnectionException.class,
             () -> new PlcDriverManager().getConnection("s7://localhost/hurz/2"));
     }
@@ -62,7 +62,7 @@ public class S7PlcDriverTest {
      */
     @Test
     @Tag("fast")
-    void getConnectionWithAuthenticationTest() throws PlcException {
+    void getConnectionWithAuthentication() throws PlcException {
         Assertions.assertThrows(PlcConnectionException.class,
             () -> new PlcDriverManager().getConnection("s7://localhost/1/2",
                 new PlcUsernamePasswordAuthentication("user", "pass")));
