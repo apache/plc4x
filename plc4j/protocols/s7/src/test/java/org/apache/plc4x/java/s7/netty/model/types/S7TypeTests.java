@@ -37,11 +37,20 @@ class S7TypeTests {
 
     @Test
     @Tag("fast")
+    void unknownDataTransportErrorCode() {
+        DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.INVALID_ADDRESS;
+
+        assertTrue(DataTransportErrorCode.valueOf((byte)0xFE) == null, "Unexpected value mapped");
+    }
+
+    @Test
+    @Tag("fast")
     void dataTransportSize() {
         DataTransportSize dataTransportSize = DataTransportSize.DINTEGER;
 
         assertTrue(DataTransportSize.valueOf((byte)6) == DataTransportSize.DINTEGER, "6 incorrectly mapped");
         assertTrue(dataTransportSize.getCode() == (byte)6, "code is not 6");
+        assertTrue(!dataTransportSize.isSizeInBits(), "Unexpected return from bit size");
     }
 
     @Test
@@ -76,6 +85,14 @@ class S7TypeTests {
 
     @Test
     @Tag("fast")
+    void unknownParameterType() {
+        ParameterType parameterType = ParameterType.UPLOAD;
+
+        assertTrue(ParameterType.valueOf((byte)0xFF) == null, "Unexpected value mapped");
+    }
+
+    @Test
+    @Tag("fast")
     void specificationType() {
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
 
@@ -100,4 +117,21 @@ class S7TypeTests {
         assertTrue(VariableAddressingMode.valueOf((byte)0x19) == VariableAddressingMode.ALARM_ACK, "0x19 incorrectly mapped");
         assertTrue(variableAddressingMode.getCode() == (byte)0x19, "code is not 0x19");
     }
+
+    @Test
+    @Tag("fast")
+    void memoryAccess() {
+        MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
+
+        assertTrue(memoryArea.valueOf((byte)0x84) == MemoryArea.DATA_BLOCKS, "0x84 incorrectly mapped");
+        assertTrue(memoryArea.getCode() == (byte)0x84, "code is not 0x84");
+    }
+
+    @Test
+    @Tag("fast")
+    void unknownMemoryAccess() {
+        MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
+
+        assertTrue(memoryArea.valueOf((byte)0xFF) == null, "Unexpected value mapped");
+     }
 }
