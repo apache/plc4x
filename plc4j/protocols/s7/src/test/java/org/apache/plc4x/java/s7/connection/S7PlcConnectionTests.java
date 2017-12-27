@@ -19,9 +19,7 @@ under the License.
 
 package org.apache.plc4x.java.s7.connection;
 
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
 import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
