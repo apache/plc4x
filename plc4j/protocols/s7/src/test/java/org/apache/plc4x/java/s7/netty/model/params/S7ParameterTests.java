@@ -21,7 +21,6 @@ package org.apache.plc4x.java.s7.netty.model.params;
 
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
-import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 import org.apache.plc4x.java.s7.netty.model.types.SpecificationType;
