@@ -58,8 +58,7 @@ class IsotpModelTests {
     @Test
     @Tag("Fast")
     void dataTpdu() {
-        short destinationReference = 0x1;
-               List<Parameter> parameters = Collections.emptyList();
+        List<Parameter> parameters = Collections.emptyList();
         ByteBuf userData = Unpooled.buffer();
 
         userData.writeByte(0x66);
@@ -67,7 +66,7 @@ class IsotpModelTests {
         DataTpdu tpdu = new DataTpdu(true, (byte) 0x7F, parameters, userData);
 
         assertTrue(tpdu.getTpduCode() == TpduCode.DATA);
-        assertTrue(tpdu.isEot() == true, "Unexpected eot reference");
+        assertTrue(tpdu.isEot(), "Unexpected eot reference");
         assertTrue(tpdu.getTpduRef() == 0x7F);
         assertTrue(tpdu.getParameters().isEmpty(), "Unexpected parameters");
         assertTrue(tpdu.getUserData().readByte() == (byte) 0x66, "Unexpected user data");
