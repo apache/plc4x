@@ -32,9 +32,9 @@ import java.util.List;
 
 public class IsoOnTcpProtocol extends MessageToMessageCodec<ByteBuf, IsoOnTcpMessage> {
 
-    public final static byte ISO_ON_TCP_MAGIC_NUMBER = 0x03;
+    public static final byte ISO_ON_TCP_MAGIC_NUMBER = 0x03;
 
-    private final static Logger logger = LoggerFactory.getLogger(IsoOnTcpProtocol.class);
+    private static final Logger logger = LoggerFactory.getLogger(IsoOnTcpProtocol.class);
 
     @Override
     protected void encode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) throws Exception {
