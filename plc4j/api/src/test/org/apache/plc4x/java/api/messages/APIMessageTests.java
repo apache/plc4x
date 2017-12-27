@@ -179,7 +179,7 @@ class APIMessageTests {
         PlcWriteRequest plcWriteRequest = new PlcWriteRequest(Byte.class, address, (byte) 0x33);
         assertTrue(plcWriteRequest.getRequestItems().size() == 1, "Expected no request item");
         assertTrue(plcWriteRequest.getNumItems() == 1, "Expected one request item");
-        Object[] values = (Object[])plcWriteRequest.getRequestItems().get(0).getValues();
+        Object[] values = plcWriteRequest.getRequestItems().get(0).getValues();
         assertTrue((byte)values[0] == (byte) 0x33, "Expected value 0x33");
     }
 
