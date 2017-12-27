@@ -32,15 +32,12 @@ class IsotpTypeTests {
         DeviceGroup deviceGroup;
 
         deviceGroup = DeviceGroup.PG_OR_PC;
-        assertTrue(deviceGroup == DeviceGroup.PG_OR_PC, "1 incorrectly mapped");
         assertTrue(deviceGroup.getCode() == (byte)1, "code is not 1");
 
         deviceGroup = DeviceGroup.OS;
-        assertTrue(deviceGroup == DeviceGroup.OS, "2 incorrectly mapped");
         assertTrue(deviceGroup.getCode() == (byte)2, "code is not 2");
 
         deviceGroup = DeviceGroup.OTHERS;
-        assertTrue(deviceGroup == DeviceGroup.OTHERS, "3 incorrectly mapped");
         assertTrue(deviceGroup.getCode() == (byte)3, "code is not 3");
     }
 
@@ -93,19 +90,15 @@ class IsotpTypeTests {
         ProtocolClass protocolClass;
 
         protocolClass = ProtocolClass.CLASS_1;
-        assertTrue(protocolClass == ProtocolClass.CLASS_1, "0x10 incorrectly mapped");
         assertTrue(protocolClass.getCode() == (byte)0x10, "code is not 0x10");
 
         protocolClass = ProtocolClass.CLASS_2;
-        assertTrue(protocolClass == ProtocolClass.CLASS_2, "0x20 incorrectly mapped");
         assertTrue(protocolClass.getCode() == (byte)0x20, "code is not 0x20");
 
         protocolClass = ProtocolClass.CLASS_3;
-        assertTrue(protocolClass == ProtocolClass.CLASS_3, "0x30 incorrectly mapped");
         assertTrue(protocolClass.getCode() == (byte)0x30, "code is not 0x30");
 
         protocolClass = ProtocolClass.CLASS_4;
-        assertTrue(protocolClass == ProtocolClass.CLASS_4, "0x40 incorrectly mapped");
         assertTrue(protocolClass.getCode() == (byte)0x40, "code is not 0x40");
     }
 
