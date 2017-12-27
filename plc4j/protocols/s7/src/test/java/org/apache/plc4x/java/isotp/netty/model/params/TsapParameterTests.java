@@ -20,7 +20,7 @@ class TsapParameterTests {
 
     @Test
     @Tag("fast")
-    void calledPartameterTest() {
+    void calledPartameter() {
         DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0);
         tsapParameter = new CalledTsapParameter(deviceGroup, (byte)1, (byte)4);
 
@@ -32,7 +32,7 @@ class TsapParameterTests {
 
     @Test
     @Tag("fast")
-    void callingPartameterTest() {
+    void callingPartameter() {
         DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0);
         tsapParameter = new CallingTsapParameter(deviceGroup, (byte)2, (byte)5);
 
