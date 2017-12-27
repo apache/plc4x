@@ -21,7 +21,7 @@ class ParameterTest {
 
     @Test
     @Tag("fast")
-    void checksumPartameterTest() {
+    void checksumPartameter() {
         ChecksumParameter checksumParameter = new ChecksumParameter((byte)1);
 
         assertTrue(checksumParameter.getChecksum() == (byte)1, "Checksum incorrect");
@@ -30,7 +30,7 @@ class ParameterTest {
 
     @Test
     @Tag("fast")
-    void disconnectAdditionalInformationParameterTest() {
+    void disconnectAdditionalInformationParameter() {
         byte[] data = {(byte)1, (byte)2};
         DisconnectAdditionalInformationParameter disconnectParameter = new DisconnectAdditionalInformationParameter(data);
 
@@ -41,7 +41,7 @@ class ParameterTest {
 
     @Test
     @Tag("fast")
-    void tpduSizeParameterTest() {
+    void tpduSizeParameter() {
         TpduSizeParameter tpduSizeParameter = new TpduSizeParameter(TpduSize.SIZE_512);
 
         assertTrue(tpduSizeParameter.getTpduSize() == TpduSize.SIZE_512, "Tpdu size incorrect");
