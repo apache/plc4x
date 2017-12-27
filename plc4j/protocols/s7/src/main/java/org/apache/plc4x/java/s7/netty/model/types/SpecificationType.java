@@ -27,7 +27,7 @@ import java.util.Map;
 public enum SpecificationType {
     VARIABLE_SPECIFICATION((byte) 0x12);
 
-    private byte code;
+    private final byte code;
 
     SpecificationType(byte code) {
         this.code = code;

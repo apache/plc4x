@@ -23,7 +23,7 @@ import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 
 public class TpduSizeParameter implements Parameter {
 
-    private TpduSize tpduSize;
+    private final TpduSize tpduSize;
 
     public TpduSizeParameter(TpduSize tpduSize) {
         this.tpduSize = tpduSize;

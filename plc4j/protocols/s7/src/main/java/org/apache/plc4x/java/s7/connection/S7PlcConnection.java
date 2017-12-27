@@ -67,8 +67,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     private final String hostName;
     private final int rack;
     private final int slot;
-
-    private int pduSize;
+    private final int pduSize;
 
     private EventLoopGroup workerGroup;
     private Channel channel;

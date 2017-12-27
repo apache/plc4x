@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 
 public class Message {
 
-    private ByteBuf userData;
+    private final ByteBuf userData;
 
     public Message(ByteBuf userData) {
         this.userData = userData;

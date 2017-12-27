@@ -27,8 +27,8 @@ import java.util.List;
 
 public abstract class Tpdu extends Message {
 
-    private TpduCode tpduCode;
-    private List<Parameter> parameters;
+    private final TpduCode tpduCode;
+    private final List<Parameter> parameters;
 
     public Tpdu(TpduCode tpduCode, List<Parameter> parameters, ByteBuf userData) {
         super(userData);

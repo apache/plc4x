@@ -33,7 +33,7 @@ public enum TpduCode {
     REJECT((byte) 0x50),
     TPDU_ERROR((byte) 0x70);
 
-    private byte code;
+    private final byte code;
 
     TpduCode(byte code) {
         this.code = code;

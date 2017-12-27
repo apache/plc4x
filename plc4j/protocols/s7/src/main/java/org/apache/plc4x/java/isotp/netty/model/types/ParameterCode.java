@@ -50,7 +50,7 @@ public enum ParameterCode {
     PREFERRED_MAX_PDU_SIZE((byte) 0xF0),
     INACTIVITY_TIMER((byte) 0xF2);
 
-    private byte code;
+    private final byte code;
 
     ParameterCode(byte code) {
         this.code = code;

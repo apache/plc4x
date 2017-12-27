@@ -22,8 +22,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
 
-    private T request;
-    private CompletableFuture<R> responseFuture;
+    private final T request;
+    private final CompletableFuture<R> responseFuture;
 
     public PlcRequestContainer(T request, CompletableFuture<R> responseFuture) {
         this.request = request;

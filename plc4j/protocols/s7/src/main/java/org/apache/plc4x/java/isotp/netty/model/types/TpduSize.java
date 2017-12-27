@@ -30,7 +30,7 @@ public enum TpduSize {
     SIZE_256((byte) 0x08),
     SIZE_128((byte) 0x07);
 
-    private byte code;
+    private final byte code;
 
     TpduSize(byte code) {
         this.code = code;

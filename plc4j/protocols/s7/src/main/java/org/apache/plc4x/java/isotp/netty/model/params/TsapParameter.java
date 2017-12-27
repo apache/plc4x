@@ -23,9 +23,9 @@ import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 
 public abstract class TsapParameter implements Parameter {
 
-    private DeviceGroup deviceGroup;
-    private byte rackNumber;
-    private byte slotNumber;
+    private final DeviceGroup deviceGroup;
+    private final byte rackNumber;
+    private final byte slotNumber;
 
     public TsapParameter(DeviceGroup deviceGroup, byte rackNumber, byte slotNumber) {
         this.deviceGroup = deviceGroup;

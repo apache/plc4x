@@ -28,7 +28,7 @@ public enum ProtocolClass {
     CLASS_3((byte) 0x30),
     CLASS_4((byte) 0x40);
 
-    private byte code;
+    private final byte code;
 
     ProtocolClass(byte code) {
         this.code = code;

@@ -43,7 +43,7 @@ public enum TransportSize {
     IEC_COUNTER((byte) 0x1F),
     HS_COUNTER((byte) 0x20);
 
-    private byte code;
+    private final byte code;
 
     TransportSize(byte code) {
         this.code = code;

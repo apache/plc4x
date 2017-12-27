@@ -42,7 +42,7 @@ public enum MemoryArea {
     S7_200_IEC_COUNTERS((byte) 0x1E), /* Renamed from "IEC counters (200 family)" */
     S7_200_IEC_TIMERS((byte) 0x1F); /* Renamed from "IEC timers (200 family)" */
 
-    private byte code;
+    private final byte code;
 
     MemoryArea(byte code) {
         this.code = code;

@@ -38,7 +38,7 @@ public enum ParameterType {
     PLC_STOP((byte) 0x29),
     SETUP_COMMUNICATION((byte) 0xF0);
 
-    private byte code;
+    private final byte code;
 
     ParameterType(byte code) {
         this.code = code;

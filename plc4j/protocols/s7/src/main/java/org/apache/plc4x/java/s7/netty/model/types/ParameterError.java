@@ -42,7 +42,7 @@ public enum ParameterError {
     L7_UNKNOWN_REQUEST((short) 0xD802),
     L7_INVALID_REQUEST_STATUS((short) 0xD803);
 
-    private short code;
+    private final short code;
 
     ParameterError(short code) {
         this.code = code;

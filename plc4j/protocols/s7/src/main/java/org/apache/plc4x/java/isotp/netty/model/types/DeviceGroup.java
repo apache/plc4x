@@ -26,7 +26,7 @@ public enum DeviceGroup {
     OS((byte) 0x02),
     OTHERS((byte) 0x03);
 
-    private byte code;
+    private final byte code;
 
     DeviceGroup(byte code) {
         this.code = code;

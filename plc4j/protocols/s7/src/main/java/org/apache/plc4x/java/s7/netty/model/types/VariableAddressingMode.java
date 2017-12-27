@@ -38,7 +38,7 @@ public enum VariableAddressingMode {
     DBREAD((byte) 0xb0),
     SYM1200((byte) 0xb2); /* Renamed from "1200SYM" */
 
-    private byte code;
+    private final byte code;
 
     VariableAddressingMode(byte code) {
         this.code = code;

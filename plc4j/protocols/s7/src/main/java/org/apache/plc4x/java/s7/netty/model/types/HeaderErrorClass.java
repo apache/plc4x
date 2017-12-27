@@ -27,7 +27,7 @@ public enum HeaderErrorClass {
     ERROR_ON_SUPPLIES((byte) 0x85),
     ACCESS_ERROR((byte) 0x87);
 
-    private byte code;
+    private final byte code;
 
     HeaderErrorClass(byte code) {
         this.code = code;

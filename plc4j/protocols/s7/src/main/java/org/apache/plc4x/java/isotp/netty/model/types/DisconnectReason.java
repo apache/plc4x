@@ -39,7 +39,7 @@ public enum DisconnectReason {
     CONNECTION_REQUEST_REFUSED((byte) 0x88),
     HEADER_OR_PARAMETER_LENGTH_INVALID((byte) 0x8A);
 
-    private byte code;
+    private final byte code;
 
     DisconnectReason(byte code) {
         this.code = code;

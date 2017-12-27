@@ -24,7 +24,7 @@ import org.apache.plc4x.java.netty.Message;
 
 public class IsoTPMessage extends Message {
 
-    private Tpdu tpdu;
+    private final Tpdu tpdu;
 
     public IsoTPMessage(Tpdu tpdu, ByteBuf userData) {
         super(userData);

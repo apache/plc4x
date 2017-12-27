@@ -41,9 +41,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
 
     private final static Logger logger = LoggerFactory.getLogger(IsoTPProtocol.class);
 
-    private byte rackNo;
-    private byte slotNo;
-    private TpduSize tpduSize;
+    private final byte rackNo;
+    private final byte slotNo;
+    private final TpduSize tpduSize;
 
     private CalledTsapParameter calledTsapParameter;
     private TpduSizeParameter tpduSizeParameter;

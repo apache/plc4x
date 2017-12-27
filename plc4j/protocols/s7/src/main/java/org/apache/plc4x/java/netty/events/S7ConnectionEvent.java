@@ -20,7 +20,7 @@ package org.apache.plc4x.java.netty.events;
 
 public class S7ConnectionEvent {
 
-    private S7ConnectionState state;
+    private final S7ConnectionState state;
 
     public S7ConnectionEvent() {
         this(S7ConnectionState.INITIAL);

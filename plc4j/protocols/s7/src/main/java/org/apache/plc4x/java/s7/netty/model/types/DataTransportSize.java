@@ -33,8 +33,8 @@ public enum DataTransportSize {
     REAL((byte) 0x07, false),
     OCTET_STRING((byte) 0x09, false);
 
-    private byte code;
-    private boolean sizeInBits;
+    private final byte code;
+    private final boolean sizeInBits;
 
     DataTransportSize(byte code, boolean sizeInBits) {
         this.code = code;

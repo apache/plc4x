@@ -27,7 +27,7 @@ public enum RejectCause {
     INVALID_TPDU_TYPE((byte) 0x02),
     INVALID_PARAMETER_TYPE((byte) 0x03);
 
-    private byte code;
+    private final byte code;
 
     RejectCause(byte code) {
         this.code = code;
