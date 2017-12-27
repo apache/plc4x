@@ -148,4 +148,33 @@ class S7MessageTests {
         assertTrue(message.getParameters().size() == 0, "Unexpected number of parameters");
     }
 
+    @Test
+    @Tag("fast")
+    void s7AnyVarParameterItem() {
+        MessageType messageType = MessageType.USER_DATA;
+        short tpduReference = 1;
+        ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
+        ArrayList<S7Payload> s7Payloads = new ArrayList<>();
+        ParameterType parameterType = ParameterType.READ_VAR;
+        ArrayList<VarParameterItem> parameterItems = new ArrayList<>();
+        SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
+        MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
+        TransportSize transportSize = TransportSize.INT;
+        short numElements = 1;
+        byte dataBlock = (byte) 0x1;
+        byte byteOffset = (byte) 0x10;
+        byte bitOffset = (byte) 0x0;
+
+        S7AnyVarParameterItem parameterItem = new S7AnyVarParameterItem(specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset);
+
+        assertTrue(parameterItem.getSpecificationType() == specificationType, "Unexpected specification type");
+        assertTrue(parameterItem.getMemoryArea() == MemoryArea.DATA_BLOCKS, "Unexpected memory area");
+        assertTrue(parameterItem.getTransportSize() == transportSize, "Unexpected transport size");
+        assertTrue(parameterItem.getNumElements() == numElements, "Unexpected number elements");
+        assertTrue(parameterItem.getDataBlockNumber() == dataBlock, "Unexpected data block");
+        assertTrue(parameterItem.getByteOffset() == byteOffset, "Unexpected byte offset");
+        assertTrue(parameterItem.getBitOffset() == bitOffset, "Unexpected bit offset");
+        assertTrue(parameterItem.getAddressingMode() == VariableAddressingMode.S7ANY, "Unexpected adressing mode");
+    }
+
 }
