@@ -19,7 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.params;
 
-import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.netty.model.types.ParameterCode;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 import org.junit.jupiter.api.*;
@@ -27,17 +26,6 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParameterTest {
-    private ParameterTest tsapParaameter;
-
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-        tsapParaameter = null;
-    }
-
     @Test
     @Tag("fast")
     void checksumPartameter() {
