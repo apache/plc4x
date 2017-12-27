@@ -186,9 +186,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         }
         MemoryArea memoryArea = MemoryArea.valueOf(addressMatcher.group("memoryArea"));
         int byteOffset = Integer.valueOf(addressMatcher.group("byteOffset"));
-        if (addressMatcher.groupCount() >= 4) {
-            int bitOffset = Integer.valueOf(addressMatcher.group("bitOffset"));
-            return new S7BitAddress(memoryArea, (short) byteOffset, (byte) bitOffset);
+        String bitOffset =  addressMatcher.group("bitOffset");
+        if (bitOffset != null) {
+            return new S7BitAddress(memoryArea, (short) byteOffset, Byte.valueOf(bitOffset));
         }
         return new S7Address(memoryArea, (short) byteOffset);
     }
