@@ -31,7 +31,7 @@ public class ErrorTpdu extends Tpdu {
     private final RejectCause rejectCause;
 
     public ErrorTpdu(short destinationReference, RejectCause rejectCause, List<Parameter> parameters, ByteBuf userData) {
-        super(TpduCode.CONNECTION_CONFIRM, parameters, userData);
+        super(TpduCode.TPDU_ERROR, parameters, userData);
         this.destinationReference = destinationReference;
         this.rejectCause = rejectCause;
     }
