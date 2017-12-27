@@ -276,7 +276,7 @@
                 <resourceBundle>org.apache:apache-incubator-disclaimer-resource-bundle:1.1</resourceBundle>
               </resourceBundles>
               <!-- Content in this directory will be appended to generated resources -->
-              <appendedResourcesDirectory>${remote-resources-maven-plugin.remote-resources.dir}</appendedResourcesDirectory>
+              <appendedResourcesDirectory>${basedir}/src/remote-resources</appendedResourcesDirectory>
             </configuration>
           </execution>
         </executions>
@@ -297,7 +297,8 @@
               <goal>unpack</goal>
             </goals>
             <configuration>
-              <!--  Bundle these dependencies in the war.
+              <!--
+                  Bundle these dependencies in the war.
 
                   You must maintain the corresponding info if you
                   add/remove artifacts or change their versions:
@@ -311,6 +312,13 @@
                   corresponding platforms/java7 files.
                -->
               <artifactItems>
+                <artifactItem>
+                  <groupId>lt.velykis.maven.skins</groupId>
+                  <artifactId>reflow-maven-skin</artifactId>
+                  <version>1.1.1</version>
+                  <excludes>META-INF/**</excludes>
+                  <outputDirectory>${project.build.directory}/dependency/reflow-maven-skin-1.1.1/</outputDirectory>
+                </artifactItem>
                 <artifactItem>
                   <groupId>org.webjars</groupId>
                   <artifactId>bootstrap</artifactId>
@@ -605,6 +613,7 @@
           <!-- get errors with site:site task when using the default (3.6) version -->
           <version>3.4</version><!--$NO-MVN-MAN-VER$-->
           <configuration>
+            <templateFile>${session.executionRootDirectory}/src/site/template/maven-site.vm</templateFile>
             <generateReports>true</generateReports>
             <generateSitemap>true</generateSitemap>
             <relativizeDecorationLinks>false</relativizeDecorationLinks>
@@ -699,6 +708,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>2.10.4</version>
+          <configuration>
+            <!--
+              This will suppress the generation of a hidden timestamp at the top of each generated html page
+              and hopefully let the site generation nod to too big updates every time.
+            -->
+            <notimestamp>true</notimestamp>
+          </configuration>
         </plugin>
 
         <plugin>
