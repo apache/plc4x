@@ -19,9 +19,15 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.messages;
 
+import org.apache.plc4x.java.s7.netty.model.params.CpuServicesParameter;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
+import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
+import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
-import org.apache.plc4x.java.s7.netty.model.types.MessageType;
+import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
+import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +63,8 @@ class S7MessageTests {
 
         assertTrue(message.getTpduReference() == tpduReference, "Unexpected tpdu value");
         assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
+        assertTrue(message.getPayloads() == null, "Unexpected payloads");
+        assertTrue(message.getParameters() == null, "Unexpected parameters");
     }
 
     @Test
@@ -75,7 +83,69 @@ class S7MessageTests {
         assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
         assertTrue(message.getErrorClass() == 0x1, "Unexpected error class");
         assertTrue(message.getErrorCode() == 0x23, "Unexpected error code");
+        assertTrue(message.getPayloads() == null, "Unexpected payloads");
+        assertTrue(message.getParameters() == null, "Unexpected parameters");
     }
 
+    @Test
+    @Tag("fast")
+    void s7MessageParameters() {
+        MessageType messageType = MessageType.USER_DATA;
+        short tpduReference = 1;
+        ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
+        ArrayList<S7Payload> s7Payloads = new ArrayList<>();
+        ParameterType parameterType = ParameterType.READ_VAR;
+        ArrayList<VarParameterItem> parameterItems = new ArrayList<>();
+        SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
+        MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
+        TransportSize transportSize = TransportSize.INT;
+        short numElements = 1;
+        byte dataBlock = (byte) 0x1;
+        byte byteOffset = (byte) 0x10;
+        byte bitOffset = (byte) 0x0;
+
+        parameterItems.add(new S7AnyVarParameterItem(specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset));
+
+        VarParameter varParameter = new VarParameter(parameterType, parameterItems);
+
+        s7Parameters.add(varParameter);
+
+        S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads);
+
+        assertTrue(message.getTpduReference() == tpduReference, "Unexpected tpdu value");
+        assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
+        assertTrue(message.getParameters().size() == 1, "Unexpected number of parameters");
+        assertTrue(message.getParameters().containsAll(s7Parameters), "Unexpected parameters");
+        assertTrue(message.getParameter(VarParameter.class).equals(varParameter), "Parameter missing");
+        assertTrue(message.getParameter(CpuServicesParameter.class) == null, "Contains unexpected parameter");
+        assertTrue(message.getPayloads().size() == 0, "Unexpected number of payloads");
+    }
+
+    @Test
+    @Tag("fast")
+    void s7MessagePayload() {
+        MessageType messageType = MessageType.USER_DATA;
+        short tpduReference = 1;
+        ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
+        ArrayList<S7Payload> s7Payloads = new ArrayList<>();
+        ParameterType parameterType = ParameterType.WRITE_VAR;
+        ArrayList<VarPayloadItem> payloadItems = new ArrayList<>();
+        byte[] data = {(byte)0x79};
+        VarPayload varPayload;
+
+        payloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BIT, data));
+        varPayload = new VarPayload(parameterType, payloadItems);
+        s7Payloads.add(varPayload);
+
+        S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads);
+
+        assertTrue(message.getTpduReference() == tpduReference, "Unexpected tpdu value");
+        assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
+        assertTrue(message.getPayloads().size() == 1, "Unexpected number of payloads");
+        assertTrue(message.getPayloads().containsAll(s7Payloads), "Unexpected payloads");
+        assertTrue(message.getPayload(VarPayload.class).equals(varPayload), "Payload missing");
+        assertTrue(message.getPayload(VarParameter.class) == null, "Contains unexpected payload"); // No other parameter classes
+        assertTrue(message.getParameters().size() == 0, "Unexpected number of parameters");
+    }
 
 }
