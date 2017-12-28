@@ -119,6 +119,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                 buf.writeShort(errorTpdu.getDestinationReference());
                 buf.writeByte(errorTpdu.getRejectCause().getCode());
                 outputParameters(buf, in.getParameters());
+                break;
             }
             default: {
                 logger.error("TDPU Value {} not implemented yet", new Object[]{in.getTpduCode().name()});
