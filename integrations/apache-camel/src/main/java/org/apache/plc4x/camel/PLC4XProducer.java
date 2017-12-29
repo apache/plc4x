@@ -21,22 +21,22 @@ package org.apache.plc4x.camel;
 import org.apache.camel.AsyncCallback;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
-import org.apache.camel.ShutdownRunningTask;
 import org.apache.camel.impl.DefaultAsyncProducer;
-import org.apache.camel.spi.ShutdownAware;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class PLC4XProducer extends DefaultAsyncProducer implements ShutdownAware {
-    private static final Logger LOG = LoggerFactory.getLogger(PLC4XProducer.class);
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
+public class PLC4XProducer extends DefaultAsyncProducer {
+    @SuppressWarnings("unused")
     private PLC4XEndpoint endpoint;
     private PlcConnection plcConnection;
+    private AtomicInteger openRequests;
 
     public PLC4XProducer(PLC4XEndpoint endpoint) {
         super(endpoint);
@@ -47,6 +47,7 @@ public class PLC4XProducer extends DefaultAsyncProducer implements ShutdownAware
         } catch (PlcException e) {
             throw new RuntimeException(e);
         }
+        openRequests = new AtomicInteger();
     }
 
     @SuppressWarnings("unchecked")
@@ -57,13 +58,21 @@ public class PLC4XProducer extends DefaultAsyncProducer implements ShutdownAware
         Object value = in.getBody(Object.class);
         PlcWriteRequest plcSimpleWriteRequest = new PlcWriteRequest(datatype, address, value);
         PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
-        Object response = plcWriter.write(plcSimpleWriteRequest).get();
-        if (exchange.getPattern().isOutCapable()) {
-            Message out = exchange.getOut();
-            out.copyFrom(exchange.getIn());
-            out.setBody(response);
-        } else {
-            in.setBody(response);
+        CompletableFuture<PlcWriteResponse> completableFuture = plcWriter.write(plcSimpleWriteRequest);
+        int currentlyOpenRequests = openRequests.incrementAndGet();
+        try {
+            log.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);
+            PlcWriteResponse plcWriteResponse = completableFuture.get();
+            if (exchange.getPattern().isOutCapable()) {
+                Message out = exchange.getOut();
+                out.copyFrom(exchange.getIn());
+                out.setBody(plcWriteResponse);
+            } else {
+                in.setBody(plcWriteResponse);
+            }
+        } finally {
+            int openRequestsAfterFinish = openRequests.decrementAndGet();
+            log.trace("Open Requests after {}:{}", exchange, openRequestsAfterFinish);
         }
     }
 
@@ -81,27 +90,17 @@ public class PLC4XProducer extends DefaultAsyncProducer implements ShutdownAware
     }
 
     @Override
-    public boolean deferShutdown(ShutdownRunningTask shutdownRunningTask) {
-        switch (shutdownRunningTask) {
-            case CompleteCurrentTaskOnly:
-                break;
-            case CompleteAllTasks:
-                break;
+    protected void doStop() throws Exception {
+        int openRequestsAtStop = openRequests.get();
+        log.debug("Stopping with {} open requests", openRequestsAtStop);
+        if (openRequestsAtStop > 0) {
+            log.warn("There are still {} open requests", openRequestsAtStop);
         }
         try {
             plcConnection.close();
         } catch (Exception ignore) {
         }
-        return false;
+        super.doStop();
     }
 
-    @Override
-    public int getPendingExchangesSize() {
-        return 0;
-    }
-
-    @Override
-    public void prepareShutdown(boolean suspendOnly, boolean forced) {
-
-    }
 }

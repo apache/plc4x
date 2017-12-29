@@ -293,12 +293,12 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         Class valueType = values[0].getClass();
         if (valueType == Boolean.class) {
             // TODO: Check if this is true and the result is not Math.ceil(values.lenght / 8)
-            result = new byte[values.length * 1];
+            result = new byte[values.length];
             for(int i = 0; i < values.length; i++) {
                 result[i] = (byte) (((Boolean) values[i]) ? 0x01 : 0x00);
             }
         } else if (valueType == Byte[].class) {
-            result = new byte[values.length * 1];
+            result = new byte[values.length];
             for(int i = 0; i < values.length; i++) {
                 result[i] = (byte) values[i];
             }
@@ -354,12 +354,12 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         return ResponseCode.INTERNAL_ERROR;
     }
 
-    private List<Object> decodeData(Class<?> datatype, byte[] s7Data) {
+    private List<Object> decodeData(Class<?> datatype, byte[] s7Data) throws PlcProtocolException {
         if(s7Data.length == 0) {
             return null;
         }
         List<Object> result = new LinkedList<>();
-        for(int i = 0; i < s7Data.length; i++) {
+        for(int i = 0; i < s7Data.length;) {
             if (datatype == Boolean.class) {
                 result.add((s7Data[i] & 0x01) == 0x01);
                 i+=1;
@@ -381,6 +381,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                     ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff));
                 result.add(Float.intBitsToFloat(intValue));
                 i+=4;
+            } else {
+                throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
             }
         }
         return result;

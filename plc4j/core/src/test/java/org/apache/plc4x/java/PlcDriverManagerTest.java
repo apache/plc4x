@@ -41,6 +41,8 @@ class PlcDriverManagerTest {
     void getExistingDriverTest() throws PlcException {
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
         Assertions.assertNull(mockConnection.getAuthentication());
+        Assertions.assertTrue(mockConnection.isConnected());
+        Assertions.assertTrue(!mockConnection.isClosed());
     }
 
     /**
@@ -54,6 +56,8 @@ class PlcDriverManagerTest {
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url", authentication);
         Assertions.assertNotNull(mockConnection.getAuthentication());
         Assertions.assertTrue(mockConnection.getAuthentication() instanceof PlcUsernamePasswordAuthentication);
+        Assertions.assertTrue(mockConnection.isConnected());
+        Assertions.assertTrue(!mockConnection.isClosed());
     }
 
     /**

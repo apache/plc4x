@@ -28,6 +28,9 @@ public class MockConnection extends AbstractPlcConnection {
 
     private final PlcAuthentication authentication;
 
+    boolean connected = false;
+    boolean closed = true;
+
     public MockConnection(PlcAuthentication authentication) {
         this.authentication = authentication;
     }
@@ -36,14 +39,24 @@ public class MockConnection extends AbstractPlcConnection {
         return authentication;
     }
 
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
     @Override
     public void connect() throws PlcConnectionException {
-
+        connected = true;
+        closed = false;
     }
 
     @Override
     public void close() throws Exception {
-
+        connected = false;
+        closed = true;
     }
 
     @Override
