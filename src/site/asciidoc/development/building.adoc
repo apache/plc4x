@@ -47,7 +47,8 @@ Justin McLean and Christofer Dutz even recorded a not quite 2 hour Maven trainin
 
 It should handle all the details needed to get a general understanding of Maven and how it works.
 
-video::167857327[vimeo]
+.Recording of a Maven Training for Apache Flex from 2016
+video::167857327[vimeo,width=640,height=420]
 
 === Building PLC4X with Maven
 
