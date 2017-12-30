@@ -269,7 +269,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                     headerLength = 7;
                     break;
                 case DISCONNECT_CONFIRM:
-                    headerLength = 8;
+                    headerLength = 6;
                     break;
                 case TPDU_ERROR:
                     headerLength = 5;
