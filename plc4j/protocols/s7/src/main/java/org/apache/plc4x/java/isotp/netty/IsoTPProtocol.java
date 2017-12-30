@@ -254,6 +254,14 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         }
     }
 
+    /**
+     * Return the length of the entire header in bytes (including the size field itself)
+     * This is a sum of the fixed size header defined for the given tpdu type and the
+     * lengths of all parameters.
+     *
+     * @param tpdu Tpdu to get the header length for
+     * @return length of the iso tp header
+     */
     private short getHeaderLength(Tpdu tpdu) {
         if (tpdu != null) {
             short headerLength = 0;
