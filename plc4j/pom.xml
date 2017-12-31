@@ -39,6 +39,7 @@
     <module>api</module>
     <module>core</module>
     <module>protocols</module>
+    <module>utils</module>
   </modules>
 
   <dependencies>
