@@ -77,6 +77,10 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
     @Override
     protected void encode(ChannelHandlerContext ctx, Tpdu in, List<Object> out) throws Exception {
         logger.debug("ISO Transport Protocol Message sent");
+        
+        if (in == null) {
+            return;
+        }
 
         ByteBuf buf = Unpooled.buffer();
 
@@ -139,7 +143,15 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         }
         logger.debug("ISO TP Message received");
 
+        if (in == null) {
+            return;
+        }
+
         ByteBuf userData = in.getUserData();
+        if (userData.writerIndex() < 1) {
+            return;
+        }
+        
         int packetStart = userData.readerIndex();
         byte headerLength = userData.readByte();
         int headerEnd = packetStart + headerLength;
