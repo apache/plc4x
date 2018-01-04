@@ -364,4 +364,34 @@ public class IsoTPProtocolTest extends NettyTestBase {
         assertTrue(errorTpdu.getParameters().isEmpty(), "Message contains paramaters");
     }
 
+    @Test
+    @Tag("fast")
+    public void encodeNullRequest() throws Exception {
+        ChannelHandlerContext ctx = new MockChannelHandlerContext();
+        ByteBuf buf = Unpooled.buffer();
+        ConnectionRequestTpdu tpdu =  null;
+        ArrayList<Object> out = new ArrayList<>();
+
+        isoTPProtocol.encode(ctx, tpdu, out);
+        assertTrue(out.size() == 0, "Message decoded when null passed");
+
+        isoTPProtocol.encode(ctx, null, out);
+        assertTrue(out.size() == 0, "Message decoded when null passed");
+    }
+
+
+    @Test
+    @Tag("fast")
+    public void decodeNull() throws Exception {
+        ChannelHandlerContext ctx = new MockChannelHandlerContext();
+        ByteBuf buf = Unpooled.buffer();
+        ArrayList<Object> out = new ArrayList<>();
+        IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
+
+        isoTPProtocol.decode(ctx, in, out);
+        assertTrue(out.size() == 0, "Message decoded when blank message passed");
+
+        isoTPProtocol.decode(ctx, null, out);
+        assertTrue(out.size() == 0, "Message decoded when blank message passed");
+    }
 }
