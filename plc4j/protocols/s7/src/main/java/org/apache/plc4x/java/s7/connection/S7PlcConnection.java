@@ -62,7 +62,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     private static final Pattern S7_ADDRESS_PATTERN =
         Pattern.compile("^(?<memoryArea>.*?)/(?<byteOffset>\\d{1,4})(?:/(?<bitOffset>\\d))?");
 
-    private final static Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
 
     private final String hostName;
     private final int rack;

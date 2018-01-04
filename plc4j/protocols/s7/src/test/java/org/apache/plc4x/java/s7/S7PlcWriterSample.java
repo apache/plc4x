@@ -30,7 +30,7 @@ import java.util.Optional;
 
 public class S7PlcWriterSample {
 
-    private final static Logger logger = LoggerFactory.getLogger(S7PlcWriterSample.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7PlcWriterSample.class);
 
     /**
      * Example code do demonstrate using the S7 Plc Driver.

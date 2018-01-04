@@ -33,7 +33,7 @@ import java.util.Scanner;
 
 public class S7PlcTestConsole {
 
-    private final static Logger logger = LoggerFactory.getLogger(S7PlcTestConsole.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7PlcTestConsole.class);
 
     /**
      * Example code do demonstrate using the S7 Plc Driver.
