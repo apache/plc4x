@@ -21,6 +21,6 @@ package org.apache.plc4x.java.api.messages;
 /**
  * Base type for all messages sent from the plc4x system to a connected plc.
  */
-public interface PlcRequest extends PlcMessage {
+public interface PlcRequest<T> extends PlcMessage<T> {
 
 }

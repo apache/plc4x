@@ -50,8 +50,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequestContainer> {
 
-    private static final Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
-
     private static final AtomicInteger tpduGenerator = new AtomicInteger(1);
 
     private Map<Short, PlcRequestContainer> requests;

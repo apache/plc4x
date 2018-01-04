@@ -27,13 +27,13 @@ public class S7ProtocolTest extends NettyTestBase {
     @Test
     @Tag("fast")
     public void encode() {
-
+        //TODO: implement me
     }
 
     @Test
     @Tag("fast")
     public void decode() {
-
+        //TODO: implement me
     }
 
 }

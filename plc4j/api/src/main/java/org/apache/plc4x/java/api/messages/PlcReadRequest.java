@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PlcReadRequest<T> implements PlcRequest {
+public class PlcReadRequest<T> implements PlcRequest<T> {
 
     private final List<ReadRequestItem<T>> readRequestItems;
 
