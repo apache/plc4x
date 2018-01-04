@@ -61,7 +61,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
 
     @ParameterizedTest
     @MethodSource("typeAndAddressProvider")
-    @Tag("slow")
+    @Tag("fast")
     public void encode(Class<?> type, S7Address address) throws Exception {
         // TODO: finish me
         // Read Request Tests
@@ -82,7 +82,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
 
     @ParameterizedTest
     @MethodSource("typeAndAddressProvider")
-    @Tag("slow")
+    @Tag("fast")
     public void decode(Class<?> type, S7Address address) throws Exception {
         // TODO: finish me
         if (type == String.class) {
@@ -97,7 +97,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
                 Field requests = Plc4XS7Protocol.class.getDeclaredField("requests");
                 requests.setAccessible(true);
                 Map<Short, PlcRequestContainer> requestContainerMap = (Map<Short, PlcRequestContainer>) requests.get(SUT);
-                requestContainerMap.put(fakeTpduReference, createMockedContainer(new PlcReadRequest<>(type, address)));
+                requestContainerMap.put(fakeTpduReference, createMockedContainer(new PlcReadRequest(type, address)));
             }
             S7ResponseMessage msg = new S7ResponseMessage(
                 MessageType.ACK,
@@ -209,11 +209,11 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
         return new VarPayloadItem(DataTransportErrorCode.OK, size, data);
     }
 
-    private <T extends PlcRequest<?>> PlcRequestContainer createMockedContainer(T initialRequest) {
+    private <T extends PlcRequest> PlcRequestContainer createMockedContainer(T initialRequest) {
         return createMockedContainer(initialRequest, null);
     }
 
-    private <T extends PlcRequest<?>> PlcRequestContainer createMockedContainer(T initialRequest, Consumer<T> requestEnricher) {
+    private <T extends PlcRequest> PlcRequestContainer createMockedContainer(T initialRequest, Consumer<T> requestEnricher) {
         Objects.requireNonNull(initialRequest);
         PlcRequestContainer mock = mock(PlcRequestContainer.class, RETURNS_DEEP_STUBS);
         if (requestEnricher != null) {
