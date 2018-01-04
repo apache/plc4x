@@ -51,7 +51,7 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
 
     private static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
 
-    private final static Logger logger = LoggerFactory.getLogger(S7Protocol.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7Protocol.class);
 
     private short maxAmqCaller;
     private short maxAmqCallee;

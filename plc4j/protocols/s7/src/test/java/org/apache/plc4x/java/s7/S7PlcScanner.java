@@ -32,7 +32,7 @@ import java.util.Optional;
 
 public class S7PlcScanner {
 
-    private final static Logger logger = LoggerFactory.getLogger(S7PlcScanner.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7PlcScanner.class);
 
     /**
      * Example code do demonstrate using the S7 Plc Driver.

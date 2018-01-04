@@ -39,7 +39,7 @@ import java.util.List;
 
 public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> {
 
-    private final static Logger logger = LoggerFactory.getLogger(IsoTPProtocol.class);
+    private static final Logger logger = LoggerFactory.getLogger(IsoTPProtocol.class);
 
     private final byte rackNo;
     private final byte slotNo;
