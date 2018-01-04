@@ -39,7 +39,7 @@ import java.util.List;
 
 public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> {
 
-    private final static Logger logger = LoggerFactory.getLogger(IsoTPProtocol.class);
+    private static final Logger logger = LoggerFactory.getLogger(IsoTPProtocol.class);
 
     private final byte rackNo;
     private final byte slotNo;
@@ -77,6 +77,10 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
     @Override
     protected void encode(ChannelHandlerContext ctx, Tpdu in, List<Object> out) throws Exception {
         logger.debug("ISO Transport Protocol Message sent");
+        
+        if (in == null) {
+            return;
+        }
 
         ByteBuf buf = Unpooled.buffer();
 
@@ -119,6 +123,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                 buf.writeShort(errorTpdu.getDestinationReference());
                 buf.writeByte(errorTpdu.getRejectCause().getCode());
                 outputParameters(buf, in.getParameters());
+                break;
             }
             default: {
                 logger.error("TDPU Value {} not implemented yet", new Object[]{in.getTpduCode().name()});
@@ -138,7 +143,15 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         }
         logger.debug("ISO TP Message received");
 
+        if (in == null) {
+            return;
+        }
+
         ByteBuf userData = in.getUserData();
+        if (userData.writerIndex() < 1) {
+            return;
+        }
+        
         int packetStart = userData.readerIndex();
         byte headerLength = userData.readByte();
         int headerEnd = packetStart + headerLength;
@@ -253,6 +266,14 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         }
     }
 
+    /**
+     * Return the length of the entire header in bytes (including the size field itself)
+     * This is a sum of the fixed size header defined for the given tpdu type and the
+     * lengths of all parameters.
+     *
+     * @param tpdu Tpdu to get the header length for
+     * @return length of the iso tp header
+     */
     private short getHeaderLength(Tpdu tpdu) {
         if (tpdu != null) {
             short headerLength = 0;
@@ -268,7 +289,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                     headerLength = 7;
                     break;
                 case DISCONNECT_CONFIRM:
-                    headerLength = 8;
+                    headerLength = 6;
                     break;
                 case TPDU_ERROR:
                     headerLength = 5;

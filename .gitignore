@@ -76,3 +76,4 @@ local.properties
 
 # Emacs backup files
 *~
+.scannerwork

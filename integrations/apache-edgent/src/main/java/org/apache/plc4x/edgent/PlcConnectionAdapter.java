@@ -60,7 +60,7 @@ import java.util.Calendar;
  */
 public class PlcConnectionAdapter implements AutoCloseable {
 
-    private final static Logger logger = LoggerFactory.getLogger(PlcConnectionAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlcConnectionAdapter.class);
 
     private String plcConnectionUrl;
     private PlcConnection plcConnection;

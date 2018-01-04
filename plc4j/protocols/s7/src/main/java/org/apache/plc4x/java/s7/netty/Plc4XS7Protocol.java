@@ -50,7 +50,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequestContainer> {
 
-    private final static Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(1);
 
@@ -294,12 +294,12 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         Class valueType = values[0].getClass();
         if (valueType == Boolean.class) {
             // TODO: Check if this is true and the result is not Math.ceil(values.lenght / 8)
-            result = new byte[values.length * 1];
+            result = new byte[values.length];
             for (int i = 0; i < values.length; i++) {
                 result[i] = (byte) (((Boolean) values[i]) ? 0x01 : 0x00);
             }
         } else if (valueType == Byte[].class) {
-            result = new byte[values.length * 1];
+            result = new byte[values.length];
             for (int i = 0; i < values.length; i++) {
                 result[i] = (byte) values[i];
             }
@@ -356,12 +356,12 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
     }
 
     @SuppressWarnings("unchecked")
-    private <T> List<T> decodeData(Class<T> datatype, byte[] s7Data) {
+    private <T> List<T> decodeData(Class<T> datatype, byte[] s7Data) throws PlcProtocolException {
         if (s7Data.length == 0) {
             return null;
         }
         List<Object> result = new LinkedList<>();
-        for (int i = 0; i < s7Data.length; i++) {
+        for (int i = 0; i < s7Data.length;) {
             if (datatype == Boolean.class) {
                 result.add((s7Data[i] & 0x01) == 0x01);
                 i += 1;
@@ -383,6 +383,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                     ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff));
                 result.add(Float.intBitsToFloat(intValue));
                 i += 4;
+            } else {
+                throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
             }
         }
         return (List<T>) result;
