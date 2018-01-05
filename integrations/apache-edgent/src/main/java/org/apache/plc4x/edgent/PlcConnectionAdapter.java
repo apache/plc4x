@@ -112,8 +112,7 @@ public class PlcConnectionAdapter implements AutoCloseable{
           address = connection.parseAddress(addressStr);
           PlcReader reader = connection.getReader().get();
           PlcReadRequest readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
-          T value = (T) reader.read(readRequest).get().getResponseItems().get(0).getValues().get(0);
-          return value;
+          return (T) reader.read(readRequest).get().getResponseItems().get(0).getValues().get(0);
         }
         catch (Exception e) {
           logger.error("reading from plc device {} {} failed", connection, address, e);
