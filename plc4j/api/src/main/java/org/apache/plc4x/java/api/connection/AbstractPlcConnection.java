@@ -18,8 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-
 import java.util.Optional;
 
 public abstract class AbstractPlcConnection implements PlcConnection {
