@@ -30,6 +30,8 @@ public enum TpduSize {
     SIZE_256((byte) 0x08),
     SIZE_128((byte) 0x07);
 
+    private static Map<Byte, TpduSize> map = null;
+    
     private final byte code;
 
     TpduSize(byte code) {
@@ -39,8 +41,6 @@ public enum TpduSize {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, TpduSize> map = null;
 
     public static TpduSize valueOf(byte code) {
         if (map == null) {

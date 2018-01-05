@@ -82,8 +82,8 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
     <!-- Tell sonar where the coverage reports are located -->
-    <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
-    <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+    <sonar.jacoco.reportPath>${project.build.directory}/target/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+    <sonar.jacoco.itReportPath>${project.build.directory}/target/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
 
     <junit-platform.version>1.0.2</junit-platform.version>
     <junit-jupiter.version>5.0.2</junit-jupiter.version>
@@ -159,102 +159,6 @@
             <!-- Jenkins build related files -->
             <exclude>.repository/**</exclude>
           </excludes>
-        </configuration>
-      </plugin>
-
-      <!--
-        This plugin doesn't really do much, it makes sure the jacoco agent
-        is downloaded and that the path to this is saved in an environment
-        variable so we can access this later on in the build.
-      -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <!--
-              Prepares the property pointing to the JaCoCo runtime agent which
-              is passed as VM argument when Maven the Surefire plugin is executed.
-          -->
-          <execution>
-            <id>pre-unit-test</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <!--
-                  Sets the name of the property containing the settings
-                  for JaCoCo runtime agent.
-              -->
-              <propertyName>surefireArgLine</propertyName>
-            </configuration>
-          </execution>
-          <!--
-              Prepares the property pointing to the JaCoCo runtime agent which
-              is passed as VM argument when Maven the Failsafe plugin is executed.
-          -->
-          <execution>
-            <id>pre-integration-test</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <!--
-                  Sets the name of the property containing the settings
-                  for JaCoCo runtime agent.
-              -->
-              <propertyName>failsafeArgLine</propertyName>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!--
-        Make the surefire execute all unit-tests
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <!--
-            We have to slightly increase the heap-size or some tests will fail.
-            Notice the @ instead of the $ as prefix? That's late evaluation.
-          -->
-          <argLine>-Xmx256m @{surefireArgLine}</argLine>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>${junit-platform.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit-jupiter.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <!--
-        Make the failsafe execute all integration-tests
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <!--
-                Notice the @ instead of the $ as prefix? That's late evaluation.
-          -->
-          <argLine>@{failsafeArgLine}</argLine>
         </configuration>
       </plugin>
 
@@ -603,7 +507,7 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.3.0.603</version>
+          <version>3.4.0.905</version>
         </plugin>
 
         <!-- Configure the Site generation -->
@@ -821,6 +725,131 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>jenkins-build</id>
+      <properties>
+        <!-- Tell sonar where the coverage reports are located -->
+        <sonar.jacoco.reportPath>${env.WORKSPACE}/target/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+        <sonar.jacoco.itReportPath>${env.WORKSPACE}/target/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+      </properties>
+    </profile>
+
+    <!--
+      This profile has java-specific plugin configurations
+      that might not apply to other languages.
+    -->
+    <profile>
+      <id>java-module</id>
+      <activation>
+        <file>
+          <exists>src/main/java</exists>
+        </file>
+      </activation>
+
+      <build>
+        <plugins>
+          <!--
+          This plugin doesn't really do much, it makes sure the jacoco agent
+          is downloaded and that the path to this is saved in an environment
+          variable so we can access this later on in the build.
+        -->
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <!--
+                  Prepares the property pointing to the JaCoCo runtime agent which
+                  is passed as VM argument when Maven the Surefire plugin is executed.
+              -->
+              <execution>
+                <id>pre-unit-test</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <!--
+                      Sets the name of the property containing the settings
+                      for JaCoCo runtime agent.
+                  -->
+                  <propertyName>surefireArgLine</propertyName>
+                  <destFile>${sonar.jacoco.reportPath}</destFile>
+                </configuration>
+              </execution>
+              <!--
+                  Prepares the property pointing to the JaCoCo runtime agent which
+                  is passed as VM argument when Maven the Failsafe plugin is executed.
+              -->
+              <execution>
+                <id>pre-integration-test</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <!--
+                      Sets the name of the property containing the settings
+                      for JaCoCo runtime agent.
+                  -->
+                  <propertyName>failsafeArgLine</propertyName>
+                  <destFile>${sonar.jacoco.itReportPath}</destFile>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!--
+            Make the surefire execute all unit-tests
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <!--
+                We have to slightly increase the heap-size or some tests will fail.
+                Notice the @ instead of the $ as prefix? That's late evaluation.
+              -->
+              <argLine>-Xmx256m @{surefireArgLine}</argLine>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-surefire-provider</artifactId>
+                <version>${junit-platform.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit-jupiter.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <!--
+            Make the failsafe execute all integration-tests
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <!--
+                    Notice the @ instead of the $ as prefix? That's late evaluation.
+              -->
+              <argLine>@{failsafeArgLine}</argLine>
+            </configuration>
           </plugin>
         </plugins>
       </build>

@@ -295,7 +295,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
 
     private byte[] encodeData(Object[] values) {
         if (values.length == 0) {
-            return null;
+            return new byte[]{};
         }
         byte[] result = null;
         Class valueType = values[0].getClass();
@@ -339,7 +339,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result[(i * 4) + 3] = (byte) (intValue & 0xff);
             }
         } else if (valueType == String.class) {
-            result = null;
+            result = new byte[]{};
         }
         return result;
     }
@@ -362,11 +362,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         return ResponseCode.INTERNAL_ERROR;
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> List<T> decodeData(Class<T> datatype, byte[] s7Data) throws PlcProtocolException {
-        if (s7Data.length == 0) {
-            return null;
-        }
+    @SuppressWarnings("unchecked")private <T>List<T> decodeData(Class<T> datatype, byte[] s7Data) throws PlcProtocolException {
+
         List<Object> result = new LinkedList<>();
         for (int i = 0; i < s7Data.length; ) {
             if (datatype == Boolean.class) {

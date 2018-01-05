@@ -30,6 +30,8 @@ public enum MessageType {
     ACK_DATA((byte) 0x03),
     USER_DATA((byte) 0x07); /* Renamed from "Userdata" */
 
+    private static Map<Byte, MessageType> map = null;
+    
     private final byte code;
 
     MessageType(byte code) {
@@ -39,8 +41,6 @@ public enum MessageType {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, MessageType> map = null;
 
     public static MessageType valueOf(byte code) {
         if (map == null) {

@@ -27,6 +27,8 @@ import java.util.Map;
 public enum SpecificationType {
     VARIABLE_SPECIFICATION((byte) 0x12);
 
+    private static Map<Byte, SpecificationType> map = null;
+    
     private final byte code;
 
     SpecificationType(byte code) {
@@ -36,8 +38,6 @@ public enum SpecificationType {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, SpecificationType> map = null;
 
     public static SpecificationType valueOf(byte code) {
         if (map == null) {

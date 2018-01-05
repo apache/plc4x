@@ -36,7 +36,7 @@ public class PlcLogger {
     private final String addressStr;
     private final int interval;
 
-    private PlcLogger(PlcConnectionAdapter plcAdapter, String addressString, int interval) throws Exception {
+    private PlcLogger(PlcConnectionAdapter plcAdapter, String addressString, int interval) {
         this.plcAdapter = plcAdapter;
         this.addressStr = addressString;
         this.interval = interval;
