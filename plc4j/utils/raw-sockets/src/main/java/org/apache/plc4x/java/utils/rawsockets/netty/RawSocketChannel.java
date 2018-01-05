@@ -1,186 +1,118 @@
-/*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
 package org.apache.plc4x.java.utils.rawsockets.netty;
 
-import com.savarese.rocksaw.net.RawSocket;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
-import io.netty.channel.nio.AbstractNioByteChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.internal.logging.InternalLogger;
-import io.netty.util.internal.logging.InternalLoggerFactory;
-import org.apache.plc4x.java.api.exceptions.PlcIoException;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.socket.ServerSocketChannel;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.channels.SelectableChannel;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.Executor;
 
-/**
- * Netty channel implementation that uses RockSaw to create a raw socket connection to implement
- * IP-socket based protocols not based on TCP or UDP.
- *
- * NOTE: This class is currently a WIP (Work in progress) it should only be used with great care.
- */
-public class RawSocketChannel extends AbstractNioByteChannel {
+public class RawSocketChannel extends AbstractRawSocketStreamChannel implements SocketChannel {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getInstance(NioSocketChannel.class);
+    private final RawSocketChannelConfig config;
 
-    // The protocol number is defined in the IP protocol and indicates the type of protocol the payload
-    // the IP packet uses. This number is assigned by the IESG. A full list of the registered protocol
-    // numbers can be found here: https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
-    private int protocolNumber;
+    private volatile Collection<InetAddress> tcpMd5SigAddresses = Collections.emptyList();
 
-    private RawSocket socket;
-    private InetSocketAddress localAddress;
-    private InetSocketAddress remoteAddress;
+    public RawSocketChannel() {
+        super(newSocketStream(), false);
+        config = new RawSocketChannelConfig(this);
+    }
+
+    public RawSocketChannel(int fd) {
+        super(fd);
+        config = new RawSocketChannelConfig(this);
+    }
+
+    RawSocketChannel(LinuxSocket fd, boolean active) {
+        super(fd, active);
+        config = new RawSocketChannelConfig(this);
+    }
+
+    RawSocketChannel(Channel parent, LinuxSocket fd, InetSocketAddress remoteAddress) {
+        super(parent, fd, remoteAddress);
+        config = new RawSocketChannelConfig(this);
+
+        if (parent instanceof RawSocketChannel) {
+            tcpMd5SigAddresses = ((RawSocketChannel) parent).tcpMd5SigAddresses();
+        }
+    }
 
     /**
-     * Initializes a raw socket that is able to communicate with raw IPv4 and IPv6 sockets, hereby
-     * allowing to implement protocols below TCP and UDP.
-     *
-     * For a list of public known protocol numbers see:
-     * https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
-     *
-     * @param parent
-     * @param ch
-     * @param protocolNumber protocol number identifying the protocol.
-     * @throws PlcIoException
+     * Returns the {@code TCP_INFO} for the current socket. See <a href="http://linux.die.net/man/7/tcp">man 7 tcp</a>.
      */
-    public RawSocketChannel(Channel parent, SelectableChannel ch, int protocolNumber) throws PlcIoException {
-        super(parent, ch);
+    public RawSocketTcpInfo tcpInfo() {
+        return tcpInfo(new RawSocketTcpInfo());
+    }
 
-        this.protocolNumber = protocolNumber;
-
+    /**
+     * Updates and returns the {@code TCP_INFO} for the current socket.
+     * See <a href="http://linux.die.net/man/7/tcp">man 7 tcp</a>.
+     */
+    public RawSocketTcpInfo tcpInfo(RawSocketTcpInfo info) {
         try {
-            socket = new RawSocket();
-            socket.setIPHeaderInclude(true);
+            socket.getTcpInfo(info);
+            return info;
         } catch (IOException e) {
-            throw new PlcIoException("Error setting up raw socket", e);
-        }
-    }
-
-    /**
-     * Opens a connection to the given remote address.
-     *
-     * @param remoteAddress
-     * @param localAddress
-     * @return
-     * @throws Exception
-     */
-    @Override
-    protected boolean doConnect(SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
-        if(!(remoteAddress instanceof InetSocketAddress) || !(localAddress instanceof InetSocketAddress)) {
-            throw new PlcIoException("Both remoteAddress and localAddress must be of type InetSocketAddress");
-        }
-
-        try {
-            this.localAddress = (InetSocketAddress) localAddress;
-            this.remoteAddress = (InetSocketAddress) remoteAddress;
-
-            socket.open(RawSocket.PF_INET, protocolNumber);
-
-            return socket.isOpen();
-        } catch (IllegalStateException | IOException e) {
-            return false;
+            throw new ChannelException(e);
         }
     }
 
     @Override
-    protected void doFinishConnect() throws Exception {
-
+    public InetSocketAddress remoteAddress() {
+        return (InetSocketAddress) super.remoteAddress();
     }
 
-    /**
-     * Opens a listening socket.
-     *
-     * @param localAddress
-     * @throws Exception
-     */
     @Override
-    protected void doBind(SocketAddress localAddress) throws Exception {
-        if(socket.isOpen()) {
-            throw new PlcIoException("Raw socket already opened.");
+    public InetSocketAddress localAddress() {
+        return (InetSocketAddress) super.localAddress();
+    }
+
+    @Override
+    public RawSocketChannelConfig config() {
+        return config;
+    }
+
+    @Override
+    public ServerSocketChannel parent() {
+        return (ServerSocketChannel) super.parent();
+    }
+
+    @Override
+    protected AbstractEpollUnsafe newUnsafe() {
+        return new EpollSocketChannelUnsafe();
+    }
+
+    private final class EpollSocketChannelUnsafe extends RawSocketStreamUnsafe {
+        @Override
+        protected Executor prepareToClose() {
+            try {
+                // Check isOpen() first as otherwise it will throw a RuntimeException
+                // when call getSoLinger() as the fd is not valid anymore.
+                if (isOpen() && config().getSoLinger() > 0) {
+                    // We need to cancel this key of the channel so we may not end up in a eventloop spin
+                    // because we try to read or write until the actual close happens which may be later due
+                    // SO_LINGER handling.
+                    // See https://github.com/netty/netty/issues/4449
+                    ((RawSocketEventLoop) eventLoop()).remove(RawSocketChannel.this);
+                    return GlobalEventExecutor.INSTANCE;
+                }
+            } catch (Throwable ignore) {
+                // Ignore the error as the underlying channel may be closed in the meantime and so
+                // getSoLinger() may produce an exception. In this case we just return null.
+                // See https://github.com/netty/netty/issues/4449
+            }
+            return null;
         }
-        if(localAddress instanceof InetSocketAddress) {
-            this.localAddress = (InetSocketAddress) localAddress;
-            socket.bind(this.localAddress.getAddress());
-        } else {
-            throw new PlcIoException("Unsupported type of local address. Only InetSocketAddress supported.");
-        }
     }
 
-    /**
-     * Closes the connection.
-     *
-     * @throws Exception
-     */
-    @Override
-    protected void doDisconnect() throws Exception {
-        if(socket.isOpen()) {
-            socket.close();
-        }
-    }
-
-    @Override
-    protected ChannelFuture shutdownInput() {
-        return null;
-    }
-
-    @Override
-    protected int doReadBytes(ByteBuf buf) throws Exception {
-        byte[] byteBuf = new byte[1024];
-        int readBytes = socket.read(byteBuf);
-        buf.writeBytes(byteBuf, 0, readBytes);
-        return readBytes;
-    }
-
-    @Override
-    protected int doWriteBytes(ByteBuf buf) throws Exception {
-        byte[] readableBytes = new byte[buf.readableBytes()];
-        buf.readBytes(readableBytes);
-        socket.write(remoteAddress.getAddress(), readableBytes);
-        return readableBytes.length;
-    }
-
-    @Override
-    protected long doWriteFileRegion(FileRegion region) throws Exception {
-        throw new UnsupportedOperationException("doWriteFileRegion not implemented");
-    }
-
-    @Override
-    protected SocketAddress localAddress0() {
-        return localAddress;
-    }
-
-    @Override
-    protected SocketAddress remoteAddress0() {
-        return remoteAddress;
-    }
-
-    @Override
-    public ChannelConfig config() {
-        return null;
-    }
-
-    @Override
-    public boolean isActive() {
-        return socket.isOpen();
+    void setTcpMd5Sig(Map<InetAddress, byte[]> keys) throws IOException {
+        tcpMd5SigAddresses = TcpMd5Util.newTcpMd5Sigs(this, tcpMd5SigAddresses, keys);
     }
 }
