@@ -162,102 +162,6 @@
         </configuration>
       </plugin>
 
-      <!--
-        This plugin doesn't really do much, it makes sure the jacoco agent
-        is downloaded and that the path to this is saved in an environment
-        variable so we can access this later on in the build.
-      -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <!--
-              Prepares the property pointing to the JaCoCo runtime agent which
-              is passed as VM argument when Maven the Surefire plugin is executed.
-          -->
-          <execution>
-            <id>pre-unit-test</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <!--
-                  Sets the name of the property containing the settings
-                  for JaCoCo runtime agent.
-              -->
-              <propertyName>surefireArgLine</propertyName>
-            </configuration>
-          </execution>
-          <!--
-              Prepares the property pointing to the JaCoCo runtime agent which
-              is passed as VM argument when Maven the Failsafe plugin is executed.
-          -->
-          <execution>
-            <id>pre-integration-test</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <!--
-                  Sets the name of the property containing the settings
-                  for JaCoCo runtime agent.
-              -->
-              <propertyName>failsafeArgLine</propertyName>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!--
-        Make the surefire execute all unit-tests
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <!--
-            We have to slightly increase the heap-size or some tests will fail.
-            Notice the @ instead of the $ as prefix? That's late evaluation.
-          -->
-          <argLine>-Xmx256m @{surefireArgLine}</argLine>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>${junit-platform.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit-jupiter.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <!--
-        Make the failsafe execute all integration-tests
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <!--
-                Notice the @ instead of the $ as prefix? That's late evaluation.
-          -->
-          <argLine>@{failsafeArgLine}</argLine>
-        </configuration>
-      </plugin>
-
       <!-- Generate the legally required text files in the jars -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -821,6 +725,122 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--
+      This profile has java-specific plugin configurations
+      that might not apply to other languages.
+    -->
+    <profile>
+      <id>java-module</id>
+      <activation>
+        <file>
+          <exists>src/main/java</exists>
+        </file>
+      </activation>
+
+      <build>
+        <plugins>
+          <!--
+          This plugin doesn't really do much, it makes sure the jacoco agent
+          is downloaded and that the path to this is saved in an environment
+          variable so we can access this later on in the build.
+        -->
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <!--
+                  Prepares the property pointing to the JaCoCo runtime agent which
+                  is passed as VM argument when Maven the Surefire plugin is executed.
+              -->
+              <execution>
+                <id>pre-unit-test</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <!--
+                      Sets the name of the property containing the settings
+                      for JaCoCo runtime agent.
+                  -->
+                  <propertyName>surefireArgLine</propertyName>
+                  <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exe</destFile>
+                </configuration>
+              </execution>
+              <!--
+                  Prepares the property pointing to the JaCoCo runtime agent which
+                  is passed as VM argument when Maven the Failsafe plugin is executed.
+              -->
+              <execution>
+                <id>pre-integration-test</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <!--
+                      Sets the name of the property containing the settings
+                      for JaCoCo runtime agent.
+                  -->
+                  <propertyName>failsafeArgLine</propertyName>
+                  <destFile>${project.build.directory}/coverage-reports/jacoco-it.exe</destFile>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!--
+            Make the surefire execute all unit-tests
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <!--
+                We have to slightly increase the heap-size or some tests will fail.
+                Notice the @ instead of the $ as prefix? That's late evaluation.
+              -->
+              <argLine>-Xmx256m @{surefireArgLine}</argLine>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-surefire-provider</artifactId>
+                <version>${junit-platform.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit-jupiter.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <!--
+            Make the failsafe execute all integration-tests
+          -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <!--
+                    Notice the @ instead of the $ as prefix? That's late evaluation.
+              -->
+              <argLine>@{failsafeArgLine}</argLine>
+            </configuration>
           </plugin>
         </plugins>
       </build>
