@@ -20,10 +20,30 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
+import java.util.Collections;
 import java.util.List;
 
-public interface PlcReadResponse extends PlcResponse {
-    PlcReadRequest getRequest();
+public class SinglePlcReadResponse<T> implements PlcReadResponse {
 
-    List<? extends ReadResponseItem> getResponseItems();
+    private final SinglePlcReadRequest<T> request;
+    private final ReadResponseItem<T> responseItem;
+
+    public SinglePlcReadResponse(SinglePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
+        this.request = request;
+        this.responseItem = responseItem;
+    }
+
+    @Override
+    public SinglePlcReadRequest<T> getRequest() {
+        return request;
+    }
+
+    @Override
+    public List<ReadResponseItem<T>> getResponseItems() {
+        return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
+    }
+
+    public ReadResponseItem<T> getResponseItem() {
+        return responseItem;
+    }
 }

@@ -18,31 +18,33 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
+import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public class UncheckedPlcWriteRequest extends PlcWriteRequest<Object> {
+public class SinglePlcWriteResponse<T> implements PlcWriteResponse {
 
-    public UncheckedPlcWriteRequest() {
-    }
+    private final SinglePlcWriteRequest<T> request;
+    private final WriteResponseItem<T> responseItem;
 
-    public UncheckedPlcWriteRequest(Class<Object> dataType, Address address, Object value) {
-        super(dataType, address, value);
-    }
-
-    public UncheckedPlcWriteRequest(Class<Object> dataType, Address address, Object[] values) {
-        super(dataType, address, values);
-    }
-
-    public UncheckedPlcWriteRequest(List<WriteRequestItem<Object>> writeRequestItems) {
-        super(writeRequestItems);
+    public SinglePlcWriteResponse(SinglePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
+        this.request = request;
+        this.responseItem = responseItem;
     }
 
     @Override
-    public void addItem(WriteRequestItem requestItem) {
-        super.addItem(requestItem);
+    public SinglePlcWriteRequest<T> getRequest() {
+        return request;
     }
+
+    @Override
+    public List<WriteResponseItem<T>> getResponseItems() {
+        return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
+    }
+
+    public WriteResponseItem<T> getResponseItem() {
+        return responseItem;
+    }
+
 }

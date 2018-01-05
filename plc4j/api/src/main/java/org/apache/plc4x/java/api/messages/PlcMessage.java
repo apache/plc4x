@@ -20,9 +20,7 @@ package org.apache.plc4x.java.api.messages;
 
 /**
  * Base type for all forms of messages passed between plc and plc4x system.
- * @param <T>         type that is being handled.
  */
-@SuppressWarnings("unused")
-public interface PlcMessage<T> {
+public interface PlcMessage {
 
 }

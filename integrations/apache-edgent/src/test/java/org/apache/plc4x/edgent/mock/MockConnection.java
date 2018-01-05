@@ -25,10 +25,7 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
@@ -85,11 +82,11 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletableFuture<PlcReadResponse<T>> read(PlcReadRequest<T> readRequest) {
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         curReadCnt++;
         if (readExceptionTriggerCount > 0 && curReadCnt == readExceptionTriggerCount) {
             curReadCnt = 0;
-            CompletableFuture<PlcReadResponse<T>> cf = new CompletableFuture<>();
+            CompletableFuture<PlcReadResponse> cf = new CompletableFuture<>();
             cf.completeExceptionally(new PlcIoException(readExceptionMsg));
             return cf;
         }
@@ -99,26 +96,42 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
                 Collections.singletonList(getDataValue(requestItem.getAddress())));
             responseItems.add(responseItem);
         }
-        PlcReadResponse response = new PlcReadResponse(readRequest, responseItems);
+        PlcReadResponse response;
+        if (readRequest instanceof BulkPlcReadRequest) {
+            response = new BulkPlcReadResponse((BulkPlcReadRequest) readRequest, responseItems);
+        } else if (readRequest instanceof SinglePlcReadRequest) {
+            response = new SinglePlcReadResponse((SinglePlcReadRequest) readRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+        } else {
+            response = null;
+        }
         return CompletableFuture.completedFuture(response);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletableFuture<PlcWriteResponse<T>> write(PlcWriteRequest<T> writeRequest) {
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         curWriteCnt++;
         if (writeExceptionTriggerCount > 0 && curWriteCnt == writeExceptionTriggerCount) {
             curWriteCnt = 0;
-            CompletableFuture<PlcWriteResponse<T>> cf = new CompletableFuture<>();
+            CompletableFuture<PlcWriteResponse> cf = new CompletableFuture<>();
             cf.completeExceptionally(new PlcIoException(writeExceptionMsg));
             return cf;
         }
-        List<WriteResponseItem<T>> responseItems = new LinkedList<>();
-        for (WriteRequestItem<T> requestItem : writeRequest.getRequestItems()) {
+        List<WriteResponseItem> responseItems = new LinkedList<>();
+        for (WriteRequestItem requestItem : writeRequest.getRequestItems()) {
             setDataValue(requestItem.getAddress(), requestItem.getValues());
-            WriteResponseItem<T> responseItem = new WriteResponseItem<>(requestItem, ResponseCode.OK);
+            WriteResponseItem<?> responseItem = new WriteResponseItem<>(requestItem, ResponseCode.OK);
             responseItems.add(responseItem);
         }
-        PlcWriteResponse<T> response = new PlcWriteResponse<>(writeRequest, responseItems);
+        PlcWriteResponse response;
+        if (writeRequest instanceof BulkPlcWriteRequest) {
+            response = new BulkPlcWriteResponse((BulkPlcWriteRequest) writeRequest, responseItems);
+        } else if (writeRequest instanceof SinglePlcWriteRequest) {
+            response = new SinglePlcWriteResponse((SinglePlcWriteRequest) writeRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+        } else {
+            response = null;
+        }
+
         return CompletableFuture.completedFuture(response);
     }
 

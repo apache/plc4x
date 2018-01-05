@@ -21,8 +21,8 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.SinglePlcReadRequest;
+import org.apache.plc4x.java.api.messages.SinglePlcReadResponse;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
@@ -63,9 +63,8 @@ public class S7PlcReaderSample {
                 // Read synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
-                PlcReadResponse<Byte> plcReadResponse = plcReader.read(new PlcReadRequest<>(Byte.class, inputs)).get();
-                List<ReadResponseItem<Byte>> responseItems = plcReadResponse.getResponseItems();
-                System.out.println("Inputs: " + responseItems.get(0).getValues().get(0));
+                SinglePlcReadResponse<Byte> plcReadResponse = plcReader.read(new SinglePlcReadRequest<>(Byte.class, inputs)).get();
+                System.out.println("Inputs: " + plcReadResponse.getResponseItem().getValues().get(0));
 
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...

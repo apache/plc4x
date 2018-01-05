@@ -18,31 +18,26 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public class UncheckedPlcReadRequest extends PlcReadRequest<Object> {
+public class BulkPlcReadResponse implements PlcReadResponse {
 
-    public UncheckedPlcReadRequest() {
+    private final BulkPlcReadRequest request;
+    private final List<ReadResponseItem> responseItems;
+
+    public BulkPlcReadResponse(BulkPlcReadRequest request, List<ReadResponseItem> responseItems) {
+        this.request = request;
+        this.responseItems = responseItems;
     }
 
-    public UncheckedPlcReadRequest(Class dataType, Address address) {
-        super(dataType, address);
+    public PlcReadRequest getRequest() {
+        return request;
     }
 
-    public UncheckedPlcReadRequest(Class dataType, Address address, int size) {
-        super(dataType, address, size);
+    public List<ReadResponseItem> getResponseItems() {
+        return responseItems;
     }
 
-    public UncheckedPlcReadRequest(List list) {
-        super(list);
-    }
-
-    @Override
-    public void addItem(ReadRequestItem readRequestItem) {
-        super.addItem(readRequestItem);
-    }
 }

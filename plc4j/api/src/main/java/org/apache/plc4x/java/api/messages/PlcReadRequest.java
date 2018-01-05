@@ -19,44 +19,14 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.model.Address;
 
-import java.util.LinkedList;
 import java.util.List;
 
-public class PlcReadRequest<T> implements PlcRequest<T> {
+public interface PlcReadRequest extends PlcRequest {
+    void addItem(ReadRequestItem readRequestItem);
 
-    private final List<ReadRequestItem<T>> readRequestItems;
+    List<? extends ReadRequestItem> getReadRequestItems();
 
-    public PlcReadRequest() {
-        this.readRequestItems = new LinkedList<>();
-    }
-
-    public PlcReadRequest(Class<T> dataType, Address address) {
-        this();
-        addItem(new ReadRequestItem<>(dataType, address));
-    }
-
-    public PlcReadRequest(Class<T> dataType, Address address, int size) {
-        this();
-        addItem(new ReadRequestItem<>(dataType, address, size));
-    }
-
-    public PlcReadRequest(List<ReadRequestItem<T>> readRequestItems) {
-        this.readRequestItems = readRequestItems;
-    }
-
-    public void addItem(ReadRequestItem<T> readRequestItem) {
-        readRequestItems.add(readRequestItem);
-    }
-
-    public List<ReadRequestItem<T>> getReadRequestItems() {
-        return readRequestItems;
-    }
-
-    public int getNumItems() {
-        return readRequestItems.size();
-    }
-
+    int getNumberOfItems();
 }
 

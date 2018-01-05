@@ -27,8 +27,9 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.SinglePlcReadRequest;
+import org.apache.plc4x.java.api.messages.SinglePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,9 +112,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
                     connection = getConnection();
                     address = connection.parseAddress(addressStr);
                     PlcReader reader = connection.getReader().get();
-                    PlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
-                    T value = (T) reader.read(readRequest).get().getResponseItems().get(0).getValues().get(0);
-                    return value;
+                    SinglePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
+                    return reader.read(readRequest).get().getResponseItems().get(0).getValues().get(0);
                 } catch (Exception e) {
                     logger.error("reading from plc device {} {} failed", connection, address, e);
                     return null;
@@ -183,15 +183,14 @@ public class PlcConnectionAdapter implements AutoCloseable {
         throw new IllegalArgumentException("Not a legal plc data type: " + cls.getSimpleName());
     }
 
-    @SuppressWarnings("unchecked")
-    static <T> PlcWriteRequest<T> newPlcWriteRequest(Address address, T value) {
+    static <T> SinglePlcWriteRequest<T> newPlcWriteRequest(Address address, T value) {
+        @SuppressWarnings("unchecked")
         Class<T> cls = (Class<T>) value.getClass();
-        return new PlcWriteRequest<>(cls, address, value);
+        return new SinglePlcWriteRequest<>(cls, address, value);
     }
 
-    @SuppressWarnings("unchecked")
-    static <T> PlcReadRequest<T> newPlcReadRequest(Class<T> datatype, Address address) {
-        return new PlcReadRequest<>(datatype, address);
+    static <T> SinglePlcReadRequest<T> newPlcReadRequest(Class<T> datatype, Address address) {
+        return new SinglePlcReadRequest<>(datatype, address);
     }
 
 }

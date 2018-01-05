@@ -22,22 +22,8 @@ import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.List;
 
-public class PlcWriteResponse<T> implements PlcResponse {
+public interface PlcWriteResponse extends PlcResponse {
+    PlcWriteRequest getRequest();
 
-    private final PlcWriteRequest<T> request;
-    private final List<WriteResponseItem<T>> responseItems;
-
-    public PlcWriteResponse(PlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
-        this.request = request;
-        this.responseItems = responseItems;
-    }
-
-    public PlcWriteRequest<T> getRequest() {
-        return request;
-    }
-
-    public List<WriteResponseItem<T>> getResponseItems() {
-        return responseItems;
-    }
-
+    List<? extends WriteResponseItem> getResponseItems();
 }
