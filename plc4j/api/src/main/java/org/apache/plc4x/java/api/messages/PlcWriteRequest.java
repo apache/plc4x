@@ -21,20 +21,21 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PlcWriteRequest extends PlcRequest {
     void addItem(WriteRequestItem writeRequestItem);
 
     List<? extends WriteRequestItem> getRequestItems();
 
-    default WriteRequestItem<?> getRequestItem() {
+    default Optional<? extends WriteRequestItem<?>> getRequestItem() {
         if (getNumberOfItems() > 1) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
         if (getNumberOfItems() < 1) {
-            return null;
+            return Optional.empty();
         }
-        return getRequestItems().get(0);
+        return Optional.<WriteRequestItem<?>>of(getRequestItems().get(0));
     }
 
     default int getNumberOfItems() {

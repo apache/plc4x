@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class SinglePlcReadRequest<T> implements PlcReadRequest {
 
@@ -53,8 +54,8 @@ public class SinglePlcReadRequest<T> implements PlcReadRequest {
         return readRequestItem != null ? Collections.singletonList(readRequestItem) : Collections.emptyList();
     }
 
-    public ReadRequestItem<T> getReadRequestItem() {
-        return readRequestItem;
+    public Optional<ReadRequestItem<T>> getReadRequestItem() {
+        return Optional.of(readRequestItem);
     }
 
     public void setReadRequestItem(ReadRequestItem<T> readRequestItem) {

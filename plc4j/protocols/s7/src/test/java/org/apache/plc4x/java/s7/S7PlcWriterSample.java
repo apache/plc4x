@@ -56,7 +56,7 @@ public class S7PlcWriterSample {
                 // the response is processed and available.
                 SinglePlcWriteResponse<Float> plcWriteResponse = plcWriter.write(
                     new SinglePlcWriteRequest<>(Float.class, inputs, 2.0f)).get();
-                System.out.println("Written: " + plcWriteResponse.getResponseItem().getResponseCode().name());
+                System.out.println("Written: " + plcWriteResponse.getResponseItem().get().getResponseCode().name());
             }
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.

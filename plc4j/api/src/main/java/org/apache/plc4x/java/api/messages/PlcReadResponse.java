@@ -21,20 +21,21 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PlcReadResponse extends PlcResponse {
     PlcReadRequest getRequest();
 
     List<? extends ReadResponseItem> getResponseItems();
 
-    default ReadResponseItem<?> getResponseItem() {
+    default Optional<? extends ReadResponseItem<?>> getResponseItem() {
         if (getNumberOfItems() > 1) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
         if (getNumberOfItems() < 1) {
-            return null;
+            return Optional.empty();
         }
-        return getResponseItems().get(0);
+        return Optional.<ReadResponseItem<?>>of(getResponseItems().get(0));
     }
 
     default int getNumberOfItems() {

@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class SinglePlcWriteRequest<T> implements PlcWriteRequest {
 
@@ -53,8 +54,8 @@ public class SinglePlcWriteRequest<T> implements PlcWriteRequest {
         return (requestItem != null) ? Collections.singletonList(requestItem) : Collections.emptyList();
     }
 
-    public WriteRequestItem<T> getRequestItem() {
-        return requestItem;
+    public Optional<WriteRequestItem<T>> getRequestItem() {
+        return Optional.ofNullable(requestItem);
     }
 
     public void setWriteRequestItem(WriteRequestItem<T> requestItem) {

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class SinglePlcReadResponse<T> implements PlcReadResponse {
 
@@ -43,7 +44,7 @@ public class SinglePlcReadResponse<T> implements PlcReadResponse {
         return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
     }
 
-    public ReadResponseItem<T> getResponseItem() {
-        return responseItem;
+    public Optional<ReadResponseItem<T>> getResponseItem() {
+        return Optional.ofNullable(responseItem);
     }
 }

@@ -64,7 +64,7 @@ public class S7PlcScanner {
                             }
                             SinglePlcReadResponse<Byte> plcReadResponse = plcReader.read(
                                 new SinglePlcReadRequest<>(Byte.class, address)).get();
-                            Byte data = plcReadResponse.getResponseItem().getValues().get(0);
+                            Byte data = plcReadResponse.getResponseItem().get().getValues().get(0);
                             if (data != null && data != 0) {
                                 System.out.println(String.format(
                                     "Response: Memory Area: %s Index: %d Value: %02X", memoryArea.name(), i, data));

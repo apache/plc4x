@@ -58,7 +58,7 @@ public class S7PlcTestConsole {
                     try {
                         Address address = plcConnection.parseAddress(line);
                         SinglePlcReadResponse<Byte> plcReadResponse = plcReader.read(new SinglePlcReadRequest<>(Byte.class, address)).get();
-                        List<Byte> data = plcReadResponse.getResponseItem().getValues();
+                        List<Byte> data = plcReadResponse.getResponseItem().get().getValues();
                         System.out.println("Response: " + data.get(0));
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class SinglePlcWriteResponse<T> implements PlcWriteResponse {
 
@@ -43,8 +44,8 @@ public class SinglePlcWriteResponse<T> implements PlcWriteResponse {
         return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
     }
 
-    public WriteResponseItem<T> getResponseItem() {
-        return responseItem;
+    public Optional<WriteResponseItem<T>> getResponseItem() {
+        return Optional.ofNullable(responseItem);
     }
 
 }
