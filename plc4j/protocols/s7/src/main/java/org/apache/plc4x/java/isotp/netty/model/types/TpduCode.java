@@ -33,6 +33,8 @@ public enum TpduCode {
     REJECT((byte) 0x50),
     TPDU_ERROR((byte) 0x70);
 
+    private static Map<Byte, TpduCode> map = null;
+    
     private final byte code;
 
     TpduCode(byte code) {
@@ -42,8 +44,6 @@ public enum TpduCode {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, TpduCode> map = null;
 
     public static TpduCode valueOf(byte code) {
         if (map == null) {
