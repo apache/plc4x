@@ -92,9 +92,8 @@ public class PlcConnectionAdapter implements AutoCloseable{
   @Override
   public void close() throws Exception {
     // only close a connection this instance created/connected
-    if (plcConnectionUrl != null) {
-      if (plcConnection != null)
-        plcConnection.close();
+    if (plcConnectionUrl != null && plcConnection != null) {
+      plcConnection.close();
     }
   }
 
