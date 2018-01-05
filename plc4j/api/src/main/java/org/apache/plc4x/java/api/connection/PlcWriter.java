@@ -59,4 +59,16 @@ public interface PlcWriter {
         return (CompletableFuture<BulkPlcWriteResponse>) write((PlcWriteRequest) writeRequest);
     }
 
+    /**
+     * Writes a given value to a PLC.
+     *
+     * @param writeRequest object describing the type, location and value that whould be written.
+     * @param <T>          type that is being requested.
+     * @return a {@link CompletableFuture} giving async access to the response of the write operation.
+     */
+    @SuppressWarnings("unchecked")
+    default <T> CompletableFuture<CheckedBulkPlcWriteResponse<T>> write(CheckedBulkPlcWriteRequest<T> writeRequest) {
+        return (CompletableFuture<CheckedBulkPlcWriteResponse<T>>) write((PlcWriteRequest) writeRequest);
+    }
+
 }

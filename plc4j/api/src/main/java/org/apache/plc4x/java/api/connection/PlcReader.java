@@ -58,4 +58,16 @@ public interface PlcReader {
         return (CompletableFuture<BulkPlcReadResponse>) read((PlcReadRequest) readRequest);
     }
 
+    /**
+     * Reads a requested value from a PLC.
+     *
+     * @param readRequest object describing the type and location of the value.
+     * @param <T>         type that is being requested.
+     * @return a {@link CompletableFuture} giving async access to the returned value.
+     */
+    @SuppressWarnings("unchecked")
+    default <T> CompletableFuture<CheckedBulkPlcReadResponse<T>> read(CheckedBulkPlcReadRequest<T> readRequest) {
+        return (CompletableFuture<CheckedBulkPlcReadResponse<T>>) read((PlcReadRequest) readRequest);
+    }
+
 }
