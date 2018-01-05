@@ -55,7 +55,4 @@ public class BulkPlcWriteRequest implements PlcWriteRequest {
         return requestItems;
     }
 
-    public int getNumberOfItems() {
-        return requestItems.size();
-    }
 }

@@ -51,7 +51,4 @@ public class BulkPlcReadRequest implements PlcReadRequest {
         return readRequestItems;
     }
 
-    public int getNumberOfItems() {
-        return readRequestItems.size();
-    }
 }

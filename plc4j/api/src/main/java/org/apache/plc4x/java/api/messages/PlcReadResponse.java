@@ -26,4 +26,18 @@ public interface PlcReadResponse extends PlcResponse {
     PlcReadRequest getRequest();
 
     List<? extends ReadResponseItem> getResponseItems();
+
+    default ReadResponseItem<?> getResponseItem() {
+        if (getNumberOfItems() > 1) {
+            throw new IllegalStateException("too many items " + getNumberOfItems());
+        }
+        if (getNumberOfItems() < 1) {
+            return null;
+        }
+        return getResponseItems().get(0);
+    }
+
+    default int getNumberOfItems() {
+        return getResponseItems().size();
+    }
 }

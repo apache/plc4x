@@ -27,5 +27,17 @@ public interface PlcWriteRequest extends PlcRequest {
 
     List<? extends WriteRequestItem> getRequestItems();
 
-    int getNumberOfItems();
+    default WriteRequestItem<?> getRequestItem() {
+        if (getNumberOfItems() > 1) {
+            throw new IllegalStateException("too many items " + getNumberOfItems());
+        }
+        if (getNumberOfItems() < 1) {
+            return null;
+        }
+        return getRequestItems().get(0);
+    }
+
+    default int getNumberOfItems() {
+        return getRequestItems().size();
+    }
 }

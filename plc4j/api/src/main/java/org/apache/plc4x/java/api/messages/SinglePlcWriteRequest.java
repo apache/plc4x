@@ -26,7 +26,7 @@ import java.util.List;
 
 public class SinglePlcWriteRequest<T> implements PlcWriteRequest {
 
-    private WriteRequestItem<T> writeRequestItem;
+    private WriteRequestItem<T> requestItem;
 
     public SinglePlcWriteRequest() {
     }
@@ -41,27 +41,27 @@ public class SinglePlcWriteRequest<T> implements PlcWriteRequest {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void addItem(WriteRequestItem writeRequestItem) {
-        if (this.writeRequestItem != null && writeRequestItem != null) {
+    public void addItem(WriteRequestItem requestItem) {
+        if (this.requestItem != null && requestItem != null) {
             throw new IllegalStateException(SinglePlcReadRequest.class.getName() + " can only contain on readRequestItem");
         }
-        this.writeRequestItem = (WriteRequestItem<T>) writeRequestItem;
+        this.requestItem = (WriteRequestItem<T>) requestItem;
     }
 
     @Override
     public List<WriteRequestItem<T>> getRequestItems() {
-        return (writeRequestItem != null) ? Collections.singletonList(writeRequestItem) : Collections.emptyList();
+        return (requestItem != null) ? Collections.singletonList(requestItem) : Collections.emptyList();
     }
 
-    public WriteRequestItem<T> getWriteRequestItem() {
-        return writeRequestItem;
+    public WriteRequestItem<T> getRequestItem() {
+        return requestItem;
     }
 
-    public void setWriteRequestItem(WriteRequestItem<T> writeRequestItem) {
-        this.writeRequestItem = writeRequestItem;
+    public void setWriteRequestItem(WriteRequestItem<T> requestItem) {
+        this.requestItem = requestItem;
     }
 
     public int getNumberOfItems() {
-        return writeRequestItem != null ? 1 : 0;
+        return requestItem != null ? 1 : 0;
     }
 }
