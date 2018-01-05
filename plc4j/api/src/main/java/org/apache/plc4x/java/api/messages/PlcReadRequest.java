@@ -19,7 +19,9 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.model.Address;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,5 +43,96 @@ public interface PlcReadRequest extends PlcRequest {
     default int getNumberOfItems() {
         return getReadRequestItems().size();
     }
+
+    static Builder builder() {
+        return new Builder();
+    }
+
+    class Builder {
+
+        private Class firstType;
+
+        private boolean mixed = false;
+
+        private List<ReadRequestItem> requests = new LinkedList<>();
+
+        public <T> Builder addItem(Class<T> dataType, Address address) {
+            checkType(dataType);
+            requests.add(new ReadRequestItem<>(dataType, address));
+            return this;
+        }
+
+        public <T> Builder addItem(Class<T> dataType, Address address, int size) {
+            checkType(dataType);
+            requests.add(new ReadRequestItem<>(dataType, address, size));
+            return this;
+        }
+
+        private void checkType(Class dataType) {
+            if (firstType != null) {
+                firstType = dataType;
+            }
+            if (firstType != dataType) {
+                mixed = true;
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        public PlcReadRequest build() {
+            if (requests.size() < 1) {
+                throw new IllegalStateException("No requests added");
+            }
+            if (requests.size() < 2) {
+                SinglePlcReadRequest<?> singlePlcReadRequest = new SinglePlcReadRequest<>();
+                singlePlcReadRequest.addItem(requests.get(0));
+                return singlePlcReadRequest;
+            }
+            PlcReadRequest plcReadRequest;
+            if (mixed) {
+                plcReadRequest = new BulkPlcReadRequest();
+            } else {
+                plcReadRequest = new CheckedBulkPlcReadRequest<>(firstType);
+            }
+            for (ReadRequestItem request : requests) {
+                plcReadRequest.addItem(request);
+            }
+            return plcReadRequest;
+        }
+
+        @SuppressWarnings("unchecked")
+        public BulkPlcReadRequest buildBulk() {
+            if (requests.size() < 2) {
+                throw new IllegalStateException("Bulk request needs more than one request");
+            }
+            return (BulkPlcReadRequest) build();
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> SinglePlcReadRequest<T> build(Class<T> type) {
+            if (requests.size() != 1) {
+                throw new IllegalStateException("Checked request needs exactly one request");
+            }
+            if (firstType != type) {
+                throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
+            }
+            return (SinglePlcReadRequest<T>) build();
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> CheckedBulkPlcReadRequest<T> buildBulk(Class<T> type) {
+            if (requests.size() < 2) {
+                throw new IllegalStateException("Checked bulk request needs more than one request");
+            }
+            if (firstType != type) {
+                throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
+            }
+            if (mixed) {
+                throw new IllegalStateException("Mixed types contained");
+            }
+            return (CheckedBulkPlcReadRequest<T>) build();
+        }
+
+    }
+
 }
 
