@@ -24,8 +24,6 @@ import java.util.Optional;
 
 public abstract class AbstractPlcConnection implements PlcConnection {
 
-    public abstract void connect() throws PlcConnectionException;
-
     @Override
     public Optional<PlcLister> getLister() {
         if(this instanceof PlcLister) {
