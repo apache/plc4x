@@ -16,35 +16,37 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class SinglePlcReadResponse<T> implements PlcReadResponse {
+public class SinglePlcWriteResponse<T> implements PlcWriteResponse {
 
-    private final SinglePlcReadRequest<T> request;
-    private final ReadResponseItem<T> responseItem;
+    private final SinglePlcWriteRequest<T> request;
+    private final WriteResponseItem<T> responseItem;
 
-    public SinglePlcReadResponse(SinglePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
+    public SinglePlcWriteResponse(SinglePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
         this.request = request;
         this.responseItem = responseItem;
     }
 
     @Override
-    public SinglePlcReadRequest<T> getRequest() {
+    public SinglePlcWriteRequest<T> getRequest() {
         return request;
     }
 
     @Override
-    public List<ReadResponseItem<T>> getResponseItems() {
+    public List<WriteResponseItem<T>> getResponseItems() {
         return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
     }
 
-    public Optional<ReadResponseItem<T>> getResponseItem() {
+    public Optional<WriteResponseItem<T>> getResponseItem() {
         return Optional.ofNullable(responseItem);
     }
+
 }

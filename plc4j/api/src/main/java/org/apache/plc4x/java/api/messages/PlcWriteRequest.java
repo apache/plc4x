@@ -19,6 +19,9 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.messages.specific.BulkPlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.CheckedBulkPlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;

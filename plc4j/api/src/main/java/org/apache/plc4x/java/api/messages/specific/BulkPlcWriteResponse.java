@@ -16,36 +16,29 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.messages.specific;
 
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-public class SinglePlcWriteResponse<T> implements PlcWriteResponse {
+public class BulkPlcWriteResponse implements PlcWriteResponse {
 
-    private final SinglePlcWriteRequest<T> request;
-    private final WriteResponseItem<T> responseItem;
+    private final BulkPlcWriteRequest request;
+    private final List<WriteResponseItem> responseItems;
 
-    public SinglePlcWriteResponse(SinglePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
+    public BulkPlcWriteResponse(BulkPlcWriteRequest request, List<WriteResponseItem> responseItems) {
         this.request = request;
-        this.responseItem = responseItem;
+        this.responseItems = responseItems;
     }
 
-    @Override
-    public SinglePlcWriteRequest<T> getRequest() {
+    public BulkPlcWriteRequest getRequest() {
         return request;
     }
 
-    @Override
-    public List<WriteResponseItem<T>> getResponseItems() {
-        return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
-    }
-
-    public Optional<WriteResponseItem<T>> getResponseItem() {
-        return Optional.ofNullable(responseItem);
+    public List<? extends WriteResponseItem> getResponseItems() {
+        return responseItems;
     }
 
 }

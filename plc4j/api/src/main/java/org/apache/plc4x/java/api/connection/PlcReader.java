@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.specific.*;
 
 import java.util.concurrent.CompletableFuture;
 

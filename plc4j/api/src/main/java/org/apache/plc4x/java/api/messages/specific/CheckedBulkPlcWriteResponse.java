@@ -16,28 +16,28 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.List;
 
-public class CheckedBulkPlcReadResponse<T> extends BulkPlcReadResponse {
+public class CheckedBulkPlcWriteResponse<T> extends BulkPlcWriteResponse {
 
-    private final CheckedBulkPlcReadRequest<T> request;
-    private final List<ReadResponseItem<T>> responseItems;
+    private final CheckedBulkPlcWriteRequest<T> request;
+    private final List<WriteResponseItem<T>> responseItems;
 
-    public CheckedBulkPlcReadResponse(CheckedBulkPlcReadRequest<T> request, List<ReadResponseItem<T>> responseItems) {
+    public CheckedBulkPlcWriteResponse(CheckedBulkPlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
         super(null, null);
         this.request = request;
         this.responseItems = responseItems;
     }
 
-    public PlcReadRequest getRequest() {
+    public BulkPlcWriteRequest getRequest() {
         return request;
     }
 
-    public List<ReadResponseItem<T>> getResponseItems() {
+    public List<WriteResponseItem<T>> getResponseItems() {
         return responseItems;
     }
 

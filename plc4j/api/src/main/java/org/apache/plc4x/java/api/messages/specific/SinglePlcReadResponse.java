@@ -16,28 +16,36 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.messages.specific;
 
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-public class BulkPlcReadResponse implements PlcReadResponse {
+public class SinglePlcReadResponse<T> implements PlcReadResponse {
 
-    private final BulkPlcReadRequest request;
-    private final List<ReadResponseItem> responseItems;
+    private final SinglePlcReadRequest<T> request;
+    private final ReadResponseItem<T> responseItem;
 
-    public BulkPlcReadResponse(BulkPlcReadRequest request, List<ReadResponseItem> responseItems) {
+    public SinglePlcReadResponse(SinglePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
         this.request = request;
-        this.responseItems = responseItems;
+        this.responseItem = responseItem;
     }
 
-    public PlcReadRequest getRequest() {
+    @Override
+    public SinglePlcReadRequest<T> getRequest() {
         return request;
     }
 
-    public List<? extends ReadResponseItem> getResponseItems() {
-        return responseItems;
+    @Override
+    public List<ReadResponseItem<T>> getResponseItems() {
+        return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
     }
 
+    public Optional<ReadResponseItem<T>> getResponseItem() {
+        return Optional.ofNullable(responseItem);
+    }
 }

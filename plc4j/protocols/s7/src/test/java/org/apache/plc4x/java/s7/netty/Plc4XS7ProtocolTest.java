@@ -19,6 +19,8 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
 import org.apache.plc4x.java.netty.NettyTestBase;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;

@@ -19,6 +19,9 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.messages.specific.BulkPlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.CheckedBulkPlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;

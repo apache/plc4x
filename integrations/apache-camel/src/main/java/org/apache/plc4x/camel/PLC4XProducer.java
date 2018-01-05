@@ -25,8 +25,8 @@ import org.apache.camel.impl.DefaultAsyncProducer;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.BulkPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.SinglePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.BulkPlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 

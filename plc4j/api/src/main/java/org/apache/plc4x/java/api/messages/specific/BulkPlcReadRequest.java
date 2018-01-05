@@ -16,47 +16,35 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.messages.specific;
 
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
+@SuppressWarnings("unchecked")
+public class BulkPlcReadRequest implements PlcReadRequest {
 
-    private final List<ReadRequestItem<T>> readRequestItems;
+    private final List<ReadRequestItem> readRequestItems;
 
-    private Class<T> datatype;
-
-    public CheckedBulkPlcReadRequest(Class<T> type) {
-        this.datatype = type;
+    public BulkPlcReadRequest() {
         this.readRequestItems = new LinkedList<>();
     }
 
-    public CheckedBulkPlcReadRequest(Class<T> dataType, Address address) {
-        this(dataType);
-        addItem(new ReadRequestItem<>(dataType, address));
+    public BulkPlcReadRequest(Class dataType, Address address) {
+        this();
+        addItem(new ReadRequestItem(dataType, address));
     }
 
-    public CheckedBulkPlcReadRequest(Class<T> dataType, Address address, int size) {
-        this(dataType);
-        addItem(new ReadRequestItem<>(dataType, address, size));
+    public BulkPlcReadRequest(Class dataType, Address address, int size) {
+        this();
+        addItem(new ReadRequestItem(dataType, address, size));
     }
 
-    public void addCheckedItem(ReadRequestItem<T> readRequestItem) {
-        readRequestItems.add(readRequestItem);
-    }
-
-    @SuppressWarnings("unchecked")
     public void addItem(ReadRequestItem readRequestItem) {
-        if (readRequestItem == null) {
-            return;
-        }
-        if (readRequestItem.getDatatype() != datatype) {
-            throw new IllegalArgumentException("Incompatible datatype " + readRequestItem.getDatatype());
-        }
         readRequestItems.add(readRequestItem);
     }
 
@@ -64,7 +52,4 @@ public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
         return readRequestItems;
     }
 
-    public int getNumberOfItems() {
-        return readRequestItems.size();
-    }
 }

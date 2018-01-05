@@ -21,14 +21,12 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.SinglePlcReadRequest;
-import org.apache.plc4x.java.api.messages.SinglePlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Optional;
 
 public class S7PlcReaderSample {
