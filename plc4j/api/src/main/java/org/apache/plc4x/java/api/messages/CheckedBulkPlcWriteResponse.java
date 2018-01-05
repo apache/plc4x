@@ -18,25 +18,26 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.List;
 
-public class BulkPlcReadResponse implements PlcReadResponse {
+public class CheckedBulkPlcWriteResponse<T> extends BulkPlcWriteResponse {
 
-    private final BulkPlcReadRequest request;
-    private final List<ReadResponseItem> responseItems;
+    private final CheckedBulkPlcWriteRequest<T> request;
+    private final List<WriteResponseItem<T>> responseItems;
 
-    public BulkPlcReadResponse(BulkPlcReadRequest request, List<ReadResponseItem> responseItems) {
+    public CheckedBulkPlcWriteResponse(CheckedBulkPlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
+        super(null, null);
         this.request = request;
         this.responseItems = responseItems;
     }
 
-    public PlcReadRequest getRequest() {
+    public BulkPlcWriteRequest getRequest() {
         return request;
     }
 
-    public List<? extends ReadResponseItem> getResponseItems() {
+    public List<WriteResponseItem<T>> getResponseItems() {
         return responseItems;
     }
 

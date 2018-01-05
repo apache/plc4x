@@ -36,7 +36,7 @@ public class BulkPlcWriteResponse implements PlcWriteResponse {
         return request;
     }
 
-    public List<WriteResponseItem> getResponseItems() {
+    public List<? extends WriteResponseItem> getResponseItems() {
         return responseItems;
     }
 

@@ -22,12 +22,13 @@ import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.List;
 
-public class BulkPlcReadResponse implements PlcReadResponse {
+public class CheckedBulkPlcReadResponse<T> extends BulkPlcReadResponse {
 
-    private final BulkPlcReadRequest request;
-    private final List<ReadResponseItem> responseItems;
+    private final CheckedBulkPlcReadRequest<T> request;
+    private final List<ReadResponseItem<T>> responseItems;
 
-    public BulkPlcReadResponse(BulkPlcReadRequest request, List<ReadResponseItem> responseItems) {
+    public CheckedBulkPlcReadResponse(CheckedBulkPlcReadRequest<T> request, List<ReadResponseItem<T>> responseItems) {
+        super(null, null);
         this.request = request;
         this.responseItems = responseItems;
     }
@@ -36,7 +37,7 @@ public class BulkPlcReadResponse implements PlcReadResponse {
         return request;
     }
 
-    public List<? extends ReadResponseItem> getResponseItems() {
+    public List<ReadResponseItem<T>> getResponseItems() {
         return responseItems;
     }
 

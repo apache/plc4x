@@ -24,26 +24,39 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public class BulkPlcReadRequest implements PlcReadRequest {
+public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
 
-    private final List<ReadRequestItem> readRequestItems;
+    private final List<ReadRequestItem<T>> readRequestItems;
 
-    public BulkPlcReadRequest() {
+    private Class<T> datatype;
+
+    public CheckedBulkPlcReadRequest(Class<T> type) {
+        this.datatype = type;
         this.readRequestItems = new LinkedList<>();
     }
 
-    public BulkPlcReadRequest(Class dataType, Address address) {
-        this();
-        addItem(new ReadRequestItem(dataType, address));
+    public CheckedBulkPlcReadRequest(Class<T> dataType, Address address) {
+        this(dataType);
+        addItem(new ReadRequestItem<>(dataType, address));
     }
 
-    public BulkPlcReadRequest(Class dataType, Address address, int size) {
-        this();
-        addItem(new ReadRequestItem(dataType, address, size));
+    public CheckedBulkPlcReadRequest(Class<T> dataType, Address address, int size) {
+        this(dataType);
+        addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
+    public void addCheckedItem(ReadRequestItem<T> readRequestItem) {
+        readRequestItems.add(readRequestItem);
+    }
+
+    @SuppressWarnings("unchecked")
     public void addItem(ReadRequestItem readRequestItem) {
+        if (readRequestItem == null) {
+            return;
+        }
+        if (readRequestItem.getDatatype() != datatype) {
+            throw new IllegalArgumentException("Incompatible datatype " + readRequestItem.getDatatype());
+        }
         readRequestItems.add(readRequestItem);
     }
 

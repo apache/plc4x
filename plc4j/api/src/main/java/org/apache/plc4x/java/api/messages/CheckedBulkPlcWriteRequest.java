@@ -24,31 +24,40 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public class BulkPlcWriteRequest implements PlcWriteRequest {
+public class CheckedBulkPlcWriteRequest<T> extends BulkPlcWriteRequest {
 
-    private final List<WriteRequestItem> requestItems;
+    private final List<WriteRequestItem<T>> requestItems;
 
-    public BulkPlcWriteRequest() {
+    private Class<T> datatype;
+
+    public CheckedBulkPlcWriteRequest(Class<T> type) {
+        this.datatype = type;
         this.requestItems = new LinkedList<>();
     }
 
-    public BulkPlcWriteRequest(Class dataType, Address address, Object value) {
-        this();
-        addItem(new WriteRequestItem(dataType, address, value));
+    public CheckedBulkPlcWriteRequest(Class<T> dataType, Address address, T value) {
+        this(dataType);
+        addItem(new WriteRequestItem<>(dataType, address, value));
     }
 
-    public BulkPlcWriteRequest(Class dataType, Address address, Object[] values) {
-        this();
-        addItem(new WriteRequestItem(dataType, address, values));
+    public CheckedBulkPlcWriteRequest(Class<T> dataType, Address address, T[] values) {
+        this(dataType);
+        addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
-    public BulkPlcWriteRequest(List<WriteRequestItem> requestItems) {
+    public CheckedBulkPlcWriteRequest(List<WriteRequestItem<T>> requestItems) {
         this.requestItems = requestItems;
     }
 
-    public void addItem(WriteRequestItem requestItem) {
-        requestItems.add(requestItem);
+    @SuppressWarnings("unchecked")
+    public void addItem(WriteRequestItem writeRequestItem) {
+        if (writeRequestItem == null) {
+            return;
+        }
+        if (writeRequestItem.getDatatype() != datatype) {
+            throw new IllegalArgumentException("Incompatible datatype " + writeRequestItem.getDatatype());
+        }
+        requestItems.add(writeRequestItem);
     }
 
     public List<? extends WriteRequestItem> getRequestItems() {
