@@ -39,7 +39,7 @@ public class IoTree {
     private AtomicInteger maxValue;
     private AtomicInteger digitalOutput;
 
-    private IoTree(PlcConnectionAdapter plcAdapter) throws Exception {
+    private IoTree(PlcConnectionAdapter plcAdapter) {
         this.plcAdapter = plcAdapter;
         internalVariables = new AtomicInteger(0);
         digitalInput = new AtomicInteger(0);
