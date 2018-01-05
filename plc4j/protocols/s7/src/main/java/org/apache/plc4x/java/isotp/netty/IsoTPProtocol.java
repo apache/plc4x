@@ -282,8 +282,8 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                         out.writeBytes(disconnectAdditionalInformation.getData());
                         break;
                     case TPDU_SIZE:
-                        TpduSizeParameter tpduSize = (TpduSizeParameter) parameter;
-                        out.writeByte(tpduSize.getTpduSize().getCode());
+                        TpduSizeParameter tpduSizeParameter = (TpduSizeParameter) parameter;
+                        out.writeByte(tpduSizeParameter.getTpduSize().getCode());
                         break;
                     default:
                         logger.error("TDPU tarameter type {} not implemented yet",
