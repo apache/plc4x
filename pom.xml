@@ -82,8 +82,8 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
     <!-- Tell sonar where the coverage reports are located -->
-    <sonar.jacoco.reportPath>${session.executionRootDirectory}/target/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
-    <sonar.jacoco.itReportPath>${session.executionRootDirectory}/target/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+    <sonar.jacoco.reportPath>${project.build.directory}/target/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+    <sonar.jacoco.itReportPath>${project.build.directory}/target/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
 
     <junit-platform.version>1.0.2</junit-platform.version>
     <junit-jupiter.version>5.0.2</junit-jupiter.version>
@@ -730,6 +730,15 @@
       </build>
     </profile>
 
+    <profile>
+      <id>jenkins-build</id>
+      <properties>
+        <!-- Tell sonar where the coverage reports are located -->
+        <sonar.jacoco.reportPath>${env.WORKSPACE}/target/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+        <sonar.jacoco.itReportPath>${env.WORKSPACE}/target/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+      </properties>
+    </profile>
+
     <!--
       This profile has java-specific plugin configurations
       that might not apply to other languages.
@@ -769,7 +778,7 @@
                       for JaCoCo runtime agent.
                   -->
                   <propertyName>surefireArgLine</propertyName>
-                  <destFile>${session.executionRootDirectory}/target/coverage-reports/jacoco-ut.exe</destFile>
+                  <destFile>${sonar.jacoco.reportPath}</destFile>
                 </configuration>
               </execution>
               <!--
@@ -788,7 +797,7 @@
                       for JaCoCo runtime agent.
                   -->
                   <propertyName>failsafeArgLine</propertyName>
-                  <destFile>${session.executionRootDirectory}/target/coverage-reports/jacoco-it.exe</destFile>
+                  <destFile>${sonar.jacoco.itReportPath}</destFile>
                 </configuration>
               </execution>
             </executions>
