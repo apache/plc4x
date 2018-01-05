@@ -26,6 +26,8 @@ public enum DeviceGroup {
     OS((byte) 0x02),
     OTHERS((byte) 0x03);
 
+    private static Map<Byte, DeviceGroup> map = null;
+    
     private final byte code;
 
     DeviceGroup(byte code) {
@@ -35,8 +37,6 @@ public enum DeviceGroup {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, DeviceGroup> map = null;
 
     public static DeviceGroup valueOf(byte code) {
         if (map == null) {

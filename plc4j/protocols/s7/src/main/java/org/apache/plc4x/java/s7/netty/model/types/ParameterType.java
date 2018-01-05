@@ -38,6 +38,8 @@ public enum ParameterType {
     PLC_STOP((byte) 0x29),
     SETUP_COMMUNICATION((byte) 0xF0);
 
+    private static Map<Byte, ParameterType> map = null;
+    
     private final byte code;
 
     ParameterType(byte code) {
@@ -47,8 +49,6 @@ public enum ParameterType {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, ParameterType> map = null;
 
     public static ParameterType valueOf(byte code) {
         if (map == null) {

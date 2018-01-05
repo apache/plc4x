@@ -50,6 +50,8 @@ public enum ParameterCode {
     PREFERRED_MAX_PDU_SIZE((byte) 0xF0),
     INACTIVITY_TIMER((byte) 0xF2);
 
+    private static Map<Byte, ParameterCode> map = null;
+    
     private final byte code;
 
     ParameterCode(byte code) {
@@ -59,8 +61,6 @@ public enum ParameterCode {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, ParameterCode> map = null;
 
     public static ParameterCode valueOf(byte code) {
         if (map == null) {

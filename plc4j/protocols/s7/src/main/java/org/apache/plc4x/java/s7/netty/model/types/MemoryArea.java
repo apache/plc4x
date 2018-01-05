@@ -41,6 +41,8 @@ public enum MemoryArea {
     S7_200_OUTPUTS((byte) 0x07), /* Renamed from "System outputs of 200 family" */
     S7_200_IEC_COUNTERS((byte) 0x1E), /* Renamed from "IEC counters (200 family)" */
     S7_200_IEC_TIMERS((byte) 0x1F); /* Renamed from "IEC timers (200 family)" */
+    
+    private static Map<Byte, MemoryArea> map = null;
 
     private final byte code;
 
@@ -51,8 +53,6 @@ public enum MemoryArea {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, MemoryArea> map = null;
 
     public static MemoryArea valueOf(byte code) {
         if (map == null) {
