@@ -341,22 +341,26 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
     ////////////////////////////////////////////////////////////////////////////////
 
     private ResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
-        if(dataTransportErrorCode != null) {
-            switch (dataTransportErrorCode) {
-                case OK:
-                    return ResponseCode.OK;
-                case NOT_FOUND:
-                    return ResponseCode.NOT_FOUND;
-                case INVALID_ADDRESS:
-                    return ResponseCode.INVALID_ADDRESS;
-            }
+        if (dataTransportErrorCode == null) {
+            return ResponseCode.INTERNAL_ERROR;
         }
-        return ResponseCode.INTERNAL_ERROR;
+        switch (dataTransportErrorCode) {
+            case OK:
+                return ResponseCode.OK;
+            case NOT_FOUND:
+                return ResponseCode.NOT_FOUND;
+            case INVALID_ADDRESS:
+                return ResponseCode.INVALID_ADDRESS;
+            default:
+                return ResponseCode.INTERNAL_ERROR;
+        }
     }
 
     private List<Object> decodeData(Class<?> datatype, byte[] s7Data) throws PlcProtocolException {
         List<Object> result = new LinkedList<>();
-        for(int i = 0; i < s7Data.length;) {
+        int i = 0;
+        
+        while (i < s7Data.length) {
             if (datatype == Boolean.class) {
                 result.add((s7Data[i] & 0x01) == 0x01);
                 i+=1;
