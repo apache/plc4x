@@ -371,15 +371,15 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result.add((short) (((s7Data[i] & 0xff) << 8) | (s7Data[i+1] & 0xff)));
                 i+=2;
             } else if (datatype == Integer.class) {
-                result.add((((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
-                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff)));
+                result.add(((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
+                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff));
                 i+=4;
             } else if (datatype == Float.class) {
                 // Description of the Real number format:
                 // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
                 // https://de.wikipedia.org/wiki/IEEE_754
-                int intValue = (((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
-                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff));
+                int intValue = ((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
+                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff);
                 result.add(Float.intBitsToFloat(intValue));
                 i+=4;
             } else {
