@@ -87,7 +87,7 @@ public class PlcLogger {
             logger.run();
 
             // Yeah ... well prevent the application from exiting ;-)
-            while (true) {
+            while (System.in.available() == 0) {
                 Thread.sleep(1000);
             }
         } catch (Exception e) {

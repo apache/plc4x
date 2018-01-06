@@ -74,11 +74,12 @@ public class IoTree {
         // Start logging ...
         dp.submit(top);
 
-        while (true) {
+        while (System.in.available() == 0) {
             Thread.sleep(1000);
             System.out.println(String.format("Internal Variables: %d Digital In: %d Analog In: %d Amplifictaion: %d Max Value: %d Digital Out: %d",
                 internalVariables.get(), digitalInput.get(), analogInput.get(), amplification.get(), maxValue.get(), digitalOutput.get()));
         }
+        System.exit(0);
     }
 
     public static void main(String[] args) {
