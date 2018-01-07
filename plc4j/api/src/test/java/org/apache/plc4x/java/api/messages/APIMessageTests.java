@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 import org.apache.plc4x.java.api.messages.mock.MockAddress;
+import org.apache.plc4x.java.api.messages.specific.*;
 import org.apache.plc4x.java.api.types.ResponseCode;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -101,53 +102,53 @@ class APIMessageTests {
     @Test
     @Tag("fast")
     void plcReadRequestEmpty() {
-        PlcReadRequest plcReadRequest = new PlcReadRequest();
+        PlcReadRequest plcReadRequest = new SinglePlcReadRequest();
         assertTrue(plcReadRequest.getReadRequestItems().isEmpty(), "Request items not empty");
-        assertTrue(plcReadRequest.getNumItems() == 0, "Expected request items to be zero");
+        assertTrue(plcReadRequest.getNumberOfItems() == 0, "Expected request items to be zero");
     }
 
     @Test
     @Tag("fast")
     void plcReadRequestAddress() {
         MockAddress address = new MockAddress("mock:/DATA");
-        PlcReadRequest plcReadRequest = new PlcReadRequest(Byte.class, address);
+        PlcReadRequest plcReadRequest = new SinglePlcReadRequest(Byte.class, address);
         assertTrue(plcReadRequest.getReadRequestItems().size() == 1, "Expected one request item");
-        assertTrue(plcReadRequest.getNumItems() == 1, "Expected one request item");
+        assertTrue(plcReadRequest.getNumberOfItems() == 1, "Expected one request item");
     }
 
     @Test
     @Tag("fast")
     void plcReadRequestSize() {
         MockAddress address = new MockAddress("mock:/DATA");
-        PlcReadRequest plcReadRequest = new PlcReadRequest(Byte.class, address, 1);
+        PlcReadRequest plcReadRequest = PlcReadRequest.builder().addItem(Byte.class, address, 1).build(Byte.class);
         assertTrue(plcReadRequest.getReadRequestItems().size() == 1, "Expected one request item");
-        assertTrue(plcReadRequest.getNumItems() == 1, "Expected one request item");
+        assertTrue(plcReadRequest.getNumberOfItems() == 1, "Expected one request item");
     }
 
     @Test
     @Tag("fast")
     void plcReadRequestAddItem() {
-        PlcReadRequest plcReadRequest = new PlcReadRequest();
+        PlcReadRequest plcReadRequest = new SinglePlcReadRequest();
         assertTrue(plcReadRequest.getReadRequestItems().isEmpty(), "Request items not empty");
-        assertTrue(plcReadRequest.getNumItems() == 0, "Expected request items to be zero");
+        assertTrue(plcReadRequest.getNumberOfItems() == 0, "Expected request items to be zero");
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem readRequestItem = new ReadRequestItem(Byte.class, address, 1);
         plcReadRequest.addItem(readRequestItem);
         assertTrue(plcReadRequest.getReadRequestItems().size() == 1, "Expected one request item");
-        assertTrue(plcReadRequest.getNumItems() == 1, "Expected one request item");
+        assertTrue(plcReadRequest.getNumberOfItems() == 1, "Expected one request item");
     }
 
     @Test
     @Tag("fast")
     void plcReadResponse() {
-        PlcReadRequest plcReadRequest = new PlcReadRequest();
+        BulkPlcReadRequest plcReadRequest = new BulkPlcReadRequest();
         ArrayList<ReadResponseItem> responseItems  = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem readRequestItem = new ReadRequestItem(Byte.class, address, 1);
         ReadResponseItem readResponseItem = new  ReadResponseItem(readRequestItem, ResponseCode.OK, Collections.emptyList());
         responseItems.add(readResponseItem);
-        PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
-        assertTrue(plcReadResponse.getRequest().getNumItems() == 0, "Unexpected number of response items");
+        PlcReadResponse plcReadResponse = new BulkPlcReadResponse(plcReadRequest, responseItems);
+        assertTrue(plcReadResponse.getRequest().getNumberOfItems() == 0, "Unexpected number of response items");
         assertTrue(plcReadResponse.getRequest().equals(plcReadRequest), "Unexpected read request");
         assertTrue(plcReadResponse.getResponseItems().size() == 1, "Unexpected number of response items");
         assertTrue(plcReadResponse.getResponseItems().containsAll(responseItems), "Unexpected items in response items");
@@ -167,18 +168,18 @@ class APIMessageTests {
     @Test
     @Tag("fast")
     void plcWriteRequestEmpty() {
-        PlcWriteRequest plcWriteRequest = new PlcWriteRequest();
+        PlcWriteRequest plcWriteRequest = new SinglePlcWriteRequest();
         assertTrue(plcWriteRequest.getRequestItems().isEmpty(), "Request items not empty");
-        assertTrue(plcWriteRequest.getNumItems() == 0, "Expected request items to be zero");
+        assertTrue(plcWriteRequest.getNumberOfItems() == 0, "Expected request items to be zero");
     }
 
     @Test
     @Tag("fast")
     void plcWriteRequestObject() {
         MockAddress address = new MockAddress("mock:/DATA");
-        PlcWriteRequest plcWriteRequest = new PlcWriteRequest(Byte.class, address, (byte) 0x33);
+        PlcWriteRequest plcWriteRequest = new SinglePlcWriteRequest(Byte.class, address, (byte) 0x33);
         assertTrue(plcWriteRequest.getRequestItems().size() == 1, "Expected no request item");
-        assertTrue(plcWriteRequest.getNumItems() == 1, "Expected one request item");
+        assertTrue(plcWriteRequest.getNumberOfItems() == 1, "Expected one request item");
         Object[] values = plcWriteRequest.getRequestItems().get(0).getValues();
         assertTrue((byte)values[0] == (byte) 0x33, "Expected value 0x33");
     }
@@ -188,9 +189,9 @@ class APIMessageTests {
     void plcWriteRequestObjects() {
         MockAddress address = new MockAddress("mock:/DATA");
         Byte[] data = {(byte)0x22, (byte)0x66};
-        PlcWriteRequest plcWriteRequest = new PlcWriteRequest(Byte.class, address, data);
+        PlcWriteRequest plcWriteRequest = new SinglePlcWriteRequest(Byte.class, address, data);
         assertTrue(plcWriteRequest.getRequestItems().size() == 1, "Expected one request item");
-        assertTrue(plcWriteRequest.getNumItems() == 1, "Expected one request item");
+        assertTrue(plcWriteRequest.getNumberOfItems() == 1, "Expected one request item");
         Byte[] values = (Byte[])plcWriteRequest.getRequestItems().get(0).getValues();
         assertTrue(values[0] == (byte) 0x22, "Expected value 0x22");
         assertTrue(values[1] == (byte) 0x66, "Expected value 0x66");
@@ -199,14 +200,14 @@ class APIMessageTests {
     @Test
     @Tag("fast")
     void plcWriteResponse() {
-        PlcWriteRequest plcWriteRequest = new PlcWriteRequest();
+        BulkPlcWriteRequest plcWriteRequest = new BulkPlcWriteRequest();
         ArrayList<WriteResponseItem> responseItems  = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         WriteRequestItem writeRequestItem = new WriteRequestItem(Byte.class, address, 1);
         WriteResponseItem writeResponseItem = new WriteResponseItem(writeRequestItem, ResponseCode.OK);
         responseItems.add(writeResponseItem);
-        PlcWriteResponse plcReadResponse = new PlcWriteResponse(plcWriteRequest, responseItems);
-        assertTrue(plcReadResponse.getRequest().getNumItems() == 0, "Unexpected number of response items");
+        PlcWriteResponse plcReadResponse = new BulkPlcWriteResponse(plcWriteRequest, responseItems);
+        assertTrue(plcReadResponse.getRequest().getNumberOfItems() == 0, "Unexpected number of response items");
         assertTrue(plcReadResponse.getRequest().equals(plcWriteRequest), "Unexpected read request");
         assertTrue(plcReadResponse.getResponseItems().size() == 1, "Unexpected number of response items");
         assertTrue(plcReadResponse.getResponseItems().containsAll(responseItems), "Unexpected items in response items");
