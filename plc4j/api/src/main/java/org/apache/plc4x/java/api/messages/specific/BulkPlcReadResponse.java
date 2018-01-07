@@ -20,9 +20,11 @@ package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.List;
+import java.util.Optional;
 
 public class BulkPlcReadResponse implements PlcReadResponse {
 
@@ -42,4 +44,10 @@ public class BulkPlcReadResponse implements PlcReadResponse {
         return responseItems;
     }
 
+    public <T> Optional<ReadResponseItem<T>> getValue(ReadRequestItem<T> item){
+        return responseItems.stream()
+            .filter(x -> x.getRequestItem().equals(item))
+            .map(e -> (ReadResponseItem<T>) e)
+            .findAny();
+    }
 }

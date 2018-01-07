@@ -72,7 +72,7 @@ public interface PlcReadRequest extends PlcRequest {
         }
 
         private void checkType(Class dataType) {
-            if (firstType != null) {
+            if (firstType == null) {
                 firstType = dataType;
             }
             if (firstType != dataType) {
