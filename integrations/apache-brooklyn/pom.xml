@@ -29,7 +29,6 @@
   </parent>
 
   <artifactId>apache-brooklyn</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Integrations: Apache Brooklyn</name>

@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>apache-camel</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>Integrations: Apache Camel</name>
   <description>Integration module for integrating PLC4X into Apache Camel.</description>
 

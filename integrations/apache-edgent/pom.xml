@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>apache-edgent</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>Integrations: Apache Edgent</name>
   <description>Integration module for integrating PLC4X into Apache Edgent.</description>
 

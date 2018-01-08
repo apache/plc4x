@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>plc4j-api</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>PLC4J: API</name>
   <description>Central API Module.</description>
 

@@ -22,6 +22,7 @@ package org.apache.plc4x.java.api.exceptions;
  * Base exception for all IO related exceptions.
  */
 public class PlcIoException extends PlcException {
+    private static final long serialVersionUID = 1L;
 
     public PlcIoException(String message) {
         super(message);

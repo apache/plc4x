@@ -184,13 +184,11 @@ public class PlcConnectionAdapter implements AutoCloseable{
     throw new IllegalArgumentException("Not a legal plc data type: "+cls.getSimpleName());
   }
 
-  @SuppressWarnings("unchecked")
   static <T> PlcWriteRequest newPlcWriteRequest(Address address, T value) {
     Class<?> cls = value.getClass();
     return new PlcWriteRequest(cls, address, value);
   }
 
-  @SuppressWarnings("unchecked")
   static <T> PlcReadRequest newPlcReadRequest(Class<T> datatype, Address address) {
       return new PlcReadRequest(datatype, address);
   }

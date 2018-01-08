@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>plc4j-protocol-s7-utils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>PLC4J: Protocol: S7-Utils</name>
   <description>Some utils used for helping to document the format.</description>
 
