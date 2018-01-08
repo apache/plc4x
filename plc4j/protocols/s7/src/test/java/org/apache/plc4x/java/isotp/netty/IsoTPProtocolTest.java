@@ -23,7 +23,9 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.isoontcp.netty.model.IsoOnTcpMessage;
 import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
+import org.apache.plc4x.java.isotp.netty.model.params.CallingTsapParameter;
 import org.apache.plc4x.java.isotp.netty.model.params.Parameter;
+import org.apache.plc4x.java.isotp.netty.model.params.TsapParameter;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.*;
 import org.apache.plc4x.java.isotp.netty.model.types.*;
 import org.apache.plc4x.java.netty.NettyTestBase;
@@ -38,7 +40,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class IsoTPProtocolTest extends NettyTestBase {
+public class IsoTPProtocolTest {
 
     private  IsoTPProtocol isoTPProtocol;
 
@@ -336,6 +338,36 @@ public class IsoTPProtocolTest extends NettyTestBase {
         assertTrue(userData.readByte() == TpduCode.TPDU_ERROR.getCode(), "Incorrect Tpdu code");
         assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
         assertTrue(userData.readByte() == RejectCause.REASON_NOT_SPECIFIED.getCode(), "Incorrect reject cause code");
+    }
+
+    @Test
+    @Tag("fast")
+    public void encodeCallingParameters() throws Exception {
+        ChannelHandlerContext ctx = new MockChannelHandlerContext();
+        ByteBuf buf = Unpooled.buffer();
+        ArrayList<Parameter> parmameters = new ArrayList<>();
+        CallingTsapParameter callingParameter = new CallingTsapParameter(DeviceGroup.PG_OR_PC, (byte) 0x7, (byte) 0xe1); // slot number too big and overflows into rack
+        parmameters.add(callingParameter);
+        ErrorTpdu tpdu = new ErrorTpdu((short)0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
+        ArrayList<Object> out = new ArrayList<>();
+
+        isoTPProtocol.encode(ctx, tpdu, out);
+
+        assertTrue(out.size() == 1, "Message not decoded");
+
+        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
+
+        assertTrue(userData.writerIndex() == 9, "Incorrect message length");
+        assertTrue(userData.readByte() == (byte)0x8, "Incorrect header length");
+        assertTrue(userData.readByte() == TpduCode.TPDU_ERROR.getCode(), "Incorrect Tpdu code");
+        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
+        assertTrue(userData.readByte() == RejectCause.REASON_NOT_SPECIFIED.getCode(), "Incorrect reject cause code");
+        assertTrue(userData.readByte() == ParameterCode.CALLING_TSAP.getCode(), "Incorrect parameter code");
+        assertTrue(userData.readByte() == (byte)0x2, "Incorrect parameter length");
+        assertTrue(userData.readByte() == DeviceGroup.PG_OR_PC.getCode(), "Incorrect device group code");
+        byte rackAndSlot = userData.readByte();
+        assertTrue((rackAndSlot & 0xf0) >> 4 == 0x7, "Incorrect rack number");
+        assertTrue((rackAndSlot & 0x0f) == (0xe1 & 0x0f), "Incorrect slot number");
     }
 
     @Test
