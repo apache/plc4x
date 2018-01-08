@@ -270,8 +270,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                     case CALLING_TSAP:
                         TsapParameter tsap = (TsapParameter) parameter;
                         out.writeByte(tsap.getDeviceGroup().getCode());
-                        out.writeByte((byte)
-                            ((tsap.getRackNumber() << 4) | (tsap.getSlotNumber())));
+                        out.writeByte((byte) ((tsap.getRackNumber() << 4) | (tsap.getSlotNumber() & 0x0F)));
                         break;
                     case CHECKSUM:
                         ChecksumParameter checksum = (ChecksumParameter) parameter;
@@ -392,9 +391,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
 
     private Parameter parseCallParameter(ByteBuf out, ParameterCode parameterCode) {
         DeviceGroup deviceGroup = DeviceGroup.valueOf(out.readByte());
-        byte tmp = out.readByte();
-        byte rackId = (byte) ((tmp & 0xF0) >> 4);
-        byte slotId = (byte) (tmp & 0x0F);
+        byte rackAndSlot = out.readByte();
+        byte rackId = (byte) ((rackAndSlot & 0xF0) >> 4);
+        byte slotId = (byte) (rackAndSlot & 0x0F);
         switch (parameterCode) {
             case CALLING_TSAP:
                 return new CallingTsapParameter(deviceGroup, rackId, slotId);
