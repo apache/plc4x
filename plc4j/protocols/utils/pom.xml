@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>plc4j-protocol-utils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>PLC4J: Protocol: Utils</name>
   <description>Some little helpers that support development of protocol modules.</description>
 

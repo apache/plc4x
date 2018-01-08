@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>plc4j-protocol-s7</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>PLC4J: Protocol: S7</name>
   <description>Implementation of a PLC4X driver able to speak with S7 devices using the S7 protocol.</description>
 
