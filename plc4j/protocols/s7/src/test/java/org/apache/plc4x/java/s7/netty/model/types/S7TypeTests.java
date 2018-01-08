@@ -19,10 +19,10 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.types;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class S7TypeTests {
 
@@ -123,7 +123,7 @@ class S7TypeTests {
     void memoryAccess() {
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
 
-        assertTrue(memoryArea.valueOf((byte)0x84) == MemoryArea.DATA_BLOCKS, "0x84 incorrectly mapped");
+        assertTrue(MemoryArea.valueOf((byte)0x84) == MemoryArea.DATA_BLOCKS, "0x84 incorrectly mapped");
         assertTrue(memoryArea.getCode() == (byte)0x84, "code is not 0x84");
     }
 
@@ -132,6 +132,6 @@ class S7TypeTests {
     void unknownMemoryAccess() {
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
 
-        assertTrue(memoryArea.valueOf((byte)0xFF) == null, "Unexpected value mapped");
+        assertTrue(MemoryArea.valueOf((byte)0xFF) == null, "Unexpected value mapped");
      }
 }
