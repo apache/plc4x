@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.api.exceptions;
 
 public class PlcConnectionException extends PlcException {
+    private static final long serialVersionUID = 1L;
 
     public PlcConnectionException(String message) {
         super(message);
