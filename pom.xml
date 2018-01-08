@@ -370,7 +370,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-scm-publish-plugin</artifactId>
-        <version>1.1</version>
         <configuration>
           <!-- mono-module doesn't require site:stage -->
           <content>${project.build.directory}/staging</content>
