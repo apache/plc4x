@@ -142,7 +142,6 @@ public class PlcConnectionAdapterTest {
   /*
    * Verify the adapter yields the appropriate PlcReadRequest for each type and that it works.
    */
-  @SuppressWarnings("unchecked")
   @Test
   @Tag("fast")
   public void testNewPlcReadRequest() throws Exception {
@@ -215,7 +214,6 @@ public class PlcConnectionAdapterTest {
   /*
    * Verify the adapter yields the appropriate PlcWriteRequest for each type and that it works.
    */
-  @SuppressWarnings("unchecked")
   @Test
   @Tag("fast")
   public void testNewPlcWriteRequest() throws Exception {
@@ -362,7 +360,6 @@ public class PlcConnectionAdapterTest {
   /*
    * test PlcConnectionAdapter.newConsumer(address)
    */
-  @SuppressWarnings("unchecked")
   @Test
   @Tag("fast")
   public void testNewConsumer1() throws Exception {
@@ -504,6 +501,7 @@ public class PlcConnectionAdapterTest {
   static <T> void checkConsumerJson(MockConnection connection, MockAddress address, Consumer<JsonObject> consumer, Object ... values) throws Exception {
     checkConsumerJson(0, connection, address, consumer, values);
   }
+  @SuppressWarnings("unchecked")
   private static <T> void checkConsumerJson(int writeFailureCountTrigger, MockConnection connection, MockAddress address, Consumer<JsonObject> consumer, Object ... values) throws Exception {
     if (writeFailureCountTrigger > 0)
       connection.setWriteException(writeFailureCountTrigger, "This is a mock write exception");
@@ -523,7 +521,6 @@ public class PlcConnectionAdapterTest {
       
       consumer.accept(jo);
       
-      @SuppressWarnings("unchecked")
       T writtenData = (T) connection.getDataValue(address);
       if(writtenData.getClass().isArray()) {
         writtenData = (T) Array.get(writtenData, 0);
