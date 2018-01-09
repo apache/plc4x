@@ -51,12 +51,12 @@ node('ubuntu') {
 
         stage ('Build') {
             echo 'Building'
-            sh "${mvnHome}/bin/mvn ${mavenLocalRepo} clean ${mavenGoal} sonar:sonar site:site"
+            sh "${mvnHome}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} sonar:sonar site:site"
         }
 
         stage ('Stage Site') {
             echo 'Staging Site'
-            sh "${mvnHome}/bin/mvn ${mavenLocalRepo} site:stage"
+            sh "${mvnHome}/bin/mvn -Pjenkins-build ${mavenLocalRepo} site:stage"
         }
 
     }

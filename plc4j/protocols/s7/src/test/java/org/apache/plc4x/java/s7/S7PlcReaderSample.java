@@ -90,7 +90,7 @@ public class S7PlcReaderSample {
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.
         catch (Exception e) {
-            e.printStackTrace();
+            logger.error("S7 PLC reader sample", e);
         }
         // The application would cleanly terminate after several seconds ... this just speeds things up.
         System.exit(0);

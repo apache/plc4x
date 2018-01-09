@@ -28,6 +28,8 @@ public enum ProtocolClass {
     CLASS_3((byte) 0x30),
     CLASS_4((byte) 0x40);
 
+    private static Map<Byte, ProtocolClass> map = null;
+    
     private final byte code;
 
     ProtocolClass(byte code) {
@@ -37,8 +39,6 @@ public enum ProtocolClass {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, ProtocolClass> map = null;
 
     public static ProtocolClass valueOf(byte code) {
         if (map == null) {

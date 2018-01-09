@@ -28,6 +28,8 @@ public enum DataTransportErrorCode {
     NOT_FOUND((byte) 0x0A),
     OK((byte) 0xFF);
 
+    private static Map<Byte, DataTransportErrorCode> map = null;
+    
     private byte code;
 
     DataTransportErrorCode(byte code) {
@@ -37,8 +39,6 @@ public enum DataTransportErrorCode {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, DataTransportErrorCode> map = null;
 
     public static DataTransportErrorCode valueOf(byte code) {
         if (map == null) {
