@@ -334,18 +334,18 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result[(i * 4) + 3] = (byte) (intValue & 0xff);
             }
         } else if (valueType == String.class) {
-            // TOOD probably need to add a terminating character so you know where each string ends
             int size = 0;
             for (Object value : values) {
                 size = size + ((String) value).length();
             }
-            result = new byte[size];
+            result = new byte[size + length];
             int j = 0;
             for (Object value : values) {
                 String str = (String) value;
                 for (int i = 0; i < str.length(); i++) {
                     result[j++] = (byte) str.charAt(i);
                 }
+                result[j++] = (byte) 0x0;
             }
         }
         return result;
@@ -399,10 +399,13 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result.add(Float.intBitsToFloat(intValue));
                 i+=4;
             } else if (datatype == String.class) {
-                // FIXME Assumes there's only a single string and no other data
-                String str = new String(s7Data);
-                result.add(str);
-                i += length;
+                StringBuilder builder = new StringBuilder();
+                while (s7Data[i] != (byte) 0x0) {
+                    builder.append(s7Data[i]);
+                    i++;
+                }
+                i++; // skip terminating character
+                result.add(builder.toString());
             } else {
                 throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
             }

@@ -196,7 +196,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
         } else if (type == String.class) {
             size = DataTransportSize.BYTE_WORD_DWORD;
-            data = new byte[]{(byte) 'S', (byte) 't', (byte) 'r', (byte) 'i' ,(byte) 'n', (byte) 'g'};
+            data = new byte[]{(byte) 'S', (byte) 't', (byte) 'r', (byte) 'i' ,(byte) 'n', (byte) 'g', (byte) 0x0};
         } else {
             throw new IllegalArgumentException("Type t not supported " + type);
         }
