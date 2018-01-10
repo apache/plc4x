@@ -300,7 +300,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             for (int i = 0; i < length; i++) {
                 result[i] = (byte) (((Boolean) values[i]) ? 0x01 : 0x00);
             }
-        } else if (valueType == Byte[].class) {
+        } else if (valueType == Byte.class) {
             result = new byte[length];
             for (int i = 0; i < length; i++) {
                 result[i] = (byte) values[i];
