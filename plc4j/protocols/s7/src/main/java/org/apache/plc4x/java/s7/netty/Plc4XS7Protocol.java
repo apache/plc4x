@@ -334,7 +334,18 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result[(i * 4) + 3] = (byte) (intValue & 0xff);
             }
         } else if (valueType == String.class) {
-            result = new byte[]{};
+            int size = 0;
+            for (Object value : values) {
+                size = size + ((String) value).length();
+            }
+            result = new byte[size];
+            int j = 0;
+            for (Object value : values) {
+                String str = (String) value;
+                for (int i = 0; i < str.length(); i++) {
+                    result[j++] = (byte) str.charAt(i);
+                }
+            }
         }
         return result;
     }
@@ -386,6 +397,10 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                     ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff);
                 result.add(Float.intBitsToFloat(intValue));
                 i+=4;
+            } else if (datatype == String.class) {
+                String str = new String(s7Data);
+                result.add(str);
+                i += length;
             } else {
                 throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
             }
