@@ -400,8 +400,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 i+=4;
             } else if (datatype == String.class) {
                 StringBuilder builder = new StringBuilder();
-                while (s7Data[i] != (byte) 0x0) {
-                    builder.append(s7Data[i]);
+                while (s7Data[i] != (byte) 0x0 && i < length) {
+                    builder.append((char)s7Data[i]);
                     i++;
                 }
                 i++; // skip terminating character
