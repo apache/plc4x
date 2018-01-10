@@ -334,6 +334,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result[(i * 4) + 3] = (byte) (intValue & 0xff);
             }
         } else if (valueType == String.class) {
+            // TOOD probably need to add a terminating character so you know where each string ends
             int size = 0;
             for (Object value : values) {
                 size = size + ((String) value).length();
@@ -398,6 +399,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result.add(Float.intBitsToFloat(intValue));
                 i+=4;
             } else if (datatype == String.class) {
+                // FIXME Assumes there's only a single string and no other data
                 String str = new String(s7Data);
                 result.add(str);
                 i += length;
