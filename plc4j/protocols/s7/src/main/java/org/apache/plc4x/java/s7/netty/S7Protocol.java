@@ -242,7 +242,7 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                         (messageType == MessageType.ACK_DATA)) {
                         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
                         short length = (dataTransportSize.isSizeInBits()) ?
-                            (short) (userData.readShort() / 8) : userData.readShort();
+                            (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
                         byte[] data = new byte[length];
                         userData.readBytes(data);
                         // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
