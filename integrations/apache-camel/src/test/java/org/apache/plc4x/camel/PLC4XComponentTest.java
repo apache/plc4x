@@ -45,8 +45,7 @@ public class PLC4XComponentTest extends CamelTestSupport {
             public void configure() {
                 from("direct:plc4x")
                     .setHeader(Constants.ADDRESS_HEADER, constant(new S7Address(MemoryArea.INPUTS, (short) 0x44)))
-                    .setHeader(Constants.DATATYPE_HEADER, constant(Byte.class))
-                    .setBody(constant(0x0))
+                    .setBody(constant((byte) 0x0))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
             }

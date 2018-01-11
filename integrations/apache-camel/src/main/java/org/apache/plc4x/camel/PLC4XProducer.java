@@ -26,14 +26,13 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class PLC4XProducer extends DefaultAsyncProducer {
     @SuppressWarnings("unused")
@@ -59,23 +58,19 @@ public class PLC4XProducer extends DefaultAsyncProducer {
         Message in = exchange.getIn();
         Address address = in.getHeader(Constants.ADDRESS_HEADER, Address.class);
         Object body = in.getBody();
-        CompletableFuture<?> completableFuture;
+        PlcWriteRequest.Builder builder = PlcWriteRequest.builder();
         if (body instanceof List) {
             List<?> bodyList = in.getBody(List.class);
-            List<WriteRequestItem<?>> collect = bodyList
+            bodyList
                 .stream()
                 .map(o -> (WriteRequestItem<?>) new WriteRequestItem(o.getClass(), address, o))
-                .collect(Collectors.toList());
-            PlcWriteRequest bulkPlcWriteRequest = new PlcWriteRequest(collect);
-            PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
-            completableFuture = plcWriter.write(bulkPlcWriteRequest);
+                .forEach(builder::addItem);
         } else {
-            Class<?> datatype = in.getHeader(Constants.DATATYPE_HEADER, Class.class);
             Object value = in.getBody(Object.class);
-            TypeSafePlcWriteRequest plcSimpleWriteRequest = new TypeSafePlcWriteRequest(datatype, address, value);
-            PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
-            completableFuture = plcWriter.write(plcSimpleWriteRequest);
+            builder.addItem(address, value);
         }
+        PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
+        CompletableFuture<? extends PlcWriteResponse> completableFuture = plcWriter.write(builder.build());
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {
             log.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);

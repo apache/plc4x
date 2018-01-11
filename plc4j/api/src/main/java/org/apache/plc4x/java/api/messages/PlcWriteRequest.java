@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class PlcWriteRequest implements PlcRequest {
@@ -92,9 +93,22 @@ public class PlcWriteRequest implements PlcRequest {
 
         private List<WriteRequestItem> requests = new LinkedList<>();
 
+        @SuppressWarnings("unchecked")
+        public <T> PlcWriteRequest.Builder addItem(Address address, T value) {
+            Objects.requireNonNull(value);
+            checkType(value.getClass());
+            requests.add(new WriteRequestItem<>((Class<T>) value.getClass(), address, (T) value));
+            return this;
+        }
+
         public <T> PlcWriteRequest.Builder addItem(Class<T> dataType, Address address, T... values) {
             checkType(dataType);
             requests.add(new WriteRequestItem<>(dataType, address, values));
+            return this;
+        }
+
+        public <T> PlcWriteRequest.Builder addItem(WriteRequestItem writeRequestItem) {
+            checkType(writeRequestItem.getDatatype());
             return this;
         }
 

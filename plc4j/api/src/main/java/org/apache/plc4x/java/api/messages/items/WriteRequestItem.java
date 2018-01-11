@@ -42,13 +42,6 @@ public class WriteRequestItem<T> {
         responseItem = null;
     }
 
-    public WriteRequestItem(Class<T> datatype, Address address, List<T> values) {
-        this.datatype = datatype;
-        this.address = address;
-        this.values = new ArrayList<>(values);
-        responseItem = null;
-    }
-
     public Class<T> getDatatype() {
         return datatype;
     }

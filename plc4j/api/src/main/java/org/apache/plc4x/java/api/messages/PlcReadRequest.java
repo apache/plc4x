@@ -114,6 +114,12 @@ public class PlcReadRequest implements PlcRequest {
             return this;
         }
 
+        public Builder addItem(ReadRequestItem readRequestItem) {
+            checkType(readRequestItem.getDatatype());
+            requests.add(readRequestItem);
+            return this;
+        }
+
         private void checkType(Class dataType) {
             if (firstType == null) {
                 firstType = dataType;
