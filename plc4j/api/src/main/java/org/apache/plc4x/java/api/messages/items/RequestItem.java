@@ -57,7 +57,9 @@ public abstract class RequestItem<DATA_TYPE, RESPONSE_ITEM extends ResponseItem>
             if (responseItem == null) {
                 try {
                     lock.lock();
-                    responseSet.await();
+                    if (responseItem == null) {
+                        responseSet.await();
+                    }
                 } catch (InterruptedException e) {
                     throw new CompletionException(e);
                 } finally {
