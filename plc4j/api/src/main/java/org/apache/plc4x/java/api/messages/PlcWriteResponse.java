@@ -30,10 +30,10 @@ public interface PlcWriteResponse extends PlcResponse {
     List<? extends WriteResponseItem> getResponseItems();
 
     default Optional<? extends WriteResponseItem<?>> getResponseItem() {
-        if (getNumberOfItems() > 1) {
+        if (isMultiValue()) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
-        if (getNumberOfItems() < 1) {
+        if (isEmpty()) {
             return Optional.empty();
         }
         return Optional.<WriteResponseItem<?>>of(getResponseItems().get(0));
@@ -41,6 +41,14 @@ public interface PlcWriteResponse extends PlcResponse {
 
     default int getNumberOfItems() {
         return getResponseItems().size();
+    }
+
+    default boolean isMultiValue() {
+        return getNumberOfItems() > 1;
+    }
+
+    default boolean isEmpty() {
+        return getNumberOfItems() < 1;
     }
 
     @SuppressWarnings("unchecked")

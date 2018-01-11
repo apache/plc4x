@@ -30,10 +30,10 @@ public interface PlcReadResponse extends PlcResponse {
     List<? extends ReadResponseItem> getResponseItems();
 
     default Optional<? extends ReadResponseItem<?>> getResponseItem() {
-        if (getNumberOfItems() > 1) {
+        if (isMultiValue()) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
-        if (getNumberOfItems() < 1) {
+        if (isEmpty()) {
             return Optional.empty();
         }
         return Optional.<ReadResponseItem<?>>of(getResponseItems().get(0));
@@ -41,6 +41,14 @@ public interface PlcReadResponse extends PlcResponse {
 
     default int getNumberOfItems() {
         return getResponseItems().size();
+    }
+
+    default boolean isMultiValue() {
+        return getNumberOfItems() > 1;
+    }
+
+    default boolean isEmpty() {
+        return getNumberOfItems() < 1;
     }
 
     @SuppressWarnings("unchecked")
