@@ -25,9 +25,9 @@ import org.apache.camel.impl.DefaultAsyncProducer;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.specific.BulkPlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.List;
@@ -62,9 +62,9 @@ public class PLC4XProducer extends DefaultAsyncProducer {
         CompletableFuture<?> completableFuture;
         if (body instanceof List) {
             List<?> bodyList = in.getBody(List.class);
-            List<WriteRequestItem> collect = bodyList
+            List<WriteRequestItem<?>> collect = bodyList
                 .stream()
-                .map(o -> new WriteRequestItem(o.getClass(), address, o))
+                .map(o -> (WriteRequestItem<?>) new WriteRequestItem(o.getClass(), address, o))
                 .collect(Collectors.toList());
             BulkPlcWriteRequest bulkPlcWriteRequest = new BulkPlcWriteRequest(collect);
             PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));

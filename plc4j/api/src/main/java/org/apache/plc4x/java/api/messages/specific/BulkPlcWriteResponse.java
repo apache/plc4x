@@ -26,9 +26,9 @@ import java.util.List;
 public class BulkPlcWriteResponse implements PlcWriteResponse {
 
     private final BulkPlcWriteRequest request;
-    private final List<WriteResponseItem> responseItems;
+    private final List<WriteResponseItem<?>> responseItems;
 
-    public BulkPlcWriteResponse(BulkPlcWriteRequest request, List<WriteResponseItem> responseItems) {
+    public BulkPlcWriteResponse(BulkPlcWriteRequest request, List<WriteResponseItem<?>> responseItems) {
         this.request = request;
         this.responseItems = responseItems;
     }
@@ -37,7 +37,7 @@ public class BulkPlcWriteResponse implements PlcWriteResponse {
         return request;
     }
 
-    public List<? extends WriteResponseItem> getResponseItems() {
+    public List<? extends WriteResponseItem<?>> getResponseItems() {
         return responseItems;
     }
 

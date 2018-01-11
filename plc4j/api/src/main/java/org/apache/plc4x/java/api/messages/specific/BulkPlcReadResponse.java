@@ -29,9 +29,9 @@ import java.util.Optional;
 public class BulkPlcReadResponse implements PlcReadResponse {
 
     private final BulkPlcReadRequest request;
-    private final List<ReadResponseItem> responseItems;
+    private final List<ReadResponseItem<?>> responseItems;
 
-    public BulkPlcReadResponse(BulkPlcReadRequest request, List<ReadResponseItem> responseItems) {
+    public BulkPlcReadResponse(BulkPlcReadRequest request, List<ReadResponseItem<?>> responseItems) {
         this.request = request;
         this.responseItems = responseItems;
     }
@@ -40,7 +40,7 @@ public class BulkPlcReadResponse implements PlcReadResponse {
         return request;
     }
 
-    public List<? extends ReadResponseItem> getResponseItems() {
+    public List<? extends ReadResponseItem<?>> getResponseItems() {
         return responseItems;
     }
 

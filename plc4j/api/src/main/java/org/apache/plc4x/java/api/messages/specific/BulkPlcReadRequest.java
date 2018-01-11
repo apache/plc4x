@@ -25,34 +25,33 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class BulkPlcReadRequest implements PlcReadRequest {
 
-    private final List<ReadRequestItem> readRequestItems;
+    private final List<ReadRequestItem<?>> readRequestItems;
 
     public BulkPlcReadRequest() {
         this.readRequestItems = new LinkedList<>();
     }
 
-    public BulkPlcReadRequest(Class dataType, Address address) {
+    public BulkPlcReadRequest(Class<?> dataType, Address address) {
         this();
-        addItem(new ReadRequestItem(dataType, address));
+        addItem(new ReadRequestItem<>(dataType, address));
     }
 
-    public BulkPlcReadRequest(Class dataType, Address address, int size) {
+    public BulkPlcReadRequest(Class<?> dataType, Address address, int size) {
         this();
-        addItem(new ReadRequestItem(dataType, address, size));
+        addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
-    public BulkPlcReadRequest(List<ReadRequestItem> readRequestItems) {
+    public BulkPlcReadRequest(List<ReadRequestItem<?>> readRequestItems) {
         this.readRequestItems = readRequestItems;
     }
 
-    public void addItem(ReadRequestItem readRequestItem) {
+    public void addItem(ReadRequestItem<?> readRequestItem) {
         readRequestItems.add(readRequestItem);
     }
 
-    public List<? extends ReadRequestItem> getReadRequestItems() {
+    public List<? extends ReadRequestItem<?>> getReadRequestItems() {
         return readRequestItems;
     }
 

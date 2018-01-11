@@ -50,17 +50,17 @@ public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
     }
 
     @SuppressWarnings("unchecked")
-    public void addItem(ReadRequestItem readRequestItem) {
+    public void addItem(ReadRequestItem<?> readRequestItem) {
         if (readRequestItem == null) {
             return;
         }
         if (readRequestItem.getDatatype() != datatype) {
             throw new IllegalArgumentException("Incompatible datatype " + readRequestItem.getDatatype());
         }
-        readRequestItems.add(readRequestItem);
+        readRequestItems.add((ReadRequestItem<T>) readRequestItem);
     }
 
-    public List<? extends ReadRequestItem> getReadRequestItems() {
+    public List<? extends ReadRequestItem<?>> getReadRequestItems() {
         return readRequestItems;
     }
 

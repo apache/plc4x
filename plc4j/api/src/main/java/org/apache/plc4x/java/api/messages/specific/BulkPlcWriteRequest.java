@@ -25,34 +25,28 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class BulkPlcWriteRequest implements PlcWriteRequest {
 
-    private final List<WriteRequestItem> requestItems;
+    private final List<WriteRequestItem<?>> requestItems;
 
     public BulkPlcWriteRequest() {
         this.requestItems = new LinkedList<>();
     }
 
-    public BulkPlcWriteRequest(Class dataType, Address address, Object value) {
+    public <T> BulkPlcWriteRequest(Class<T> dataType, Address address, T... values) {
         this();
-        addItem(new WriteRequestItem(dataType, address, value));
+        addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
-    public BulkPlcWriteRequest(Class dataType, Address address, Object[] values) {
-        this();
-        addItem(new WriteRequestItem(dataType, address, values));
-    }
-
-    public BulkPlcWriteRequest(List<WriteRequestItem> requestItems) {
+    public BulkPlcWriteRequest(List<WriteRequestItem<?>> requestItems) {
         this.requestItems = requestItems;
     }
 
-    public void addItem(WriteRequestItem requestItem) {
+    public void addItem(WriteRequestItem<?> requestItem) {
         requestItems.add(requestItem);
     }
 
-    public List<? extends WriteRequestItem> getRequestItems() {
+    public List<? extends WriteRequestItem<?>> getRequestItems() {
         return requestItems;
     }
 

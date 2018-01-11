@@ -47,7 +47,7 @@ public class SinglePlcReadRequest<T> implements PlcReadRequest {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void addItem(ReadRequestItem readRequestItem) {
+    public void addItem(ReadRequestItem<?> readRequestItem) {
         if (this.requestItem != null && readRequestItem != null) {
             throw new IllegalStateException(SinglePlcReadRequest.class.getName() + " can only contain on requestItem");
         }

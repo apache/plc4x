@@ -47,7 +47,7 @@ public class SinglePlcWriteRequest<T> implements PlcWriteRequest {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void addItem(WriteRequestItem requestItem) {
+    public void addItem(WriteRequestItem<?> requestItem) {
         if (this.requestItem != null && requestItem != null) {
             throw new IllegalStateException(SinglePlcReadRequest.class.getName() + " can only contain on readRequestItem");
         }

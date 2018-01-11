@@ -59,13 +59,7 @@ public interface PlcWriteRequest extends PlcRequest {
 
         private List<WriteRequestItem> requests = new LinkedList<>();
 
-        public <T> PlcWriteRequest.Builder addItem(Class<T> dataType, Address address, T value) {
-            checkType(dataType);
-            requests.add(new WriteRequestItem<>(dataType, address, value));
-            return this;
-        }
-
-        public <T> PlcWriteRequest.Builder addItem(Class<T> dataType, Address address, T[] values) {
+        public <T> PlcWriteRequest.Builder addItem(Class<T> dataType, Address address, T... values) {
             checkType(dataType);
             requests.add(new WriteRequestItem<>(dataType, address, values));
             return this;

@@ -91,7 +91,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             cf.completeExceptionally(new PlcIoException(readExceptionMsg));
             return cf;
         }
-        List<ReadResponseItem> responseItems = new LinkedList<>();
+        List<ReadResponseItem<?>> responseItems = new LinkedList<>();
         for (ReadRequestItem requestItem : readRequest.getReadRequestItems()) {
             ReadResponseItem responseItem = new ReadResponseItem(requestItem, ResponseCode.OK,
                 Collections.singletonList(getDataValue(requestItem.getAddress())));
@@ -118,7 +118,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             cf.completeExceptionally(new PlcIoException(writeExceptionMsg));
             return cf;
         }
-        List<WriteResponseItem> responseItems = new LinkedList<>();
+        List<WriteResponseItem<?>> responseItems = new LinkedList<>();
         for (WriteRequestItem requestItem : writeRequest.getRequestItems()) {
             setDataValue(requestItem.getAddress(), requestItem.getValues());
             WriteResponseItem<?> responseItem = new WriteResponseItem<>(requestItem, ResponseCode.OK);

@@ -20,7 +20,9 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class WriteRequestItem<T> {
@@ -29,23 +31,21 @@ public class WriteRequestItem<T> {
 
     private final Address address;
 
-    private final T[] values;
+    private final List<T> values;
 
     private WriteResponseItem<T> responseItem;
 
-    @SuppressWarnings("unchecked")
-    public WriteRequestItem(Class<T> datatype, Address address, T value) {
+    public WriteRequestItem(Class<T> datatype, Address address, T... values) {
         this.datatype = datatype;
         this.address = address;
-        this.values = (T[]) Array.newInstance(datatype, 1);
-        this.values[0] = value;
+        this.values = new ArrayList<>(Arrays.asList(values));
         responseItem = null;
     }
 
-    public WriteRequestItem(Class<T> datatype, Address address, T[] values) {
+    public WriteRequestItem(Class<T> datatype, Address address, List<T> values) {
         this.datatype = datatype;
         this.address = address;
-        this.values = values;
+        this.values = new ArrayList<>(values);
         responseItem = null;
     }
 
@@ -57,7 +57,7 @@ public class WriteRequestItem<T> {
         return address;
     }
 
-    public T[] getValues() {
+    public List<T> getValues() {
         return values;
     }
 

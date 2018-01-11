@@ -35,12 +35,7 @@ public class CheckedBulkPlcWriteRequest<T> extends BulkPlcWriteRequest {
         this.requestItems = new LinkedList<>();
     }
 
-    public CheckedBulkPlcWriteRequest(Class<T> dataType, Address address, T value) {
-        this(dataType);
-        addItem(new WriteRequestItem<>(dataType, address, value));
-    }
-
-    public CheckedBulkPlcWriteRequest(Class<T> dataType, Address address, T[] values) {
+    public CheckedBulkPlcWriteRequest(Class<T> dataType, Address address, T... values) {
         this(dataType);
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
@@ -50,17 +45,17 @@ public class CheckedBulkPlcWriteRequest<T> extends BulkPlcWriteRequest {
     }
 
     @SuppressWarnings("unchecked")
-    public void addItem(WriteRequestItem writeRequestItem) {
+    public void addItem(WriteRequestItem<?> writeRequestItem) {
         if (writeRequestItem == null) {
             return;
         }
         if (writeRequestItem.getDatatype() != datatype) {
             throw new IllegalArgumentException("Incompatible datatype " + writeRequestItem.getDatatype());
         }
-        requestItems.add(writeRequestItem);
+        requestItems.add((WriteRequestItem<T>)writeRequestItem);
     }
 
-    public List<? extends WriteRequestItem> getRequestItems() {
+    public List<? extends WriteRequestItem<?>> getRequestItems() {
         return requestItems;
     }
 
