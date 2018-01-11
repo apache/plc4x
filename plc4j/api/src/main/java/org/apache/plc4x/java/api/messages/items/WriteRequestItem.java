@@ -23,7 +23,12 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class WriteRequestItem<T> {
 
@@ -33,7 +38,11 @@ public class WriteRequestItem<T> {
 
     private final List<T> values;
 
-    private WriteResponseItem<T> responseItem;
+    private volatile WriteResponseItem<T> responseItem;
+
+    private final Lock lock = new ReentrantLock();
+
+    private final Condition responseSet = lock.newCondition();
 
     public WriteRequestItem(Class<T> datatype, Address address, T... values) {
         this.datatype = datatype;
@@ -54,11 +63,30 @@ public class WriteRequestItem<T> {
         return values;
     }
 
-    public Optional<WriteResponseItem<T>> getResponseItem() {
-        return Optional.ofNullable(responseItem);
+    public CompletableFuture<WriteResponseItem<T>> getResponseItem() {
+        return CompletableFuture.supplyAsync(() -> {
+            if (responseItem == null) {
+                try {
+                    lock.lock();
+                    responseSet.await();
+                } catch (InterruptedException e) {
+                    throw new CompletionException(e);
+                } finally {
+                    lock.unlock();
+                }
+            }
+            return responseItem;
+        });
     }
 
     protected void setResponseItem(WriteResponseItem<T> responseItem) {
+        Objects.requireNonNull(responseItem);
+        try {
+            lock.lock();
+            responseSet.signalAll();
+        } finally {
+            lock.unlock();
+        }
         this.responseItem = responseItem;
     }
 }

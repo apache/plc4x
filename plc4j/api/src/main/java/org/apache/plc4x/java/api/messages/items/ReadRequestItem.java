@@ -20,7 +20,12 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.Optional;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ReadRequestItem<T> {
 
@@ -30,7 +35,11 @@ public class ReadRequestItem<T> {
 
     private final int size;
 
-    private ReadResponseItem<T> responseItem;
+    private volatile ReadResponseItem<T> responseItem;
+
+    private final Lock lock = new ReentrantLock();
+
+    private final Condition responseSet = lock.newCondition();
 
     public ReadRequestItem(Class<T> datatype, Address address) {
         this.datatype = datatype;
@@ -58,11 +67,30 @@ public class ReadRequestItem<T> {
         return size;
     }
 
-    public Optional<ReadResponseItem<T>> getResponseItem() {
-        return Optional.ofNullable(responseItem);
+    public CompletableFuture<ReadResponseItem<T>> getResponseItem() {
+        return CompletableFuture.supplyAsync(() -> {
+            if (responseItem == null) {
+                try {
+                    lock.lock();
+                    responseSet.await();
+                } catch (InterruptedException e) {
+                    throw new CompletionException(e);
+                } finally {
+                    lock.unlock();
+                }
+            }
+            return responseItem;
+        });
     }
 
     protected void setResponseItem(ReadResponseItem<T> responseItem) {
+        Objects.requireNonNull(responseItem);
+        try {
+            lock.lock();
+            responseSet.signalAll();
+        } finally {
+            lock.unlock();
+        }
         this.responseItem = responseItem;
     }
 }
