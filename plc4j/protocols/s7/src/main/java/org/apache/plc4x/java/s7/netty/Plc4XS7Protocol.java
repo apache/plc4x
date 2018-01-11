@@ -168,18 +168,16 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                         // All Ok.
                         else {
                             byte[] data = payloadItem.getData();
-                            Class datatype = requestItem.getDatatype();
-                            List value = decodeData(datatype, data);
+                            Class<?> datatype = requestItem.getDatatype();
+                            List<?> value = decodeData(datatype, data);
                             responseItem = new ReadResponseItem(requestItem, responseCode, value);
                         }
                         responseItems.add(responseItem);
                     }
                     if (plcReadRequest instanceof TypeSafePlcReadRequest) {
-                        response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems.isEmpty() ? null : responseItems.get(0));
-                    } else if (plcReadRequest instanceof PlcReadRequest) {
+                        response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems);
+                    }  else {
                         response = new PlcReadResponse(plcReadRequest, responseItems);
-                    } else {
-                        response = null;
                     }
                 }
 
@@ -210,12 +208,10 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                         responseItems.add(responseItem);
                     }
 
-                    if (plcWriteRequest instanceof PlcWriteRequest) {
-                        response = new PlcWriteResponse(plcWriteRequest, responseItems);
-                    } else if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
-                        response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+                    if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
+                        response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, responseItems);
                     } else {
-                        response = null;
+                        response = new PlcWriteResponse(plcWriteRequest, responseItems);
                     }
                 }
 
@@ -257,7 +253,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         }
     }
 
-    private TransportSize encodeTransportSize(Class datatype) {
+    private TransportSize encodeTransportSize(Class<?> datatype) {
         if (datatype == Boolean.class) {
             return TransportSize.BIT;
         } else if (datatype == Byte.class) {
@@ -276,7 +272,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         return null;
     }
 
-    private DataTransportSize encodeDataTransportSize(Class datatype) {
+    private DataTransportSize encodeDataTransportSize(Class<?> datatype) {
         if (datatype == Boolean.class) {
             return DataTransportSize.BIT;
         } else if (datatype == Byte.class) {

@@ -18,7 +18,8 @@ under the License.
 */
 package org.apache.plc4x.edgent;
 
-import com.google.gson.JsonObject;
+import java.util.Calendar;
+
 import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
@@ -34,7 +35,7 @@ import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
+import com.google.gson.JsonObject;
 
 /**
  * PlcConnectionAdapter encapsulates a plc4x {@link PlcConnection}.
