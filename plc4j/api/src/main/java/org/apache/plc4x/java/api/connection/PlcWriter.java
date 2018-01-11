@@ -23,8 +23,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteResponse;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -40,18 +38,6 @@ public interface PlcWriter {
      * @return a {@link CompletableFuture} giving async access to the response of the write operation.
      */
     CompletableFuture<? extends PlcWriteResponse> write(PlcWriteRequest writeRequest);
-
-    /**
-     * Writes a given value to a PLC.
-     *
-     * @param writeRequest object describing the type, location and value that whould be written.
-     * @param <T>          type that is being requested.
-     * @return a {@link CompletableFuture} giving async access to the response of the write operation.
-     */
-    @SuppressWarnings("unchecked")
-    default <T> CompletableFuture<SinglePlcWriteResponse<T>> write(SinglePlcWriteRequest<T> writeRequest) {
-        return (CompletableFuture<SinglePlcWriteResponse<T>>) write((PlcWriteRequest) writeRequest);
-    }
 
     /**
      * Writes a given value to a PLC.

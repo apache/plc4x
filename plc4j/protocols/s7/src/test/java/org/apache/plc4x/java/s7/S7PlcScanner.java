@@ -21,8 +21,8 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.slf4j.Logger;
@@ -62,8 +62,8 @@ public class S7PlcScanner {
                             } else {
                                 address = plcConnection.parseAddress(memoryArea.name() + "/" + i);
                             }
-                            SinglePlcReadResponse<Byte> plcReadResponse = plcReader.read(
-                                new SinglePlcReadRequest<>(Byte.class, address)).get();
+                            TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(
+                                new TypeSafePlcReadRequest<>(Byte.class, address)).get();
                             Byte data = plcReadResponse.getResponseItem().get().getValues().get(0);
                             if (data != null && data != 0) {
                                 System.out.println(String.format(

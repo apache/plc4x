@@ -174,8 +174,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                         }
                         responseItems.add(responseItem);
                     }
-                    if (plcReadRequest instanceof SinglePlcReadRequest) {
-                        response = new SinglePlcReadResponse((SinglePlcReadRequest) plcReadRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+                    if (plcReadRequest instanceof TypeSafePlcReadRequest) {
+                        response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems.isEmpty() ? null : responseItems.get(0));
                     } else if (plcReadRequest instanceof PlcReadRequest) {
                         response = new PlcReadResponse(plcReadRequest, responseItems);
                     } else {
@@ -212,8 +212,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
 
                     if (plcWriteRequest instanceof PlcWriteRequest) {
                         response = new PlcWriteResponse(plcWriteRequest, responseItems);
-                    } else if (plcWriteRequest instanceof SinglePlcWriteRequest) {
-                        response = new SinglePlcWriteResponse((SinglePlcWriteRequest) plcWriteRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+                    } else if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
+                        response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, responseItems.isEmpty() ? null : responseItems.get(0));
                     } else {
                         response = null;
                     }

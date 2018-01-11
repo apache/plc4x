@@ -27,7 +27,7 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public class PLC4XProducer extends DefaultAsyncProducer {
         } else {
             Class<?> datatype = in.getHeader(Constants.DATATYPE_HEADER, Class.class);
             Object value = in.getBody(Object.class);
-            SinglePlcWriteRequest plcSimpleWriteRequest = new SinglePlcWriteRequest(datatype, address, value);
+            TypeSafePlcWriteRequest plcSimpleWriteRequest = new TypeSafePlcWriteRequest(datatype, address, value);
             PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
             completableFuture = plcWriter.write(plcSimpleWriteRequest);
         }

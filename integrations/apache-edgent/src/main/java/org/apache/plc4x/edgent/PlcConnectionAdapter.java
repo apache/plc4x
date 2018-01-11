@@ -28,8 +28,8 @@ import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +111,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                     connection = getConnection();
                     address = connection.parseAddress(addressStr);
                     PlcReader reader = connection.getReader().get();
-                    SinglePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
+                    TypeSafePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
                     return reader.read(readRequest).get().getResponseItem().get().getValues().get(0);
                 } catch (Exception e) {
                     logger.error("reading from plc device {} {} failed", connection, address, e);
@@ -182,13 +182,13 @@ public class PlcConnectionAdapter implements AutoCloseable {
     }
 
     @SuppressWarnings("unchecked")
-    static <T> SinglePlcWriteRequest<T> newPlcWriteRequest(Address address, T value) {
+    static <T> TypeSafePlcWriteRequest<T> newPlcWriteRequest(Address address, T value) {
         Class<T> cls = (Class<T>) value.getClass();
-        return new SinglePlcWriteRequest<>(cls, address, value);
+        return new TypeSafePlcWriteRequest<>(cls, address, value);
     }
 
-    static <T> SinglePlcReadRequest<T> newPlcReadRequest(Class<T> datatype, Address address) {
-        return new SinglePlcReadRequest<>(datatype, address);
+    static <T> TypeSafePlcReadRequest<T> newPlcReadRequest(Class<T> datatype, Address address) {
+        return new TypeSafePlcReadRequest<>(datatype, address);
     }
 
 }

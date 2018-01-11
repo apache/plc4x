@@ -24,8 +24,8 @@ import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 import org.apache.plc4x.java.api.messages.mock.MockAddress;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.types.ResponseCode;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -116,7 +116,7 @@ class APIMessageTests {
     @Tag("fast")
     void plcReadRequestAddress() {
         MockAddress address = new MockAddress("mock:/DATA");
-        PlcReadRequest plcReadRequest = new SinglePlcReadRequest<>(Byte.class, address);
+        PlcReadRequest plcReadRequest = new TypeSafePlcReadRequest<>(Byte.class, address);
         assertTrue(plcReadRequest.getRequestItems().size() == 1, "Expected one request item");
         assertTrue(plcReadRequest.getNumberOfItems() == 1, "Expected one request item");
     }
@@ -171,7 +171,7 @@ class APIMessageTests {
     @Tag("fast")
     void plcWriteRequestObject() {
         MockAddress address = new MockAddress("mock:/DATA");
-        PlcWriteRequest plcWriteRequest = new SinglePlcWriteRequest<>(Byte.class, address, (byte) 0x33);
+        PlcWriteRequest plcWriteRequest = new TypeSafePlcWriteRequest<>(Byte.class, address, (byte) 0x33);
         assertTrue(plcWriteRequest.getRequestItems().size() == 1, "Expected no request item");
         assertTrue(plcWriteRequest.getNumberOfItems() == 1, "Expected one request item");
         List values = plcWriteRequest.getRequestItems().get(0).getValues();
@@ -183,7 +183,7 @@ class APIMessageTests {
     void plcWriteRequestObjects() {
         MockAddress address = new MockAddress("mock:/DATA");
         Byte[] data = {(byte) 0x22, (byte) 0x66};
-        PlcWriteRequest plcWriteRequest = new SinglePlcWriteRequest<>(Byte.class, address, data);
+        PlcWriteRequest plcWriteRequest = new TypeSafePlcWriteRequest<>(Byte.class, address, data);
         assertTrue(plcWriteRequest.getRequestItems().size() == 1, "Expected one request item");
         assertTrue(plcWriteRequest.getNumberOfItems() == 1, "Expected one request item");
         List values = plcWriteRequest.getRequestItems().get(0).getValues();

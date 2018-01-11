@@ -22,8 +22,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadResponse;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -39,18 +37,6 @@ public interface PlcReader {
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
     CompletableFuture<? extends PlcReadResponse> read(PlcReadRequest readRequest);
-
-    /**
-     * Reads a requested value from a PLC.
-     *
-     * @param readRequest object describing the type and location of the value.
-     * @param <T>         type that is being requested.
-     * @return a {@link CompletableFuture} giving async access to the returned value.
-     */
-    @SuppressWarnings("unchecked")
-    default <T> CompletableFuture<SinglePlcReadResponse<T>> read(SinglePlcReadRequest<T> readRequest) {
-        return (CompletableFuture<SinglePlcReadResponse<T>>) read((PlcReadRequest) readRequest);
-    }
 
     /**
      * Reads a requested value from a PLC.

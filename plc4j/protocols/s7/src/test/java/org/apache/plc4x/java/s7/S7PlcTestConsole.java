@@ -21,8 +21,8 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class S7PlcTestConsole {
                 while (!"exit".equalsIgnoreCase(line = scanner.next())) {
                     try {
                         Address address = plcConnection.parseAddress(line);
-                        SinglePlcReadResponse<Byte> plcReadResponse = plcReader.read(new SinglePlcReadRequest<>(Byte.class, address)).get();
+                        TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(new TypeSafePlcReadRequest<>(Byte.class, address)).get();
                         List<Byte> data = plcReadResponse.getResponseItem().get().getValues();
                         System.out.println("Response: " + data.get(0));
                     } catch (Exception e) {

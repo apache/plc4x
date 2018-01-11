@@ -33,10 +33,10 @@ import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.types.ResponseCode;
 
@@ -104,8 +104,8 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             responseItems.add(responseItem);
         }
         PlcReadResponse response;
-        if (readRequest instanceof SinglePlcReadRequest) {
-            response = new SinglePlcReadResponse((SinglePlcReadRequest) readRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+        if (readRequest instanceof TypeSafePlcReadRequest) {
+            response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) readRequest, responseItems.isEmpty() ? null : responseItems.get(0));
         } else {
             response = new PlcReadResponse(readRequest, responseItems);
         }
@@ -129,8 +129,8 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             responseItems.add(responseItem);
         }
         PlcWriteResponse response;
-        if (writeRequest instanceof SinglePlcWriteRequest) {
-            response = new SinglePlcWriteResponse((SinglePlcWriteRequest) writeRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+        if (writeRequest instanceof TypeSafePlcWriteRequest) {
+            response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) writeRequest, responseItems.isEmpty() ? null : responseItems.get(0));
         } else {
             response = new PlcWriteResponse(writeRequest, responseItems);
         }

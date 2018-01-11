@@ -21,8 +21,8 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +54,8 @@ public class S7PlcWriterSample {
                 // Write synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
-                SinglePlcWriteResponse<Float> plcWriteResponse = plcWriter.write(
-                    new SinglePlcWriteRequest<>(Float.class, inputs, 2.0f)).get();
+                TypeSafePlcWriteResponse<Float> plcWriteResponse = plcWriter.write(
+                    new TypeSafePlcWriteRequest<>(Float.class, inputs, 2.0f)).get();
                 System.out.println("Written: " + plcWriteResponse.getResponseItem().get().getResponseCode().name());
             }
         }
