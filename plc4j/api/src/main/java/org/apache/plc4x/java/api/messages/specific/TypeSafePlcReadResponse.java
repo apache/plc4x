@@ -26,15 +26,33 @@ import java.util.Optional;
 
 public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
 
-    public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
-        // TODO: use checked list.
-        super(request, responseItem);
+    public TypeSafePlcReadResponse(PlcReadResponse plcReadResponse) {
+        super(plcReadResponse.getRequest(), plcReadResponse.getResponseItems());
+        List<? extends ReadResponseItem<?>> responseItems = plcReadResponse.getResponseItems();
+        Class type = null;
+        for (ReadResponseItem<?> responseItem : responseItems) {
+            if (responseItem.getValues().size() > 0) {
+                type = responseItem.getValues().get(0).getClass();
+                break;
+            }
+        }
+        if (type != null) {
+            for (ReadResponseItem<?> responseItem : responseItems) {
+                checkList(responseItem.getValues(), type);
+            }
+        }
     }
 
-    @SuppressWarnings("unchecked")
+    public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
+        super(request, responseItem);
+        checkList(responseItem.getValues(), request.getDataType());
+    }
+
     public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, List<ReadResponseItem<T>> responseItems) {
-        // TODO: use checked list.
-        super(request, (List) responseItems);
+        super(request, responseItems);
+        for (ReadResponseItem<T> responseItem : responseItems) {
+            checkList(responseItem.getValues(), request.getDataType());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -43,13 +61,21 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ReadResponseItem<T>> getResponseItems() {
-        return (List<ReadResponseItem<T>>) super.getResponseItems();
+    public List<? extends ReadResponseItem<T>> getResponseItems() {
+        return (List<? extends ReadResponseItem<T>>) super.getResponseItems();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Optional<ReadResponseItem<T>> getResponseItem() {
         return (Optional<ReadResponseItem<T>>) super.getResponseItem();
+    }
+
+    private static void checkList(List<?> list, Class<?> type) {
+        for (Object o : list) {
+            if (!type.isAssignableFrom(o.getClass())) {
+                throw new IllegalArgumentException("Unexpected data type " + o.getClass() + " on readRequestItem. Expected " + type);
+            }
+        }
     }
 }

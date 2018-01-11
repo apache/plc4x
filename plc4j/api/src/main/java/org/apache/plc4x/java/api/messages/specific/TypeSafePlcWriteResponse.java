@@ -26,22 +26,25 @@ import java.util.Optional;
 
 public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
 
+    public TypeSafePlcWriteResponse(PlcWriteResponse plcWriteResponse) {
+        super(plcWriteResponse.getRequest(), plcWriteResponse.getResponseItems());
+    }
+
     public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
-        // TODO: use checked type.
         super(request, responseItem);
     }
 
     @SuppressWarnings("unchecked")
     public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
-        // TODO: use checked list.
-        super(request, (List) responseItems);
+        super(request, responseItems);
     }
 
     public TypeSafePlcWriteRequest<T> getRequest() {
         return (TypeSafePlcWriteRequest<T>) super.getRequest();
     }
 
-    public List<WriteResponseItem<T>> getResponseItems() {
+    @SuppressWarnings("unchecked")
+    public List<? extends WriteResponseItem<T>> getResponseItems() {
         return (List<WriteResponseItem<T>>) super.getResponseItems();
     }
 

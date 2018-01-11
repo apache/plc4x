@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -45,9 +46,9 @@ public interface PlcReader {
      * @param <T>         type that is being requested.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    @SuppressWarnings("unchecked")
     default <T> CompletableFuture<TypeSafePlcReadResponse<T>> read(TypeSafePlcReadRequest<T> readRequest) {
-        return (CompletableFuture<TypeSafePlcReadResponse<T>>) read((PlcReadRequest) readRequest);
+        Objects.requireNonNull(readRequest);
+        return read((PlcReadRequest) readRequest).thenApply(TypeSafePlcReadResponse::new);
     }
 
 }

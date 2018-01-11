@@ -28,14 +28,15 @@ import java.util.Optional;
 public class PlcReadResponse implements PlcResponse {
 
     private final PlcReadRequest request;
-    private final List<ReadResponseItem<?>> responseItems;
+
+    private final List<? extends ReadResponseItem<?>> responseItems;
 
     public PlcReadResponse(PlcReadRequest request, ReadResponseItem<?> responseItems) {
         this.request = request;
         this.responseItems = Collections.singletonList(responseItems);
     }
 
-    public PlcReadResponse(PlcReadRequest request, List<ReadResponseItem<?>> responseItems) {
+    public PlcReadResponse(PlcReadRequest request, List<? extends ReadResponseItem<?>> responseItems) {
         this.request = request;
         this.responseItems = responseItems;
     }

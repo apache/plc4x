@@ -23,18 +23,22 @@ import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
 
-    private Class<T> datatype;
+    private Class<T> dataType;
 
     public TypeSafePlcReadRequest(Class<T> dataType) {
-        this.datatype = dataType;
+        this.dataType = dataType;
     }
 
-    public TypeSafePlcReadRequest(Class<T> dataType, ReadRequestItem<T> readRequestItem) {
+    public TypeSafePlcReadRequest(Class<T> dataType, PlcReadRequest plcReadRequest) {
         this(dataType);
+        for (ReadRequestItem<?> readRequestItem : plcReadRequest.getRequestItems()) {
+            addItem(readRequestItem);
+        }
     }
 
     public TypeSafePlcReadRequest(Class<T> dataType, Address address) {
@@ -47,13 +51,18 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
         addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
-    @SuppressWarnings("unchecked")
-    public void addItem(ReadRequestItem<?> readRequestItem) {
-        if (readRequestItem == null) {
-            return;
+    public TypeSafePlcReadRequest(Class<T> dataType, ReadRequestItem<T>... requestItems) {
+        this(dataType);
+        Objects.requireNonNull(requestItems);
+        for (ReadRequestItem<T> readRequestItem : requestItems) {
+            addItem(readRequestItem);
         }
-        if (readRequestItem.getDatatype() != datatype) {
-            throw new IllegalArgumentException("Incompatible datatype " + readRequestItem.getDatatype());
+    }
+
+    public void addItem(ReadRequestItem<?> readRequestItem) {
+        Objects.requireNonNull(readRequestItem);
+        if (readRequestItem.getDatatype() != dataType) {
+            throw new IllegalArgumentException("Unexpected data type " + readRequestItem.getDatatype() + " on readRequestItem. Expected " + dataType);
         }
         super.addItem(readRequestItem);
     }
@@ -67,5 +76,9 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
     @Override
     public Optional<ReadRequestItem<T>> getRequestItem() {
         return (Optional<ReadRequestItem<T>>) super.getRequestItem();
+    }
+
+    public Class<T> getDataType() {
+        return dataType;
     }
 }

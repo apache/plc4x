@@ -21,6 +21,7 @@ package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 
@@ -48,7 +49,7 @@ public interface PlcWriter {
      */
     @SuppressWarnings("unchecked")
     default <T> CompletableFuture<TypeSafePlcWriteResponse<T>> write(TypeSafePlcWriteRequest<T> writeRequest) {
-        return (CompletableFuture<TypeSafePlcWriteResponse<T>>) write((PlcWriteRequest) writeRequest);
+        return write((PlcWriteRequest) writeRequest).thenApply(TypeSafePlcWriteResponse::new);
     }
 
 }

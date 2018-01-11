@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
@@ -33,26 +34,29 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
         this.datatype = type;
     }
 
+    public TypeSafePlcWriteRequest(Class<T> dataType, PlcWriteRequest plcWriteRequest) {
+        this(dataType);
+        for (WriteRequestItem<?> WriteRequestItem : plcWriteRequest.getRequestItems()) {
+            addItem(WriteRequestItem);
+        }
+    }
+
     public TypeSafePlcWriteRequest(Class<T> dataType, Address address, T... values) {
         this(dataType);
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
-    public TypeSafePlcWriteRequest(Class<T> dataType, WriteRequestItem<T> requestItem) {
+    public TypeSafePlcWriteRequest(Class<T> dataType, WriteRequestItem<T>... requestItems) {
         this(dataType);
-        this.getRequestItems().add(requestItem);
-    }
-
-    public TypeSafePlcWriteRequest(Class<T> dataType, List<WriteRequestItem<T>> requestItems) {
-        this(dataType);
-        this.getRequestItems().addAll(requestItems);
+        Objects.requireNonNull(requestItems);
+        for (WriteRequestItem<T> requestItem : requestItems) {
+            getRequestItems().add(requestItem);
+        }
     }
 
     @SuppressWarnings("unchecked")
     public void addItem(WriteRequestItem<?> writeRequestItem) {
-        if (writeRequestItem == null) {
-            return;
-        }
+        Objects.requireNonNull(writeRequestItem);
         if (writeRequestItem.getDatatype() != datatype) {
             throw new IllegalArgumentException("Incompatible datatype " + writeRequestItem.getDatatype());
         }

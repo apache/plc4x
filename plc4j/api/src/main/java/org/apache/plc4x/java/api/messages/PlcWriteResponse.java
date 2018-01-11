@@ -29,14 +29,14 @@ public class PlcWriteResponse implements PlcResponse {
 
     private final PlcWriteRequest request;
 
-    private final List<WriteResponseItem<?>> responseItems;
+    private final List<? extends WriteResponseItem<?>> responseItems;
 
     public PlcWriteResponse(PlcWriteRequest request, WriteResponseItem<?> responseItem) {
         this.request = request;
         this.responseItems = Collections.singletonList(responseItem);
     }
 
-    public PlcWriteResponse(PlcWriteRequest request, List<WriteResponseItem<?>> responseItems) {
+    public PlcWriteResponse(PlcWriteRequest request, List<? extends WriteResponseItem<?>> responseItems) {
         this.request = request;
         this.responseItems = responseItems;
     }
