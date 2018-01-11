@@ -28,7 +28,7 @@ import java.util.Optional;
  * Base type for all response messages sent as response for a prior request
  * from a plc to the plc4x system.
  */
-public abstract class PlcResponse<REQUEST, RESPONSE_ITEM extends ResponseItem, REQUEST_ITEM extends RequestItem> implements PlcMessage {
+public abstract class PlcResponse<REQUEST extends PlcRequest, RESPONSE_ITEM extends ResponseItem, REQUEST_ITEM extends RequestItem> implements PlcMessage {
 
     private final REQUEST request;
 

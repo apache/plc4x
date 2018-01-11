@@ -27,7 +27,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public abstract class RequestItem<DATA_TYPE, RESPONSE_ITEM> {
+public abstract class RequestItem<DATA_TYPE, RESPONSE_ITEM extends ResponseItem> {
 
     private final Class<DATA_TYPE> datatype;
 
