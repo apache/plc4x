@@ -19,43 +19,144 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class PlcReadRequest implements PlcRequest {
 
-    private final List<ReadRequestItem> readRequestItems;
+    private final List<ReadRequestItem<?>> requestItems;
 
     public PlcReadRequest() {
-        this.readRequestItems = new LinkedList<>();
+        this.requestItems = new LinkedList<>();
     }
 
-    public PlcReadRequest(Class dataType, Address address) {
+    public PlcReadRequest(ReadRequestItem<?> requestItem) {
         this();
-        addItem(new ReadRequestItem(dataType, address));
+        requestItems.add(requestItem);
     }
 
-    public PlcReadRequest(Class dataType, Address address, int size) {
+    public PlcReadRequest(Class<?> dataType, Address address) {
         this();
-        addItem(new ReadRequestItem(dataType, address, size));
+        addItem(new ReadRequestItem<>(dataType, address));
     }
 
-    public PlcReadRequest(List<ReadRequestItem> readRequestItems) {
-        this.readRequestItems = readRequestItems;
+    public PlcReadRequest(Class<?> dataType, Address address, int size) {
+        this();
+        addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
-    public void addItem(ReadRequestItem readRequestItem) {
-        readRequestItems.add(readRequestItem);
+    public PlcReadRequest(List<ReadRequestItem<?>> requestItems) {
+        this.requestItems = requestItems;
     }
 
-    public List<ReadRequestItem> getReadRequestItems() {
-        return readRequestItems;
+    public void addItem(ReadRequestItem<?> readRequestItem) {
+        getRequestItems().add(readRequestItem);
     }
 
-    public int getNumItems() {
-        return readRequestItems.size();
+    public List<ReadRequestItem<?>> getRequestItems() {
+        return requestItems;
+    }
+
+    public Optional<? extends ReadRequestItem<?>> getRequestItem() {
+        if (isMultiValue()) {
+            throw new IllegalStateException("too many items " + getNumberOfItems());
+        }
+        if (isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.<ReadRequestItem<?>>of(getRequestItems().get(0));
+    }
+
+    public void setRequestItem(ReadRequestItem<?> requestItem) {
+        if (isMultiValue()) {
+            throw new IllegalStateException("too many items " + getNumberOfItems());
+        }
+        addItem(requestItem);
+    }
+
+    public int getNumberOfItems() {
+        return getRequestItems().size();
+    }
+
+    public boolean isMultiValue() {
+        return getNumberOfItems() > 1;
+    }
+
+    public boolean isEmpty() {
+        return getNumberOfItems() < 1;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private Class firstType;
+
+        private boolean mixed = false;
+
+        private List<ReadRequestItem> requests = new LinkedList<>();
+
+        public Builder addItem(Class<?> dataType, Address address) {
+            checkType(dataType);
+            requests.add(new ReadRequestItem<>(dataType, address));
+            return this;
+        }
+
+        public Builder addItem(Class<?> dataType, Address address, int size) {
+            checkType(dataType);
+            requests.add(new ReadRequestItem<>(dataType, address, size));
+            return this;
+        }
+
+        public Builder addItem(ReadRequestItem readRequestItem) {
+            checkType(readRequestItem.getDatatype());
+            requests.add(readRequestItem);
+            return this;
+        }
+
+        private void checkType(Class dataType) {
+            if (firstType == null) {
+                firstType = dataType;
+            }
+            if (firstType != dataType) {
+                mixed = true;
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        public PlcReadRequest build() {
+            if (requests.size() < 1) {
+                throw new IllegalStateException("No requests added");
+            }
+            PlcReadRequest plcReadRequest;
+            if (mixed) {
+                plcReadRequest = new PlcReadRequest();
+            } else {
+                plcReadRequest = new TypeSafePlcReadRequest<>(firstType);
+            }
+            for (ReadRequestItem request : requests) {
+                plcReadRequest.addItem(request);
+            }
+            return plcReadRequest;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> TypeSafePlcReadRequest<T> build(Class<T> type) {
+            if (firstType != type) {
+                throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
+            }
+            if (mixed) {
+                throw new IllegalStateException("Mixed types contained");
+            }
+            return (TypeSafePlcReadRequest<T>) build();
+        }
+
     }
 
 }

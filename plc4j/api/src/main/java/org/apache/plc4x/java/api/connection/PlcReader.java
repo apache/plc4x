@@ -20,7 +20,10 @@ package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -34,6 +37,18 @@ public interface PlcReader {
      * @param readRequest object describing the type and location of the value.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
+    CompletableFuture<? extends PlcReadResponse> read(PlcReadRequest readRequest);
+
+    /**
+     * Reads a requested value from a PLC.
+     *
+     * @param readRequest object describing the type and location of the value.
+     * @param <T>         type that is being requested.
+     * @return a {@link CompletableFuture} giving async access to the returned value.
+     */
+    default <T> CompletableFuture<TypeSafePlcReadResponse<T>> read(TypeSafePlcReadRequest<T> readRequest) {
+        Objects.requireNonNull(readRequest);
+        return read((PlcReadRequest) readRequest).thenApply(TypeSafePlcReadResponse::new);
+    }
 
 }

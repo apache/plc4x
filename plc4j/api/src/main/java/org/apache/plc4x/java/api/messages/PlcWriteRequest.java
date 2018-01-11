@@ -19,43 +19,135 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class PlcWriteRequest implements PlcRequest {
 
-    private final List<WriteRequestItem> requestItems;
+    private final List<WriteRequestItem<?>> requestItems;
 
     public PlcWriteRequest() {
         this.requestItems = new LinkedList<>();
     }
 
-    public PlcWriteRequest(Class dataType, Address address, Object value) {
+    public <T> PlcWriteRequest(Class<T> dataType, Address address, T... values) {
         this();
-        addItem(new WriteRequestItem(dataType, address, value));
+        addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
-    public PlcWriteRequest(Class dataType, Address address, Object[] values) {
-        this();
-        addItem(new WriteRequestItem(dataType, address, values));
-    }
-
-    public PlcWriteRequest(List<WriteRequestItem> requestItems) {
+    public PlcWriteRequest(List<WriteRequestItem<?>> requestItems) {
         this.requestItems = requestItems;
     }
 
-    public void addItem(WriteRequestItem requestItem) {
-        requestItems.add(requestItem);
+    public void addItem(WriteRequestItem<?> requestItem) {
+        getRequestItems().add(requestItem);
     }
 
-    public List<WriteRequestItem> getRequestItems() {
+    public List<WriteRequestItem<?>> getRequestItems() {
         return requestItems;
     }
 
-    public int getNumItems() {
-        return requestItems.size();
+    public Optional<? extends WriteRequestItem<?>> getRequestItem() {
+        if (isMultiValue()) {
+            throw new IllegalStateException("too many items " + getNumberOfItems());
+        }
+        if (isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.<WriteRequestItem<?>>of(getRequestItems().get(0));
     }
 
+    public void setRequestItem(WriteRequestItem<?> requestItem) {
+        if (isMultiValue()) {
+            throw new IllegalStateException("too many items " + getNumberOfItems());
+        }
+        addItem(requestItem);
+    }
+
+    public int getNumberOfItems() {
+        return getRequestItems().size();
+    }
+
+    public boolean isMultiValue() {
+        return getNumberOfItems() > 1;
+    }
+
+    public boolean isEmpty() {
+        return getNumberOfItems() < 1;
+    }
+
+    public static PlcWriteRequest.Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private Class firstType;
+
+        private boolean mixed = false;
+
+        private List<WriteRequestItem> requests = new LinkedList<>();
+
+        @SuppressWarnings("unchecked")
+        public <T> PlcWriteRequest.Builder addItem(Address address, T value) {
+            Objects.requireNonNull(value);
+            checkType(value.getClass());
+            requests.add(new WriteRequestItem<>((Class<T>) value.getClass(), address, (T) value));
+            return this;
+        }
+
+        public <T> PlcWriteRequest.Builder addItem(Class<T> dataType, Address address, T... values) {
+            checkType(dataType);
+            requests.add(new WriteRequestItem<>(dataType, address, values));
+            return this;
+        }
+
+        public <T> PlcWriteRequest.Builder addItem(WriteRequestItem writeRequestItem) {
+            checkType(writeRequestItem.getDatatype());
+            return this;
+        }
+
+        private void checkType(Class dataType) {
+            if (firstType == null) {
+                firstType = dataType;
+            }
+            if (firstType != dataType) {
+                mixed = true;
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        public PlcWriteRequest build() {
+            if (requests.size() < 1) {
+                throw new IllegalStateException("No requests added");
+            }
+            PlcWriteRequest plcWriteRequest;
+            if (mixed) {
+                plcWriteRequest = new PlcWriteRequest();
+            } else {
+                plcWriteRequest = new TypeSafePlcWriteRequest<>(firstType);
+            }
+            for (WriteRequestItem request : requests) {
+                plcWriteRequest.addItem(request);
+            }
+            return plcWriteRequest;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> TypeSafePlcWriteRequest<T> build(Class<T> type) {
+            if (firstType != type) {
+                throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
+            }
+            if (mixed) {
+                throw new IllegalStateException("Mixed types contained");
+            }
+            return (TypeSafePlcWriteRequest<T>) build();
+        }
+
+    }
 }

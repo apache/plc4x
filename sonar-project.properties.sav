@@ -1,0 +1,46 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# must be unique in a given SonarQube instance
+sonar.projectKey=PLC4X
+# this is the name and version displayed in the SonarQube UI. Was mandatory prior to SonarQube 6.1.
+sonar.projectName=PLC4X
+sonar.projectVersion=0.0.1
+ 
+# Path is relative to the sonar-project.properties file. Replace "\" by "/" on Windows.
+# Since SonarQube 4.2, this property is optional if sonar.modules is set. 
+# If not set, SonarQube starts looking for source code from the directory containing 
+# the sonar-project.properties file.
+sonar.sources=./applications/iotree/src/main,./applications/plclogger/src/main,./integrations/apache-camel/src/main,./integrations/apache-edgent/src/main,./plc4j/api/src/main,./plc4j/core/src/main,./plc4j/protocols/s7/src/main,./plc4j/protocols/s7-utils/src/main,./plc4j/protocols/utils/src/main
+
+# ignore tests (DRY vs WET)
+sonar.exclusions=**/*Tests.java,**/*Test.java,**/*Mock*.java
+
+# Encoding of the source code. Default is default system encoding
+#sonar.sourceEncoding=UTF-8
+
+#tests
+sonar.tests=./plc4j/api/src/test,./plc4j/core/src/test,./plc4j/core/target/test-classes/test,./plc4j/protocols/s7/src/test
+
+# test results
+sonar.junit.reportPaths=./plc4j/api/target/surefire-reports,./plc4j/core/target/surefire-reports,./plc4j/protocols/s7/target/surefire-report
+
+# coverage results
+sonar.jacoco.reportPaths=./api/target/jacoco.exec,./plc4j/core/target/jacoco.exec,./plc4j/protocols/s7/target/jacoco.exec
+        
+# java classes - needed for coverage
+sonar.java.binaries=./applications/iotree/target/classes,./applications/plclogger/target/classes,./plc4j/api/target/classes,./plc4j/core/target/classes,./plc4j/protocols/s7/target/classes,./plc4j/protocols/s7-utils/target/classes,./plc4j/protocols/utils/target/classes

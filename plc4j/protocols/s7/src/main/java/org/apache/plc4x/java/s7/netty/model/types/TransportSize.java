@@ -43,6 +43,8 @@ public enum TransportSize {
     IEC_COUNTER((byte) 0x1F),
     HS_COUNTER((byte) 0x20);
 
+    private static Map<Byte, TransportSize> map = null;
+    
     private final byte code;
 
     TransportSize(byte code) {
@@ -52,8 +54,6 @@ public enum TransportSize {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, TransportSize> map = null;
 
     public static TransportSize valueOf(byte code) {
         if (map == null) {

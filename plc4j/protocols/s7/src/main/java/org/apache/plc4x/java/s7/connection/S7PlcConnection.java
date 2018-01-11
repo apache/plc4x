@@ -62,7 +62,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     private static final Pattern S7_ADDRESS_PATTERN =
         Pattern.compile("^(?<memoryArea>.*?)/(?<byteOffset>\\d{1,4})(?:/(?<bitOffset>\\d))?");
 
-    private final static Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
 
     private final String hostName;
     private final int rack;
@@ -174,8 +174,8 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     public Address parseAddress(String addressString) throws PlcException {
         Matcher datablockAddressMatcher = S7_DATABLOCK_ADDRESS_PATTERN.matcher(addressString);
         if (datablockAddressMatcher.matches()) {
-            int datablockNumber = Integer.valueOf(datablockAddressMatcher.group("blockNumber"));
-            int datablockByteOffset = Integer.valueOf(datablockAddressMatcher.group("byteOffset"));
+            int datablockNumber = Integer.parseInt(datablockAddressMatcher.group("blockNumber"));
+            int datablockByteOffset = Integer.parseInt(datablockAddressMatcher.group("byteOffset"));
             return new S7DataBlockAddress((short) datablockNumber, (short) datablockByteOffset);
         }
         Matcher addressMatcher = S7_ADDRESS_PATTERN.matcher(addressString);
@@ -184,7 +184,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                 "Address string doesn't match the format '{area}/{offset}[/{bit-offset}]'");
         }
         MemoryArea memoryArea = MemoryArea.valueOf(addressMatcher.group("memoryArea"));
-        int byteOffset = Integer.valueOf(addressMatcher.group("byteOffset"));
+        int byteOffset = Integer.parseInt(addressMatcher.group("byteOffset"));
         String bitOffset =  addressMatcher.group("bitOffset");
         if (bitOffset != null) {
             return new S7BitAddress(memoryArea, (short) byteOffset, Byte.valueOf(bitOffset));

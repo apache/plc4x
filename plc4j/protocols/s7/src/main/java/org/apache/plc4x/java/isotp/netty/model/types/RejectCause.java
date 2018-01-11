@@ -27,6 +27,8 @@ public enum RejectCause {
     INVALID_TPDU_TYPE((byte) 0x02),
     INVALID_PARAMETER_TYPE((byte) 0x03);
 
+    private static Map<Byte, RejectCause> map = null;
+
     private final byte code;
 
     RejectCause(byte code) {
@@ -36,8 +38,6 @@ public enum RejectCause {
     public byte getCode() {
         return code;
     }
-
-    private static Map<Byte, RejectCause> map = null;
 
     public static RejectCause valueOf(byte code) {
         if (map == null) {

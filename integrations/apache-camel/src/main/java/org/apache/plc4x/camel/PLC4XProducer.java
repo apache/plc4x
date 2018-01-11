@@ -27,8 +27,10 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -51,18 +53,28 @@ public class PLC4XProducer extends DefaultAsyncProducer {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();
         Address address = in.getHeader(Constants.ADDRESS_HEADER, Address.class);
-        Class<?> datatype = in.getHeader(Constants.DATATYPE_HEADER, Class.class);
-        Object value = in.getBody(Object.class);
-        PlcWriteRequest plcSimpleWriteRequest = new PlcWriteRequest(datatype, address, value);
+        Object body = in.getBody();
+        PlcWriteRequest.Builder builder = PlcWriteRequest.builder();
+        if (body instanceof List) {
+            List<?> bodyList = in.getBody(List.class);
+            bodyList
+                .stream()
+                .map(o -> (WriteRequestItem<?>) new WriteRequestItem(o.getClass(), address, o))
+                .forEach(builder::addItem);
+        } else {
+            Object value = in.getBody(Object.class);
+            builder.addItem(address, value);
+        }
         PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
-        CompletableFuture<PlcWriteResponse> completableFuture = plcWriter.write(plcSimpleWriteRequest);
+        CompletableFuture<? extends PlcWriteResponse> completableFuture = plcWriter.write(builder.build());
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {
             log.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);
-            PlcWriteResponse plcWriteResponse = completableFuture.get();
+            Object plcWriteResponse = completableFuture.get();
             if (exchange.getPattern().isOutCapable()) {
                 Message out = exchange.getOut();
                 out.copyFrom(exchange.getIn());
@@ -76,6 +88,7 @@ public class PLC4XProducer extends DefaultAsyncProducer {
         }
     }
 
+    @Override
     public boolean process(Exchange exchange, AsyncCallback callback) {
         try {
             process(exchange);
