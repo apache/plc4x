@@ -20,62 +20,24 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class PlcReadResponse implements PlcResponse {
-
-    private final PlcReadRequest request;
-
-    private final List<? extends ReadResponseItem<?>> responseItems;
+public class PlcReadResponse extends PlcResponse<PlcReadRequest, ReadResponseItem<?>, ReadRequestItem<?>> {
 
     public PlcReadResponse(PlcReadRequest request, ReadResponseItem<?> responseItems) {
-        this.request = request;
-        this.responseItems = Collections.singletonList(responseItems);
+        super(request, Collections.singletonList(responseItems));
     }
 
     public PlcReadResponse(PlcReadRequest request, List<? extends ReadResponseItem<?>> responseItems) {
-        this.request = request;
-        this.responseItems = responseItems;
-    }
-
-    public PlcReadRequest getRequest() {
-        return request;
-    }
-
-    public List<? extends ReadResponseItem<?>> getResponseItems() {
-        return responseItems;
-    }
-
-    public Optional<? extends ReadResponseItem<?>> getResponseItem() {
-        if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
-        }
-        if (isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.<ReadResponseItem<?>>of(getResponseItems().get(0));
-    }
-
-    public int getNumberOfItems() {
-        return getResponseItems().size();
-    }
-
-    public boolean isMultiValue() {
-        return getNumberOfItems() > 1;
-    }
-
-    public boolean isEmpty() {
-        return getNumberOfItems() < 1;
+        super(request, responseItems);
     }
 
     @SuppressWarnings("unchecked")
     public <T> Optional<ReadResponseItem<T>> getValue(ReadRequestItem<T> item) {
-        return getResponseItems().stream()
-            .filter(x -> x.getRequestItem().equals(item))
-            .map(e -> (ReadResponseItem<T>) e)
-            .findAny();
+        return (Optional) super.getValue(item);
     }
 }

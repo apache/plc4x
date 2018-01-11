@@ -22,85 +22,34 @@ import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
-public class PlcReadRequest implements PlcRequest {
-
-    private final List<ReadRequestItem<?>> requestItems;
+public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
     public PlcReadRequest() {
-        this.requestItems = new LinkedList<>();
     }
 
     public PlcReadRequest(ReadRequestItem<?> requestItem) {
-        this();
         requestItems.add(requestItem);
     }
 
     public PlcReadRequest(Class<?> dataType, Address address) {
-        this();
         addItem(new ReadRequestItem<>(dataType, address));
     }
 
     public PlcReadRequest(Class<?> dataType, Address address, int size) {
-        this();
         addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
     public PlcReadRequest(List<ReadRequestItem<?>> requestItems) {
-        this.requestItems = requestItems;
-    }
-
-    public void addItem(ReadRequestItem<?> readRequestItem) {
-        getRequestItems().add(readRequestItem);
-    }
-
-    public List<ReadRequestItem<?>> getRequestItems() {
-        return requestItems;
-    }
-
-    public Optional<? extends ReadRequestItem<?>> getRequestItem() {
-        if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
-        }
-        if (isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.<ReadRequestItem<?>>of(getRequestItems().get(0));
-    }
-
-    public void setRequestItem(ReadRequestItem<?> requestItem) {
-        if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
-        }
-        addItem(requestItem);
-    }
-
-    public int getNumberOfItems() {
-        return getRequestItems().size();
-    }
-
-    public boolean isMultiValue() {
-        return getNumberOfItems() > 1;
-    }
-
-    public boolean isEmpty() {
-        return getNumberOfItems() < 1;
+        super(requestItems);
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder {
-
-        private Class firstType;
-
-        private boolean mixed = false;
-
-        private List<ReadRequestItem> requests = new LinkedList<>();
+    public static class Builder extends PlcRequest.Builder<ReadRequestItem<?>> {
 
         public Builder addItem(Class<?> dataType, Address address) {
             checkType(dataType);
@@ -118,15 +67,6 @@ public class PlcReadRequest implements PlcRequest {
             checkType(readRequestItem.getDatatype());
             requests.add(readRequestItem);
             return this;
-        }
-
-        private void checkType(Class dataType) {
-            if (firstType == null) {
-                firstType = dataType;
-            }
-            if (firstType != dataType) {
-                mixed = true;
-            }
         }
 
         @SuppressWarnings("unchecked")

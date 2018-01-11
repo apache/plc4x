@@ -25,57 +25,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class PlcWriteResponse implements PlcResponse {
-
-    private final PlcWriteRequest request;
-
-    private final List<? extends WriteResponseItem<?>> responseItems;
+public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, WriteResponseItem<?>, WriteRequestItem<?>> {
 
     public PlcWriteResponse(PlcWriteRequest request, WriteResponseItem<?> responseItem) {
-        this.request = request;
-        this.responseItems = Collections.singletonList(responseItem);
+        super(request, Collections.singletonList(responseItem));
     }
 
     public PlcWriteResponse(PlcWriteRequest request, List<? extends WriteResponseItem<?>> responseItems) {
-        this.request = request;
-        this.responseItems = responseItems;
-    }
-
-    public PlcWriteRequest getRequest() {
-        return request;
-    }
-
-    public List<? extends WriteResponseItem<?>> getResponseItems() {
-        return responseItems;
-    }
-
-    public Optional<? extends WriteResponseItem<?>> getResponseItem() {
-        if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
-        }
-        if (isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.<WriteResponseItem<?>>of(getResponseItems().get(0));
-    }
-
-    public int getNumberOfItems() {
-        return getResponseItems().size();
-    }
-
-    public boolean isMultiValue() {
-        return getNumberOfItems() > 1;
-    }
-
-    public boolean isEmpty() {
-        return getNumberOfItems() < 1;
+        super(request, responseItems);
     }
 
     @SuppressWarnings("unchecked")
     public <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item) {
-        return getResponseItems().stream()
-            .filter(x -> x.getRequestItem().equals(item))
-            .map(e -> (WriteResponseItem<T>) e)
-            .findAny();
+        return (Optional) super.getValue(item);
     }
 }

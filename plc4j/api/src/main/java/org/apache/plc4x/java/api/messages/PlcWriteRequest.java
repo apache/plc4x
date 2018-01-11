@@ -22,76 +22,27 @@ import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
-public class PlcWriteRequest implements PlcRequest {
-
-    private final List<WriteRequestItem<?>> requestItems;
+public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
 
     public PlcWriteRequest() {
-        this.requestItems = new LinkedList<>();
     }
 
     public <T> PlcWriteRequest(Class<T> dataType, Address address, T... values) {
-        this();
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
     public PlcWriteRequest(List<WriteRequestItem<?>> requestItems) {
-        this.requestItems = requestItems;
-    }
-
-    public void addItem(WriteRequestItem<?> requestItem) {
-        getRequestItems().add(requestItem);
-    }
-
-    public List<WriteRequestItem<?>> getRequestItems() {
-        return requestItems;
-    }
-
-    public Optional<? extends WriteRequestItem<?>> getRequestItem() {
-        if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
-        }
-        if (isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.<WriteRequestItem<?>>of(getRequestItems().get(0));
-    }
-
-    public void setRequestItem(WriteRequestItem<?> requestItem) {
-        if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
-        }
-        addItem(requestItem);
-    }
-
-    public int getNumberOfItems() {
-        return getRequestItems().size();
-    }
-
-    public boolean isMultiValue() {
-        return getNumberOfItems() > 1;
-    }
-
-    public boolean isEmpty() {
-        return getNumberOfItems() < 1;
+        super(requestItems);
     }
 
     public static PlcWriteRequest.Builder builder() {
         return new Builder();
     }
 
-    public static class Builder {
-
-        private Class firstType;
-
-        private boolean mixed = false;
-
-        private List<WriteRequestItem> requests = new LinkedList<>();
+    public static class Builder extends PlcRequest.Builder<WriteRequestItem<?>> {
 
         @SuppressWarnings("unchecked")
         public <T> PlcWriteRequest.Builder addItem(Address address, T value) {
@@ -110,15 +61,6 @@ public class PlcWriteRequest implements PlcRequest {
         public <T> PlcWriteRequest.Builder addItem(WriteRequestItem writeRequestItem) {
             checkType(writeRequestItem.getDatatype());
             return this;
-        }
-
-        private void checkType(Class dataType) {
-            if (firstType == null) {
-                firstType = dataType;
-            }
-            if (firstType != dataType) {
-                mixed = true;
-            }
         }
 
         @SuppressWarnings("unchecked")
