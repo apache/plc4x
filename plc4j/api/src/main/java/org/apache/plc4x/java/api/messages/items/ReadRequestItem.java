@@ -20,77 +20,22 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-public class ReadRequestItem<T> {
-
-    private final Class<T> datatype;
-
-    private final Address address;
+public class ReadRequestItem<T> extends RequestItem<T, ReadResponseItem<T>> {
 
     private final int size;
 
-    private volatile ReadResponseItem<T> responseItem;
-
-    private final Lock lock = new ReentrantLock();
-
-    private final Condition responseSet = lock.newCondition();
-
     public ReadRequestItem(Class<T> datatype, Address address) {
-        this.datatype = datatype;
-        this.address = address;
+        super(datatype, address);
         this.size = 1;
-        this.responseItem = null;
     }
 
     public ReadRequestItem(Class<T> datatype, Address address, int size) {
-        this.datatype = datatype;
-        this.address = address;
+        super(datatype, address);
         this.size = size;
-        this.responseItem = null;
-    }
-
-    public Class<T> getDatatype() {
-        return datatype;
-    }
-
-    public Address getAddress() {
-        return address;
     }
 
     public int getSize() {
         return size;
     }
 
-    public CompletableFuture<ReadResponseItem<T>> getResponseItem() {
-        return CompletableFuture.supplyAsync(() -> {
-            if (responseItem == null) {
-                try {
-                    lock.lock();
-                    responseSet.await();
-                } catch (InterruptedException e) {
-                    throw new CompletionException(e);
-                } finally {
-                    lock.unlock();
-                }
-            }
-            return responseItem;
-        });
-    }
-
-    protected void setResponseItem(ReadResponseItem<T> responseItem) {
-        Objects.requireNonNull(responseItem);
-        try {
-            lock.lock();
-            responseSet.signalAll();
-        } finally {
-            lock.unlock();
-        }
-        this.responseItem = responseItem;
-    }
 }

@@ -23,70 +23,18 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-public class WriteRequestItem<T> {
-
-    private final Class<T> datatype;
-
-    private final Address address;
+public class WriteRequestItem<T> extends RequestItem<T, WriteResponseItem<T>> {
 
     private final List<T> values;
 
-    private volatile WriteResponseItem<T> responseItem;
-
-    private final Lock lock = new ReentrantLock();
-
-    private final Condition responseSet = lock.newCondition();
-
     public WriteRequestItem(Class<T> datatype, Address address, T... values) {
-        this.datatype = datatype;
-        this.address = address;
+        super(datatype, address);
         this.values = new ArrayList<>(Arrays.asList(values));
-        responseItem = null;
-    }
-
-    public Class<T> getDatatype() {
-        return datatype;
-    }
-
-    public Address getAddress() {
-        return address;
     }
 
     public List<T> getValues() {
         return values;
     }
 
-    public CompletableFuture<WriteResponseItem<T>> getResponseItem() {
-        return CompletableFuture.supplyAsync(() -> {
-            if (responseItem == null) {
-                try {
-                    lock.lock();
-                    responseSet.await();
-                } catch (InterruptedException e) {
-                    throw new CompletionException(e);
-                } finally {
-                    lock.unlock();
-                }
-            }
-            return responseItem;
-        });
-    }
-
-    protected void setResponseItem(WriteResponseItem<T> responseItem) {
-        Objects.requireNonNull(responseItem);
-        try {
-            lock.lock();
-            responseSet.signalAll();
-        } finally {
-            lock.unlock();
-        }
-        this.responseItem = responseItem;
-    }
 }
