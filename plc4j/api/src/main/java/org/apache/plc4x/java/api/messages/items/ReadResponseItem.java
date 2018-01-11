@@ -34,9 +34,10 @@ public class ReadResponseItem<T> {
         this.requestItem = requestItem;
         this.responseCode = responseCode;
         this.values = values;
+        requestItem.setResponseItem(this);
     }
 
-    public ReadRequestItem getRequestItem() {
+    public ReadRequestItem<T> getRequestItem() {
         return requestItem;
     }
 

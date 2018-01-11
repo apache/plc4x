@@ -29,6 +29,7 @@ public class WriteResponseItem<T> {
     public WriteResponseItem(WriteRequestItem<T> requestItem, ResponseCode responseCode) {
         this.requestItem = requestItem;
         this.responseCode = responseCode;
+        requestItem.setResponseItem(this);
     }
 
     public WriteRequestItem<T> getRequestItem() {
