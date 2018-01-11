@@ -61,6 +61,7 @@ public abstract class RequestItem<DATA_TYPE, RESPONSE_ITEM extends ResponseItem>
                         responseSet.await();
                     }
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     throw new CompletionException(e);
                 } finally {
                     lock.unlock();
