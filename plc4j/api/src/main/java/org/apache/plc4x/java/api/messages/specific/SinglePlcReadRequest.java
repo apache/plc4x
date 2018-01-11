@@ -58,8 +58,13 @@ public class SinglePlcReadRequest<T> extends CheckedBulkPlcReadRequest<T> {
     }
 
     @Override
-    public List<ReadRequestItem<T>> getReadRequestItems() {
+    public List<ReadRequestItem<T>> getCheckedReadRequestItems() {
         return requestItem != null ? Collections.singletonList(requestItem) : Collections.emptyList();
+    }
+
+    @Override
+    public List<ReadRequestItem<?>> getReadRequestItems() {
+        return (List) getCheckedReadRequestItems();
     }
 
     public Optional<ReadRequestItem<T>> getRequestItem() {

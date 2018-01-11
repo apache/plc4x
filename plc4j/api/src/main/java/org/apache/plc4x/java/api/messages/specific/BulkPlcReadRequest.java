@@ -22,37 +22,25 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.LinkedList;
 import java.util.List;
 
-public class BulkPlcReadRequest implements PlcReadRequest {
-
-    private final List<ReadRequestItem<?>> readRequestItems;
-
+/**
+ * @deprecated just use {@link PlcReadRequest}
+ */
+@Deprecated
+public class BulkPlcReadRequest extends PlcReadRequest {
     public BulkPlcReadRequest() {
-        this.readRequestItems = new LinkedList<>();
     }
 
     public BulkPlcReadRequest(Class<?> dataType, Address address) {
-        this();
-        addItem(new ReadRequestItem<>(dataType, address));
+        super(dataType, address);
     }
 
     public BulkPlcReadRequest(Class<?> dataType, Address address, int size) {
-        this();
-        addItem(new ReadRequestItem<>(dataType, address, size));
+        super(dataType, address, size);
     }
 
     public BulkPlcReadRequest(List<ReadRequestItem<?>> readRequestItems) {
-        this.readRequestItems = readRequestItems;
+        super(readRequestItems);
     }
-
-    public void addItem(ReadRequestItem<?> readRequestItem) {
-        readRequestItems.add(readRequestItem);
-    }
-
-    public List<? extends ReadRequestItem<?>> getReadRequestItems() {
-        return readRequestItems;
-    }
-
 }

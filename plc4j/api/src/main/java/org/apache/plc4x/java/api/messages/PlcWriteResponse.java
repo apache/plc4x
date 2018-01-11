@@ -20,16 +20,31 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.specific.BulkPlcWriteRequest;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PlcWriteResponse extends PlcResponse {
-    PlcWriteRequest getRequest();
+public class PlcWriteResponse implements PlcResponse {
 
-    List<? extends WriteResponseItem<?>> getResponseItems();
+    private final PlcWriteRequest request;
 
-    default Optional<? extends WriteResponseItem<?>> getResponseItem() {
+    private final List<WriteResponseItem<?>> responseItems;
+
+    public PlcWriteResponse(PlcWriteRequest request, List<WriteResponseItem<?>> responseItems) {
+        this.request = request;
+        this.responseItems = responseItems;
+    }
+
+    public PlcWriteRequest getRequest() {
+        return request;
+    }
+
+    public List<? extends WriteResponseItem<?>> getResponseItems() {
+        return responseItems;
+    }
+
+    public Optional<? extends WriteResponseItem<?>> getResponseItem() {
         if (isMultiValue()) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
@@ -39,20 +54,20 @@ public interface PlcWriteResponse extends PlcResponse {
         return Optional.<WriteResponseItem<?>>of(getResponseItems().get(0));
     }
 
-    default int getNumberOfItems() {
+    public int getNumberOfItems() {
         return getResponseItems().size();
     }
 
-    default boolean isMultiValue() {
+    public boolean isMultiValue() {
         return getNumberOfItems() > 1;
     }
 
-    default boolean isEmpty() {
+    public boolean isEmpty() {
         return getNumberOfItems() < 1;
     }
 
     @SuppressWarnings("unchecked")
-    default <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item) {
+    public <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item) {
         return getResponseItems().stream()
             .filter(x -> x.getRequestItem().equals(item))
             .map(e -> (WriteResponseItem<T>) e)

@@ -26,22 +26,13 @@ import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import java.util.List;
 import java.util.Optional;
 
-public class BulkPlcReadResponse implements PlcReadResponse {
+/**
+ * @deprecated just use {@link PlcReadResponse}
+ */
+@Deprecated
+public class BulkPlcReadResponse extends PlcReadResponse {
 
-    private final BulkPlcReadRequest request;
-    private final List<ReadResponseItem<?>> responseItems;
-
-    public BulkPlcReadResponse(BulkPlcReadRequest request, List<ReadResponseItem<?>> responseItems) {
-        this.request = request;
-        this.responseItems = responseItems;
+    public BulkPlcReadResponse(PlcReadRequest request, List<ReadResponseItem<?>> responseItems) {
+        super(request, responseItems);
     }
-
-    public PlcReadRequest getRequest() {
-        return request;
-    }
-
-    public List<? extends ReadResponseItem<?>> getResponseItems() {
-        return responseItems;
-    }
-
 }

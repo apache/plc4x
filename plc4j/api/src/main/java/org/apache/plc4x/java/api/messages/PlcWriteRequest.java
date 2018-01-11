@@ -28,12 +28,32 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public interface PlcWriteRequest extends PlcRequest {
-    void addItem(WriteRequestItem<?> writeRequestItem);
+public class PlcWriteRequest implements PlcRequest {
 
-    List<? extends WriteRequestItem<?>> getRequestItems();
+    private final List<WriteRequestItem<?>> requestItems;
 
-    default Optional<? extends WriteRequestItem<?>> getRequestItem() {
+    public PlcWriteRequest() {
+        this.requestItems = new LinkedList<>();
+    }
+
+    public <T> PlcWriteRequest(Class<T> dataType, Address address, T... values) {
+        this();
+        addItem(new WriteRequestItem<>(dataType, address, values));
+    }
+
+    public PlcWriteRequest(List<WriteRequestItem<?>> requestItems) {
+        this.requestItems = requestItems;
+    }
+
+    public void addItem(WriteRequestItem<?> requestItem) {
+        getRequestItems().add(requestItem);
+    }
+
+    public List<WriteRequestItem<?>> getRequestItems() {
+        return requestItems;
+    }
+
+    public Optional<? extends WriteRequestItem<?>> getRequestItem() {
         if (getNumberOfItems() > 1) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
@@ -43,15 +63,15 @@ public interface PlcWriteRequest extends PlcRequest {
         return Optional.<WriteRequestItem<?>>of(getRequestItems().get(0));
     }
 
-    default int getNumberOfItems() {
+    public int getNumberOfItems() {
         return getRequestItems().size();
     }
 
-    static PlcWriteRequest.Builder builder() {
+    public static PlcWriteRequest.Builder builder() {
         return new Builder();
     }
 
-    class Builder {
+    public static class Builder {
 
         private Class firstType;
 

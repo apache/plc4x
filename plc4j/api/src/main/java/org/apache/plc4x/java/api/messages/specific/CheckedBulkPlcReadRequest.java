@@ -46,7 +46,7 @@ public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
     }
 
     public void addCheckedItem(ReadRequestItem<T> readRequestItem) {
-        readRequestItems.add(readRequestItem);
+        addItem(readRequestItem);
     }
 
     @SuppressWarnings("unchecked")
@@ -60,8 +60,13 @@ public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
         readRequestItems.add((ReadRequestItem<T>) readRequestItem);
     }
 
-    public List<? extends ReadRequestItem<T>> getReadRequestItems() {
+    public List<ReadRequestItem<T>> getCheckedReadRequestItems() {
         return readRequestItems;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ReadRequestItem<?>> getReadRequestItems() {
+        return (List) getCheckedReadRequestItems();
     }
 
 }

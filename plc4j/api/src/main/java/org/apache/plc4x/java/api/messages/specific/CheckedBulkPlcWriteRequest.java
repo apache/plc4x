@@ -45,6 +45,10 @@ public class CheckedBulkPlcWriteRequest<T> extends BulkPlcWriteRequest {
         this.requestItems.addAll(requestItems);
     }
 
+    public void addCheckedItem(WriteRequestItem<T> writeRequestItem) {
+        addItem(writeRequestItem);
+    }
+
     @SuppressWarnings("unchecked")
     public void addItem(WriteRequestItem<?> writeRequestItem) {
         if (writeRequestItem == null) {
@@ -56,11 +60,14 @@ public class CheckedBulkPlcWriteRequest<T> extends BulkPlcWriteRequest {
         requestItems.add((WriteRequestItem<T>) writeRequestItem);
     }
 
-    public List<? extends WriteRequestItem<?>> getRequestItems() {
+    public List<WriteRequestItem<T>> getCheckedRequestItems() {
         return requestItems;
     }
 
-    public int getNumberOfItems() {
-        return requestItems.size();
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<WriteRequestItem<?>> getRequestItems() {
+        return (List) getCheckedRequestItems();
     }
+
 }

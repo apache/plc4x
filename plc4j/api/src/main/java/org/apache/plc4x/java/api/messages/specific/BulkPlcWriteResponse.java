@@ -18,27 +18,19 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.List;
 
-public class BulkPlcWriteResponse implements PlcWriteResponse {
+/**
+ * @deprecated just use {@link PlcWriteResponse}
+ */
+@Deprecated
+public class BulkPlcWriteResponse extends PlcWriteResponse {
 
-    private final BulkPlcWriteRequest request;
-    private final List<WriteResponseItem<?>> responseItems;
-
-    public BulkPlcWriteResponse(BulkPlcWriteRequest request, List<WriteResponseItem<?>> responseItems) {
-        this.request = request;
-        this.responseItems = responseItems;
+    public BulkPlcWriteResponse(PlcWriteRequest request, List<WriteResponseItem<?>> responseItems) {
+        super(request, responseItems);
     }
-
-    public BulkPlcWriteRequest getRequest() {
-        return request;
-    }
-
-    public List<? extends WriteResponseItem<?>> getResponseItems() {
-        return responseItems;
-    }
-
 }

@@ -52,9 +52,13 @@ public class SinglePlcWriteRequest<T> extends CheckedBulkPlcWriteRequest<T> {
         this.requestItem = (WriteRequestItem<T>) requestItem;
     }
 
-    @Override
-    public List<WriteRequestItem<T>> getRequestItems() {
+    public List<WriteRequestItem<T>> getCheckedRequestItems() {
         return (requestItem != null) ? Collections.singletonList(requestItem) : Collections.emptyList();
+    }
+
+    @Override
+    public List<WriteRequestItem<?>> getRequestItems() {
+        return (List) getCheckedRequestItems();
     }
 
     public Optional<WriteRequestItem<T>> getRequestItem() {

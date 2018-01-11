@@ -24,12 +24,25 @@ import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import java.util.List;
 import java.util.Optional;
 
-public interface PlcReadResponse extends PlcResponse {
-    PlcReadRequest getRequest();
+public class PlcReadResponse implements PlcResponse {
 
-    List<? extends ReadResponseItem<?>> getResponseItems();
+    private final PlcReadRequest request;
+    private final List<ReadResponseItem<?>> responseItems;
 
-    default Optional<? extends ReadResponseItem<?>> getResponseItem() {
+    public PlcReadResponse(PlcReadRequest request, List<ReadResponseItem<?>> responseItems) {
+        this.request = request;
+        this.responseItems = responseItems;
+    }
+
+    public PlcReadRequest getRequest() {
+        return request;
+    }
+
+    public List<? extends ReadResponseItem<?>> getResponseItems() {
+        return responseItems;
+    }
+
+    public Optional<? extends ReadResponseItem<?>> getResponseItem() {
         if (isMultiValue()) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
@@ -39,20 +52,20 @@ public interface PlcReadResponse extends PlcResponse {
         return Optional.<ReadResponseItem<?>>of(getResponseItems().get(0));
     }
 
-    default int getNumberOfItems() {
+    public int getNumberOfItems() {
         return getResponseItems().size();
     }
 
-    default boolean isMultiValue() {
+    public boolean isMultiValue() {
         return getNumberOfItems() > 1;
     }
 
-    default boolean isEmpty() {
+    public boolean isEmpty() {
         return getNumberOfItems() < 1;
     }
 
     @SuppressWarnings("unchecked")
-    default <T> Optional<ReadResponseItem<T>> getValue(ReadRequestItem<T> item) {
+    public <T> Optional<ReadResponseItem<T>> getValue(ReadRequestItem<T> item) {
         return getResponseItems().stream()
             .filter(x -> x.getRequestItem().equals(item))
             .map(e -> (ReadResponseItem<T>) e)

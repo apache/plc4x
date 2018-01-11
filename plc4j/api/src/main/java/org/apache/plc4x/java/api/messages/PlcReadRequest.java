@@ -28,12 +28,37 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public interface PlcReadRequest extends PlcRequest {
-    void addItem(ReadRequestItem<?> readRequestItem);
+public class PlcReadRequest implements PlcRequest {
 
-    List<? extends ReadRequestItem<?>> getReadRequestItems();
+    private final List<ReadRequestItem<?>> readRequestItems;
 
-    default Optional<? extends ReadRequestItem<?>> getRequestItem() {
+    public PlcReadRequest() {
+        this.readRequestItems = new LinkedList<>();
+    }
+
+    public PlcReadRequest(Class<?> dataType, Address address) {
+        this();
+        addItem(new ReadRequestItem<>(dataType, address));
+    }
+
+    public PlcReadRequest(Class<?> dataType, Address address, int size) {
+        this();
+        addItem(new ReadRequestItem<>(dataType, address, size));
+    }
+
+    public PlcReadRequest(List<ReadRequestItem<?>> readRequestItems) {
+        this.readRequestItems = readRequestItems;
+    }
+
+    public void addItem(ReadRequestItem<?> readRequestItem) {
+        getReadRequestItems().add(readRequestItem);
+    }
+
+    public List<ReadRequestItem<?>> getReadRequestItems() {
+        return readRequestItems;
+    }
+
+    public Optional<? extends ReadRequestItem<?>> getRequestItem() {
         if (getNumberOfItems() > 1) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
@@ -43,15 +68,15 @@ public interface PlcReadRequest extends PlcRequest {
         return Optional.<ReadRequestItem<?>>of(getReadRequestItems().get(0));
     }
 
-    default int getNumberOfItems() {
+    public int getNumberOfItems() {
         return getReadRequestItems().size();
     }
 
-    static Builder builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    class Builder {
+    public static class Builder {
 
         private Class firstType;
 
