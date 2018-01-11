@@ -22,18 +22,15 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
-
-    private final List<WriteRequestItem<T>> requestItems;
 
     private final Class<T> datatype;
 
     public TypeSafePlcWriteRequest(Class<T> type) {
         this.datatype = type;
-        this.requestItems = new LinkedList<>();
     }
 
     public TypeSafePlcWriteRequest(Class<T> dataType, Address address, T... values) {
@@ -41,13 +38,14 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
-    public TypeSafePlcWriteRequest(Class<T> dataType, List<WriteRequestItem<T>> requestItems) {
+    public TypeSafePlcWriteRequest(Class<T> dataType, WriteRequestItem<T> requestItem) {
         this(dataType);
-        this.requestItems.addAll(requestItems);
+        this.getRequestItems().add(requestItem);
     }
 
-    public void addCheckedItem(WriteRequestItem<T> writeRequestItem) {
-        addItem(writeRequestItem);
+    public TypeSafePlcWriteRequest(Class<T> dataType, List<WriteRequestItem<T>> requestItems) {
+        this(dataType);
+        this.getRequestItems().addAll(requestItems);
     }
 
     @SuppressWarnings("unchecked")
@@ -61,14 +59,14 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
         super.addItem(writeRequestItem);
     }
 
+    @SuppressWarnings("unchecked")
     public List<WriteRequestItem<T>> getCheckedRequestItems() {
-        return requestItems;
+        return (List) getRequestItems();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<WriteRequestItem<?>> getRequestItems() {
-        return (List) getCheckedRequestItems();
+    public Optional<WriteRequestItem<T>> getRequestItem() {
+        return (Optional<WriteRequestItem<T>>) super.getRequestItem();
     }
-
 }

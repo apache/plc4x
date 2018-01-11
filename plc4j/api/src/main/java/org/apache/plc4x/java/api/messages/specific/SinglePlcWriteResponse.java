@@ -24,29 +24,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @deprecated methods integrated into super type
+ */
+@Deprecated
 public class SinglePlcWriteResponse<T> extends TypeSafePlcWriteResponse<T> {
 
-    private final SinglePlcWriteRequest<T> request;
-    private final WriteResponseItem<T> responseItem;
-
-    public SinglePlcWriteResponse(SinglePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
-        super(request, Collections.singletonList(responseItem));
-        this.request = request;
-        this.responseItem = responseItem;
+    public SinglePlcWriteResponse(TypeSafePlcWriteRequest<T> request, WriteResponseItem<T> writeResponseItem) {
+        super(request, Collections.singletonList(writeResponseItem));
     }
-
-    @Override
-    public SinglePlcWriteRequest<T> getRequest() {
-        return request;
-    }
-
-    @Override
-    public List<WriteResponseItem<T>> getResponseItems() {
-        return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
-    }
-
-    public Optional<WriteResponseItem<T>> getResponseItem() {
-        return Optional.ofNullable(responseItem);
-    }
-
 }

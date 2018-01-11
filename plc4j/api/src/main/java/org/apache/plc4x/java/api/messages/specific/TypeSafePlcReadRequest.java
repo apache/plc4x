@@ -22,18 +22,19 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
 
-    private final List<ReadRequestItem<T>> readRequestItems;
-
     private Class<T> datatype;
 
-    public TypeSafePlcReadRequest(Class<T> type) {
-        this.datatype = type;
-        this.readRequestItems = new LinkedList<>();
+    public TypeSafePlcReadRequest(Class<T> dataType) {
+        this.datatype = dataType;
+    }
+
+    public TypeSafePlcReadRequest(Class<T> dataType, ReadRequestItem<T> readRequestItem) {
+        this(dataType);
     }
 
     public TypeSafePlcReadRequest(Class<T> dataType, Address address) {
@@ -44,10 +45,6 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
     public TypeSafePlcReadRequest(Class<T> dataType, Address address, int size) {
         this(dataType);
         addItem(new ReadRequestItem<>(dataType, address, size));
-    }
-
-    public void addCheckedItem(ReadRequestItem<T> readRequestItem) {
-        addItem(readRequestItem);
     }
 
     @SuppressWarnings("unchecked")
@@ -61,13 +58,14 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
         super.addItem(readRequestItem);
     }
 
+    @SuppressWarnings("unchecked")
     public List<ReadRequestItem<T>> getCheckedReadRequestItems() {
-        return readRequestItems;
+        return (List) getRequestItems();
     }
 
     @SuppressWarnings("unchecked")
-    public List<ReadRequestItem<?>> getReadRequestItems() {
-        return (List) getCheckedReadRequestItems();
+    @Override
+    public Optional<ReadRequestItem<T>> getRequestItem() {
+        return (Optional<ReadRequestItem<T>>) super.getRequestItem();
     }
-
 }

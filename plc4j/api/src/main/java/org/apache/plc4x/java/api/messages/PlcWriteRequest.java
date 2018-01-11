@@ -20,7 +20,6 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;
@@ -53,17 +52,32 @@ public class PlcWriteRequest implements PlcRequest {
     }
 
     public Optional<? extends WriteRequestItem<?>> getRequestItem() {
-        if (getNumberOfItems() > 1) {
+        if (isMultiValue()) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
-        if (getNumberOfItems() < 1) {
+        if (isEmpty()) {
             return Optional.empty();
         }
         return Optional.<WriteRequestItem<?>>of(getRequestItems().get(0));
     }
 
+    public void setRequestItem(WriteRequestItem<?> requestItem) {
+        if (isMultiValue()) {
+            throw new IllegalStateException("too many items " + getNumberOfItems());
+        }
+        addItem(requestItem);
+    }
+
     public int getNumberOfItems() {
         return getRequestItems().size();
+    }
+
+    public boolean isMultiValue() {
+        return getNumberOfItems() > 1;
+    }
+
+    public boolean isEmpty() {
+        return getNumberOfItems() < 1;
     }
 
     public static PlcWriteRequest.Builder builder() {
@@ -98,9 +112,6 @@ public class PlcWriteRequest implements PlcRequest {
             if (requests.size() < 1) {
                 throw new IllegalStateException("No requests added");
             }
-            if (requests.size() < 2) {
-                return new SinglePlcWriteRequest<>(requests.get(0));
-            }
             PlcWriteRequest plcWriteRequest;
             if (mixed) {
                 plcWriteRequest = new PlcWriteRequest();
@@ -114,29 +125,7 @@ public class PlcWriteRequest implements PlcRequest {
         }
 
         @SuppressWarnings("unchecked")
-        public PlcWriteRequest buildBulk() {
-            if (requests.size() < 2) {
-                throw new IllegalStateException("Bulk request needs more than one request");
-            }
-            return build();
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T> SinglePlcWriteRequest<T> build(Class<T> type) {
-            if (requests.size() != 1) {
-                throw new IllegalStateException("Checked request needs exactly one request");
-            }
-            if (firstType != type) {
-                throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
-            }
-            return (SinglePlcWriteRequest<T>) build();
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T> TypeSafePlcWriteRequest<T> buildBulk(Class<T> type) {
-            if (requests.size() < 2) {
-                throw new IllegalStateException("Checked bulk request needs more than one request");
-            }
+        public <T> TypeSafePlcWriteRequest<T> build(Class<T> type) {
             if (firstType != type) {
                 throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
             }

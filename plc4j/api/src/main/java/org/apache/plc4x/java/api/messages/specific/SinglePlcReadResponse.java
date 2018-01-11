@@ -21,31 +21,14 @@ package org.apache.plc4x.java.api.messages.specific;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
+/**
+ * @deprecated methods integrated into super type
+ */
+@Deprecated
 public class SinglePlcReadResponse<T> extends TypeSafePlcReadResponse<T> {
 
-    private final SinglePlcReadRequest<T> request;
-    private final ReadResponseItem<T> responseItem;
-
-    public SinglePlcReadResponse(SinglePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
-        super(request, Collections.singletonList(responseItem));
-        this.request = request;
-        this.responseItem = responseItem;
-    }
-
-    @Override
-    public SinglePlcReadRequest<T> getRequest() {
-        return request;
-    }
-
-    @Override
-    public List<ReadResponseItem<T>> getResponseItems() {
-        return responseItem != null ? Collections.singletonList(responseItem) : Collections.emptyList();
-    }
-
-    public Optional<ReadResponseItem<T>> getResponseItem() {
-        return Optional.ofNullable(responseItem);
+    public SinglePlcReadResponse(TypeSafePlcReadRequest<T> request, ReadResponseItem<T> readResponseItem) {
+        super(request, Collections.singletonList(readResponseItem));
     }
 }

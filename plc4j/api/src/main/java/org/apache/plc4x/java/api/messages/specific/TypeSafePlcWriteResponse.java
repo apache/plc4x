@@ -18,29 +18,36 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
 
-    private final TypeSafePlcWriteRequest<T> request;
-    private final List<WriteResponseItem<T>> responseItems;
-
-    public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
-        super(null, null);
-        this.request = request;
-        this.responseItems = responseItems;
+    public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
+        // TODO: use checked type.
+        super(request, responseItem);
     }
 
-    public PlcWriteRequest getRequest() {
-        return request;
+    @SuppressWarnings("unchecked")
+    public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
+        // TODO: use checked list.
+        super(request, (List) responseItems);
+    }
+
+    public TypeSafePlcWriteRequest<T> getRequest() {
+        return (TypeSafePlcWriteRequest<T>) super.getRequest();
     }
 
     public List<WriteResponseItem<T>> getResponseItems() {
-        return responseItems;
+        return (List<WriteResponseItem<T>>) super.getResponseItems();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Optional<WriteResponseItem<T>> getResponseItem() {
+        return (Optional<WriteResponseItem<T>>) super.getResponseItem();
+    }
 }

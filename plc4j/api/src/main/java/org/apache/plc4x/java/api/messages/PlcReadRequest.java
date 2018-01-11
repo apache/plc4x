@@ -20,7 +20,6 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;
@@ -29,10 +28,15 @@ import java.util.Optional;
 
 public class PlcReadRequest implements PlcRequest {
 
-    private final List<ReadRequestItem<?>> readRequestItems;
+    private final List<ReadRequestItem<?>> requestItems;
 
     public PlcReadRequest() {
-        this.readRequestItems = new LinkedList<>();
+        this.requestItems = new LinkedList<>();
+    }
+
+    public PlcReadRequest(ReadRequestItem<?> requestItem) {
+        this();
+        requestItems.add(requestItem);
     }
 
     public PlcReadRequest(Class<?> dataType, Address address) {
@@ -45,30 +49,45 @@ public class PlcReadRequest implements PlcRequest {
         addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
-    public PlcReadRequest(List<ReadRequestItem<?>> readRequestItems) {
-        this.readRequestItems = readRequestItems;
+    public PlcReadRequest(List<ReadRequestItem<?>> requestItems) {
+        this.requestItems = requestItems;
     }
 
     public void addItem(ReadRequestItem<?> readRequestItem) {
-        getReadRequestItems().add(readRequestItem);
+        getRequestItems().add(readRequestItem);
     }
 
-    public List<ReadRequestItem<?>> getReadRequestItems() {
-        return readRequestItems;
+    public List<ReadRequestItem<?>> getRequestItems() {
+        return requestItems;
     }
 
     public Optional<? extends ReadRequestItem<?>> getRequestItem() {
-        if (getNumberOfItems() > 1) {
+        if (isMultiValue()) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
-        if (getNumberOfItems() < 1) {
+        if (isEmpty()) {
             return Optional.empty();
         }
-        return Optional.<ReadRequestItem<?>>of(getReadRequestItems().get(0));
+        return Optional.<ReadRequestItem<?>>of(getRequestItems().get(0));
+    }
+
+    public void setRequestItem(ReadRequestItem<?> requestItem) {
+        if (isMultiValue()) {
+            throw new IllegalStateException("too many items " + getNumberOfItems());
+        }
+        addItem(requestItem);
     }
 
     public int getNumberOfItems() {
-        return getReadRequestItems().size();
+        return getRequestItems().size();
+    }
+
+    public boolean isMultiValue() {
+        return getNumberOfItems() > 1;
+    }
+
+    public boolean isEmpty() {
+        return getNumberOfItems() < 1;
     }
 
     public static Builder builder() {
@@ -83,13 +102,13 @@ public class PlcReadRequest implements PlcRequest {
 
         private List<ReadRequestItem> requests = new LinkedList<>();
 
-        public <T> Builder addItem(Class<T> dataType, Address address) {
+        public Builder addItem(Class<?> dataType, Address address) {
             checkType(dataType);
             requests.add(new ReadRequestItem<>(dataType, address));
             return this;
         }
 
-        public <T> Builder addItem(Class<T> dataType, Address address, int size) {
+        public Builder addItem(Class<?> dataType, Address address, int size) {
             checkType(dataType);
             requests.add(new ReadRequestItem<>(dataType, address, size));
             return this;
@@ -109,9 +128,6 @@ public class PlcReadRequest implements PlcRequest {
             if (requests.size() < 1) {
                 throw new IllegalStateException("No requests added");
             }
-            if (requests.size() < 2) {
-                return new SinglePlcReadRequest<>(requests.get(0));
-            }
             PlcReadRequest plcReadRequest;
             if (mixed) {
                 plcReadRequest = new PlcReadRequest();
@@ -125,29 +141,7 @@ public class PlcReadRequest implements PlcRequest {
         }
 
         @SuppressWarnings("unchecked")
-        public PlcReadRequest buildBulk() {
-            if (requests.size() < 2) {
-                throw new IllegalStateException("Bulk request needs more than one request");
-            }
-            return build();
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T> SinglePlcReadRequest<T> build(Class<T> type) {
-            if (requests.size() != 1) {
-                throw new IllegalStateException("Checked request needs exactly one request");
-            }
-            if (firstType != type) {
-                throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
-            }
-            return (SinglePlcReadRequest<T>) build();
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T> TypeSafePlcReadRequest<T> buildBulk(Class<T> type) {
-            if (requests.size() < 2) {
-                throw new IllegalStateException("Checked bulk request needs more than one request");
-            }
+        public <T> TypeSafePlcReadRequest<T> build(Class<T> type) {
             if (firstType != type) {
                 throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
             }

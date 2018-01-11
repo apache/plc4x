@@ -18,29 +18,38 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
 
-    private final TypeSafePlcReadRequest<T> request;
-    private final List<ReadResponseItem<T>> responseItems;
+    public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
+        // TODO: use checked list.
+        super(request, responseItem);
+    }
 
+    @SuppressWarnings("unchecked")
     public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, List<ReadResponseItem<T>> responseItems) {
-        super(null, null);
-        this.request = request;
-        this.responseItems = responseItems;
+        // TODO: use checked list.
+        super(request, (List) responseItems);
     }
 
-    public PlcReadRequest getRequest() {
-        return request;
+    @SuppressWarnings("unchecked")
+    public TypeSafePlcReadRequest<T> getRequest() {
+        return (TypeSafePlcReadRequest<T>) super.getRequest();
     }
 
+    @SuppressWarnings("unchecked")
     public List<ReadResponseItem<T>> getResponseItems() {
-        return responseItems;
+        return (List<ReadResponseItem<T>>) super.getResponseItems();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Optional<ReadResponseItem<T>> getResponseItem() {
+        return (Optional<ReadResponseItem<T>>) super.getResponseItem();
+    }
 }

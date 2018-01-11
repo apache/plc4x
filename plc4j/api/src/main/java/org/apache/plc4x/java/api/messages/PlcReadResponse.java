@@ -21,6 +21,7 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,11 @@ public class PlcReadResponse implements PlcResponse {
 
     private final PlcReadRequest request;
     private final List<ReadResponseItem<?>> responseItems;
+
+    public PlcReadResponse(PlcReadRequest request, ReadResponseItem<?> responseItems) {
+        this.request = request;
+        this.responseItems = Collections.singletonList(responseItems);
+    }
 
     public PlcReadResponse(PlcReadRequest request, List<ReadResponseItem<?>> responseItems) {
         this.request = request;

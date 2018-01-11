@@ -21,55 +21,27 @@ package org.apache.plc4x.java.api.messages.specific;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * @deprecated methods integrated into super type
+ */
+@Deprecated
 public class SinglePlcWriteRequest<T> extends TypeSafePlcWriteRequest<T> {
 
-    private WriteRequestItem<T> requestItem;
-
-    public SinglePlcWriteRequest() {
-        super(null);
-    }
-
-    public SinglePlcWriteRequest(WriteRequestItem<T> requestItem) {
-        super(null);
-        this.requestItem = requestItem;
+    public SinglePlcWriteRequest(Class<T> type) {
+        super(type);
     }
 
     public SinglePlcWriteRequest(Class<T> dataType, Address address, T... values) {
-        super(null);
-        addItem(new WriteRequestItem<>(dataType, address, values));
+        super(dataType, address, values);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void addItem(WriteRequestItem<?> requestItem) {
-        if (this.requestItem != null && requestItem != null) {
-            throw new IllegalStateException(SinglePlcReadRequest.class.getName() + " can only contain on readRequestItem");
-        }
-        this.requestItem = (WriteRequestItem<T>) requestItem;
+    public SinglePlcWriteRequest(Class<T> dataType, WriteRequestItem<T> requestItem) {
+        super(dataType, requestItem);
     }
 
-    public List<WriteRequestItem<T>> getCheckedRequestItems() {
-        return (requestItem != null) ? Collections.singletonList(requestItem) : Collections.emptyList();
-    }
-
-    @Override
-    public List<WriteRequestItem<?>> getRequestItems() {
-        return (List) getCheckedRequestItems();
-    }
-
-    public Optional<WriteRequestItem<T>> getRequestItem() {
-        return Optional.ofNullable(requestItem);
-    }
-
-    public void setRequestItem(WriteRequestItem<T> requestItem) {
-        this.requestItem = requestItem;
-    }
-
-    public int getNumberOfItems() {
-        return requestItem != null ? 1 : 0;
+    public SinglePlcWriteRequest(Class<T> dataType, List<WriteRequestItem<T>> writeRequestItems) {
+        super(dataType, writeRequestItems);
     }
 }

@@ -62,7 +62,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             List<VarParameterItem> parameterItems = new LinkedList<>();
 
             PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
-            for (ReadRequestItem requestItem : readRequest.getReadRequestItems()) {
+            for (ReadRequestItem requestItem : readRequest.getRequestItems()) {
                 // Try to get the correct S7 transport size for the given data type.
                 // (Map PLC4X data type to S7 data type)
                 TransportSize transportSize = encodeTransportSize(requestItem.getDatatype());
@@ -146,7 +146,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                     // If the numbers of items don't match, we're in big trouble as the only
                     // way to know how to interpret the responses is by aligning them with the
                     // items from the request as this information is not returned by the PLC.
-                    if (plcReadRequest.getReadRequestItems().size() != payload.getPayloadItems().size()) {
+                    if (plcReadRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
                         throw new PlcProtocolException(
                             "The number of requested items doesn't match the number of returned items");
                     }
@@ -156,7 +156,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                         VarPayloadItem payloadItem = payloadItems.get(i);
 
                         // Get the request item for this payload item
-                        ReadRequestItem requestItem = plcReadRequest.getReadRequestItems().get(i);
+                        ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(i);
 
                         ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
 

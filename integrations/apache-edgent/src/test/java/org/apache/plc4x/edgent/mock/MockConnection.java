@@ -98,7 +98,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             return cf;
         }
         List<ReadResponseItem<?>> responseItems = new LinkedList<>();
-        for (ReadRequestItem requestItem : readRequest.getReadRequestItems()) {
+        for (ReadRequestItem requestItem : readRequest.getRequestItems()) {
             ReadResponseItem responseItem = new ReadResponseItem(requestItem, ResponseCode.OK,
                 Collections.singletonList(getDataValue(requestItem.getAddress())));
             responseItems.add(responseItem);

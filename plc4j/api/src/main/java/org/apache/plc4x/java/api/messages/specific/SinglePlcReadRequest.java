@@ -21,61 +21,25 @@ package org.apache.plc4x.java.api.messages.specific;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
+/**
+ * @deprecated methods integrated into super type
+ */
+@Deprecated
 public class SinglePlcReadRequest<T> extends TypeSafePlcReadRequest<T> {
 
-    private ReadRequestItem<T> requestItem;
-
-    public SinglePlcReadRequest() {
-        super(null);
+    public SinglePlcReadRequest(Class<T> dataType) {
+        super(dataType);
     }
 
-    public SinglePlcReadRequest(ReadRequestItem<T> requestItem) {
-        super(null);
-        this.requestItem = requestItem;
+    public SinglePlcReadRequest(Class<T> dataType, ReadRequestItem<T> readRequestItem) {
+        super(dataType, readRequestItem);
     }
 
     public SinglePlcReadRequest(Class<T> dataType, Address address) {
-        super(null);
-        requestItem = new ReadRequestItem<>(dataType, address);
+        super(dataType, address);
     }
 
     public SinglePlcReadRequest(Class<T> dataType, Address address, int size) {
-        super(null);
-        requestItem = new ReadRequestItem<>(dataType, address, size);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void addItem(ReadRequestItem<?> readRequestItem) {
-        if (this.requestItem != null && readRequestItem != null) {
-            throw new IllegalStateException(SinglePlcReadRequest.class.getName() + " can only contain on requestItem");
-        }
-        this.requestItem = (ReadRequestItem<T>) readRequestItem;
-    }
-
-    @Override
-    public List<ReadRequestItem<T>> getCheckedReadRequestItems() {
-        return requestItem != null ? Collections.singletonList(requestItem) : Collections.emptyList();
-    }
-
-    @Override
-    public List<ReadRequestItem<?>> getReadRequestItems() {
-        return (List) getCheckedReadRequestItems();
-    }
-
-    public Optional<ReadRequestItem<T>> getRequestItem() {
-        return Optional.of(requestItem);
-    }
-
-    public void setRequestItem(ReadRequestItem<T> requestItem) {
-        this.requestItem = requestItem;
-    }
-
-    public int getNumberOfItems() {
-        return requestItem != null ? 1 : 0;
+        super(dataType, address, size);
     }
 }

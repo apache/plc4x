@@ -21,6 +21,7 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,11 @@ public class PlcWriteResponse implements PlcResponse {
     private final PlcWriteRequest request;
 
     private final List<WriteResponseItem<?>> responseItems;
+
+    public PlcWriteResponse(PlcWriteRequest request, WriteResponseItem<?> responseItem) {
+        this.request = request;
+        this.responseItems = Collections.singletonList(responseItem);
+    }
 
     public PlcWriteResponse(PlcWriteRequest request, List<WriteResponseItem<?>> responseItems) {
         this.request = request;
