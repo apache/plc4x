@@ -177,10 +177,10 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                         }
                         responseItems.add(responseItem);
                     }
-                    if (plcReadRequest instanceof BulkPlcReadRequest) {
-                        response = new BulkPlcReadResponse((BulkPlcReadRequest) plcReadRequest, responseItems);
-                    } else if (plcReadRequest instanceof SinglePlcReadRequest) {
+                    if (plcReadRequest instanceof SinglePlcReadRequest) {
                         response = new SinglePlcReadResponse((SinglePlcReadRequest) plcReadRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+                    } else if (plcReadRequest instanceof BulkPlcReadRequest) {
+                        response = new BulkPlcReadResponse((BulkPlcReadRequest) plcReadRequest, responseItems);
                     } else {
                         response = null;
                     }

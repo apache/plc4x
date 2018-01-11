@@ -60,11 +60,8 @@ public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
         readRequestItems.add((ReadRequestItem<T>) readRequestItem);
     }
 
-    public List<? extends ReadRequestItem<?>> getReadRequestItems() {
+    public List<? extends ReadRequestItem<T>> getReadRequestItems() {
         return readRequestItems;
     }
 
-    public int getNumberOfItems() {
-        return readRequestItems.size();
-    }
 }

@@ -18,19 +18,19 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class SinglePlcWriteResponse<T> implements PlcWriteResponse {
+public class SinglePlcWriteResponse<T> extends CheckedBulkPlcWriteResponse<T> {
 
     private final SinglePlcWriteRequest<T> request;
     private final WriteResponseItem<T> responseItem;
 
     public SinglePlcWriteResponse(SinglePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
+        super(request, Collections.singletonList(responseItem));
         this.request = request;
         this.responseItem = responseItem;
     }

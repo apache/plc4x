@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
@@ -26,22 +25,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class SinglePlcWriteRequest<T> implements PlcWriteRequest {
+public class SinglePlcWriteRequest<T> extends CheckedBulkPlcWriteRequest<T> {
 
     private WriteRequestItem<T> requestItem;
 
     public SinglePlcWriteRequest() {
+        super(null);
     }
 
     public SinglePlcWriteRequest(WriteRequestItem<T> requestItem) {
+        super(null);
         this.requestItem = requestItem;
     }
 
-    public SinglePlcWriteRequest(Class<T> dataType, Address address, T value) {
-        addItem(new WriteRequestItem<>(dataType, address, value));
-    }
-
-    public SinglePlcWriteRequest(Class<T> dataType, Address address, T[] values) {
+    public SinglePlcWriteRequest(Class<T> dataType, Address address, T... values) {
+        super(null);
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 

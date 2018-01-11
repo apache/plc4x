@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
@@ -26,22 +25,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class SinglePlcReadRequest<T> implements PlcReadRequest {
+public class SinglePlcReadRequest<T> extends CheckedBulkPlcReadRequest<T> {
 
     private ReadRequestItem<T> requestItem;
 
     public SinglePlcReadRequest() {
+        super(null);
     }
 
     public SinglePlcReadRequest(ReadRequestItem<T> requestItem) {
+        super(null);
         this.requestItem = requestItem;
     }
 
     public SinglePlcReadRequest(Class<T> dataType, Address address) {
+        super(null);
         requestItem = new ReadRequestItem<>(dataType, address);
     }
 
     public SinglePlcReadRequest(Class<T> dataType, Address address, int size) {
+        super(null);
         requestItem = new ReadRequestItem<>(dataType, address, size);
     }
 

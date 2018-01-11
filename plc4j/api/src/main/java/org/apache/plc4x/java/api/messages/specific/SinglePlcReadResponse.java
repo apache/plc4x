@@ -18,19 +18,19 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class SinglePlcReadResponse<T> implements PlcReadResponse {
+public class SinglePlcReadResponse<T> extends CheckedBulkPlcReadResponse<T> {
 
     private final SinglePlcReadRequest<T> request;
     private final ReadResponseItem<T> responseItem;
 
     public SinglePlcReadResponse(SinglePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
+        super(request, Collections.singletonList(responseItem));
         this.request = request;
         this.responseItem = responseItem;
     }

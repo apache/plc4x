@@ -25,7 +25,10 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
@@ -98,10 +101,10 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             responseItems.add(responseItem);
         }
         PlcReadResponse response;
-        if (readRequest instanceof BulkPlcReadRequest) {
-            response = new BulkPlcReadResponse((BulkPlcReadRequest) readRequest, responseItems);
-        } else if (readRequest instanceof SinglePlcReadRequest) {
+        if (readRequest instanceof SinglePlcReadRequest) {
             response = new SinglePlcReadResponse((SinglePlcReadRequest) readRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+        } else if (readRequest instanceof BulkPlcReadRequest) {
+            response = new BulkPlcReadResponse((BulkPlcReadRequest) readRequest, responseItems);
         } else {
             response = null;
         }
