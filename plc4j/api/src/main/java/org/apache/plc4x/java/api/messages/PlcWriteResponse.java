@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.List;
@@ -40,5 +41,13 @@ public interface PlcWriteResponse extends PlcResponse {
 
     default int getNumberOfItems() {
         return getResponseItems().size();
+    }
+
+    @SuppressWarnings("unchecked")
+    default <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item) {
+        return getResponseItems().stream()
+            .filter(x -> x.getRequestItem().equals(item))
+            .map(e -> (WriteResponseItem<T>) e)
+            .findAny();
     }
 }

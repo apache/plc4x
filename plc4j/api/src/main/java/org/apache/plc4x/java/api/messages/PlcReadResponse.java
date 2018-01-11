@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.List;
@@ -40,5 +41,13 @@ public interface PlcReadResponse extends PlcResponse {
 
     default int getNumberOfItems() {
         return getResponseItems().size();
+    }
+
+    @SuppressWarnings("unchecked")
+    default <T> Optional<ReadResponseItem<T>> getValue(ReadRequestItem<T> item) {
+        return getResponseItems().stream()
+            .filter(x -> x.getRequestItem().equals(item))
+            .map(e -> (ReadResponseItem<T>) e)
+            .findAny();
     }
 }

@@ -44,10 +44,4 @@ public class BulkPlcReadResponse implements PlcReadResponse {
         return responseItems;
     }
 
-    public <T> Optional<ReadResponseItem<T>> getValue(ReadRequestItem<T> item){
-        return responseItems.stream()
-            .filter(x -> x.getRequestItem().equals(item))
-            .map(e -> (ReadResponseItem<T>) e)
-            .findAny();
-    }
 }

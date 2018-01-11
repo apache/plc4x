@@ -19,13 +19,9 @@ under the License.
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.List;
-import java.util.Optional;
 
 public class BulkPlcWriteResponse implements PlcWriteResponse {
 
@@ -45,10 +41,4 @@ public class BulkPlcWriteResponse implements PlcWriteResponse {
         return responseItems;
     }
 
-    public <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item){
-        return responseItems.stream()
-            .filter(x -> x.getRequestItem().equals(item))
-            .map(e -> (WriteResponseItem<T>) e)
-            .findAny();
-    }
 }
