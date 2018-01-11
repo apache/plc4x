@@ -19,8 +19,7 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.specific.BulkPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.CheckedBulkPlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.CheckedPlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
 
@@ -104,9 +103,9 @@ public class PlcWriteRequest implements PlcRequest {
             }
             PlcWriteRequest plcWriteRequest;
             if (mixed) {
-                plcWriteRequest = new BulkPlcWriteRequest();
+                plcWriteRequest = new PlcWriteRequest();
             } else {
-                plcWriteRequest = new CheckedBulkPlcWriteRequest<>(firstType);
+                plcWriteRequest = new CheckedPlcWriteRequest<>(firstType);
             }
             for (WriteRequestItem request : requests) {
                 plcWriteRequest.addItem(request);
@@ -115,11 +114,11 @@ public class PlcWriteRequest implements PlcRequest {
         }
 
         @SuppressWarnings("unchecked")
-        public BulkPlcWriteRequest buildBulk() {
+        public PlcWriteRequest buildBulk() {
             if (requests.size() < 2) {
                 throw new IllegalStateException("Bulk request needs more than one request");
             }
-            return (BulkPlcWriteRequest) build();
+            return build();
         }
 
         @SuppressWarnings("unchecked")
@@ -134,7 +133,7 @@ public class PlcWriteRequest implements PlcRequest {
         }
 
         @SuppressWarnings("unchecked")
-        public <T> CheckedBulkPlcWriteRequest<T> buildBulk(Class<T> type) {
+        public <T> CheckedPlcWriteRequest<T> buildBulk(Class<T> type) {
             if (requests.size() < 2) {
                 throw new IllegalStateException("Checked bulk request needs more than one request");
             }
@@ -144,7 +143,7 @@ public class PlcWriteRequest implements PlcRequest {
             if (mixed) {
                 throw new IllegalStateException("Mixed types contained");
             }
-            return (CheckedBulkPlcWriteRequest<T>) build();
+            return (CheckedPlcWriteRequest<T>) build();
         }
 
     }

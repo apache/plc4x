@@ -19,28 +19,28 @@ under the License.
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.List;
 
-/**
- * @deprecated just use {@link PlcReadRequest}
- */
-@Deprecated
-public class BulkPlcReadRequest extends PlcReadRequest {
-    public BulkPlcReadRequest() {
+public class CheckedPlcReadResponse<T> extends PlcReadResponse {
+
+    private final CheckedPlcReadRequest<T> request;
+    private final List<ReadResponseItem<T>> responseItems;
+
+    public CheckedPlcReadResponse(CheckedPlcReadRequest<T> request, List<ReadResponseItem<T>> responseItems) {
+        super(null, null);
+        this.request = request;
+        this.responseItems = responseItems;
     }
 
-    public BulkPlcReadRequest(Class<?> dataType, Address address) {
-        super(dataType, address);
+    public PlcReadRequest getRequest() {
+        return request;
     }
 
-    public BulkPlcReadRequest(Class<?> dataType, Address address, int size) {
-        super(dataType, address, size);
+    public List<ReadResponseItem<T>> getResponseItems() {
+        return responseItems;
     }
 
-    public BulkPlcReadRequest(List<ReadRequestItem<?>> readRequestItems) {
-        super(readRequestItems);
-    }
 }

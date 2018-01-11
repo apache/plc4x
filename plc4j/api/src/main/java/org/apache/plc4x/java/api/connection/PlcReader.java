@@ -18,8 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.specific.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.CheckedPlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.CheckedPlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcReadResponse;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -52,23 +56,12 @@ public interface PlcReader {
      * Reads a requested value from a PLC.
      *
      * @param readRequest object describing the type and location of the value.
-     * @return a {@link CompletableFuture} giving async access to the returned value.
-     */
-    @SuppressWarnings("unchecked")
-    default CompletableFuture<BulkPlcReadResponse> read(BulkPlcReadRequest readRequest) {
-        return (CompletableFuture<BulkPlcReadResponse>) read((PlcReadRequest) readRequest);
-    }
-
-    /**
-     * Reads a requested value from a PLC.
-     *
-     * @param readRequest object describing the type and location of the value.
      * @param <T>         type that is being requested.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
     @SuppressWarnings("unchecked")
-    default <T> CompletableFuture<CheckedBulkPlcReadResponse<T>> read(CheckedBulkPlcReadRequest<T> readRequest) {
-        return (CompletableFuture<CheckedBulkPlcReadResponse<T>>) read((PlcReadRequest) readRequest);
+    default <T> CompletableFuture<CheckedPlcReadResponse<T>> read(CheckedPlcReadRequest<T> readRequest) {
+        return (CompletableFuture<CheckedPlcReadResponse<T>>) read((PlcReadRequest) readRequest);
     }
 
 }

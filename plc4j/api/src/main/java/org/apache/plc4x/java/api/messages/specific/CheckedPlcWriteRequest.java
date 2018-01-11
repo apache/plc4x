@@ -18,29 +18,30 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckedBulkPlcWriteRequest<T> extends BulkPlcWriteRequest {
+public class CheckedPlcWriteRequest<T> extends PlcWriteRequest {
 
     private final List<WriteRequestItem<T>> requestItems;
 
     private final Class<T> datatype;
 
-    public CheckedBulkPlcWriteRequest(Class<T> type) {
+    public CheckedPlcWriteRequest(Class<T> type) {
         this.datatype = type;
         this.requestItems = new LinkedList<>();
     }
 
-    public CheckedBulkPlcWriteRequest(Class<T> dataType, Address address, T... values) {
+    public CheckedPlcWriteRequest(Class<T> dataType, Address address, T... values) {
         this(dataType);
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
-    public CheckedBulkPlcWriteRequest(Class<T> dataType, List<WriteRequestItem<T>> requestItems) {
+    public CheckedPlcWriteRequest(Class<T> dataType, List<WriteRequestItem<T>> requestItems) {
         this(dataType);
         this.requestItems.addAll(requestItems);
     }
@@ -57,7 +58,7 @@ public class CheckedBulkPlcWriteRequest<T> extends BulkPlcWriteRequest {
         if (writeRequestItem.getDatatype() != datatype) {
             throw new IllegalArgumentException("Incompatible datatype " + writeRequestItem.getDatatype());
         }
-        requestItems.add((WriteRequestItem<T>) writeRequestItem);
+        super.addItem(writeRequestItem);
     }
 
     public List<WriteRequestItem<T>> getCheckedRequestItems() {

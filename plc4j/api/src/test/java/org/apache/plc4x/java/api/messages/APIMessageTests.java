@@ -145,13 +145,13 @@ class APIMessageTests {
     @Test
     @Tag("fast")
     void plcReadResponse() {
-        BulkPlcReadRequest plcReadRequest = new BulkPlcReadRequest();
+        PlcReadRequest plcReadRequest = new PlcReadRequest();
         List<ReadResponseItem<?>> responseItems = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, address, 1);
         ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK, Collections.emptyList());
         responseItems.add(readResponseItem);
-        PlcReadResponse plcReadResponse = new BulkPlcReadResponse(plcReadRequest, responseItems);
+        PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
         assertTrue(plcReadResponse.getRequest().getNumberOfItems() == 0, "Unexpected number of response items");
         assertTrue(plcReadResponse.getRequest().equals(plcReadRequest), "Unexpected read request");
         assertTrue(plcReadResponse.getResponseItems().size() == 1, "Unexpected number of response items");
@@ -193,13 +193,13 @@ class APIMessageTests {
     @Test
     @Tag("fast")
     void plcWriteResponse() {
-        BulkPlcWriteRequest plcWriteRequest = new BulkPlcWriteRequest();
+        PlcWriteRequest plcWriteRequest = new PlcWriteRequest();
         List<WriteResponseItem<?>> responseItems = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         WriteRequestItem<Byte> writeRequestItem = new WriteRequestItem<>(Byte.class, address, (byte) 1);
         WriteResponseItem<Byte> writeResponseItem = new WriteResponseItem<>(writeRequestItem, ResponseCode.OK);
         responseItems.add(writeResponseItem);
-        PlcWriteResponse plcReadResponse = new BulkPlcWriteResponse(plcWriteRequest, responseItems);
+        PlcWriteResponse plcReadResponse = new PlcWriteResponse(plcWriteRequest, responseItems);
         assertTrue(plcReadResponse.getRequest().getNumberOfItems() == 0, "Unexpected number of response items");
         assertTrue(plcReadResponse.getRequest().equals(plcWriteRequest), "Unexpected read request");
         assertTrue(plcReadResponse.getResponseItems().size() == 1, "Unexpected number of response items");
@@ -209,7 +209,7 @@ class APIMessageTests {
     @Test
     @Tag("fast")
     void bulkPlcWriteResponseGetValue() {
-        BulkPlcWriteRequest plcWriteRequest = new BulkPlcWriteRequest();
+        PlcWriteRequest plcWriteRequest = new PlcWriteRequest();
         List<WriteResponseItem<?>> responseItems = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         WriteRequestItem<Byte> writeRequestItem1 = new WriteRequestItem<>(Byte.class, address, (byte) 1);
@@ -218,7 +218,7 @@ class APIMessageTests {
         WriteResponseItem<Byte> writeResponseItem2 = new WriteResponseItem<>(writeRequestItem2, ResponseCode.OK);
         responseItems.add(writeResponseItem1);
         responseItems.add(writeResponseItem2);
-        BulkPlcWriteResponse plcWriteResponse = new BulkPlcWriteResponse(plcWriteRequest, responseItems);
+        PlcWriteResponse plcWriteResponse = new PlcWriteResponse(plcWriteRequest, responseItems);
         Optional<WriteResponseItem<Byte>> responseValue1 = plcWriteResponse.getValue(writeRequestItem1);
         Optional<WriteResponseItem<Byte>> responseValue2 = plcWriteResponse.getValue(writeRequestItem2);
         assertEquals(Optional.of(writeResponseItem1), responseValue1, "Unexpected items in response items");
@@ -227,12 +227,12 @@ class APIMessageTests {
 
     @Test
     @Tag("fast")
-    void nonExistingItemBulkPlcWriteResponseGetValue() {
-        BulkPlcWriteRequest plcWriteRequest = new BulkPlcWriteRequest();
+    void nonExistingItemPlcWriteResponseGetValue() {
+        PlcWriteRequest plcWriteRequest = new PlcWriteRequest();
         List<WriteResponseItem<?>> responseItems = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         WriteRequestItem<Byte> nonExistingWriteRequestItem = new WriteRequestItem<>(Byte.class, address, (byte) 1);
-        BulkPlcWriteResponse plcWriteResponse = new BulkPlcWriteResponse(plcWriteRequest, responseItems);
+        PlcWriteResponse plcWriteResponse = new PlcWriteResponse(plcWriteRequest, responseItems);
         Optional<WriteResponseItem<Byte>> responseValue1 = plcWriteResponse.getValue(nonExistingWriteRequestItem);
         assertEquals(Optional.empty(), responseValue1, "Unexpected items in response items");
     }
@@ -240,7 +240,7 @@ class APIMessageTests {
     @Test
     @Tag("fast")
     void bulkPlcReadResponseGetValue() {
-        BulkPlcReadRequest plcReadRequest = new BulkPlcReadRequest();
+        PlcReadRequest plcReadRequest = new PlcReadRequest();
         List<ReadResponseItem<?>> responseItems = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem1 = new ReadRequestItem<>(Byte.class, address, 1);
@@ -249,7 +249,7 @@ class APIMessageTests {
         ReadResponseItem<Byte> readResponseItem2 = new ReadResponseItem<>(readRequestItem2, ResponseCode.OK, Collections.emptyList());
         responseItems.add(readResponseItem1);
         responseItems.add(readResponseItem2);
-        BulkPlcReadResponse plcReadResponse = new BulkPlcReadResponse(plcReadRequest, responseItems);
+        PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
         Optional<ReadResponseItem<Byte>> responseValue1 = plcReadResponse.getValue(readRequestItem1);
         Optional<ReadResponseItem<Byte>> responseValue2 = plcReadResponse.getValue(readRequestItem2);
         assertEquals(Optional.of(readResponseItem1), responseValue1, "Unexpected items in response items");
@@ -258,12 +258,12 @@ class APIMessageTests {
 
     @Test
     @Tag("fast")
-    void nonExistingItemBulkPlcReadResponseGetValue() {
-        BulkPlcReadRequest plcReadRequest = new BulkPlcReadRequest();
+    void nonExistingItemPlcReadResponseGetValue() {
+        PlcReadRequest plcReadRequest = new PlcReadRequest();
         List<ReadResponseItem<?>> responseItems = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> nonExistingReadRequestItem = new ReadRequestItem<>(Byte.class, address, 1);
-        BulkPlcReadResponse plcReadResponse = new BulkPlcReadResponse(plcReadRequest, responseItems);
+        PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
         Optional<ReadResponseItem<Byte>> responseValue1 = plcReadResponse.getValue(nonExistingReadRequestItem);
         assertEquals(Optional.empty(), responseValue1, "Unexpected items in response items");
     }

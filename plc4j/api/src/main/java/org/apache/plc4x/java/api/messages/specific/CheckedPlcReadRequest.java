@@ -18,29 +18,30 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
+public class CheckedPlcReadRequest<T> extends PlcReadRequest {
 
     private final List<ReadRequestItem<T>> readRequestItems;
 
     private Class<T> datatype;
 
-    public CheckedBulkPlcReadRequest(Class<T> type) {
+    public CheckedPlcReadRequest(Class<T> type) {
         this.datatype = type;
         this.readRequestItems = new LinkedList<>();
     }
 
-    public CheckedBulkPlcReadRequest(Class<T> dataType, Address address) {
+    public CheckedPlcReadRequest(Class<T> dataType, Address address) {
         this(dataType);
         addItem(new ReadRequestItem<>(dataType, address));
     }
 
-    public CheckedBulkPlcReadRequest(Class<T> dataType, Address address, int size) {
+    public CheckedPlcReadRequest(Class<T> dataType, Address address, int size) {
         this(dataType);
         addItem(new ReadRequestItem<>(dataType, address, size));
     }
@@ -57,7 +58,7 @@ public class CheckedBulkPlcReadRequest<T> extends BulkPlcReadRequest {
         if (readRequestItem.getDatatype() != datatype) {
             throw new IllegalArgumentException("Incompatible datatype " + readRequestItem.getDatatype());
         }
-        readRequestItems.add((ReadRequestItem<T>) readRequestItem);
+        super.addItem(readRequestItem);
     }
 
     public List<ReadRequestItem<T>> getCheckedReadRequestItems() {

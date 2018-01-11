@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class SinglePlcReadRequest<T> extends CheckedBulkPlcReadRequest<T> {
+public class SinglePlcReadRequest<T> extends CheckedPlcReadRequest<T> {
 
     private ReadRequestItem<T> requestItem;
 

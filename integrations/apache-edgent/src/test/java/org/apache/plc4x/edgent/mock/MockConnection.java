@@ -33,7 +33,10 @@ import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
-import org.apache.plc4x.java.api.messages.specific.*;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.types.ResponseCode;
 
@@ -103,10 +106,8 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
         PlcReadResponse response;
         if (readRequest instanceof SinglePlcReadRequest) {
             response = new SinglePlcReadResponse((SinglePlcReadRequest) readRequest, responseItems.isEmpty() ? null : responseItems.get(0));
-        } else if (readRequest instanceof BulkPlcReadRequest) {
-            response = new BulkPlcReadResponse(readRequest, responseItems);
         } else {
-            response = null;
+            response = new PlcReadResponse(readRequest, responseItems);
         }
         return CompletableFuture.completedFuture(response);
     }
@@ -130,10 +131,8 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
         PlcWriteResponse response;
         if (writeRequest instanceof SinglePlcWriteRequest) {
             response = new SinglePlcWriteResponse((SinglePlcWriteRequest) writeRequest, responseItems.isEmpty() ? null : responseItems.get(0));
-        } else if (writeRequest instanceof BulkPlcWriteRequest) {
-            response = new BulkPlcWriteResponse(writeRequest, responseItems);
         } else {
-            response = null;
+            response = new PlcWriteResponse(writeRequest, responseItems);
         }
 
         return CompletableFuture.completedFuture(response);

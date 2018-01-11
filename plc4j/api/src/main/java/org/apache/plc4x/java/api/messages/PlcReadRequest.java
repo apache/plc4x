@@ -19,8 +19,7 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.specific.BulkPlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.CheckedBulkPlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.CheckedPlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
 
@@ -115,9 +114,9 @@ public class PlcReadRequest implements PlcRequest {
             }
             PlcReadRequest plcReadRequest;
             if (mixed) {
-                plcReadRequest = new BulkPlcReadRequest();
+                plcReadRequest = new PlcReadRequest();
             } else {
-                plcReadRequest = new CheckedBulkPlcReadRequest<>(firstType);
+                plcReadRequest = new CheckedPlcReadRequest<>(firstType);
             }
             for (ReadRequestItem request : requests) {
                 plcReadRequest.addItem(request);
@@ -126,11 +125,11 @@ public class PlcReadRequest implements PlcRequest {
         }
 
         @SuppressWarnings("unchecked")
-        public BulkPlcReadRequest buildBulk() {
+        public PlcReadRequest buildBulk() {
             if (requests.size() < 2) {
                 throw new IllegalStateException("Bulk request needs more than one request");
             }
-            return (BulkPlcReadRequest) build();
+            return build();
         }
 
         @SuppressWarnings("unchecked")
@@ -145,7 +144,7 @@ public class PlcReadRequest implements PlcRequest {
         }
 
         @SuppressWarnings("unchecked")
-        public <T> CheckedBulkPlcReadRequest<T> buildBulk(Class<T> type) {
+        public <T> CheckedPlcReadRequest<T> buildBulk(Class<T> type) {
             if (requests.size() < 2) {
                 throw new IllegalStateException("Checked bulk request needs more than one request");
             }
@@ -155,7 +154,7 @@ public class PlcReadRequest implements PlcRequest {
             if (mixed) {
                 throw new IllegalStateException("Mixed types contained");
             }
-            return (CheckedBulkPlcReadRequest<T>) build();
+            return (CheckedPlcReadRequest<T>) build();
         }
 
     }

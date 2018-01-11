@@ -22,10 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcRequestContainer;
-import org.apache.plc4x.java.api.messages.PlcResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
@@ -179,8 +176,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                     }
                     if (plcReadRequest instanceof SinglePlcReadRequest) {
                         response = new SinglePlcReadResponse((SinglePlcReadRequest) plcReadRequest, responseItems.isEmpty() ? null : responseItems.get(0));
-                    } else if (plcReadRequest instanceof BulkPlcReadRequest) {
-                        response = new BulkPlcReadResponse((BulkPlcReadRequest) plcReadRequest, responseItems);
+                    } else if (plcReadRequest instanceof PlcReadRequest) {
+                        response = new PlcReadResponse(plcReadRequest, responseItems);
                     } else {
                         response = null;
                     }
@@ -213,8 +210,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                         responseItems.add(responseItem);
                     }
 
-                    if (plcWriteRequest instanceof BulkPlcWriteRequest) {
-                        response = new BulkPlcWriteResponse((BulkPlcWriteRequest) plcWriteRequest, responseItems);
+                    if (plcWriteRequest instanceof PlcWriteRequest) {
+                        response = new PlcWriteResponse(plcWriteRequest, responseItems);
                     } else if (plcWriteRequest instanceof SinglePlcWriteRequest) {
                         response = new SinglePlcWriteResponse((SinglePlcWriteRequest) plcWriteRequest, responseItems.isEmpty() ? null : responseItems.get(0));
                     } else {

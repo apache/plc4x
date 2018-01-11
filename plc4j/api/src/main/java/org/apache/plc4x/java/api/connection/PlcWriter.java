@@ -19,8 +19,12 @@ under the License.
 package org.apache.plc4x.java.api.connection;
 
 
-import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.specific.*;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.specific.CheckedPlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.CheckedPlcWriteResponse;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteResponse;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -53,23 +57,12 @@ public interface PlcWriter {
      * Writes a given value to a PLC.
      *
      * @param writeRequest object describing the type, location and value that whould be written.
-     * @return a {@link CompletableFuture} giving async access to the response of the write operation.
-     */
-    @SuppressWarnings("unchecked")
-    default CompletableFuture<BulkPlcWriteResponse> write(BulkPlcWriteRequest writeRequest) {
-        return (CompletableFuture<BulkPlcWriteResponse>) write((PlcWriteRequest) writeRequest);
-    }
-
-    /**
-     * Writes a given value to a PLC.
-     *
-     * @param writeRequest object describing the type, location and value that whould be written.
      * @param <T>          type that is being requested.
      * @return a {@link CompletableFuture} giving async access to the response of the write operation.
      */
     @SuppressWarnings("unchecked")
-    default <T> CompletableFuture<CheckedBulkPlcWriteResponse<T>> write(CheckedBulkPlcWriteRequest<T> writeRequest) {
-        return (CompletableFuture<CheckedBulkPlcWriteResponse<T>>) write((PlcWriteRequest) writeRequest);
+    default <T> CompletableFuture<CheckedPlcWriteResponse<T>> write(CheckedPlcWriteRequest<T> writeRequest) {
+        return (CompletableFuture<CheckedPlcWriteResponse<T>>) write((PlcWriteRequest) writeRequest);
     }
 
 }
