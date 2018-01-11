@@ -25,23 +25,23 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckedPlcReadRequest<T> extends PlcReadRequest {
+public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
 
     private final List<ReadRequestItem<T>> readRequestItems;
 
     private Class<T> datatype;
 
-    public CheckedPlcReadRequest(Class<T> type) {
+    public TypeSafePlcReadRequest(Class<T> type) {
         this.datatype = type;
         this.readRequestItems = new LinkedList<>();
     }
 
-    public CheckedPlcReadRequest(Class<T> dataType, Address address) {
+    public TypeSafePlcReadRequest(Class<T> dataType, Address address) {
         this(dataType);
         addItem(new ReadRequestItem<>(dataType, address));
     }
 
-    public CheckedPlcReadRequest(Class<T> dataType, Address address, int size) {
+    public TypeSafePlcReadRequest(Class<T> dataType, Address address, int size) {
         this(dataType);
         addItem(new ReadRequestItem<>(dataType, address, size));
     }

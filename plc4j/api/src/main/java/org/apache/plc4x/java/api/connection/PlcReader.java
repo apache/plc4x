@@ -20,8 +20,8 @@ package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.CheckedPlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.CheckedPlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.SinglePlcReadResponse;
 
@@ -60,8 +60,8 @@ public interface PlcReader {
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
     @SuppressWarnings("unchecked")
-    default <T> CompletableFuture<CheckedPlcReadResponse<T>> read(CheckedPlcReadRequest<T> readRequest) {
-        return (CompletableFuture<CheckedPlcReadResponse<T>>) read((PlcReadRequest) readRequest);
+    default <T> CompletableFuture<TypeSafePlcReadResponse<T>> read(TypeSafePlcReadRequest<T> readRequest) {
+        return (CompletableFuture<TypeSafePlcReadResponse<T>>) read((PlcReadRequest) readRequest);
     }
 
 }

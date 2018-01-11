@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class SinglePlcWriteRequest<T> extends CheckedPlcWriteRequest<T> {
+public class SinglePlcWriteRequest<T> extends TypeSafePlcWriteRequest<T> {
 
     private WriteRequestItem<T> requestItem;
 

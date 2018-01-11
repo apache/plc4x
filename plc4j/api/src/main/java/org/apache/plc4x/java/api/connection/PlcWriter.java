@@ -21,8 +21,8 @@ package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.specific.CheckedPlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.CheckedPlcWriteResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.SinglePlcWriteResponse;
 
@@ -61,8 +61,8 @@ public interface PlcWriter {
      * @return a {@link CompletableFuture} giving async access to the response of the write operation.
      */
     @SuppressWarnings("unchecked")
-    default <T> CompletableFuture<CheckedPlcWriteResponse<T>> write(CheckedPlcWriteRequest<T> writeRequest) {
-        return (CompletableFuture<CheckedPlcWriteResponse<T>>) write((PlcWriteRequest) writeRequest);
+    default <T> CompletableFuture<TypeSafePlcWriteResponse<T>> write(TypeSafePlcWriteRequest<T> writeRequest) {
+        return (CompletableFuture<TypeSafePlcWriteResponse<T>>) write((PlcWriteRequest) writeRequest);
     }
 
 }

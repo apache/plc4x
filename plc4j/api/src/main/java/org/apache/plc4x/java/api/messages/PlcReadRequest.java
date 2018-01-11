@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.specific.CheckedPlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.SinglePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
 
@@ -116,7 +116,7 @@ public class PlcReadRequest implements PlcRequest {
             if (mixed) {
                 plcReadRequest = new PlcReadRequest();
             } else {
-                plcReadRequest = new CheckedPlcReadRequest<>(firstType);
+                plcReadRequest = new TypeSafePlcReadRequest<>(firstType);
             }
             for (ReadRequestItem request : requests) {
                 plcReadRequest.addItem(request);
@@ -144,7 +144,7 @@ public class PlcReadRequest implements PlcRequest {
         }
 
         @SuppressWarnings("unchecked")
-        public <T> CheckedPlcReadRequest<T> buildBulk(Class<T> type) {
+        public <T> TypeSafePlcReadRequest<T> buildBulk(Class<T> type) {
             if (requests.size() < 2) {
                 throw new IllegalStateException("Checked bulk request needs more than one request");
             }
@@ -154,7 +154,7 @@ public class PlcReadRequest implements PlcRequest {
             if (mixed) {
                 throw new IllegalStateException("Mixed types contained");
             }
-            return (CheckedPlcReadRequest<T>) build();
+            return (TypeSafePlcReadRequest<T>) build();
         }
 
     }

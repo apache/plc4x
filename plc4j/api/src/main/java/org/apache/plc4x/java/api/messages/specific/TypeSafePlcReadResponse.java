@@ -18,28 +18,28 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.util.List;
 
-public class CheckedPlcWriteResponse<T> extends PlcWriteResponse {
+public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
 
-    private final CheckedPlcWriteRequest<T> request;
-    private final List<WriteResponseItem<T>> responseItems;
+    private final TypeSafePlcReadRequest<T> request;
+    private final List<ReadResponseItem<T>> responseItems;
 
-    public CheckedPlcWriteResponse(CheckedPlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
+    public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, List<ReadResponseItem<T>> responseItems) {
         super(null, null);
         this.request = request;
         this.responseItems = responseItems;
     }
 
-    public PlcWriteRequest getRequest() {
+    public PlcReadRequest getRequest() {
         return request;
     }
 
-    public List<WriteResponseItem<T>> getResponseItems() {
+    public List<ReadResponseItem<T>> getResponseItems() {
         return responseItems;
     }
 

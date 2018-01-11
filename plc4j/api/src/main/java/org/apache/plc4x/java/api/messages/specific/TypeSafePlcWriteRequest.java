@@ -25,23 +25,23 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckedPlcWriteRequest<T> extends PlcWriteRequest {
+public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
 
     private final List<WriteRequestItem<T>> requestItems;
 
     private final Class<T> datatype;
 
-    public CheckedPlcWriteRequest(Class<T> type) {
+    public TypeSafePlcWriteRequest(Class<T> type) {
         this.datatype = type;
         this.requestItems = new LinkedList<>();
     }
 
-    public CheckedPlcWriteRequest(Class<T> dataType, Address address, T... values) {
+    public TypeSafePlcWriteRequest(Class<T> dataType, Address address, T... values) {
         this(dataType);
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
-    public CheckedPlcWriteRequest(Class<T> dataType, List<WriteRequestItem<T>> requestItems) {
+    public TypeSafePlcWriteRequest(Class<T> dataType, List<WriteRequestItem<T>> requestItems) {
         this(dataType);
         this.requestItems.addAll(requestItems);
     }
