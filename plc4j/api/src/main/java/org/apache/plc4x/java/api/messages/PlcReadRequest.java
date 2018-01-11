@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlcReadRequest extends PlcRequest {
-    void addItem(ReadRequestItem readRequestItem);
+    void addItem(ReadRequestItem<?> readRequestItem);
 
-    List<? extends ReadRequestItem> getReadRequestItems();
+    List<? extends ReadRequestItem<?>> getReadRequestItems();
 
     default Optional<? extends ReadRequestItem<?>> getReadRequestItem() {
         if (getNumberOfItems() > 1) {

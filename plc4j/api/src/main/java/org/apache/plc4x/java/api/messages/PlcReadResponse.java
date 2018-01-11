@@ -27,7 +27,7 @@ import java.util.Optional;
 public interface PlcReadResponse extends PlcResponse {
     PlcReadRequest getRequest();
 
-    List<? extends ReadResponseItem> getResponseItems();
+    List<? extends ReadResponseItem<?>> getResponseItems();
 
     default Optional<? extends ReadResponseItem<?>> getResponseItem() {
         if (isMultiValue()) {

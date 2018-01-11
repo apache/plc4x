@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlcWriteRequest extends PlcRequest {
-    void addItem(WriteRequestItem writeRequestItem);
+    void addItem(WriteRequestItem<?> writeRequestItem);
 
-    List<? extends WriteRequestItem> getRequestItems();
+    List<? extends WriteRequestItem<?>> getRequestItems();
 
     default Optional<? extends WriteRequestItem<?>> getRequestItem() {
         if (getNumberOfItems() > 1) {
