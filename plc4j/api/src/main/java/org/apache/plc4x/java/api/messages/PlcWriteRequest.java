@@ -86,9 +86,7 @@ public interface PlcWriteRequest extends PlcRequest {
                 throw new IllegalStateException("No requests added");
             }
             if (requests.size() < 2) {
-                SinglePlcWriteRequest<?> singlePlcWriteRequest = new SinglePlcWriteRequest<>();
-                singlePlcWriteRequest.addItem(requests.get(0));
-                return singlePlcWriteRequest;
+                return new SinglePlcWriteRequest<>(requests.get(0));
             }
             PlcWriteRequest plcWriteRequest;
             if (mixed) {

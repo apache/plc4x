@@ -33,7 +33,7 @@ public interface PlcReadRequest extends PlcRequest {
 
     List<? extends ReadRequestItem<?>> getReadRequestItems();
 
-    default Optional<? extends ReadRequestItem<?>> getReadRequestItem() {
+    default Optional<? extends ReadRequestItem<?>> getRequestItem() {
         if (getNumberOfItems() > 1) {
             throw new IllegalStateException("too many items " + getNumberOfItems());
         }
@@ -86,9 +86,7 @@ public interface PlcReadRequest extends PlcRequest {
                 throw new IllegalStateException("No requests added");
             }
             if (requests.size() < 2) {
-                SinglePlcReadRequest<?> singlePlcReadRequest = new SinglePlcReadRequest<>();
-                singlePlcReadRequest.addItem(requests.get(0));
-                return singlePlcReadRequest;
+                return new SinglePlcReadRequest<>(requests.get(0));
             }
             PlcReadRequest plcReadRequest;
             if (mixed) {

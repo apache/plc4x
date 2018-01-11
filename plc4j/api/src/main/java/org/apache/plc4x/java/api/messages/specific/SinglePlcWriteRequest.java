@@ -33,6 +33,10 @@ public class SinglePlcWriteRequest<T> implements PlcWriteRequest {
     public SinglePlcWriteRequest() {
     }
 
+    public SinglePlcWriteRequest(WriteRequestItem<T> requestItem) {
+        this.requestItem = requestItem;
+    }
+
     public SinglePlcWriteRequest(Class<T> dataType, Address address, T value) {
         addItem(new WriteRequestItem<>(dataType, address, value));
     }
@@ -59,7 +63,7 @@ public class SinglePlcWriteRequest<T> implements PlcWriteRequest {
         return Optional.ofNullable(requestItem);
     }
 
-    public void setWriteRequestItem(WriteRequestItem<T> requestItem) {
+    public void setRequestItem(WriteRequestItem<T> requestItem) {
         this.requestItem = requestItem;
     }
 

@@ -44,6 +44,10 @@ public class BulkPlcReadRequest implements PlcReadRequest {
         addItem(new ReadRequestItem(dataType, address, size));
     }
 
+    public BulkPlcReadRequest(List<ReadRequestItem> readRequestItems) {
+        this.readRequestItems = readRequestItems;
+    }
+
     public void addItem(ReadRequestItem readRequestItem) {
         readRequestItems.add(readRequestItem);
     }

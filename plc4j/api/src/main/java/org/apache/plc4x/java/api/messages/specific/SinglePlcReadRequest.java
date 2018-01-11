@@ -28,42 +28,46 @@ import java.util.Optional;
 
 public class SinglePlcReadRequest<T> implements PlcReadRequest {
 
-    private ReadRequestItem<T> readRequestItem;
+    private ReadRequestItem<T> requestItem;
 
     public SinglePlcReadRequest() {
     }
 
+    public SinglePlcReadRequest(ReadRequestItem<T> requestItem) {
+        this.requestItem = requestItem;
+    }
+
     public SinglePlcReadRequest(Class<T> dataType, Address address) {
-        readRequestItem = new ReadRequestItem<>(dataType, address);
+        requestItem = new ReadRequestItem<>(dataType, address);
     }
 
     public SinglePlcReadRequest(Class<T> dataType, Address address, int size) {
-        readRequestItem = new ReadRequestItem<>(dataType, address, size);
+        requestItem = new ReadRequestItem<>(dataType, address, size);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void addItem(ReadRequestItem readRequestItem) {
-        if (this.readRequestItem != null && readRequestItem != null) {
-            throw new IllegalStateException(SinglePlcReadRequest.class.getName() + " can only contain on readRequestItem");
+        if (this.requestItem != null && readRequestItem != null) {
+            throw new IllegalStateException(SinglePlcReadRequest.class.getName() + " can only contain on requestItem");
         }
-        this.readRequestItem = (ReadRequestItem<T>) readRequestItem;
+        this.requestItem = (ReadRequestItem<T>) readRequestItem;
     }
 
     @Override
     public List<ReadRequestItem<T>> getReadRequestItems() {
-        return readRequestItem != null ? Collections.singletonList(readRequestItem) : Collections.emptyList();
+        return requestItem != null ? Collections.singletonList(requestItem) : Collections.emptyList();
     }
 
-    public Optional<ReadRequestItem<T>> getReadRequestItem() {
-        return Optional.of(readRequestItem);
+    public Optional<ReadRequestItem<T>> getRequestItem() {
+        return Optional.of(requestItem);
     }
 
-    public void setReadRequestItem(ReadRequestItem<T> readRequestItem) {
-        this.readRequestItem = readRequestItem;
+    public void setRequestItem(ReadRequestItem<T> requestItem) {
+        this.requestItem = requestItem;
     }
 
     public int getNumberOfItems() {
-        return readRequestItem != null ? 1 : 0;
+        return requestItem != null ? 1 : 0;
     }
 }
