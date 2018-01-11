@@ -54,6 +54,7 @@ public class PLC4XProducer extends DefaultAsyncProducer {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();
         Address address = in.getHeader(Constants.ADDRESS_HEADER, Address.class);
@@ -92,6 +93,7 @@ public class PLC4XProducer extends DefaultAsyncProducer {
         }
     }
 
+    @Override
     public boolean process(Exchange exchange, AsyncCallback callback) {
         try {
             process(exchange);

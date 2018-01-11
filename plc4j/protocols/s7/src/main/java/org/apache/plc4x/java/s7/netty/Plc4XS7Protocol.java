@@ -151,7 +151,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                             "The number of requested items doesn't match the number of returned items");
                     }
                     List<VarPayloadItem> payloadItems = payload.getPayloadItems();
-                    for (int i = 0; i < payloadItems.size(); i++) {
+                    final int noPayLoadItems = payloadItems.size();
+                    for (int i = 0; i < noPayLoadItems; i++) {
                         VarPayloadItem payloadItem = payloadItems.get(i);
 
                         // Get the request item for this payload item
@@ -195,7 +196,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                             "The number of requested items doesn't match the number of returned items");
                     }
                     List<VarPayloadItem> payloadItems = payload.getPayloadItems();
-                    for (int i = 0; i < payloadItems.size(); i++) {
+                    final int noPayLoadItems = payloadItems.size();
+                    for (int i = 0; i < noPayLoadItems; i++) {
                         VarPayloadItem payloadItem = payloadItems.get(i);
 
                         // Get the request item for this payload item
@@ -295,32 +297,33 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
     }
 
     private byte[] encodeData(Object[] values) {
-        if (values.length == 0) {
+        final int length =values.length;
+        if (length == 0) {
             return new byte[]{};
         }
         byte[] result = null;
         Class valueType = values[0].getClass();
         if (valueType == Boolean.class) {
             // TODO: Check if this is true and the result is not Math.ceil(values.lenght / 8)
-            result = new byte[values.length];
-            for (int i = 0; i < values.length; i++) {
+            result = new byte[length];
+            for (int i = 0; i < length; i++) {
                 result[i] = (byte) (((Boolean) values[i]) ? 0x01 : 0x00);
             }
-        } else if (valueType == Byte[].class) {
-            result = new byte[values.length];
-            for (int i = 0; i < values.length; i++) {
+        } else if (valueType == Byte.class) {
+            result = new byte[length];
+            for (int i = 0; i < length; i++) {
                 result[i] = (byte) values[i];
             }
         } else if (valueType == Short.class) {
-            result = new byte[values.length * 2];
-            for (int i = 0; i < values.length; i++) {
+            result = new byte[length * 2];
+            for (int i = 0; i < length; i++) {
                 short intValue = (short) values[i];
                 result[i * 2] = (byte) ((intValue & 0xff00) >> 8);
                 result[(i * 2) + 1] = (byte) (intValue & 0xff);
             }
         } else if (valueType == Integer.class) {
-            result = new byte[values.length * 4];
-            for (int i = 0; i < values.length; i++) {
+            result = new byte[length * 4];
+            for (int i = 0; i < length; i++) {
                 int intValue = (int) values[i];
                 result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
                 result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
@@ -330,8 +333,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         } else if (valueType == Calendar.class) {
             result = null;
         } else if (valueType == Float.class) {
-            result = new byte[values.length * 4];
-            for (int i = 0; i < values.length; i++) {
+            result = new byte[length * 4];
+            for (int i = 0; i < length; i++) {
                 float floatValue = (float) values[i];
                 int intValue = Float.floatToIntBits(floatValue);
                 result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
@@ -340,7 +343,19 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result[(i * 4) + 3] = (byte) (intValue & 0xff);
             }
         } else if (valueType == String.class) {
-            result = new byte[]{};
+            int size = 0;
+            for (Object value : values) {
+                size = size + ((String) value).length();
+            }
+            result = new byte[size + length];
+            int j = 0;
+            for (Object value : values) {
+                String str = (String) value;
+                for (int i = 0; i < str.length(); i++) {
+                    result[j++] = (byte) str.charAt(i);
+                }
+                result[j++] = (byte) 0x0;
+            }
         }
         return result;
     }
@@ -350,23 +365,25 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
     ////////////////////////////////////////////////////////////////////////////////
 
     private ResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
-        if (dataTransportErrorCode != null) {
-            switch (dataTransportErrorCode) {
-                case OK:
-                    return ResponseCode.OK;
-                case NOT_FOUND:
-                    return ResponseCode.NOT_FOUND;
-                case INVALID_ADDRESS:
-                    return ResponseCode.INVALID_ADDRESS;
-            }
+        if (dataTransportErrorCode == null) {
+            return ResponseCode.INTERNAL_ERROR;
         }
-        return ResponseCode.INTERNAL_ERROR;
+        switch (dataTransportErrorCode) {
+            case OK:
+                return ResponseCode.OK;
+            case NOT_FOUND:
+                return ResponseCode.NOT_FOUND;
+            case INVALID_ADDRESS:
+                return ResponseCode.INVALID_ADDRESS;
+            default:
+                return ResponseCode.INTERNAL_ERROR;
+        }
     }
 
     @SuppressWarnings("unchecked")private <T>List<T> decodeData(Class<T> datatype, byte[] s7Data) throws PlcProtocolException {
 
         List<Object> result = new LinkedList<>();
-        for (int i = 0; i < s7Data.length; ) {
+        int i = 0; final int length = s7Data.length;while (i < length) {
             if (datatype == Boolean.class) {
                 result.add((s7Data[i] & 0x01) == 0x01);
                 i += 1;
@@ -377,17 +394,25 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 result.add((short) (((s7Data[i] & 0xff) << 8) | (s7Data[i + 1] & 0xff)));
                 i += 2;
             } else if (datatype == Integer.class) {
-                result.add((((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
-                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff)));
+                result.add(((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
+                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff));
                 i += 4;
             } else if (datatype == Float.class) {
                 // Description of the Real number format:
                 // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
                 // https://de.wikipedia.org/wiki/IEEE_754
-                int intValue = (((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
-                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff));
+                int intValue = ((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
+                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff);
                 result.add(Float.intBitsToFloat(intValue));
                 i += 4;
+            } else if (datatype == String.class) {
+                StringBuilder builder = new StringBuilder();
+                while (s7Data[i] != (byte) 0x0 && i < length) {
+                    builder.append((char)s7Data[i]);
+                    i++;
+                }
+                i++; // skip terminating character
+                result.add(builder.toString());
             } else {
                 throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
             }

@@ -24,11 +24,16 @@ import org.apache.edgent.topology.TStream;
 import org.apache.edgent.topology.Topology;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class IoTree {
+
+    private static final Logger logger = LoggerFactory.getLogger(IoTree.class);
 
     private final PlcConnectionAdapter plcAdapter;
 
@@ -49,7 +54,7 @@ public class IoTree {
         digitalOutput = new AtomicInteger(0);
     }
 
-    private void run() throws Exception {
+    private void run() throws InterruptedException, IOException {
         DirectProvider dp = new DirectProvider();
         Topology top = dp.newTopology();
         // Automatically update the internal variable values ...
@@ -74,7 +79,7 @@ public class IoTree {
         // Start logging ...
         dp.submit(top);
 
-        while (true) {
+        while (System.in.available() == 0) {
             Thread.sleep(1000);
             System.out.println(String.format("Internal Variables: %d Digital In: %d Analog In: %d Amplifictaion: %d Max Value: %d Digital Out: %d",
                 internalVariables.get(), digitalInput.get(), analogInput.get(), amplification.get(), maxValue.get(), digitalOutput.get()));
@@ -91,14 +96,13 @@ public class IoTree {
         try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter(args[0])) {
             // Initialize the tree itself
             IoTree tree = new IoTree(plcAdapter);
+
             // Start the tree ...
             tree.run();
-            // Yeah ... well prevent the application from exiting ;-)
-            while (true) {
-                Thread.sleep(1000);
-            }
+
+            System.exit(0);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Caught exception", e);
         }
     }
 

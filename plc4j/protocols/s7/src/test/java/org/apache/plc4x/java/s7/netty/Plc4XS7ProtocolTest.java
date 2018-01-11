@@ -83,11 +83,6 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
     @MethodSource("typeAndAddressProvider")
     @Tag("fast")
     public void decode(Class<?> type, S7Address address) throws Exception {
-        // TODO: finish me
-        if (type == String.class) {
-            // String seems not yet decodable
-            return;
-        }
         // Read Test
         {
             short fakeTpduReference = (short) 1;
@@ -200,8 +195,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
         } else if (type == String.class) {
             size = DataTransportSize.BYTE_WORD_DWORD;
-            // TODO: what size is string?
-            data = new byte[]{(byte) 0b0000_0000};
+            data = new byte[]{(byte) 'S', (byte) 't', (byte) 'r', (byte) 'i' ,(byte) 'n', (byte) 'g', (byte) 0x0};
         } else {
             throw new IllegalArgumentException("Type t not supported " + type);
         }

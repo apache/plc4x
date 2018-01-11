@@ -104,44 +104,10 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             switch (s7Parameter.getType()) {
                 case READ_VAR:
                 case WRITE_VAR:
-                    VarParameter varParameter = (VarParameter) s7Parameter;
-                    List<VarParameterItem> items = varParameter.getItems();
-                    // ReadRequestItem count (Read one variable at a time)
-                    buf.writeByte((byte) items.size());
-                    for (VarParameterItem item : items) {
-                        VariableAddressingMode addressMode = item.getAddressingMode();
-                        if (addressMode == VariableAddressingMode.S7ANY) {
-                            S7AnyVarParameterItem s7AnyRequestItem = (S7AnyVarParameterItem) item;
-                            buf.writeByte(s7AnyRequestItem.getSpecificationType().getCode());
-                            // Length of this item (excluding spec type and length)
-                            buf.writeByte((byte) 0x0a);
-                            buf.writeByte(s7AnyRequestItem.getAddressingMode().getCode());
-                            buf.writeByte(s7AnyRequestItem.getTransportSize().getCode());
-                            buf.writeShort(s7AnyRequestItem.getNumElements());
-                            buf.writeShort(s7AnyRequestItem.getDataBlockNumber());
-                            buf.writeByte(s7AnyRequestItem.getMemoryArea().getCode());
-                            // A S7 address is 3 bytes long. Unfortunately the byte-offset is NOT located in
-                            // byte 1 and byte 2 and the bit offset in byte 3. Siemens used the last 3 bits of
-                            // byte 3 for the bit-offset and the remaining 5 bits of byte 3 to contain the lowest
-                            // 5 bits of the byte-offset. The highest 5 bits of byte 1 are probably left unused
-                            // for future extensions.
-                            buf.writeShort((short) (s7AnyRequestItem.getByteOffset() >> 5));
-                            buf.writeByte((byte) ((
-                                    (s7AnyRequestItem.getByteOffset() & 0x1F) << 3)
-                                    | (s7AnyRequestItem.getBitOffset() & 0x07)));
-                        } else {
-                            logger.error("writing this item type not implemented");
-                            return;
-                        }
-                    }
+                    encodeReadWriteVar(buf, (VarParameter) s7Parameter);
                     break;
                 case SETUP_COMMUNICATION:
-                    SetupCommunicationParameter setupCommunication = (SetupCommunicationParameter) s7Parameter;
-                    // Reserved (is always constant 0x00)
-                    buf.writeByte((byte) 0x00);
-                    buf.writeShort(setupCommunication.getMaxAmqCaller());
-                    buf.writeShort(setupCommunication.getMaxAmqCallee());
-                    buf.writeShort(setupCommunication.getPduLength());
+                    encodeSetupCommunication(buf, (SetupCommunicationParameter) s7Parameter);
                     break;
                 default:
                     logger.error("writing this parameter type not implemented");
@@ -149,24 +115,64 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             }
         }
 
-        if(!in.getPayloads().isEmpty()) {
+        if (!in.getPayloads().isEmpty()) {
             for (S7Payload payload : in.getPayloads()) {
-                switch (payload.getType()) {
-                    case READ_VAR:
-                    case WRITE_VAR:
-                        VarPayload varPayload = (VarPayload) payload;
-                        for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
-                            buf.writeByte(payloadItem.getReturnCode().getCode());
-                            buf.writeByte(payloadItem.getDataTransportSize().getCode());
-                            buf.writeShort(payloadItem.getData().length);
-                            buf.writeBytes(payloadItem.getData());
-                        }
-                        break;
+                ParameterType parameterType = payload.getType();
+                if (parameterType == ParameterType.READ_VAR || parameterType == ParameterType.WRITE_VAR) {
+                    VarPayload varPayload = (VarPayload) payload;
+                    for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
+                        buf.writeByte(payloadItem.getReturnCode().getCode());
+                        buf.writeByte(payloadItem.getDataTransportSize().getCode());
+                        buf.writeShort(payloadItem.getData().length);
+                        buf.writeBytes(payloadItem.getData());
+                    }
                 }
             }
         }
 
         out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf));
+    }
+
+    private void encodeSetupCommunication(ByteBuf buf, SetupCommunicationParameter s7Parameter) {
+        // Reserved (is always constant 0x00)
+        buf.writeByte((byte) 0x00);
+        buf.writeShort(s7Parameter.getMaxAmqCaller());
+        buf.writeShort(s7Parameter.getMaxAmqCallee());
+        buf.writeShort(s7Parameter.getPduLength());
+    }
+
+    private void encodeReadWriteVar(ByteBuf buf, VarParameter s7Parameter) {
+        List<VarParameterItem> items = s7Parameter.getItems();
+        // ReadRequestItem count (Read one variable at a time)
+        buf.writeByte((byte) items.size());
+        for (VarParameterItem item : items) {
+            VariableAddressingMode addressMode = item.getAddressingMode();
+            if (addressMode == VariableAddressingMode.S7ANY) {
+                encodeS7AnyParameterItem(buf, (S7AnyVarParameterItem) item);
+            } else {
+                logger.error("writing this item type not implemented");
+            }
+        }
+    }
+
+    private void encodeS7AnyParameterItem(ByteBuf buf, S7AnyVarParameterItem s7AnyRequestItem) {
+        buf.writeByte(s7AnyRequestItem.getSpecificationType().getCode());
+        // Length of this item (excluding spec type and length)
+        buf.writeByte((byte) 0x0a);
+        buf.writeByte(s7AnyRequestItem.getAddressingMode().getCode());
+        buf.writeByte(s7AnyRequestItem.getTransportSize().getCode());
+        buf.writeShort(s7AnyRequestItem.getNumElements());
+        buf.writeShort(s7AnyRequestItem.getDataBlockNumber());
+        buf.writeByte(s7AnyRequestItem.getMemoryArea().getCode());
+        // A S7 address is 3 bytes long. Unfortunately the byte-offset is NOT located in
+        // byte 1 and byte 2 and the bit offset in byte 3. Siemens used the last 3 bits of
+        // byte 3 for the bit-offset and the remaining 5 bits of byte 3 to contain the lowest
+        // 5 bits of the byte-offset. The highest 5 bits of byte 1 are probably left unused
+        // for future extensions.
+        buf.writeShort((short) (s7AnyRequestItem.getByteOffset() >> 5));
+        buf.writeByte((byte) ((
+                (s7AnyRequestItem.getByteOffset() & 0x1F) << 3)
+                | (s7AnyRequestItem.getBitOffset() & 0x07)));
     }
 
     @Override
@@ -200,7 +206,9 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             List<S7Parameter> s7Parameters = new LinkedList<>();
             SetupCommunicationParameter setupCommunicationParameter = null;
             VarParameter readWriteVarParameter = null;
-            for (int i = 0; i < headerParametersLength; ) {
+            int i = 0;
+
+            while (i < headerParametersLength) {
                 S7Parameter parameter = parseParameter(userData, isResponse, headerParametersLength - i);
                 s7Parameters.add(parameter);
                 if (parameter instanceof SetupCommunicationParameter) {
@@ -217,7 +225,9 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             List<S7Payload> s7Payloads = new LinkedList<>();
             if(readWriteVarParameter != null) {
                 List<VarPayloadItem> payloadItems = new LinkedList<>();
-                for (int i = 0; i < userDataLength; ) {
+                i = 0;
+
+                while (i < userDataLength) {
                     DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
                     // This is a response to a WRITE_VAR request (It only contains the return code for every sent item.
                     if ((readWriteVarParameter.getType() == ParameterType.WRITE_VAR) &&
@@ -232,7 +242,7 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                         (messageType == MessageType.ACK_DATA)) {
                         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
                         short length = (dataTransportSize.isSizeInBits()) ?
-                            (short) Math.ceil(userData.readShort() / 8) : userData.readShort();
+                            (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
                         byte[] data = new byte[length];
                         userData.readBytes(data);
                         // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class

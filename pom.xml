@@ -716,7 +716,7 @@
             <executions>
               <execution>
                 <id>generate-effective-pom</id>
-                <phase>pre-site</phase>
+                <phase>compile</phase>
                 <goals>
                   <goal>effective-pom</goal>
                 </goals>
@@ -798,6 +798,40 @@
                   -->
                   <propertyName>failsafeArgLine</propertyName>
                   <destFile>${sonar.jacoco.itReportPath}</destFile>
+                </configuration>
+              </execution>
+              <!--
+                  Check if the unit-test-coverage is at least a certain minimum.
+              -->
+              <execution>
+                <id>check-coverage</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <!-- TODO: Turn this on as soon as possible. -->
+                  <haltOnFailure>false</haltOnFailure>
+                  <dataFile>${sonar.jacoco.reportPath}</dataFile>
+                  <rules>
+                    <rule implementation="org.jacoco.maven.RuleConfiguration">
+                      <element>BUNDLE</element>
+                      <limits>
+                        <!-- Fail the build if the instruction level coverage is below 80%. -->
+                        <limit implementation="org.jacoco.report.check.Limit">
+                          <counter>INSTRUCTION</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.50</minimum>
+                        </limit>
+                        <!-- Fail the build if there are classes without any coverage. -->
+                        <limit implementation="org.jacoco.report.check.Limit">
+                          <counter>CLASS</counter>
+                          <value>MISSEDCOUNT</value>
+                          <maximum>0</maximum>
+                        </limit>
+                      </limits>
+                    </rule>
+                  </rules>
                 </configuration>
               </execution>
             </executions>

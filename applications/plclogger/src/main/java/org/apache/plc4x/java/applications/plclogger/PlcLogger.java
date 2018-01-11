@@ -29,8 +29,12 @@ import org.apache.edgent.topology.TStream;
 import org.apache.edgent.topology.Topology;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PlcLogger {
+
+    private static final Logger logger = LoggerFactory.getLogger(PlcLogger.class);
 
     private final PlcConnectionAdapter plcAdapter;
     private final String addressStr;
@@ -42,16 +46,12 @@ public class PlcLogger {
         this.interval = interval;
     }
 
-    private void run() throws Exception {
+    private void run() {
         AtomicInteger counter = new AtomicInteger(0);
         AtomicLong totalTime = new AtomicLong(0);
         DirectProvider dp = new DirectProvider();
         Topology top = dp.newTopology();
-        // normally would just do the following
-        //   TStream<Byte> source = top.poll(
-        //       PlcFunctions.byteSupplier(adapter, addressStr),
-        //       interval, TimeUnit.MILLISECONDS);
-        // but in this case we want to make some timing measurements
+
         Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, addressStr);
         TStream<Byte> source = top.poll(() -> {
             long start = Calendar.getInstance().getTimeInMillis();
@@ -87,11 +87,13 @@ public class PlcLogger {
             logger.run();
 
             // Yeah ... well prevent the application from exiting ;-)
-            while (true) {
+            while (System.in.available() == 0) {
                 Thread.sleep(1000);
             }
+
+            System.exit(0);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Caught exception", e);
         }
     }
 

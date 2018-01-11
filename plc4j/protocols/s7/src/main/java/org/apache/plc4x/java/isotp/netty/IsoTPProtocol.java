@@ -261,35 +261,36 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
     }
 
     private void outputParameters(ByteBuf out, List<Parameter> parameters) {
-        if (parameters != null) {
-            for (Parameter parameter : parameters) {
-                out.writeByte(parameter.getType().getCode());
-                out.writeByte((byte) (getParameterLength(parameter) - 2));
-                switch (parameter.getType()) {
-                    case CALLED_TSAP:
-                    case CALLING_TSAP:
-                        TsapParameter tsap = (TsapParameter) parameter;
-                        out.writeByte(tsap.getDeviceGroup().getCode());
-                        out.writeByte((byte)
-                            ((tsap.getRackNumber() << 4) | (tsap.getSlotNumber())));
-                        break;
-                    case CHECKSUM:
-                        ChecksumParameter checksum = (ChecksumParameter) parameter;
-                        out.writeByte(checksum.getChecksum());
-                        break;
-                    case DISCONNECT_ADDITIONAL_INFORMATION:
-                        DisconnectAdditionalInformationParameter disconnectAdditionalInformation = (DisconnectAdditionalInformationParameter) parameter;
-                        out.writeBytes(disconnectAdditionalInformation.getData());
-                        break;
-                    case TPDU_SIZE:
-                        TpduSizeParameter sizeParameter = (TpduSizeParameter) parameter;
-                        out.writeByte(sizeParameter.getTpduSize().getCode());
-                        break;
-                    default:
-                        logger.error("TDPU tarameter type {} not implemented yet",
-                            new Object[]{parameter.getType().name()});
-                        return;
-                }
+        if (parameters == null) {
+            return;
+        }
+        
+        for (Parameter parameter : parameters) {
+            out.writeByte(parameter.getType().getCode());
+            out.writeByte((byte) (getParameterLength(parameter) - 2));
+            switch (parameter.getType()) {
+                case CALLED_TSAP:
+                case CALLING_TSAP:
+                    TsapParameter tsap = (TsapParameter) parameter;
+                    out.writeByte(tsap.getDeviceGroup().getCode());
+                    out.writeByte((byte) ((tsap.getRackNumber() << 4) | (tsap.getSlotNumber() & 0x0F)));
+                    break;
+                case CHECKSUM:
+                    ChecksumParameter checksum = (ChecksumParameter) parameter;
+                    out.writeByte(checksum.getChecksum());
+                    break;
+                case DISCONNECT_ADDITIONAL_INFORMATION:
+                    DisconnectAdditionalInformationParameter disconnectAdditionalInformation = (DisconnectAdditionalInformationParameter) parameter;
+                    out.writeBytes(disconnectAdditionalInformation.getData());
+                    break;
+                case TPDU_SIZE:
+                    TpduSizeParameter sizeParameter = (TpduSizeParameter) parameter;
+                    out.writeByte(sizeParameter.getTpduSize().getCode());
+                    break;
+                default:
+                    logger.error("TDPU tarameter type {} not implemented yet",
+                        new Object[]{parameter.getType().name()});
+                    return;
             }
         }
     }
@@ -303,32 +304,33 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
      * @return length of the iso tp header
      */
     private short getHeaderLength(Tpdu tpdu) {
-        if (tpdu != null) {
-            short headerLength;
-            switch (tpdu.getTpduCode()) {
-                case CONNECTION_REQUEST:
-                case CONNECTION_CONFIRM:
-                    headerLength = 7;
-                    break;
-                case DATA:
-                    headerLength = 3;
-                    break;
-                case DISCONNECT_REQUEST:
-                    headerLength = 7;
-                    break;
-                case DISCONNECT_CONFIRM:
-                    headerLength = 6;
-                    break;
-                case TPDU_ERROR:
-                    headerLength = 5;
-                    break;
-                default:
-                    headerLength = 0;
-                    break;
-            }
-            return (short) (headerLength + getParametersLength(tpdu.getParameters()));
+        if (tpdu == null) {
+            return 0;
         }
-        return 0;
+        
+        short headerLength;
+        switch (tpdu.getTpduCode()) {
+            case CONNECTION_REQUEST:
+            case CONNECTION_CONFIRM:
+                headerLength = 7;
+                break;
+            case DATA:
+                headerLength = 3;
+                break;
+            case DISCONNECT_REQUEST:
+                headerLength = 7;
+                break;
+            case DISCONNECT_CONFIRM:
+                headerLength = 6;
+                break;
+            case TPDU_ERROR:
+                headerLength = 5;
+                break;
+            default:
+                headerLength = 0;
+                break;
+        }
+        return (short) (headerLength + getParametersLength(tpdu.getParameters()));
     }
 
     private short getParametersLength(List<Parameter> parameters) {
@@ -342,25 +344,25 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
     }
 
     private short getParameterLength(Parameter parameter) {
-        if (parameter != null) {
-            switch (parameter.getType()) {
-                case CALLED_TSAP:
-                case CALLING_TSAP:
-                    return 4;
-                case CHECKSUM:
-                    return 3;
-                case DISCONNECT_ADDITIONAL_INFORMATION:
-                    DisconnectAdditionalInformationParameter disconnectAdditionalInformationParameter =
-                        (DisconnectAdditionalInformationParameter) parameter;
-                    return (short) (2 + ((disconnectAdditionalInformationParameter.getData() != null) ?
-                        disconnectAdditionalInformationParameter.getData().length : 0));
-                case TPDU_SIZE:
-                    return 3;
-                default:
-                    return 0;
-            }
+        if (parameter == null) {
+            return 0;
         }
-        return 0;
+        switch (parameter.getType()) {
+            case CALLED_TSAP:
+            case CALLING_TSAP:
+                return 4;
+            case CHECKSUM:
+                return 3;
+            case DISCONNECT_ADDITIONAL_INFORMATION:
+                DisconnectAdditionalInformationParameter disconnectAdditionalInformationParameter =
+                    (DisconnectAdditionalInformationParameter) parameter;
+                return (short) (2 + ((disconnectAdditionalInformationParameter.getData() != null) ?
+                    disconnectAdditionalInformationParameter.getData().length : 0));
+            case TPDU_SIZE:
+                return 3;
+            default:
+                return 0;
+        }
     }
 
     private Parameter parseParameter(ByteBuf out) {
@@ -392,9 +394,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
 
     private Parameter parseCallParameter(ByteBuf out, ParameterCode parameterCode) {
         DeviceGroup deviceGroup = DeviceGroup.valueOf(out.readByte());
-        byte tmp = out.readByte();
-        byte rackId = (byte) ((tmp & 0xF0) >> 4);
-        byte slotId = (byte) (tmp & 0x0F);
+        byte rackAndSlot = out.readByte();
+        byte rackId = (byte) ((rackAndSlot & 0xF0) >> 4);
+        byte slotId = (byte) (rackAndSlot & 0x0F);
         switch (parameterCode) {
             case CALLING_TSAP:
                 return new CallingTsapParameter(deviceGroup, rackId, slotId);
