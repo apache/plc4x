@@ -104,7 +104,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
         if (readRequest instanceof SinglePlcReadRequest) {
             response = new SinglePlcReadResponse((SinglePlcReadRequest) readRequest, responseItems.isEmpty() ? null : responseItems.get(0));
         } else if (readRequest instanceof BulkPlcReadRequest) {
-            response = new BulkPlcReadResponse((BulkPlcReadRequest) readRequest, responseItems);
+            response = new BulkPlcReadResponse(readRequest, responseItems);
         } else {
             response = null;
         }
@@ -128,10 +128,10 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             responseItems.add(responseItem);
         }
         PlcWriteResponse response;
-        if (writeRequest instanceof BulkPlcWriteRequest) {
-            response = new BulkPlcWriteResponse((BulkPlcWriteRequest) writeRequest, responseItems);
-        } else if (writeRequest instanceof SinglePlcWriteRequest) {
+        if (writeRequest instanceof SinglePlcWriteRequest) {
             response = new SinglePlcWriteResponse((SinglePlcWriteRequest) writeRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+        } else if (writeRequest instanceof BulkPlcWriteRequest) {
+            response = new BulkPlcWriteResponse(writeRequest, responseItems);
         } else {
             response = null;
         }
