@@ -39,17 +39,20 @@ public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
         super(request, responseItems);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     public TypeSafePlcWriteRequest<T> getRequest() {
         return (TypeSafePlcWriteRequest<T>) super.getRequest();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<? extends WriteResponseItem<T>> getResponseItems() {
         return (List<WriteResponseItem<T>>) super.getResponseItems();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public Optional<WriteResponseItem<T>> getResponseItem() {
         return (Optional<WriteResponseItem<T>>) super.getResponseItem();
     }
