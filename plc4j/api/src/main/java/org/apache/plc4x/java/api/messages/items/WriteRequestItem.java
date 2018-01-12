@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.model.Address;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class WriteRequestItem<T> extends RequestItem<T, WriteResponseItem<T>> {
@@ -30,7 +31,9 @@ public class WriteRequestItem<T> extends RequestItem<T, WriteResponseItem<T>> {
 
     public WriteRequestItem(Class<T> datatype, Address address, T... values) {
         super(datatype, address);
-        this.values = new ArrayList<>(Arrays.asList(values));
+        List<T> checkedList = Collections.checkedList(new ArrayList<>(), datatype);
+        checkedList.addAll(Arrays.asList(values));
+        this.values = checkedList;
     }
 
     public List<T> getValues() {
