@@ -56,7 +56,9 @@ public class S7PlcWriterSample {
                 // the response is processed and available.
                 TypeSafePlcWriteResponse<Float> plcWriteResponse = plcWriter.write(
                     new TypeSafePlcWriteRequest<>(Float.class, inputs, 2.0f)).get();
-                System.out.println("Written: " + plcWriteResponse.getResponseItem().get().getResponseCode().name());
+                System.out.println("Written: " + plcWriteResponse.getResponseItem()
+                    .orElseThrow(() -> new IllegalStateException("No response available"))
+                    .getResponseCode().name());
             }
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.

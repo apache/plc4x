@@ -64,7 +64,9 @@ public class S7PlcScanner {
                             }
                             TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(
                                 new TypeSafePlcReadRequest<>(Byte.class, address)).get();
-                            Byte data = plcReadResponse.getResponseItem().get().getValues().get(0);
+                            Byte data = plcReadResponse.getResponseItem()
+                                .orElseThrow(() -> new IllegalStateException("No response available"))
+                                .getValues().get(0);
                             if (data != null && data != 0) {
                                 System.out.println(String.format(
                                     "Response: Memory Area: %s Index: %d Value: %02X", memoryArea.name(), i, data));

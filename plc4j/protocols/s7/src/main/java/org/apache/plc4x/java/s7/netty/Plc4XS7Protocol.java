@@ -27,7 +27,10 @@ import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
-import org.apache.plc4x.java.api.messages.specific.*;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.types.ResponseCode;
 import org.apache.plc4x.java.s7.model.S7Address;
@@ -142,7 +145,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                     PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
 
                     List<ReadResponseItem<?>> responseItems = new LinkedList<>();
-                    VarPayload payload = responseMessage.getPayload(VarPayload.class).get();
+                    VarPayload payload = responseMessage.getPayload(VarPayload.class)
+                        .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
                     // If the numbers of items don't match, we're in big trouble as the only
                     // way to know how to interpret the responses is by aligning them with the
                     // items from the request as this information is not returned by the PLC.
@@ -176,7 +180,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                     }
                     if (plcReadRequest instanceof TypeSafePlcReadRequest) {
                         response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems);
-                    }  else {
+                    } else {
                         response = new PlcReadResponse(plcReadRequest, responseItems);
                     }
                 }
@@ -185,7 +189,8 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 else if (requestContainer.getRequest() instanceof PlcWriteRequest) {
                     PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
                     List<WriteResponseItem<?>> responseItems = new LinkedList<>();
-                    VarPayload payload = responseMessage.getPayload(VarPayload.class).get();
+                    VarPayload payload = responseMessage.getPayload(VarPayload.class)
+                        .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
                     // If the numbers of items don't match, we're in big trouble as the only
                     // way to know how to interpret the responses is by aligning them with the
                     // items from the request as this information is not returned by the PLC.

@@ -58,7 +58,9 @@ public class S7PlcTestConsole {
                     try {
                         Address address = plcConnection.parseAddress(line);
                         TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(new TypeSafePlcReadRequest<>(Byte.class, address)).get();
-                        List<Byte> data = plcReadResponse.getResponseItem().get().getValues();
+                        List<Byte> data = plcReadResponse.getResponseItem()
+                            .orElseThrow(() -> new IllegalStateException("No response available"))
+                            .getValues();
                         System.out.println("Response: " + data.get(0));
                     } catch (Exception e) {
                         e.printStackTrace();

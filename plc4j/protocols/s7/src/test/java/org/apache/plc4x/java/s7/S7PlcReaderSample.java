@@ -62,7 +62,9 @@ public class S7PlcReaderSample {
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
                 TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(new TypeSafePlcReadRequest<>(Byte.class, inputs)).get();
-                System.out.println("Inputs: " + plcReadResponse.getResponseItem().get().getValues().get(0));
+                System.out.println("Inputs: " + plcReadResponse.getResponseItem()
+                    .orElseThrow(() -> new IllegalStateException("No response available"))
+                    .getValues().get(0));
 
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...

@@ -111,9 +111,12 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 try {
                     connection = getConnection();
                     address = connection.parseAddress(addressStr);
-                    PlcReader reader = connection.getReader().get();
+                    PlcReader reader = connection.getReader()
+                        .orElseThrow(() -> new NullPointerException("No reader available"));
                     TypeSafePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
-                    return reader.read(readRequest).get().getResponseItem().get().getValues().get(0);
+                    return reader.read(readRequest).get().getResponseItem()
+                        .orElseThrow(() -> new IllegalStateException("No response available"))
+                        .getValues().get(0);
                 } catch (Exception e) {
                     logger.error("reading from plc device {} {} failed", connection, address, e);
                     return null;
@@ -134,7 +137,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 try {
                     connection = getConnection();
                     address = connection.parseAddress(addressStr);
-                    PlcWriter writer = connection.getWriter().get();
+                    PlcWriter writer = connection.getWriter()
+                        .orElseThrow(() -> new NullPointerException("No writer available"));
                     PlcWriteRequest writeReq = PlcConnectionAdapter.newPlcWriteRequest(address, arg0);
                     writer.write(writeReq).get();
                 } catch (Exception e) {
@@ -159,7 +163,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
                     String addressStr = addressFn.apply(jo);
                     address = connection.parseAddress(addressStr);
                     T value = valueFn.apply(jo);
-                    PlcWriter writer = connection.getWriter().get();
+                    PlcWriter writer = connection.getWriter()
+                        .orElseThrow(() -> new NullPointerException("No writer available"));
                     PlcWriteRequest writeReq = newPlcWriteRequest(address, value);
                     writer.write(writeReq).get();
                 } catch (Exception e) {
