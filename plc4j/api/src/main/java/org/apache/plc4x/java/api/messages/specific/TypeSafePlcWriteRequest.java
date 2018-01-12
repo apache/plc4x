@@ -53,7 +53,8 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
             getRequestItems().add(requestItem);
         }
     }
-
+    
+    @Override
     @SuppressWarnings("unchecked")
     public void addItem(WriteRequestItem<?> writeRequestItem) {
         Objects.requireNonNull(writeRequestItem);
@@ -68,8 +69,8 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
         return (List) getRequestItems();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public Optional<WriteRequestItem<T>> getRequestItem() {
         return (Optional<WriteRequestItem<T>>) super.getRequestItem();
     }
