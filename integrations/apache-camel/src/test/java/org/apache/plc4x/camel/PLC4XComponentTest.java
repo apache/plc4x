@@ -23,11 +23,23 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 
 public class PLC4XComponentTest extends CamelTestSupport {
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
 
     @Test
     public void testSimpleRouting() throws Exception {
