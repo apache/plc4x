@@ -71,7 +71,7 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
         @SuppressWarnings("unchecked")
         public PlcReadRequest build() {
-            if (requests.size() < 1) {
+            if (requests.isEmpty()) {
                 throw new IllegalStateException("No requests added");
             }
             PlcReadRequest plcReadRequest;
