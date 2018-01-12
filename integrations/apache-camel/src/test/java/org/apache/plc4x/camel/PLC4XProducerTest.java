@@ -21,15 +21,17 @@ package org.apache.plc4x.camel;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.model.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mockito.Mockito.*;
 
@@ -61,21 +63,48 @@ class PLC4XProducerTest {
         SUT.process(testExchange);
         when(testExchange.getPattern()).thenReturn(ExchangePattern.OutOnly);
         SUT.process(testExchange);
+        when(testExchange.getIn().getBody()).thenReturn(Arrays.asList("test","test"));
+        when(testExchange.getIn().getBody(eq(List.class))).thenReturn(Arrays.asList("test","test"));
+        SUT.process(testExchange);
+
     }
 
     @Test
     void process_Async() throws Exception {
-        SUT.process(testExchange, doneSync -> { });
+        SUT.process(testExchange, doneSync -> {
+        });
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOnly);
-        SUT.process(testExchange, doneSync -> { });
+        SUT.process(testExchange, doneSync -> {
+        });
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
-        SUT.process(testExchange, doneSync -> { });
+        SUT.process(testExchange, doneSync -> {
+        });
         when(testExchange.getPattern()).thenReturn(ExchangePattern.OutOnly);
-        SUT.process(testExchange, doneSync -> { });
+        SUT.process(testExchange, doneSync -> {
+        });
     }
 
     @Test
     void doStop() throws Exception {
+        SUT.doStop();
+    }
+
+    @Test
+    void doStopOpenRequest() throws Exception {
+        Field openRequests = SUT.getClass().getDeclaredField("openRequests");
+        openRequests.setAccessible(true);
+        AtomicInteger atomicInteger = (AtomicInteger) openRequests.get(SUT);
+        atomicInteger.incrementAndGet();
+        SUT.doStop();
+    }
+
+    @Test
+    void doStopBadConnection() throws Exception {
+        Field openRequests = SUT.getClass().getDeclaredField("plcConnection");
+        openRequests.setAccessible(true);
+        PlcConnection plcConnectionMock = mock(PlcConnection.class);
+        doThrow(new RuntimeException("oh noes")).when(plcConnectionMock).close();
+        openRequests.set(SUT, plcConnectionMock);
         SUT.doStop();
     }
 
