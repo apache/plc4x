@@ -76,7 +76,7 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
         return getNumberOfItems() < 1;
     }
 
-    public static abstract class Builder<REQUEST_ITEM> {
+    public abstract static class Builder<REQUEST_ITEM> {
 
         Class firstType;
 
