@@ -59,6 +59,7 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
         }
     }
 
+    @Override
     public void addItem(ReadRequestItem<?> readRequestItem) {
         Objects.requireNonNull(readRequestItem);
         if (readRequestItem.getDatatype() != dataType) {
