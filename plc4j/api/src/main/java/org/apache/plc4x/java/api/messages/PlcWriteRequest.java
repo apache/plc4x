@@ -65,7 +65,7 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
 
         @SuppressWarnings("unchecked")
         public PlcWriteRequest build() {
-            if (requests.size() < 1) {
+            if (requests.isEmpty()) {
                 throw new IllegalStateException("No requests added");
             }
             PlcWriteRequest plcWriteRequest;
