@@ -30,7 +30,7 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
     }
 
     public PlcReadRequest(ReadRequestItem<?> requestItem) {
-        requestItems.add(requestItem);
+        addItem(requestItem);
     }
 
     public PlcReadRequest(Class<?> dataType, Address address) {

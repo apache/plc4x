@@ -28,10 +28,10 @@ import java.util.Optional;
 
 public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
 
-    private final Class<T> datatype;
+    private final Class<T> dataType;
 
-    public TypeSafePlcWriteRequest(Class<T> type) {
-        this.datatype = type;
+    public TypeSafePlcWriteRequest(Class<T> dataType) {
+        this.dataType = dataType;
     }
 
     public TypeSafePlcWriteRequest(Class<T> dataType, PlcWriteRequest plcWriteRequest) {
@@ -59,8 +59,8 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
     @Override
     public void addItem(WriteRequestItem<?> writeRequestItem) {
         Objects.requireNonNull(writeRequestItem);
-        if (writeRequestItem.getDatatype() != datatype) {
-            throw new IllegalArgumentException("Incompatible datatype " + writeRequestItem.getDatatype());
+        if (writeRequestItem.getDatatype() != dataType) {
+            throw new IllegalArgumentException("Incompatible dataType " + writeRequestItem.getDatatype());
         }
         super.addItem(writeRequestItem);
     }
@@ -74,5 +74,9 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
     @SuppressWarnings("unchecked")
     public Optional<WriteRequestItem<T>> getRequestItem() {
         return (Optional<WriteRequestItem<T>>) super.getRequestItem();
+    }
+
+    public Class<T> getDataType() {
+        return dataType;
     }
 }

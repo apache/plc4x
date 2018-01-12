@@ -30,6 +30,10 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
     public PlcWriteRequest() {
     }
 
+    public PlcWriteRequest(WriteRequestItem<?> requestItem) {
+        addItem(requestItem);
+    }
+
     @SafeVarargs
     public <T> PlcWriteRequest(Class<T> dataType, Address address, T... values) {
         addItem(new WriteRequestItem<>(dataType, address, values));

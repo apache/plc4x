@@ -317,6 +317,7 @@ class APIMessageTests {
         ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK, Collections.singletonList((byte) 0x0));
         ReadResponseItem<Byte> byteReadResponseItem = readRequestItem.getResponseItem().get(10, TimeUnit.MILLISECONDS);
         assertEquals(readResponseItem, byteReadResponseItem);
+        successLatch.await(10, TimeUnit.SECONDS);
         assertEquals(0, successLatch.getCount());
         assertEquals(10, failLatch.getCount());
     }
