@@ -44,7 +44,7 @@ public class PLC4XProducer extends DefaultAsyncProducer {
         super(endpoint);
         this.endpoint = endpoint;
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
-        plcConnection = endpoint.plcDriverManager.getConnection(plc4xURI);
+        plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
         openRequests = new AtomicInteger();
     }
 

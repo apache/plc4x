@@ -37,7 +37,7 @@ public class PLC4XEndpoint extends DefaultEndpoint {
     @UriPath
     @Metadata(required = "true")
     @SuppressWarnings("unused")
-    String driver;
+    private String driver;
 
     /**
      * The address for the PLC4X driver
@@ -45,9 +45,9 @@ public class PLC4XEndpoint extends DefaultEndpoint {
     @UriPath
     @Metadata(required = "true")
     @SuppressWarnings("unused")
-    String address;
+    private String address;
 
-    final PlcDriverManager plcDriverManager;
+    private final PlcDriverManager plcDriverManager;
 
     public PLC4XEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
@@ -67,5 +67,17 @@ public class PLC4XEndpoint extends DefaultEndpoint {
     @Override
     public boolean isSingleton() {
         return true;
+    }
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public PlcDriverManager getPlcDriverManager() {
+        return plcDriverManager;
     }
 }
