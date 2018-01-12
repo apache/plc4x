@@ -58,7 +58,7 @@ public class PlcFunctionsTest {
     PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
     MockConnection connection = (MockConnection) adapter.getConnection();
 
-    Supplier<?> supplier;
+    Supplier supplier;
     
     supplier = PlcFunctions.booleanSupplier(adapter, addressStr);
     PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Boolean>)supplier, true, false);
@@ -96,22 +96,22 @@ public class PlcFunctionsTest {
     Consumer<?> consumer;
     
     consumer = PlcFunctions.booleanConsumer(adapter, addressStr);
-    PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<Boolean>)consumer, true, false);
+    PlcConnectionAdapterTest.checkConsumer(connection, address, consumer, true, false);
     
     consumer = PlcFunctions.byteConsumer(adapter, addressStr);
-    PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<Byte>)consumer, (byte)0x1, (byte)0x2, (byte)0x3);
+    PlcConnectionAdapterTest.checkConsumer(connection, address, consumer, (byte)0x1, (byte)0x2, (byte)0x3);
     
     consumer = PlcFunctions.shortConsumer(adapter, addressStr);
-    PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<Short>)consumer, (short)1, (short)2, (short)3);
+    PlcConnectionAdapterTest.checkConsumer(connection, address, consumer, (short)1, (short)2, (short)3);
 
     consumer = PlcFunctions.integerConsumer(adapter, addressStr);
-    PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<Integer>)consumer, 1000, 1001, 1002);
+    PlcConnectionAdapterTest.checkConsumer(connection, address, consumer, 1000, 1001, 1002);
     
     consumer = PlcFunctions.floatConsumer(adapter, addressStr);
-    PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<Float>)consumer, 1000.5f, 1001.5f, 1002.5f);
+    PlcConnectionAdapterTest.checkConsumer(connection, address, consumer, 1000.5f, 1001.5f, 1002.5f);
     
     consumer = PlcFunctions.stringConsumer(adapter, addressStr);
-    PlcConnectionAdapterTest.checkConsumer(connection, address, (Consumer<String>)consumer, "one", "two", "three");
+    PlcConnectionAdapterTest.checkConsumer(connection, address, consumer, "one", "two", "three");
     
     adapter.close();
   }
