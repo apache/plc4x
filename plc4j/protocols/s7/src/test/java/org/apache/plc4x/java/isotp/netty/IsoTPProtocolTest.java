@@ -26,7 +26,6 @@ import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.netty.model.params.*;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.*;
 import org.apache.plc4x.java.isotp.netty.model.types.*;
-import org.apache.plc4x.java.netty.NettyTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -34,7 +33,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
