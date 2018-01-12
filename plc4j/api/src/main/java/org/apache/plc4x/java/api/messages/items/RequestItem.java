@@ -73,12 +73,12 @@ public abstract class RequestItem<DATA_TYPE, RESPONSE_ITEM extends ResponseItem>
 
     protected void setResponseItem(RESPONSE_ITEM responseItem) {
         Objects.requireNonNull(responseItem);
+        this.responseItem = responseItem;
         try {
             lock.lock();
             responseSet.signalAll();
         } finally {
             lock.unlock();
         }
-        this.responseItem = responseItem;
     }
 }
