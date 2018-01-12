@@ -142,7 +142,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                     PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
 
                     List<ReadResponseItem<?>> responseItems = new LinkedList<>();
-                    VarPayload payload = responseMessage.getPayload(VarPayload.class);
+                    VarPayload payload = responseMessage.getPayload(VarPayload.class).get();
                     // If the numbers of items don't match, we're in big trouble as the only
                     // way to know how to interpret the responses is by aligning them with the
                     // items from the request as this information is not returned by the PLC.
@@ -185,7 +185,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 else if (requestContainer.getRequest() instanceof PlcWriteRequest) {
                     PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
                     List<WriteResponseItem<?>> responseItems = new LinkedList<>();
-                    VarPayload payload = responseMessage.getPayload(VarPayload.class);
+                    VarPayload payload = responseMessage.getPayload(VarPayload.class).get();
                     // If the numbers of items don't match, we're in big trouble as the only
                     // way to know how to interpret the responses is by aligning them with the
                     // items from the request as this information is not returned by the PLC.

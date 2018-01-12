@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IsotpModelTests {
 
@@ -69,12 +69,12 @@ class IsotpModelTests {
         ErrorTpdu tpdu = new ErrorTpdu(destinationReference, rejectCause, parameters, userData);
 
         parameters.add(new TpduSizeParameter(TpduSize.SIZE_1024));
-        parameters.add(new ChecksumParameter((byte)0xFF));
+        parameters.add(new ChecksumParameter((byte) 0xFF));
 
         assertTrue(tpdu.getParameters().size() == 2, "Unexpected number of parameters");
         assertTrue(tpdu.getParameters().containsAll(parameters), "Unexpected parameter");
-        assertTrue(tpdu.getParameter(ChecksumParameter.class) != null, "Checksum parameter should exist");
-        assertTrue(tpdu.getParameter(CallingTsapParameter.class) == null, "CallingTsapParameter parameter should not exist");
+        assertTrue(tpdu.getParameter(ChecksumParameter.class).isPresent(), "Checksum parameter should exist");
+        assertTrue(!tpdu.getParameter(CallingTsapParameter.class).isPresent(), "CallingTsapParameter parameter should not exist");
     }
 
     @Test

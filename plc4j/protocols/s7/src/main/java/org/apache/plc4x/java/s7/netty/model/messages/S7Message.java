@@ -24,6 +24,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class S7Message extends Message {
 
@@ -52,30 +53,30 @@ public abstract class S7Message extends Message {
         return parameters;
     }
 
-    public <T> T getParameter(Class<? extends T> parameterType) {
+    public <T> Optional<T> getParameter(Class<T> parameterType) {
         if (parameters != null) {
             for (S7Parameter s7Parameter : parameters) {
                 if (s7Parameter.getClass() == parameterType) {
-                    return (T) s7Parameter;
+                    return Optional.of(parameterType.cast(s7Parameter));
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<S7Payload> getPayloads() {
         return payloads;
     }
 
-    public <T> T getPayload(Class<? extends T> payloadType) {
+    public <T> Optional<T> getPayload(Class<T> payloadType) {
         if (payloads != null) {
             for (S7Payload s7Payload : payloads) {
                 if (s7Payload.getClass() == payloadType) {
-                    return (T) s7Payload;
+                    return Optional.of(payloadType.cast(s7Payload));
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 }
