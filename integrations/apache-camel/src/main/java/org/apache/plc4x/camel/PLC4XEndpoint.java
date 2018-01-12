@@ -69,14 +69,6 @@ public class PLC4XEndpoint extends DefaultEndpoint {
         return true;
     }
 
-    public String getDriver() {
-        return driver;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
     public PlcDriverManager getPlcDriverManager() {
         return plcDriverManager;
     }
