@@ -78,7 +78,7 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
 
     public abstract static class Builder<REQUEST_ITEM> {
 
-        Class firstType;
+        Class<?> firstType;
 
         boolean mixed = false;
 

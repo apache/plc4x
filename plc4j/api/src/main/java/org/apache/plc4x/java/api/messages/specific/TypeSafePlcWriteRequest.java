@@ -41,11 +41,13 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
         }
     }
 
+    @SafeVarargs
     public TypeSafePlcWriteRequest(Class<T> dataType, Address address, T... values) {
         this(dataType);
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
+    @SafeVarargs
     public TypeSafePlcWriteRequest(Class<T> dataType, WriteRequestItem<T>... requestItems) {
         this(dataType);
         Objects.requireNonNull(requestItems);
@@ -53,9 +55,8 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
             getRequestItems().add(requestItem);
         }
     }
-    
+
     @Override
-    @SuppressWarnings("unchecked")
     public void addItem(WriteRequestItem<?> writeRequestItem) {
         Objects.requireNonNull(writeRequestItem);
         if (writeRequestItem.getDatatype() != datatype) {

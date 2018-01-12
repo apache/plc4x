@@ -29,9 +29,10 @@ public class WriteRequestItem<T> extends RequestItem<T, WriteResponseItem<T>> {
 
     private final List<T> values;
 
-    public WriteRequestItem(Class<T> datatype, Address address, T... values) {
-        super(datatype, address);
-        List<T> checkedList = Collections.checkedList(new ArrayList<>(), datatype);
+    @SafeVarargs
+    public WriteRequestItem(Class<T> dataType, Address address, T... values) {
+        super(dataType, address);
+        List<T> checkedList = Collections.checkedList(new ArrayList<>(), dataType);
         checkedList.addAll(Arrays.asList(values));
         this.values = checkedList;
     }

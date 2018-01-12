@@ -51,6 +51,7 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
         addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
+    @SafeVarargs
     public TypeSafePlcReadRequest(Class<T> dataType, ReadRequestItem<T>... requestItems) {
         this(dataType);
         Objects.requireNonNull(requestItems);

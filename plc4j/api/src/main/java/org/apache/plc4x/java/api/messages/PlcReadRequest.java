@@ -51,26 +51,25 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
     public static class Builder extends PlcRequest.Builder<ReadRequestItem<?>> {
 
-        public Builder addItem(Class<?> dataType, Address address) {
+        public final Builder addItem(Class<?> dataType, Address address) {
             checkType(dataType);
             requests.add(new ReadRequestItem<>(dataType, address));
             return this;
         }
 
-        public Builder addItem(Class<?> dataType, Address address, int size) {
+        public final Builder addItem(Class<?> dataType, Address address, int size) {
             checkType(dataType);
             requests.add(new ReadRequestItem<>(dataType, address, size));
             return this;
         }
 
-        public Builder addItem(ReadRequestItem readRequestItem) {
+        public final Builder addItem(ReadRequestItem readRequestItem) {
             checkType(readRequestItem.getDatatype());
             requests.add(readRequestItem);
             return this;
         }
 
-        @SuppressWarnings("unchecked")
-        public PlcReadRequest build() {
+        public final PlcReadRequest build() {
             if (requests.isEmpty()) {
                 throw new IllegalStateException("No requests added");
             }
@@ -87,7 +86,7 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
         }
 
         @SuppressWarnings("unchecked")
-        public <T> TypeSafePlcReadRequest<T> build(Class<T> type) {
+        public final <T> TypeSafePlcReadRequest<T> build(Class<T> type) {
             if (firstType != type) {
                 throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
             }

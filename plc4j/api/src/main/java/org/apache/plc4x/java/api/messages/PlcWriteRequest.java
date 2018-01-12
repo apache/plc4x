@@ -30,6 +30,7 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
     public PlcWriteRequest() {
     }
 
+    @SafeVarargs
     public <T> PlcWriteRequest(Class<T> dataType, Address address, T... values) {
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
@@ -52,19 +53,20 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
             return this;
         }
 
-        public <T> PlcWriteRequest.Builder addItem(Class<T> dataType, Address address, T... values) {
+        @SafeVarargs
+        public final <T> PlcWriteRequest.Builder addItem(Class<T> dataType, Address address, T... values) {
             checkType(dataType);
             requests.add(new WriteRequestItem<>(dataType, address, values));
             return this;
         }
 
-        public <T> PlcWriteRequest.Builder addItem(WriteRequestItem writeRequestItem) {
+        public final PlcWriteRequest.Builder addItem(WriteRequestItem<?> writeRequestItem) {
             checkType(writeRequestItem.getDatatype());
+            requests.add(writeRequestItem);
             return this;
         }
 
-        @SuppressWarnings("unchecked")
-        public PlcWriteRequest build() {
+        public final PlcWriteRequest build() {
             if (requests.isEmpty()) {
                 throw new IllegalStateException("No requests added");
             }
@@ -81,7 +83,7 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
         }
 
         @SuppressWarnings("unchecked")
-        public <T> TypeSafePlcWriteRequest<T> build(Class<T> type) {
+        public final <T> TypeSafePlcWriteRequest<T> build(Class<T> type) {
             if (firstType != type) {
                 throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
             }
