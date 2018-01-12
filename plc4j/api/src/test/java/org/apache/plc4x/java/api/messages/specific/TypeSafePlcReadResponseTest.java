@@ -21,12 +21,15 @@ package org.apache.plc4x.java.api.messages.specific;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +39,7 @@ class TypeSafePlcReadResponseTest {
 
     @BeforeEach
     void setUp() {
-        readResponseItemString = new ReadResponseItem<>(mock(ReadRequestItem.class), null, Collections.emptyList());
+        readResponseItemString = new ReadResponseItem<>(mock(ReadRequestItem.class), null, Arrays.asList("", ""));
     }
 
     @Test
@@ -45,8 +48,14 @@ class TypeSafePlcReadResponseTest {
         PlcReadResponse response = mock(PlcReadResponse.class);
         when(response.getResponseItems()).thenReturn((List) Collections.singletonList(readResponseItemString));
         new TypeSafePlcReadResponse<>(response);
-        new TypeSafePlcReadResponse<>(mock(TypeSafePlcReadRequest.class), readResponseItemString);
-        new TypeSafePlcReadResponse<>(mock(TypeSafePlcReadRequest.class), Collections.singletonList(readResponseItemString));
+        TypeSafePlcReadRequest mock = mock(TypeSafePlcReadRequest.class);
+        when(mock.getDataType()).thenReturn(String.class);
+        new TypeSafePlcReadResponse<>(mock, readResponseItemString);
+        new TypeSafePlcReadResponse<>(mock, Collections.singletonList(readResponseItemString));
+        Assertions.assertThrows(IllegalArgumentException.class, () ->{
+            when(mock.getDataType()).thenReturn(Byte.class);
+            new TypeSafePlcReadResponse<>(mock, readResponseItemString);
+        });
     }
 
     @Test
