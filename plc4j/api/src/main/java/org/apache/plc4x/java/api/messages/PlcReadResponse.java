@@ -20,7 +20,6 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 import java.util.Collections;
 import java.util.List;
