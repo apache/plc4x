@@ -28,6 +28,10 @@ import java.nio.ByteBuffer;
 
 public class PcapngUtils {
 
+    private PcapngUtils() {
+      throw new IllegalStateException("Utility class!");
+    }
+
     public static void dumpPacket(ByteBuffer data, int length, String name) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(out);
