@@ -21,7 +21,6 @@ package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 
