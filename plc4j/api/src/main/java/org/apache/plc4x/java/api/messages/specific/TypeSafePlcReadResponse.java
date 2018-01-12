@@ -31,7 +31,7 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
         List<? extends ReadResponseItem<?>> responseItems = plcReadResponse.getResponseItems();
         Class type = null;
         for (ReadResponseItem<?> responseItem : responseItems) {
-            if (responseItem.getValues().size() > 0) {
+            if (!responseItem.getValues().isEmpty()) {
                 type = responseItem.getValues().get(0).getClass();
                 break;
             }
@@ -55,18 +55,20 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public TypeSafePlcReadRequest<T> getRequest() {
         return (TypeSafePlcReadRequest<T>) super.getRequest();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<? extends ReadResponseItem<T>> getResponseItems() {
         return (List<? extends ReadResponseItem<T>>) super.getResponseItems();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public Optional<ReadResponseItem<T>> getResponseItem() {
         return (Optional<ReadResponseItem<T>>) super.getResponseItem();
     }
