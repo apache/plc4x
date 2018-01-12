@@ -35,10 +35,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
 
 public class IsoTPProtocolTest {
 
-    private  IsoTPProtocol isoTPProtocol;
+    private IsoTPProtocol isoTPProtocol;
+    private ChannelHandlerContext ctx;
+    private ByteBuf buf;
+    private ArrayList<Object> out;
 
     @BeforeEach
     void setup() {
@@ -47,6 +52,9 @@ public class IsoTPProtocolTest {
         TpduSize tpduSize = TpduSize.SIZE_512;
 
         isoTPProtocol = new IsoTPProtocol(rackNo, slotNo, tpduSize);
+        ctx = mock(ChannelHandlerContext.class, RETURNS_DEEP_STUBS);
+        buf = Unpooled.buffer();
+        out = new ArrayList<>();
     }
 
     @AfterEach
@@ -57,44 +65,37 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void encodeConnectionRequest() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ConnectionRequestTpdu tpdu = new ConnectionRequestTpdu((short)0x1, (short)(0x2), ProtocolClass.CLASS_0, Collections.emptyList(), buf);
-        ArrayList<Object> out = new ArrayList<>();
+        ConnectionRequestTpdu tpdu = new ConnectionRequestTpdu((short) 0x1, (short) (0x2), ProtocolClass.CLASS_0, Collections.emptyList(), buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
-        
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
+
         assertTrue(userData.writerIndex() == 7, "Incorrect message length");
-        assertTrue(userData.readByte() == (byte)0x6, "Incorrect header length");
+        assertTrue(userData.readByte() == (byte) 0x6, "Incorrect header length");
         assertTrue(userData.readByte() == TpduCode.CONNECTION_REQUEST.getCode(), "Incorrect Tpdu code");
-        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
-        assertTrue(userData.readShort() == (short)0x2, "Incorrect source reference code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x2, "Incorrect source reference code");
         assertTrue(userData.readByte() == ProtocolClass.CLASS_0.getCode(), "Incorrect protocol class");
     }
 
     @Test
     @Tag("fast")
     public void decodeConnectionRequest() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x6); // header length
-        buf.writeByte(TpduCode.CONNECTION_REQUEST.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeShort(0x02); // source reference
-        buf.writeByte(ProtocolClass.CLASS_0.getCode());
+        buf.writeByte(0x6) // header length
+            .writeByte(TpduCode.CONNECTION_REQUEST.getCode())
+            .writeShort(0x01) // destination reference
+            .writeShort(0x02) // source reference
+            .writeByte(ProtocolClass.CLASS_0.getCode());
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ConnectionRequestTpdu requestTpdu = (ConnectionRequestTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        ConnectionRequestTpdu requestTpdu = (ConnectionRequestTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(requestTpdu.getTpduCode() == TpduCode.CONNECTION_REQUEST, "Message code not correct");
         assertTrue(requestTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
@@ -106,43 +107,36 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void encodeDisconnectionRequest() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        DisconnectRequestTpdu tpdu = new DisconnectRequestTpdu((short)0x1, (short)(0x2), DisconnectReason.NORMAL, Collections.emptyList(), buf);
-        ArrayList<Object> out = new ArrayList<>();
+        DisconnectRequestTpdu tpdu = new DisconnectRequestTpdu((short) 0x1, (short) (0x2), DisconnectReason.NORMAL, Collections.emptyList(), buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
-        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
         assertTrue(userData.writerIndex() == 7, "Incorrect message length");
-        assertTrue(userData.readByte() == (byte)0x6, "Incorrect header length");
+        assertTrue(userData.readByte() == (byte) 0x6, "Incorrect header length");
         assertTrue(userData.readByte() == TpduCode.DISCONNECT_REQUEST.getCode(), "Incorrect Tpdu code");
-        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
-        assertTrue(userData.readShort() == (short)0x2, "Incorrect source reference code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x2, "Incorrect source reference code");
         assertTrue(userData.readByte() == DisconnectReason.NORMAL.getCode(), "Incorrect disconnect reason");
     }
 
     @Test
     @Tag("fast")
     public void decodeDisconnectionRequest() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x6); // header length
-        buf.writeByte(TpduCode.DISCONNECT_REQUEST.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeShort(0x02); // source reference
-        buf.writeByte(DisconnectReason.NORMAL.getCode());
+        buf.writeByte(0x6) // header length
+            .writeByte(TpduCode.DISCONNECT_REQUEST.getCode())
+            .writeShort(0x01) // destination reference
+            .writeShort(0x02) // source reference
+            .writeByte(DisconnectReason.NORMAL.getCode());
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        DisconnectRequestTpdu requestTpdu = (DisconnectRequestTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        DisconnectRequestTpdu requestTpdu = (DisconnectRequestTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(requestTpdu.getTpduCode() == TpduCode.DISCONNECT_REQUEST, "Message code not correct");
         assertTrue(requestTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
@@ -154,112 +148,94 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void encodeData() throws Exception {
-      ChannelHandlerContext ctx = new MockChannelHandlerContext();
-      ByteBuf buf = Unpooled.buffer();
-      DataTpdu tpdu = new DataTpdu(true, (byte)0x7, Collections.emptyList(), buf);
-      ArrayList<Object> out = new ArrayList<>();
-
-      isoTPProtocol.encode(ctx, tpdu, out);
-
-      assertTrue(out.size() == 1, "Message not decoded");
-
-      ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
-
-      assertTrue(userData.writerIndex() == 3, "Incorrect message length");
-      assertTrue(userData.readByte() == (byte)0x2, "Incorrect header length");
-      assertTrue(userData.readByte() == TpduCode.DATA.getCode(), "Incorrect Tpdu code");
-      assertTrue(userData.readByte() == (byte)0x87, "Incorrect Tpdu reference and EOT");
-    }
-
-    @Test
-    @Tag("fast")
-    public void decodeDataEOT() throws Exception {
-      ChannelHandlerContext ctx = new MockChannelHandlerContext();
-      ByteBuf buf = Unpooled.buffer();
-      ArrayList<Object> out = new ArrayList<>();
-
-      buf.writeByte(0x3); // header length
-      buf.writeByte(TpduCode.DATA.getCode());
-      buf.writeByte((byte) 0x81); // Tpdu code + EOT
-      IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
-
-      isoTPProtocol.decode(ctx, in, out);
-
-      assertTrue(out.size() == 1, "Message not decoded");
-
-      DataTpdu requestTpdu = (DataTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
-
-      assertTrue(requestTpdu.getTpduCode() == TpduCode.DATA, "Message code not correct");
-      assertTrue(requestTpdu.getTpduRef() == (short) 0x1, "Message Tpdu reference not correct");
-      assertTrue(requestTpdu.isEot(), "Message EOT not correct");
-      assertTrue(requestTpdu.getParameters().isEmpty(), "Message contains paramaters");
-    }
-
-    @Test
-    @Tag("fast")
-    public void decodeData() throws Exception {
-      ChannelHandlerContext ctx = new MockChannelHandlerContext();
-      ByteBuf buf = Unpooled.buffer();
-      ArrayList<Object> out = new ArrayList<>();
-
-      buf.writeByte(0x3); // header length
-      buf.writeByte(TpduCode.DATA.getCode());
-      buf.writeByte((byte) 0x1); // Tpdu code
-      IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
-
-      isoTPProtocol.decode(ctx, in, out);
-
-      assertTrue(out.size() == 1, "Message not decoded");
-
-      DataTpdu requestTpdu = (DataTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
-
-      assertTrue(requestTpdu.getTpduCode() == TpduCode.DATA, "Message code not correct");
-      assertTrue(requestTpdu.getTpduRef() == (short) 0x1, "Message Tpdu reference not correct");
-      assertTrue(!requestTpdu.isEot(), "Message EOT not correct");
-      assertTrue(requestTpdu.getParameters().isEmpty(), "Message contains paramaters");
-    }
-
-    @Test
-    @Tag("fast")
-    public void encodeConnectionConfirm() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ConnectionConfirmTpdu tpdu = new ConnectionConfirmTpdu((short)0x1, (short)(0x2), ProtocolClass.CLASS_1, Collections.emptyList(), buf);
-        ArrayList<Object> out = new ArrayList<>();
+        DataTpdu tpdu = new DataTpdu(true, (byte) 0x7, Collections.emptyList(), buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
-        assertTrue(userData.writerIndex() == 7, "Incorrect message length");
-        assertTrue(userData.readByte() == (byte)0x6, "Incorrect header length");
-        assertTrue(userData.readByte() == TpduCode.CONNECTION_CONFIRM.getCode(), "Incorrect Tpdu code");
-        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
-        assertTrue(userData.readShort() == (short)0x2, "Incorrect source reference code");
-        assertTrue(userData.readByte() == ProtocolClass.CLASS_1.getCode(), "Incorrect protocol class");
+        assertTrue(userData.writerIndex() == 3, "Incorrect message length");
+        assertTrue(userData.readByte() == (byte) 0x2, "Incorrect header length");
+        assertTrue(userData.readByte() == TpduCode.DATA.getCode(), "Incorrect Tpdu code");
+        assertTrue(userData.readByte() == (byte) 0x87, "Incorrect Tpdu reference and EOT");
     }
 
     @Test
     @Tag("fast")
-    public void decodeConnectionConfirm() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x6); // header length
-        buf.writeByte(TpduCode.CONNECTION_CONFIRM.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeShort(0x02); // source reference
-        buf.writeByte(ProtocolClass.CLASS_0.getCode());
+    public void decodeDataEOT() throws Exception {
+        buf.writeByte(0x3) // header length
+            .writeByte(TpduCode.DATA.getCode())
+            .writeByte((byte) 0x81); // Tpdu code + EOT
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ConnectionConfirmTpdu requestTpdu = (ConnectionConfirmTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        DataTpdu requestTpdu = (DataTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
+
+        assertTrue(requestTpdu.getTpduCode() == TpduCode.DATA, "Message code not correct");
+        assertTrue(requestTpdu.getTpduRef() == (short) 0x1, "Message Tpdu reference not correct");
+        assertTrue(requestTpdu.isEot(), "Message EOT not correct");
+        assertTrue(requestTpdu.getParameters().isEmpty(), "Message contains paramaters");
+    }
+
+    @Test
+    @Tag("fast")
+    public void decodeData() throws Exception {
+        buf.writeByte(0x3) // header length
+            .writeByte(TpduCode.DATA.getCode())
+            .writeByte((byte) 0x1); // Tpdu code
+        IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
+
+        isoTPProtocol.decode(ctx, in, out);
+
+        assertTrue(out.size() == 1, "Message not decoded");
+
+        DataTpdu requestTpdu = (DataTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
+
+        assertTrue(requestTpdu.getTpduCode() == TpduCode.DATA, "Message code not correct");
+        assertTrue(requestTpdu.getTpduRef() == (short) 0x1, "Message Tpdu reference not correct");
+        assertTrue(!requestTpdu.isEot(), "Message EOT not correct");
+        assertTrue(requestTpdu.getParameters().isEmpty(), "Message contains paramaters");
+    }
+
+    @Test
+    @Tag("fast")
+    public void encodeConnectionConfirm() throws Exception {
+        ConnectionConfirmTpdu tpdu = new ConnectionConfirmTpdu((short) 0x1, (short) (0x2), ProtocolClass.CLASS_1, Collections.emptyList(), buf);
+
+        isoTPProtocol.encode(ctx, tpdu, out);
+
+        assertTrue(out.size() == 1, "Message not decoded");
+
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
+
+        assertTrue(userData.writerIndex() == 7, "Incorrect message length");
+        assertTrue(userData.readByte() == (byte) 0x6, "Incorrect header length");
+        assertTrue(userData.readByte() == TpduCode.CONNECTION_CONFIRM.getCode(), "Incorrect Tpdu code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x2, "Incorrect source reference code");
+        assertTrue(userData.readByte() == ProtocolClass.CLASS_1.getCode(), "Incorrect protocol class");
+    }
+
+    @Test
+    @Tag("fast")
+    public void decodeConnectionConfirm() throws Exception {
+        buf.writeByte(0x6) // header length
+            .writeByte(TpduCode.CONNECTION_CONFIRM.getCode())
+            .writeShort(0x01) // destination reference
+            .writeShort(0x02) // source reference
+            .writeByte(ProtocolClass.CLASS_0.getCode());
+        IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
+
+        isoTPProtocol.decode(ctx, in, out);
+
+        assertTrue(out.size() == 1, "Message not decoded");
+
+        ConnectionConfirmTpdu requestTpdu = (ConnectionConfirmTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(requestTpdu.getTpduCode() == TpduCode.CONNECTION_CONFIRM, "Message code not correct");
         assertTrue(requestTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
@@ -269,97 +245,84 @@ public class IsoTPProtocolTest {
     }
 
     @Test
-      @Tag("fast")
-      public void encodeDisconnectionConfirm() throws Exception {
-          ChannelHandlerContext ctx = new MockChannelHandlerContext();
-          ByteBuf buf = Unpooled.buffer();
-          DisconnectConfirmTpdu tpdu = new DisconnectConfirmTpdu((short)0x1, (short)(0x2), Collections.emptyList(), buf);
-          ArrayList<Object> out = new ArrayList<>();
-
-          isoTPProtocol.encode(ctx, tpdu, out);
-
-          assertTrue(out.size() == 1, "Message not decoded");
-
-          ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
-
-          assertTrue(userData.writerIndex() == 6, "Incorrect message length");
-          assertTrue(userData.readByte() == (byte)0x5, "Incorrect header length");
-          assertTrue(userData.readByte() == TpduCode.DISCONNECT_CONFIRM.getCode(), "Incorrect Tpdu code");
-          assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
-          assertTrue(userData.readShort() == (short)0x2, "Incorrect source reference code");
-      }
-
-      @Test
-      @Tag("fast")
-      public void decodeDisconnectionConfirm() throws Exception {
-          ChannelHandlerContext ctx = new MockChannelHandlerContext();
-          ByteBuf buf = Unpooled.buffer();
-          ArrayList<Object> out = new ArrayList<>();
-
-          buf.writeByte(0x5); // header length
-          buf.writeByte(TpduCode.DISCONNECT_CONFIRM.getCode());
-          buf.writeShort(0x01); // destination reference
-          buf.writeShort(0x02); // source reference
-          buf.writeByte(DisconnectReason.NORMAL.getCode());
-          IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
-
-          isoTPProtocol.decode(ctx, in, out);
-
-          assertTrue(out.size() == 1, "Message not decoded");
-
-          DisconnectConfirmTpdu requestTpdu = (DisconnectConfirmTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
-
-          assertTrue(requestTpdu.getTpduCode() == TpduCode.DISCONNECT_CONFIRM, "Message code not correct");
-          assertTrue(requestTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
-          assertTrue(requestTpdu.getSourceReference() == (short) 0x2, "Message source reference not correct");
-          assertTrue(requestTpdu.getParameters().isEmpty(), "Message contains paramaters");
-      }
-
-    @Test
     @Tag("fast")
-    public void encodeError() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ErrorTpdu tpdu = new ErrorTpdu((short)0x1, RejectCause.REASON_NOT_SPECIFIED, Collections.emptyList(), buf);
-        ArrayList<Object> out = new ArrayList<>();
+    public void encodeDisconnectionConfirm() throws Exception {
+        DisconnectConfirmTpdu tpdu = new DisconnectConfirmTpdu((short) 0x1, (short) (0x2), Collections.emptyList(), buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
+
+        assertTrue(userData.writerIndex() == 6, "Incorrect message length");
+        assertTrue(userData.readByte() == (byte) 0x5, "Incorrect header length");
+        assertTrue(userData.readByte() == TpduCode.DISCONNECT_CONFIRM.getCode(), "Incorrect Tpdu code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x2, "Incorrect source reference code");
+    }
+
+    @Test
+    @Tag("fast")
+    public void decodeDisconnectionConfirm() throws Exception {
+        buf.writeByte(0x5) // header length
+            .writeByte(TpduCode.DISCONNECT_CONFIRM.getCode())
+            .writeShort(0x01) // destination reference
+            .writeShort(0x02) // source reference
+            .writeByte(DisconnectReason.NORMAL.getCode());
+        IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
+
+        isoTPProtocol.decode(ctx, in, out);
+
+        assertTrue(out.size() == 1, "Message not decoded");
+
+        DisconnectConfirmTpdu requestTpdu = (DisconnectConfirmTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
+
+        assertTrue(requestTpdu.getTpduCode() == TpduCode.DISCONNECT_CONFIRM, "Message code not correct");
+        assertTrue(requestTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
+        assertTrue(requestTpdu.getSourceReference() == (short) 0x2, "Message source reference not correct");
+        assertTrue(requestTpdu.getParameters().isEmpty(), "Message contains paramaters");
+    }
+
+    @Test
+    @Tag("fast")
+    public void encodeError() throws Exception {
+        ErrorTpdu tpdu = new ErrorTpdu((short) 0x1, RejectCause.REASON_NOT_SPECIFIED, Collections.emptyList(), buf);
+
+        isoTPProtocol.encode(ctx, tpdu, out);
+
+        assertTrue(out.size() == 1, "Message not decoded");
+
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
         assertTrue(userData.writerIndex() == 5, "Incorrect message length");
-        assertTrue(userData.readByte() == (byte)0x4, "Incorrect header length");
+        assertTrue(userData.readByte() == (byte) 0x4, "Incorrect header length");
         assertTrue(userData.readByte() == TpduCode.TPDU_ERROR.getCode(), "Incorrect Tpdu code");
-        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
         assertTrue(userData.readByte() == RejectCause.REASON_NOT_SPECIFIED.getCode(), "Incorrect reject cause code");
     }
 
     @Test
     @Tag("fast")
     public void encodeCallingParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
         ArrayList<Parameter> parmameters = new ArrayList<>();
         CallingTsapParameter callingParameter = new CallingTsapParameter(DeviceGroup.PG_OR_PC, (byte) 0x7, (byte) 0xe1); // slot number too big and overflows into rack
         parmameters.add(callingParameter);
-        ErrorTpdu tpdu = new ErrorTpdu((short)0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
-        ArrayList<Object> out = new ArrayList<>();
+        ErrorTpdu tpdu = new ErrorTpdu((short) 0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
         assertTrue(userData.writerIndex() == 9, "Incorrect message length");
-        assertTrue(userData.readByte() == (byte)0x8, "Incorrect header length");
+        assertTrue(userData.readByte() == (byte) 0x8, "Incorrect header length");
         assertTrue(userData.readByte() == TpduCode.TPDU_ERROR.getCode(), "Incorrect Tpdu code");
-        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
         assertTrue(userData.readByte() == RejectCause.REASON_NOT_SPECIFIED.getCode(), "Incorrect reject cause code");
         assertTrue(userData.readByte() == ParameterCode.CALLING_TSAP.getCode(), "Incorrect parameter code");
-        assertTrue(userData.readByte() == (byte)0x2, "Incorrect parameter length");
+        assertTrue(userData.readByte() == (byte) 0x2, "Incorrect parameter length");
         assertTrue(userData.readByte() == DeviceGroup.PG_OR_PC.getCode(), "Incorrect device group code");
         byte rackAndSlot = userData.readByte();
         assertTrue((rackAndSlot & 0xf0) >> 4 == 0x7, "Incorrect rack number");
@@ -369,55 +332,49 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void encodeChecksumParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
         ArrayList<Parameter> parmameters = new ArrayList<>();
-        ChecksumParameter checksumParameter = new ChecksumParameter((byte)0x77);
+        ChecksumParameter checksumParameter = new ChecksumParameter((byte) 0x77);
         parmameters.add(checksumParameter);
-        ErrorTpdu tpdu = new ErrorTpdu((short)0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
-        ArrayList<Object> out = new ArrayList<>();
+        ErrorTpdu tpdu = new ErrorTpdu((short) 0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
         assertTrue(userData.writerIndex() == 8, "Incorrect message length");
-        assertTrue(userData.readByte() == (byte)0x7, "Incorrect header length");
+        assertTrue(userData.readByte() == (byte) 0x7, "Incorrect header length");
         assertTrue(userData.readByte() == TpduCode.TPDU_ERROR.getCode(), "Incorrect Tpdu code");
-        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
         assertTrue(userData.readByte() == RejectCause.REASON_NOT_SPECIFIED.getCode(), "Incorrect reject cause code");
         assertTrue(userData.readByte() == ParameterCode.CHECKSUM.getCode(), "Incorrect parameter code");
-        assertTrue(userData.readByte() == (byte)0x1, "Incorrect parameter length");
+        assertTrue(userData.readByte() == (byte) 0x1, "Incorrect parameter length");
         assertTrue(userData.readByte() == 0x77, "Incorrect checksum");
     }
 
     @Test
     @Tag("fast")
     public void encodeAditionalInformationParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
         ArrayList<Parameter> parmameters = new ArrayList<>();
-        byte[] data = {'O','p','p','s'};
+        byte[] data = {'O', 'p', 'p', 's'};
         DisconnectAdditionalInformationParameter informationParameter = new DisconnectAdditionalInformationParameter(data);
         parmameters.add(informationParameter);
-        ErrorTpdu tpdu = new ErrorTpdu((short)0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
-        ArrayList<Object> out = new ArrayList<>();
+        ErrorTpdu tpdu = new ErrorTpdu((short) 0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
         assertTrue(userData.writerIndex() == 11, "Incorrect message length");
-        assertTrue(userData.readByte() == (byte)0xA, "Incorrect header length");
+        assertTrue(userData.readByte() == (byte) 0xA, "Incorrect header length");
         assertTrue(userData.readByte() == TpduCode.TPDU_ERROR.getCode(), "Incorrect Tpdu code");
-        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
         assertTrue(userData.readByte() == RejectCause.REASON_NOT_SPECIFIED.getCode(), "Incorrect reject cause code");
         assertTrue(userData.readByte() == ParameterCode.DISCONNECT_ADDITIONAL_INFORMATION.getCode(), "Incorrect parameter code");
-        assertTrue(userData.readByte() == (byte)0x4, "Incorrect parameter length");
+        assertTrue(userData.readByte() == (byte) 0x4, "Incorrect parameter length");
         assertTrue(userData.readByte() == 'O', "Incorrect data");
         assertTrue(userData.readByte() == 'p', "Incorrect data");
         assertTrue(userData.readByte() == 'p', "Incorrect data");
@@ -427,48 +384,41 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void encodeSizeParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
         ArrayList<Parameter> parmameters = new ArrayList<>();
         TpduSizeParameter sizeParameter = new TpduSizeParameter(TpduSize.SIZE_512);
         parmameters.add(sizeParameter);
-        ErrorTpdu tpdu = new ErrorTpdu((short)0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
-        ArrayList<Object> out = new ArrayList<>();
+        ErrorTpdu tpdu = new ErrorTpdu((short) 0x1, RejectCause.REASON_NOT_SPECIFIED, parmameters, buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ByteBuf userData = ((IsoOnTcpMessage)out.get(0)).getUserData();
+        ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
         assertTrue(userData.writerIndex() == 8, "Incorrect message length");
-        assertTrue(userData.readByte() == (byte)0x7, "Incorrect header length");
+        assertTrue(userData.readByte() == (byte) 0x7, "Incorrect header length");
         assertTrue(userData.readByte() == TpduCode.TPDU_ERROR.getCode(), "Incorrect Tpdu code");
-        assertTrue(userData.readShort() == (short)0x1, "Incorrect destination reference code");
+        assertTrue(userData.readShort() == (short) 0x1, "Incorrect destination reference code");
         assertTrue(userData.readByte() == RejectCause.REASON_NOT_SPECIFIED.getCode(), "Incorrect reject cause code");
         assertTrue(userData.readByte() == ParameterCode.TPDU_SIZE.getCode(), "Incorrect parameter code");
-        assertTrue(userData.readByte() == (byte)0x1, "Incorrect parameter length");
+        assertTrue(userData.readByte() == (byte) 0x1, "Incorrect parameter length");
         assertTrue(userData.readByte() == TpduSize.SIZE_512.getCode(), "Incorrect tdpu size");
     }
 
     @Test
     @Tag("fast")
     public void decodeError() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x4); // header length
-        buf.writeByte(TpduCode.TPDU_ERROR.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode());
+        buf.writeByte(0x4) // header length
+            .writeByte(TpduCode.TPDU_ERROR.getCode())
+            .writeShort(0x01) // destination reference
+            .writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode());
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(errorTpdu.getTpduCode() == TpduCode.TPDU_ERROR, "Message code not correct");
         assertTrue(errorTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
@@ -479,10 +429,7 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void encodeNullRequest() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ConnectionRequestTpdu tpdu =  null;
-        ArrayList<Object> out = new ArrayList<>();
+        ConnectionRequestTpdu tpdu = null;
 
         isoTPProtocol.encode(ctx, tpdu, out);
         assertTrue(out.size() == 0, "Message decoded when null passed");
@@ -495,9 +442,6 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void decodeNull() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
@@ -510,25 +454,21 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void decodeCallingParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x8); // header length
-        buf.writeByte(TpduCode.TPDU_ERROR.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()); // reject clause
-        buf.writeByte(ParameterCode.CALLING_TSAP.getCode());
-        buf.writeByte(0x2); // parameter length
-        buf.writeByte(DeviceGroup.PG_OR_PC.getCode());
-        buf.writeByte((byte) ((0x1 << 4) | 0x7));
+        buf.writeByte(0x8) // header length
+            .writeByte(TpduCode.TPDU_ERROR.getCode())
+            .writeShort(0x01) // destination reference
+            .writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()) // reject clause
+            .writeByte(ParameterCode.CALLING_TSAP.getCode())
+            .writeByte(0x2) // parameter length
+            .writeByte(DeviceGroup.PG_OR_PC.getCode())
+            .writeByte((byte) ((0x1 << 4) | 0x7));
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(errorTpdu.getTpduCode() == TpduCode.TPDU_ERROR, "Message code not correct");
         assertTrue(errorTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
@@ -544,25 +484,21 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void decodeCalledParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x8); // header length
-        buf.writeByte(TpduCode.TPDU_ERROR.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()); // reject clause
-        buf.writeByte(ParameterCode.CALLED_TSAP.getCode());
-        buf.writeByte(0x2); // parameter length
-        buf.writeByte(DeviceGroup.PG_OR_PC.getCode());
-        buf.writeByte((byte) ((0x2 << 4) | 0x3));
+        buf.writeByte(0x8) // header length
+            .writeByte(TpduCode.TPDU_ERROR.getCode())
+            .writeShort(0x01) // destination reference
+            .writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()) // reject clause
+            .writeByte(ParameterCode.CALLED_TSAP.getCode())
+            .writeByte(0x2) // parameter length
+            .writeByte(DeviceGroup.PG_OR_PC.getCode())
+            .writeByte((byte) ((0x2 << 4) | 0x3));
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(errorTpdu.getTpduCode() == TpduCode.TPDU_ERROR, "Message code not correct");
         assertTrue(errorTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
@@ -578,24 +514,20 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void decodeChecksumParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x8); // header length
-        buf.writeByte(TpduCode.TPDU_ERROR.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()); // reject clause
-        buf.writeByte(ParameterCode.CHECKSUM.getCode());
-        buf.writeByte(0x1); // parameter length
-        buf.writeByte(0x33); // checksum
+        buf.writeByte(0x8) // header length
+            .writeByte(TpduCode.TPDU_ERROR.getCode())
+            .writeShort(0x01) // destination reference
+            .writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()) // reject clause
+            .writeByte(ParameterCode.CHECKSUM.getCode())
+            .writeByte(0x1) // parameter length
+            .writeByte(0x33); // checksum
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(errorTpdu.getTpduCode() == TpduCode.TPDU_ERROR, "Message code not correct");
         assertTrue(errorTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
@@ -609,24 +541,20 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void decodeSizeParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x8); // header length
-        buf.writeByte(TpduCode.TPDU_ERROR.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()); // reject clause
-        buf.writeByte(ParameterCode.TPDU_SIZE.getCode());
-        buf.writeByte(0x1); // parameter length
-        buf.writeByte(TpduSize.SIZE_256.getCode());
+        buf.writeByte(0x8) // header length
+            .writeByte(TpduCode.TPDU_ERROR.getCode())
+            .writeShort(0x01) // destination reference
+            .writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()) // reject clause
+            .writeByte(ParameterCode.TPDU_SIZE.getCode())
+            .writeByte(0x1) // parameter length
+            .writeByte(TpduSize.SIZE_256.getCode());
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(errorTpdu.getTpduCode() == TpduCode.TPDU_ERROR, "Message code not correct");
         assertTrue(errorTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
@@ -640,28 +568,24 @@ public class IsoTPProtocolTest {
     @Test
     @Tag("fast")
     public void decodeAdditionalInformationParameter() throws Exception {
-        ChannelHandlerContext ctx = new MockChannelHandlerContext();
-        ByteBuf buf = Unpooled.buffer();
-        ArrayList<Object> out = new ArrayList<>();
-
-        buf.writeByte(0x8); // header length
-        buf.writeByte(TpduCode.TPDU_ERROR.getCode());
-        buf.writeShort(0x01); // destination reference
-        buf.writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()); // reject clause
-        buf.writeByte(ParameterCode.DISCONNECT_ADDITIONAL_INFORMATION.getCode());
-        buf.writeByte(0x5); // parameter length
-        buf.writeByte('E');
-        buf.writeByte('r');
-        buf.writeByte('r');
-        buf.writeByte('o');
-        buf.writeByte('r');
+        buf.writeByte(0x8) // header length
+            .writeByte(TpduCode.TPDU_ERROR.getCode())
+            .writeShort(0x01) // destination reference
+            .writeByte(RejectCause.REASON_NOT_SPECIFIED.getCode()) // reject clause
+            .writeByte(ParameterCode.DISCONNECT_ADDITIONAL_INFORMATION.getCode())
+            .writeByte(0x5) // parameter length
+            .writeByte('E')
+            .writeByte('r')
+            .writeByte('r')
+            .writeByte('o')
+            .writeByte('r');
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
 
         assertTrue(out.size() == 1, "Message not decoded");
 
-        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage)out.get(0)).getTpdu();
+        ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
         assertTrue(errorTpdu.getTpduCode() == TpduCode.TPDU_ERROR, "Message code not correct");
         assertTrue(errorTpdu.getDestinationReference() == (short) 0x1, "Message destination reference not correct");
