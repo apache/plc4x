@@ -107,7 +107,8 @@ public class PLC4XProducer extends DefaultAsyncProducer {
         }
         try {
             plcConnection.close();
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            log.warn("Could not close {}", plcConnection, e);
         }
         super.doStop();
     }
