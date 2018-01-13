@@ -31,7 +31,8 @@ public enum TpduCode {
     EXPEDITED_DATA((byte) 0x10),
     EXPEDITED_DATA_ACKNOWLEDGEMENT((byte) 0x20),
     REJECT((byte) 0x50),
-    TPDU_ERROR((byte) 0x70);
+    TPDU_ERROR((byte) 0x70),
+    TPDU_UNKNOWN((byte) 0xFF);
 
     private static Map<Byte, TpduCode> map = null;
     
@@ -52,7 +53,10 @@ public enum TpduCode {
                 map.put(tpduCode.code, tpduCode);
             }
         }
-        return map.get(code);
+        if (map.containsKey(code)) {
+            return map.get(code);
+        }
+        return TpduCode.TPDU_UNKNOWN;
     }
 
 }
