@@ -75,7 +75,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, Tpdu in, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, Tpdu in, List<Object> out) {
         logger.debug("ISO Transport Protocol Message sent");
 
         if (in == null) {
@@ -105,7 +105,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                 enocdeError(in, buf);
                 break;
             default:
-                logger.error("TDPU Value %s not implemented yet", in.getTpduCode().name());
+                if (logger.isErrorEnabled()) {
+                    logger.error("TDPU Value {} not implemented yet", in.getTpduCode().name());
+                }
                 return;
         }
         // Add the user-data itself.
@@ -147,7 +149,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) {
         if (logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
         }
@@ -185,7 +187,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                 tpdu = decodeError(userData, parameters);
                 break;
             default:
-                logger.trace("Tpdu Code %s not implemented", tpduCode.name());
+                if (logger.isErrorEnabled()) {
+                    logger.error("Tpdu Code {} not implemented", tpduCode.name());
+                }
                 break;
         }
 
@@ -290,8 +294,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                     out.writeByte(sizeParameter.getTpduSize().getCode());
                     break;
                 default:
-                    logger.error("TDPU tarameter type {} not implemented yet",
-                        new Object[]{parameter.getType().name()});
+                    if (logger.isErrorEnabled()) {
+                        logger.error("TDPU tarameter type {} not implemented yet", parameter.getType().name());
+                    }
                     return;
             }
         }
@@ -389,7 +394,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                 TpduSize size = TpduSize.valueOf(out.readByte());
                 return new TpduSizeParameter(size);
             default:
-                logger.error("Parameter not implemented yet " + parameterCode.name());
+                if (logger.isErrorEnabled()) {
+                    logger.error("Parameter not implemented yet {}", parameterCode.name());
+                }
                 return null;
         }
     }
@@ -405,7 +412,9 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
             case CALLED_TSAP:
                 return new CalledTsapParameter(deviceGroup, rackId, slotId);
             default:
-                logger.error("Parameter not implemented yet " + parameterCode.name());
+                if (logger.isErrorEnabled()) {
+                    logger.error("Parameter not implemented yet {}", parameterCode.name());
+                }
                 return null;
         }
     }
