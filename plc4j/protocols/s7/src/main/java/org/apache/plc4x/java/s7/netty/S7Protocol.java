@@ -333,7 +333,9 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 short pduLength = in.readShort();
                 return new SetupCommunicationParameter(callingMaxAmq, calledMaxAmq, pduLength);
             default:
-                logger.error("Unimplemented parameter type: " + parameterType.name());
+                if (logger.isErrorEnabled()) {
+                    logger.error("Unimplemented parameter type: {}", parameterType.name());
+                }
         }
         return null;
     }
