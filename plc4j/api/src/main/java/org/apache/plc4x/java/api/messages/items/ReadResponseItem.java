@@ -29,7 +29,6 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
     public ReadResponseItem(ReadRequestItem<T> requestItem, ResponseCode responseCode, List<T> values) {
         super(requestItem, responseCode);
         this.values = values;
-        requestItem.setResponseItem(this);
     }
 
     public List<T> getValues() {

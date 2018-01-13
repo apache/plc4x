@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -268,58 +266,6 @@ class APIMessageTests {
         PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
         Optional<ReadResponseItem<Byte>> responseValue1 = plcReadResponse.getValue(nonExistingReadRequestItem);
         assertEquals(Optional.empty(), responseValue1, "Unexpected items in response items");
-    }
-
-    @Test
-    void accessReadResponseFromRequest() throws Exception {
-        ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, null, (byte) 0x0);
-        try {
-            readRequestItem.getResponseItem().get(10, TimeUnit.MILLISECONDS);
-            fail("We should no get anything because of the short Timeout");
-        } catch (Exception ignore) {
-        }
-        ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK, Collections.singletonList((byte) 0x0));
-        ReadResponseItem<Byte> byteReadResponseItem = readRequestItem.getResponseItem().get(10, TimeUnit.MILLISECONDS);
-        assertEquals(readResponseItem, byteReadResponseItem);
-    }
-
-    @Test
-    void accessWriteResponseFromRequest() throws Exception {
-        WriteRequestItem<Byte> writeRequestItem = new WriteRequestItem<>(Byte.class, null, (byte) 0x0);
-        try {
-            writeRequestItem.getResponseItem().get(10, TimeUnit.MILLISECONDS);
-            fail("We should no get anything because of the short Timeout");
-        } catch (Exception ignore) {
-        }
-        WriteResponseItem<Byte> writeResponseItem = new WriteResponseItem<>(writeRequestItem, ResponseCode.OK);
-        WriteResponseItem<Byte> byteWriteResponseItem = writeRequestItem.getResponseItem().get(10, TimeUnit.MILLISECONDS);
-        assertEquals(writeResponseItem, byteWriteResponseItem);
-    }
-
-    @Test
-    void accessResponseFromRequestMultiThreaded() throws Exception {
-        ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, null, (byte) 0x0);
-        CountDownLatch successLatch = new CountDownLatch(10);
-        CountDownLatch failLatch = new CountDownLatch(10);
-        for (int i = 0; i < 10; i++) {
-            new Thread(() -> {
-                try {
-                    readRequestItem.getResponseItem().get(10, TimeUnit.SECONDS);
-                    successLatch.countDown();
-                } catch (Exception ignore) {
-                    failLatch.countDown();
-                }
-            }).start();
-        }
-        assertEquals(10, failLatch.getCount());
-        assertEquals(10, successLatch.getCount());
-
-        ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK, Collections.singletonList((byte) 0x0));
-        ReadResponseItem<Byte> byteReadResponseItem = readRequestItem.getResponseItem().get(10, TimeUnit.MILLISECONDS);
-        assertEquals(readResponseItem, byteReadResponseItem);
-        successLatch.await(10, TimeUnit.SECONDS);
-        assertEquals(0, successLatch.getCount());
-        assertEquals(10, failLatch.getCount());
     }
 
 }

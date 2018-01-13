@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class WriteRequestItem<T> extends RequestItem<T, WriteResponseItem<T>> {
+public class WriteRequestItem<T> extends RequestItem<T> {
 
     private final List<T> values;
 

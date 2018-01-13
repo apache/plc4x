@@ -24,7 +24,6 @@ public class WriteResponseItem<T> extends ResponseItem<WriteRequestItem<T>> {
 
     public WriteResponseItem(WriteRequestItem<T> requestItem, ResponseCode responseCode) {
         super(requestItem, responseCode);
-        requestItem.setResponseItem(this);
     }
 
 }

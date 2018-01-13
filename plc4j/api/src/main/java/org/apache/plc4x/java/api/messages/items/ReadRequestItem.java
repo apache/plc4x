@@ -20,7 +20,7 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-public class ReadRequestItem<T> extends RequestItem<T, ReadResponseItem<T>> {
+public class ReadRequestItem<T> extends RequestItem<T> {
 
     private final int size;
 

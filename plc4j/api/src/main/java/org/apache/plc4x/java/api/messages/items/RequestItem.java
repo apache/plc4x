@@ -27,13 +27,11 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public abstract class RequestItem<DATA_TYPE, RESPONSE_ITEM extends ResponseItem> {
+public abstract class RequestItem<DATA_TYPE> {
 
     private final Class<DATA_TYPE> datatype;
 
     private final Address address;
-
-    private volatile RESPONSE_ITEM responseItem;
 
     private final Lock lock = new ReentrantLock();
 
@@ -52,33 +50,4 @@ public abstract class RequestItem<DATA_TYPE, RESPONSE_ITEM extends ResponseItem>
         return address;
     }
 
-    public CompletableFuture<RESPONSE_ITEM> getResponseItem() {
-        return CompletableFuture.supplyAsync(() -> {
-            if (responseItem == null) {
-                try {
-                    lock.lock();
-                    while (responseItem == null) {
-                        responseSet.await();
-                    }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    throw new CompletionException(e);
-                } finally {
-                    lock.unlock();
-                }
-            }
-            return responseItem;
-        });
-    }
-
-    protected void setResponseItem(RESPONSE_ITEM responseItem) {
-        Objects.requireNonNull(responseItem);
-        this.responseItem = responseItem;
-        try {
-            lock.lock();
-            responseSet.signalAll();
-        } finally {
-            lock.unlock();
-        }
-    }
 }
