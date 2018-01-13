@@ -78,11 +78,51 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, S7Message in, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, S7Message in, List<Object> out) {
         logger.debug("S7 Message sent");
 
         ByteBuf buf = Unpooled.buffer();
 
+        encodeHeader(in, buf);
+        encodeParameters(in, buf);
+        encodePayloads(in, buf);
+
+        out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf));
+    }
+
+    private void encodePayloads(S7Message in, ByteBuf buf) {
+        for (S7Payload payload : in.getPayloads()) {
+            ParameterType parameterType = payload.getType();
+            if (parameterType == ParameterType.READ_VAR || parameterType == ParameterType.WRITE_VAR) {
+                VarPayload varPayload = (VarPayload) payload;
+                for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
+                    buf.writeByte(payloadItem.getReturnCode().getCode());
+                    buf.writeByte(payloadItem.getDataTransportSize().getCode());
+                    buf.writeShort(payloadItem.getData().length);
+                    buf.writeBytes(payloadItem.getData());
+                }
+            }
+        }
+    }
+
+    private void encodeParameters(S7Message in, ByteBuf buf) {
+        for (S7Parameter s7Parameter : in.getParameters()) {
+            buf.writeByte(s7Parameter.getType().getCode());
+            switch (s7Parameter.getType()) {
+                case READ_VAR:
+                case WRITE_VAR:
+                    encodeReadWriteVar(buf, (VarParameter) s7Parameter);
+                    break;
+                case SETUP_COMMUNICATION:
+                    encodeSetupCommunication(buf, (SetupCommunicationParameter) s7Parameter);
+                    break;
+                default:
+                    logger.error("writing this parameter type not implemented");
+            }
+        }
+    }
+
+    private void encodeHeader(S7Message in, ByteBuf buf) {
         buf.writeByte(S7_PROTOCOL_MAGIC_NUMBER);
         buf.writeByte(in.getMessageType().getCode());
         // Reserved (is always constant 0x0000)
@@ -98,39 +138,6 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             buf.writeByte(s7ResponseMessage.getErrorClass());
             buf.writeByte(s7ResponseMessage.getErrorCode());
         }
-
-        for (S7Parameter s7Parameter : in.getParameters()) {
-            buf.writeByte(s7Parameter.getType().getCode());
-            switch (s7Parameter.getType()) {
-                case READ_VAR:
-                case WRITE_VAR:
-                    encodeReadWriteVar(buf, (VarParameter) s7Parameter);
-                    break;
-                case SETUP_COMMUNICATION:
-                    encodeSetupCommunication(buf, (SetupCommunicationParameter) s7Parameter);
-                    break;
-                default:
-                    logger.error("writing this parameter type not implemented");
-                    return;
-            }
-        }
-
-        if (!in.getPayloads().isEmpty()) {
-            for (S7Payload payload : in.getPayloads()) {
-                ParameterType parameterType = payload.getType();
-                if (parameterType == ParameterType.READ_VAR || parameterType == ParameterType.WRITE_VAR) {
-                    VarPayload varPayload = (VarPayload) payload;
-                    for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
-                        buf.writeByte(payloadItem.getReturnCode().getCode());
-                        buf.writeByte(payloadItem.getDataTransportSize().getCode());
-                        buf.writeShort(payloadItem.getData().length);
-                        buf.writeBytes(payloadItem.getData());
-                    }
-                }
-            }
-        }
-
-        out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf));
     }
 
     private void encodeSetupCommunication(ByteBuf buf, SetupCommunicationParameter s7Parameter) {
@@ -176,106 +183,123 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) {
         if (logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
         }
         ByteBuf userData = in.getUserData();
-        if (userData.readableBytes() > 0) {
-            logger.debug("S7 Message received");
+        if (userData.readableBytes() == 0) {
+            return;
+        }
+        logger.debug("S7 Message received");
 
-            if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
-                logger.warn("Expecting S7 protocol magic number.");
-                logger.debug("Got Data: {}", ByteBufUtil.hexDump(userData));
-                return;
+        if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
+            logger.warn("Expecting S7 protocol magic number.");
+            logger.debug("Got Data: {}", ByteBufUtil.hexDump(userData));
+            return;
+        }
+
+        MessageType messageType = MessageType.valueOf(userData.readByte());
+        boolean isResponse = messageType == MessageType.ACK_DATA;
+        userData.readShort();  // Reserved (is always constant 0x0000)
+        short tpduReference = userData.readShort();
+        short headerParametersLength = userData.readShort();
+        short userDataLength = userData.readShort();
+        byte errorClass = 0;
+        byte errorCode = 0;
+        if (isResponse) {
+            errorClass = userData.readByte();
+            errorCode = userData.readByte();
+        }
+
+        List<S7Parameter> s7Parameters = new LinkedList<>();
+        SetupCommunicationParameter setupCommunicationParameter = null;
+        VarParameter readWriteVarParameter = null;
+        int i = 0;
+
+        while (i < headerParametersLength) {
+            S7Parameter parameter = parseParameter(userData, isResponse, headerParametersLength - i);
+            s7Parameters.add(parameter);
+            if (parameter instanceof SetupCommunicationParameter) {
+                setupCommunicationParameter = (SetupCommunicationParameter) parameter;
             }
-
-            MessageType messageType = MessageType.valueOf(userData.readByte());
-            boolean isResponse = messageType == MessageType.ACK_DATA;
-            // Reserved (is always constant 0x0000)
-            userData.readShort();
-            short tpduReference = userData.readShort();
-            short headerParametersLength = userData.readShort();
-            short userDataLength = userData.readShort();
-            byte errorClass = 0;
-            byte errorCode = 0;
-            if (messageType == MessageType.ACK_DATA) {
-                errorClass = userData.readByte();
-                errorCode = userData.readByte();
+            if (readWriteVarParameter == null)  {
+                readWriteVarParameter = decodeReadWriteParameter(parameter);
             }
-            List<S7Parameter> s7Parameters = new LinkedList<>();
-            SetupCommunicationParameter setupCommunicationParameter = null;
-            VarParameter readWriteVarParameter = null;
-            int i = 0;
+            i += getParameterLength(parameter);
+        }
 
-            while (i < headerParametersLength) {
-                S7Parameter parameter = parseParameter(userData, isResponse, headerParametersLength - i);
-                s7Parameters.add(parameter);
-                if (parameter instanceof SetupCommunicationParameter) {
-                    setupCommunicationParameter = (SetupCommunicationParameter) parameter;
-                }
-                if (parameter instanceof VarParameter) {
-                    ParameterType paramType = parameter.getType();
-                    if (paramType == ParameterType.READ_VAR || paramType == ParameterType.WRITE_VAR) {
-                        readWriteVarParameter = (VarParameter) parameter;
-                    }
-                }
-                i += getParameterLength(parameter);
-            }
-            List<S7Payload> s7Payloads = new LinkedList<>();
-            if(readWriteVarParameter != null) {
-                List<VarPayloadItem> payloadItems = new LinkedList<>();
-                i = 0;
+        List<S7Payload> s7Payloads = decodePayloads(userData, isResponse, userDataLength, readWriteVarParameter);
 
-                while (i < userDataLength) {
-                    DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
-                    // This is a response to a WRITE_VAR request (It only contains the return code for every sent item.
-                    if ((readWriteVarParameter.getType() == ParameterType.WRITE_VAR) &&
-                        (messageType == MessageType.ACK_DATA)) {
-                        // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
-                        VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, null, null);
-                        payloadItems.add(payload);
-                        i += 1;
-                    }
-                    // This is a response to a READ_VAR request.
-                    else if ((readWriteVarParameter.getType() == ParameterType.READ_VAR) &&
-                        (messageType == MessageType.ACK_DATA)) {
-                        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-                        short length = (dataTransportSize.isSizeInBits()) ?
-                            (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
-                        byte[] data = new byte[length];
-                        userData.readBytes(data);
-                        // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
-                        VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, dataTransportSize, data);
-                        payloadItems.add(payload);
-                        i += getPayloadLength(payload);
-                    }
-                }
+        if (isResponse) {
+            setupCommunications(ctx, setupCommunicationParameter);
+            out.add(new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode));
+        } else {
+            out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads));
+        }
+    }
 
-                VarPayload varPayload = new VarPayload(readWriteVarParameter.getType(), payloadItems);
-                s7Payloads.add(varPayload);
-            }
+    private void setupCommunications(ChannelHandlerContext ctx, SetupCommunicationParameter setupCommunicationParameter) {
+        // If we got a SetupCommunicationParameter as part of the response
+        // we are currently in the process of establishing a connection with
+        // the PLC, so save some of the information in the session and tell
+        // the next layer to negotiate the connection parameters.
+        if (setupCommunicationParameter != null) {
+            maxAmqCaller = setupCommunicationParameter.getMaxAmqCaller();
+            maxAmqCallee = setupCommunicationParameter.getMaxAmqCallee();
+            pduSize = setupCommunicationParameter.getPduLength();
 
-            if (messageType == MessageType.ACK_DATA) {
-                // If we got a SetupCommunicationParameter as part of the response
-                // we are currently in the process of establishing a connection with
-                // the PLC, so save some of the information in the session and tell
-                // the next layer to negotiate the connection parameters.
-                if (setupCommunicationParameter != null) {
-                    maxAmqCaller = setupCommunicationParameter.getMaxAmqCaller();
-                    maxAmqCallee = setupCommunicationParameter.getMaxAmqCallee();
-                    pduSize = setupCommunicationParameter.getPduLength();
+            // Send an event that setup is complete.
+            ctx.channel().pipeline().fireUserEventTriggered(
+                new S7ConnectionEvent(S7ConnectionState.SETUP_COMPLETE));
+        }
+    }
 
-                    // Send an event that setup is complete.
-                    ctx.channel().pipeline().fireUserEventTriggered(
-                        new S7ConnectionEvent(S7ConnectionState.SETUP_COMPLETE));
-                }
-                out.add(new S7ResponseMessage(
-                    messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode));
-            } else {
-                out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads));
+    private VarParameter decodeReadWriteParameter(S7Parameter parameter) {
+        VarParameter readWriteVarParameter = null;
+
+        if (parameter instanceof VarParameter) {
+            ParameterType paramType = parameter.getType();
+            if (paramType == ParameterType.READ_VAR || paramType == ParameterType.WRITE_VAR) {
+                readWriteVarParameter = (VarParameter) parameter;
             }
         }
+        return readWriteVarParameter;
+    }
+
+    private List<S7Payload> decodePayloads(ByteBuf userData, boolean isResponse, short userDataLength, VarParameter readWriteVarParameter) {
+        int i = 0;
+        List<S7Payload> s7Payloads = new LinkedList<>();
+        if (readWriteVarParameter != null) {
+            List<VarPayloadItem> payloadItems = new LinkedList<>();
+
+            while (i < userDataLength) {
+                DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
+                // This is a response to a WRITE_VAR request (It only contains the return code for every sent item.
+                if ((readWriteVarParameter.getType() == ParameterType.WRITE_VAR) && isResponse) {
+                    // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
+                    VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, null, null);
+                    payloadItems.add(payload);
+                    i += 1;
+                }
+                // This is a response to a READ_VAR request.
+                else if ((readWriteVarParameter.getType() == ParameterType.READ_VAR) && isResponse) {
+                    DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+                    short length = (dataTransportSize.isSizeInBits()) ?
+                        (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
+                    byte[] data = new byte[length];
+                    userData.readBytes(data);
+                    // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
+                    VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, dataTransportSize, data);
+                    payloadItems.add(payload);
+                    i += getPayloadLength(payload);
+                }
+            }
+
+            VarPayload varPayload = new VarPayload(readWriteVarParameter.getType(), payloadItems);
+            s7Payloads.add(varPayload);
+        }
+        return s7Payloads;
     }
 
     private S7Parameter parseParameter(ByteBuf in, boolean isResponse, int restLength) {
@@ -294,40 +318,11 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 return null;
             case READ_VAR:
             case WRITE_VAR:
-                List<VarParameterItem> items = new LinkedList<>();
-                byte numItems = in.readByte();
-                if (!isResponse) {
-                    for (int i = 0; i < numItems; i++) {
-                        SpecificationType specificationType = SpecificationType.valueOf(in.readByte());
-                        // Length of the rest of this item.
-                        byte itemLength = in.readByte();
-                        if (itemLength != 0x0a) {
-                            logger.warn("Expecting a length of 10 here.");
-                            return null;
-                        }
-                        VariableAddressingMode variableAddressingMode = VariableAddressingMode.valueOf(in.readByte());
-                        if (variableAddressingMode == VariableAddressingMode.S7ANY) {
-                            TransportSize transportSize = TransportSize.valueOf(in.readByte());
-                            short length = in.readShort();
-                            short dbNumber = in.readShort();
-                            MemoryArea memoryArea = MemoryArea.valueOf(in.readByte());
-                            short byteAddress = (short) (in.readShort() << 5);
-                            byte tmp = in.readByte();
-                            // Only the least 3 bits are the bit address, the
-                            byte bitAddress = (byte) (tmp & 0x07);
-                            // Bits 4-8 belong to the byte address
-                            byteAddress = (short) (byteAddress | (tmp >> 3));
-                            S7AnyVarParameterItem item = new S7AnyVarParameterItem(
-                                    specificationType, memoryArea, transportSize,
-                                    length, dbNumber, byteAddress, bitAddress);
-                            items.add(item);
-                        } else {
-                            logger.error("Error parsing item type");
-                            return null;
-                        }
-                    }
+                List<VarParameterItem> varParamameter = null;
+                if (isResponse) {
+                    varParamameter = parseReadWriteVarParameter(in);
                 }
-                return new VarParameter(parameterType, items);
+                return new VarParameter(parameterType, varParamameter);
             case SETUP_COMMUNICATION:
                 // Reserved (is always constant 0x00)
                 in.readByte();
@@ -339,6 +334,43 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 logger.error("Unimplemented parameter type: " + parameterType.name());
         }
         return null;
+    }
+
+    private List<VarParameterItem> parseReadWriteVarParameter(ByteBuf in) {
+        List<VarParameterItem> items = new LinkedList<>();
+        byte numItems = in.readByte();
+
+        for (int i = 0; i < numItems; i++) {
+            SpecificationType specificationType = SpecificationType.valueOf(in.readByte());
+            // Length of the rest of this item.
+            byte itemLength = in.readByte();
+            if (itemLength != 0x0a) {
+                logger.warn("Expecting a length of 10 here.");
+                return items;
+            }
+            VariableAddressingMode variableAddressingMode = VariableAddressingMode.valueOf(in.readByte());
+            if (variableAddressingMode == VariableAddressingMode.S7ANY) {
+                TransportSize transportSize = TransportSize.valueOf(in.readByte());
+                short length = in.readShort();
+                short dbNumber = in.readShort();
+                MemoryArea memoryArea = MemoryArea.valueOf(in.readByte());
+                short byteAddress = (short) (in.readShort() << 5);
+                byte tmp = in.readByte();
+                // Only the least 3 bits are the bit address, the
+                byte bitAddress = (byte) (tmp & 0x07);
+                // Bits 4-8 belong to the byte address
+                byteAddress = (short) (byteAddress | (tmp >> 3));
+                S7AnyVarParameterItem item = new S7AnyVarParameterItem(
+                        specificationType, memoryArea, transportSize,
+                        length, dbNumber, byteAddress, bitAddress);
+                items.add(item);
+            } else {
+                logger.error("Error parsing item type");
+                return items;
+            }
+        }
+
+        return items;
     }
 
     private short getParametersLength(List<S7Parameter> parameters) {
@@ -353,13 +385,15 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
 
     private short getPayloadsLength(List<S7Payload> payloads) {
         short l = 0;
-        if (payloads != null) {
-            for (S7Payload payload : payloads) {
-                if(payload instanceof VarPayload) {
-                    VarPayload varPayload = (VarPayload) payload;
-                    for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
-                        l += getPayloadLength(payloadItem);
-                    }
+        if (payloads == null) {
+            return 0;
+        }
+
+        for (S7Payload payload : payloads) {
+            if(payload instanceof VarPayload) {
+                VarPayload varPayload = (VarPayload) payload;
+                for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
+                    l += getPayloadLength(payloadItem);
                 }
             }
         }
@@ -398,10 +432,10 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
     }
 
     private short getPayloadLength(VarPayloadItem payloadItem) {
-        if (payloadItem != null) {
-            return (short) (4 + payloadItem.getData().length);
+        if (payloadItem == null) {
+            return 0;
         }
-        return 0;
+        return (short) (4 + payloadItem.getData().length);
     }
 
 }

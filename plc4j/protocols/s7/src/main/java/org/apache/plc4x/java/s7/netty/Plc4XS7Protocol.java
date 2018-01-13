@@ -61,171 +61,197 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
 
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
-        if (msg.getRequest() instanceof PlcReadRequest) {
-            List<VarParameterItem> parameterItems = new LinkedList<>();
+        PlcRequest request = msg.getRequest();
+        if (request instanceof PlcReadRequest) {
+            encodeREadRequest(msg, out);
+        } else if (request instanceof PlcWriteRequest) {
+            encodeWriteRequest(msg, out);
+        }
+    }
 
-            PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
-            for (ReadRequestItem requestItem : readRequest.getRequestItems()) {
-                // Try to get the correct S7 transport size for the given data type.
-                // (Map PLC4X data type to S7 data type)
-                TransportSize transportSize = encodeTransportSize(requestItem.getDatatype());
-                if (transportSize == null) {
-                    throw new PlcException("Unknown transport size for datatype " + requestItem.getDatatype());
-                }
+    private void encodeWriteRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        List<VarParameterItem> parameterItems = new LinkedList<>();
+        List<VarPayloadItem> payloadItems = new LinkedList<>();
 
-                // Depending on the address type, generate the corresponding type of request item.
-                VarParameterItem varParameterItem = encodeVarParameterItem(requestItem.getAddress(), transportSize, requestItem.getSize());
-                parameterItems.add(varParameterItem);
+        PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
+        for (WriteRequestItem requestItem : writeRequest.getRequestItems()) {
+            // Try to get the correct S7 transport size for the given data type.
+            // (Map PLC4X data type to S7 data type)
+            TransportSize transportSize = encodeTransportSize(requestItem.getDatatype());
+            if (transportSize == null) {
+                throw new PlcException("Unknown transport size for datatype " + requestItem.getDatatype());
             }
-            VarParameter readVarParameter = new VarParameter(ParameterType.READ_VAR, parameterItems);
 
-            // Assemble the request.
-            S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.JOB,
-                (short) tpduGenerator.getAndIncrement(), Collections.singletonList(readVarParameter),
-                Collections.emptyList());
+            // Depending on the address type, generate the corresponding type of request item.
+            VarParameterItem varParameterItem = encodeVarParameterItem(
+                requestItem.getAddress(), transportSize, requestItem.getValues().size());
+            parameterItems.add(varParameterItem);
 
-            requests.put(s7ReadRequest.getTpduReference(), msg);
-
-            out.add(s7ReadRequest);
-        } else if (msg.getRequest() instanceof PlcWriteRequest) {
-            List<VarParameterItem> parameterItems = new LinkedList<>();
-            List<VarPayloadItem> payloadItems = new LinkedList<>();
-
-            PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
-            for (WriteRequestItem requestItem : writeRequest.getRequestItems()) {
-                // Try to get the correct S7 transport size for the given data type.
-                // (Map PLC4X data type to S7 data type)
-                TransportSize transportSize = encodeTransportSize(requestItem.getDatatype());
-                if (transportSize == null) {
-                    throw new PlcException("Unknown transport size for datatype " + requestItem.getDatatype());
-                }
-
-                // Depending on the address type, generate the corresponding type of request item.
-                VarParameterItem varParameterItem = encodeVarParameterItem(
-                    requestItem.getAddress(), transportSize, requestItem.getValues().size());
-                parameterItems.add(varParameterItem);
-
-                DataTransportSize dataTransportSize = encodeDataTransportSize(requestItem.getDatatype());
-                if (dataTransportSize == null) {
-                    throw new PlcException("Unknown data transport size for datatype " + requestItem.getDatatype());
-                }
-
-                VarPayloadItem varPayloadItem = new VarPayloadItem(
-                    DataTransportErrorCode.RESERVED, dataTransportSize, encodeData(requestItem.getValues().toArray()));
-
-                payloadItems.add(varPayloadItem);
+            DataTransportSize dataTransportSize = encodeDataTransportSize(requestItem.getDatatype());
+            if (dataTransportSize == null) {
+                throw new PlcException("Unknown data transport size for datatype " + requestItem.getDatatype());
             }
-            VarParameter writeVarParameter = new VarParameter(ParameterType.WRITE_VAR, parameterItems);
-            VarPayload writeVarPayload = new VarPayload(ParameterType.WRITE_VAR, payloadItems);
 
-            // Assemble the request.
-            S7RequestMessage s7WriteRequest = new S7RequestMessage(MessageType.JOB,
-                (short) tpduGenerator.getAndIncrement(), Collections.singletonList(writeVarParameter),
-                Collections.singletonList(writeVarPayload));
+            VarPayloadItem varPayloadItem = new VarPayloadItem(
+                DataTransportErrorCode.RESERVED, dataTransportSize, encodeData(requestItem.getValues().toArray()));
 
-            requests.put(s7WriteRequest.getTpduReference(), msg);
+            payloadItems.add(varPayloadItem);
+        }
+        VarParameter writeVarParameter = new VarParameter(ParameterType.WRITE_VAR, parameterItems);
+        VarPayload writeVarPayload = new VarPayload(ParameterType.WRITE_VAR, payloadItems);
 
-            out.add(s7WriteRequest);
+        // Assemble the request.
+        S7RequestMessage s7WriteRequest = new S7RequestMessage(MessageType.JOB,
+            (short) tpduGenerator.getAndIncrement(), Collections.singletonList(writeVarParameter),
+            Collections.singletonList(writeVarPayload));
+
+        requests.put(s7WriteRequest.getTpduReference(), msg);
+
+        out.add(s7WriteRequest);
+    }
+
+    private void encodeREadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        List<VarParameterItem> parameterItems = new LinkedList<>();
+
+        PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
+        encodeParameterItems(parameterItems, readRequest);
+        VarParameter readVarParameter = new VarParameter(ParameterType.READ_VAR, parameterItems);
+
+        // Assemble the request.
+        S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.JOB,
+            (short) tpduGenerator.getAndIncrement(), Collections.singletonList(readVarParameter),
+            Collections.emptyList());
+
+        requests.put(s7ReadRequest.getTpduReference(), msg);
+
+        out.add(s7ReadRequest);
+    }
+
+    private void encodeParameterItems(List<VarParameterItem> parameterItems, PlcReadRequest readRequest) throws PlcException {
+        for (ReadRequestItem requestItem : readRequest.getRequestItems()) {
+            // Try to get the correct S7 transport size for the given data type.
+            // (Map PLC4X data type to S7 data type)
+            TransportSize transportSize = encodeTransportSize(requestItem.getDatatype());
+            if (transportSize == null) {
+                throw new PlcException("Unknown transport size for datatype " + requestItem.getDatatype());
+            }
+
+            // Depending on the address type, generate the corresponding type of request item.
+            VarParameterItem varParameterItem = encodeVarParameterItem(requestItem.getAddress(), transportSize, requestItem.getSize());
+            parameterItems.add(varParameterItem);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws Exception {
-        if (msg instanceof S7ResponseMessage) {
-            S7ResponseMessage responseMessage = (S7ResponseMessage) msg;
-            short tpduReference = responseMessage.getTpduReference();
-            if (requests.containsKey(tpduReference)) {
-                PlcRequestContainer requestContainer = requests.remove(tpduReference);
+        if (!(msg instanceof S7ResponseMessage)) {
+            return;
+        }
+        S7ResponseMessage responseMessage = (S7ResponseMessage) msg;
+        short tpduReference = responseMessage.getTpduReference();
+        if (requests.containsKey(tpduReference)) {
+            PlcRequestContainer requestContainer = requests.remove(tpduReference);
+            PlcRequest request = requestContainer.getRequest();
+            PlcResponse response = null;
 
-                PlcResponse response = null;
+            // Handle the response to a read request.
+            if (request instanceof PlcReadRequest) {
+                response = decodeReadRequest(responseMessage, requestContainer);
+            }
+            else if (request instanceof PlcWriteRequest) {
+                response = decodeWriteRequest(responseMessage, requestContainer);
+            }
 
-                // Handle the response to a read request.
-                if (requestContainer.getRequest() instanceof PlcReadRequest) {
-                    PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
-
-                    List<ReadResponseItem<?>> responseItems = new LinkedList<>();
-                    VarPayload payload = responseMessage.getPayload(VarPayload.class)
-                        .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
-                    // If the numbers of items don't match, we're in big trouble as the only
-                    // way to know how to interpret the responses is by aligning them with the
-                    // items from the request as this information is not returned by the PLC.
-                    if (plcReadRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
-                        throw new PlcProtocolException(
-                            "The number of requested items doesn't match the number of returned items");
-                    }
-                    List<VarPayloadItem> payloadItems = payload.getPayloadItems();
-                    final int noPayLoadItems = payloadItems.size();
-                    for (int i = 0; i < noPayLoadItems; i++) {
-                        VarPayloadItem payloadItem = payloadItems.get(i);
-
-                        // Get the request item for this payload item
-                        ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(i);
-
-                        ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-
-                        ReadResponseItem responseItem;
-                        // Something went wrong.
-                        if (responseCode != ResponseCode.OK) {
-                            responseItem = new ReadResponseItem<>(requestItem, responseCode, null);
-                        }
-                        // All Ok.
-                        else {
-                            byte[] data = payloadItem.getData();
-                            Class<?> datatype = requestItem.getDatatype();
-                            List<?> value = decodeData(datatype, data);
-                            responseItem = new ReadResponseItem(requestItem, responseCode, value);
-                        }
-                        responseItems.add(responseItem);
-                    }
-                    if (plcReadRequest instanceof TypeSafePlcReadRequest) {
-                        response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems);
-                    } else {
-                        response = new PlcReadResponse(plcReadRequest, responseItems);
-                    }
-                }
-
-                // Handle the response to a write request.
-                else if (requestContainer.getRequest() instanceof PlcWriteRequest) {
-                    PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
-                    List<WriteResponseItem<?>> responseItems = new LinkedList<>();
-                    VarPayload payload = responseMessage.getPayload(VarPayload.class)
-                        .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
-                    // If the numbers of items don't match, we're in big trouble as the only
-                    // way to know how to interpret the responses is by aligning them with the
-                    // items from the request as this information is not returned by the PLC.
-                    if (plcWriteRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
-                        throw new PlcProtocolException(
-                            "The number of requested items doesn't match the number of returned items");
-                    }
-                    List<VarPayloadItem> payloadItems = payload.getPayloadItems();
-                    final int noPayLoadItems = payloadItems.size();
-                    for (int i = 0; i < noPayLoadItems; i++) {
-                        VarPayloadItem payloadItem = payloadItems.get(i);
-
-                        // Get the request item for this payload item
-                        WriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(i);
-
-                        // A write response contains only the return code for every item.
-                        ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-
-                        WriteResponseItem responseItem = new WriteResponseItem(requestItem, responseCode);
-                        responseItems.add(responseItem);
-                    }
-
-                    if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
-                        response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, responseItems);
-                    } else {
-                        response = new PlcWriteResponse(plcWriteRequest, responseItems);
-                    }
-                }
-
-                // Confirm the response being handled.
-                if (response != null) {
-                    requestContainer.getResponseFuture().complete(response);
-                }
+            // Confirm the response being handled.
+            if (response != null) {
+                requestContainer.getResponseFuture().complete(response);
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private PlcResponse decodeWriteRequest(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
+        PlcResponse response;
+        PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
+        List<WriteResponseItem<?>> responseItems = new LinkedList<>();
+        VarPayload payload = responseMessage.getPayload(VarPayload.class)
+            .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
+        // If the numbers of items don't match, we're in big trouble as the only
+        // way to know how to interpret the responses is by aligning them with the
+        // items from the request as this information is not returned by the PLC.
+        if (plcWriteRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
+            throw new PlcProtocolException(
+                "The number of requested items doesn't match the number of returned items");
+        }
+        List<VarPayloadItem> payloadItems = payload.getPayloadItems();
+        final int noPayLoadItems = payloadItems.size();
+        for (int i = 0; i < noPayLoadItems; i++) {
+            VarPayloadItem payloadItem = payloadItems.get(i);
+
+            // Get the request item for this payload item
+            WriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(i);
+
+            // A write response contains only the return code for every item.
+            ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
+
+            WriteResponseItem responseItem = new WriteResponseItem(requestItem, responseCode);
+            responseItems.add(responseItem);
+        }
+
+        if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
+            response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, responseItems);
+        } else {
+            response = new PlcWriteResponse(plcWriteRequest, responseItems);
+        }
+        return response;
+    }
+
+    @SuppressWarnings("unchecked")
+    private PlcResponse decodeReadRequest(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
+        PlcResponse response;
+        PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
+
+        List<ReadResponseItem<?>> responseItems = new LinkedList<>();
+        VarPayload payload = responseMessage.getPayload(VarPayload.class)
+            .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
+        // If the numbers of items don't match, we're in big trouble as the only
+        // way to know how to interpret the responses is by aligning them with the
+        // items from the request as this information is not returned by the PLC.
+        if (plcReadRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
+            throw new PlcProtocolException(
+                "The number of requested items doesn't match the number of returned items");
+        }
+        List<VarPayloadItem> payloadItems = payload.getPayloadItems();
+        final int noPayLoadItems = payloadItems.size();
+        for (int i = 0; i < noPayLoadItems; i++) {
+            VarPayloadItem payloadItem = payloadItems.get(i);
+
+            // Get the request item for this payload item
+            ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(i);
+
+            ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
+
+            ReadResponseItem responseItem;
+            // Something went wrong.
+            if (responseCode != ResponseCode.OK) {
+                responseItem = new ReadResponseItem<>(requestItem, responseCode, null);
+            }
+            // All Ok.
+            else {
+                byte[] data = payloadItem.getData();
+                Class<?> datatype = requestItem.getDatatype();
+                List<?> value = decodeData(datatype, data);
+                responseItem = new ReadResponseItem(requestItem, responseCode, value);
+            }
+            responseItems.add(responseItem);
+        }
+        if (plcReadRequest instanceof TypeSafePlcReadRequest) {
+            response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems);
+        } else {
+            response = new PlcReadResponse(plcReadRequest, responseItems);
+        }
+        return response;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -305,58 +331,93 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         byte[] result = null;
         Class valueType = values[0].getClass();
         if (valueType == Boolean.class) {
-            // TODO: Check if this is true and the result is not Math.ceil(values.lenght / 8)
-            result = new byte[length];
-            for (int i = 0; i < length; i++) {
-                result[i] = (byte) (((Boolean) values[i]) ? 0x01 : 0x00);
-            }
+            result = encodeBoolean(values, length);
         } else if (valueType == Byte.class) {
-            result = new byte[length];
-            for (int i = 0; i < length; i++) {
-                result[i] = (byte) values[i];
-            }
+            result = encodeByte(values, length);
         } else if (valueType == Short.class) {
-            result = new byte[length * 2];
-            for (int i = 0; i < length; i++) {
-                short intValue = (short) values[i];
-                result[i * 2] = (byte) ((intValue & 0xff00) >> 8);
-                result[(i * 2) + 1] = (byte) (intValue & 0xff);
-            }
+            result = encodeShort(values, length);
         } else if (valueType == Integer.class) {
-            result = new byte[length * 4];
-            for (int i = 0; i < length; i++) {
-                int intValue = (int) values[i];
-                result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
-                result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
-                result[(i * 4) + 2] = (byte) ((intValue & 0x0000ff00) >> 8);
-                result[(i * 4) + 3] = (byte) (intValue & 0xff);
-            }
+            result = encodeInteger(values, length);
         } else if (valueType == Calendar.class) {
             result = null;
         } else if (valueType == Float.class) {
-            result = new byte[length * 4];
-            for (int i = 0; i < length; i++) {
-                float floatValue = (float) values[i];
-                int intValue = Float.floatToIntBits(floatValue);
-                result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
-                result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
-                result[(i * 4) + 2] = (byte) ((intValue & 0x0000ff00) >> 8);
-                result[(i * 4) + 3] = (byte) (intValue & 0xff);
-            }
+            result = encodeFloat(values, length);
         } else if (valueType == String.class) {
-            int size = 0;
-            for (Object value : values) {
-                size = size + ((String) value).length();
+            result = encodeString(values, length);
+        }
+        return result;
+    }
+
+    private byte[] encodeString(Object[] values, int length) {
+        byte[] result;
+        int size = 0;
+        for (Object value : values) {
+            size = size + ((String) value).length();
+        }
+        result = new byte[size + length];
+        int j = 0;
+        for (Object value : values) {
+            String str = (String) value;
+            for (int i = 0; i < str.length(); i++) {
+                result[j++] = (byte) str.charAt(i);
             }
-            result = new byte[size + length];
-            int j = 0;
-            for (Object value : values) {
-                String str = (String) value;
-                for (int i = 0; i < str.length(); i++) {
-                    result[j++] = (byte) str.charAt(i);
-                }
-                result[j++] = (byte) 0x0;
-            }
+            result[j++] = (byte) 0x0;
+        }
+        return result;
+    }
+
+    private byte[] encodeFloat(Object[] values, int length) {
+        byte[] result;
+        result = new byte[length * 4];
+        for (int i = 0; i < length; i++) {
+            float floatValue = (float) values[i];
+            int intValue = Float.floatToIntBits(floatValue);
+            result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
+            result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
+            result[(i * 4) + 2] = (byte) ((intValue & 0x0000ff00) >> 8);
+            result[(i * 4) + 3] = (byte) (intValue & 0xff);
+        }
+        return result;
+    }
+
+    private byte[] encodeInteger(Object[] values, int length) {
+        byte[] result;
+        result = new byte[length * 4];
+        for (int i = 0; i < length; i++) {
+            int intValue = (int) values[i];
+            result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
+            result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
+            result[(i * 4) + 2] = (byte) ((intValue & 0x0000ff00) >> 8);
+            result[(i * 4) + 3] = (byte) (intValue & 0xff);
+        }
+        return result;
+    }
+
+    private byte[] encodeShort(Object[] values, int length) {
+        byte[] result;
+        result = new byte[length * 2];
+        for (int i = 0; i < length; i++) {
+            short intValue = (short) values[i];
+            result[i * 2] = (byte) ((intValue & 0xff00) >> 8);
+            result[(i * 2) + 1] = (byte) (intValue & 0xff);
+        }
+        return result;
+    }
+
+    private byte[] encodeByte(Object[] values, int length) {
+        byte[] result;
+        result = new byte[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = (byte) values[i];
+        }
+        return result;
+    }
+
+    private byte[] encodeBoolean(Object[] values, int length) {
+        byte[] result;// TODO: Check if this is true and the result is not Math.ceil(values.lenght / 8)
+        result = new byte[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = (byte) (((Boolean) values[i]) ? 0x01 : 0x00);
         }
         return result;
     }
