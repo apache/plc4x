@@ -453,6 +453,28 @@ public class IsoTPProtocolTest {
 
     @Test
     @Tag("fast")
+    public void encodeUnsupported() throws Exception {
+        ArrayList<Parameter> parmameters = new ArrayList<>();
+        CustomTpdu tpdu = new CustomTpdu((byte)0x7F, parmameters, buf);
+
+        isoTPProtocol.encode(ctx, tpdu, out);
+        assertTrue(out.size() == 0, "Message encoded when unsupported Tpdu code passed");
+   }
+
+
+    @Test
+    @Tag("fast")
+    public void decodeUnsupported() throws Exception {
+        IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
+        buf.writeByte(0x3) // header length
+            .writeByte(0x7F)
+            .writeShort(0x01); // destination reference
+        isoTPProtocol.decode(ctx, in, out);
+        assertTrue(out.size() == 0, "Message decoded when unsupported Tpdu code passed");
+    }
+
+    @Test
+    @Tag("fast")
     public void decodeCallingParameter() throws Exception {
         buf.writeByte(0x8) // header length
             .writeByte(TpduCode.TPDU_ERROR.getCode())
