@@ -195,7 +195,9 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
 
         if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
             logger.warn("Expecting S7 protocol magic number.");
-            logger.debug("Got Data: {}", ByteBufUtil.hexDump(userData));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Got Data: {}", ByteBufUtil.hexDump(userData));
+            }
             return;
         }
 
