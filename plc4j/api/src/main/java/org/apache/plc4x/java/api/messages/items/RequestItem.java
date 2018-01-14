@@ -20,10 +20,6 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 public abstract class RequestItem<DATA_TYPE> {
 
     private final Class<DATA_TYPE> datatype;
