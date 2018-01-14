@@ -30,10 +30,6 @@ public abstract class RequestItem<DATA_TYPE> {
 
     private final Address address;
 
-    private final Lock lock = new ReentrantLock();
-
-    private final Condition responseSet = lock.newCondition();
-
     public RequestItem(Class<DATA_TYPE> datatype, Address address) {
         this.datatype = datatype;
         this.address = address;
