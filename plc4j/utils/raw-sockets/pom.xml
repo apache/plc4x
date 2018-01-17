@@ -49,11 +49,17 @@
       <groupId>com.github.mlaccetti</groupId>
       <artifactId>rocksaw</artifactId>
       <version>1.1.0</version>
-      <!--
-        The jar-with-dependencies doesn't pull in third party dependencies,
-        but rather include all JNI libraries for about 22 platforms.
-      -->
-      <classifier>jar-with-dependencies</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.25</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
