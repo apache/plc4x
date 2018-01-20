@@ -15,7 +15,68 @@
 //  limitations under the License.
 //
 
-== Industry 4.0 Toolbox
+== Industry 4.0 with Apache
+
+Since the introduction of programmable logic controllers in the production industry in the early 80s, they have been the core of almost every piece of production machinery.
+
+While first PLCs were usually stand-alone controllers.
+These were soon extended by the ability to talk to other controllers of the same type via proprietary protocols.
+After that came first computer based control systems, which were able to monitor and parametrize these controllers.
+Usually however in order to do this, a company needed to use the control system that was provided by the PLC vendor.
+This has tied companies to stick to the company they decided to use the PLCs of.
+Making it almost impossible to switch to another vendor.
+
+In the last 20 years in the IT industry, the concept of Open-Source has come up and has more and more proven to be the engine of great innovation.
+Most of the biggest changes in how we create modern IT systems is a result of this.
+
+Unfortunately the production industry has been missing a lot of this innovation.
+Only a small number of companies today use Open-Source software in their production systems.
+
+However the benefit of using Open-Source could be huge:
+
+* Increased Flexibility
+* Increased Stability
+* Increased Extendability
+* Increased Security
+* Great Cost-Reduction
+
+=== Increased Flexibility
+
+If a company had decided to use PLCs and control systems of a certain vendor, it is almost impossible to change this decision.
+This reduces the options available when adding new machinery or replacing existing ones.
+
+Technologically speaking, also the company can only use the options and solution it's vendor is able to provide.
+
+=== Increased Stability
+
+Current control systems are usually based on the concept of "backup systems".
+If the main control system fails, all activity is switched to the standby system.
+
+When using modern public- or private cloud systems, there is no need for a backup system, because the cluster is designed in a way that it can live with the failure of most of its hosts before loosing the ability to function.
+
+=== Increased Extendability
+
+From the perspective of designing and scaling the IT infrastructure:
+If a control system was designed to handle the current size of plant, for cost reasons the IT infrastructure isn't designed to handle much more than that.
+Now if the plant should be extended in the future, extending it's control-systems IT infrastructure would probably result in replacing this with a bigger system.
+
+By utilizing modern virtualization frameworks, extending the existing cloud solution, would only require adding more compute resources, by adding more systems to the cluster and it should be possible to extend the existing system without problems.
+If the company decided to utilize a public cloud provider, it makes things even simpler, as it would only require booking more resources.
+
+=== Increased Security
+
+This is probably one of the most concerning aspects of modern production control systems.
+Right now, in order to run these systems, a lot of the most popular solutions require companies to run not up-to-date systems.
+If applying all updates, the company is risking either loss of commercial support or even loss of functionality.
+Therefore an attacker can probably be certain to be able to exploit certain vulnerabilities just by knowing the type and version of the used control-system.
+
+=== Great Cost-Reduction
+
+Well the probably biggest and most obvious cost-reduction factor is definitely, that if the software you are using is fee, you will not have to pay for it.
+
+Additionally, the ability to get the computing power of one insanely expensive system by using a cluster of cheap commodity systems, helps saving a lot of money.
+
+Being freed of the requirement to stick to the products of one vendor alonw anf to be able to choose the technology and the vendor of used systems freely will definitely also reduce costs.
 
 
 
