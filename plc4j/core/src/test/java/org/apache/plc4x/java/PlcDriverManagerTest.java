@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthenticatio
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.mock.MockConnection;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +30,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import static org.assertj.core.api.Assertions.*;
 
 class PlcDriverManagerTest {
 
@@ -40,9 +42,17 @@ class PlcDriverManagerTest {
     @Tag("fast")
     void getExistingDriverTest() throws PlcException {
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
-        Assertions.assertNull(mockConnection.getAuthentication());
-        Assertions.assertTrue(mockConnection.isConnected());
-        Assertions.assertTrue(!mockConnection.isClosed());
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(mockConnection.getAuthentication())
+            .as("check authentication object")
+            .isNull();
+        softAssertions.assertThat(mockConnection.isConnected())
+            .as("check connection state")
+            .isTrue();
+        softAssertions.assertThat(mockConnection.isClosed())
+            .as("check closed state")
+            .isFalse();
+        softAssertions.assertAll();
     }
 
     /**
@@ -54,10 +64,21 @@ class PlcDriverManagerTest {
         PlcUsernamePasswordAuthentication authentication =
             new PlcUsernamePasswordAuthentication("user", "pass");
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url", authentication);
-        Assertions.assertNotNull(mockConnection.getAuthentication());
-        Assertions.assertTrue(mockConnection.getAuthentication() instanceof PlcUsernamePasswordAuthentication);
-        Assertions.assertTrue(mockConnection.isConnected());
-        Assertions.assertTrue(!mockConnection.isClosed());
+
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(mockConnection.getAuthentication())
+            .as("check authentication object")
+            .isNotNull();
+        softAssertions.assertThat(mockConnection.getAuthentication())
+            .as("check authentication object type")
+            .isInstanceOf(PlcUsernamePasswordAuthentication.class);
+        softAssertions.assertThat(mockConnection.isConnected())
+            .as("check connection state")
+            .isTrue();
+        softAssertions.assertThat(mockConnection.isClosed())
+            .as("check closed state")
+            .isFalse();
+        softAssertions.assertAll();
     }
 
     /**
@@ -66,8 +87,9 @@ class PlcDriverManagerTest {
     @Test
     @Tag("fast")
     void getNotExistingDriverTest() throws PlcException {
-        Assertions.assertThrows(PlcConnectionException.class,
-            () -> new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url"));
+        assertThatThrownBy(() -> new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url"))
+            .as("check rejection of invalid protocol")
+            .isInstanceOf(PlcConnectionException.class);
     }
 
     /**
@@ -76,8 +98,9 @@ class PlcDriverManagerTest {
     @Test
     @Tag("fast")
     void getInvalidUriTest() throws PlcException {
-        Assertions.assertThrows(PlcConnectionException.class,
-            () -> new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog"));
+        assertThatThrownBy(() -> new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog"))
+            .as("check rejection of invalid uri")
+            .isInstanceOf(PlcConnectionException.class);
     }
 
     /**
@@ -95,8 +118,9 @@ class PlcDriverManagerTest {
         urls[0] = new File("src/test/resources/test").toURI().toURL();
         ClassLoader fakeClassLoader = new URLClassLoader(urls, originalClassloader);
 
-        Assertions.assertThrows(IllegalStateException.class,
-            () -> new PlcDriverManager(fakeClassLoader).getConnection("mock://some-cool-url"));
+        assertThatThrownBy(() -> new PlcDriverManager(fakeClassLoader).getConnection("mock://some-cool-url"))
+            .as("check detection of duplicated driver detection")
+            .isInstanceOf(IllegalStateException.class);
     }
 
 }

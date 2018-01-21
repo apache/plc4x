@@ -141,9 +141,10 @@ class IsotpTypeTests {
     void tpduCodeUnknown() {
         TpduCode tpduCode = TpduCode.valueOf((byte)0x01);
 
-        assertNull(tpduCode, "expected tpdu code to be null");
+        assertTrue(TpduCode.valueOf((byte)0xFF) == TpduCode.TPDU_UNKNOWN, "0xFF incorrectly mapped");
+        assertTrue(tpduCode.getCode() == (byte)0xFF, "code is not 0xFF");
     }
-
+    
     @Test
     @Tag("fast")
     void typduSize() {

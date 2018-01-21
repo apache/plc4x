@@ -19,6 +19,10 @@ under the License.
 package org.apache.plc4x.camel;
 
 public class Constants {
+
     public static final String ADDRESS_HEADER = "address";
-    public static final String DATATYPE_HEADER = "datatype";
+    
+    private Constants() {
+      throw new IllegalStateException("Utility class!");
+    }
 }

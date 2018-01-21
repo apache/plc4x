@@ -78,7 +78,9 @@ public class IsoOnTcpProtocol extends MessageToMessageCodec<ByteBuf, IsoOnTcpMes
             // So we just gobble up the header and continue reading in higher levels.
             if (in.getByte(0) != ISO_ON_TCP_MAGIC_NUMBER) {
                 logger.warn("Expecting ISO on TCP magic number: {}", ISO_ON_TCP_MAGIC_NUMBER);
-                logger.debug("Got Data: " + ByteBufUtil.hexDump(in));
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Got Data: {}", ByteBufUtil.hexDump(in));
+                }
                 exceptionCaught(ctx, new PlcProtocolException(
                     String.format("Expecting ISO on TCP magic number: %02X", ISO_ON_TCP_MAGIC_NUMBER)));
                 return;

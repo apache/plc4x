@@ -21,8 +21,8 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class S7PlcScanner {
     public static void main(String[] args) throws Exception {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")){
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
             logger.info("Connected");
 
             Optional<PlcReader> reader = plcConnection.getReader();
@@ -54,18 +54,20 @@ public class S7PlcScanner {
                 for (MemoryArea memoryArea : MemoryArea.values()) {
                     System.out.println(memoryArea);
                     System.out.println("------------------------------------------");
-                    for(int i = 0; i < 8959; i++) {
+                    for (int i = 0; i < 8959; i++) {
                         try {
                             Address address;
-                            if(memoryArea == MemoryArea.DATA_BLOCKS) {
+                            if (memoryArea == MemoryArea.DATA_BLOCKS) {
                                 address = plcConnection.parseAddress("DATA_BLOCKS/1/" + i);
                             } else {
                                 address = plcConnection.parseAddress(memoryArea.name() + "/" + i);
                             }
-                            PlcReadResponse plcReadResponse = plcReader.read(
-                                new PlcReadRequest(Byte.class, address)).get();
-                            Byte data = (Byte) plcReadResponse.getResponseItems().get(0).getValues().get(0);
-                            if(data != null && data != 0) {
+                            TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(
+                                new TypeSafePlcReadRequest<>(Byte.class, address)).get();
+                            Byte data = plcReadResponse.getResponseItem()
+                                .orElseThrow(() -> new IllegalStateException("No response available"))
+                                .getValues().get(0);
+                            if (data != null && data != 0) {
                                 System.out.println(String.format(
                                     "Response: Memory Area: %s Index: %d Value: %02X", memoryArea.name(), i, data));
                             }

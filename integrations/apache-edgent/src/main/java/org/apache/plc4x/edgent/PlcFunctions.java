@@ -69,6 +69,10 @@ import com.google.gson.JsonObject;
  */
 public class PlcFunctions {
 
+  private PlcFunctions() {
+    throw new IllegalStateException("Utility class!");
+  }
+
   /**
    * Create a new Edgent {@link Supplier} to read data from the 
    * plc device.

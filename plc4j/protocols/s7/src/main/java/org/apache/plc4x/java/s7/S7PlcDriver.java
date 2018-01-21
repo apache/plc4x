@@ -56,8 +56,8 @@ public class S7PlcDriver implements PlcDriver {
                 "Connection url doesn't match the format 's7://{host|ip}/{rack}/{slot}'");
         }
         String host = matcher.group("host");
-        int rack = Integer.valueOf(matcher.group("rack"));
-        int slot = Integer.valueOf(matcher.group("slot"));
+        int rack = Integer.parseInt(matcher.group("rack"));
+        int slot = Integer.parseInt(matcher.group("slot"));
         return new S7PlcConnection(host, rack, slot);
     }
 

@@ -82,19 +82,19 @@
       <link rel="stylesheet" href="$resourcePath/css/font-awesome.min.css"/>
     </head>
 
-    <menu ref="reports" inherit="top"/>
     <menu ref="parent" inherit="top"/>
-    <menu name="Development">
-      <item name="Building" href="development/building.html"/>
-      <item name="Continuous Integration" href="development/ci.adoc"/>
-      <item name="Contributing" href="development/contributing.adoc"/>
-      <item name="Website" href="development/website.html"/>
+    <menu name="Users">
+      <item name="Getting Started" href="users/gettingstarted.html"/>
+      <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
     </menu>
-    <menu name="Infrastructure">
-      <item name="Wiki" href="https://cwiki.apache.org/confluence/display/PLC4X"/>
-      <item name="Issues" href="https://issues.apache.org/jira/projects/PLC4X"/>
-      <item name="CI" href="https://builds.apache.org/view/P/view/PLC4X/"/>
-      <item name="SonarQube" href="https://builds.apache.org/analysis/overview?id=55410"/>
+    <menu name="Developers">
+      <item name="Bug &amp; Issue Tracker" href="developers/issues.html"/>
+      <item name="Building PLC4X" href="developers/building.html"/>
+      <item name="Code Analysis" href="developers/sonar.html"/>
+      <item name="Continuous Integration" href="developers/ci.html"/>
+      <item name="Contributing" href="developers/contributing.html"/>
+      <item name="Website" href="developers/website.html"/>
+      <item name="Wiki" href="developers/wiki.html"/>
     </menu>
     <menu name="Protocols">
       <item name="Features" href="protocols/features.html"/>
@@ -102,6 +102,7 @@
       <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
       <item name="S7/Profinet" href="protocols/s7/index.html"/>
     </menu>
+    <menu name="Reports" ref="reports" inherit="top"/>
     <menu ref="modules" inherit="top"/>
   </body>
 

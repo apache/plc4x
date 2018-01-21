@@ -18,10 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcRequest;
-import org.apache.plc4x.java.api.messages.PlcRequestContainer;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.netty.NettyTestBase;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
@@ -67,14 +66,14 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
         // Read Request Tests
         {
             LinkedList<Object> out = new LinkedList<>();
-            SUT.encode(null, createMockedContainer(new PlcReadRequest(type, address)), out);
+            SUT.encode(null, createMockedContainer(new TypeSafePlcReadRequest(type, address)), out);
             // TODO: finish the asserts
             assertThat(out).hasSize(1);
         }
         // Write Request Tests
         {
             LinkedList<Object> out = new LinkedList<>();
-            SUT.encode(null, createMockedContainer(new PlcWriteRequest(type, address, fakeValueFor(type))), out);
+            SUT.encode(null, createMockedContainer(new TypeSafePlcWriteRequest(type, address, fakeValueFor(type))), out);
             // TODO: finish the asserts
             assertThat(out).hasSize(1);
         }
@@ -84,11 +83,6 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
     @MethodSource("typeAndAddressProvider")
     @Tag("fast")
     public void decode(Class<?> type, S7Address address) throws Exception {
-        // TODO: finish me
-        if (type == String.class) {
-            // String seems not yet decodable
-            return;
-        }
         // Read Test
         {
             short fakeTpduReference = (short) 1;
@@ -97,7 +91,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
                 Field requests = Plc4XS7Protocol.class.getDeclaredField("requests");
                 requests.setAccessible(true);
                 Map<Short, PlcRequestContainer> requestContainerMap = (Map<Short, PlcRequestContainer>) requests.get(SUT);
-                requestContainerMap.put(fakeTpduReference, createMockedContainer(new PlcReadRequest(type, address)));
+                requestContainerMap.put(fakeTpduReference, createMockedContainer(new TypeSafePlcReadRequest(type, address)));
             }
             S7ResponseMessage msg = new S7ResponseMessage(
                 MessageType.ACK,
@@ -119,7 +113,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
                 Field requests = Plc4XS7Protocol.class.getDeclaredField("requests");
                 requests.setAccessible(true);
                 Map<Short, PlcRequestContainer> requestContainerMap = (Map<Short, PlcRequestContainer>) requests.get(SUT);
-                requestContainerMap.put(fakeTpduReference, createMockedContainer(new PlcWriteRequest(type, address, fakeValueFor(type))));
+                requestContainerMap.put(fakeTpduReference, createMockedContainer(new TypeSafePlcWriteRequest(type, address, fakeValueFor(type))));
             }
             S7ResponseMessage msg = new S7ResponseMessage(
                 MessageType.ACK,
@@ -201,8 +195,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
         } else if (type == String.class) {
             size = DataTransportSize.BYTE_WORD_DWORD;
-            // TODO: what size is string?
-            data = new byte[]{(byte) 0b0000_0000};
+            data = new byte[]{(byte) 'S', (byte) 't', (byte) 'r', (byte) 'i' ,(byte) 'n', (byte) 'g', (byte) 0x0};
         } else {
             throw new IllegalArgumentException("Type t not supported " + type);
         }
@@ -220,9 +213,9 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             requestEnricher.accept(initialRequest);
         }
         when(mock.getRequest()).thenReturn(initialRequest);
-        if (initialRequest.getClass() == PlcReadRequest.class) {
+        if (PlcReadRequest.class.isAssignableFrom(initialRequest.getClass())) {
             return mock;
-        } else if (initialRequest.getClass() == PlcWriteRequest.class) {
+        } else if (PlcWriteRequest.class.isAssignableFrom(initialRequest.getClass())) {
             return mock;
         } else {
             throw new IllegalArgumentException("Unsupported Type: " + initialRequest.getClass());

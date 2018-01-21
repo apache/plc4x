@@ -18,6 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +30,8 @@ public enum DataTransportErrorCode {
     INVALID_ADDRESS((byte) 0x05),
     NOT_FOUND((byte) 0x0A),
     OK((byte) 0xFF);
+
+    private static final Logger logger = LoggerFactory.getLogger(DataTransportErrorCode.class);
 
     private static Map<Byte, DataTransportErrorCode> map = null;
     
@@ -47,8 +52,8 @@ public enum DataTransportErrorCode {
                 map.put(dataTransportErrorCode.code, dataTransportErrorCode);
             }
         }
-        if(!map.containsKey(code)) {
-            System.out.println("No DataTransportErrorCode for code " + code);
+        if (!map.containsKey(code)) {
+            logger.error("No DataTransportErrorCode for code {}", code);
         }
         return map.get(code);
     }

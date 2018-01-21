@@ -21,14 +21,12 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Optional;
 
 public class S7PlcReaderSample {
@@ -44,7 +42,7 @@ public class S7PlcReaderSample {
     public static void main(String[] args) throws Exception {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")){
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
             logger.info("Connected");
 
             Optional<PlcReader> reader = plcConnection.getReader();
@@ -63,9 +61,10 @@ public class S7PlcReaderSample {
                 // Read synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
-                PlcReadResponse plcReadResponse = plcReader.read(new PlcReadRequest(Byte.class, inputs)).get();
-                List<ReadResponseItem> responseItems = plcReadResponse.getResponseItems();
-                System.out.println("Inputs: " + responseItems.get(0).getValues().get(0));
+                TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(new TypeSafePlcReadRequest<>(Byte.class, inputs)).get();
+                System.out.println("Inputs: " + plcReadResponse.getResponseItem()
+                    .orElseThrow(() -> new IllegalStateException("No response available"))
+                    .getValues().get(0));
 
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...

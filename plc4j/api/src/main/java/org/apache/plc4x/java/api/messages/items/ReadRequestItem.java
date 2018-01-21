@@ -20,32 +20,18 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-public class ReadRequestItem {
-
-    private final Class datatype;
-
-    private final Address address;
+public class ReadRequestItem<T> extends RequestItem<T> {
 
     private final int size;
 
-    public ReadRequestItem(Class datatype, Address address) {
-        this.datatype = datatype;
-        this.address = address;
+    public ReadRequestItem(Class<T> datatype, Address address) {
+        super(datatype, address);
         this.size = 1;
     }
 
-    public ReadRequestItem(Class datatype, Address address, int size) {
-        this.datatype = datatype;
-        this.address = address;
+    public ReadRequestItem(Class<T> datatype, Address address, int size) {
+        super(datatype, address);
         this.size = size;
-    }
-
-    public Class getDatatype() {
-        return datatype;
-    }
-
-    public Address getAddress() {
-        return address;
     }
 
     public int getSize() {

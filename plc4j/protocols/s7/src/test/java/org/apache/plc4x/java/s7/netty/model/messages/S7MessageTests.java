@@ -116,8 +116,8 @@ class S7MessageTests {
         assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
         assertTrue(message.getParameters().size() == 1, "Unexpected number of parameters");
         assertTrue(message.getParameters().containsAll(s7Parameters), "Unexpected parameters");
-        assertTrue(message.getParameter(VarParameter.class).equals(varParameter), "Parameter missing");
-        assertTrue(message.getParameter(CpuServicesParameter.class) == null, "Contains unexpected parameter");
+        assertTrue(message.getParameter(VarParameter.class).get().equals(varParameter), "Parameter missing");
+        assertTrue(!message.getParameter(CpuServicesParameter.class).isPresent(), "Contains unexpected parameter");
         assertTrue(message.getPayloads().size() == 0, "Unexpected number of payloads");
     }
 
@@ -143,8 +143,8 @@ class S7MessageTests {
         assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
         assertTrue(message.getPayloads().size() == 1, "Unexpected number of payloads");
         assertTrue(message.getPayloads().containsAll(s7Payloads), "Unexpected payloads");
-        assertTrue(message.getPayload(VarPayload.class).equals(varPayload), "Payload missing");
-        assertTrue(message.getPayload(VarParameter.class) == null, "Contains unexpected payload"); // No other parameter classes
+        assertTrue(message.getPayload(VarPayload.class).get().equals(varPayload), "Payload missing");
+        assertTrue(!message.getPayload(VarParameter.class).isPresent(), "Contains unexpected payload"); // No other parameter classes
         assertTrue(message.getParameters().size() == 0, "Unexpected number of parameters");
     }
 

@@ -82,7 +82,7 @@ This will generate an additional `target/staging` directory which contains the f
 
 A lot of documentation on Maven suggests to use the `site:site` goal directly instead of calling the `site` phase, but in case of PLC4X there is more than just the site generation that has to be executed.
 
-This is just a quick-start version of the site generation, for a fully detailed documentation please read the http://plc4x.apache.org/development/website.html[Website] documentation page.
+This is just a quick-start version of the site generation, for a fully detailed documentation please read the http://plc4x.apache.org/developers/website.html[Website] documentation page.
 
 === Some special Maven profiles
 

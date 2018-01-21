@@ -20,23 +20,10 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.types.ResponseCode;
 
-public class WriteResponseItem {
+public class WriteResponseItem<T> extends ResponseItem<WriteRequestItem<T>> {
 
-    private final WriteRequestItem requestItem;
-
-    private final ResponseCode responseCode;
-
-    public WriteResponseItem(WriteRequestItem requestItem, ResponseCode responseCode) {
-        this.requestItem = requestItem;
-        this.responseCode = responseCode;
-    }
-
-    public WriteRequestItem getRequestItem() {
-        return requestItem;
-    }
-
-    public ResponseCode getResponseCode() {
-        return responseCode;
+    public WriteResponseItem(WriteRequestItem<T> requestItem, ResponseCode responseCode) {
+        super(requestItem, responseCode);
     }
 
 }

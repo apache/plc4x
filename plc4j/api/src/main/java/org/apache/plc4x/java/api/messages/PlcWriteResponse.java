@@ -18,26 +18,25 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-public class PlcWriteResponse implements PlcResponse {
+public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, WriteResponseItem<?>, WriteRequestItem<?>> {
 
-    private final PlcWriteRequest request;
-    private final List<WriteResponseItem> responseItems;
-
-    public PlcWriteResponse(PlcWriteRequest request, List<WriteResponseItem> responseItems) {
-        this.request = request;
-        this.responseItems = responseItems;
+    public PlcWriteResponse(PlcWriteRequest request, WriteResponseItem<?> responseItem) {
+        super(request, Collections.singletonList(responseItem));
     }
 
-    public PlcWriteRequest getRequest() {
-        return request;
+    public PlcWriteResponse(PlcWriteRequest request, List<? extends WriteResponseItem<?>> responseItems) {
+        super(request, responseItems);
     }
 
-    public List<WriteResponseItem> getResponseItems() {
-        return responseItems;
+    @SuppressWarnings("unchecked")
+    public <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item) {
+        return (Optional) super.getValue(item);
     }
-
 }

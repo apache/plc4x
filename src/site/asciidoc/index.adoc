@@ -55,9 +55,9 @@ Beyond implementing the pure adapters we are also planning on implementing integ
 
 [width=100%]
 |===
-a|image::apache_edgent_logo.png[width=80%] a|image::apache_mynewt_logo.png[width=80%] a|image::apache_brooklyn_logo.png[width=80%]
+a|image::apache_edgent_logo.png[width=80%,link=https://edgent.apache.org] a|image::apache_mynewt_logo.png[width=80%,link=https://mynewt.apache.org] a|image::apache_brooklyn_logo.png[width=80%,link=https://brooklyn.apache.org]
 |https://edgent.apache.org[Apache Edgent (Incubating)] |https://mynewt.apache.org[Apache Mynewt] |https://brooklyn.apache.org[Apache Brooklyn]
-a|image::apache_camel_logo.png[width=80%] | |
+a|image::apache_camel_logo.png[width=80%,link=https://camel.apache.org] | |
 |https://camel.apache.org[Apache Camel] | |
 |===
 

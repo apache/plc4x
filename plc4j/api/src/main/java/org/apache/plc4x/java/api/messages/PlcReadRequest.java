@@ -19,43 +19,83 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.LinkedList;
 import java.util.List;
 
-public class PlcReadRequest implements PlcRequest {
-
-    private final List<ReadRequestItem> readRequestItems;
+public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
     public PlcReadRequest() {
-        this.readRequestItems = new LinkedList<>();
     }
 
-    public PlcReadRequest(Class dataType, Address address) {
-        this();
-        addItem(new ReadRequestItem(dataType, address));
+    public PlcReadRequest(ReadRequestItem<?> requestItem) {
+        addItem(requestItem);
     }
 
-    public PlcReadRequest(Class dataType, Address address, int size) {
-        this();
-        addItem(new ReadRequestItem(dataType, address, size));
+    public PlcReadRequest(Class<?> dataType, Address address) {
+        addItem(new ReadRequestItem<>(dataType, address));
     }
 
-    public PlcReadRequest(List<ReadRequestItem> readRequestItems) {
-        this.readRequestItems = readRequestItems;
+    public PlcReadRequest(Class<?> dataType, Address address, int size) {
+        addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
-    public void addItem(ReadRequestItem readRequestItem) {
-        readRequestItems.add(readRequestItem);
+    public PlcReadRequest(List<ReadRequestItem<?>> requestItems) {
+        super(requestItems);
     }
 
-    public List<ReadRequestItem> getReadRequestItems() {
-        return readRequestItems;
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public int getNumItems() {
-        return readRequestItems.size();
+    public static class Builder extends PlcRequest.Builder<ReadRequestItem<?>> {
+
+        public final Builder addItem(Class<?> dataType, Address address) {
+            checkType(dataType);
+            requests.add(new ReadRequestItem<>(dataType, address));
+            return this;
+        }
+
+        public final Builder addItem(Class<?> dataType, Address address, int size) {
+            checkType(dataType);
+            requests.add(new ReadRequestItem<>(dataType, address, size));
+            return this;
+        }
+
+        public final Builder addItem(ReadRequestItem readRequestItem) {
+            checkType(readRequestItem.getDatatype());
+            requests.add(readRequestItem);
+            return this;
+        }
+
+        public final PlcReadRequest build() {
+            if (requests.isEmpty()) {
+                throw new IllegalStateException("No requests added");
+            }
+            PlcReadRequest plcReadRequest;
+            if (mixed) {
+                plcReadRequest = new PlcReadRequest();
+            } else {
+                plcReadRequest = new TypeSafePlcReadRequest<>(firstType);
+            }
+            for (ReadRequestItem request : requests) {
+                plcReadRequest.addItem(request);
+            }
+            return plcReadRequest;
+        }
+
+        @SuppressWarnings("unchecked")
+        public final <T> TypeSafePlcReadRequest<T> build(Class<T> type) {
+            if (firstType != type) {
+                throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
+            }
+            if (mixed) {
+                throw new IllegalStateException("Mixed types contained");
+            }
+            return (TypeSafePlcReadRequest<T>) build();
+        }
+
     }
 
 }

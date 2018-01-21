@@ -22,10 +22,6 @@ import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
 public class CpuServicesParameter implements S7Parameter {
 
-
-    public CpuServicesParameter() {
-    }
-
     @Override
     public ParameterType getType() {
         return ParameterType.CPU_SERVICES;

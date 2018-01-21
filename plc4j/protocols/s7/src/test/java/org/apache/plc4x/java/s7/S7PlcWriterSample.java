@@ -21,7 +21,8 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class S7PlcWriterSample {
     public static void main(String[] args) throws Exception {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")){
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
             logger.info("Connected");
 
             Optional<PlcWriter> writer = plcConnection.getWriter();
@@ -53,9 +54,11 @@ public class S7PlcWriterSample {
                 // Write synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
-                PlcWriteResponse plcWriteResponse = plcWriter.write(
-                    new PlcWriteRequest(Float.class, inputs, 2.0f)).get();
-                System.out.println("Written: " + plcWriteResponse.getResponseItems().get(0).getResponseCode().name());
+                TypeSafePlcWriteResponse<Float> plcWriteResponse = plcWriter.write(
+                    new TypeSafePlcWriteRequest<>(Float.class, inputs, 2.0f)).get();
+                System.out.println("Written: " + plcWriteResponse.getResponseItem()
+                    .orElseThrow(() -> new IllegalStateException("No response available"))
+                    .getResponseCode().name());
             }
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.

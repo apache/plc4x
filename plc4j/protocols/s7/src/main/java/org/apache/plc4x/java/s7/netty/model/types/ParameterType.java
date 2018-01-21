@@ -18,6 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +40,8 @@ public enum ParameterType {
     PI_SERVICE((byte) 0x28),
     PLC_STOP((byte) 0x29),
     SETUP_COMMUNICATION((byte) 0xF0);
+
+    private static final Logger logger = LoggerFactory.getLogger(ParameterType.class);
 
     private static Map<Byte, ParameterType> map = null;
     
@@ -58,7 +63,7 @@ public enum ParameterType {
             }
         }
         if(!map.containsKey(code)) {
-            System.out.println("ParameterType for code " + code + " not found");
+            logger.error("ParameterType for code {} not found", code);
         }
         return map.get(code);
     }

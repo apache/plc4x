@@ -82,8 +82,8 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
     <!-- Tell sonar where the coverage reports are located -->
-    <sonar.jacoco.reportPath>${project.build.directory}/target/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
-    <sonar.jacoco.itReportPath>${project.build.directory}/target/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+    <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+    <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
 
     <junit-platform.version>1.0.2</junit-platform.version>
     <junit-jupiter.version>5.0.2</junit-jupiter.version>

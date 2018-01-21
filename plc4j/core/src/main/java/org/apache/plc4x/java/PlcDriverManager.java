@@ -89,7 +89,7 @@ public class PlcDriverManager {
             }
             return driver;
         } catch (URISyntaxException e) {
-            throw new PlcConnectionException("Invalid plc4j connection string '" + url + "'");
+            throw new PlcConnectionException("Invalid plc4j connection string '" + url + "'", e);
         }
     }
 

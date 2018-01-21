@@ -27,8 +27,10 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,15 +40,11 @@ public class PLC4XProducer extends DefaultAsyncProducer {
     private PlcConnection plcConnection;
     private AtomicInteger openRequests;
 
-    public PLC4XProducer(PLC4XEndpoint endpoint) {
+    public PLC4XProducer(PLC4XEndpoint endpoint) throws PlcException {
         super(endpoint);
         this.endpoint = endpoint;
-        try {
-            String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
-            plcConnection = endpoint.plcDriverManager.getConnection(plc4xURI);
-        } catch (PlcException e) {
-            throw new RuntimeException(e);
-        }
+        String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
+        plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
         openRequests = new AtomicInteger();
     }
 
@@ -55,15 +53,24 @@ public class PLC4XProducer extends DefaultAsyncProducer {
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();
         Address address = in.getHeader(Constants.ADDRESS_HEADER, Address.class);
-        Class<?> datatype = in.getHeader(Constants.DATATYPE_HEADER, Class.class);
-        Object value = in.getBody(Object.class);
-        PlcWriteRequest plcSimpleWriteRequest = new PlcWriteRequest(datatype, address, value);
+        Object body = in.getBody();
+        PlcWriteRequest.Builder builder = PlcWriteRequest.builder();
+        if (body instanceof List) {
+            List<?> bodyList = in.getBody(List.class);
+            bodyList
+                .stream()
+                .map(o -> (WriteRequestItem<?>) new WriteRequestItem(o.getClass(), address, o))
+                .forEach(builder::addItem);
+        } else {
+            Object value = in.getBody(Object.class);
+            builder.addItem(address, value);
+        }
         PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
-        CompletableFuture<PlcWriteResponse> completableFuture = plcWriter.write(plcSimpleWriteRequest);
+        CompletableFuture<? extends PlcWriteResponse> completableFuture = plcWriter.write(builder.build());
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {
             log.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);
-            PlcWriteResponse plcWriteResponse = completableFuture.get();
+            Object plcWriteResponse = completableFuture.get();
             if (exchange.getPattern().isOutCapable()) {
                 Message out = exchange.getOut();
                 out.copyFrom(exchange.getIn());
@@ -100,7 +107,8 @@ public class PLC4XProducer extends DefaultAsyncProducer {
         }
         try {
             plcConnection.close();
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            log.warn("Could not close {}", plcConnection, e);
         }
         super.doStop();
     }

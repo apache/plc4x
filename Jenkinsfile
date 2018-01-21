@@ -18,6 +18,7 @@
  *  limitations under the License.
  *
  */
+// TODO: migrate to declarative pipeline if possible (https://jenkins.io/doc/book/pipeline/jenkinsfile/)
 node('ubuntu') {
 
     currentBuild.result = "SUCCESS"

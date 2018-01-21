@@ -24,6 +24,7 @@ import org.apache.plc4x.java.isotp.netty.model.types.TpduCode;
 import org.apache.plc4x.java.netty.Message;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Tpdu extends Message {
 
@@ -44,15 +45,15 @@ public abstract class Tpdu extends Message {
         return parameters;
     }
 
-    public <T extends Parameter> T getParameter(Class<? extends T> parameterClass) {
+    public <T extends Parameter> Optional<T> getParameter(Class<T> parameterClass) {
         if (parameters != null) {
             for (Parameter parameter : parameters) {
                 if (parameter.getClass() == parameterClass) {
-                    return (T) parameter;
+                    return Optional.of(parameterClass.cast(parameter));
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 }

@@ -15,5 +15,6 @@
 //  limitations under the License.
 //
 
-== Continuous Integration
+== WIKI
 
+https://cwiki.apache.org/confluence/display/PLC4X

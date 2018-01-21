@@ -146,7 +146,11 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             sessionSetupCompleteFuture.get();
         } catch (UnknownHostException e) {
             throw new PlcConnectionException("Unknown Host " + hostName, e);
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new PlcConnectionException(e);
+        }
+        catch (ExecutionException e) {
             throw new PlcConnectionException(e);
         }
     }

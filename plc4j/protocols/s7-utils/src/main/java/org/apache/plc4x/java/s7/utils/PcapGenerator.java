@@ -18,17 +18,18 @@ under the License.
 */
 package org.apache.plc4x.java.s7.utils;
 
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -270,10 +271,11 @@ public class PcapGenerator {
         // Write Ack variable generation
     }
 
-    private static void generateFiles(File parentDir, String testName, int byteIndex, byte[] template, String matchXPath) throws Exception {
+    private static void generateFiles(File parentDir, String testName, int byteIndex, byte[] template, String matchXPath)
+        throws IOException, ParserConfigurationException, XPathExpressionException, InterruptedException, SAXException {
         File testDir = new File(parentDir, testName);
-        if(!testDir.exists() && !testDir.mkdirs()) {
-            throw new RuntimeException("Error creating directory " + testDir.getAbsolutePath());
+        if (!testDir.exists() && !testDir.mkdirs()) {
+            throw new FileExistsException("Error creating directory " + testDir.getAbsolutePath());
         }
 
         // Initialize the heavy weight XML stuff.
@@ -285,7 +287,7 @@ public class PcapGenerator {
         XPathExpression expr = xpath.compile(matchXPath);
 
         // Iterate over all possible value the current byte could have.
-        for(int i = 0; i <= 255; i++) {
+        for (int i = 0; i <= 255; i++) {
 
             // Generate a packet.
             byte[] copy = Arrays.copyOf(template, template.length);
@@ -302,10 +304,10 @@ public class PcapGenerator {
 
             // Check if a given XPath is found -> A valid parameter was found.
             Document document = builder.parse(decodedOutput);
-            NodeList list= (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+            NodeList list = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
 
             // If a valid parameter is found, output that to the console.
-            if(list.getLength() > 0) {
+            if (list.getLength() > 0) {
                 String name = list.item(0).getAttributes().getNamedItem("showname").getNodeValue();
                 String value = list.item(0).getAttributes().getNamedItem("value").getNodeValue();
                 System.out.println("found option for " + testName + ": " + name + " = 0x" + value);
