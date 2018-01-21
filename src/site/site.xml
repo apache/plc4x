@@ -85,7 +85,7 @@
     <menu ref="parent" inherit="top"/>
     <menu name="Users">
       <item name="Getting Started" href="users/gettingstarted.html"/>
-      <item name="Industry 4.0 Toolbox" href="users/industry40.html"/>
+      <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
     </menu>
     <menu name="Developers">
       <item name="Bug &amp; Issue Tracker" href="developers/issues.html"/>
