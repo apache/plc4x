@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>iotree</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>Applications: IoTree (The IoT Christmas Tree)</name>
   <description>An example Application for the IoT Frankfurt meetup on 14.12.2017.</description>
 

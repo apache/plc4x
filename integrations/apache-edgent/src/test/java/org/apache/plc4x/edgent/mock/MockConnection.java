@@ -87,7 +87,6 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
         return new MockAddress(addressString);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         curReadCnt++;

@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>plc4j-core</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>PLC4J: Core</name>
   <description>Implementation of the core PLC4J system containing the DriverManger.</description>
 
