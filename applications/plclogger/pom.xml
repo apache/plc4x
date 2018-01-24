@@ -29,8 +29,6 @@
   </parent>
 
   <artifactId>plclogger</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
   <name>Applications: PLC Data Logger</name>
   <description>Application using Edgent and Elastic-Search to implement a PLC data logger.</description>
 

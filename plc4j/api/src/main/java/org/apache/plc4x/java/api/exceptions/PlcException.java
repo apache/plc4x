@@ -23,6 +23,7 @@ package org.apache.plc4x.java.api.exceptions;
  * PlcException.
  */
 public class PlcException extends Exception {
+    private static final long serialVersionUID = 1L;
 
     public PlcException(String message) {
         super(message);

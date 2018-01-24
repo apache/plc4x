@@ -24,6 +24,7 @@ package org.apache.plc4x.java.api.exceptions;
  * any other problems occur which are related to the protocol being implemented.
  */
 public class PlcProtocolException extends PlcException {
+    private static final long serialVersionUID = 1L;
 
     public PlcProtocolException(String message) {
         super(message);
