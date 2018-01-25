@@ -88,9 +88,6 @@
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
     <!-- Exclude all generated code -->
     <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
-    <!-- Tell sonar where the coverage reports are located -->
-    <!--sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
-    <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath-->
 
     <junit-platform.version>1.1.0-M1</junit-platform.version>
     <junit-jupiter.version>5.1.0-M1</junit-jupiter.version>
@@ -869,9 +866,6 @@
     <profile>
       <id>jenkins-build</id>
       <properties>
-        <!-- Tell sonar where the coverage reports are located -->
-        <!--sonar.jacoco.reportPath>${env.WORKSPACE}/target/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
-        <sonar.jacoco.itReportPath>${env.WORKSPACE}/target/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath-->
       </properties>
     </profile>
 
@@ -985,7 +979,6 @@
                       for JaCoCo runtime agent.
                   -->
                   <propertyName>surefireArgLine</propertyName>
-                  <!--destFile>${sonar.jacoco.reportPath}</destFile-->
                 </configuration>
               </execution>
               <!--
@@ -1004,7 +997,6 @@
                       for JaCoCo runtime agent.
                   -->
                   <propertyName>failsafeArgLine</propertyName>
-                  <!--destFile>${sonar.jacoco.itReportPath}</destFile-->
                 </configuration>
               </execution>
               <!--
@@ -1019,7 +1011,6 @@
                 <configuration>
                   <!-- TODO: Turn this on as soon as possible. -->
                   <haltOnFailure>false</haltOnFailure>
-                  <!--dataFile>${sonar.jacoco.reportPath}</dataFile-->
                   <rules>
                     <rule implementation="org.jacoco.maven.RuleConfiguration">
                       <element>BUNDLE</element>
