@@ -942,9 +942,9 @@
             <executions>
               <execution>
                 <id>check-dependencies</id>
-                <phase>test-compile</phase>
+                <phase>verify</phase>
                 <goals>
-                  <goal>analyze</goal>
+                  <goal>analyze-only</goal>
                 </goals>
                 <configuration>
                   <failOnWarning>true</failOnWarning>
