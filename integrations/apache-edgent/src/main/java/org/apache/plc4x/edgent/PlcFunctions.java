@@ -85,8 +85,9 @@ public class PlcFunctions {
    * @param adapter the @{link PlcConnectionAdapter}
    * @param addressStr the plc device address string
    * @return the {@code Supplier<T>}
-   * 
-   * @see org.apache.edgent.topology.Topology#poll(Supplier, long, java.util.concurrent.TimeUnit)
+   *
+   * // TODO: No need to import the Topology module for just this comment ... I think
+   * //see org.apache.edgent.topology.Topology#poll(Supplier, long, java.util.concurrent.TimeUnit)
    */
   public static Supplier<Boolean> booleanSupplier(PlcConnectionAdapter adapter, String addressStr) {
     return adapter.newSupplier(Boolean.class, addressStr);
@@ -121,8 +122,9 @@ public class PlcFunctions {
    * @param adapter the @{link PlcConnectionAdapter}
    * @param addressStr the plc device address string
    * @return the {@code Consumer<T>}
-   * 
-   * @see org.apache.edgent.topology.TStream#sink(Consumer)
+   *
+   * // TODO: No need to import the Topology module for just this comment ... I think
+   * //see org.apache.edgent.topology.TStream#sink(Consumer)
    */
   public static Consumer<Boolean> booleanConsumer(PlcConnectionAdapter adapter, String addressStr) {
     return adapter.newConsumer(Boolean.class, addressStr);
@@ -164,8 +166,9 @@ public class PlcFunctions {
    * @param addressFn {@code Function} the returns a device {@code Address} from a {@code JsonObject}
    * @param valueFn {@code Function} the returns a {@code Value} from a {@code JsonObject}
    * @return the {@code Consumer<JsonObject>}
-   * 
-   * @see org.apache.edgent.topology.TStream#sink(Consumer)
+   *
+   * // TODO: No need to import the Topology module for just this comment ... I think
+   * //see org.apache.edgent.topology.TStream#sink(Consumer)
    */
   public static Consumer<JsonObject> booleanConsumer(PlcConnectionAdapter adapter, Function<JsonObject,String> addressFn, Function<JsonObject,Boolean> valueFn) {
     return adapter.newConsumer(Boolean.class, addressFn, valueFn);

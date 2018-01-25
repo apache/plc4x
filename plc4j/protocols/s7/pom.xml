@@ -47,19 +47,24 @@
 
     <dependency>
       <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-      <version>4.1.17.Final</version>
+      <artifactId>netty-buffer</artifactId>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
-      <artifactId>netty-handler</artifactId>
-      <version>4.1.17.Final</version>
+      <artifactId>netty-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
     </dependency>
   </dependencies>
 
