@@ -1,4 +1,7 @@
-package org.apache.plc4x.java.utils.rawsockets.netty;
+package org.apache.plc4x.java.utils.rawsockets;
+
+import org.apache.plc4x.java.utils.rawsockets.RawSocket;
+import org.apache.plc4x.java.utils.rawsockets.RawSocketListener;
 
 import java.util.Arrays;
 

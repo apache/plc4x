@@ -1,4 +1,4 @@
-package org.apache.plc4x.java.utils.rawsockets.netty;
+package org.apache.plc4x.java.utils.rawsockets;
 
 public class RawSocketException extends Exception {
 

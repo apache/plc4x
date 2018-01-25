@@ -1,4 +1,4 @@
-package org.apache.plc4x.java.utils.rawsockets.netty;
+package org.apache.plc4x.java.utils.rawsockets;
 
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
