@@ -86,13 +86,6 @@
       <!-- TODO: version temporary defined due to PLC4X-22-->
       <version>${camel.version}</version>
       <scope>test</scope>
-      <!-- TODO: Seems camel test requires JUnit 4 classes ... we should keep an eye on this -->
-      <!--exclusions>
-        <exclusion>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-        </exclusion>
-      </exclusions-->
     </dependency>
   </dependencies>
 

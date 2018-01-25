@@ -895,6 +895,30 @@
           <version>${junit-jupiter.version}</version>
           <scope>test</scope>
         </dependency>
+        <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter-engine</artifactId>
+          <version>${junit-jupiter.version}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+          <version>${junit-jupiter.version}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.junit.platform</groupId>
+          <artifactId>junit-platform-launcher</artifactId>
+          <version>${junit-platform.version}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.junit.platform</groupId>
+          <artifactId>junit-platform-runner</artifactId>
+          <version>${junit-platform.version}</version>
+          <scope>test</scope>
+        </dependency>
 
         <dependency>
           <groupId>org.junit.jupiter</groupId>
@@ -944,8 +968,7 @@
                   <failOnWarning>true</failOnWarning>
                   <ignoredDependencies>
                     <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
-                    <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
-                    <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
+                    <ignoredDependency>org.junit.*:*</ignoredDependency>
                     <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
                     <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
                   </ignoredDependencies>
