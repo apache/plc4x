@@ -34,36 +34,40 @@
   <name>PLC4J: Utils: Raw-Sockets</name>
   <description>An implementation of a Netty Channel that allows implementing protocols below the TCP and UCP level.</description>
 
+  <properties>
+    <pcap4j.vewrsion>1.7.3</pcap4j.vewrsion>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>4.1.17.Final</version>
     </dependency>
+
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>
-      <version>1.7.3</version>
+      <version>${pcap4j.vewrsion}</version>
     </dependency>
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-packetfactory-static</artifactId>
-      <version>1.7.3</version>
+      <version>${pcap4j.vewrsion}</version>
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.25</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
