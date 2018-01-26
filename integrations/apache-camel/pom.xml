@@ -32,68 +32,59 @@
   <name>Integrations: Apache Camel</name>
   <description>Integration module for integrating PLC4X into Apache Camel.</description>
 
+  <properties>
+    <camel.version>2.20.1</camel.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <!-- need plc4j-core if we need to use PlcDriverManager -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-core</artifactId>
       <!-- TODO: version temporary defined due to PLC4X-22-->
-      <version>2.20.1</version>
+      <version>${camel.version}</version>
     </dependency>
 
     <!-- Support camel documentation-->
-    <dependency>
+    <!-- TODO: Do we need this? -->
+    <!--dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>apt</artifactId>
-      <!-- TODO: version temporary defined due to PLC4X-22-->
-      <version>2.20.1</version>
+      <!- TODO: version temporary defined due to PLC4X-22->
+      <version>${camel.version}</version>
       <scope>provided</scope>
-    </dependency>
+    </dependency-->
 
-    <!-- Required driver implementation -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-s7</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
-
-    <!-- logging -->
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <!-- TODO: version temporary defined due to PLC4X-22-->
-      <version>2.12.0</version>
-      <!-- TODO: version temporary defined due to PLC4X-22-->
-      <exclusions>
-        <exclusion>
-          <artifactId>hamcrest-core</artifactId>
-          <groupId>org.hamcrest</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+    <!-- TODO: Do we need this? And if we do, definitely not as scope=compile -->
+    <!--dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <!- TODO: version temporary defined due to PLC4X-22->
+        <exclusions>
+          <exclusion>
+            <artifactId>hamcrest-core</artifactId>
+            <groupId>org.hamcrest</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency-->
 
     <!-- Testing -->
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-test</artifactId>
       <!-- TODO: version temporary defined due to PLC4X-22-->
-      <version>2.20.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit-jupiter.version}</version>
+      <version>${camel.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -113,8 +104,6 @@
   </dependencyManagement>
 
   <build>
-    <defaultGoal>install</defaultGoal>
-
     <plugins>
       <plugin>
         <groupId>org.apache.camel</groupId>
@@ -141,7 +130,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.5.0</version>
         <extensions>true</extensions>
         <configuration>
           <instructions>
@@ -154,7 +143,6 @@
       <plugin>
         <groupId>com.buschmais.jqassistant</groupId>
         <artifactId>jqassistant-maven-plugin</artifactId>
-        <version>1.3.0</version>
         <configuration>
           <skip>true</skip>
         </configuration>

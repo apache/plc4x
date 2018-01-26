@@ -39,23 +39,24 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-core</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>apache-edgent</artifactId>
       <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.edgent</groupId>
+      <artifactId>edgent-api-function</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.edgent</groupId>
+      <artifactId>edgent-api-topology</artifactId>
+      <version>1.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.edgent</groupId>
       <artifactId>edgent-providers-direct</artifactId>
       <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.25</version>
     </dependency>
 
     <!-- Required driver implementation -->
@@ -66,5 +67,19 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies>
+            <usedDependency>org.apache.plc4x:plc4j-protocol-s7</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
