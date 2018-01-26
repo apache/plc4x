@@ -20,9 +20,18 @@ package org.apache.plc4x.java.ads.model.generic.types;
 
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
+import java.nio.ByteBuffer;
+
 public class Length extends ByteValue {
-    public Length(byte... value) {
+
+    public static final int NUM_BYTES = 4;
+
+    Length(byte... value) {
         super(value);
-        assertLength(4);
+        assertLength(NUM_BYTES);
+    }
+
+    public static Length of(int length) {
+        return new Length(ByteBuffer.allocate(NUM_BYTES).putInt(length).array());
     }
 }

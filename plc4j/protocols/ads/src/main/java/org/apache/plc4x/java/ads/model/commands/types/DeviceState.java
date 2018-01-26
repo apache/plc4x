@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class DeviceState extends ByteValue {
-    public DeviceState(byte... value) {
+
+    public static final int NUM_BYTES = 2;
+
+    DeviceState(byte... value) {
         super(value);
-        assertLength(2);
+        assertLength(NUM_BYTES);
+    }
+
+    public static DeviceState of(byte... values) {
+        return new DeviceState(values);
     }
 }

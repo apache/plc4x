@@ -20,9 +20,16 @@ package org.apache.plc4x.java.ads.model.generic.types;
 
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
-public class Error extends ByteValue {
-    public Error(byte... value) {
-        super(value);
-        assertLength(4);
+public class AMSError extends ByteValue {
+
+    public static final int NUM_BYTES = 4;
+
+    AMSError(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static AMSError of(byte... values) {
+        return new AMSError(values);
     }
 }

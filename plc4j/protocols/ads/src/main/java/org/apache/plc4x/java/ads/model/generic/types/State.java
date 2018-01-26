@@ -45,10 +45,13 @@ public enum State implements ByteReadable {
     ADS_RESPONSE_TCP(0x0005),
     ADS_REQUEST_UDP(0x0044),
     ADS_RESPONSE_UDP(0x0045);
+
+    public static final int NUM_BYTES = 4;
+
     final byte[] value;
 
     State(int value) {
-        this.value = ByteBuffer.allocate(4).putInt(value).array();
+        this.value = ByteBuffer.allocate(NUM_BYTES).putInt(value).array();
     }
 
     @Override

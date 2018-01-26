@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class TimeStamp extends ByteValue {
-    public TimeStamp(byte... value) {
-        super(value);
-        assertLength(8);
+
+    public static final int NUM_BYTES = 8;
+
+    TimeStamp(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static TimeStamp of(byte... values) {
+        return new TimeStamp(values);
     }
 }

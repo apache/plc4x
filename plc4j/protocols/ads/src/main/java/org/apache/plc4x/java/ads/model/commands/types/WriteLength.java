@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class WriteLength extends ByteValue {
-    public WriteLength(byte... value) {
-        super(value);
-        assertLength(4);
+
+    public static final int NUM_BYTES = 4;
+
+    WriteLength(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static WriteLength of(byte... values) {
+        return new WriteLength(values);
     }
 }

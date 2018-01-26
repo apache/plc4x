@@ -37,10 +37,14 @@ public class AdsNotificationSample implements ByteReadable {
      */
     private final Data data;
 
-    public AdsNotificationSample(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
+    AdsNotificationSample(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
         this.notificationHandle = notificationHandle;
         this.sampleSize = sampleSize;
         this.data = data;
+    }
+
+    public static AdsNotificationSample of(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
+        return new AdsNotificationSample(notificationHandle, sampleSize, data);
     }
 
     @Override

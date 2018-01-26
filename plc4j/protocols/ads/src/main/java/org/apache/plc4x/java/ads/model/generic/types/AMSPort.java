@@ -24,12 +24,14 @@ import java.nio.ByteBuffer;
 
 public class AMSPort extends ByteValue {
 
-    public AMSPort(int port) {
-        super(ByteBuffer.allocate(2).putInt(port).array());
+    private static final int NUM_BYTES = 2;
+
+    AMSPort(byte... value) {
+        super(value);
+        assertLength(NUM_BYTES);
     }
 
-    public AMSPort(byte... value) {
-        super(value);
-        assertLength(2);
+    public static AMSPort of(int port) {
+        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).putInt(port).array());
     }
 }

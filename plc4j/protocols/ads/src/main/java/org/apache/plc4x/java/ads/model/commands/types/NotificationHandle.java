@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class NotificationHandle extends ByteValue {
-    public NotificationHandle(byte... value) {
-        super(value);
-        assertLength(4);
+
+    public static final int NUM_BYTES = 4;
+
+    NotificationHandle(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static NotificationHandle of(byte... values) {
+        return new NotificationHandle(values);
     }
 }

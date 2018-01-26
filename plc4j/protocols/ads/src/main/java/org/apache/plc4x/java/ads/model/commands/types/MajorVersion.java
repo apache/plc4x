@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class MajorVersion extends ByteValue {
-    public MajorVersion(byte... value) {
-        super(value);
-        assertLength(1);
+
+    public static final int NUM_BYTES = 1;
+
+    MajorVersion(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static MajorVersion of(byte... values) {
+        return new MajorVersion(values);
     }
 }

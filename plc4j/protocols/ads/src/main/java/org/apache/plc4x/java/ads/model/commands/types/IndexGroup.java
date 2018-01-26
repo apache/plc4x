@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class IndexGroup extends ByteValue {
-    public IndexGroup(byte... value) {
+
+    public static final int NUM_BYTES = 4;
+
+    IndexGroup(byte... value) {
         super(value);
-        assertLength(4);
+        assertLength(NUM_BYTES);
+    }
+
+    public static IndexGroup of(byte... values) {
+        return new IndexGroup(values);
     }
 }

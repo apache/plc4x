@@ -39,10 +39,13 @@ public enum Command implements ByteReadable {
      * Other commands are not defined or are used internally. Therefore the Command Id  is only allowed to contain the above enumerated values!
      */
     UNKNOWN(0xffff);
+
+    public static final int NUM_BYTES = 4;
+
     final byte[] value;
 
     Command(int value) {
-        this.value = ByteBuffer.allocate(4).putInt(value).array();
+        this.value = ByteBuffer.allocate(NUM_BYTES).putInt(value).array();
     }
 
     @Override

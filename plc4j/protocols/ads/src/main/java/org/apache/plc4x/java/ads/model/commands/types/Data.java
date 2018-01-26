@@ -21,7 +21,11 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class Data extends ByteValue {
-    public Data(byte... value) {
-        super(value);
+    Data(byte... values) {
+        super(values);
+    }
+
+    public static Data of(byte... values) {
+        return new Data(values);
     }
 }

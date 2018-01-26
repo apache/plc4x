@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class TransmissionMode extends ByteValue {
-    public TransmissionMode(byte... value) {
-        super(value);
-        assertLength(4);
+
+    public static final int NUM_BYTES = 4;
+
+    TransmissionMode(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static TransmissionMode of(byte... values) {
+        return new TransmissionMode(values);
     }
 }

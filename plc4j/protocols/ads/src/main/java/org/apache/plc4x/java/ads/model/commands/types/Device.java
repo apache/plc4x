@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class Device extends ByteValue {
-    public Device(byte... value) {
-        super(value);
-        assertLength(16);
+
+    public static final int NUM_BYTES = 16;
+
+    Device(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static Device of(byte... values) {
+        return new Device(values);
     }
 }

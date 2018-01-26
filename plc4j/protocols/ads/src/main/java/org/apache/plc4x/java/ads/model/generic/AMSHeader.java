@@ -57,7 +57,7 @@ public class AMSHeader implements ByteReadable {
     /**
      * 4 bytes	AMS error number. See ADS Return Codes.
      */
-    private final org.apache.plc4x.java.ads.model.generic.types.Error code;
+    private final AMSError code;
 
     /**
      * 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
@@ -70,7 +70,7 @@ public class AMSHeader implements ByteReadable {
     // TODO: check if this is indeed {@link ADSData} and the documentation is just confusing at this point
     private final Data nData;
 
-    public AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, org.apache.plc4x.java.ads.model.generic.types.Error code, Invoke invokeId, Data nData) {
+    public AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId, Data nData) {
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;

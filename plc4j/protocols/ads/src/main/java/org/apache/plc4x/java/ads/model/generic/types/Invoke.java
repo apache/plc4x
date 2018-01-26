@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.generic.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class Invoke extends ByteValue {
-    public Invoke(byte... value) {
-        super(value);
-        assertLength(4);
+
+    public static final int NUM_BYTES = 4;
+
+    Invoke(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static Invoke of(byte... values) {
+        return new Invoke(values);
     }
 }

@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class SampleSize extends ByteValue {
-    public SampleSize(byte... value) {
+
+    public static final int NUM_BYTES = 4;
+
+    SampleSize(byte... value) {
         super(value);
-        assertLength(4);
+        assertLength(NUM_BYTES);
+    }
+
+    public static SampleSize of(byte... values) {
+        return new SampleSize(values);
     }
 }

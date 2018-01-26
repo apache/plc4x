@@ -33,12 +33,18 @@ import org.apache.plc4x.java.ads.model.util.ByteValue;
  */
 public class AMSNetId extends ByteValue {
 
-    public AMSNetId(int octed1, int octed2, int octed3, int octed4, int octed5, int octed6) {
-        super((byte) octed1, (byte) octed2, (byte) octed3, (byte) octed4, (byte) octed5, (byte) octed6);
+    public static final int NUM_BYTES = 6;
+
+    AMSNetId(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
     }
 
-    public AMSNetId(byte... value) {
-        super(value);
-        assertLength(6);
+    public static AMSNetId of(byte... values) {
+        return new AMSNetId(values);
+    }
+
+    public static AMSNetId of(int octed1, int octed2, int octed3, int octed4, int octed5, int octed6) {
+        return new AMSNetId((byte) octed1, (byte) octed2, (byte) octed3, (byte) octed4, (byte) octed5, (byte) octed6);
     }
 }

@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class Version extends ByteValue {
-    public Version(byte... value) {
-        super(value);
-        assertLength(2);
+
+    public static final int NUM_BYTES = 2;
+
+    Version(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static Version of(byte... values) {
+        return new Version(values);
     }
 }

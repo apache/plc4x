@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class ADSState extends ByteValue {
-    public ADSState(byte... value) {
-        super(value);
-        assertLength(2);
+
+    public static final int NUM_BYTES = 2;
+
+    ADSState(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static ADSState of(byte... values) {
+        return new ADSState(values);
     }
 }

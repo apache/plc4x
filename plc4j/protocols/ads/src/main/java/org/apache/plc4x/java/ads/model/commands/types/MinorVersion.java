@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class MinorVersion extends ByteValue {
-    public MinorVersion(byte... value) {
-        super(value);
-        assertLength(1);
+
+    public static final int NUM_BYTES = 1;
+
+    MinorVersion(byte... values) {
+        super(values);
+        assertLength(NUM_BYTES);
+    }
+
+    public static MinorVersion of(byte... values) {
+        return new MinorVersion(values);
     }
 }

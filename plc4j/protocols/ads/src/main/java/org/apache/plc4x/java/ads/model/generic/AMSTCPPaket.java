@@ -27,6 +27,11 @@ public abstract class AMSTCPPaket implements ByteReadable {
 
     private final AMSHeader amsHeader;
 
+    public AMSTCPPaket(int amstcpHeaderLength, AMSHeader amsHeader) {
+        this.amstcpHeader = AMSTCPHeader.of(amstcpHeaderLength);
+        this.amsHeader = amsHeader;
+    }
+
     public AMSTCPPaket(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         this.amstcpHeader = amstcpHeader;
         this.amsHeader = amsHeader;

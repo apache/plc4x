@@ -23,12 +23,15 @@ import org.apache.plc4x.java.ads.model.util.ByteValue;
 import java.nio.ByteBuffer;
 
 public class DataLength extends ByteValue {
-    public DataLength(int length) {
-        super(ByteBuffer.allocate(4).putInt(length).array());
+
+    public static final int NUM_BYTES = 4;
+
+    DataLength(byte... value) {
+        super(value);
+        assertLength(NUM_BYTES);
     }
 
-    public DataLength(byte... value) {
-        super(value);
-        assertLength(4);
+    public static DataLength of(int length) {
+        return new DataLength(ByteBuffer.allocate(4).putInt(length).array());
     }
 }

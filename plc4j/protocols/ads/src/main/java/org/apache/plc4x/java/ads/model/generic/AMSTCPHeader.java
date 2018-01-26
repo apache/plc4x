@@ -37,6 +37,10 @@ public class AMSTCPHeader implements ByteReadable {
         this.length = length;
     }
 
+    public static AMSTCPHeader of(int length) {
+        return new AMSTCPHeader(Length.of(length));
+    }
+
     @Override
     public ByteBuf getByteBuf() {
         return AMSTCPPaket.buildByteBuff(reserved, length);

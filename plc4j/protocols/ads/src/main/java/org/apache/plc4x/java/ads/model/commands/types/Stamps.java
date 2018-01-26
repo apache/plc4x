@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class Stamps extends ByteValue {
-    public Stamps(byte... value) {
+
+    public static final int NUM_BYTES = 4;
+
+    Stamps(byte... value) {
         super(value);
-        assertLength(4);
+        assertLength(NUM_BYTES);
+    }
+
+    public static Stamps of(byte... values) {
+        return new Stamps(values);
     }
 }

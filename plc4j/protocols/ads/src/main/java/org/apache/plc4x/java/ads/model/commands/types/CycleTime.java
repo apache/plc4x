@@ -21,8 +21,15 @@ package org.apache.plc4x.java.ads.model.commands.types;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 public class CycleTime extends ByteValue {
-    public CycleTime(byte... value) {
+
+    public static final int NUM_BYTES = 4;
+
+    CycleTime(byte... value) {
         super(value);
-        assertLength(4);
+        assertLength(NUM_BYTES);
+    }
+
+    public static CycleTime of(byte... values) {
+        return new CycleTime(values);
     }
 }
