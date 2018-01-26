@@ -24,21 +24,17 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4j-uitils</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4j-utils-wireshark-utils</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
-  <name>PLC4J</name>
-  <description>Implementation of the protocol adapters for usage as Java library.</description>
+  <name>PLC4J: Utils: WireShark Utils</name>
+  <description>A set of helper utilities that allow reading and writing of `pcapng` files so they can be inspected with WireShark.</description>
 
-  <modules>
-    <module>api</module>
-    <module>core</module>
-    <module>protocols</module>
-    <module>utils</module>
-  </modules>
+  <dependencies>
+  </dependencies>
 
 </project>

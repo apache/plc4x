@@ -24,21 +24,19 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4j</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j</artifactId>
+  <artifactId>plc4j-utils</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>PLC4J</name>
-  <description>Implementation of the protocol adapters for usage as Java library.</description>
+  <name>PLC4J: Utils</name>
+  <description>A collection of utilities used in multiple modules.</description>
 
   <modules>
-    <module>api</module>
-    <module>core</module>
-    <module>protocols</module>
-    <module>utils</module>
+    <module>raw-sockets</module>
   </modules>
 
 </project>
