@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
   Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,26 +16,4 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-protocols</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: Protocols</name>
-  <description>Wrapper project for all PLC4J protocol implementations.</description>
-
-  <modules>
-    <module>ads</module>
-    <module>s7</module>
-  </modules>
-
-</project>
+SPEC ADS: https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsamsspec/html/tcadsamsspec_intro.htm
