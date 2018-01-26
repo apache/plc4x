@@ -54,7 +54,7 @@ public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
     }
 
     @SuppressWarnings("unchecked")
-    public static TypeSafePlcWriteResponse of(PlcWriteResponse plcWriteResponse) {
+    public static <T> TypeSafePlcWriteResponse<T> of(PlcWriteResponse plcWriteResponse) {
         if (plcWriteResponse instanceof TypeSafePlcWriteResponse) {
             return (TypeSafePlcWriteResponse) plcWriteResponse;
         }

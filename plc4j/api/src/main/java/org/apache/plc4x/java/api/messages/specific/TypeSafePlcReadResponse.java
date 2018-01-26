@@ -60,7 +60,7 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
     }
 
     @SuppressWarnings("unchecked")
-    public static TypeSafePlcReadResponse of(PlcReadResponse plcReadResponse) {
+    public static <T> TypeSafePlcReadResponse<T> of(PlcReadResponse plcReadResponse) {
         if (plcReadResponse instanceof TypeSafePlcReadResponse) {
             return (TypeSafePlcReadResponse) plcReadResponse;
         }
