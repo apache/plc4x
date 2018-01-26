@@ -55,10 +55,19 @@ class TypeSafePlcReadResponseTest {
 
     @Test
     void of() {
-        TypeSafePlcReadResponse.of(mock(PlcReadResponse.class, RETURNS_DEEP_STUBS));
-        PlcReadResponse response = mock(PlcReadResponse.class, RETURNS_DEEP_STUBS);
-        when(response.getResponseItems()).thenReturn((List) Collections.singletonList(readResponseItemString));
-        TypeSafePlcReadResponse.of(response);
+        {
+            TypeSafePlcReadResponse.of(mock(PlcReadResponse.class, RETURNS_DEEP_STUBS));
+        }
+        {
+            PlcReadResponse response = mock(PlcReadResponse.class, RETURNS_DEEP_STUBS);
+            when(response.getRequest()).thenReturn(mock(TypeSafePlcReadRequest.class, RETURNS_DEEP_STUBS));
+            TypeSafePlcReadResponse.of(response);
+        }
+        {
+            PlcReadResponse response = mock(PlcReadResponse.class, RETURNS_DEEP_STUBS);
+            when(response.getResponseItems()).thenReturn((List) Collections.singletonList(readResponseItemString));
+            TypeSafePlcReadResponse.of(response);
+        }
     }
 
     @Test

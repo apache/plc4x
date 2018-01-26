@@ -26,9 +26,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.List;
 
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 class TypeSafePlcWriteResponseTest {
     WriteResponseItem<String> writeResponseItemString;
@@ -46,7 +46,19 @@ class TypeSafePlcWriteResponseTest {
 
     @Test
     void of() {
-        TypeSafePlcWriteResponse.of(mock(PlcWriteResponse.class, RETURNS_DEEP_STUBS));
+        {
+            TypeSafePlcWriteResponse.of(mock(PlcWriteResponse.class, RETURNS_DEEP_STUBS));
+        }
+        {
+            PlcWriteResponse response = mock(PlcWriteResponse.class, RETURNS_DEEP_STUBS);
+            when(response.getRequest()).thenReturn(mock(TypeSafePlcWriteRequest.class, RETURNS_DEEP_STUBS));
+            TypeSafePlcWriteResponse.of(response);
+        }
+        {
+            PlcWriteResponse response = mock(PlcWriteResponse.class, RETURNS_DEEP_STUBS);
+            when(response.getResponseItems()).thenReturn((List) Collections.singletonList(writeResponseItemString));
+            TypeSafePlcWriteResponse.of(response);
+        }
     }
 
     @Test
