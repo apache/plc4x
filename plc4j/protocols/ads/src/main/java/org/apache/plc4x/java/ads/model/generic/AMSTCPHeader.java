@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.model.generic;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.model.generic.types.Length;
 import org.apache.plc4x.java.ads.model.util.ByteReadable;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
@@ -38,32 +39,21 @@ public class AMSTCPHeader implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return AMSTCPPaket.buildByteBuff(reserved,length);
+        return AMSTCPPaket.buildByteBuff(reserved, length);
     }
 
     /**
      * Size: 2 bytes
      * These bytes must be set to 0.
      */
-    static class Reserved extends ByteValue {
+    private static class Reserved extends ByteValue {
 
-        static final Reserved CONSTANT = new Reserved();
+        private static final Reserved CONSTANT = new Reserved();
 
-        public Reserved() {
+        private Reserved() {
             super((byte) 0x00, (byte) 0x00);
             assertLength(2);
         }
     }
 
-    /**
-     * Size: 4 bytes
-     * This array contains the length of the data packet. It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
-     */
-    static class Length extends ByteValue {
-
-        public Length(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
 }
