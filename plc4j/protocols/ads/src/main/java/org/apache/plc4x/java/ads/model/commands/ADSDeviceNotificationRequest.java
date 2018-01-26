@@ -23,6 +23,7 @@ import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.model.util.ByteReadable;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 /**
@@ -71,7 +72,7 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
         }
     }
 
-    class AdsStampHeader extends ByteValue {
+    class AdsStampHeader implements ByteReadable {
 
         /**
          * 8 bytes	The timestamp is coded after the Windos FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
@@ -87,7 +88,6 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
         final AdsNotificationSample adsNotificationSample;
 
         public AdsStampHeader(TimeStamp timeStamp, Samples samples, AdsNotificationSample adsNotificationSample) {
-            super(new byte[]{0x00});
             this.timeStamp = timeStamp;
             this.samples = samples;
             this.adsNotificationSample = adsNotificationSample;
@@ -109,7 +109,7 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
             }
         }
 
-        class AdsNotificationSample extends ByteValue {
+        class AdsNotificationSample implements ByteReadable {
 
             /**
              * 4 Bytes	Handle of notification.
@@ -125,7 +125,6 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
             final Data data;
 
             public AdsNotificationSample(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
-                super((byte) 0x00);
                 this.notificationHandle = notificationHandle;
                 this.sampleSize = sampleSize;
                 this.data = data;
