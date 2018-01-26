@@ -40,12 +40,6 @@
 
   <dependencies>
     <!--dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
     </dependency-->
