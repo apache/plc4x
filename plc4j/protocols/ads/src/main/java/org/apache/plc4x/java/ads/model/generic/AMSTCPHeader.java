@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.model.generic;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.ads.model.util.ByteReadable;
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
@@ -38,15 +37,8 @@ public class AMSTCPHeader implements ByteReadable {
     }
 
     @Override
-    public byte[] getBytes() {
-        return getByteBuf().array();
-    }
-
-    @Override
     public ByteBuf getByteBuf() {
-        return Unpooled.buffer()
-            .writeBytes(reserved.getByteBuf())
-            .writeBytes(length.getByteBuf());
+        return AMSTCPPaket.buildByteBuff(reserved,length);
     }
 
     /**

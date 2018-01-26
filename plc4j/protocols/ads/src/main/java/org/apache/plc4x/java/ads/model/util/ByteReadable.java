@@ -19,13 +19,13 @@
 package org.apache.plc4x.java.ads.model.util;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
+@FunctionalInterface
 public interface ByteReadable {
 
-    byte[] getBytes();
-
-    default ByteBuf getByteBuf() {
-        return Unpooled.buffer().writeBytes(getBytes());
+    default byte[] getBytes() {
+        return getByteBuf().array();
     }
+
+    ByteBuf getByteBuf();
 }

@@ -134,6 +134,10 @@ public class AMSHeader implements ByteReadable {
         public byte[] getBytes() {
             return value;
         }
+
+        public ByteBuf getByteBuf() {
+            return Unpooled.buffer().writeBytes(value);
+        }
     }
 
     /**
@@ -166,6 +170,10 @@ public class AMSHeader implements ByteReadable {
         @Override
         public byte[] getBytes() {
             return value;
+        }
+
+        public ByteBuf getByteBuf() {
+            return Unpooled.buffer().writeBytes(value);
         }
     }
 
@@ -213,22 +221,17 @@ public class AMSHeader implements ByteReadable {
     }
 
     @Override
-    public byte[] getBytes() {
-        return getByteBuf().array();
-    }
-
-    @Override
     public ByteBuf getByteBuf() {
-        return Unpooled.buffer()
-            .writeBytes(targetAmsNetId.getByteBuf())
-            .writeBytes(targetAmsPort.getByteBuf())
-            .writeBytes(sourceAmsNetId.getByteBuf())
-            .writeBytes(sourceAmsPort.getByteBuf())
-            .writeBytes(commandId.getByteBuf())
-            .writeBytes(stateFlags.getByteBuf())
-            .writeBytes(dataLength.getByteBuf())
-            .writeBytes(code.getByteBuf())
-            .writeBytes(invokeId.getByteBuf())
-            .writeBytes(nData.getByteBuf());
+        return AMSTCPPaket.buildByteBuff(
+            targetAmsNetId,
+            targetAmsPort,
+            sourceAmsNetId,
+            sourceAmsPort,
+            commandId,
+            stateFlags,
+            dataLength,
+            code,
+            invokeId,
+            nData);
     }
 }

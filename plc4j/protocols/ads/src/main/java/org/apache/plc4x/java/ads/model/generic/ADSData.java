@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.model.generic;
 
+import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.ads.model.util.ByteReadable;
 
 /**
@@ -26,6 +27,6 @@ import org.apache.plc4x.java.ads.model.util.ByteReadable;
 @FunctionalInterface
 public interface ADSData extends ByteReadable {
 
-    ADSData EMPTY = () -> new byte[0];
+    ADSData EMPTY = () -> Unpooled.EMPTY_BUFFER;
 
 }

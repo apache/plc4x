@@ -44,11 +44,6 @@ public class AdsStampHeader implements ByteReadable {
     }
 
     @Override
-    public byte[] getBytes() {
-        return getByteBuf().array();
-    }
-
-    @Override
     public ByteBuf getByteBuf() {
         return AMSTCPPaket.buildByteBuff(timeStamp, samples, adsNotificationSample);
     }

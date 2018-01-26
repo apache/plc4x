@@ -43,17 +43,12 @@ public abstract class AMSTCPPaket implements ByteReadable {
     public abstract ADSData getAdsData();
 
     @Override
-    public byte[] getBytes() {
-        return getByteBuf().array();
-    }
-
-    @Override
     public ByteBuf getByteBuf() {
         return buildByteBuff(amstcpHeader, amsHeader, getAdsData());
     }
 
     protected ADSData buildADSData(ByteReadable... byteReadables) {
-        return () -> buildByteBuff(byteReadables).array();
+        return () -> buildByteBuff(byteReadables);
     }
 
     public static ByteBuf buildByteBuff(ByteReadable... byteReadables) {

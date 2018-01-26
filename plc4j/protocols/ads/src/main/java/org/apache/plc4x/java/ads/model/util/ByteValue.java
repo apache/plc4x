@@ -18,6 +18,9 @@
  */
 package org.apache.plc4x.java.ads.model.util;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.Objects;
 
 public class ByteValue implements ByteReadable {
@@ -38,5 +41,10 @@ public class ByteValue implements ByteReadable {
     @Override
     public byte[] getBytes() {
         return value;
+    }
+
+    @Override
+    public ByteBuf getByteBuf() {
+        return Unpooled.buffer().writeBytes(value);
     }
 }
