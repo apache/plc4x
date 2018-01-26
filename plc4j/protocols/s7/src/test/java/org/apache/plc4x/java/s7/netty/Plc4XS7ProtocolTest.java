@@ -171,7 +171,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
     }
 
     private VarPayloadItem varPayloadItemFor(Class type) {
-        // TODO: fix example
+        // TODO: Most of these are just some value. We have to check if this is actually correct.
         final DataTransportSize size;
         final byte[] data;
         if (type == Boolean.class) {

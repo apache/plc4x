@@ -36,9 +36,6 @@
 
   <modules>
     <module>s7</module>
-    <module>s7-utils</module>
-
-    <module>utils</module>
   </modules>
 
 </project>
