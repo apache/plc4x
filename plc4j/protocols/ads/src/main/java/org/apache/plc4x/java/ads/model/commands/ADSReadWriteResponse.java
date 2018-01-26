@@ -32,17 +32,17 @@ public class ADSReadWriteResponse extends AMSTCPPaket {
     /**
      * 4 bytes	ADS error number
      */
-    final Result result;
+    private final Result result;
 
     /**
      * 4 bytes	Length of data which are supplied back.
      */
-    final Length length;
+    private final Length length;
 
     /**
      * n bytes	Data which are supplied back.
      */
-    final Data data;
+    private final Data data;
 
     public ADSReadWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
         super(amstcpHeader, amsHeader);
@@ -56,21 +56,21 @@ public class ADSReadWriteResponse extends AMSTCPPaket {
         return ADSData.EMPTY;
     }
 
-    class Result extends ByteValue {
+    public static class Result extends ByteValue {
         public Result(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class Length extends ByteValue {
+    public static class Length extends ByteValue {
         public Length(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class Data extends ByteValue {
+    public static class Data extends ByteValue {
         public Data(byte... value) {
             super(value);
         }

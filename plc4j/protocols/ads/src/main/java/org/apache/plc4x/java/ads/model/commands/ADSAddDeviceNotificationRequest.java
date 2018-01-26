@@ -35,31 +35,31 @@ public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
     /**
      * 4 bytes	Index Group of the data, which should be sent per notification.
      */
-    final IndexGroup indexGroup;
+    private final IndexGroup indexGroup;
     /**
      * 4 bytes	Index Offset of the data, which should be sent per notification.
      */
-    final IndexOffset indexOffset;
+    private final IndexOffset indexOffset;
     /**
      * 4 bytes	Length of data in bytes, which should be sent per notification.
      */
-    final Length length;
+    private final Length length;
     /**
      * 4 bytes	See description of the structure ADSTRANSMODE at the ADS-DLL.
      */
-    final TransmissionMode transmissionMode;
+    private final TransmissionMode transmissionMode;
     /**
      * 4 bytes	At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
      */
-    final MaxDelay maxDelay;
+    private final MaxDelay maxDelay;
     /**
      * 4 bytes	The ADS server checks if the value changes in this time slice. The unit is 1ms
      */
-    final CycleTime cycleTime;
+    private final CycleTime cycleTime;
     /**
      * 16bytes	Must be set to 0
      */
-    final Reserved reserved = Reserved.INSTANCE;
+    private final Reserved reserved = Reserved.INSTANCE;
 
     public ADSAddDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amstcpHeader, amsHeader);
@@ -76,53 +76,53 @@ public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
         return buildADSData(indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime, reserved);
     }
 
-    class IndexGroup extends ByteValue {
+    public static class IndexGroup extends ByteValue {
         public IndexGroup(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class IndexOffset extends ByteValue {
+    public static class IndexOffset extends ByteValue {
         public IndexOffset(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-  class Length extends ByteValue {
+    public static class Length extends ByteValue {
         public Length(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-   class TransmissionMode extends ByteValue {
+    public static class TransmissionMode extends ByteValue {
         public TransmissionMode(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    static class MaxDelay extends ByteValue {
+    public static class MaxDelay extends ByteValue {
         public MaxDelay(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    static class CycleTime extends ByteValue {
+    public static class CycleTime extends ByteValue {
         public CycleTime(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-     static class Reserved extends ByteValue {
+    public static class Reserved extends ByteValue {
 
-        static final Reserved INSTANCE = new Reserved();
+        private static final Reserved INSTANCE = new Reserved();
 
-        public Reserved() {
+        private Reserved() {
             super((byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00);
             assertLength(16);
         }

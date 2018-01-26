@@ -32,12 +32,12 @@ public class ADSAddDeviceNotificationResponse extends AMSTCPPaket {
     /**
      * 4 bytes	ADS error number
      */
-    final Result result;
+    private final Result result;
 
     /**
      * 4 bytes	Handle of notification
      */
-    final NotificationHandle notificationHandle;
+    private final NotificationHandle notificationHandle;
 
     public ADSAddDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
         super(amstcpHeader, amsHeader);
@@ -50,14 +50,14 @@ public class ADSAddDeviceNotificationResponse extends AMSTCPPaket {
         return buildADSData(result, notificationHandle);
     }
 
-   class Result extends ByteValue {
+    public static class Result extends ByteValue {
         public Result(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-   class NotificationHandle extends ByteValue {
+    public static class NotificationHandle extends ByteValue {
         public NotificationHandle(byte... value) {
             super(value);
             assertLength(4);

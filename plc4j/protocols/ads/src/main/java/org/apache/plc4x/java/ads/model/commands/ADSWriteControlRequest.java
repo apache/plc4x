@@ -34,19 +34,19 @@ public class ADSWriteControlRequest extends AMSTCPPaket {
     /**
      * 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
      */
-    final ADSState adsState;
+    private final ADSState adsState;
     /**
      * 2 bytes	New device status.
      */
-    final DeviceState deviceState;
+    private final DeviceState deviceState;
     /**
      * 4 bytes	Length of data in byte.
      */
-    final Length length;
+    private final Length length;
     /**
      * n bytes	Additional data which are sent to the ADS device
      */
-    final Data data;
+    private final Data data;
 
     public ADSWriteControlRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(amstcpHeader, amsHeader);
@@ -61,28 +61,28 @@ public class ADSWriteControlRequest extends AMSTCPPaket {
         return buildADSData(adsState, deviceState, length, data);
     }
 
-    class ADSState extends ByteValue {
+    public static class ADSState extends ByteValue {
         public ADSState(byte... value) {
             super(value);
             assertLength(2);
         }
     }
 
-    class DeviceState extends ByteValue {
+    public static class DeviceState extends ByteValue {
         public DeviceState(byte... value) {
             super(value);
             assertLength(2);
         }
     }
 
-    class Length extends ByteValue {
+    public static class Length extends ByteValue {
         public Length(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class Data extends ByteValue {
+    public static class Data extends ByteValue {
         public Data(byte... value) {
             super(value);
         }

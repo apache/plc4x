@@ -32,17 +32,17 @@ public class ADSReadRequest extends AMSTCPPaket {
     /**
      * 4 bytes	Index Group of the data which should be read.
      */
-    final IndexGroup indexGroup;
+    private final IndexGroup indexGroup;
 
     /**
      * 4 bytes	Index Offset of the data which should be read.
      */
-    final IndexOffset indexOffset;
+    private final IndexOffset indexOffset;
 
     /**
      * 4 bytes	Length of the data (in bytes) which should be read.
      */
-    final Length length;
+    private final Length length;
 
     public ADSReadRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
         super(amstcpHeader, amsHeader);
@@ -56,21 +56,21 @@ public class ADSReadRequest extends AMSTCPPaket {
         return buildADSData(indexGroup, indexOffset, length);
     }
 
-    class IndexGroup extends ByteValue {
+    public static class IndexGroup extends ByteValue {
         public IndexGroup(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class IndexOffset extends ByteValue {
+    public static class IndexOffset extends ByteValue {
         public IndexOffset(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-   class Length extends ByteValue {
+    public static class Length extends ByteValue {
         public Length(byte... value) {
             super(value);
             assertLength(4);

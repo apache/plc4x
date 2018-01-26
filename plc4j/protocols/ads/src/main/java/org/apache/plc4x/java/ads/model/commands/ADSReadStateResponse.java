@@ -32,7 +32,7 @@ public class ADSReadStateResponse extends AMSTCPPaket {
     /**
      * 4 bytes	ADS error number
      */
-    final Result result;
+    private final Result result;
 
     public ADSReadStateResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
         super(amstcpHeader, amsHeader);
@@ -44,7 +44,7 @@ public class ADSReadStateResponse extends AMSTCPPaket {
         return buildADSData(result);
     }
 
-    class Result extends ByteValue {
+    public static class Result extends ByteValue {
         public Result(byte... value) {
             super(value);
             assertLength(4);

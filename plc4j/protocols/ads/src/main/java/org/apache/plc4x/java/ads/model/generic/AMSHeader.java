@@ -32,31 +32,31 @@ public class AMSHeader implements ByteReadable {
     /**
      * This is the AMSNetId of the station, for which the packet is intended. Remarks see below.
      */
-    final AMSNetId targetAmsNetId;
+    private final AMSNetId targetAmsNetId;
     /**
      * This is the AMSPort of the station, for which the packet is intended.
      */
-    final AMSPort targetAmsPort;
+    private final AMSPort targetAmsPort;
     /**
      * This contains the AMSNetId of the station, from which the packet was sent.
      */
-    final AMSNetId sourceAmsNetId;
+    private final AMSNetId sourceAmsNetId;
     /**
      * This contains the AMSPort of the station, from which the packet was sent.
      */
-    final AMSPort sourceAmsPort;
+    private final AMSPort sourceAmsPort;
 
-    final Command commandId;
+    private final Command commandId;
 
-    final State stateFlags;
+    private final State stateFlags;
 
-    final DataLength dataLength;
+    private final DataLength dataLength;
 
-    final Error code;
+    private final Error code;
 
-    final Invoke invokeId;
+    private final Invoke invokeId;
 
-    final Data nData;
+    private final Data nData;
 
     public AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, Error code, Invoke invokeId, Data nData) {
         this.targetAmsNetId = targetAmsNetId;

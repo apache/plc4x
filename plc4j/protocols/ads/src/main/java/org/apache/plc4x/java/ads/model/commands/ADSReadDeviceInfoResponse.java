@@ -31,23 +31,23 @@ public class ADSReadDeviceInfoResponse extends AMSTCPPaket {
     /**
      * 4 bytes	ADS error number.
      */
-    final Result result;
+    private final Result result;
     /**
      * Version	1 byte	Major version number
      */
-    final MajorVersion majorVersion;
+    private final MajorVersion majorVersion;
     /**
      * Version	1 byte	Minor version number
      */
-    final MinorVersion minorVersion;
+    private final MinorVersion minorVersion;
     /**
      * Build	2 bytes	Build number
      */
-    final Version version;
+    private final Version version;
     /**
      * Name	16 bytes	Name of ADS device
      */
-    final Device device;
+    private final Device device;
 
     public ADSReadDeviceInfoResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
         super(amstcpHeader, amsHeader);
@@ -63,35 +63,35 @@ public class ADSReadDeviceInfoResponse extends AMSTCPPaket {
         return buildADSData(result, majorVersion, minorVersion, version, device);
     }
 
-    static class Result extends ByteValue {
+    public static class Result extends ByteValue {
         public Result(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    static class MajorVersion extends ByteValue {
+    public static class MajorVersion extends ByteValue {
         public MajorVersion(byte... value) {
             super(value);
             assertLength(1);
         }
     }
 
-    static class MinorVersion extends ByteValue {
+    public static class MinorVersion extends ByteValue {
         public MinorVersion(byte... value) {
             super(value);
             assertLength(1);
         }
     }
 
-    static class Version extends ByteValue {
+    public static class Version extends ByteValue {
         public Version(byte... value) {
             super(value);
             assertLength(2);
         }
     }
 
-    static class Device extends ByteValue {
+    public static class Device extends ByteValue {
         public Device(byte... value) {
             super(value);
             assertLength(16);

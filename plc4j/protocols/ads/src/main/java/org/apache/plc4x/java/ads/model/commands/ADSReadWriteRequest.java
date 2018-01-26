@@ -34,23 +34,23 @@ public class ADSReadWriteRequest extends AMSTCPPaket {
     /**
      * 4 bytes	Index Group, in which the data should be written.
      */
-    final IndexGroup indexGroup;
+    private final IndexGroup indexGroup;
     /**
      * 4 bytes	Index Offset, in which the data should be written
      */
-    final IndexOffset indexOffset;
+    private final IndexOffset indexOffset;
     /**
      * 4 bytes	Length of data in bytes, which should be read.
      */
-    final ReadLength readLength;
+    private final ReadLength readLength;
     /**
      * 4 bytes	Length of data in bytes, which should be written
      */
-    final WriteLength writeLength;
+    private final WriteLength writeLength;
     /**
      * n bytes	Data which are written in the ADS device.
      */
-    final Data data;
+    private final Data data;
 
     public ADSReadWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(amstcpHeader, amsHeader);
@@ -66,35 +66,35 @@ public class ADSReadWriteRequest extends AMSTCPPaket {
         return ADSData.EMPTY;
     }
 
-    class IndexGroup extends ByteValue {
+    public static class IndexGroup extends ByteValue {
         public IndexGroup(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class IndexOffset extends ByteValue {
+    public static class IndexOffset extends ByteValue {
         public IndexOffset(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class ReadLength extends ByteValue {
+    public static class ReadLength extends ByteValue {
         public ReadLength(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class WriteLength extends ByteValue {
+    public static class WriteLength extends ByteValue {
         public WriteLength(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class Data extends ByteValue {
+    public static class Data extends ByteValue {
         public Data(byte... value) {
             super(value);
         }

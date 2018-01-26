@@ -32,7 +32,7 @@ public class ADSDeleteDeviceNotificationRequest extends AMSTCPPaket {
     /**
      * 4 bytes	Handle of notification
      */
-    final NotificationHandle notificationHandle;
+    private final NotificationHandle notificationHandle;
 
     public ADSDeleteDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {
         super(amstcpHeader, amsHeader);
@@ -45,7 +45,7 @@ public class ADSDeleteDeviceNotificationRequest extends AMSTCPPaket {
     }
 
 
-   class NotificationHandle extends ByteValue {
+    public static class NotificationHandle extends ByteValue {
         public NotificationHandle(byte... value) {
             super(value);
             assertLength(4);

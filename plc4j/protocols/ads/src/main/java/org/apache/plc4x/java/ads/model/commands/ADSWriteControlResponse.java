@@ -31,7 +31,7 @@ public class ADSWriteControlResponse extends AMSTCPPaket {
     /**
      * 4 bytes	ADS error number
      */
-    final ADSReadResponse.Result result;
+    private final ADSReadResponse.Result result;
 
     public ADSWriteControlResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSReadResponse.Result result) {
         super(amstcpHeader, amsHeader);
@@ -43,7 +43,7 @@ public class ADSWriteControlResponse extends AMSTCPPaket {
         return buildADSData(result);
     }
 
-    class Result extends ByteValue {
+    public static class Result extends ByteValue {
         public Result(byte... value) {
             super(value);
             assertLength(4);

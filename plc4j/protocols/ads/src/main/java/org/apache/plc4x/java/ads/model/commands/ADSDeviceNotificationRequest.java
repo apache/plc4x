@@ -36,15 +36,15 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
     /**
      * 4 bytes	Size of data in byte.
      */
-    final Length length;
+    private final Length length;
     /**
      * 4 bytes	Number of elements of type AdsStampHeader.
      */
-    final Stamps stamps;
+    private final Stamps stamps;
     /**
      * n bytes	Array with elements of type AdsStampHeader.
      */
-    final AdsStampHeader adsStampHeader;
+    private final AdsStampHeader adsStampHeader;
 
     public ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, AdsStampHeader adsStampHeader) {
         super(amstcpHeader, amsHeader);
@@ -58,34 +58,34 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
         return buildADSData(length, stamps, adsStampHeader);
     }
 
-    class Length extends ByteValue {
+    public static class Length extends ByteValue {
         public Length(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class Stamps extends ByteValue {
+    public static class Stamps extends ByteValue {
         public Stamps(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class AdsStampHeader implements ByteReadable {
+    public static class AdsStampHeader implements ByteReadable {
 
         /**
          * 8 bytes	The timestamp is coded after the Windos FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
          */
-        final TimeStamp timeStamp;
+        private final TimeStamp timeStamp;
         /**
          * 4 bytes	Number of elements of type AdsNotificationSample.
          */
-        final Samples samples;
+        private final Samples samples;
         /**
          * n bytes	Array with elements of type AdsNotificationSample.
          */
-        final AdsNotificationSample adsNotificationSample;
+        private final AdsNotificationSample adsNotificationSample;
 
         public AdsStampHeader(TimeStamp timeStamp, Samples samples, AdsNotificationSample adsNotificationSample) {
             this.timeStamp = timeStamp;
@@ -93,7 +93,7 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
             this.adsNotificationSample = adsNotificationSample;
         }
 
-        class TimeStamp extends ByteValue {
+        public static class TimeStamp extends ByteValue {
 
             public TimeStamp(byte... value) {
                 super(value);
@@ -101,7 +101,7 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
             }
         }
 
-        class Samples extends ByteValue {
+        public static class Samples extends ByteValue {
 
             public Samples(byte... value) {
                 super(value);
@@ -109,20 +109,20 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
             }
         }
 
-        class AdsNotificationSample implements ByteReadable {
+        public static class AdsNotificationSample implements ByteReadable {
 
             /**
              * 4 Bytes	Handle of notification.
              */
-            final NotificationHandle notificationHandle;
+            private final NotificationHandle notificationHandle;
             /**
              * 4 Bytes	Size of data range in bytes.
              */
-            final SampleSize sampleSize;
+            private final SampleSize sampleSize;
             /**
              * n Bytes	Data
              */
-            final Data data;
+            private final Data data;
 
             public AdsNotificationSample(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
                 this.notificationHandle = notificationHandle;
@@ -140,7 +140,7 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
                 return buildByteBuff(notificationHandle, sampleSize, data);
             }
 
-            class NotificationHandle extends ByteValue {
+            public static class NotificationHandle extends ByteValue {
 
                 public NotificationHandle(byte... value) {
                     super(value);
@@ -151,12 +151,12 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
             /**
              * Notice: If your handle becomes invalid, one notification without data will be send once as advice.
              */
-            class InvalidationNotificationHandle extends NotificationHandle {
+            public static class InvalidationNotificationHandle extends NotificationHandle {
                 public InvalidationNotificationHandle() {
                 }
             }
 
-            class SampleSize extends ByteValue {
+            public static class SampleSize extends ByteValue {
 
                 public SampleSize(byte... value) {
                     super(value);
@@ -164,7 +164,7 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
                 }
             }
 
-            class Data extends ByteValue {
+            public static class Data extends ByteValue {
 
                 public Data(byte... value) {
                     super(value);

@@ -28,9 +28,9 @@ import org.apache.plc4x.java.ads.model.util.ByteValue;
  */
 public class AMSTCPHeader implements ByteReadable {
 
-    final Reserved reserved;
+    private final Reserved reserved;
 
-    final Length length;
+    private final Length length;
 
     public AMSTCPHeader(Length length) {
         this.reserved = Reserved.CONSTANT;

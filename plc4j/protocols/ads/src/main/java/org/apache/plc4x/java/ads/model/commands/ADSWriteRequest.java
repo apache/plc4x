@@ -32,19 +32,19 @@ public class ADSWriteRequest extends AMSTCPPaket {
     /**
      * 4 bytes	Index Group in which the data should be written
      */
-    final IndexGroup indexGroup;
+    private final IndexGroup indexGroup;
     /**
      * 4 bytes	Index Offset, in which the data should be written
      */
-    final IndexOffset indexOffset;
+    private final IndexOffset indexOffset;
     /**
      * 4 bytes	Length of data in bytes which are written
      */
-    final Length length;
+    private final Length length;
     /**
      * n bytes	Data which are written in the ADS device.
      */
-    final Data data;
+    private final Data data;
 
     public ADSWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(amstcpHeader, amsHeader);
@@ -60,28 +60,28 @@ public class ADSWriteRequest extends AMSTCPPaket {
         return buildADSData(indexGroup, indexOffset, length, data);
     }
 
-    class IndexGroup extends ByteValue {
+    public static class IndexGroup extends ByteValue {
         public IndexGroup(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class IndexOffset extends ByteValue {
+    public static class IndexOffset extends ByteValue {
         public IndexOffset(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class Length extends ByteValue {
+    public static class Length extends ByteValue {
         public Length(byte... value) {
             super(value);
             assertLength(4);
         }
     }
 
-    class Data extends ByteValue {
+    public static class Data extends ByteValue {
         public Data(byte... value) {
             super(value);
         }

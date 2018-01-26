@@ -23,9 +23,9 @@ import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.ads.model.util.ByteReadable;
 
 public abstract class AMSTCPPaket implements ByteReadable {
-    final AMSTCPHeader amstcpHeader;
+    private final AMSTCPHeader amstcpHeader;
 
-    final AMSHeader amsHeader;
+    private final AMSHeader amsHeader;
 
     public AMSTCPPaket(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         this.amstcpHeader = amstcpHeader;
@@ -56,7 +56,7 @@ public abstract class AMSTCPPaket implements ByteReadable {
         return () -> buildByteBuff(byteReadables).array();
     }
 
-    protected ByteBuf buildByteBuff(ByteReadable... byteReadables) {
+    protected static ByteBuf buildByteBuff(ByteReadable... byteReadables) {
         ByteBuf buffer = Unpooled.buffer();
         for (ByteReadable byteReadable : byteReadables) {
             buffer.writeBytes(byteReadable.getByteBuf());
