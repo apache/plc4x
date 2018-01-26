@@ -18,11 +18,14 @@
  */
 package org.apache.plc4x.java.ads.model.commands;
 
+import org.apache.plc4x.java.ads.model.commands.types.ADSState;
+import org.apache.plc4x.java.ads.model.commands.types.Data;
+import org.apache.plc4x.java.ads.model.commands.types.DeviceState;
+import org.apache.plc4x.java.ads.model.commands.types.Length;
 import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 /**
  * Changes the ADS status and the device status of an ADS device.
@@ -61,30 +64,4 @@ public class ADSWriteControlRequest extends AMSTCPPaket {
         return buildADSData(adsState, deviceState, length, data);
     }
 
-    public static class ADSState extends ByteValue {
-        public ADSState(byte... value) {
-            super(value);
-            assertLength(2);
-        }
-    }
-
-    public static class DeviceState extends ByteValue {
-        public DeviceState(byte... value) {
-            super(value);
-            assertLength(2);
-        }
-    }
-
-    public static class Length extends ByteValue {
-        public Length(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class Data extends ByteValue {
-        public Data(byte... value) {
-            super(value);
-        }
-    }
 }

@@ -16,39 +16,41 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.model.commands;
+package org.apache.plc4x.java.ads.model.commands.types;
 
-import org.apache.plc4x.java.ads.model.commands.types.NotificationHandle;
-import org.apache.plc4x.java.ads.model.commands.types.Result;
-import org.apache.plc4x.java.ads.model.generic.ADSData;
-import org.apache.plc4x.java.ads.model.generic.AMSHeader;
-import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.model.util.ByteReadable;
 
-/**
- * A notification is created in an ADS device.
- */
-public class ADSAddDeviceNotificationResponse extends AMSTCPPaket {
+public class AdsNotificationSample implements ByteReadable {
 
     /**
-     * 4 bytes	ADS error number
-     */
-    private final Result result;
-
-    /**
-     * 4 bytes	Handle of notification
+     * 4 Bytes	Handle of notification.
      */
     private final NotificationHandle notificationHandle;
+    /**
+     * 4 Bytes	Size of data range in bytes.
+     */
+    private final SampleSize sampleSize;
+    /**
+     * n Bytes	Data
+     */
+    private final Data data;
 
-    public ADSAddDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
-        super(amstcpHeader, amsHeader);
-        this.result = result;
+    public AdsNotificationSample(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
         this.notificationHandle = notificationHandle;
+        this.sampleSize = sampleSize;
+        this.data = data;
     }
 
     @Override
-    public ADSData getAdsData() {
-        return buildADSData(result, notificationHandle);
+    public byte[] getBytes() {
+        return getByteBuf().array();
+    }
+
+    @Override
+    public ByteBuf getByteBuf() {
+        return AMSTCPPaket.buildByteBuff(notificationHandle, sampleSize, data);
     }
 
 }

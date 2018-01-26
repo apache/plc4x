@@ -18,6 +18,10 @@
  */
 package org.apache.plc4x.java.ads.model.commands;
 
+import org.apache.plc4x.java.ads.model.commands.types.IndexGroup;
+import org.apache.plc4x.java.ads.model.commands.types.IndexOffset;
+import org.apache.plc4x.java.ads.model.commands.types.ReadLength;
+import org.apache.plc4x.java.ads.model.commands.types.WriteLength;
 import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
@@ -64,34 +68,6 @@ public class ADSReadWriteRequest extends AMSTCPPaket {
     @Override
     public ADSData getAdsData() {
         return ADSData.EMPTY;
-    }
-
-    public static class IndexGroup extends ByteValue {
-        public IndexGroup(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class IndexOffset extends ByteValue {
-        public IndexOffset(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class ReadLength extends ByteValue {
-        public ReadLength(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class WriteLength extends ByteValue {
-        public WriteLength(byte... value) {
-            super(value);
-            assertLength(4);
-        }
     }
 
     public static class Data extends ByteValue {

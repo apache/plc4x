@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.ads.model.commands;
 
+import org.apache.plc4x.java.ads.model.commands.types.Data;
+import org.apache.plc4x.java.ads.model.commands.types.Length;
+import org.apache.plc4x.java.ads.model.commands.types.Result;
 import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 /**
  * With ADS Read Write data will be written to an ADS device. Additionally, data can be read from the ADS device.
@@ -56,23 +58,4 @@ public class ADSReadWriteResponse extends AMSTCPPaket {
         return ADSData.EMPTY;
     }
 
-    public static class Result extends ByteValue {
-        public Result(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class Length extends ByteValue {
-        public Length(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class Data extends ByteValue {
-        public Data(byte... value) {
-            super(value);
-        }
-    }
 }

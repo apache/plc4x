@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.ads.model.commands;
 
+import org.apache.plc4x.java.ads.model.commands.types.IndexGroup;
+import org.apache.plc4x.java.ads.model.commands.types.IndexOffset;
+import org.apache.plc4x.java.ads.model.commands.types.Length;
 import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 /**
  * With ADS Read data can be read from an ADS device.  The data are addressed by the Index Group and the Index Offset
@@ -56,24 +58,4 @@ public class ADSReadRequest extends AMSTCPPaket {
         return buildADSData(indexGroup, indexOffset, length);
     }
 
-    public static class IndexGroup extends ByteValue {
-        public IndexGroup(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class IndexOffset extends ByteValue {
-        public IndexOffset(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class Length extends ByteValue {
-        public Length(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
 }

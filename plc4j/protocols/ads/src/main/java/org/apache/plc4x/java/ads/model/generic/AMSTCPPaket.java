@@ -56,7 +56,7 @@ public abstract class AMSTCPPaket implements ByteReadable {
         return () -> buildByteBuff(byteReadables).array();
     }
 
-    protected static ByteBuf buildByteBuff(ByteReadable... byteReadables) {
+    public static ByteBuf buildByteBuff(ByteReadable... byteReadables) {
         ByteBuf buffer = Unpooled.buffer();
         for (ByteReadable byteReadable : byteReadables) {
             buffer.writeBytes(byteReadable.getByteBuf());

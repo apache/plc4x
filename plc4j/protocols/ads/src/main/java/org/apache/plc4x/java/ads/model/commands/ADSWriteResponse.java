@@ -18,11 +18,11 @@
  */
 package org.apache.plc4x.java.ads.model.commands;
 
+import org.apache.plc4x.java.ads.model.commands.types.Result;
 import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 /**
  * With ADS Write data can be written to an ADS device.
@@ -42,13 +42,6 @@ public class ADSWriteResponse extends AMSTCPPaket {
     @Override
     public ADSData getAdsData() {
         return buildADSData(result);
-    }
-
-    public static class Result extends ByteValue {
-        public Result(byte... value) {
-            super(value);
-            assertLength(4);
-        }
     }
 
 }

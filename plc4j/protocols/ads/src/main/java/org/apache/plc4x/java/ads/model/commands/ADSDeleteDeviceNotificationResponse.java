@@ -18,11 +18,11 @@
  */
 package org.apache.plc4x.java.ads.model.commands;
 
+import org.apache.plc4x.java.ads.model.commands.types.Result;
 import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 /**
  * One before defined notification is deleted in an ADS device.
@@ -44,10 +44,4 @@ public class ADSDeleteDeviceNotificationResponse extends AMSTCPPaket {
         return buildADSData(result);
     }
 
-    public static class Result extends ByteValue {
-        public Result(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
 }

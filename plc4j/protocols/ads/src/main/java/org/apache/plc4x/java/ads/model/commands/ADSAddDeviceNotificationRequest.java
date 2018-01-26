@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.model.commands;
 
+import org.apache.plc4x.java.ads.model.commands.types.*;
 import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
@@ -74,48 +75,6 @@ public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime, reserved);
-    }
-
-    public static class IndexGroup extends ByteValue {
-        public IndexGroup(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class IndexOffset extends ByteValue {
-        public IndexOffset(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class Length extends ByteValue {
-        public Length(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class TransmissionMode extends ByteValue {
-        public TransmissionMode(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class MaxDelay extends ByteValue {
-        public MaxDelay(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class CycleTime extends ByteValue {
-        public CycleTime(byte... value) {
-            super(value);
-            assertLength(4);
-        }
     }
 
     public static class Reserved extends ByteValue {

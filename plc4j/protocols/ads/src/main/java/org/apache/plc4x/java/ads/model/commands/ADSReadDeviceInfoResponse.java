@@ -18,11 +18,11 @@
  */
 package org.apache.plc4x.java.ads.model.commands;
 
+import org.apache.plc4x.java.ads.model.commands.types.*;
 import org.apache.plc4x.java.ads.model.generic.ADSData;
 import org.apache.plc4x.java.ads.model.generic.AMSHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.model.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.model.util.ByteValue;
 
 /**
  * Reads the name and the version number of the ADS device.
@@ -63,38 +63,4 @@ public class ADSReadDeviceInfoResponse extends AMSTCPPaket {
         return buildADSData(result, majorVersion, minorVersion, version, device);
     }
 
-    public static class Result extends ByteValue {
-        public Result(byte... value) {
-            super(value);
-            assertLength(4);
-        }
-    }
-
-    public static class MajorVersion extends ByteValue {
-        public MajorVersion(byte... value) {
-            super(value);
-            assertLength(1);
-        }
-    }
-
-    public static class MinorVersion extends ByteValue {
-        public MinorVersion(byte... value) {
-            super(value);
-            assertLength(1);
-        }
-    }
-
-    public static class Version extends ByteValue {
-        public Version(byte... value) {
-            super(value);
-            assertLength(2);
-        }
-    }
-
-    public static class Device extends ByteValue {
-        public Device(byte... value) {
-            super(value);
-            assertLength(16);
-        }
-    }
 }
