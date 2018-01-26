@@ -32,9 +32,9 @@ public class ADSWriteResponse extends AMSTCPPaket {
     /**
      * 4 bytes	ADS error number
      */
-    private final ADSReadResponse.Result result;
+    private final Result result;
 
-    public ADSWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSReadResponse.Result result) {
+    public ADSWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
         super(amstcpHeader, amsHeader);
         this.result = result;
     }
