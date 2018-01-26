@@ -20,10 +20,7 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class WriteRequestItem<T> extends RequestItem<T> {
 
@@ -32,6 +29,7 @@ public class WriteRequestItem<T> extends RequestItem<T> {
     @SafeVarargs
     public WriteRequestItem(Class<T> dataType, Address address, T... values) {
         super(dataType, address);
+        Objects.requireNonNull(values, "Values must not be null");
         List<T> checkedList = Collections.checkedList(new ArrayList<>(), dataType);
         checkedList.addAll(Arrays.asList(values));
         this.values = checkedList;

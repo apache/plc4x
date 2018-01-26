@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
@@ -38,6 +39,8 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
     }
 
     public PlcReadRequest(Class<?> dataType, Address address, int size) {
+        Objects.requireNonNull(dataType, "Data type must not be null");
+        Objects.requireNonNull(address, "Address must not be null");
         addItem(new ReadRequestItem<>(dataType, address, size));
     }
 

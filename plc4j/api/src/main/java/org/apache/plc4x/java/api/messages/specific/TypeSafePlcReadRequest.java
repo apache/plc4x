@@ -31,11 +31,14 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
     private Class<T> dataType;
 
     public TypeSafePlcReadRequest(Class<T> dataType) {
+        Objects.requireNonNull(dataType, "data type must not be null");
         this.dataType = dataType;
     }
 
     public TypeSafePlcReadRequest(Class<T> dataType, PlcReadRequest plcReadRequest) {
         this(dataType);
+        Objects.requireNonNull(plcReadRequest, "plc read request must not be null");
+        Objects.requireNonNull(plcReadRequest.getRequestItems(), "plc read request item on " + plcReadRequest + " must not be null");
         for (ReadRequestItem<?> readRequestItem : plcReadRequest.getRequestItems()) {
             addItem(readRequestItem);
         }
@@ -43,18 +46,20 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
 
     public TypeSafePlcReadRequest(Class<T> dataType, Address address) {
         this(dataType);
+        Objects.requireNonNull(address, "Address must not be null");
         addItem(new ReadRequestItem<>(dataType, address));
     }
 
     public TypeSafePlcReadRequest(Class<T> dataType, Address address, int size) {
         this(dataType);
+        Objects.requireNonNull(address, "Address must not be null");
         addItem(new ReadRequestItem<>(dataType, address, size));
     }
 
     @SafeVarargs
     public TypeSafePlcReadRequest(Class<T> dataType, ReadRequestItem<T>... requestItems) {
         this(dataType);
-        Objects.requireNonNull(requestItems);
+        Objects.requireNonNull(requestItems, "Read request items must not be null");
         for (ReadRequestItem<T> readRequestItem : requestItems) {
             addItem(readRequestItem);
         }
@@ -62,7 +67,7 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
 
     @Override
     public void addItem(ReadRequestItem<?> readRequestItem) {
-        Objects.requireNonNull(readRequestItem);
+        Objects.requireNonNull(readRequestItem, "Read request item must not be null");
         if (readRequestItem.getDatatype() != dataType) {
             throw new IllegalArgumentException("Unexpected data type " + readRequestItem.getDatatype() + " on readRequestItem. Expected " + dataType);
         }

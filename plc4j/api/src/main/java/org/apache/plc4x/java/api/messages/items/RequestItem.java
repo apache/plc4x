@@ -20,6 +20,8 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
+import java.util.Objects;
+
 public abstract class RequestItem<DATA_TYPE> {
 
     private final Class<DATA_TYPE> datatype;
@@ -27,6 +29,8 @@ public abstract class RequestItem<DATA_TYPE> {
     private final Address address;
 
     public RequestItem(Class<DATA_TYPE> datatype, Address address) {
+        Objects.requireNonNull(datatype, "Data type must not be null");
+        Objects.requireNonNull(address, "Address type must not be null");
         this.datatype = datatype;
         this.address = address;
     }

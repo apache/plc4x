@@ -18,12 +18,16 @@ under the License.
 */
 package org.apache.plc4x.java.api.authentication;
 
+import java.util.Objects;
+
 public class PlcUsernamePasswordAuthentication implements PlcAuthentication {
 
     private final String username;
     private final String password;
 
     public PlcUsernamePasswordAuthentication(String username, String password) {
+        Objects.requireNonNull(username, "User name must not be null");
+        Objects.requireNonNull(password, "Password must not be null");
         this.username = username;
         this.password = password;
     }

@@ -31,11 +31,14 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
     private final Class<T> dataType;
 
     public TypeSafePlcWriteRequest(Class<T> dataType) {
+        Objects.requireNonNull(dataType, "Data type must not be null");
         this.dataType = dataType;
     }
 
     public TypeSafePlcWriteRequest(Class<T> dataType, PlcWriteRequest plcWriteRequest) {
         this(dataType);
+        Objects.requireNonNull(plcWriteRequest, "PLC write request must not be null");
+        Objects.requireNonNull(plcWriteRequest.getRequestItems(), "plc write request item on " + plcWriteRequest + " must not be null");
         for (WriteRequestItem<?> WriteRequestItem : plcWriteRequest.getRequestItems()) {
             addItem(WriteRequestItem);
         }
@@ -44,13 +47,14 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
     @SafeVarargs
     public TypeSafePlcWriteRequest(Class<T> dataType, Address address, T... values) {
         this(dataType);
+        Objects.requireNonNull(address, "Address must not be null");
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 
     @SafeVarargs
     public TypeSafePlcWriteRequest(Class<T> dataType, WriteRequestItem<T>... requestItems) {
         this(dataType);
-        Objects.requireNonNull(requestItems);
+        Objects.requireNonNull(requestItems, "Request item must not be null");
         for (WriteRequestItem<T> requestItem : requestItems) {
             getRequestItems().add(requestItem);
         }
@@ -58,7 +62,7 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
 
     @Override
     public void addItem(WriteRequestItem<?> writeRequestItem) {
-        Objects.requireNonNull(writeRequestItem);
+        Objects.requireNonNull(writeRequestItem, "Write request item must not be null");
         if (writeRequestItem.getDatatype() != dataType) {
             throw new IllegalArgumentException("Incompatible dataType " + writeRequestItem.getDatatype());
         }

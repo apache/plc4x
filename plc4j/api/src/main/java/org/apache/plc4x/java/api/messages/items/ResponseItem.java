@@ -20,6 +20,8 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.types.ResponseCode;
 
+import java.util.Objects;
+
 public abstract class ResponseItem<REQUEST_ITEM extends RequestItem> {
 
     private final REQUEST_ITEM requestItem;
@@ -27,6 +29,8 @@ public abstract class ResponseItem<REQUEST_ITEM extends RequestItem> {
     private final ResponseCode responseCode;
 
     public ResponseItem(REQUEST_ITEM requestItem, ResponseCode responseCode) {
+        Objects.requireNonNull(requestItem,"Request item must not be null");
+        Objects.requireNonNull(responseCode,"Response code must not be null");
         this.requestItem = requestItem;
         this.responseCode = responseCode;
     }

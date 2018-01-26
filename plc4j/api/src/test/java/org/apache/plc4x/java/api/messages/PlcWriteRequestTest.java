@@ -19,18 +19,30 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.model.Address;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static org.mockito.Mockito.mock;
+
 class PlcWriteRequestTest {
+
+    Address dummyAddress;
+
+    @BeforeEach
+    void setUp() {
+        dummyAddress = mock(Address.class);
+    }
+
     @Test
     void constuctor() {
         new PlcWriteRequest();
-        new PlcWriteRequest(new WriteRequestItem<>(String.class, null, ""));
-        new PlcWriteRequest(String.class, null);
-        new PlcWriteRequest(Collections.singletonList(new WriteRequestItem<>(String.class, null)));
+        new PlcWriteRequest(new WriteRequestItem<>(String.class, dummyAddress, ""));
+        new PlcWriteRequest(String.class, dummyAddress);
+        new PlcWriteRequest(Collections.singletonList(new WriteRequestItem<>(String.class, dummyAddress)));
     }
 
     @Test
@@ -40,45 +52,45 @@ class PlcWriteRequestTest {
         }
         { // one item implicit type
             PlcWriteRequest.builder()
-                .addItem(null, "")
+                .addItem(dummyAddress, "")
                 .build();
         }
         { // one item
             PlcWriteRequest.builder()
-                .addItem(String.class, null)
+                .addItem(String.class, dummyAddress)
                 .build();
         }
         { // one item prebuild
             PlcWriteRequest.builder()
-                .addItem(new WriteRequestItem<>(String.class, null))
+                .addItem(new WriteRequestItem<>(String.class, dummyAddress))
                 .build();
         }
         { // two different item
             PlcWriteRequest.builder()
-                .addItem(String.class, null)
-                .addItem(Byte.class, null)
+                .addItem(String.class, dummyAddress)
+                .addItem(Byte.class, dummyAddress)
                 .build();
         }
         { // two different item typeSafe
             Assertions.assertThrows(IllegalStateException.class, () -> {
                 PlcWriteRequest.builder()
-                    .addItem(String.class, null)
-                    .addItem(Byte.class, null)
+                    .addItem(String.class, dummyAddress)
+                    .addItem(Byte.class, dummyAddress)
                     .build(String.class);
             });
         }
         { // two different item typeSafe
             Assertions.assertThrows(ClassCastException.class, () -> {
                 PlcWriteRequest.builder()
-                    .addItem(String.class, null)
-                    .addItem(Byte.class, null)
+                    .addItem(String.class, dummyAddress)
+                    .addItem(Byte.class, dummyAddress)
                     .build(Byte.class);
             });
         }
         { // two equal item typeSafe
             PlcWriteRequest.builder()
-                .addItem(Byte.class, null)
-                .addItem(Byte.class, null)
+                .addItem(Byte.class, dummyAddress)
+                .addItem(Byte.class, dummyAddress)
                 .build(Byte.class);
         }
     }

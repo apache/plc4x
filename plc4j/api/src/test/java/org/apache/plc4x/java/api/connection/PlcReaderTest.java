@@ -26,11 +26,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
+import static org.mockito.Mockito.mock;
+
 class PlcReaderTest {
     @Test
     void read() throws Exception {
         ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, Collections.emptyList())))
-            .read(new TypeSafePlcReadRequest<>(String.class, (Address) null)).get();
+            .read(new TypeSafePlcReadRequest<>(String.class, mock(Address.class))).get();
     }
 
 }

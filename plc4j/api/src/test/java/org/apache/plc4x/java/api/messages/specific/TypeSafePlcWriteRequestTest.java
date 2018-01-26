@@ -36,7 +36,7 @@ class TypeSafePlcWriteRequestTest {
 
     @BeforeEach
     void setUp() {
-        writeRequestItemString = new WriteRequestItem<>(String.class, null);
+        writeRequestItemString = new WriteRequestItem<>(String.class, mock(Address.class));
     }
 
     @Test

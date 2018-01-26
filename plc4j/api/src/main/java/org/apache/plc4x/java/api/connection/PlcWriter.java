@@ -49,8 +49,8 @@ public interface PlcWriter {
      */
     @SuppressWarnings("unchecked")
     default <T> CompletableFuture<TypeSafePlcWriteResponse<T>> write(TypeSafePlcWriteRequest<T> writeRequest) {
-        Objects.requireNonNull(writeRequest);
-        return write((PlcWriteRequest) writeRequest).thenApply(TypeSafePlcWriteResponse::new);
+        Objects.requireNonNull(writeRequest, "write request must not be null");
+        return write((PlcWriteRequest) writeRequest).thenApply(TypeSafePlcWriteResponse::of);
     }
 
 }

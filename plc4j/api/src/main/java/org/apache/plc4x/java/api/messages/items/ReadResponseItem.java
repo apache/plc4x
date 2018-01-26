@@ -21,6 +21,7 @@ package org.apache.plc4x.java.api.messages.items;
 import org.apache.plc4x.java.api.types.ResponseCode;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
 
@@ -28,6 +29,7 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
 
     public ReadResponseItem(ReadRequestItem<T> requestItem, ResponseCode responseCode, List<T> values) {
         super(requestItem, responseCode);
+        Objects.requireNonNull(values, "Values must not be null");
         this.values = values;
     }
 

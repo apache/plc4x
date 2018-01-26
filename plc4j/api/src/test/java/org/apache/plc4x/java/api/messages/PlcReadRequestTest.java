@@ -19,20 +19,31 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.model.Address;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static org.mockito.Mockito.mock;
+
 class PlcReadRequestTest {
+
+    Address dummyAddress;
+
+    @BeforeEach
+    void setUp() {
+        dummyAddress = mock(Address.class);
+    }
 
     @Test
     void constuctor() {
         new PlcReadRequest();
-        new PlcReadRequest(new ReadRequestItem<>(String.class, null));
-        new PlcReadRequest(String.class, null);
-        new PlcReadRequest(String.class, null, 13);
-        new PlcReadRequest(Collections.singletonList(new ReadRequestItem<>(String.class, null)));
+        new PlcReadRequest(new ReadRequestItem<>(String.class, dummyAddress));
+        new PlcReadRequest(String.class, dummyAddress);
+        new PlcReadRequest(String.class, dummyAddress, 13);
+        new PlcReadRequest(Collections.singletonList(new ReadRequestItem<>(String.class, dummyAddress)));
     }
 
     @Test
@@ -42,45 +53,45 @@ class PlcReadRequestTest {
         }
         { // one item
             PlcReadRequest.builder()
-                .addItem(String.class, null)
+                .addItem(String.class, dummyAddress)
                 .build();
         }
         { // one item sized
             PlcReadRequest.builder()
-                .addItem(String.class, null, 13)
+                .addItem(String.class, dummyAddress, 13)
                 .build();
         }
         { // one item prebuild
             PlcReadRequest.builder()
-                .addItem(new ReadRequestItem<>(String.class, null))
+                .addItem(new ReadRequestItem<>(String.class, dummyAddress))
                 .build();
         }
         { // two different item
             PlcReadRequest.builder()
-                .addItem(String.class, null)
-                .addItem(Byte.class, null)
+                .addItem(String.class, dummyAddress)
+                .addItem(Byte.class, dummyAddress)
                 .build();
         }
         { // two different item typeSafe
             Assertions.assertThrows(IllegalStateException.class, () -> {
                 PlcReadRequest.builder()
-                    .addItem(String.class, null)
-                    .addItem(Byte.class, null)
+                    .addItem(String.class, dummyAddress)
+                    .addItem(Byte.class, dummyAddress)
                     .build(String.class);
             });
         }
         { // two different item typeSafe
             Assertions.assertThrows(ClassCastException.class, () -> {
                 PlcReadRequest.builder()
-                    .addItem(String.class, null)
-                    .addItem(Byte.class, null)
+                    .addItem(String.class, dummyAddress)
+                    .addItem(Byte.class, dummyAddress)
                     .build(Byte.class);
             });
         }
         { // two equal item typeSafe
             PlcReadRequest.builder()
-                .addItem(Byte.class, null)
-                .addItem(Byte.class, null)
+                .addItem(Byte.class, dummyAddress)
+                .addItem(Byte.class, dummyAddress)
                 .build(Byte.class);
         }
     }

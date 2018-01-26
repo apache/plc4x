@@ -36,6 +36,8 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
 
     @SafeVarargs
     public <T> PlcWriteRequest(Class<T> dataType, Address address, T... values) {
+        Objects.requireNonNull(dataType, "Data type must not be null");
+        Objects.requireNonNull(address, "Address must not be null");
         addItem(new WriteRequestItem<>(dataType, address, values));
     }
 

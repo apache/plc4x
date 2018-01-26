@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
@@ -26,6 +27,8 @@ public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
     private final CompletableFuture<R> responseFuture;
 
     public PlcRequestContainer(T request, CompletableFuture<R> responseFuture) {
+        Objects.requireNonNull(request, "Request must not be null");
+        Objects.requireNonNull(responseFuture, "Response future must not be null");
         this.request = request;
         this.responseFuture = responseFuture;
     }

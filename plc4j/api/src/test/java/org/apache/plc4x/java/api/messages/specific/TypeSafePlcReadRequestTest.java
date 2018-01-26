@@ -36,7 +36,7 @@ class TypeSafePlcReadRequestTest {
 
     @BeforeEach
     void setUp() {
-        readRequestItemString = new ReadRequestItem<>(String.class, null);
+        readRequestItemString = new ReadRequestItem<>(String.class, mock(Address.class));
     }
 
     @Test

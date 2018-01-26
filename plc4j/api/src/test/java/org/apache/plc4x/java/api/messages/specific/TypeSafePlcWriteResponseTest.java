@@ -21,12 +21,13 @@ package org.apache.plc4x.java.api.messages.specific;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.types.ResponseCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
 class TypeSafePlcWriteResponseTest {
@@ -34,29 +35,33 @@ class TypeSafePlcWriteResponseTest {
 
     @BeforeEach
     void setUp() {
-        writeResponseItemString = new WriteResponseItem<>(mock(WriteRequestItem.class), null);
+        writeResponseItemString = new WriteResponseItem<>(mock(WriteRequestItem.class), ResponseCode.OK);
     }
 
     @Test
     void constuctor() {
-        new TypeSafePlcWriteResponse<>(mock(PlcWriteResponse.class));
         new TypeSafePlcWriteResponse<>(mock(TypeSafePlcWriteRequest.class), writeResponseItemString);
         new TypeSafePlcWriteResponse<>(mock(TypeSafePlcWriteRequest.class), Collections.singletonList(writeResponseItemString));
     }
 
     @Test
+    void of() {
+        TypeSafePlcWriteResponse.of(mock(PlcWriteResponse.class, RETURNS_DEEP_STUBS));
+    }
+
+    @Test
     void getRequest() {
-        new TypeSafePlcWriteResponse<>(mock(PlcWriteResponse.class)).getRequest();
+        new TypeSafePlcWriteResponse<>(mock(TypeSafePlcWriteRequest.class), Collections.emptyList()).getRequest();
     }
 
     @Test
     void getResponseItems() {
-        new TypeSafePlcWriteResponse<>(mock(PlcWriteResponse.class)).getResponseItems();
+        new TypeSafePlcWriteResponse<>(mock(TypeSafePlcWriteRequest.class), Collections.emptyList()).getResponseItems();
     }
 
     @Test
     void getResponseItem() {
-        new TypeSafePlcWriteResponse<>(mock(PlcWriteResponse.class)).getResponseItem();
+        new TypeSafePlcWriteResponse<>(mock(TypeSafePlcWriteRequest.class), Collections.emptyList()).getResponseItem();
     }
 
 }

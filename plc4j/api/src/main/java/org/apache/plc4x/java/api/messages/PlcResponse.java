@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.items.RequestItem;
 import org.apache.plc4x.java.api.messages.items.ResponseItem;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -35,6 +36,8 @@ public abstract class PlcResponse<REQUEST extends PlcRequest, RESPONSE_ITEM exte
     private final List<? extends RESPONSE_ITEM> responseItems;
 
     public PlcResponse(REQUEST request, List<? extends RESPONSE_ITEM> responseItems) {
+        Objects.requireNonNull(request, "Request must not be null");
+        Objects.requireNonNull(responseItems, "Response items must not be null");
         this.request = request;
         this.responseItems = responseItems;
     }
@@ -49,7 +52,7 @@ public abstract class PlcResponse<REQUEST extends PlcRequest, RESPONSE_ITEM exte
 
     public Optional<? extends RESPONSE_ITEM> getResponseItem() {
         if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
+            throw new IllegalStateException("Too many items " + getNumberOfItems());
         }
         if (isEmpty()) {
             return Optional.empty();

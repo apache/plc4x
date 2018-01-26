@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.items.RequestItem;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -36,10 +37,12 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
     }
 
     public PlcRequest(List<REQUEST_ITEM> requestItems) {
+        Objects.requireNonNull(requestItems, "Request items must not be null");
         this.requestItems = requestItems;
     }
 
     public void addItem(REQUEST_ITEM readRequestItem) {
+        Objects.requireNonNull(readRequestItem, "Request item must not be null");
         getRequestItems().add(readRequestItem);
     }
 
@@ -49,7 +52,7 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
 
     public Optional<? extends REQUEST_ITEM> getRequestItem() {
         if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
+            throw new IllegalStateException("Too many items " + getNumberOfItems());
         }
         if (isEmpty()) {
             return Optional.empty();
@@ -59,7 +62,7 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
 
     public void setRequestItem(REQUEST_ITEM requestItem) {
         if (isMultiValue()) {
-            throw new IllegalStateException("too many items " + getNumberOfItems());
+            throw new IllegalStateException("Too many items " + getNumberOfItems());
         }
         addItem(requestItem);
     }

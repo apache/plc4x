@@ -26,10 +26,6 @@ import java.util.Optional;
 
 public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
 
-    public TypeSafePlcWriteResponse(PlcWriteResponse plcWriteResponse) {
-        super(plcWriteResponse.getRequest(), plcWriteResponse.getResponseItems());
-    }
-
     public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
         super(request, responseItem);
     }
@@ -55,5 +51,29 @@ public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
     @SuppressWarnings("unchecked")
     public Optional<WriteResponseItem<T>> getResponseItem() {
         return (Optional<WriteResponseItem<T>>) super.getResponseItem();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TypeSafePlcWriteResponse of(PlcWriteResponse plcWriteResponse) {
+        if (plcWriteResponse instanceof TypeSafePlcWriteResponse) {
+            return (TypeSafePlcWriteResponse) plcWriteResponse;
+        }
+        if (plcWriteResponse.getRequest() instanceof TypeSafePlcWriteRequest) {
+            return new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteResponse.getRequest(), plcWriteResponse.getResponseItems());
+        }
+        Class<?> referenceType = null;
+        for (WriteResponseItem<?> writeResponseItem : plcWriteResponse.getResponseItems()) {
+            Class<?> foundDataType = writeResponseItem.getRequestItem().getDatatype();
+            if (referenceType == null) {
+                referenceType = foundDataType;
+            }
+            if (referenceType != foundDataType) {
+                throw new IllegalArgumentException("invalid types found " + foundDataType + ". Required " + referenceType);
+            }
+        }
+        if (referenceType == null) {
+            referenceType = Object.class;
+        }
+        return new TypeSafePlcWriteResponse(new TypeSafePlcWriteRequest(referenceType, plcWriteResponse.getRequest()), plcWriteResponse.getResponseItems());
     }
 }
