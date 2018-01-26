@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.model.commands.types;
 
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
+import java.nio.ByteBuffer;
+
 public class WriteLength extends ByteValue {
 
     public static final int NUM_BYTES = 4;
@@ -31,5 +33,9 @@ public class WriteLength extends ByteValue {
 
     public static WriteLength of(byte... values) {
         return new WriteLength(values);
+    }
+
+    public static WriteLength of(int length) {
+        return new WriteLength(ByteBuffer.allocate(NUM_BYTES).putInt(length).array());
     }
 }

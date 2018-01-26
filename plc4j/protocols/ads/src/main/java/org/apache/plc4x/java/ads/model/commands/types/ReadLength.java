@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.model.commands.types;
 
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
+import java.nio.ByteBuffer;
+
 public class ReadLength extends ByteValue {
 
     public static final int NUM_BYTES = 4;
@@ -27,6 +29,10 @@ public class ReadLength extends ByteValue {
     ReadLength(byte... value) {
         super(value);
         assertLength(NUM_BYTES);
+    }
+
+    public static ReadLength of(int length) {
+        return new ReadLength(ByteBuffer.allocate(NUM_BYTES).putInt(length).array());
     }
 
     public static ReadLength of(byte... values) {

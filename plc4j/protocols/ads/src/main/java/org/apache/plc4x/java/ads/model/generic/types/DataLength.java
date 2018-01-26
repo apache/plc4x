@@ -31,7 +31,11 @@ public class DataLength extends ByteValue {
         assertLength(NUM_BYTES);
     }
 
+    public static DataLength of(byte... values) {
+        return new DataLength(values);
+    }
+
     public static DataLength of(int length) {
-        return new DataLength(ByteBuffer.allocate(4).putInt(length).array());
+        return new DataLength(ByteBuffer.allocate(NUM_BYTES).putInt(length).array());
     }
 }

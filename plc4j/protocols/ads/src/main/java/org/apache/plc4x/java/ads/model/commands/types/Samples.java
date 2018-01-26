@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.model.commands.types;
 
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
+import java.nio.ByteBuffer;
+
 public class Samples extends ByteValue {
 
     public static final int NUM_BYTES = 4;
@@ -27,6 +29,10 @@ public class Samples extends ByteValue {
     Samples(byte... values) {
         super(values);
         assertLength(NUM_BYTES);
+    }
+
+    public static Samples of(int numberOfSamples) {
+        return new Samples(ByteBuffer.allocate(NUM_BYTES).putInt(numberOfSamples).array());
     }
 
     public static Samples of(byte... values) {

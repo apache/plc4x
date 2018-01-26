@@ -31,6 +31,10 @@ public class AMSPort extends ByteValue {
         assertLength(NUM_BYTES);
     }
 
+    public static AMSPort of(byte... values) {
+        return new AMSPort(values);
+    }
+
     public static AMSPort of(int port) {
         return new AMSPort(ByteBuffer.allocate(NUM_BYTES).putInt(port).array());
     }

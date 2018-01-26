@@ -26,11 +26,14 @@ public class Length extends ByteValue {
 
     public static final int NUM_BYTES = 4;
 
-    Length(byte... value) {
-        super(value);
+    Length(byte... values) {
+        super(values);
         assertLength(NUM_BYTES);
     }
 
+    public static Length of(byte... values) {
+        return new Length(values);
+    }
     public static Length of(int length) {
         return new Length(ByteBuffer.allocate(NUM_BYTES).putInt(length).array());
     }

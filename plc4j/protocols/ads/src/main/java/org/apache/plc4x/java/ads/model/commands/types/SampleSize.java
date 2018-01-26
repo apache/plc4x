@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.model.commands.types;
 
 import org.apache.plc4x.java.ads.model.util.ByteValue;
 
+import java.nio.ByteBuffer;
+
 public class SampleSize extends ByteValue {
 
     public static final int NUM_BYTES = 4;
@@ -27,6 +29,10 @@ public class SampleSize extends ByteValue {
     SampleSize(byte... value) {
         super(value);
         assertLength(NUM_BYTES);
+    }
+
+    public static SampleSize of(int size) {
+        return new SampleSize(ByteBuffer.allocate(NUM_BYTES).putInt(size).array());
     }
 
     public static SampleSize of(byte... values) {
