@@ -35,11 +35,11 @@
   <description>An implementation of a Netty Channel that allows implementing protocols below the TCP and UCP level.</description>
 
   <properties>
-    <pcap4j.vewrsion>1.7.3</pcap4j.vewrsion>
+    <pcap4j.version>1.7.3</pcap4j.version>
   </properties>
 
   <dependencies>
-    <dependency>
+    <!--dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
       <version>0.0.1-SNAPSHOT</version>
@@ -48,27 +48,22 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-    </dependency>
+    </dependency-->
 
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>
-      <version>${pcap4j.vewrsion}</version>
+      <version>${pcap4j.version}</version>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-packetfactory-static</artifactId>
-      <version>${pcap4j.vewrsion}</version>
-    </dependency>
+      <version>${pcap4j.version}</version>
+    </dependency-->
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

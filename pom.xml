@@ -887,6 +887,11 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </dependency>
+        <dependency>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+          <scope>test</scope>
+        </dependency>
 
         <dependency>
           <groupId>org.junit.jupiter</groupId>
@@ -970,6 +975,7 @@
                     <ignoredDependency>org.junit.*:*</ignoredDependency>
                     <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
                     <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
+                    <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
                   </ignoredDependencies>
                 </configuration>
               </execution>
