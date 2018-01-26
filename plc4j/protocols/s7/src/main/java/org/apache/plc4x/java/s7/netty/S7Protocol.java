@@ -320,9 +320,12 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
                 return null;
             case READ_VAR:
             case WRITE_VAR:
-                List<VarParameterItem> varParamameter = null;
-                if (isResponse) {
-                    varParamameter = parseReadWriteVarParameter(in);
+                List<VarParameterItem> varParamameter;
+                byte numItems = in.readByte();
+                if (!isResponse) {
+                    varParamameter = parseReadWriteVarParameter(in, numItems);
+                } else {
+                    varParamameter = Collections.emptyList();
                 }
                 return new VarParameter(parameterType, varParamameter);
             case SETUP_COMMUNICATION:
@@ -340,10 +343,8 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
         return null;
     }
 
-    private List<VarParameterItem> parseReadWriteVarParameter(ByteBuf in) {
+    private List<VarParameterItem> parseReadWriteVarParameter(ByteBuf in, byte numItems) {
         List<VarParameterItem> items = new LinkedList<>();
-        byte numItems = in.readByte();
-
         for (int i = 0; i < numItems; i++) {
             SpecificationType specificationType = SpecificationType.valueOf(in.readByte());
             // Length of the rest of this item.
