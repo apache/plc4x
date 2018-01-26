@@ -132,7 +132,6 @@ public class RawSocket {
             );
 
             Packet p = etherBuilder.build();
-            System.out.println(p.toString());
             sendHandle.sendPacket(p);
         } catch (PcapNativeException | NotOpenException e) {
             throw new RawSocketException("Error sending packet.", e);
