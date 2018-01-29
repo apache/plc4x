@@ -111,8 +111,8 @@
     <!-- Integration modules for other frameworks -->
     <module>integrations</module>
 
-    <!-- Example applications -->
-    <module>applications</module>
+    <!-- Examples -->
+    <module>examples</module>
   </modules>
 
   <prerequisites>

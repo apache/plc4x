@@ -1,0 +1,60 @@
+/*
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+package org.apache.plc4x.java.examples.dummydriver;
+
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.examples.dummydriver.connection.DummyConnection;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class DummyDriver implements PlcDriver {
+
+    private static final Pattern RAW_URI_PATTERN = Pattern.compile("^raw://(?<host>.*)");
+
+    @Override
+    public String getProtocolCode() {
+        return "raw";
+    }
+
+    @Override
+    public String getProtocolName() {
+        return "RAW";
+    }
+
+    @Override
+    public PlcConnection connect(String url) throws PlcConnectionException {
+        Matcher matcher = RAW_URI_PATTERN.matcher(url);
+        if (!matcher.matches()) {
+            throw new PlcConnectionException(
+                "Connection url doesn't match the format 'raw://{host|ip}'");
+        }
+        String host = matcher.group("host");
+        return new DummyConnection(host);
+    }
+
+    @Override
+    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
+        throw new PlcConnectionException("RAW connections don't support authentication.");
+    }
+
+}
