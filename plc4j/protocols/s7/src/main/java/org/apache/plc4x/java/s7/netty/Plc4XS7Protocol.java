@@ -63,7 +63,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
         PlcRequest request = msg.getRequest();
         if (request instanceof PlcReadRequest) {
-            encodeREadRequest(msg, out);
+            encodeReadRequest(msg, out);
         } else if (request instanceof PlcWriteRequest) {
             encodeWriteRequest(msg, out);
         }
@@ -110,7 +110,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         out.add(s7WriteRequest);
     }
 
-    private void encodeREadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
         List<VarParameterItem> parameterItems = new LinkedList<>();
 
         PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
