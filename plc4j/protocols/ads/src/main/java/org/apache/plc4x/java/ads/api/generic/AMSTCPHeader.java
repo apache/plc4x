@@ -32,11 +32,13 @@ public class AMSTCPHeader implements ByteReadable {
 
     private final Length length;
 
-    public AMSTCPHeader(Length length) {
+    AMSTCPHeader(Length length) {
         this.reserved = Reserved.CONSTANT;
         this.length = length;
     }
 
+    // TODO: this should only be used when deserializing.
+    // TODO: When sending this needs to be calculated
     public static AMSTCPHeader of(int length) {
         return new AMSTCPHeader(Length.of(length));
     }
