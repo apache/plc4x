@@ -47,3 +47,7 @@ under the License.
 .protocolParameter {
     background-color: #80DED9;
 }
+
+#bannerRight > img {
+    width: 400px;
+}
