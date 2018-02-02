@@ -37,13 +37,12 @@ import org.apache.plc4x.java.api.model.Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
-    private static final int TCP_PORT = 48898;
+    public static final int TCP_PORT = 48898;
 
     private final String hostName;
 
@@ -95,11 +94,6 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
         workerGroup = new NioEventLoopGroup();
 
         try {
-            // As we don't just want to wait till the connection is established,
-            // define a future we can use to signal back that the ads session is
-            // finished initializing.
-            CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
-
             InetAddress serverInetAddress = InetAddress.getByName(hostName);
 
             Bootstrap bootstrap = new Bootstrap();
@@ -120,14 +114,10 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
             f.awaitUninterruptibly();
             // Wait till the session is finished initializing.
             channel = f.channel();
-
-            sessionSetupCompleteFuture.get();
         } catch (UnknownHostException e) {
             throw new PlcConnectionException("Unknown Host " + hostName, e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new PlcConnectionException(e);
-        } catch (ExecutionException e) {
             throw new PlcConnectionException(e);
         }
     }

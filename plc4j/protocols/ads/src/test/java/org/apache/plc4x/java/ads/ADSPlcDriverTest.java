@@ -21,24 +21,29 @@ package org.apache.plc4x.java.ads;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.ads.connection.ADSPlcConnection;
+import org.apache.plc4x.java.ads.util.ExtendWithTcpHexDumper;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@ExtendWithTcpHexDumper(value = ADSPlcConnection.TCP_PORT, shutdownTimeout = 3)
 public class ADSPlcDriverTest {
 
-    @Disabled("We first have to find/build some tool to help test these connections.")
+    private static final Logger logger = LoggerFactory.getLogger(ADSPlcDriverTest.class);
+
     @Test
     @Tag("fast")
-    void getConnection() throws PlcException {
+    void getConnection() throws Exception {
         ADSPlcConnection adsConnection = (ADSPlcConnection)
             new PlcDriverManager().getConnection("ads://localhost/0.0.0.0.0.0:13");
         Assertions.assertEquals(adsConnection.getHostName(), "localhost");
         Assertions.assertEquals(adsConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
         Assertions.assertEquals(adsConnection.getTargetAmsPort().toString(), "13");
+        adsConnection.close();
     }
 
     /**
