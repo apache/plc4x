@@ -38,12 +38,14 @@ public class AMSPort extends ByteValue {
         return new AMSPort(values);
     }
 
-    public static AMSPort of(short port) {
-        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).putShort(port).array());
-    }
-
     public static AMSPort of(int port) {
-        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).put((byte) (port & 0xffff)).array());
+        if (port < 0 || port > 65535) {
+            throw new IllegalArgumentException("Value must between 0 and 65535");
+        }
+        return new AMSPort(ByteBuffer.allocate(NUM_BYTES)
+            .put((byte) (port >> 8 & 0xff))
+            .put((byte) (port & 0xff))
+            .array());
     }
 
     public static AMSPort of(String port) {
@@ -55,6 +57,6 @@ public class AMSPort extends ByteValue {
 
     @Override
     public String toString() {
-        return "" + getBytes()[0];
+        return "" + (getBytes()[0] << 8 | getBytes()[1]);
     }
 }
