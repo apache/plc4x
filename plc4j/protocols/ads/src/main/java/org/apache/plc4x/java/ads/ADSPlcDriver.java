@@ -37,9 +37,10 @@ import java.util.regex.Pattern;
 public class ADSPlcDriver implements PlcDriver {
 
     private static final Pattern ADS_ADDRESS_PATTERN =
-        Pattern.compile("^(?<targetAmsNetId>" + AMSNetId.AMS_NET_ID_PATTERN + "):(?<targetAmsPort>" + AMSPort.AMS_PORT_PATTERN + ")"
-            + "/"
-            + "(?<sourceAmsNetId>" + AMSNetId.AMS_NET_ID_PATTERN + "):(?<sourceAmsPort>" + AMSPort.AMS_PORT_PATTERN + ")");
+        Pattern.compile("(?<targetAmsNetId>" + AMSNetId.AMS_NET_ID_PATTERN + "):(?<targetAmsPort>" + AMSPort.AMS_PORT_PATTERN + ")"
+            + "(/"
+            + "(?<sourceAmsNetId>" + AMSNetId.AMS_NET_ID_PATTERN + "):(?<sourceAmsPort>" + AMSPort.AMS_PORT_PATTERN + ")"
+            + ")?");
     private static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads://(?<host>\\w+)/" + ADS_ADDRESS_PATTERN);
 
     @Override
@@ -57,13 +58,15 @@ public class ADSPlcDriver implements PlcDriver {
         Matcher matcher = ADS_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 'ads://{host|ip}/{targetAmsNetId}:{targetAmsPort}/{sourceAmsNetId}:{sourceAmsPort}'");
+                "Connection url " + url + " doesn't match 'ads://{host|ip}/{targetAmsNetId}:{targetAmsPort}/{sourceAmsNetId}:{sourceAmsPort}' RAW:" + ADS_URI_PATTERN);
         }
         String host = matcher.group("host");
         AMSNetId targetAmsNetId = AMSNetId.of(matcher.group("targetAmsNetId"));
         AMSPort targetAmsPort = AMSPort.of(matcher.group("targetAmsPort"));
-        AMSNetId sourceAmsNetId = AMSNetId.of(matcher.group("sourceAmsNetId"));
-        AMSPort sourceAmsPort = AMSPort.of(matcher.group("sourceAmsPort"));
+        String sourceAmsNetIdString = matcher.group("sourceAmsNetId");
+        AMSNetId sourceAmsNetId = sourceAmsNetIdString != null ? AMSNetId.of(sourceAmsNetIdString) : null;
+        String sourceAmsPortString = matcher.group("sourceAmsPort");
+        AMSPort sourceAmsPort = sourceAmsPortString != null ? AMSPort.of(sourceAmsPortString) : null;
         return new ADSPlcConnection(host, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 

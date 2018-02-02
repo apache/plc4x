@@ -63,4 +63,10 @@ public class AMSNetId extends ByteValue {
         byte[] bytes = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::byteValue).toArray(Byte[]::new));
         return new AMSNetId(bytes);
     }
+
+    @Override
+    public String toString() {
+        byte[] bytes = getBytes();
+        return bytes[0] + "." + bytes[1] + "." + bytes[2] + "." + bytes[3] + "." + bytes[4] + "." + bytes[5];
+    }
 }

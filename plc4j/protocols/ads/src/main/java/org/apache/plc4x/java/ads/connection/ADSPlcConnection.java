@@ -47,19 +47,23 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
 
     private final String hostName;
 
-    private final int pduSize;
-
     private final AMSNetId targetAmsNetId;
+
     private final AMSPort targetAmsPort;
+
     private final AMSNetId sourceAmsNetId;
+
     private final AMSPort sourceAmsPort;
 
     private EventLoopGroup workerGroup;
     private Channel channel;
 
+    public ADSPlcConnection(String hostName, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
+        this(hostName, targetAmsNetId, targetAmsPort, null, null);
+    }
+
     public ADSPlcConnection(String hostName, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
         this.hostName = hostName;
-        this.pduSize = 1024;
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
@@ -70,8 +74,20 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
         return hostName;
     }
 
-    public int getPduSize() {
-        return pduSize;
+    public AMSNetId getTargetAmsNetId() {
+        return targetAmsNetId;
+    }
+
+    public AMSPort getTargetAmsPort() {
+        return targetAmsPort;
+    }
+
+    public AMSNetId getSourceAmsNetId() {
+        return sourceAmsNetId;
+    }
+
+    public AMSPort getSourceAmsPort() {
+        return sourceAmsPort;
     }
 
     @Override

@@ -39,13 +39,18 @@ public class AMSPort extends ByteValue {
     }
 
     public static AMSPort of(int port) {
-        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).putInt(port).array());
+        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).put((byte) (port & 0xff)).array());
     }
 
     public static AMSPort of(String port) {
         if (!AMS_PORT_PATTERN.matcher(port).matches()) {
             throw new IllegalArgumentException(port + " must match " + AMS_PORT_PATTERN);
         }
-        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).putInt(Integer.parseInt(port)).array());
+        return of(Integer.parseInt(port));
+    }
+
+    @Override
+    public String toString() {
+        return "" + getBytes()[0];
     }
 }
