@@ -38,6 +38,13 @@ public class ByteValue implements ByteReadable {
         }
     }
 
+    protected static void checkUnsignedBounds(long value, int numberOfBytes) {
+        double upperBound = Math.pow(2, 8 * numberOfBytes);
+        if (value < 0 || value >= upperBound) {
+            throw new IllegalArgumentException("Value must between 0 and " + upperBound + ". Was " + value);
+        }
+    }
+
     @Override
     public byte[] getBytes() {
         return value;

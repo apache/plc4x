@@ -39,9 +39,7 @@ public class AMSPort extends ByteValue {
     }
 
     public static AMSPort of(int port) {
-        if (port < 0 || port > 65535) {
-            throw new IllegalArgumentException("Value must between 0 and 65535");
-        }
+        checkUnsignedBounds(port, NUM_BYTES);
         return new AMSPort(ByteBuffer.allocate(NUM_BYTES)
             .put((byte) (port >> 8 & 0xff))
             .put((byte) (port & 0xff))
