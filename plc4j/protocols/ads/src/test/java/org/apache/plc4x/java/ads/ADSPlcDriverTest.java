@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ExtendWithTcpHexDumper(port = ADSPlcConnection.TCP_PORT, shutdownTimeout = 3)
+@ExtendWithTcpHexDumper(shutdownTimeout = 3)
 public class ADSPlcDriverTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ADSPlcDriverTest.class);
@@ -45,7 +45,7 @@ public class ADSPlcDriverTest {
     @Tag("fast")
     void getConnection() throws Exception {
         ADSPlcConnection adsConnection = (ADSPlcConnection)
-            new PlcDriverManager().getConnection("ads://localhost/0.0.0.0.0.0:13");
+            new PlcDriverManager().getConnection("ads://localhost:" + usedPort + "/0.0.0.0.0.0:13");
         Assertions.assertEquals(adsConnection.getHostName(), "localhost");
         Assertions.assertEquals(adsConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
         Assertions.assertEquals(adsConnection.getTargetAmsPort().toString(), "13");

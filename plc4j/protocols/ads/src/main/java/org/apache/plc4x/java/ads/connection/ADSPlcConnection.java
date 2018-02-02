@@ -36,6 +36,7 @@ import org.apache.plc4x.java.api.model.Address;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +46,8 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
     public static final int TCP_PORT = 48898;
 
     private final String hostName;
+
+    private final Optional<Integer> suppliedPort;
 
     private final AMSNetId targetAmsNetId;
 
@@ -61,8 +64,18 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
         this(hostName, targetAmsNetId, targetAmsPort, null, null);
     }
 
+    public ADSPlcConnection(String hostName, Integer port, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
+        this(hostName, port, targetAmsNetId, targetAmsPort, null, null);
+    }
+
+
     public ADSPlcConnection(String hostName, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
+        this(hostName, null, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+    }
+
+    public ADSPlcConnection(String hostName, Integer port, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
         this.hostName = hostName;
+        this.suppliedPort = Optional.ofNullable(port);
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
@@ -110,7 +123,7 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
                 }
             });
             // Start the client.
-            ChannelFuture f = bootstrap.connect(serverInetAddress, TCP_PORT).sync();
+            ChannelFuture f = bootstrap.connect(serverInetAddress, suppliedPort.orElse(TCP_PORT)).sync();
             f.awaitUninterruptibly();
             // Wait till the session is finished initializing.
             channel = f.channel();

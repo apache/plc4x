@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.ads;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.connection.ADSPlcConnection;
@@ -41,7 +42,7 @@ public class ADSPlcDriver implements PlcDriver {
             + "(/"
             + "(?<sourceAmsNetId>" + AMSNetId.AMS_NET_ID_PATTERN + "):(?<sourceAmsPort>" + AMSPort.AMS_PORT_PATTERN + ")"
             + ")?");
-    private static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads://(?<host>\\w+)/" + ADS_ADDRESS_PATTERN);
+    private static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads://(?<host>\\w+)(:(?<port>\\d*))?/" + ADS_ADDRESS_PATTERN);
 
     @Override
     public String getProtocolCode() {
@@ -61,13 +62,15 @@ public class ADSPlcDriver implements PlcDriver {
                 "Connection url " + url + " doesn't match 'ads://{host|ip}/{targetAmsNetId}:{targetAmsPort}/{sourceAmsNetId}:{sourceAmsPort}' RAW:" + ADS_URI_PATTERN);
         }
         String host = matcher.group("host");
+        String portString = matcher.group("port");
+        Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
         AMSNetId targetAmsNetId = AMSNetId.of(matcher.group("targetAmsNetId"));
         AMSPort targetAmsPort = AMSPort.of(matcher.group("targetAmsPort"));
         String sourceAmsNetIdString = matcher.group("sourceAmsNetId");
-        AMSNetId sourceAmsNetId = sourceAmsNetIdString != null ? AMSNetId.of(sourceAmsNetIdString) : null;
+        AMSNetId sourceAmsNetId = StringUtils.isNotBlank(sourceAmsNetIdString) ? AMSNetId.of(sourceAmsNetIdString) : null;
         String sourceAmsPortString = matcher.group("sourceAmsPort");
-        AMSPort sourceAmsPort = sourceAmsPortString != null ? AMSPort.of(sourceAmsPortString) : null;
-        return new ADSPlcConnection(host, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+        AMSPort sourceAmsPort = StringUtils.isNotBlank(sourceAmsPortString) ? AMSPort.of(sourceAmsPortString) : null;
+        return new ADSPlcConnection(host, port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 
     @Override
