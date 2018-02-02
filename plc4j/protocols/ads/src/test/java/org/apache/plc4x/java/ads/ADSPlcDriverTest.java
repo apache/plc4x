@@ -30,10 +30,16 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ExtendWithTcpHexDumper(value = ADSPlcConnection.TCP_PORT, shutdownTimeout = 3)
+@ExtendWithTcpHexDumper(port = ADSPlcConnection.TCP_PORT, shutdownTimeout = 3)
 public class ADSPlcDriverTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ADSPlcDriverTest.class);
+
+    int usedPort;
+
+    ADSPlcDriverTest(int port) {
+        usedPort = port;
+    }
 
     @Test
     @Tag("fast")

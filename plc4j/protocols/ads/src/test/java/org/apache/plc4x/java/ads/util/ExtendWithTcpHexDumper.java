@@ -30,7 +30,7 @@ import static java.lang.annotation.ElementType.*;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(TcpHexDumper.class)
 public @interface ExtendWithTcpHexDumper {
-    int value();
+    int port() default 0;
 
     int shutdownTimeout() default 10;
 }

@@ -20,9 +20,7 @@ package org.apache.plc4x.java.ads.util;
 
 import org.apache.commons.io.HexDump;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +33,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback {
+public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
     private static final Logger logger = LoggerFactory.getLogger(TcpHexDumper.class);
 
     private ExecutorService pool = Executors.newCachedThreadPool();
+
+    private Integer portToUse;
 
     private ServerSocket serverSocket;
 
@@ -96,8 +96,43 @@ public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
+        init(initPortToUse(context));
+        shutdownTimeout = initShutdownTimeout(context);
+    }
+
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return parameterContext.getParameter().getType()
+            .equals(int.class);
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        try {
+            return initPortToUse(extensionContext);
+        } catch (IOException e) {
+            throw new ParameterResolutionException("Could not find a free port", e);
+        }
+    }
+
+    private int initShutdownTimeout(ExtensionContext context) {
         ExtendWithTcpHexDumper annotation = context.getRequiredTestClass().getAnnotation(ExtendWithTcpHexDumper.class);
-        init(annotation.value());
-        shutdownTimeout = annotation.shutdownTimeout();
+        return annotation.shutdownTimeout();
+    }
+
+    private int initPortToUse(ExtensionContext context) throws IOException {
+        if (portToUse == null) {
+            ExtendWithTcpHexDumper annotation = context.getRequiredTestClass().getAnnotation(ExtendWithTcpHexDumper.class);
+            int port = annotation.port();
+            portToUse = port != 0 ? port : findFreePort();
+        }
+        return portToUse;
+    }
+
+    private static int findFreePort() throws IOException {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            socket.setReuseAddress(true);
+            return socket.getLocalPort();
+        }
     }
 }
