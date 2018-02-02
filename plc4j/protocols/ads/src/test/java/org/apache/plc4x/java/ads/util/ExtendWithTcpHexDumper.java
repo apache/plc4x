@@ -30,7 +30,13 @@ import static java.lang.annotation.ElementType.*;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(TcpHexDumper.class)
 public @interface ExtendWithTcpHexDumper {
+    /**
+     * Can be used to set a fixed port for the dumper, otherwise he will use a random port.
+     */
     int port() default 0;
 
+    /**
+     * The timeout for the pool shutdown. After this no dumps will be printed anymore.
+     */
     int shutdownTimeout() default 10;
 }
