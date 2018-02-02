@@ -32,13 +32,13 @@ public class ByteValue implements ByteReadable {
         this.value = value;
     }
 
-    protected void assertLength(int length) {
+    public void assertLength(int length) {
         if (value.length != length) {
             throw new IllegalArgumentException("Expected length " + length + " got " + value.length);
         }
     }
 
-    protected static void checkUnsignedBounds(long value, int numberOfBytes) {
+    public static void checkUnsignedBounds(long value, int numberOfBytes) {
         double upperBound = Math.pow(2, 8 * numberOfBytes);
         if (value < 0 || value >= upperBound) {
             throw new IllegalArgumentException("Value must between 0 and " + upperBound + ". Was " + value);

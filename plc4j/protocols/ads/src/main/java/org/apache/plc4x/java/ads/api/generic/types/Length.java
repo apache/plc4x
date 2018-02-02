@@ -31,10 +31,26 @@ public class Length extends ByteValue {
         assertLength(NUM_BYTES);
     }
 
+    public static Length of(long length) {
+        checkUnsignedBounds(length, NUM_BYTES);
+        return new Length(ByteBuffer.allocate(NUM_BYTES)
+            .put((byte) (length >> 24 & 0xff))
+            .put((byte) (length >> 16 & 0xff))
+            .put((byte) (length >> 8 & 0xff))
+            .put((byte) (length & 0xff))
+            .array());
+    }
+
+    public static Length of(String length) {
+        return of(Long.parseLong(length));
+    }
+
     public static Length of(byte... values) {
         return new Length(values);
     }
-    public static Length of(int length) {
-        return new Length(ByteBuffer.allocate(NUM_BYTES).putInt(length).array());
+
+    @Override
+    public String toString() {
+        return "" + (getBytes()[0] << 24 | getBytes()[1] << 16 | getBytes()[2] << 8 | getBytes()[3]);
     }
 }

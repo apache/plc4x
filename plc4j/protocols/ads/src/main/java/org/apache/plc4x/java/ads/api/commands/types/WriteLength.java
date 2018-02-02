@@ -31,11 +31,26 @@ public class WriteLength extends ByteValue {
         assertLength(NUM_BYTES);
     }
 
+    public static WriteLength of(long length) {
+        checkUnsignedBounds(length, NUM_BYTES);
+        return new WriteLength(ByteBuffer.allocate(NUM_BYTES)
+            .put((byte) (length >> 24 & 0xff))
+            .put((byte) (length >> 16 & 0xff))
+            .put((byte) (length >> 8 & 0xff))
+            .put((byte) (length & 0xff))
+            .array());
+    }
+
+    public static WriteLength of(String writeLength) {
+        return of(Long.parseLong(writeLength));
+    }
+
     public static WriteLength of(byte... values) {
         return new WriteLength(values);
     }
 
-    public static WriteLength of(int length) {
-        return new WriteLength(ByteBuffer.allocate(NUM_BYTES).putInt(length).array());
+    @Override
+    public String toString() {
+        return "" + (getBytes()[0] << 24 | getBytes()[1] << 16 | getBytes()[2] << 8 | getBytes()[3]);
     }
 }

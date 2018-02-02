@@ -31,11 +31,26 @@ public class SampleSize extends ByteValue {
         assertLength(NUM_BYTES);
     }
 
-    public static SampleSize of(int size) {
-        return new SampleSize(ByteBuffer.allocate(NUM_BYTES).putInt(size).array());
+    public static SampleSize of(long sampleSize) {
+        checkUnsignedBounds(sampleSize, NUM_BYTES);
+        return new SampleSize(ByteBuffer.allocate(NUM_BYTES)
+            .put((byte) (sampleSize >> 24 & 0xff))
+            .put((byte) (sampleSize >> 16 & 0xff))
+            .put((byte) (sampleSize >> 8 & 0xff))
+            .put((byte) (sampleSize & 0xff))
+            .array());
+    }
+
+    public static SampleSize of(String sampleSize) {
+        return of(Long.parseLong(sampleSize));
     }
 
     public static SampleSize of(byte... values) {
         return new SampleSize(values);
+    }
+
+    @Override
+    public String toString() {
+        return "" + (getBytes()[0] << 24 | getBytes()[1] << 16 | getBytes()[2] << 8 | getBytes()[3]);
     }
 }

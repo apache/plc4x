@@ -31,11 +31,26 @@ public class DataLength extends ByteValue {
         assertLength(NUM_BYTES);
     }
 
+    public static DataLength of(long length) {
+        checkUnsignedBounds(length, NUM_BYTES);
+        return new DataLength(ByteBuffer.allocate(NUM_BYTES)
+            .put((byte) (length >> 24 & 0xff))
+            .put((byte) (length >> 16 & 0xff))
+            .put((byte) (length >> 8 & 0xff))
+            .put((byte) (length & 0xff))
+            .array());
+    }
+
+    public static DataLength of(String length) {
+        return of(Long.parseLong(length));
+    }
+
     public static DataLength of(byte... values) {
         return new DataLength(values);
     }
 
-    public static DataLength of(int length) {
-        return new DataLength(ByteBuffer.allocate(NUM_BYTES).putInt(length).array());
+    @Override
+    public String toString() {
+        return "" + (getBytes()[0] << 24 | getBytes()[1] << 16 | getBytes()[2] << 8 | getBytes()[3]);
     }
 }

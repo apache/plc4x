@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.api.generic.types;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
+import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.ByteBuffer;
 
@@ -38,14 +39,20 @@ public enum Command implements ByteReadable {
     /**
      * Other commands are not defined or are used internally. Therefore the Command Id  is only allowed to contain the above enumerated values!
      */
-    UNKNOWN(0xffff);
+    UNKNOWN(0xffff_ffff);
 
     public static final int NUM_BYTES = 4;
 
     final byte[] value;
 
-    Command(int value) {
-        this.value = ByteBuffer.allocate(NUM_BYTES).putInt(value).array();
+    Command(long value) {
+        ByteValue.checkUnsignedBounds(value, NUM_BYTES);
+        this.value = ByteBuffer.allocate(NUM_BYTES)
+            .put((byte) (value >> 24 & 0xff))
+            .put((byte) (value >> 16 & 0xff))
+            .put((byte) (value >> 8 & 0xff))
+            .put((byte) (value & 0xff))
+            .array();
     }
 
     @Override
