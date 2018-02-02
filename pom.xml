@@ -816,6 +816,14 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changelog-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changelog</report>
+              <report>file-activity</report>
+            </reports>
+          </reportSet>
+        </reportSets>
         <configuration>
           <!-- Automatically link Jira issues -->
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
