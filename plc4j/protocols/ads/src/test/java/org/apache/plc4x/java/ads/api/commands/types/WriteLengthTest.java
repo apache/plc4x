@@ -37,7 +37,7 @@ class WriteLengthTest {
         assertByte(WriteLength.of(1), "0x00000001");
         assertByte(WriteLength.of(65535), "0x0000ffff");
         Assertions.assertThrows(IllegalArgumentException.class, () -> WriteLength.of(-1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> WriteLength.of(Long.valueOf("4294967296")));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> WriteLength.of(4294967296L));
     }
 
     @Test

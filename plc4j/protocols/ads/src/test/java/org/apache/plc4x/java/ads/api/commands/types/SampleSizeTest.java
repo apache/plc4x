@@ -37,7 +37,7 @@ class SampleSizeTest {
         assertByte(SampleSize.of(1), "0x00000001");
         assertByte(SampleSize.of(65535), "0x0000ffff");
         Assertions.assertThrows(IllegalArgumentException.class, () -> SampleSize.of(-1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> SampleSize.of(Long.valueOf("4294967296")));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> SampleSize.of(4294967296L));
     }
 
     @Test

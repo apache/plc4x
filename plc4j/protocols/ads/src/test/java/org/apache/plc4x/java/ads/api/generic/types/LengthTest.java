@@ -37,7 +37,7 @@ class LengthTest {
         assertByte(Length.of(1), "0x00000001");
         assertByte(Length.of(65535), "0x0000ffff");
         Assertions.assertThrows(IllegalArgumentException.class, () -> Length.of(-1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> Length.of(Long.valueOf("4294967296")));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Length.of(4294967296L));
     }
 
     @Test

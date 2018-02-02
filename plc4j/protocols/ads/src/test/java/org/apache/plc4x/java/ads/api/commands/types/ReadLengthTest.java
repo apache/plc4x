@@ -22,7 +22,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ReadReadLengthTest {
+class ReadLengthTest {
     byte NULL_BYTE = 0x0;
 
     @Test
@@ -36,7 +36,7 @@ class ReadReadLengthTest {
         assertByte(ReadLength.of(1), "0x00000001");
         assertByte(ReadLength.of(65535), "0x0000ffff");
         Assertions.assertThrows(IllegalArgumentException.class, () -> ReadLength.of(-1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> ReadLength.of(Long.valueOf("4294967296")));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> ReadLength.of(4294967296L));
     }
 
     @Test
