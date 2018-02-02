@@ -21,10 +21,13 @@ package org.apache.plc4x.java.ads.api.generic.types;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.ByteBuffer;
+import java.util.regex.Pattern;
 
 public class AMSPort extends ByteValue {
 
-    private static final int NUM_BYTES = 2;
+    public static final Pattern AMS_PORT_PATTERN = Pattern.compile("\\d+");
+
+    public static final int NUM_BYTES = 2;
 
     AMSPort(byte... value) {
         super(value);
@@ -37,5 +40,12 @@ public class AMSPort extends ByteValue {
 
     public static AMSPort of(int port) {
         return new AMSPort(ByteBuffer.allocate(NUM_BYTES).putInt(port).array());
+    }
+
+    public static AMSPort of(String port) {
+        if (!AMS_PORT_PATTERN.matcher(port).matches()) {
+            throw new IllegalArgumentException(port + " must match " + AMS_PORT_PATTERN);
+        }
+        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).putInt(Integer.parseInt(port)).array());
     }
 }

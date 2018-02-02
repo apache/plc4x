@@ -37,9 +37,9 @@ import java.util.regex.Pattern;
 public class ADSPlcDriver implements PlcDriver {
 
     private static final Pattern ADS_ADDRESS_PATTERN =
-        Pattern.compile("^(?<targetAmsNetId>" + AMSNetId.AMS_NET_ID_REGEX + "):(?<targetAmsPort>" + AMSPort.AMS_PORT_REGEX + ")"
+        Pattern.compile("^(?<targetAmsNetId>" + AMSNetId.AMS_NET_ID_PATTERN + "):(?<targetAmsPort>" + AMSPort.AMS_PORT_PATTERN + ")"
             + "/"
-            + "(?<sourceAmsNetId>" + AMSNetId.AMS_NET_ID_REGEX + "):(?<sourceAmsPort>" + AMSPort.AMS_PORT_REGEX + ")");
+            + "(?<sourceAmsNetId>" + AMSNetId.AMS_NET_ID_PATTERN + "):(?<sourceAmsPort>" + AMSPort.AMS_PORT_PATTERN + ")");
     private static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads://(?<host>\\w+)/" + ADS_ADDRESS_PATTERN);
 
     @Override

@@ -18,7 +18,11 @@
  */
 package org.apache.plc4x.java.ads.api.generic.types;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
+
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * The AMSNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AMSNetId would be e.g.. 172.16.17.10.1.1. The storage arrangement in this example is as follows:
@@ -33,6 +37,9 @@ import org.apache.plc4x.java.ads.api.util.ByteValue;
  */
 public class AMSNetId extends ByteValue {
 
+    public static final Pattern AMS_NET_ID_PATTERN =
+        Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
+
     public static final int NUM_BYTES = 6;
 
     AMSNetId(byte... values) {
@@ -46,5 +53,14 @@ public class AMSNetId extends ByteValue {
 
     public static AMSNetId of(int octed1, int octed2, int octed3, int octed4, int octed5, int octed6) {
         return new AMSNetId((byte) octed1, (byte) octed2, (byte) octed3, (byte) octed4, (byte) octed5, (byte) octed6);
+    }
+
+    public static AMSNetId of(String address) {
+        if (!AMS_NET_ID_PATTERN.matcher(address).matches()) {
+            throw new IllegalArgumentException(address + " must match " + AMS_NET_ID_PATTERN);
+        }
+        String[] split = address.split("\\.");
+        byte[] bytes = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::byteValue).toArray(Byte[]::new));
+        return new AMSNetId(bytes);
     }
 }
