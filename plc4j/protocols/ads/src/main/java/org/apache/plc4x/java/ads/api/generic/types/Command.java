@@ -39,11 +39,16 @@ public enum Command implements ByteReadable {
     /**
      * Other commands are not defined or are used internally. Therefore the Command Id  is only allowed to contain the above enumerated values!
      */
-    UNKNOWN(0xffff_ffff);
+    UNKNOWN();
 
     public static final int NUM_BYTES = 4;
 
     final byte[] value;
+
+    Command() {
+        // Only used for unkown enum
+        value = new byte[0];
+    }
 
     Command(long value) {
         ByteValue.checkUnsignedBounds(value, NUM_BYTES);
@@ -57,10 +62,16 @@ public enum Command implements ByteReadable {
 
     @Override
     public byte[] getBytes() {
+        if (this == UNKNOWN) {
+            throw new IllegalStateException("Unknown enum can't be serialized");
+        }
         return value;
     }
 
     public ByteBuf getByteBuf() {
+        if (this == UNKNOWN) {
+            throw new IllegalStateException("Unknown enum can't be serialized");
+        }
         return Unpooled.buffer().writeBytes(value);
     }
 }

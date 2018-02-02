@@ -46,11 +46,15 @@ public enum State implements ByteReadable {
     ADS_RESPONSE_TCP(0x0005),
     ADS_REQUEST_UDP(0x0044),
     ADS_RESPONSE_UDP(0x0045),
-    UNKNOWN(0xffff);
+    UNKNOWN();
 
     public static final int NUM_BYTES = 4;
 
     final byte[] value;
+
+    State() {
+        value = new byte[0];
+    }
 
     State(long value) {
         ByteValue.checkUnsignedBounds(value, NUM_BYTES);
@@ -64,10 +68,16 @@ public enum State implements ByteReadable {
 
     @Override
     public byte[] getBytes() {
+        if (this == UNKNOWN) {
+            throw new IllegalStateException("Unknown enum can't be serialized");
+        }
         return value;
     }
 
     public ByteBuf getByteBuf() {
+        if (this == UNKNOWN) {
+            throw new IllegalStateException("Unknown enum can't be serialized");
+        }
         return Unpooled.buffer().writeBytes(value);
     }
 }
