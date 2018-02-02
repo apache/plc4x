@@ -43,7 +43,7 @@ public class AMSPort extends ByteValue {
     }
 
     public static AMSPort of(int port) {
-        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).put((byte) (port & 0xff)).array());
+        return new AMSPort(ByteBuffer.allocate(NUM_BYTES).put((byte) (port & 0xffff)).array());
     }
 
     public static AMSPort of(String port) {
