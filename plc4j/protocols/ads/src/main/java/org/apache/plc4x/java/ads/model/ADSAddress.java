@@ -18,16 +18,47 @@
  */
 package org.apache.plc4x.java.ads.model;
 
-import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
-import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
+import org.apache.plc4x.java.ads.api.util.ByteValue;
 import org.apache.plc4x.java.api.model.Address;
 
-public class ADSAddress implements Address {
-    public final AMSNetId targetAmsNetId;
-    public final AMSPort targetAmsPort;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    public ADSAddress(AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
-        this.targetAmsNetId = targetAmsNetId;
-        this.targetAmsPort = targetAmsPort;
+public class ADSAddress implements Address {
+    private static final Pattern RESSOURCE_ADDRESS_PATTERN = Pattern.compile("^(?<indexGroup>\\d+)/(?<indexOffset>\\d+)");
+
+    private final long indexGroup;
+
+    private final long indexOffset;
+
+    protected ADSAddress(long indexGroup, long indexOffset) {
+        ByteValue.checkUnsignedBounds(indexGroup, 4);
+        this.indexGroup = indexGroup;
+        ByteValue.checkUnsignedBounds(indexOffset, 4);
+        this.indexOffset = indexOffset;
+    }
+
+    public static ADSAddress of(long indexGroup, long indexOffset) {
+        return new ADSAddress(indexGroup, indexOffset);
+    }
+
+    public static ADSAddress of(String address) {
+        Matcher matcher = RESSOURCE_ADDRESS_PATTERN.matcher(address);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(
+                "address " + address + " doesn't match '{indexGroup}/{indexOffset}' RAW:" + RESSOURCE_ADDRESS_PATTERN);
+        }
+        String indexGroup = matcher.group("indexGroup");
+        String indexOffset = matcher.group("indexOffset");
+
+        return new ADSAddress(Long.parseLong(indexGroup), Long.parseLong(indexOffset));
+    }
+
+    public long getIndexGroup() {
+        return indexGroup;
+    }
+
+    public long getIndexOffset() {
+        return indexOffset;
     }
 }

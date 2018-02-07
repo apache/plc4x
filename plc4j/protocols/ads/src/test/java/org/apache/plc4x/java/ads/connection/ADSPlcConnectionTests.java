@@ -22,7 +22,6 @@ package org.apache.plc4x.java.ads.connection;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.model.ADSAddress;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,21 +50,21 @@ class ADSPlcConnectionTests {
     }
 
     @Test
-    void emptyParseAddress() {
+    void emptyParseAddress() throws Exception {
         try {
             adsPlcConnection.parseAddress("");
-        } catch (PlcException exception) {
-            assertTrue(exception.getMessage().startsWith("Address string doesn't match"), "Unexpected exception");
+        } catch (IllegalArgumentException exception) {
+            assertTrue(exception.getMessage().startsWith("address  doesn't match "), "Unexpected exception");
         }
     }
 
     @Test
-    void parseAddress() {
+    void parseAddress() throws Exception {
         try {
-            ADSAddress address = (ADSAddress) adsPlcConnection.parseAddress("0.0.0.0.0.0:13");
-            assertEquals(address.targetAmsNetId.toString(), "0.0.0.0.0.0");
-            assertEquals(address.targetAmsPort.toString(), "13");
-        } catch (PlcException exception) {
+            ADSAddress address = (ADSAddress) adsPlcConnection.parseAddress("1/1");
+            assertEquals(address.getIndexGroup(), 1);
+            assertEquals(address.getIndexOffset(), 1);
+        } catch (IllegalArgumentException exception) {
             fail("valid data block address");
         }
     }

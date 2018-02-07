@@ -34,15 +34,15 @@ class LengthTest {
 
     @Test
     void ofLong() {
-        assertByte(Length.of(1), "0x00000001");
-        assertByte(Length.of(65535), "0x0000ffff");
+        assertByte(Length.of(1), "0x01000000");
+        assertByte(Length.of(65535), "0xffff0000");
         Assertions.assertThrows(IllegalArgumentException.class, () -> Length.of(-1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> Length.of(4294967296L));
     }
 
     @Test
     void ofString() {
-        assertByte(Length.of("1"), "0x00000001");
+        assertByte(Length.of("1"), "0x01000000");
     }
 
     @Test

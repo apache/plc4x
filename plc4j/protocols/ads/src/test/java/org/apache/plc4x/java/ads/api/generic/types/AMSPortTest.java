@@ -34,7 +34,7 @@ class AMSPortTest {
 
     @Test
     void ofInt() {
-        assertByte(AMSPort.of(1), "0x0001");
+        assertByte(AMSPort.of(1), "0x0100");
         assertByte(AMSPort.of(65535), "0xffff");
         Assertions.assertThrows(IllegalArgumentException.class, () -> AMSPort.of(-1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> AMSPort.of(65536));
@@ -42,7 +42,7 @@ class AMSPortTest {
 
     @Test
     void ofString() {
-        assertByte(AMSPort.of("1"), "0x0001");
+        assertByte(AMSPort.of("1"), "0x0100");
     }
 
     @Test

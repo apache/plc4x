@@ -35,15 +35,15 @@ class DataLengthTest {
 
     @Test
     void ofLong() {
-        assertByte(DataLength.of(1), "0x00000001");
-        assertByte(DataLength.of(65535), "0x0000ffff");
+        assertByte(DataLength.of(1), "0x01000000");
+        assertByte(DataLength.of(65535), "0xffff0000");
         Assertions.assertThrows(IllegalArgumentException.class, () -> DataLength.of(-1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> DataLength.of(4294967296L));
     }
 
     @Test
     void ofString() {
-        assertByte(DataLength.of("1"), "0x00000001");
+        assertByte(DataLength.of("1"), "0x01000000");
     }
 
     @Test

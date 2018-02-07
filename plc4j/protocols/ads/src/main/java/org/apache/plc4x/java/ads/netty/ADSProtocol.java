@@ -220,6 +220,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                             if (sampleSizeLong > Integer.MAX_VALUE) {
                                 throw new IllegalStateException("Overflow in datalength: " + sampleSizeLong);
                             }
+                            // TODO: do we need a special marker class for: Notice: If your handle becomes invalid, one notification without data will be send once as advice.
                             Data data = Data.of(adsDeviceNotificationBuffer.readBytes((int) sampleSizeLong).array());
                             AdsNotificationSample adsNotificationSample = AdsNotificationSample.of(notificationHandle, sampleSize, data);
                             adsNotificationSamples.add(adsNotificationSample);

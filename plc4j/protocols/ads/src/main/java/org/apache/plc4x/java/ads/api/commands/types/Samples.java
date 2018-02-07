@@ -52,6 +52,6 @@ public class Samples extends ByteValue {
 
     @Override
     public String toString() {
-        return "" + (getBytes()[0] << 24 | getBytes()[1] << 16 | getBytes()[2] << 8 | getBytes()[3]);
+        return "" + (getBytes()[3] << 24 | getBytes()[2] << 16 | getBytes()[1] << 8 | getBytes()[0]);
     }
 }

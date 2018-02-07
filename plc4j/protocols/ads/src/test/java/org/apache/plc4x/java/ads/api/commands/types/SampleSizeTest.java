@@ -34,15 +34,15 @@ class SampleSizeTest {
 
     @Test
     void ofLong() {
-        assertByte(SampleSize.of(1), "0x00000001");
-        assertByte(SampleSize.of(65535), "0x0000ffff");
+        assertByte(SampleSize.of(1), "0x01000000");
+        assertByte(SampleSize.of(65535), "0xffff0000");
         Assertions.assertThrows(IllegalArgumentException.class, () -> SampleSize.of(-1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> SampleSize.of(4294967296L));
     }
 
     @Test
     void ofString() {
-        assertByte(SampleSize.of("1"), "0x00000001");
+        assertByte(SampleSize.of("1"), "0x01000000");
     }
 
     @Test

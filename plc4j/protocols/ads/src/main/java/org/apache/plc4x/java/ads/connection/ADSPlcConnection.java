@@ -38,8 +38,6 @@ import org.apache.plc4x.java.api.model.Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
@@ -119,7 +117,7 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
                 protected void initChannel(Channel channel) throws Exception {
                     // Build the protocol stack for communicating with the ads protocol.
                     ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast(new Plc4XADSProtocol());
+                    pipeline.addLast(new Plc4XADSProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
                     pipeline.addLast(new ADSProtocol());
                 }
             });
@@ -143,14 +141,7 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
 
     @Override
     public Address parseAddress(String addressString) throws PlcException {
-        Matcher matcher = Pattern.compile("(?<targetAmsNetId>" + AMSNetId.AMS_NET_ID_PATTERN + "):(?<targetAmsPort>" + AMSPort.AMS_PORT_PATTERN + ")").matcher(addressString);
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Address string doesn't match the format '{targetAmsNetId}:{targetAmsPort}'");
-        }
-        AMSNetId targetAmsNetId = AMSNetId.of(matcher.group("targetAmsNetId"));
-        AMSPort targetAmsPort = AMSPort.of(matcher.group("targetAmsPort"));
-        return new ADSAddress(targetAmsNetId, targetAmsPort);
+        return ADSAddress.of(addressString);
     }
 
     @Override

@@ -33,15 +33,15 @@ class ReadLengthTest {
 
     @Test
     void ofLong() {
-        assertByte(ReadLength.of(1), "0x00000001");
-        assertByte(ReadLength.of(65535), "0x0000ffff");
+        assertByte(ReadLength.of(1), "0x01000000");
+        assertByte(ReadLength.of(65535), "0xffff0000");
         Assertions.assertThrows(IllegalArgumentException.class, () -> ReadLength.of(-1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> ReadLength.of(4294967296L));
     }
 
     @Test
     void ofString() {
-        assertByte(ReadLength.of("1"), "0x00000001");
+        assertByte(ReadLength.of("1"), "0x01000000");
     }
 
     @Test
