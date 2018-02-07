@@ -18,7 +18,7 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
-cd /Users/christofer.dutz/Devtools/Apache/Kafka/kafka_2.12-0.11.0.1/bin
+cd ${KAFKA_HOME}/bin
 
 # Start Zookeeper
 ./zookeeper-server-start.sh -daemon ../config/zookeeper.properties
