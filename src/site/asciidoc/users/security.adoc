@@ -15,14 +15,12 @@
 //  limitations under the License.
 //
 
-== Continuous Integration
+== Security Vulnerabilities
 
-We are currently using two different CI systems.
+Please note that binary patches are not produced for individual vulnerabilities. To obtain the binary fix for a particular vulnerability you should upgrade to an Apache PLC4X version where that vulnerability has been fixed.
 
-- Apache's Jenkins at: https://builds.apache.org/view/M-R/job/PLC4X/
-- Travis at: https://travis-ci.org/apache/incubator-plc4x/
+For more information about reporting vulnerabilities, see the https://www.apache.org/security/[Apache Security Team] page.
 
-Hereby Apache Jenkins clearly is responsible for running the full testsuite with all integration-tests.
-Also only jobs on Apache Jenkins are allowed to publish SNAPSHOT versions of the Maven artifacts to Apaches Nexus.
+=== Known Vulnerabilities
 
-Travis integrates perfectly into GitHub. We are using this to auto-check any pull-requests coming in.
+No vulnerabilities have been reported.

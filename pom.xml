@@ -111,8 +111,8 @@
     <!-- Integration modules for other frameworks -->
     <module>integrations</module>
 
-    <!-- Example applications -->
-    <module>applications</module>
+    <!-- Examples -->
+    <module>examples</module>
   </modules>
 
   <prerequisites>
@@ -494,19 +494,6 @@
             -->
             <consoleOutput>true</consoleOutput>
           </configuration>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.maven.doxia</groupId>
-              <artifactId>doxia-core</artifactId>
-              <version>1.6</version>
-              <exclusions>
-                <exclusion>
-                  <groupId>xerces</groupId>
-                  <artifactId>xercesImpl</artifactId>
-                </exclusion>
-              </exclusions>
-            </dependency>
-          </dependencies>
         </plugin>
 
         <plugin>
@@ -829,6 +816,14 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changelog-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changelog</report>
+              <report>file-activity</report>
+            </reports>
+          </reportSet>
+        </reportSets>
         <configuration>
           <!-- Automatically link Jira issues -->
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>

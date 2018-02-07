@@ -16,38 +16,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-.green {
-    color: #008000;
-}
+package org.apache.plc4x.java.examples.dummydriver.model;
 
-.yellow {
-    color: #ffa500;
-}
+import org.apache.plc4x.java.api.model.Address;
 
-.red {
-    color: #ff0000;
-}
+public class DummyAddress implements Address {
 
-.protocolIsoOnTcp {
-    background-color: #068D9D;
-}
+    private final int address;
 
-.protocolIsoTP {
-    background-color: #53599A;
-}
+    public DummyAddress(int address) {
+        this.address = address;
+    }
 
-.protocolS7 {
-    background-color: #6D9DC5;
-}
+    public int getAddress() {
+        return address;
+    }
 
-.protocolId {
-    background-color: #AEECEF;
-}
-
-.protocolParameter {
-    background-color: #80DED9;
-}
-
-#bannerRight > img {
-    width: 400px;
 }

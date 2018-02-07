@@ -29,6 +29,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Interface implemented by all PlcConnections that are able to read from remote resources.
  */
+@FunctionalInterface
 public interface PlcReader {
 
     /**

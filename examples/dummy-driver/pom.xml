@@ -23,57 +23,46 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-utils</artifactId>
+    <groupId>org.apache.plc4x.examples</groupId>
+    <artifactId>examples</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-utils-raw-sockets</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
-  <name>PLC4J: Utils: Raw-Sockets</name>
-  <description>An implementation of a Netty Channel that allows implementing protocols below the TCP and UCP level.</description>
-
-  <properties>
-    <pcap4j.version>1.7.3</pcap4j.version>
-  </properties>
+  <artifactId>dummy-driver</artifactId>
+  <name>Examples: Protocol: Dummy</name>
+  <description>
+    Implementation of a PLC4X driver able to speak a non existent dummy protocol.
+    This module should be used as inspiration for implementing own drivers.
+  </description>
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-raw-sockets</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pcap4j</groupId>
-      <artifactId>pcap4j-core</artifactId>
-      <version>${pcap4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.pcap4j</groupId>
-      <artifactId>pcap4j-packetfactory-static</artifactId>
-      <version>${pcap4j.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies>
-            <usedDependency>org.pcap4j:pcap4j-packetfactory-static</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
-
       <!-- This is currently a work in progress ... skip this till it reaches a slightly more mature state -->
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>

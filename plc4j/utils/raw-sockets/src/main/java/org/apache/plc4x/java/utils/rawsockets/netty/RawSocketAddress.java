@@ -16,38 +16,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-.green {
-    color: #008000;
-}
+package org.apache.plc4x.java.utils.rawsockets.netty;
 
-.yellow {
-    color: #ffa500;
-}
+import java.net.SocketAddress;
 
-.red {
-    color: #ff0000;
-}
+public class RawSocketAddress extends SocketAddress {
 
-.protocolIsoOnTcp {
-    background-color: #068D9D;
-}
+    private String hostName;
 
-.protocolIsoTP {
-    background-color: #53599A;
-}
+    public RawSocketAddress(String hostName) {
+        this.hostName = hostName;
+    }
 
-.protocolS7 {
-    background-color: #6D9DC5;
-}
+    String getHostName() {
+        return hostName;
+    }
 
-.protocolId {
-    background-color: #AEECEF;
-}
-
-.protocolParameter {
-    background-color: #80DED9;
-}
-
-#bannerRight > img {
-    width: 400px;
 }

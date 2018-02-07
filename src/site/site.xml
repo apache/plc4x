@@ -52,7 +52,9 @@
       </brand>
       <bottomDescription>
         <![CDATA[
-          <p id="bottomNote"></p>
+          <p id="bottomNote">
+          Apache PLC4X is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
+          </p>
         ]]>
       </bottomDescription>
       <breadcrumbs>true</breadcrumbs>
@@ -64,6 +66,10 @@
       </pages>
     </reflowSkin>
   </custom>
+
+  <poweredBy>
+    <logo name="Apache Software Foundation" img="https://www.apache.org/img/asf_logo.png" href="https://www.apache.org/"/>
+  </poweredBy>
 
   <bannerLeft>
       <name>Apache PLC4X (incubating)</name>
@@ -86,6 +92,7 @@
     <menu name="Users">
       <item name="Getting Started" href="users/gettingstarted.html"/>
       <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
+      <item name="Security" href="users/security.html"/>
     </menu>
     <menu name="Developers">
       <item name="Bug &amp; Issue Tracker" href="developers/issues.html"/>
@@ -103,6 +110,13 @@
       <item name="S7/Profinet" href="protocols/s7/index.html"/>
     </menu>
     <menu name="Reports" ref="reports" inherit="top"/>
+    <menu name="Apache">
+      <item name="Apache Software Foundation" href="http://www.apache.org/"/>
+      <item name="How Apache Works" href="https://www.apache.org/foundation/how-it-works.html"/>
+      <item name="Apache License" href="http://www.apache.org/licenses/"/>
+      <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
+      <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
+    </menu>
     <menu ref="modules" inherit="top"/>
   </body>
 

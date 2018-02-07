@@ -23,42 +23,48 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-utils</artifactId>
+    <groupId>org.apache.plc4x.examples</groupId>
+    <artifactId>examples</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-utils-raw-sockets</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-
-  <name>PLC4J: Utils: Raw-Sockets</name>
-  <description>An implementation of a Netty Channel that allows implementing protocols below the TCP and UCP level.</description>
+  <artifactId>plclogger</artifactId>
+  <name>Examples: PLC Data Logger</name>
+  <description>Application using Edgent and Elastic-Search to implement a PLC data logger.</description>
 
   <properties>
-    <pcap4j.version>1.7.3</pcap4j.version>
+    <app.main.class>org.apache.plc4x.java.examples.plclogger.PlcLogger</app.main.class>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>apache-edgent</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
-      <groupId>org.pcap4j</groupId>
-      <artifactId>pcap4j-core</artifactId>
-      <version>${pcap4j.version}</version>
+      <groupId>org.apache.edgent</groupId>
+      <artifactId>edgent-api-function</artifactId>
+      <version>1.2.0</version>
     </dependency>
     <dependency>
-      <groupId>org.pcap4j</groupId>
-      <artifactId>pcap4j-packetfactory-static</artifactId>
-      <version>${pcap4j.version}</version>
+      <groupId>org.apache.edgent</groupId>
+      <artifactId>edgent-api-topology</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.edgent</groupId>
+      <artifactId>edgent-providers-direct</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+
+    <!-- Required driver implementation -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-protocol-s7</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
       <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 
@@ -69,17 +75,8 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies>
-            <usedDependency>org.pcap4j:pcap4j-packetfactory-static</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-protocol-s7</usedDependency>
           </usedDependencies>
-        </configuration>
-      </plugin>
-
-      <!-- This is currently a work in progress ... skip this till it reaches a slightly more mature state -->
-      <plugin>
-        <groupId>org.sonarsource.scanner.maven</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>

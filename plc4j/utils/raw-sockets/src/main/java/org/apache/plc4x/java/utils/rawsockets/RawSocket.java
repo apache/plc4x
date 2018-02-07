@@ -20,6 +20,8 @@ import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.*;
 import org.pcap4j.util.ByteArrays;
 import org.pcap4j.util.MacAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -28,6 +30,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class RawSocket {
+
+    private static final Logger logger = LoggerFactory.getLogger(RawSocket.class);
 
     private static final int SNAPLEN = 65536;
     private static final int READ_TIMEOUT = 10;
@@ -84,8 +88,8 @@ public class RawSocket {
                 try {
                     receiveHandle.loop(-1, packetListener);
                 } catch (PcapNativeException | InterruptedException | NotOpenException e) {
-                    // TODO: This is not nice ... fix this ...
-                    throw new RuntimeException("Error receiving ARP lookup", e);
+                    logger.error("Error receiving packet for protocol {} from MAC address {}",
+                        protocolNumber, remoteMacAddress, e);
                 }
             });
         } catch (PcapNativeException | NotOpenException | UnknownHostException e) {
@@ -191,8 +195,7 @@ public class RawSocket {
                 try {
                     receiveHandle.loop(-1, listener);
                 } catch (PcapNativeException | InterruptedException | NotOpenException e) {
-                    // TODO: This is not nice ... fix this ...
-                    throw new RuntimeException("Error receiving ARP lookup", e);
+                    logger.error("Error receiving ARP lookup", e);
                 }
             });
 
@@ -220,6 +223,7 @@ public class RawSocket {
             try {
                 return resolutionFuture.get(10000, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
+                logger.info("Couldn't resolve MAC address for ip address {}", remoteIpAddress.getHostAddress(), e);
                 return null;
             }
         } catch (PcapNativeException | InterruptedException | ExecutionException | NotOpenException e) {
