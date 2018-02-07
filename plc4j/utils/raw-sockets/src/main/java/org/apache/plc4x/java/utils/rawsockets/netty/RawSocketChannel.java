@@ -24,17 +24,23 @@ import java.net.SocketAddress;
 
 public class RawSocketChannel extends AbstractChannel {
 
-    public RawSocketChannel(Channel parent) {
-        super(parent);
+    private static final ChannelMetadata METADATA = new ChannelMetadata(false, 16);
+
+    protected class RawByteUnsafe extends AbstractChannel.AbstractUnsafe {
+        @Override
+        public void connect(SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) {
+            //getPipeline()
+            promise.setSuccess();
+        }
     }
 
-    public RawSocketChannel(Channel parent, ChannelId id) {
-        super(parent, id);
+    public RawSocketChannel() {
+        super(null);
     }
 
     @Override
     protected AbstractUnsafe newUnsafe() {
-        return null;
+        return new RawByteUnsafe();
     }
 
     @Override
@@ -54,47 +60,47 @@ public class RawSocketChannel extends AbstractChannel {
 
     @Override
     protected void doBind(SocketAddress localAddress) throws Exception {
-
+        System.out.println(localAddress);
     }
 
     @Override
     protected void doDisconnect() throws Exception {
-
+        System.out.println("disconnect");
     }
 
     @Override
     protected void doClose() throws Exception {
-
+        System.out.println("close");
     }
 
     @Override
     protected void doBeginRead() throws Exception {
-
+        System.out.println("beginRead");
     }
 
     @Override
     protected void doWrite(ChannelOutboundBuffer in) throws Exception {
-
+        System.out.println(in);
     }
 
     @Override
     public ChannelConfig config() {
-        return null;
+        return new RawSocketChannelConfig(this);
     }
 
     @Override
     public boolean isOpen() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isActive() {
-        return false;
+        return true;
     }
 
     @Override
     public ChannelMetadata metadata() {
-        return null;
+        return METADATA;
     }
 
 }
