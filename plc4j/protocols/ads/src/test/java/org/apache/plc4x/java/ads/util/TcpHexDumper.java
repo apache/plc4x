@@ -48,7 +48,7 @@ public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, Para
 
     public void init(int port) throws IOException, InterruptedException {
         if (serverSocket != null) {
-            stop();
+            stop(true);
         }
         serverSocket = new ServerSocket(port);
         logger.info("Starting pool");
@@ -90,16 +90,17 @@ public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, Para
 
     public void stop(boolean await) throws IOException, InterruptedException {
         serverSocket.close();
-        if (await)
+        if (await) {
             pool.awaitTermination(shutdownTimeout, TimeUnit.SECONDS);
-        else
+        } else {
             pool.shutdownNow();
+        }
         logger.info("Stopped");
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        stop();
+        stop(true);
     }
 
     @Override
