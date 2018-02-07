@@ -26,5 +26,6 @@ cd ${KAFKA_HOME}/bin
 # Start Kafka
 ./kafka-server-start.sh -daemon ../config/server.properties
 
+# Start a Kafka consumer that simply dumps everything to the console
 ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning
 
