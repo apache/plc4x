@@ -19,22 +19,38 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.plc4x.java.ads.api.util.UnsignedShortLEByteValue;
 
-public class DeviceState extends ByteValue {
+public class DeviceState extends UnsignedShortLEByteValue {
 
-    public static final int NUM_BYTES = 2;
+    public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
 
-    DeviceState(byte... value) {
+    protected DeviceState(byte... values) {
+        super(values);
+    }
+
+    protected DeviceState(int value) {
         super(value);
-        assertLength(NUM_BYTES);
+    }
+
+    protected DeviceState(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static DeviceState of(byte... values) {
         return new DeviceState(values);
     }
 
+    public static DeviceState of(int value) {
+        checkUnsignedBounds(value, NUM_BYTES);
+        return new DeviceState(value);
+    }
+
     public static DeviceState of(ByteBuf byteBuf) {
-        return of(byteBuf.readBytes(NUM_BYTES).array());
+        return new DeviceState(byteBuf);
+    }
+
+    public static DeviceState of(String length) {
+        return of(Integer.parseInt(length));
     }
 }

@@ -19,23 +19,38 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.plc4x.java.ads.api.util.UnsignedShortLEByteValue;
 
-public class ADSState extends ByteValue {
+public class ADSState extends UnsignedShortLEByteValue {
 
-    public static final int NUM_BYTES = 2;
+    public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
 
-    ADSState(byte... values) {
+    protected ADSState(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
+    }
+
+    protected ADSState(int value) {
+        super(value);
+    }
+
+    protected ADSState(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static ADSState of(byte... values) {
         return new ADSState(values);
     }
 
+    public static ADSState of(int value) {
+        checkUnsignedBounds(value, NUM_BYTES);
+        return new ADSState(value);
+    }
+
     public static ADSState of(ByteBuf byteBuf) {
-        // TODO: could be transformed to readUnsignedShortLE someday
-        return of(byteBuf.readBytes(NUM_BYTES).array());
+        return new ADSState(byteBuf);
+    }
+
+    public static ADSState of(String length) {
+        return of(Integer.parseInt(length));
     }
 }
