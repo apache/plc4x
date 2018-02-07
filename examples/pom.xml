@@ -38,6 +38,7 @@
   <modules>
     <module>dummy-driver</module>
     <module>iotree</module>
+    <module>kafka-bridge</module>
     <module>plclogger</module>
   </modules>
 
