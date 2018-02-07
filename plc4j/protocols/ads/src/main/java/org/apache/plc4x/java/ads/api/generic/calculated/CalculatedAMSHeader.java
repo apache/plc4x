@@ -37,16 +37,6 @@ public class CalculatedAMSHeader extends AMSHeader {
         return new CalculatedAMSHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateId, lengthSupplier, invokeId);
     }
 
-    @FunctionalInterface
-    public interface CommandIdSupplier {
-        Command getCommandId();
-    }
-
-    @FunctionalInterface
-    public interface StateIdSupplier {
-        State getStateId();
-    }
-
     public interface LengthSupplier {
         DataLength getLength();
     }
