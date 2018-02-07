@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class S7PlcDriver implements PlcDriver {
 
-    private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7://(?<host>.*)/(?<rack>\\d{1,4})/(?<slot>\\d{1,4})(\\?.*)?");
+    private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7://(?<host>.*)/(?<rack>\\d{1,4})/(?<slot>\\d{1,4})(?<params>\\?.*)?");
 
     @Override
     public String getProtocolCode() {
@@ -58,7 +58,8 @@ public class S7PlcDriver implements PlcDriver {
         String host = matcher.group("host");
         int rack = Integer.parseInt(matcher.group("rack"));
         int slot = Integer.parseInt(matcher.group("slot"));
-        return new S7PlcConnection(host, rack, slot);
+        String params = matcher.group("params").substring(1);
+        return new S7PlcConnection(host, rack, slot, params);
     }
 
     @Override

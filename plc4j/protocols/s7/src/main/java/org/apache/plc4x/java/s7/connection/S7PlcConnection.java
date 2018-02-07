@@ -22,6 +22,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
@@ -67,16 +68,53 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     private final String hostName;
     private final int rack;
     private final int slot;
-    private final int pduSize;
+
+    private final int paramPduSize;
+    private final short paramMaxAmqCaller;
+    private final short paramMaxAmqCallee;
 
     private EventLoopGroup workerGroup;
     private Channel channel;
 
-    public S7PlcConnection(String hostName, int rack, int slot) {
+    public S7PlcConnection(String hostName, int rack, int slot, String params) {
         this.hostName = hostName;
         this.rack = rack;
         this.slot = slot;
-        this.pduSize = 1024;
+
+        int paramPduSize = 1024;
+        short paramMaxAmqCaller = 8;
+        short paramMaxAmqCallee = 8;
+
+        if(!StringUtils.isEmpty(params)) {
+            for (String param : params.split("&")) {
+                String[] paramElements = param.split("=");
+                String paramName = paramElements[0];
+                if(paramElements.length == 2) {
+                    String paramValue = paramElements[1];
+                    switch (paramName) {
+                        case "pdu-size":
+                            paramPduSize = Integer.parseInt(paramValue);
+                            break;
+                        case "max-amq-caller":
+                            paramMaxAmqCaller = Short.parseShort(paramValue);
+                            break;
+                        case "max-amq-callee":
+                            paramMaxAmqCallee = Short.parseShort(paramValue);
+                            break;
+                        default:
+                            logger.debug("Unknown parameter {}={}", paramName, paramValue);
+                    }
+                } else {
+                    logger.debug("Unknown no-value parameter {}", paramName);
+                }
+            }
+        }
+        this.paramPduSize = paramPduSize;
+        this.paramMaxAmqCaller = paramMaxAmqCaller;
+        this.paramMaxAmqCallee = paramMaxAmqCallee;
+
+        logger.info("Configured S7cConnection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
+            "max-amq-callee {}", hostName, rack, slot, paramPduSize, paramMaxAmqCaller, paramMaxAmqCallee);
     }
 
     public String getHostName() {
@@ -91,8 +129,16 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         return slot;
     }
 
-    public int getPduSize() {
-        return pduSize;
+    public int getParamPduSize() {
+        return paramPduSize;
+    }
+
+    public int getParamMaxAmqCaller() {
+        return paramMaxAmqCaller;
+    }
+
+    public int getParamMaxAmqCallee() {
+        return paramMaxAmqCallee;
     }
 
     @Override
@@ -107,6 +153,15 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
             InetAddress serverInetAddress = InetAddress.getByName(hostName);
 
+            // IsoTP uses pre defined sizes. Find the smallest box,
+            // that would be able to contain the requested pdu size.
+            TpduSize isoTpTpduSize = TpduSize.valueForGivenSize(paramPduSize);
+
+            // If the pdu size was very big, it might have exceeded the
+            // maximum of 8MB defined in the IsoTP protocol, so we have
+            // to generally downgrade the requested size.
+            int pduSize = (isoTpTpduSize.getValue() < paramPduSize) ? isoTpTpduSize.getValue() : paramPduSize;
+
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(NioSocketChannel.class);
@@ -114,7 +169,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             bootstrap.option(ChannelOption.TCP_NODELAY, true);
             bootstrap.handler(new ChannelInitializer() {
                 @Override
-                protected void initChannel(Channel channel) throws Exception {
+                protected void initChannel(Channel channel) {
                     // Build the protocol stack for communicating with the s7 protocol.
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(new ChannelInboundHandlerAdapter() {
@@ -129,8 +184,8 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                         }
                     });
                     pipeline.addLast(new IsoOnTcpProtocol());
-                    pipeline.addLast(new IsoTPProtocol((byte) rack, (byte) slot, TpduSize.SIZE_1024));
-                    pipeline.addLast(new S7Protocol((short) 8, (short) 8, (short) 1024));
+                    pipeline.addLast(new IsoTPProtocol((byte) rack, (byte) slot, isoTpTpduSize));
+                    pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) pduSize));
                     pipeline.addLast(new Plc4XS7Protocol());
                 }
             });
@@ -156,7 +211,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         if((channel != null) && channel.isOpen()) {
             // Send the PLC a message that the connection is being closed.
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(

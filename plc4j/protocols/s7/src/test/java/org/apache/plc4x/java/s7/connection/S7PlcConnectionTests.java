@@ -36,7 +36,7 @@ class S7PlcConnectionTests {
 
     @BeforeEach
     void setUp() {
-        s7PlcConnection = new S7PlcConnection("localhost", 1, 2);
+        s7PlcConnection = new S7PlcConnection("localhost", 1, 2, "");
     }
 
     @AfterEach
@@ -49,7 +49,9 @@ class S7PlcConnectionTests {
         assertTrue(s7PlcConnection.getHostName().equalsIgnoreCase("localhost"), "Hostname is incorrect");
         assertTrue(s7PlcConnection.getRack() == 1, "Rack is incorrect");
         assertTrue(s7PlcConnection.getSlot() == 2, "Slot is incorrect");
-        assertTrue(s7PlcConnection.getPduSize() == 1024, "Pdu size is incorrect"); // Why is this hard coded?
+        assertTrue(s7PlcConnection.getParamPduSize() == 1024, "Pdu size is incorrect");
+        assertTrue(s7PlcConnection.getParamMaxAmqCaller() == 8, "Max AMQ Caller size is incorrect");
+        assertTrue(s7PlcConnection.getParamMaxAmqCallee() == 8, "Max AMQ Callee size is incorrect");
     }
 
     @Test

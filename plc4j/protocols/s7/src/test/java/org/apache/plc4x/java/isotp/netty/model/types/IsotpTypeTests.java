@@ -152,6 +152,7 @@ class IsotpTypeTests {
 
         assertTrue(TpduSize.valueOf((byte)0x07) == TpduSize.SIZE_128, "0x07 incorrectly mapped");
         assertTrue(tpduSize.getCode() == (byte)0x07, "code is not 0x07");
+        assertEquals(tpduSize.getValue(), 128, "the value is not 128");
     }
 
     @Test
@@ -162,5 +163,53 @@ class IsotpTypeTests {
         assertNull(tpduSize, "expected tpdu size to be null");
     }
 
+    /**
+     * If we are requesting exactly the size of one of the iso tp
+     * pdu sizes, then exactly that box should be returned.
+     */
+    @Test
+    @Tag("fast")
+    void tpduValueForGivenExactFit() {
+        TpduSize tpduSize = TpduSize.valueForGivenSize(256);
+
+        assertEquals(tpduSize, TpduSize.SIZE_256, "expected tpdu size of 256");
+        assertEquals(tpduSize.getValue(), 128, "the value is not 128");
+    }
+
+    /**
+     * In this case we have a given value that is in-between the boundaries of
+     * a pdu box, the method should return the next larger box.
+     */
+    @Test
+    @Tag("fast")
+    void tpduValueForGivenIntermediateSize() {
+        TpduSize tpduSize = TpduSize.valueForGivenSize(123);
+
+        assertEquals(tpduSize, TpduSize.SIZE_256, "expected tpdu size of 256");
+    }
+
+    /**
+     * This test should cause an exception as the tpdu size has to be greater
+     * than 0 in any case.
+     */
+    @Test
+    @Tag("fast")
+    void tpduValueForGivenTooSmallSize() {
+        TpduSize tpduSize = TpduSize.valueForGivenSize(-1);
+
+        assertEquals(tpduSize, TpduSize.SIZE_256, "expected tpdu size of 256");
+    }
+
+    /**
+     * In this test the tpdu size is greater than the maximum defined by the iso tp
+     * protocol spec, so it is automatically downgraded to the maximum valid value.
+     */
+    @Test
+    @Tag("fast")
+    void tpduValueForGivenTooGreatSize() {
+        TpduSize tpduSize = TpduSize.valueForGivenSize(10000);
+
+        assertEquals(tpduSize, TpduSize.SIZE_8192, "expected tpdu size of 8192");
+    }
 
 }

@@ -22,24 +22,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TpduSize {
-    SIZE_8192((byte) 0x0d),
-    SIZE_4096((byte) 0x0c),
-    SIZE_2048((byte) 0x0b),
-    SIZE_1024((byte) 0x0a),
-    SIZE_512((byte) 0x09),
-    SIZE_256((byte) 0x08),
-    SIZE_128((byte) 0x07);
+    SIZE_128((byte) 0x07, 128),
+    SIZE_256((byte) 0x08, 256),
+    SIZE_512((byte) 0x09, 512),
+    SIZE_1024((byte) 0x0a, 1024),
+    SIZE_2048((byte) 0x0b, 2048),
+    SIZE_4096((byte) 0x0c, 4096),
+    SIZE_8192((byte) 0x0d, 8192);
 
     private static Map<Byte, TpduSize> map = null;
     
     private final byte code;
+    private final int value;
 
-    TpduSize(byte code) {
+    TpduSize(byte code, int value) {
         this.code = code;
+        this.value = value;
     }
 
     public byte getCode() {
         return code;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public static TpduSize valueForGivenSize(int pduSize) {
+        assert pduSize > 0;
+        for (TpduSize tpduSize : values()) {
+            if(tpduSize.getValue() <= pduSize) {
+                return tpduSize;
+            }
+        }
+        // If the requested pdu size is greater than 8MB,
+        // Simply use that as the given size is simple a
+        // requested size, if the remote responds with a
+        // lower value the application has to live with
+        // this anyway.
+        return SIZE_8192;
     }
 
     public static TpduSize valueOf(byte code) {
