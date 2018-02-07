@@ -42,13 +42,13 @@ import java.nio.ByteBuffer;
  * Bit number 7 marks, if it should be transfered with TCP or UDP.
  */
 public enum State implements ByteReadable {
-    ADS_REQUEST_TCP(0x0004),
-    ADS_RESPONSE_TCP(0x0005),
-    ADS_REQUEST_UDP(0x0044),
-    ADS_RESPONSE_UDP(0x0045),
+    ADS_REQUEST_TCP(0x04),
+    ADS_RESPONSE_TCP(0x05),
+    ADS_REQUEST_UDP(0x44),
+    ADS_RESPONSE_UDP(0x45),
     UNKNOWN();
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = 2;
 
     final byte[] value;
 
@@ -59,10 +59,9 @@ public enum State implements ByteReadable {
     State(long value) {
         ByteValue.checkUnsignedBounds(value, NUM_BYTES);
         this.value = ByteBuffer.allocate(NUM_BYTES)
-            .put((byte) (value >> 24 & 0xff))
-            .put((byte) (value >> 16 & 0xff))
-            .put((byte) (value >> 8 & 0xff))
+            // LE
             .put((byte) (value & 0xff))
+            .put((byte) (value >> 8 & 0xff))
             .array();
     }
 

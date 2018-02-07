@@ -34,10 +34,11 @@ public class SampleSize extends ByteValue {
     public static SampleSize of(long sampleSize) {
         checkUnsignedBounds(sampleSize, NUM_BYTES);
         return new SampleSize(ByteBuffer.allocate(NUM_BYTES)
-            .put((byte) (sampleSize >> 24 & 0xff))
-            .put((byte) (sampleSize >> 16 & 0xff))
-            .put((byte) (sampleSize >> 8 & 0xff))
+            // LE
             .put((byte) (sampleSize & 0xff))
+            .put((byte) (sampleSize >> 8 & 0xff))
+            .put((byte) (sampleSize >> 16 & 0xff))
+            .put((byte) (sampleSize >> 24 & 0xff))
             .array());
     }
 

@@ -34,10 +34,11 @@ public class ReadLength extends ByteValue {
     public static ReadLength of(long length) {
         checkUnsignedBounds(length, NUM_BYTES);
         return new ReadLength(ByteBuffer.allocate(NUM_BYTES)
-            .put((byte) (length >> 24 & 0xff))
-            .put((byte) (length >> 16 & 0xff))
-            .put((byte) (length >> 8 & 0xff))
+            // LE
             .put((byte) (length & 0xff))
+            .put((byte) (length >> 8 & 0xff))
+            .put((byte) (length >> 16 & 0xff))
+            .put((byte) (length >> 24 & 0xff))
             .array());
     }
 

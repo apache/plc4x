@@ -26,22 +26,22 @@ import org.apache.plc4x.java.ads.api.util.ByteValue;
 import java.nio.ByteBuffer;
 
 public enum Command implements ByteReadable {
-    Invalid(0x0000),
-    ADS_Read_Device_Info(0x0001),
-    ADS_Read(0x0002),
-    ADS_Write(0x0003),
-    ADS_Read_State(0x0004),
-    ADS_Write_Control(0x0005),
-    ADS_Add_Device_Notification(0x0006),
-    ADS_Delete_Device_Notification(0x0007),
-    ADS_Device_Notification(0x0008),
-    ADS_Read_Write(0x0009),
+    Invalid(0x00),
+    ADS_Read_Device_Info(0x01),
+    ADS_Read(0x02),
+    ADS_Write(0x03),
+    ADS_Read_State(0x04),
+    ADS_Write_Control(0x05),
+    ADS_Add_Device_Notification(0x06),
+    ADS_Delete_Device_Notification(0x07),
+    ADS_Device_Notification(0x08),
+    ADS_Read_Write(0x09),
     /**
      * Other commands are not defined or are used internally. Therefore the Command Id  is only allowed to contain the above enumerated values!
      */
     UNKNOWN();
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = 2;
 
     final byte[] value;
 
@@ -50,13 +50,12 @@ public enum Command implements ByteReadable {
         value = new byte[0];
     }
 
-    Command(long value) {
+    Command(int value) {
         ByteValue.checkUnsignedBounds(value, NUM_BYTES);
         this.value = ByteBuffer.allocate(NUM_BYTES)
-            .put((byte) (value >> 24 & 0xff))
-            .put((byte) (value >> 16 & 0xff))
-            .put((byte) (value >> 8 & 0xff))
+            // LE
             .put((byte) (value & 0xff))
+            .put((byte) (value >> 8 & 0xff))
             .array();
     }
 

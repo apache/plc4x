@@ -34,10 +34,11 @@ public class Samples extends ByteValue {
     public static Samples of(long numberOfSamples) {
         checkUnsignedBounds(numberOfSamples, NUM_BYTES);
         return new Samples(ByteBuffer.allocate(NUM_BYTES)
-            .put((byte) (numberOfSamples >> 24 & 0xff))
-            .put((byte) (numberOfSamples >> 16 & 0xff))
-            .put((byte) (numberOfSamples >> 8 & 0xff))
+            // LE
             .put((byte) (numberOfSamples & 0xff))
+            .put((byte) (numberOfSamples >> 8 & 0xff))
+            .put((byte) (numberOfSamples >> 16 & 0xff))
+            .put((byte) (numberOfSamples >> 24 & 0xff))
             .array());
     }
 

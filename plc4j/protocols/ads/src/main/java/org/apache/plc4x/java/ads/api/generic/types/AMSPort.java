@@ -41,8 +41,9 @@ public class AMSPort extends ByteValue {
     public static AMSPort of(int port) {
         checkUnsignedBounds(port, NUM_BYTES);
         return new AMSPort(ByteBuffer.allocate(NUM_BYTES)
-            .put((byte) (port >> 8 & 0xff))
+            // LE
             .put((byte) (port & 0xff))
+            .put((byte) (port >> 8 & 0xff))
             .array());
     }
 
