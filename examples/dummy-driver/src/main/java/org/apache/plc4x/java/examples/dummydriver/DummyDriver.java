@@ -29,24 +29,24 @@ import java.util.regex.Pattern;
 
 public class DummyDriver implements PlcDriver {
 
-    private static final Pattern RAW_URI_PATTERN = Pattern.compile("^raw://(?<host>.*)");
+    private static final Pattern DUMMY_URI_PATTERN = Pattern.compile("^dummy://(?<host>.*)");
 
     @Override
     public String getProtocolCode() {
-        return "raw";
+        return "dummy";
     }
 
     @Override
     public String getProtocolName() {
-        return "RAW";
+        return "Dummy";
     }
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = RAW_URI_PATTERN.matcher(url);
+        Matcher matcher = DUMMY_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 'raw://{host|ip}'");
+                "Connection url doesn't match the format 'dummy://{host|ip}'");
         }
         String host = matcher.group("host");
         return new DummyConnection(host);
@@ -54,7 +54,7 @@ public class DummyDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("RAW connections don't support authentication.");
+        throw new PlcConnectionException("Dummy connections don't support authentication.");
     }
 
 }
