@@ -18,10 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.examples.plclogger;
 
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.edgent.function.Supplier;
 import org.apache.edgent.providers.direct.DirectProvider;
@@ -29,47 +26,10 @@ import org.apache.edgent.topology.TStream;
 import org.apache.edgent.topology.Topology;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PlcLogger {
 
-    private static final Logger logger = LoggerFactory.getLogger(PlcLogger.class);
-
-    private final PlcConnectionAdapter plcAdapter;
-    private final String addressStr;
-    private final int interval;
-
-    private PlcLogger(PlcConnectionAdapter plcAdapter, String addressString, int interval) {
-        this.plcAdapter = plcAdapter;
-        this.addressStr = addressString;
-        this.interval = interval;
-    }
-
-    private void run() {
-        AtomicInteger counter = new AtomicInteger(0);
-        AtomicLong totalTime = new AtomicLong(0);
-        DirectProvider dp = new DirectProvider();
-        Topology top = dp.newTopology();
-
-        Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, addressStr);
-        TStream<Byte> source = top.poll(() -> {
-            long start = Calendar.getInstance().getTimeInMillis();
-            Byte value = plcSupplier.get();
-            long end = Calendar.getInstance().getTimeInMillis();
-            long time = end - start;
-            System.out.println("Time: " + time);
-            int curCounter = counter.incrementAndGet();
-            long curTotalTime = totalTime.addAndGet(time);
-            System.out.println("Avg:  " + (curTotalTime / curCounter));
-            return value;
-          },
-          interval, TimeUnit.MILLISECONDS);
-        source.print();
-        dp.submit(top);
-    }
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if(args.length != 3) {
             System.out.println("Usage: PlcLogger {connection-string} {resource-address-string} {interval-ms}");
             System.out.println("Example: PlcLogger s7://192.168.0.1/0/0 INPUTS/0 10");
@@ -78,24 +38,24 @@ public class PlcLogger {
         String connectionString = args[0];
         String addressString = args[1];
         Integer interval = Integer.valueOf(args[2]);
+
+        // Get a plc connection.
         try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter(connectionString)) {
+            // Initialize the Edgent core.
+            DirectProvider dp = new DirectProvider();
+            Topology top = dp.newTopology();
 
-            // Initialize the logger itself
-            PlcLogger logger = new PlcLogger(plcAdapter, addressString, interval);
+            // Define the event stream.
+            // 1) PLC4X source generating a stream of bytes.
+            Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, addressString);
+            // 2) Use polling to get an item from the byte-stream in regular intervals.
+            TStream<Byte> source = top.poll(plcSupplier, interval, TimeUnit.MILLISECONDS);
+            // 3) Output the events in the stream on the console.
+            source.print();
 
-            // Start the logging ...
-            logger.run();
-
-            // Yeah ... well prevent the application from exiting ;-)
-            while (System.in.available() == 0) {
-                Thread.sleep(1000);
-            }
-
-            System.exit(0);
-        } catch (Exception e) {
-            logger.error("Caught exception", e);
+            // Submit the topology and hereby start the event streams.
+            dp.submit(top);
         }
     }
-
 
 }
