@@ -85,8 +85,15 @@ public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, Para
     }
 
     public void stop() throws IOException, InterruptedException {
+        stop(false);
+    }
+
+    public void stop(boolean await) throws IOException, InterruptedException {
         serverSocket.close();
-        pool.awaitTermination(shutdownTimeout, TimeUnit.SECONDS);
+        if (await)
+            pool.awaitTermination(shutdownTimeout, TimeUnit.SECONDS);
+        else
+            pool.shutdownNow();
         logger.info("Stopped");
     }
 

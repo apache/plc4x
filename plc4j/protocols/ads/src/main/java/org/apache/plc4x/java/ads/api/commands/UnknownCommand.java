@@ -24,11 +24,11 @@ import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
-import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
  * Unknown ADS Package
  */
+@ADSCommandType(Command.UNKNOWN)
 public class UnknownCommand extends AMSTCPPaket {
 
     final ByteBuf remainingBytes;
@@ -43,13 +43,4 @@ public class UnknownCommand extends AMSTCPPaket {
         return () -> remainingBytes;
     }
 
-    @Override
-    protected Command getCommandId() {
-        return Command.UNKNOWN;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.UNKNOWN;
-    }
 }

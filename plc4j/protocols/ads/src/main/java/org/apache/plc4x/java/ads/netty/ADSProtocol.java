@@ -74,32 +74,14 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
             throw new IllegalStateException("Overflow in datalength: " + dataLength.getAsLong());
         }
         ByteBuf commandBuffer = byteBuf.readBytes((int) dataLength.getAsLong());
-        boolean request = false;
         AMSTCPHeader amstcpHeader = AMSTCPHeader.of(packetLength);
         AMSHeader amsHeader = AMSHeader.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateId, dataLength, errorCode, invoke);
-        switch (stateId) {
-            case ADS_REQUEST_TCP:
-                request = true;
-                break;
-            case ADS_RESPONSE_TCP:
-                request = false;
-                break;
-            case ADS_REQUEST_UDP:
-                request = true;
-                break;
-            case ADS_RESPONSE_UDP:
-                request = false;
-                break;
-            case UNKNOWN:
-                out.add(new UnknownCommand(amstcpHeader, amsHeader, commandBuffer));
-                return;
-        }
         switch (commandId) {
             case Invalid:
                 out.add(new UnknownCommand(amstcpHeader, amsHeader, commandBuffer));
                 break;
             case ADS_Read_Device_Info:
-                if (request) {
+                if (stateId.isRequest()) {
                     out.add(new ADSReadDeviceInfoRequest(amstcpHeader, amsHeader));
                 } else {
                     Result result = Result.of(commandBuffer);
@@ -111,7 +93,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 }
                 break;
             case ADS_Read:
-                if (request) {
+                if (stateId.isRequest()) {
                     IndexGroup indexGroup = IndexGroup.of(commandBuffer);
                     IndexOffset indexOffset = IndexOffset.of(commandBuffer);
                     Length length = Length.of(commandBuffer);
@@ -127,7 +109,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 }
                 break;
             case ADS_Write:
-                if (request) {
+                if (stateId.isRequest()) {
                     IndexGroup indexGroup = IndexGroup.of(commandBuffer);
                     IndexOffset indexOffset = IndexOffset.of(commandBuffer);
                     Length length = Length.of(byteBuf);
@@ -142,7 +124,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 }
                 break;
             case ADS_Read_State:
-                if (request) {
+                if (stateId.isRequest()) {
                     out.add(new ADSReadStateRequest(amstcpHeader, amsHeader));
                 } else {
                     Result result = Result.of(commandBuffer);
@@ -150,7 +132,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 }
                 break;
             case ADS_Write_Control:
-                if (request) {
+                if (stateId.isRequest()) {
                     ADSState adsState = ADSState.of(commandBuffer);
                     DeviceState deviceState = DeviceState.of(commandBuffer);
                     Length length = Length.of(byteBuf);
@@ -165,7 +147,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 }
                 break;
             case ADS_Add_Device_Notification:
-                if (request) {
+                if (stateId.isRequest()) {
                     IndexGroup indexGroup = IndexGroup.of(commandBuffer);
                     IndexOffset indexOffset = IndexOffset.of(commandBuffer);
                     Length length = Length.of(commandBuffer);
@@ -180,7 +162,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 }
                 break;
             case ADS_Delete_Device_Notification:
-                if (request) {
+                if (stateId.isRequest()) {
                     NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
                     out.add(new ADSDeleteDeviceNotificationRequest(amstcpHeader, amsHeader, notificationHandle));
                 } else {
@@ -189,7 +171,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 }
                 break;
             case ADS_Device_Notification:
-                if (request) {
+                if (stateId.isRequest()) {
                     Length length = Length.of(commandBuffer);
                     if (length.getAsLong() > Integer.MAX_VALUE) {
                         throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
@@ -226,7 +208,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 }
                 break;
             case ADS_Read_Write:
-                if (request) {
+                if (stateId.isRequest()) {
                     IndexGroup indexGroup = IndexGroup.of(commandBuffer);
                     IndexOffset indexOffset = IndexOffset.of(commandBuffer);
                     ReadLength readLength = ReadLength.of(commandBuffer);

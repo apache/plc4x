@@ -25,7 +25,10 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
+import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import java.util.List;
@@ -35,6 +38,7 @@ import java.util.List;
  * <p>
  * The data which are transfered at the Device Notification  are multiple nested into one another. The Notification Stream contains an array with elements of type AdsStampHeader. This array again contains elements of type AdsNotificationSample.
  */
+@ADSCommandType(Command.ADS_Device_Notification)
 public class ADSDeviceNotificationRequest extends AMSTCPPaket {
 
     /**
@@ -76,13 +80,4 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
         return buildADSData(length, stamps, buildADSData(adsStampHeaders.toArray(new ByteReadable[adsStampHeaders.size()])));
     }
 
-    @Override
-    protected Command getCommandId() {
-        return Command.ADS_Device_Notification;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.ADS_REQUEST_TCP;
-    }
 }

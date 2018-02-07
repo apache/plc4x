@@ -42,7 +42,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 
 public class ADSDumper {
 
@@ -70,7 +69,6 @@ public class ADSDumper {
 
             try (TcpHexDumper tcpHexDumper = TcpHexDumper.runOn(55862); Socket localhost = new Socket("localhost", tcpHexDumper.getPort())) {
                 localhost.getOutputStream().write(adsWriteRequest.getBytes());
-                TimeUnit.SECONDS.sleep(30);
             }
 
             UnknownPacket.Builder amsPacket = new UnknownPacket.Builder();

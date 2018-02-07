@@ -26,11 +26,11 @@ import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
-import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
  * With ADS Read data can be read from an ADS device
  */
+@ADSCommandType(Command.ADS_Read)
 public class ADSReadResponse extends AMSTCPPaket {
 
     /**
@@ -58,13 +58,4 @@ public class ADSReadResponse extends AMSTCPPaket {
         return buildADSData(result, length, data);
     }
 
-    @Override
-    protected Command getCommandId() {
-        return Command.ADS_Read;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.ADS_RESPONSE_TCP;
-    }
 }

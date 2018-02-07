@@ -26,21 +26,15 @@ import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff
 
 public class CalculatedAMSHeader extends AMSHeader {
 
-    protected final CommandIdSupplier commandIdSupplier;
-
-    protected final StateIdSupplier stateIdSupplier;
-
     protected final LengthSupplier lengthSupplier;
 
-    protected CalculatedAMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, CommandIdSupplier commandIdSupplier, StateIdSupplier stateIdSupplier, LengthSupplier lengthSupplier, Invoke invokeId) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, null, null, null, AMSError.NONE, invokeId);
-        this.commandIdSupplier = commandIdSupplier;
-        this.stateIdSupplier = stateIdSupplier;
+    protected CalculatedAMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateId, LengthSupplier lengthSupplier, Invoke invokeId) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateId, null, AMSError.NONE, invokeId);
         this.lengthSupplier = lengthSupplier;
     }
 
-    public static CalculatedAMSHeader of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, CommandIdSupplier commandIdSupplier, StateIdSupplier stateIdSupplier, LengthSupplier lengthSupplier, Invoke invokeId) {
-        return new CalculatedAMSHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandIdSupplier, stateIdSupplier, lengthSupplier, invokeId);
+    public static CalculatedAMSHeader of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateId, LengthSupplier lengthSupplier, Invoke invokeId) {
+        return new CalculatedAMSHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateId, lengthSupplier, invokeId);
     }
 
     @FunctionalInterface
@@ -64,8 +58,8 @@ public class CalculatedAMSHeader extends AMSHeader {
             targetAmsPort,
             sourceAmsNetId,
             sourceAmsPort,
-            commandIdSupplier.getCommandId(),
-            stateIdSupplier.getStateId(),
+            commandId,
+            stateFlags,
             lengthSupplier.getLength(),
             code,
             invokeId);

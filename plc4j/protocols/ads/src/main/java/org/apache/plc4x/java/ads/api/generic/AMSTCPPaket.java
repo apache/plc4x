@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.commands.ADSCommandType;
 import org.apache.plc4x.java.ads.api.generic.calculated.CalculatedAMSHeader;
 import org.apache.plc4x.java.ads.api.generic.calculated.CalculatedAMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.*;
@@ -44,13 +45,16 @@ public abstract class AMSTCPPaket implements ByteReadable {
     }
 
     public AMSTCPPaket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+        if (!getClass().isAnnotationPresent(ADSCommandType.class)) {
+            throw new IllegalArgumentException(ADSCommandType.class + " need to be present.");
+        }
         this.amsHeader = CalculatedAMSHeader.of(
             targetAmsNetId,
             targetAmsPort,
             sourceAmsNetId,
             sourceAmsPort,
-            this::getCommandId,
-            this::getStateId,
+            getClass().getAnnotation(ADSCommandType.class).value(),
+            State.DEFAULT,
             () -> DataLength.of(getAdsData().getLength()),
             invokeId);
         this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getLength());
@@ -65,10 +69,6 @@ public abstract class AMSTCPPaket implements ByteReadable {
     }
 
     public abstract ADSData getAdsData();
-
-    protected abstract Command getCommandId();
-
-    protected abstract State getStateId();
 
     @Override
     public ByteBuf getByteBuf() {

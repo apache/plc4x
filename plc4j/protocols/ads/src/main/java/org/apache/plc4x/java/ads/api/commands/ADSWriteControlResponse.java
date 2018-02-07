@@ -24,11 +24,11 @@ import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
-import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
  * Changes the ADS status and the device status of an ADS device.
  */
+@ADSCommandType(Command.ADS_Write_Control)
 public class ADSWriteControlResponse extends AMSTCPPaket {
     /**
      * 4 bytes	ADS error number
@@ -45,13 +45,4 @@ public class ADSWriteControlResponse extends AMSTCPPaket {
         return buildADSData(result);
     }
 
-    @Override
-    protected Command getCommandId() {
-        return Command.ADS_Write_Control;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.ADS_RESPONSE_TCP;
-    }
 }

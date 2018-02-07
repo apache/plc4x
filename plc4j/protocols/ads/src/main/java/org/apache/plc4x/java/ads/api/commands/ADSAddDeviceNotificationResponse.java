@@ -25,11 +25,11 @@ import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
-import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
  * A notification is created in an ADS device.
  */
+@ADSCommandType(Command.ADS_Add_Device_Notification)
 public class ADSAddDeviceNotificationResponse extends AMSTCPPaket {
 
     /**
@@ -53,13 +53,4 @@ public class ADSAddDeviceNotificationResponse extends AMSTCPPaket {
         return buildADSData(result, notificationHandle);
     }
 
-    @Override
-    protected Command getCommandId() {
-        return Command.ADS_Add_Device_Notification;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.ADS_RESPONSE_TCP;
-    }
 }

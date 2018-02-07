@@ -24,11 +24,11 @@ import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
-import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
  * Reads the name and the version number of the ADS device.
  */
+@ADSCommandType(Command.ADS_Read_Device_Info)
 public class ADSReadDeviceInfoResponse extends AMSTCPPaket {
     /**
      * 4 bytes	ADS error number.
@@ -65,13 +65,4 @@ public class ADSReadDeviceInfoResponse extends AMSTCPPaket {
         return buildADSData(result, majorVersion, minorVersion, version, device);
     }
 
-    @Override
-    protected Command getCommandId() {
-        return Command.ADS_Read_Device_Info;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.ADS_RESPONSE_TCP;
-    }
 }

@@ -19,12 +19,14 @@
 package org.apache.plc4x.java.ads.api.commands;
 
 import org.apache.plc4x.java.ads.api.commands.types.*;
-import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
+import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 /**
@@ -33,6 +35,7 @@ import org.apache.plc4x.java.ads.api.util.ByteValue;
  * Note: We recommend to announce not more then 550 notifications per device.
  * You can increase the payload by organizing the data in structures.
  */
+@ADSCommandType(Command.ADS_Add_Device_Notification)
 public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
 
     /**
@@ -97,16 +100,6 @@ public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime, reserved);
-    }
-
-    @Override
-    protected Command getCommandId() {
-        return Command.ADS_Add_Device_Notification;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.ADS_REQUEST_TCP;
     }
 
     public static class Reserved extends ByteValue {

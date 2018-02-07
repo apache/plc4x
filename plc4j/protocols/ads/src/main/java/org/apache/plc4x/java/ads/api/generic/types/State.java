@@ -19,12 +19,14 @@
 package org.apache.plc4x.java.ads.api.generic.types;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import org.apache.plc4x.java.ads.api.util.ByteReadable;
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.plc4x.java.ads.api.util.UnsignedShortLEByteValue;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.apache.plc4x.java.ads.api.generic.types.State.StateMask.*;
 
 /**
  * 2 bytes	see below.
@@ -42,82 +44,144 @@ import java.util.Arrays;
  * 0x004x	UDP Protocol
  * Bit number 7 marks, if it should be transfered with TCP or UDP.
  */
-public enum State implements ByteReadable {
-    ADS_REQUEST_TCP(0x04),
-    ADS_RESPONSE_TCP(0x05),
-    ADS_REQUEST_UDP(0x44),
-    ADS_RESPONSE_UDP(0x45),
-    UNKNOWN();
+public class State extends UnsignedShortLEByteValue {
 
-    // TODO: refactor as this is not really an enum, its more a flag collection:
-    //.... .... .... ...0 = RESPONSE: Not set
-    //.... .... .... ..0. = NO RETURN: Not set
-    //.... .... .... .1.. = ADS COMMAND: Set
-    //.... .... .... 0... = SYSTEM COMMAND: Not set
-    //.... .... ...0 .... = HIGH PRIORITY COMMAND: Not set
-    //.... .... ..0. .... = TIMESTAMP ADDED: Not set
-    //.... .... .0.. .... = UDP COMMAND: Not set
-    //.... .... 0... .... = INIT COMMAND: Not set
-    //0... .... .... .... = BROADCAST: Not set
+    public enum StateMask {
+        RESPONSE(0b0000_0000_0000_0001),
+        NO_RETURN(0b0000_0000_0000_0010),
+        ADS_COMMAND(0b0000_0000_0000_0100),
+        SYSTEM_COMMAND(0b0000_0000_0000_1000),
+        HIGH_PRIORITY_COMMAND(0b0000_0000_0001_0000),
+        TIMESTAMP_ADDED(0b0000_0000_0010_0000),
+        UDP_COMMAND(0b0000_0000_0100_0000),
+        INIT_COMMAND(0b0000_0000_1000_0000),
+        BROADCAST(0b1000_0000_0000_0000);
 
-    public static final int NUM_BYTES = 2;
+        private final int mask;
 
-    final byte[] value;
-
-    final int intValue;
-
-    State() {
-        value = new byte[0];
-        intValue = 0;
-    }
-
-    State(int value) {
-        ByteValue.checkUnsignedBounds(value, NUM_BYTES);
-        this.intValue = value;
-        this.value = ByteBuffer.allocate(NUM_BYTES)
-            // LE
-            .put((byte) (value & 0xff))
-            .put((byte) (value >> 8 & 0xff))
-            .array();
-    }
-
-    @Override
-    public byte[] getBytes() {
-        if (this == UNKNOWN) {
-            throw new IllegalStateException("Unknown enum can't be serialized");
+        StateMask(int mask) {
+            this.mask = mask;
         }
-        return value;
+
+        public boolean applies(int value) {
+            return (value & this.mask) != 0;
+        }
+
+        public boolean applies(State state) {
+            return (state.getAsInt() & this.mask) != 0;
+        }
+
+        public int getMask() {
+            return mask;
+        }
     }
 
-    public ByteBuf getByteBuf() {
-        if (this == UNKNOWN) {
-            throw new IllegalStateException("Unknown enum can't be serialized");
-        }
-        return Unpooled.buffer().writeBytes(value);
+    public static final State DEFAULT = State.of(ADS_COMMAND);
+
+    public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
+
+    protected State(byte... values) {
+        super(values);
     }
 
-    public static State of(byte... bytes) {
-        // TODO: improve by using a map
-        for (State command : values()) {
-            if (Arrays.equals(bytes, command.value)) {
-                return command;
-            }
-        }
-        return UNKNOWN;
+    protected State(int value) {
+        super(value);
     }
 
+    protected State(ByteBuf byteBuf) {
+        super(byteBuf);
+    }
 
-    public static State of(int intValue) {
-        // TODO: improve by using a map
-        for (State state : values()) {
-            if (state.intValue == intValue) {
-                return state;
-            }
-        }
-        return UNKNOWN;
+    public static State of(byte... values) {
+        return new State(values);
+    }
+
+    public static State of(int value) {
+        checkUnsignedBounds(value, NUM_BYTES);
+        return new State(value);
     }
 
     public static State of(ByteBuf byteBuf) {
-        return of(byteBuf.readUnsignedShortLE());
+        return new State(byteBuf);
+    }
+
+    public static State of(String length) {
+        return of(Integer.parseInt(length));
+    }
+
+    public static State of(StateMask... stateMasks) {
+        return State.of(Stream.of(stateMasks).map(StateMask::getMask).reduce(0, (a, b) -> a | b));
+    }
+
+    public EnumSet<StateMask> getStateMaskEnumSet() {
+        List<StateMask> result = new LinkedList<>();
+        if (isResponse()) {
+            result.add(StateMask.RESPONSE);
+        }
+        if (isNoReturn()) {
+            result.add(NO_RETURN);
+        }
+        if (isADSCommand()) {
+            result.add(StateMask.ADS_COMMAND);
+        }
+        if (isSystemCommand()) {
+            result.add(StateMask.SYSTEM_COMMAND);
+        }
+        if (isHighPriorityCommand()) {
+            result.add(StateMask.HIGH_PRIORITY_COMMAND);
+        }
+        if (isTimestampAdded()) {
+            result.add(StateMask.TIMESTAMP_ADDED);
+        }
+        if (isUDPCommand()) {
+            result.add(StateMask.UDP_COMMAND);
+        }
+        if (isInitCommand()) {
+            result.add(StateMask.INIT_COMMAND);
+        }
+        if (isBroadcast()) {
+            result.add(StateMask.BROADCAST);
+        }
+        return EnumSet.copyOf(result);
+    }
+
+    public boolean isResponse() {
+        return RESPONSE.applies(this);
+    }
+
+    public boolean isRequest() {
+        return !isResponse();
+    }
+
+    public boolean isNoReturn() {
+        return NO_RETURN.applies(this);
+    }
+
+    public boolean isADSCommand() {
+        return ADS_COMMAND.applies(this);
+    }
+
+    public boolean isSystemCommand() {
+        return SYSTEM_COMMAND.applies(this);
+    }
+
+    public boolean isHighPriorityCommand() {
+        return HIGH_PRIORITY_COMMAND.applies(this);
+    }
+
+    public boolean isTimestampAdded() {
+        return TIMESTAMP_ADDED.applies(this);
+    }
+
+    public boolean isUDPCommand() {
+        return UDP_COMMAND.applies(this);
+    }
+
+    public boolean isInitCommand() {
+        return INIT_COMMAND.applies(this);
+    }
+
+    public boolean isBroadcast() {
+        return BROADCAST.applies(this);
     }
 }

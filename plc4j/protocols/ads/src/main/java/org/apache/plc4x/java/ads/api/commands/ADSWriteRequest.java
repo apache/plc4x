@@ -26,11 +26,15 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
+import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
 /**
  * With ADS Write data can be written to an ADS device. The data are addressed by the Index Group and the Index Offset.
  */
+@ADSCommandType(Command.ADS_Write)
 public class ADSWriteRequest extends AMSTCPPaket {
 
     /**
@@ -77,15 +81,5 @@ public class ADSWriteRequest extends AMSTCPPaket {
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, length, data);
-    }
-
-    @Override
-    protected Command getCommandId() {
-        return Command.ADS_Write;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.ADS_REQUEST_TCP;
     }
 }

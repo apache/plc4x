@@ -26,13 +26,17 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
+import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
 /**
  * Changes the ADS status and the device status of an ADS device.
  * Additionally it is possible to send data to the ADS device to transfer further information.
  * These data were not analysed from the current ADS devices (PLC, NC, ...)
  */
+@ADSCommandType(Command.ADS_Write_Control)
 public class ADSWriteControlRequest extends AMSTCPPaket {
 
     /**
@@ -81,13 +85,4 @@ public class ADSWriteControlRequest extends AMSTCPPaket {
         return buildADSData(adsState, deviceState, length, data);
     }
 
-    @Override
-    protected Command getCommandId() {
-        return Command.ADS_Write_Control;
-    }
-
-    @Override
-    protected State getStateId() {
-        return State.ADS_REQUEST_TCP;
-    }
 }
