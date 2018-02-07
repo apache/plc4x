@@ -21,5 +21,5 @@ package org.apache.plc4x.java.ads.api.util;
 @FunctionalInterface
 public interface LengthSupplier {
 
-    long getLength();
+    long getCalculatedLength();
 }

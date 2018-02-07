@@ -24,10 +24,7 @@ import org.apache.plc4x.java.ads.api.commands.ADSReadRequest;
 import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteResponse;
-import org.apache.plc4x.java.ads.api.commands.types.Data;
-import org.apache.plc4x.java.ads.api.commands.types.IndexGroup;
-import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
-import org.apache.plc4x.java.ads.api.commands.types.Length;
+import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
@@ -35,24 +32,33 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.ADSAddress;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcRequest;
-import org.apache.plc4x.java.api.messages.PlcRequestContainer;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.types.ResponseCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequestContainer> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XADSProtocol.class);
+
     private static final AtomicLong correlationBuilder = new AtomicLong(1);
 
-    private Map<Short, PlcRequestContainer> requests;
+    private ConcurrentMap<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requests;
 
     private final AMSNetId targetAmsNetId;
     private final AMSPort targetAmsPort;
@@ -64,7 +70,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
         this.sourceAmsPort = sourceAmsPort;
-        this.requests = new HashMap<>();
+        this.requests = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -77,14 +83,6 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         }
     }
 
-    @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, AMSTCPPaket amstcpPaket, List<Object> out) throws Exception {
-        if (amstcpPaket instanceof ADSReadResponse) {
-            // TODO: implement me
-        } else if (amstcpPaket instanceof ADSWriteResponse) {
-            // TODO: implement me
-        }
-    }
 
     private void encodeWriteRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
         PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
@@ -100,7 +98,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
-        // TODO: how to get length and data. Serialization of plc is the problem here
+        // TODO: implement serialization
         Length length = Length.of(1);
         Data data = Data.of(new byte[]{0x42});
         AMSTCPPaket amstcpPaket = new ADSWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, data);
@@ -125,6 +123,72 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         Length length = Length.of(readRequestItem.getSize());
         AMSTCPPaket amstcpPaket = new ADSReadRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         out.add(amstcpPaket);
+    }
+
+    @Override
+    protected void decode(ChannelHandlerContext channelHandlerContext, AMSTCPPaket amstcpPaket, List<Object> out) throws Exception {
+        PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requests.remove(amstcpPaket.getAmsHeader().getInvokeId().getAsLong());
+        if (plcRequestContainer == null) {
+            LOGGER.info("Unmapped packet received {}", amstcpPaket);
+            return;
+        }
+        PlcRequest request = plcRequestContainer.getRequest();
+        PlcResponse response = null;
+
+        // Handle the response to a read request.
+        if (request instanceof PlcReadRequest) {
+            if (amstcpPaket instanceof ADSReadResponse) {
+                response = decodeReadResponse((ADSReadResponse) amstcpPaket, plcRequestContainer);
+            } else {
+                throw new PlcProtocolException("Wrong type correlated " + amstcpPaket);
+            }
+        } else if (request instanceof PlcWriteRequest) {
+            if (amstcpPaket instanceof ADSWriteResponse) {
+                response = decodeWriteResponse((ADSWriteResponse) amstcpPaket, plcRequestContainer);
+            } else {
+                throw new PlcProtocolException("Wrong type correlated " + amstcpPaket);
+            }
+        }
+
+        // Confirm the response being handled.
+        if (response != null) {
+            plcRequestContainer.getResponseFuture().complete(response);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private PlcResponse decodeWriteResponse(ADSWriteResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) throws PlcProtocolException {
+        PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
+        WriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(0);
+
+        ResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
+
+        if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
+            return new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, Collections.singletonList(new WriteResponseItem<>(requestItem, responseCode)));
+        } else {
+            return new PlcWriteResponse(plcWriteRequest, Collections.singletonList(new WriteResponseItem<>(requestItem, responseCode)));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private PlcResponse decodeReadResponse(ADSReadResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) throws PlcProtocolException {
+        PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
+        ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(0);
+
+        ResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
+        byte[] bytes = responseMessage.getData().getBytes();
+
+        // TODO: implement deserialization
+        if (plcReadRequest instanceof TypeSafePlcReadRequest) {
+            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, Collections.singletonList(bytes))));
+        } else {
+            return new PlcReadResponse(plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, Collections.singletonList(bytes))));
+        }
+    }
+
+    private ResponseCode decodeResponseCode(Result result) {
+        // TODO: complete mapping
+        return result.getAsLong() == 0 ? ResponseCode.OK : ResponseCode.INTERNAL_ERROR;
     }
 
 }

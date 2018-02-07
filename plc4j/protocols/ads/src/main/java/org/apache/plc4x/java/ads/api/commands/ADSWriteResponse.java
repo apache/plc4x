@@ -46,4 +46,7 @@ public class ADSWriteResponse extends AMSTCPPaket {
         return buildADSData(result);
     }
 
+    public Result getResult() {
+        return result;
+    }
 }

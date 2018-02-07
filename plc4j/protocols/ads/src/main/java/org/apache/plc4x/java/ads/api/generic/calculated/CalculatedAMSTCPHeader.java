@@ -46,7 +46,7 @@ public class CalculatedAMSTCPHeader extends AMSTCPHeader {
     public ByteBuf getByteBuf() {
         long aggregateLength = 0;
         for (LengthSupplier supplier : lengthSupplier) {
-            aggregateLength += supplier.getLength();
+            aggregateLength += supplier.getCalculatedLength();
         }
         return buildByteBuff(reserved, Length.of(aggregateLength));
     }

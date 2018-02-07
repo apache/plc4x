@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.api.generic.types;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.commands.types.AdsReturnCode;
 import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
 public class AMSError extends UnsignedIntLEByteValue {
@@ -50,5 +51,14 @@ public class AMSError extends UnsignedIntLEByteValue {
 
     public static AMSError of(ByteBuf byteBuf) {
         return new AMSError(byteBuf);
+    }
+
+    public AdsReturnCode toAdsReturnCode() {
+        return AdsReturnCode.of(getAsLong());
+    }
+
+    @Override
+    public String toString() {
+        return "AMSError{" + toAdsReturnCode() + "}";
     }
 }

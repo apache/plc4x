@@ -29,7 +29,7 @@ public interface ByteReadable extends LengthSupplier {
 
     ByteBuf getByteBuf();
 
-    default long getLength() {
+    default long getCalculatedLength() {
         return getBytes().length;
     }
 

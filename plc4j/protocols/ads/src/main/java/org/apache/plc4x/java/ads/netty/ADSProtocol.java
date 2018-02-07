@@ -31,16 +31,20 @@ import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ADSProtocol.class);
 
-    private Map<Invoke, AMSTCPPaket> requests;
+    private ConcurrentMap<Invoke, AMSTCPPaket> requests;
 
     public ADSProtocol() {
-        this.requests = new HashMap<>();
+        this.requests = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -68,8 +72,10 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
         DataLength dataLength = DataLength.of(byteBuf);
         AMSError errorCode = AMSError.of(byteBuf);
         Invoke invoke = Invoke.of(byteBuf);
-        AMSTCPPaket correlatedAmstcpPacket = requests.get(invoke);
-        LOGGER.debug("Correlated packet received {}", correlatedAmstcpPacket);
+        AMSTCPPaket correlatedAmstcpPacket = requests.remove(invoke);
+        if (correlatedAmstcpPacket != null) {
+            LOGGER.debug("Correlated packet received {}", correlatedAmstcpPacket);
+        }
         if (dataLength.getAsLong() > Integer.MAX_VALUE) {
             throw new IllegalStateException("Overflow in datalength: " + dataLength.getAsLong());
         }

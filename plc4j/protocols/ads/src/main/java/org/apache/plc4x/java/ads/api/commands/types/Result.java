@@ -49,4 +49,13 @@ public class Result extends UnsignedIntLEByteValue {
     public static Result of(ByteBuf byteBuf) {
         return new Result(byteBuf);
     }
+
+    public AdsReturnCode toAdsReturnCode() {
+        return AdsReturnCode.of(getAsLong());
+    }
+
+    @Override
+    public String toString() {
+        return "Result{" + toAdsReturnCode() + "}";
+    }
 }

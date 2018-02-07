@@ -58,4 +58,15 @@ public class ADSReadResponse extends AMSTCPPaket {
         return buildADSData(result, length, data);
     }
 
+    public Result getResult() {
+        return result;
+    }
+
+    public Length getLength() {
+        return length;
+    }
+
+    public Data getData() {
+        return data;
+    }
 }

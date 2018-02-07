@@ -40,7 +40,7 @@ public abstract class AMSTCPPaket implements ByteReadable {
     public AMSTCPPaket(AMSHeader amsHeader) {
         // It is important that we wrap the ads data call as this will initialized in the constructor
         // so this value will be null if we call adsData now.
-        this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getLength());
+        this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getCalculatedLength());
         this.amsHeader = amsHeader;
     }
 
@@ -55,9 +55,9 @@ public abstract class AMSTCPPaket implements ByteReadable {
             sourceAmsPort,
             getClass().getAnnotation(ADSCommandType.class).value(),
             State.DEFAULT,
-            () -> DataLength.of(getAdsData().getLength()),
+            () -> DataLength.of(getAdsData().getCalculatedLength()),
             invokeId);
-        this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getLength());
+        this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getCalculatedLength());
     }
 
     public AMSTCPHeader getAmstcpHeader() {
