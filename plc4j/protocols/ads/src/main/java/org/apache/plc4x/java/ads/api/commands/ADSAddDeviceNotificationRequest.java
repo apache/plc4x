@@ -100,12 +100,12 @@ public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
     }
 
     @Override
-    public Command getCommandId() {
+    protected Command getCommandId() {
         return Command.ADS_Add_Device_Notification;
     }
 
     @Override
-    public State getStateId() {
+    protected State getStateId() {
         return State.ADS_REQUEST_TCP;
     }
 

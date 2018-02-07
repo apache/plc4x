@@ -26,6 +26,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.generic.types.Length;
+import org.apache.plc4x.java.ads.util.TcpHexDumper;
 import org.pcap4j.core.PcapDumper;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.Pcaps;
@@ -37,8 +38,10 @@ import org.slf4j.LoggerFactory;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 public class ADSDumper {
 
@@ -50,18 +53,24 @@ public class ADSDumper {
         try (PcapHandle handle = Pcaps.openDead(DataLinkType.EN10MB, 65536);
              PcapDumper dumper = handle.dumpOpen(dumpFile.toAbsolutePath().toString())) {
 
+            String crhit= "Hallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine Nachricht";
+
             ADSWriteRequest adsWriteRequest = new ADSWriteRequest(
                 AMSNetId.of("192.168.0.70.1.2"),
                 AMSPort.of(12),
                 AMSNetId.of("192.168.0.70.1.1"),
                 AMSPort.of(14),
                 Invoke.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
-                org.apache.plc4x.java.ads.api.generic.types.Data.of((byte) 0),
                 IndexGroup.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
                 IndexOffset.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
-                Length.of(1),
-                Data.of((byte) 0x42)
+                Length.of(crhit.getBytes().length),
+                Data.of(crhit.getBytes())
             );
+
+            try (TcpHexDumper tcpHexDumper = TcpHexDumper.runOn(55862); Socket localhost = new Socket("localhost", tcpHexDumper.getPort())) {
+                localhost.getOutputStream().write(adsWriteRequest.getBytes());
+                TimeUnit.SECONDS.sleep(30);
+            }
 
             UnknownPacket.Builder amsPacket = new UnknownPacket.Builder();
             amsPacket.rawData(adsWriteRequest.getBytes());

@@ -24,6 +24,8 @@ public class Invoke extends ByteValue {
 
     public static final int NUM_BYTES = 4;
 
+    public static final Invoke NONE = of((byte) 0, (byte) 0, (byte) 0, (byte) 0);
+
     Invoke(byte... values) {
         super(values);
         assertLength(NUM_BYTES);

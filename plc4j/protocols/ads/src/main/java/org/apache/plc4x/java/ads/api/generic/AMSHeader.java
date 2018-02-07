@@ -67,7 +67,7 @@ public class AMSHeader implements ByteReadable {
      */
     protected final Invoke invokeId;
 
-    public AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId) {
+    protected AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId) {
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
@@ -77,6 +77,10 @@ public class AMSHeader implements ByteReadable {
         this.dataLength = dataLength;
         this.code = code;
         this.invokeId = invokeId;
+    }
+
+    public static AMSHeader of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId) {
+        return new AMSHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateFlags, dataLength, code, invokeId);
     }
 
     @Override
@@ -91,5 +95,41 @@ public class AMSHeader implements ByteReadable {
             dataLength,
             code,
             invokeId);
+    }
+
+    public AMSNetId getTargetAmsNetId() {
+        return targetAmsNetId;
+    }
+
+    public AMSPort getTargetAmsPort() {
+        return targetAmsPort;
+    }
+
+    public AMSNetId getSourceAmsNetId() {
+        return sourceAmsNetId;
+    }
+
+    public AMSPort getSourceAmsPort() {
+        return sourceAmsPort;
+    }
+
+    public Command getCommandId() {
+        return commandId;
+    }
+
+    public State getStateFlags() {
+        return stateFlags;
+    }
+
+    public DataLength getDataLength() {
+        return dataLength;
+    }
+
+    public AMSError getCode() {
+        return code;
+    }
+
+    public Invoke getInvokeId() {
+        return invokeId;
     }
 }

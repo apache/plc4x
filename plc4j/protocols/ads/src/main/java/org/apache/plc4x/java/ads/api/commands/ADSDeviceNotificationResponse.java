@@ -28,7 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.State;
  */
 public class ADSDeviceNotificationResponse extends AMSTCPPaket {
 
-    private ADSDeviceNotificationResponse() {
+    public ADSDeviceNotificationResponse() {
         super(null, null);
         // There is no {@link ADSDeviceNotificationResponse} specified
     }
@@ -39,12 +39,12 @@ public class ADSDeviceNotificationResponse extends AMSTCPPaket {
     }
 
     @Override
-    public Command getCommandId() {
+    protected Command getCommandId() {
         return Command.ADS_Device_Notification;
     }
 
     @Override
-    public State getStateId() {
+    protected State getStateId() {
         return State.ADS_RESPONSE_TCP;
     }
 }

@@ -26,6 +26,9 @@ import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.util.ByteReadable;
+
+import java.util.List;
 
 /**
  * Data will carry forward independently from an ADS device to a Client
@@ -45,41 +48,41 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
     /**
      * n bytes	Array with elements of type AdsStampHeader.
      */
-    private final AdsStampHeader adsStampHeader;
+    private final List<AdsStampHeader> adsStampHeaders;
 
-    public ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, AdsStampHeader adsStampHeader) {
+    public ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amstcpHeader, amsHeader);
         this.length = length;
         this.stamps = stamps;
-        this.adsStampHeader = adsStampHeader;
+        this.adsStampHeaders = adsStampHeaders;
     }
 
-    public ADSDeviceNotificationRequest(AMSHeader amsHeader, Length length, Stamps stamps, AdsStampHeader adsStampHeader) {
+    public ADSDeviceNotificationRequest(AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amsHeader);
         this.length = length;
         this.stamps = stamps;
-        this.adsStampHeader = adsStampHeader;
+        this.adsStampHeaders = adsStampHeaders;
     }
 
-    public ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Length length, Stamps stamps, AdsStampHeader adsStampHeader) {
+    public ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.length = length;
         this.stamps = stamps;
-        this.adsStampHeader = adsStampHeader;
+        this.adsStampHeaders = adsStampHeaders;
     }
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(length, stamps, adsStampHeader);
+        return buildADSData(length, stamps, buildADSData(adsStampHeaders.toArray(new ByteReadable[adsStampHeaders.size()])));
     }
 
     @Override
-    public Command getCommandId() {
+    protected Command getCommandId() {
         return Command.ADS_Device_Notification;
     }
 
     @Override
-    public State getStateId() {
+    protected State getStateId() {
         return State.ADS_REQUEST_TCP;
     }
 }

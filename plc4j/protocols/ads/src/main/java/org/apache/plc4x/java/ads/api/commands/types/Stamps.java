@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.api.commands.types;
 
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
+import java.nio.ByteBuffer;
+
 public class Stamps extends ByteValue {
 
     public static final int NUM_BYTES = 4;
@@ -27,6 +29,17 @@ public class Stamps extends ByteValue {
     Stamps(byte... value) {
         super(value);
         assertLength(NUM_BYTES);
+    }
+
+    public static Stamps of(long length) {
+        checkUnsignedBounds(length, NUM_BYTES);
+        return new Stamps(ByteBuffer.allocate(NUM_BYTES)
+            // LE
+            .put((byte) (length & 0xff))
+            .put((byte) (length >> 8 & 0xff))
+            .put((byte) (length >> 16 & 0xff))
+            .put((byte) (length >> 24 & 0xff))
+            .array());
     }
 
     public static Stamps of(byte... values) {

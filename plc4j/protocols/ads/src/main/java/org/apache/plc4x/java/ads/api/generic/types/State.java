@@ -24,6 +24,7 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  * 2 bytes	see below.
@@ -78,5 +79,16 @@ public enum State implements ByteReadable {
             throw new IllegalStateException("Unknown enum can't be serialized");
         }
         return Unpooled.buffer().writeBytes(value);
+    }
+
+    // TODO: improve by accepting int
+    public static State of(byte... bytes) {
+        // TODO: improve by using a map
+        for (State command : values()) {
+            if (Arrays.equals(bytes, command.value)) {
+                return command;
+            }
+        }
+        return UNKNOWN;
     }
 }

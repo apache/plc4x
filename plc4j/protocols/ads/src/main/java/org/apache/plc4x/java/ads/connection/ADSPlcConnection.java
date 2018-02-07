@@ -25,6 +25,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.model.ADSAddress;
+import org.apache.plc4x.java.ads.netty.ADSProtocol;
 import org.apache.plc4x.java.ads.netty.Plc4XADSProtocol;
 import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -119,6 +120,7 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
                     // Build the protocol stack for communicating with the ads protocol.
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast(new Plc4XADSProtocol());
+                    pipeline.addLast(new ADSProtocol());
                 }
             });
             // Start the client.

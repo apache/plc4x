@@ -46,12 +46,12 @@ public class ADSWriteControlResponse extends AMSTCPPaket {
     }
 
     @Override
-    public Command getCommandId() {
+    protected Command getCommandId() {
         return Command.ADS_Write_Control;
     }
 
     @Override
-    public State getStateId() {
+    protected State getStateId() {
         return State.ADS_RESPONSE_TCP;
     }
 }

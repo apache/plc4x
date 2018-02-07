@@ -18,10 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.ads.netty;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -34,11 +34,11 @@ import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class Plc4XADSProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestContainer> {
+public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequestContainer> {
 
-    private static final AtomicInteger tpduGenerator = new AtomicInteger(1);
+    private static final AtomicLong correlationBuilder = new AtomicLong(1);
 
     private Map<Short, PlcRequestContainer> requests;
 
@@ -54,6 +54,11 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestC
         } else if (request instanceof PlcWriteRequest) {
             encodeWriteRequest(msg, out);
         }
+    }
+
+    @Override
+    protected void decode(ChannelHandlerContext channelHandlerContext, AMSTCPPaket amstcpPaket, List<Object> out) throws Exception {
+
     }
 
     private void encodeWriteRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
@@ -74,12 +79,6 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestC
         }
         ReadRequestItem<?> readRequestItem = readRequest.getRequestItems().get(0);
         out.add(Unpooled.buffer());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-
     }
 
 }

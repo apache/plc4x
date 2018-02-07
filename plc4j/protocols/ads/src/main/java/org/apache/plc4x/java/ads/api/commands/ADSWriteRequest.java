@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.api.commands;
 import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.IndexGroup;
 import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
+import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
@@ -79,12 +80,12 @@ public class ADSWriteRequest extends AMSTCPPaket {
     }
 
     @Override
-    public Command getCommandId() {
+    protected Command getCommandId() {
         return Command.ADS_Write;
     }
 
     @Override
-    public State getStateId() {
+    protected State getStateId() {
         return State.ADS_REQUEST_TCP;
     }
 }

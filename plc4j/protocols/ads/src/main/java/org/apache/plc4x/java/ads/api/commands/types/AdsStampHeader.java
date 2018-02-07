@@ -21,6 +21,8 @@ package org.apache.plc4x.java.ads.api.commands.types;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
+import java.util.List;
+
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public class AdsStampHeader implements ByteReadable {
@@ -36,20 +38,20 @@ public class AdsStampHeader implements ByteReadable {
     /**
      * n bytes	Array with elements of type AdsNotificationSample.
      */
-    private final AdsNotificationSample adsNotificationSample;
+    private final List<AdsNotificationSample> adsNotificationSamples;
 
-    AdsStampHeader(TimeStamp timeStamp, Samples samples, AdsNotificationSample adsNotificationSample) {
+    AdsStampHeader(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {
         this.timeStamp = timeStamp;
         this.samples = samples;
-        this.adsNotificationSample = adsNotificationSample;
+        this.adsNotificationSamples = adsNotificationSamples;
     }
 
-    public static AdsStampHeader of(TimeStamp timeStamp, Samples samples, AdsNotificationSample adsNotificationSample) {
-        return new AdsStampHeader(timeStamp, samples, adsNotificationSample);
+    public static AdsStampHeader of(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {
+        return new AdsStampHeader(timeStamp, samples, adsNotificationSamples);
     }
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(timeStamp, samples, adsNotificationSample);
+        return buildByteBuff(timeStamp, samples, () -> buildByteBuff(adsNotificationSamples.toArray(new ByteReadable[adsNotificationSamples.size()])));
     }
 }

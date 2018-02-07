@@ -48,12 +48,12 @@ public class ADSReadDeviceInfoRequest extends AMSTCPPaket {
     }
 
     @Override
-    public Command getCommandId() {
+    protected Command getCommandId() {
         return Command.ADS_Read_Device_Info;
     }
 
     @Override
-    public State getStateId() {
+    protected State getStateId() {
         return State.ADS_REQUEST_TCP;
     }
 }

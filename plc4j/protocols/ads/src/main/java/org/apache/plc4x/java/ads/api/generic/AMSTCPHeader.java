@@ -39,7 +39,7 @@ public class AMSTCPHeader implements ByteReadable {
         this.length = length;
     }
 
-    public static AMSTCPHeader of(int length) {
+    public static AMSTCPHeader of(long length) {
         return new AMSTCPHeader(Length.of(length));
     }
 
@@ -62,4 +62,7 @@ public class AMSTCPHeader implements ByteReadable {
         }
     }
 
+    public Length getLengthValue() {
+        return length;
+    }
 }

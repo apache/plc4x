@@ -47,12 +47,12 @@ public class ADSReadStateResponse extends AMSTCPPaket {
     }
 
     @Override
-    public Command getCommandId() {
+    protected Command getCommandId() {
         return Command.ADS_Read_State;
     }
 
     @Override
-    public State getStateId() {
+    protected State getStateId() {
         return State.ADS_RESPONSE_TCP;
     }
 }

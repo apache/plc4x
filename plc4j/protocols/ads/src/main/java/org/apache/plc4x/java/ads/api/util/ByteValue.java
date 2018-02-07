@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.api.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class ByteValue implements ByteReadable {
@@ -53,5 +54,20 @@ public class ByteValue implements ByteReadable {
     @Override
     public ByteBuf getByteBuf() {
         return Unpooled.buffer().writeBytes(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ByteValue byteValue = (ByteValue) o;
+
+        return Arrays.equals(value, byteValue.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(value);
     }
 }

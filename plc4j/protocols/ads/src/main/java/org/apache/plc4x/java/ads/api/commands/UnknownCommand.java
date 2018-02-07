@@ -18,42 +18,38 @@
  */
 package org.apache.plc4x.java.ads.api.commands;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
- * Reads the ADS status and the device status of an ADS device.
- * <p>
- * No additional data required
+ * Unknown ADS Package
  */
-public class ADSReadStateRequest extends AMSTCPPaket {
-    public ADSReadStateRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+public class UnknownCommand extends AMSTCPPaket {
+
+    final ByteBuf remainingBytes;
+
+    public UnknownCommand(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ByteBuf remainingBytes) {
         super(amstcpHeader, amsHeader);
-    }
-
-    public ADSReadStateRequest(AMSHeader amsHeader) {
-        super(amsHeader);
-    }
-
-    public ADSReadStateRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+        this.remainingBytes = remainingBytes;
     }
 
     @Override
     public ADSData getAdsData() {
-        return ADSData.EMPTY;
+        return () -> remainingBytes;
     }
 
     @Override
     protected Command getCommandId() {
-        return Command.ADS_Read_State;
+        return Command.UNKNOWN;
     }
 
     @Override
     protected State getStateId() {
-        return State.ADS_REQUEST_TCP;
+        return State.UNKNOWN;
     }
 }

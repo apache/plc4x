@@ -66,9 +66,9 @@ public abstract class AMSTCPPaket implements ByteReadable {
 
     public abstract ADSData getAdsData();
 
-    public abstract Command getCommandId();
+    protected abstract Command getCommandId();
 
-    public abstract State getStateId();
+    protected abstract State getStateId();
 
     @Override
     public ByteBuf getByteBuf() {
