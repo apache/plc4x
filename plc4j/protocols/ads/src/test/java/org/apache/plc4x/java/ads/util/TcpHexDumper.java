@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -33,7 +34,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
+public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, ParameterResolver, Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(TcpHexDumper.class);
 
@@ -115,6 +116,16 @@ public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, Para
         }
     }
 
+    public static TcpHexDumper runOn(int port) throws IOException, InterruptedException {
+        TcpHexDumper tcpHexDumper = new TcpHexDumper();
+        tcpHexDumper.init(port);
+        return tcpHexDumper;
+    }
+
+    public Integer getPort() {
+        return serverSocket.getLocalPort();
+    }
+
     private int initShutdownTimeout(ExtensionContext context) {
         ExtendWithTcpHexDumper annotation = context.getRequiredTestClass().getAnnotation(ExtendWithTcpHexDumper.class);
         return annotation.shutdownTimeout();
@@ -133,6 +144,15 @@ public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, Para
         try (ServerSocket socket = new ServerSocket(0)) {
             socket.setReuseAddress(true);
             return socket.getLocalPort();
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        try {
+            stop();
+        } catch (InterruptedException e) {
+            throw new IOException(e);
         }
     }
 }
