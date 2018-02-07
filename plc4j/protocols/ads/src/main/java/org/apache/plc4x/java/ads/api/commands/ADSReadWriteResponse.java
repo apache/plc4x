@@ -25,6 +25,8 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
  * With ADS Read Write data will be written to an ADS device. Additionally, data can be read from the ADS device.
@@ -58,4 +60,13 @@ public class ADSReadWriteResponse extends AMSTCPPaket {
         return ADSData.EMPTY;
     }
 
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Read_Write;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_RESPONSE_TCP;
+    }
 }

@@ -22,6 +22,8 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
+import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
+
 /**
  * AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
  */
@@ -29,46 +31,47 @@ public class AMSHeader implements ByteReadable {
     /**
      * This is the AMSNetId of the station, for which the packet is intended. Remarks see below.
      */
-    private final AMSNetId targetAmsNetId;
+    protected final AMSNetId targetAmsNetId;
     /**
      * This is the AMSPort of the station, for which the packet is intended.
      */
-    private final AMSPort targetAmsPort;
+    protected final AMSPort targetAmsPort;
     /**
      * This contains the AMSNetId of the station, from which the packet was sent.
      */
-    private final AMSNetId sourceAmsNetId;
+    protected final AMSNetId sourceAmsNetId;
     /**
      * This contains the AMSPort of the station, from which the packet was sent.
      */
-    private final AMSPort sourceAmsPort;
+    protected final AMSPort sourceAmsPort;
     /**
      * 2 bytes.
      */
-    private final Command commandId;
-
-    private final State stateFlags;
-
+    protected final Command commandId;
+    /**
+     * 2 bytes.
+     */
+    protected final State stateFlags;
     /**
      * 4 bytes	Size of the data range. The unit is byte.
      */
-    private final DataLength dataLength;
+    protected final DataLength dataLength;
 
     /**
      * 4 bytes	AMS error number. See ADS Return Codes.
      */
-    private final AMSError code;
+    protected final AMSError code;
 
     /**
      * 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
      */
-    private final Invoke invokeId;
+    protected final Invoke invokeId;
 
     /**
      * bytes	Data range. The data range contains the parameter of the considering ADS commands.
      */
     // TODO: check if this is indeed {@link ADSData} and the documentation is just confusing at this point
-    private final Data nData;
+    protected final Data nData;
 
     public AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId, Data nData) {
         this.targetAmsNetId = targetAmsNetId;
@@ -85,7 +88,7 @@ public class AMSHeader implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return AMSTCPPaket.buildByteBuff(
+        return buildByteBuff(
             targetAmsNetId,
             targetAmsPort,
             sourceAmsNetId,

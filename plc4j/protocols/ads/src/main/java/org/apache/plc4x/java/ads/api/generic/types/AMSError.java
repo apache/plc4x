@@ -24,6 +24,8 @@ public class AMSError extends ByteValue {
 
     public static final int NUM_BYTES = 4;
 
+    public static final AMSError NONE = of((byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00);
+
     AMSError(byte... values) {
         super(values);
         assertLength(NUM_BYTES);

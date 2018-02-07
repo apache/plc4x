@@ -26,6 +26,7 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 /**
@@ -65,6 +66,24 @@ public class ADSReadWriteRequest extends AMSTCPPaket {
         this.data = data;
     }
 
+    public ADSReadWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+        super(amsHeader);
+        this.indexGroup = indexGroup;
+        this.indexOffset = indexOffset;
+        this.readLength = readLength;
+        this.writeLength = writeLength;
+        this.data = data;
+    }
+
+    public ADSReadWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, org.apache.plc4x.java.ads.api.generic.types.Data nData, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+        this.indexGroup = indexGroup;
+        this.indexOffset = indexOffset;
+        this.readLength = readLength;
+        this.writeLength = writeLength;
+        this.data = data;
+    }
+
     @Override
     public ADSData getAdsData() {
         return ADSData.EMPTY;
@@ -74,5 +93,15 @@ public class ADSReadWriteRequest extends AMSTCPPaket {
         public Data(byte... value) {
             super(value);
         }
+    }
+
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Read_Write;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_REQUEST_TCP;
     }
 }

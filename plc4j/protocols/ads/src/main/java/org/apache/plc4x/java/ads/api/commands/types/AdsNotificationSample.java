@@ -19,8 +19,9 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
+
+import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public class AdsNotificationSample implements ByteReadable {
 
@@ -49,7 +50,7 @@ public class AdsNotificationSample implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return AMSTCPPaket.buildByteBuff(notificationHandle, sampleSize, data);
+        return buildByteBuff(notificationHandle, sampleSize, data);
     }
 
 }

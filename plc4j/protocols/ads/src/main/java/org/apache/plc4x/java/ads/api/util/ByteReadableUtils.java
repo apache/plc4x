@@ -19,18 +19,19 @@
 package org.apache.plc4x.java.ads.api.util;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
-@FunctionalInterface
-public interface ByteReadable extends LengthSupplier {
+public class ByteReadableUtils {
 
-    default byte[] getBytes() {
-        return getByteBuf().array();
+    private ByteReadableUtils() {
+        // Singleton
     }
 
-    ByteBuf getByteBuf();
-
-    default long getLength() {
-        return getBytes().length;
+    public static ByteBuf buildByteBuff(ByteReadable... byteReadables) {
+        ByteBuf buffer = Unpooled.buffer();
+        for (ByteReadable byteReadable : byteReadables) {
+            buffer.writeBytes(byteReadable.getByteBuf());
+        }
+        return buffer;
     }
-
 }

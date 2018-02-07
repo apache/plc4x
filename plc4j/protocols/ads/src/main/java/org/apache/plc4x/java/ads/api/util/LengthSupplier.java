@@ -18,19 +18,8 @@
  */
 package org.apache.plc4x.java.ads.api.util;
 
-import io.netty.buffer.ByteBuf;
-
 @FunctionalInterface
-public interface ByteReadable extends LengthSupplier {
+public interface LengthSupplier {
 
-    default byte[] getBytes() {
-        return getByteBuf().array();
-    }
-
-    ByteBuf getByteBuf();
-
-    default long getLength() {
-        return getBytes().length;
-    }
-
+    long getLength();
 }

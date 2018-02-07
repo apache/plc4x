@@ -26,6 +26,7 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 
 /**
  * Changes the ADS status and the device status of an ADS device.
@@ -59,9 +60,34 @@ public class ADSWriteControlRequest extends AMSTCPPaket {
         this.data = data;
     }
 
+    public ADSWriteControlRequest(AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+        super(amsHeader);
+        this.adsState = adsState;
+        this.deviceState = deviceState;
+        this.length = length;
+        this.data = data;
+    }
+
+    public ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, org.apache.plc4x.java.ads.api.generic.types.Data nData, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+        this.adsState = adsState;
+        this.deviceState = deviceState;
+        this.length = length;
+        this.data = data;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(adsState, deviceState, length, data);
     }
 
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Write_Control;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_REQUEST_TCP;
+    }
 }

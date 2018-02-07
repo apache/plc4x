@@ -19,10 +19,13 @@
 package org.apache.plc4x.java.ads.api.commands;
 
 import org.apache.plc4x.java.ads.api.commands.types.*;
+import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.generic.types.Data;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 /**
@@ -72,9 +75,39 @@ public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
         this.cycleTime = cycleTime;
     }
 
+    public ADSAddDeviceNotificationRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+        super(amsHeader);
+        this.indexGroup = indexGroup;
+        this.indexOffset = indexOffset;
+        this.length = length;
+        this.transmissionMode = transmissionMode;
+        this.maxDelay = maxDelay;
+        this.cycleTime = cycleTime;
+    }
+
+    public ADSAddDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+        this.indexGroup = indexGroup;
+        this.indexOffset = indexOffset;
+        this.length = length;
+        this.transmissionMode = transmissionMode;
+        this.maxDelay = maxDelay;
+        this.cycleTime = cycleTime;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime, reserved);
+    }
+
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Add_Device_Notification;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_REQUEST_TCP;
     }
 
     public static class Reserved extends ByteValue {

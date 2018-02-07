@@ -22,6 +22,7 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 
 /**
  * Reads the ADS status and the device status of an ADS device.
@@ -33,9 +34,26 @@ public class ADSReadStateRequest extends AMSTCPPaket {
         super(amstcpHeader, amsHeader);
     }
 
+    public ADSReadStateRequest(AMSHeader amsHeader) {
+        super(amsHeader);
+    }
+
+    public ADSReadStateRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+    }
+
     @Override
     public ADSData getAdsData() {
         return ADSData.EMPTY;
     }
 
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Read_State;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_REQUEST_TCP;
+    }
 }

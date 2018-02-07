@@ -23,6 +23,7 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 
 /**
  * One before defined notification is deleted in an ADS device.
@@ -39,9 +40,28 @@ public class ADSDeleteDeviceNotificationRequest extends AMSTCPPaket {
         this.notificationHandle = notificationHandle;
     }
 
+    public ADSDeleteDeviceNotificationRequest(AMSHeader amsHeader, NotificationHandle notificationHandle) {
+        super(amsHeader);
+        this.notificationHandle = notificationHandle;
+    }
+
+    public ADSDeleteDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData, NotificationHandle notificationHandle) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+        this.notificationHandle = notificationHandle;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(notificationHandle);
     }
 
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Delete_Device_Notification;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_REQUEST_TCP;
+    }
 }

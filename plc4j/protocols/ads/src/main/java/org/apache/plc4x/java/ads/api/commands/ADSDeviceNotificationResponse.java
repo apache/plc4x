@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.api.commands;
 
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
  * Data will carry forward independently from an ADS device to a Client
@@ -36,4 +38,13 @@ public class ADSDeviceNotificationResponse extends AMSTCPPaket {
         return ADSData.EMPTY;
     }
 
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Device_Notification;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_RESPONSE_TCP;
+    }
 }

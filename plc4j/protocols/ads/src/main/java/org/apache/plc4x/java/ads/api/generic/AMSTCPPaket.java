@@ -19,22 +19,42 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import org.apache.plc4x.java.ads.api.generic.calculated.CalculatedAMSHeader;
+import org.apache.plc4x.java.ads.api.generic.calculated.CalculatedAMSTCPHeader;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
+
+import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public abstract class AMSTCPPaket implements ByteReadable {
     private final AMSTCPHeader amstcpHeader;
 
     private final AMSHeader amsHeader;
 
-    public AMSTCPPaket(int amstcpHeaderLength, AMSHeader amsHeader) {
-        this.amstcpHeader = AMSTCPHeader.of(amstcpHeaderLength);
-        this.amsHeader = amsHeader;
-    }
-
     public AMSTCPPaket(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         this.amstcpHeader = amstcpHeader;
         this.amsHeader = amsHeader;
+    }
+
+    public AMSTCPPaket(AMSHeader amsHeader) {
+        // It is important that we wrap the ads data call as this will initialized in the constructor
+        // so this value will be null if we call adsData now.
+        this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getLength());
+        this.amsHeader = amsHeader;
+    }
+
+    public AMSTCPPaket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData) {
+        this.amsHeader = CalculatedAMSHeader.of(
+            targetAmsNetId,
+            targetAmsPort,
+            sourceAmsNetId,
+            sourceAmsPort,
+            this::getCommandId,
+            this::getStateId,
+            () -> DataLength.of(getAdsData().getLength()),
+            invokeId,
+            nData);
+        this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getLength());
     }
 
     public AMSTCPHeader getAmstcpHeader() {
@@ -47,6 +67,10 @@ public abstract class AMSTCPPaket implements ByteReadable {
 
     public abstract ADSData getAdsData();
 
+    public abstract Command getCommandId();
+
+    public abstract State getStateId();
+
     @Override
     public ByteBuf getByteBuf() {
         return buildByteBuff(amstcpHeader, amsHeader, getAdsData());
@@ -56,11 +80,4 @@ public abstract class AMSTCPPaket implements ByteReadable {
         return () -> buildByteBuff(byteReadables);
     }
 
-    public static ByteBuf buildByteBuff(ByteReadable... byteReadables) {
-        ByteBuf buffer = Unpooled.buffer();
-        for (ByteReadable byteReadable : byteReadables) {
-            buffer.writeBytes(byteReadable.getByteBuf());
-        }
-        return buffer;
-    }
 }

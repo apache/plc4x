@@ -22,10 +22,11 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 
 /**
  * Reads the name and the version number of the ADS device.
- *
+ * <p>
  * No additional data required
  */
 public class ADSReadDeviceInfoRequest extends AMSTCPPaket {
@@ -33,8 +34,26 @@ public class ADSReadDeviceInfoRequest extends AMSTCPPaket {
         super(amstcpHeader, amsHeader);
     }
 
+    public ADSReadDeviceInfoRequest(AMSHeader amsHeader) {
+        super(amsHeader);
+    }
+
+    public ADSReadDeviceInfoRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+    }
+
     @Override
     public ADSData getAdsData() {
         return ADSData.EMPTY;
+    }
+
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Read_Device_Info;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_REQUEST_TCP;
     }
 }

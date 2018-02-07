@@ -25,6 +25,7 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 
 /**
  * Data will carry forward independently from an ADS device to a Client
@@ -53,9 +54,32 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
         this.adsStampHeader = adsStampHeader;
     }
 
+    public ADSDeviceNotificationRequest(AMSHeader amsHeader, Length length, Stamps stamps, AdsStampHeader adsStampHeader) {
+        super(amsHeader);
+        this.length = length;
+        this.stamps = stamps;
+        this.adsStampHeader = adsStampHeader;
+    }
+
+    public ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData, Length length, Stamps stamps, AdsStampHeader adsStampHeader) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+        this.length = length;
+        this.stamps = stamps;
+        this.adsStampHeader = adsStampHeader;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(length, stamps, adsStampHeader);
     }
 
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Device_Notification;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_REQUEST_TCP;
+    }
 }

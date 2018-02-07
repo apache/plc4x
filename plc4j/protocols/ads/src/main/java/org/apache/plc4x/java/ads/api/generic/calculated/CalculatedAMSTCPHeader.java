@@ -16,50 +16,38 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.api.generic;
+package org.apache.plc4x.java.ads.api.generic.calculated;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.Length;
-import org.apache.plc4x.java.ads.api.util.ByteReadable;
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 /**
  * AMS/TCP Header	6 bytes	contains the length of the data packet.
+ * This Header is caluclated. Can be used when sending.
  */
-public class AMSTCPHeader implements ByteReadable {
+public class CalculatedAMSTCPHeader extends AMSTCPHeader {
 
-    protected final Reserved reserved;
+    protected final LengthSupplier[] lengthSupplier;
 
-    protected final Length length;
-
-    protected AMSTCPHeader(Length length) {
-        this.reserved = Reserved.CONSTANT;
-        this.length = length;
+    protected CalculatedAMSTCPHeader(LengthSupplier... lengthSupplier) {
+        super(null);
+        this.lengthSupplier = lengthSupplier;
     }
 
-    public static AMSTCPHeader of(int length) {
-        return new AMSTCPHeader(Length.of(length));
+    public static CalculatedAMSTCPHeader of(LengthSupplier... lengthSupplier) {
+        return new CalculatedAMSTCPHeader(lengthSupplier);
     }
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(reserved, length);
-    }
-
-    /**
-     * Size: 2 bytes
-     * These bytes must be set to 0.
-     */
-    protected static class Reserved extends ByteValue {
-
-        private static final Reserved CONSTANT = new Reserved();
-
-        private Reserved() {
-            super((byte) 0x00, (byte) 0x00);
-            assertLength(2);
+        long aggregateLength = 0;
+        for (LengthSupplier supplier : lengthSupplier) {
+            aggregateLength += supplier.getLength();
         }
+        return buildByteBuff(reserved, Length.of(aggregateLength));
     }
-
 }

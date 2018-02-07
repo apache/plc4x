@@ -23,6 +23,8 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.State;
 
 /**
  * Changes the ADS status and the device status of an ADS device.
@@ -43,4 +45,13 @@ public class ADSWriteControlResponse extends AMSTCPPaket {
         return buildADSData(result);
     }
 
+    @Override
+    public Command getCommandId() {
+        return Command.ADS_Write_Control;
+    }
+
+    @Override
+    public State getStateId() {
+        return State.ADS_RESPONSE_TCP;
+    }
 }

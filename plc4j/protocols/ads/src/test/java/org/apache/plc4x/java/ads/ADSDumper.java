@@ -22,9 +22,10 @@ import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
 import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.IndexGroup;
 import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
-import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.api.generic.types.Length;
 import org.pcap4j.core.PcapDumper;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.Pcaps;
@@ -50,22 +51,15 @@ public class ADSDumper {
              PcapDumper dumper = handle.dumpOpen(dumpFile.toAbsolutePath().toString())) {
 
             ADSWriteRequest adsWriteRequest = new ADSWriteRequest(
-                AMSTCPHeader.of(13),
-                new AMSHeader(
-                    AMSNetId.of("0.0.0.0.0.0"),
-                    AMSPort.of(13),
-                    AMSNetId.of("0.0.0.0.0.0"),
-                    AMSPort.of(13),
-                    Command.ADS_Write,
-                    State.ADS_REQUEST_TCP,
-                    DataLength.of(13),
-                    AMSError.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
-                    Invoke.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
-                    org.apache.plc4x.java.ads.api.generic.types.Data.of((byte) 0)
-                ),
+                AMSNetId.of("192.168.0.70.1.2"),
+                AMSPort.of(12),
+                AMSNetId.of("192.168.0.70.1.1"),
+                AMSPort.of(14),
+                Invoke.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
+                org.apache.plc4x.java.ads.api.generic.types.Data.of((byte) 0),
                 IndexGroup.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
                 IndexOffset.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
-                Length.of(13),
+                Length.of(1),
                 Data.of((byte) 0x42)
             );
 
