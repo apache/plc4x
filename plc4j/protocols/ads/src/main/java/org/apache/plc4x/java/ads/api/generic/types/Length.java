@@ -18,28 +18,25 @@
  */
 package org.apache.plc4x.java.ads.api.generic.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-import java.nio.ByteBuffer;
+public class Length extends UnsignedIntLEByteValue {
 
-public class Length extends ByteValue {
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    public static final int NUM_BYTES = 4;
+    public static final Length NONE = of(0);
 
-    Length(byte... values) {
+    protected Length(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
     }
 
-    public static Length of(long length) {
-        checkUnsignedBounds(length, NUM_BYTES);
-        return new Length(ByteBuffer.allocate(NUM_BYTES)
-            // LE
-            .put((byte) (length & 0xff))
-            .put((byte) (length >> 8 & 0xff))
-            .put((byte) (length >> 16 & 0xff))
-            .put((byte) (length >> 24 & 0xff))
-            .array());
+    protected Length(long value) {
+        super(value);
+    }
+
+    protected Length(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static Length of(String length) {
@@ -50,8 +47,12 @@ public class Length extends ByteValue {
         return new Length(values);
     }
 
-    @Override
-    public String toString() {
-        return "" + (getBytes()[3] << 24 | getBytes()[2] << 16 | getBytes()[1] << 8 | getBytes()[0]);
+    public static Length of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new Length(errorCode);
+    }
+
+    public static Length of(ByteBuf byteBuf) {
+        return new Length(byteBuf);
     }
 }

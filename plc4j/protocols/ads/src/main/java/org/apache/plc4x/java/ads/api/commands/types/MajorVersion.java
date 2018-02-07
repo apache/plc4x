@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 public class MajorVersion extends ByteValue {
@@ -31,5 +32,9 @@ public class MajorVersion extends ByteValue {
 
     public static MajorVersion of(byte... values) {
         return new MajorVersion(values);
+    }
+
+    public static MajorVersion of(ByteBuf byteBuf) {
+        return of(byteBuf.readBytes(NUM_BYTES).array());
     }
 }

@@ -18,20 +18,37 @@
  */
 package org.apache.plc4x.java.ads.api.generic.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-public class Invoke extends ByteValue {
+public class Invoke extends UnsignedIntLEByteValue {
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    public static final Invoke NONE = of((byte) 0, (byte) 0, (byte) 0, (byte) 0);
+    public static final Invoke NONE = of(0);
 
-    Invoke(byte... values) {
+    protected Invoke(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
+    }
+
+    protected Invoke(long value) {
+        super(value);
+    }
+
+    protected Invoke(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static Invoke of(byte... values) {
         return new Invoke(values);
+    }
+
+    public static Invoke of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new Invoke(errorCode);
+    }
+
+    public static Invoke of(ByteBuf byteBuf) {
+        return new Invoke(byteBuf);
     }
 }

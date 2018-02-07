@@ -18,20 +18,37 @@
  */
 package org.apache.plc4x.java.ads.api.generic.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-public class AMSError extends ByteValue {
+public class AMSError extends UnsignedIntLEByteValue {
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    public static final AMSError NONE = of((byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00);
+    public static final AMSError NONE = of(0);
 
-    AMSError(byte... values) {
+    protected AMSError(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
+    }
+
+    protected AMSError(long value) {
+        super(value);
+    }
+
+    protected AMSError(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static AMSError of(byte... values) {
         return new AMSError(values);
+    }
+
+    public static AMSError of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new AMSError(errorCode);
+    }
+
+    public static AMSError of(ByteBuf byteBuf) {
+        return new AMSError(byteBuf);
     }
 }

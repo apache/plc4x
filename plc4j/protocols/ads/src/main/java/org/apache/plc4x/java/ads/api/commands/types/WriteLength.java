@@ -18,40 +18,39 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-import java.nio.ByteBuffer;
+public class WriteLength extends UnsignedIntLEByteValue {
 
-public class WriteLength extends ByteValue {
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    public static final int NUM_BYTES = 4;
-
-    WriteLength(byte... values) {
+    protected WriteLength(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
     }
 
-    public static WriteLength of(long length) {
-        checkUnsignedBounds(length, NUM_BYTES);
-        return new WriteLength(ByteBuffer.allocate(NUM_BYTES)
-            // LE
-            .put((byte) (length & 0xff))
-            .put((byte) (length >> 8 & 0xff))
-            .put((byte) (length >> 16 & 0xff))
-            .put((byte) (length >> 24 & 0xff))
-            .array());
+    protected WriteLength(long value) {
+        super(value);
     }
 
-    public static WriteLength of(String writeLength) {
-        return of(Long.parseLong(writeLength));
+    protected WriteLength(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static WriteLength of(byte... values) {
         return new WriteLength(values);
     }
 
-    @Override
-    public String toString() {
-        return "" + (getBytes()[3] << 24 | getBytes()[2] << 16 | getBytes()[1] << 8 | getBytes()[0]);
+    public static WriteLength of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new WriteLength(errorCode);
+    }
+
+    public static WriteLength of(ByteBuf byteBuf) {
+        return new WriteLength(byteBuf);
+    }
+
+    public static WriteLength of(String length) {
+        return of(Long.valueOf(length));
     }
 }

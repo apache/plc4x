@@ -40,7 +40,7 @@ public class AdsStampHeader implements ByteReadable {
      */
     private final List<AdsNotificationSample> adsNotificationSamples;
 
-    AdsStampHeader(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {
+    protected AdsStampHeader(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {
         this.timeStamp = timeStamp;
         this.samples = samples;
         this.adsNotificationSamples = adsNotificationSamples;

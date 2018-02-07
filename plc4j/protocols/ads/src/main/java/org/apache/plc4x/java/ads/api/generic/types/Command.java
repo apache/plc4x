@@ -46,13 +46,17 @@ public enum Command implements ByteReadable {
 
     final byte[] value;
 
+    final int intValue;
+
     Command() {
         // Only used for unkown enum
         value = new byte[0];
+        intValue = 0;
     }
 
     Command(int value) {
         ByteValue.checkUnsignedBounds(value, NUM_BYTES);
+        this.intValue = value;
         this.value = ByteBuffer.allocate(NUM_BYTES)
             // LE
             .put((byte) (value & 0xff))
@@ -75,7 +79,6 @@ public enum Command implements ByteReadable {
         return Unpooled.buffer().writeBytes(value);
     }
 
-    // TODO: improve by accepting int
     public static Command of(byte... bytes) {
         // TODO: improve by using a map
         for (Command command : values()) {
@@ -84,5 +87,19 @@ public enum Command implements ByteReadable {
             }
         }
         return UNKNOWN;
+    }
+
+    public static Command of(int intValue) {
+        // TODO: improve by using a map
+        for (Command command : values()) {
+            if (command.intValue == intValue) {
+                return command;
+            }
+        }
+        return UNKNOWN;
+    }
+
+    public static Command of(ByteBuf byteBuf) {
+        return of(byteBuf.readUnsignedShortLE());
     }
 }

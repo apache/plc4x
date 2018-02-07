@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.generic.types;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.ByteBuffer;
@@ -52,6 +53,10 @@ public class AMSPort extends ByteValue {
             throw new IllegalArgumentException(port + " must match " + AMS_PORT_PATTERN);
         }
         return of(Integer.parseInt(port));
+    }
+
+    public static AMSPort of(ByteBuf byteBuf) {
+        return of(byteBuf.readUnsignedShortLE());
     }
 
     @Override

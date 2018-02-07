@@ -18,18 +18,35 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-public class NotificationHandle extends ByteValue {
+public class NotificationHandle extends UnsignedIntLEByteValue {
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    NotificationHandle(byte... values) {
+    protected NotificationHandle(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
+    }
+
+    protected NotificationHandle(long value) {
+        super(value);
+    }
+
+    protected NotificationHandle(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static NotificationHandle of(byte... values) {
         return new NotificationHandle(values);
+    }
+
+    public static NotificationHandle of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new NotificationHandle(errorCode);
+    }
+
+    public static NotificationHandle of(ByteBuf byteBuf) {
+        return new NotificationHandle(byteBuf);
     }
 }

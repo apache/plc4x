@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 public class ADSState extends ByteValue {
@@ -31,5 +32,10 @@ public class ADSState extends ByteValue {
 
     public static ADSState of(byte... values) {
         return new ADSState(values);
+    }
+
+    public static ADSState of(ByteBuf byteBuf) {
+        // TODO: could be transformed to readUnsignedShortLE someday
+        return of(byteBuf.readBytes(NUM_BYTES).array());
     }
 }

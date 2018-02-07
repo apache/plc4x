@@ -18,31 +18,35 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-import java.nio.ByteBuffer;
+public class Stamps extends UnsignedIntLEByteValue {
 
-public class Stamps extends ByteValue {
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    public static final int NUM_BYTES = 4;
-
-    Stamps(byte... value) {
-        super(value);
-        assertLength(NUM_BYTES);
+    protected Stamps(byte... values) {
+        super(values);
     }
 
-    public static Stamps of(long length) {
-        checkUnsignedBounds(length, NUM_BYTES);
-        return new Stamps(ByteBuffer.allocate(NUM_BYTES)
-            // LE
-            .put((byte) (length & 0xff))
-            .put((byte) (length >> 8 & 0xff))
-            .put((byte) (length >> 16 & 0xff))
-            .put((byte) (length >> 24 & 0xff))
-            .array());
+    protected Stamps(long value) {
+        super(value);
+    }
+
+    protected Stamps(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static Stamps of(byte... values) {
         return new Stamps(values);
+    }
+
+    public static Stamps of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new Stamps(errorCode);
+    }
+
+    public static Stamps of(ByteBuf byteBuf) {
+        return new Stamps(byteBuf);
     }
 }

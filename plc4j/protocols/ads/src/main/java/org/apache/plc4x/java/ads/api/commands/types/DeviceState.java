@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 public class DeviceState extends ByteValue {
@@ -31,5 +32,9 @@ public class DeviceState extends ByteValue {
 
     public static DeviceState of(byte... values) {
         return new DeviceState(values);
+    }
+
+    public static DeviceState of(ByteBuf byteBuf) {
+        return of(byteBuf.readBytes(NUM_BYTES).array());
     }
 }

@@ -18,18 +18,35 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-public class CycleTime extends ByteValue {
+public class CycleTime extends UnsignedIntLEByteValue {
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    CycleTime(byte... value) {
+    protected CycleTime(byte... values) {
+        super(values);
+    }
+
+    protected CycleTime(long value) {
         super(value);
-        assertLength(NUM_BYTES);
+    }
+
+    protected CycleTime(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static CycleTime of(byte... values) {
         return new CycleTime(values);
+    }
+
+    public static CycleTime of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new CycleTime(errorCode);
+    }
+
+    public static CycleTime of(ByteBuf byteBuf) {
+        return new CycleTime(byteBuf);
     }
 }

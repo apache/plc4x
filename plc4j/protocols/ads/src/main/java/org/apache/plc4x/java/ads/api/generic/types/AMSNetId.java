@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.generic.types;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
@@ -62,6 +63,10 @@ public class AMSNetId extends ByteValue {
         String[] split = address.split("\\.");
         byte[] bytes = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::byteValue).toArray(Byte[]::new));
         return new AMSNetId(bytes);
+    }
+
+    public static AMSNetId of(ByteBuf byteBuf) {
+        return of(byteBuf.readBytes(NUM_BYTES).array());
     }
 
     @Override

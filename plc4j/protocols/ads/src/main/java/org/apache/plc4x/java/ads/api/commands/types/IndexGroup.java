@@ -18,18 +18,35 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-public class IndexGroup extends ByteValue {
+public class IndexGroup extends UnsignedIntLEByteValue {
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    IndexGroup(byte... value) {
+    protected IndexGroup(byte... values) {
+        super(values);
+    }
+
+    protected IndexGroup(long value) {
         super(value);
-        assertLength(NUM_BYTES);
+    }
+
+    protected IndexGroup(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static IndexGroup of(byte... values) {
         return new IndexGroup(values);
+    }
+
+    public static IndexGroup of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new IndexGroup(errorCode);
+    }
+
+    public static IndexGroup of(ByteBuf byteBuf) {
+        return new IndexGroup(byteBuf);
     }
 }

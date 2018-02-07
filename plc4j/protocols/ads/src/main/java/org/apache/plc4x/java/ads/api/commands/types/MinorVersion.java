@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 public class MinorVersion extends ByteValue {
@@ -31,5 +32,9 @@ public class MinorVersion extends ByteValue {
 
     public static MinorVersion of(byte... values) {
         return new MinorVersion(values);
+    }
+
+    public static MinorVersion of(ByteBuf byteBuf) {
+        return of(byteBuf.readBytes(NUM_BYTES).array());
     }
 }

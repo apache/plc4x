@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 public class TimeStamp extends ByteValue {
@@ -31,5 +32,9 @@ public class TimeStamp extends ByteValue {
 
     public static TimeStamp of(byte... values) {
         return new TimeStamp(values);
+    }
+
+    public static TimeStamp of(ByteBuf byteBuf) {
+        return of(byteBuf.readBytes(NUM_BYTES).array());
     }
 }

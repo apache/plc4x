@@ -28,12 +28,15 @@ import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
 
-    // TODO: better track this a layer above as this here might be useless
+    private static final Logger LOGGER = LoggerFactory.getLogger(ADSProtocol.class);
+
     private Map<Invoke, AMSTCPPaket> requests;
 
     public ADSProtocol() {
@@ -56,23 +59,21 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
         // Reserved
         byteBuf.skipBytes(2);
         long packetLength = byteBuf.readUnsignedIntLE();
-        AMSNetId targetAmsNetId = AMSNetId.of(byteBuf.readBytes(6).array());
-        AMSPort targetAmsPort = AMSPort.of(byteBuf.readUnsignedShortLE());
-        AMSNetId sourceAmsNetId = AMSNetId.of(byteBuf.readBytes(6).array());
-        AMSPort sourceAmsPort = AMSPort.of(byteBuf.readUnsignedShortLE());
-        // TODO: could be transformed to readUnsignedShortLE someday
-        Command commandId = Command.of(byteBuf.readBytes(2).array());
-        // TODO: could be transformed to readUnsignedShortLE someday
-        State stateId = State.of(byteBuf.readBytes(2).array());
-        long dataLengthLong = byteBuf.readUnsignedIntLE();
-        DataLength dataLength = DataLength.of(dataLengthLong);
-        AMSError errorCode = AMSError.of(byteBuf.readBytes(4).array());
-        Invoke invoke = Invoke.of(byteBuf.readBytes(4).array());
-        AMSTCPPaket correlatedAmstcpPaket = requests.get(invoke);
-        if (dataLengthLong > Integer.MAX_VALUE) {
-            throw new IllegalStateException("Overflow in datalength: " + dataLengthLong);
+        AMSNetId targetAmsNetId = AMSNetId.of(byteBuf);
+        AMSPort targetAmsPort = AMSPort.of(byteBuf);
+        AMSNetId sourceAmsNetId = AMSNetId.of(byteBuf);
+        AMSPort sourceAmsPort = AMSPort.of(byteBuf);
+        Command commandId = Command.of(byteBuf);
+        State stateId = State.of(byteBuf);
+        DataLength dataLength = DataLength.of(byteBuf);
+        AMSError errorCode = AMSError.of(byteBuf);
+        Invoke invoke = Invoke.of(byteBuf);
+        AMSTCPPaket correlatedAmstcpPacket = requests.get(invoke);
+        LOGGER.debug("Correlated packet received {}", correlatedAmstcpPacket);
+        if (dataLength.getAsLong() > Integer.MAX_VALUE) {
+            throw new IllegalStateException("Overflow in datalength: " + dataLength.getAsLong());
         }
-        ByteBuf commandBuffer = byteBuf.readBytes((int) dataLengthLong);
+        ByteBuf commandBuffer = byteBuf.readBytes((int) dataLength.getAsLong());
         boolean request = false;
         AMSTCPHeader amstcpHeader = AMSTCPHeader.of(packetLength);
         AMSHeader amsHeader = AMSHeader.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateId, dataLength, errorCode, invoke);
@@ -101,45 +102,42 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 if (request) {
                     out.add(new ADSReadDeviceInfoRequest(amstcpHeader, amsHeader));
                 } else {
-                    Result result = Result.of(commandBuffer.readBytes(4).array());
-                    MajorVersion majorVersion = MajorVersion.of(commandBuffer.readByte());
-                    MinorVersion minorVersion = MinorVersion.of(commandBuffer.readByte());
-                    // TODO: could be transformed to readUnsignedShortLE someday
-                    Version version = Version.of(commandBuffer.readBytes(2).array());
-                    Device device = Device.of(commandBuffer.readBytes(16).array());
+                    Result result = Result.of(commandBuffer);
+                    MajorVersion majorVersion = MajorVersion.of(commandBuffer);
+                    MinorVersion minorVersion = MinorVersion.of(commandBuffer);
+                    Version version = Version.of(commandBuffer);
+                    Device device = Device.of(commandBuffer);
                     out.add(new ADSReadDeviceInfoResponse(amstcpHeader, amsHeader, result, majorVersion, minorVersion, version, device));
                 }
                 break;
             case ADS_Read:
                 if (request) {
-                    IndexGroup indexGroup = IndexGroup.of(commandBuffer.readBytes(4).array());
-                    IndexOffset indexOffset = IndexOffset.of(commandBuffer.readBytes(4).array());
-                    Length length = Length.of(commandBuffer.readBytes(4).array());
+                    IndexGroup indexGroup = IndexGroup.of(commandBuffer);
+                    IndexOffset indexOffset = IndexOffset.of(commandBuffer);
+                    Length length = Length.of(commandBuffer);
                     out.add(new ADSReadRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, length));
                 } else {
-                    Result result = Result.of(commandBuffer.readBytes(4).array());
-                    long adsReadLength = byteBuf.readUnsignedIntLE();
-                    Length length = Length.of(adsReadLength);
-                    if (adsReadLength > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + adsReadLength);
+                    Result result = Result.of(commandBuffer);
+                    Length length = Length.of(byteBuf);
+                    if (length.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
                     }
-                    Data data = Data.of(commandBuffer.readBytes((int) adsReadLength).array());
+                    Data data = Data.of(commandBuffer.readBytes((int) length.getAsLong()).array());
                     out.add(new ADSReadResponse(amstcpHeader, amsHeader, result, length, data));
                 }
                 break;
             case ADS_Write:
                 if (request) {
-                    IndexGroup indexGroup = IndexGroup.of(commandBuffer.readBytes(4).array());
-                    IndexOffset indexOffset = IndexOffset.of(commandBuffer.readBytes(4).array());
-                    long adsWriteLength = byteBuf.readUnsignedIntLE();
-                    Length length = Length.of(adsWriteLength);
-                    if (adsWriteLength > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + adsWriteLength);
+                    IndexGroup indexGroup = IndexGroup.of(commandBuffer);
+                    IndexOffset indexOffset = IndexOffset.of(commandBuffer);
+                    Length length = Length.of(byteBuf);
+                    if (length.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
                     }
-                    Data data = Data.of(commandBuffer.readBytes((int) adsWriteLength).array());
+                    Data data = Data.of(commandBuffer.readBytes((int) length.getAsLong()).array());
                     out.add(new ADSWriteRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, length, data));
                 } else {
-                    Result result = Result.of(commandBuffer.readBytes(4).array());
+                    Result result = Result.of(commandBuffer);
                     out.add(new ADSWriteResponse(amstcpHeader, amsHeader, result));
                 }
                 break;
@@ -147,81 +145,74 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 if (request) {
                     out.add(new ADSReadStateRequest(amstcpHeader, amsHeader));
                 } else {
-                    Result result = Result.of(commandBuffer.readBytes(4).array());
+                    Result result = Result.of(commandBuffer);
                     out.add(new ADSReadStateResponse(amstcpHeader, amsHeader, result));
                 }
                 break;
             case ADS_Write_Control:
                 if (request) {
-                    // TODO: could be transformed to readUnsignedShortLE someday
-                    ADSState adsState = ADSState.of(commandBuffer.readBytes(2).array());
-                    // TODO: could be transformed to readUnsignedShortLE someday
-                    DeviceState deviceState = DeviceState.of(commandBuffer.readBytes(2).array());
-                    long adsWriteControlLength = byteBuf.readUnsignedIntLE();
-                    Length length = Length.of(adsWriteControlLength);
-                    if (adsWriteControlLength > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + adsWriteControlLength);
+                    ADSState adsState = ADSState.of(commandBuffer);
+                    DeviceState deviceState = DeviceState.of(commandBuffer);
+                    Length length = Length.of(byteBuf);
+                    if (length.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
                     }
-                    Data data = Data.of(commandBuffer.readBytes((int) adsWriteControlLength).array());
+                    Data data = Data.of(commandBuffer.readBytes((int) length.getAsLong()).array());
                     out.add(new ADSWriteControlRequest(amstcpHeader, amsHeader, adsState, deviceState, length, data));
                 } else {
-                    Result result = Result.of(commandBuffer.readBytes(4).array());
+                    Result result = Result.of(commandBuffer);
                     out.add(new ADSWriteControlResponse(amstcpHeader, amsHeader, result));
                 }
                 break;
             case ADS_Add_Device_Notification:
                 if (request) {
-                    IndexGroup indexGroup = IndexGroup.of(commandBuffer.readBytes(4).array());
-                    IndexOffset indexOffset = IndexOffset.of(commandBuffer.readBytes(4).array());
-                    Length length = Length.of(commandBuffer.readUnsignedIntLE());
-                    TransmissionMode transmissionMode = TransmissionMode.of(commandBuffer.readBytes(4).array());
-                    MaxDelay maxDelay = MaxDelay.of(commandBuffer.readBytes(4).array());
-                    CycleTime cycleTime = CycleTime.of(commandBuffer.readBytes(4).array());
+                    IndexGroup indexGroup = IndexGroup.of(commandBuffer);
+                    IndexOffset indexOffset = IndexOffset.of(commandBuffer);
+                    Length length = Length.of(commandBuffer);
+                    TransmissionMode transmissionMode = TransmissionMode.of(commandBuffer);
+                    MaxDelay maxDelay = MaxDelay.of(commandBuffer);
+                    CycleTime cycleTime = CycleTime.of(commandBuffer);
                     out.add(new ADSAddDeviceNotificationRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime));
                 } else {
-                    Result result = Result.of(commandBuffer.readBytes(4).array());
-                    NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer.readBytes(4).array());
+                    Result result = Result.of(commandBuffer);
+                    NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
                     out.add(new ADSAddDeviceNotificationResponse(amstcpHeader, amsHeader, result, notificationHandle));
                 }
                 break;
             case ADS_Delete_Device_Notification:
                 if (request) {
-                    NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer.readBytes(4).array());
+                    NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
                     out.add(new ADSDeleteDeviceNotificationRequest(amstcpHeader, amsHeader, notificationHandle));
                 } else {
-                    Result result = Result.of(commandBuffer.readBytes(4).array());
+                    Result result = Result.of(commandBuffer);
                     out.add(new ADSDeleteDeviceNotificationResponse(amstcpHeader, amsHeader, result));
                 }
                 break;
             case ADS_Device_Notification:
                 if (request) {
-                    long adsDeviceNotificationLength = commandBuffer.readUnsignedIntLE();
-                    Length length = Length.of(adsDeviceNotificationLength);
-                    if (adsDeviceNotificationLength > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + adsDeviceNotificationLength);
+                    Length length = Length.of(commandBuffer);
+                    if (length.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
                     }
-                    long numberOfStamps = commandBuffer.readUnsignedIntLE();
-                    Stamps stamps = Stamps.of(numberOfStamps);
-                    if (numberOfStamps > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + numberOfStamps);
+                    Stamps stamps = Stamps.of(commandBuffer);
+                    if (stamps.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + stamps.getAsLong());
                     }
-                    ByteBuf adsDeviceNotificationBuffer = commandBuffer.readBytes((int) adsDeviceNotificationLength);
-                    List<AdsStampHeader> adsStampHeaders = new ArrayList<>((int) numberOfStamps);
-                    for (int i = 1; i <= numberOfStamps; i++) {
-                        TimeStamp timeStamp = TimeStamp.of(adsDeviceNotificationBuffer.readBytes(8).array());
-                        long numberOfSamples = adsDeviceNotificationBuffer.readUnsignedIntLE();
-                        Samples samples = Samples.of(numberOfSamples);
+                    ByteBuf adsDeviceNotificationBuffer = commandBuffer.readBytes((int) length.getAsLong());
+                    List<AdsStampHeader> adsStampHeaders = new ArrayList<>((int) stamps.getAsLong());
+                    for (int i = 1; i <= stamps.getAsLong(); i++) {
+                        TimeStamp timeStamp = TimeStamp.of(adsDeviceNotificationBuffer);
+                        Samples samples = Samples.of(adsDeviceNotificationBuffer);
 
                         List<AdsNotificationSample> adsNotificationSamples = new LinkedList<>();
-                        for (int j = 1; j <= numberOfSamples; j++) {
-                            NotificationHandle notificationHandle = NotificationHandle.of(adsDeviceNotificationBuffer.readBytes(4).array());
-                            long sampleSizeLong = adsDeviceNotificationBuffer.readUnsignedIntLE();
-                            SampleSize sampleSize = SampleSize.of(sampleSizeLong);
-                            if (sampleSizeLong > Integer.MAX_VALUE) {
-                                throw new IllegalStateException("Overflow in datalength: " + sampleSizeLong);
+                        for (int j = 1; j <= samples.getAsLong(); j++) {
+                            NotificationHandle notificationHandle = NotificationHandle.of(adsDeviceNotificationBuffer);
+                            SampleSize sampleSize = SampleSize.of(adsDeviceNotificationBuffer);
+                            if (sampleSize.getAsLong() > Integer.MAX_VALUE) {
+                                throw new IllegalStateException("Overflow in datalength: " + sampleSize.getAsLong());
                             }
                             // TODO: do we need a special marker class for: Notice: If your handle becomes invalid, one notification without data will be send once as advice.
-                            Data data = Data.of(adsDeviceNotificationBuffer.readBytes((int) sampleSizeLong).array());
+                            Data data = Data.of(adsDeviceNotificationBuffer.readBytes((int) sampleSize.getAsLong()).array());
                             AdsNotificationSample adsNotificationSample = AdsNotificationSample.of(notificationHandle, sampleSize, data);
                             adsNotificationSamples.add(adsNotificationSample);
 
@@ -236,31 +227,28 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPaket> {
                 break;
             case ADS_Read_Write:
                 if (request) {
-                    IndexGroup indexGroup = IndexGroup.of(commandBuffer.readBytes(4).array());
-                    IndexOffset indexOffset = IndexOffset.of(commandBuffer.readBytes(4).array());
-                    long readLengthLong = commandBuffer.readUnsignedIntLE();
-                    ReadLength readLength = ReadLength.of(readLengthLong);
-                    if (readLengthLong > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + readLengthLong);
+                    IndexGroup indexGroup = IndexGroup.of(commandBuffer);
+                    IndexOffset indexOffset = IndexOffset.of(commandBuffer);
+                    ReadLength readLength = ReadLength.of(commandBuffer);
+                    if (readLength.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + readLength.getAsLong());
                     }
-                    long writeLengthLong = commandBuffer.readUnsignedIntLE();
-                    WriteLength writeLength = WriteLength.of(writeLengthLong);
-                    if (writeLengthLong > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + writeLengthLong);
+                    WriteLength writeLength = WriteLength.of(commandBuffer);
+                    if (writeLength.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + writeLength.getAsLong());
                     }
-                    if (readLengthLong + writeLengthLong > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + readLengthLong + writeLengthLong);
+                    if (readLength.getAsLong() + writeLength.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + readLength.getAsLong() + writeLength.getAsLong());
                     }
-                    Data data = Data.of(commandBuffer.readBytes((int) (readLengthLong + writeLengthLong)).array());
+                    Data data = Data.of(commandBuffer.readBytes((int) (readLength.getAsLong() + writeLength.getAsLong())).array());
                     out.add(new ADSReadWriteRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, readLength, writeLength, data));
                 } else {
-                    Result result = Result.of(commandBuffer.readBytes(4).array());
-                    long adsReadLength = byteBuf.readUnsignedIntLE();
-                    Length length = Length.of(adsReadLength);
-                    if (adsReadLength > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + adsReadLength);
+                    Result result = Result.of(commandBuffer);
+                    Length length = Length.of(commandBuffer);
+                    if (length.getAsLong() > Integer.MAX_VALUE) {
+                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
                     }
-                    Data data = Data.of(commandBuffer.readBytes((int) adsReadLength).array());
+                    Data data = Data.of(commandBuffer.readBytes((int) length.getAsLong()).array());
                     out.add(new ADSReadWriteResponse(amstcpHeader, amsHeader, result, length, data));
                 }
                 break;

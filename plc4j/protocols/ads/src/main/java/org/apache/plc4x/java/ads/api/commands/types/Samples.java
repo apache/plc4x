@@ -18,40 +18,39 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-import java.nio.ByteBuffer;
+public class Samples extends UnsignedIntLEByteValue {
 
-public class Samples extends ByteValue {
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    public static final int NUM_BYTES = 4;
-
-    Samples(byte... values) {
+    protected Samples(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
     }
 
-    public static Samples of(long numberOfSamples) {
-        checkUnsignedBounds(numberOfSamples, NUM_BYTES);
-        return new Samples(ByteBuffer.allocate(NUM_BYTES)
-            // LE
-            .put((byte) (numberOfSamples & 0xff))
-            .put((byte) (numberOfSamples >> 8 & 0xff))
-            .put((byte) (numberOfSamples >> 16 & 0xff))
-            .put((byte) (numberOfSamples >> 24 & 0xff))
-            .array());
+    protected Samples(long value) {
+        super(value);
     }
 
-    public static Samples of(String numberOfSamples) {
-        return of(Long.parseLong(numberOfSamples));
+    protected Samples(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static Samples of(byte... values) {
         return new Samples(values);
     }
 
-    @Override
-    public String toString() {
-        return "" + (getBytes()[3] << 24 | getBytes()[2] << 16 | getBytes()[1] << 8 | getBytes()[0]);
+    public static Samples of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new Samples(errorCode);
+    }
+
+    public static Samples of(ByteBuf byteBuf) {
+        return new Samples(byteBuf);
+    }
+
+    public static Samples of(String size) {
+        return of(Long.parseLong(size));
     }
 }

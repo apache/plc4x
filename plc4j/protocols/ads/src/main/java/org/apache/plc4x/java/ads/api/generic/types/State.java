@@ -53,12 +53,16 @@ public enum State implements ByteReadable {
 
     final byte[] value;
 
+    final int intValue;
+
     State() {
         value = new byte[0];
+        intValue = 0;
     }
 
-    State(long value) {
+    State(int value) {
         ByteValue.checkUnsignedBounds(value, NUM_BYTES);
+        this.intValue = value;
         this.value = ByteBuffer.allocate(NUM_BYTES)
             // LE
             .put((byte) (value & 0xff))
@@ -81,7 +85,6 @@ public enum State implements ByteReadable {
         return Unpooled.buffer().writeBytes(value);
     }
 
-    // TODO: improve by accepting int
     public static State of(byte... bytes) {
         // TODO: improve by using a map
         for (State command : values()) {
@@ -90,5 +93,20 @@ public enum State implements ByteReadable {
             }
         }
         return UNKNOWN;
+    }
+
+
+    public static State of(int intValue) {
+        // TODO: improve by using a map
+        for (State state : values()) {
+            if (state.intValue == intValue) {
+                return state;
+            }
+        }
+        return UNKNOWN;
+    }
+
+    public static State of(ByteBuf byteBuf) {
+        return of(byteBuf.readUnsignedShortLE());
     }
 }

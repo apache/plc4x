@@ -18,18 +18,35 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-public class MaxDelay extends ByteValue {
+public class MaxDelay extends UnsignedIntLEByteValue {
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    MaxDelay(byte... values) {
+    protected MaxDelay(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
+    }
+
+    protected MaxDelay(long value) {
+        super(value);
+    }
+
+    protected MaxDelay(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static MaxDelay of(byte... values) {
         return new MaxDelay(values);
+    }
+
+    public static MaxDelay of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new MaxDelay(errorCode);
+    }
+
+    public static MaxDelay of(ByteBuf byteBuf) {
+        return new MaxDelay(byteBuf);
     }
 }

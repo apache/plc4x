@@ -18,18 +18,35 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-public class TransmissionMode extends ByteValue {
+public class TransmissionMode extends UnsignedIntLEByteValue {
 
-    public static final int NUM_BYTES = 4;
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    TransmissionMode(byte... values) {
+    protected TransmissionMode(byte... values) {
         super(values);
-        assertLength(NUM_BYTES);
+    }
+
+    protected TransmissionMode(long value) {
+        super(value);
+    }
+
+    protected TransmissionMode(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static TransmissionMode of(byte... values) {
         return new TransmissionMode(values);
+    }
+
+    public static TransmissionMode of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new TransmissionMode(errorCode);
+    }
+
+    public static TransmissionMode of(ByteBuf byteBuf) {
+        return new TransmissionMode(byteBuf);
     }
 }

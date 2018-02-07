@@ -18,40 +18,39 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-import java.nio.ByteBuffer;
+public class ReadLength extends UnsignedIntLEByteValue {
 
-public class ReadLength extends ByteValue {
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    public static final int NUM_BYTES = 4;
+    protected ReadLength(byte... values) {
+        super(values);
+    }
 
-    ReadLength(byte... value) {
+    protected ReadLength(long value) {
         super(value);
-        assertLength(NUM_BYTES);
     }
 
-    public static ReadLength of(long length) {
-        checkUnsignedBounds(length, NUM_BYTES);
-        return new ReadLength(ByteBuffer.allocate(NUM_BYTES)
-            // LE
-            .put((byte) (length & 0xff))
-            .put((byte) (length >> 8 & 0xff))
-            .put((byte) (length >> 16 & 0xff))
-            .put((byte) (length >> 24 & 0xff))
-            .array());
-    }
-
-    public static ReadLength of(String length) {
-        return of(Long.parseLong(length));
+    protected ReadLength(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static ReadLength of(byte... values) {
         return new ReadLength(values);
     }
 
-    @Override
-    public String toString() {
-        return "" + (getBytes()[3] << 24 | getBytes()[2] << 16 | getBytes()[1] << 8 | getBytes()[0]);
+    public static ReadLength of(long errorCode) {
+        checkUnsignedBounds(errorCode, NUM_BYTES);
+        return new ReadLength(errorCode);
+    }
+
+    public static ReadLength of(ByteBuf byteBuf) {
+        return new ReadLength(byteBuf);
+    }
+
+    public static ReadLength of(String length) {
+        return of(Long.parseLong(length));
     }
 }
