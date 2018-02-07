@@ -119,12 +119,9 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
             throw new PlcProtocolException("Address not of type ADSAddress: " + address.getClass());
         }
         ADSAddress adsAddress = (ADSAddress) address;
-        // TODO: we need a long parser her
-        Invoke invokeId = Invoke.of((byte) correlationBuilder.incrementAndGet());
-        // TODO: we need a long parser her
-        IndexGroup indexGroup = IndexGroup.of((byte) adsAddress.getIndexGroup());
-        // TODO: we need a long parser her
-        IndexOffset indexOffset = IndexOffset.of((byte) adsAddress.getIndexOffset());
+        Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
+        IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
+        IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
         Length length = Length.of(readRequestItem.getSize());
         AMSTCPPaket amstcpPaket = new ADSReadRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         out.add(amstcpPaket);
