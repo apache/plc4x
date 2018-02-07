@@ -61,8 +61,8 @@ public class ADSReadRequest extends AMSTCPPaket {
         this.length = length;
     }
 
-    public ADSReadRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+    public ADSReadRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
         this.length = length;

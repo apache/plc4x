@@ -38,8 +38,8 @@ public class ADSReadDeviceInfoRequest extends AMSTCPPaket {
         super(amsHeader);
     }
 
-    public ADSReadDeviceInfoRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+    public ADSReadDeviceInfoRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
     }
 
     @Override

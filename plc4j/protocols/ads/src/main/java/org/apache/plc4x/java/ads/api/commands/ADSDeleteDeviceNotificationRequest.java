@@ -45,8 +45,8 @@ public class ADSDeleteDeviceNotificationRequest extends AMSTCPPaket {
         this.notificationHandle = notificationHandle;
     }
 
-    public ADSDeleteDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData, NotificationHandle notificationHandle) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+    public ADSDeleteDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, NotificationHandle notificationHandle) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.notificationHandle = notificationHandle;
     }
 

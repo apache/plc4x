@@ -61,8 +61,8 @@ public class ADSDeviceNotificationRequest extends AMSTCPPaket {
         this.adsStampHeader = adsStampHeader;
     }
 
-    public ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData, Length length, Stamps stamps, AdsStampHeader adsStampHeader) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+    public ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Length length, Stamps stamps, AdsStampHeader adsStampHeader) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.length = length;
         this.stamps = stamps;
         this.adsStampHeader = adsStampHeader;

@@ -32,15 +32,15 @@ public class CalculatedAMSHeader extends AMSHeader {
 
     protected final LengthSupplier lengthSupplier;
 
-    protected CalculatedAMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, CommandIdSupplier commandIdSupplier, StateIdSupplier stateIdSupplier, LengthSupplier lengthSupplier, Invoke invokeId, Data nData) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, null, null, null, AMSError.NONE, invokeId, nData);
+    protected CalculatedAMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, CommandIdSupplier commandIdSupplier, StateIdSupplier stateIdSupplier, LengthSupplier lengthSupplier, Invoke invokeId) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, null, null, null, AMSError.NONE, invokeId);
         this.commandIdSupplier = commandIdSupplier;
         this.stateIdSupplier = stateIdSupplier;
         this.lengthSupplier = lengthSupplier;
     }
 
-    public static CalculatedAMSHeader of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, CommandIdSupplier commandIdSupplier, StateIdSupplier stateIdSupplier, LengthSupplier lengthSupplier, Invoke invokeId, Data nData) {
-        return new CalculatedAMSHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandIdSupplier, stateIdSupplier, lengthSupplier, invokeId, nData);
+    public static CalculatedAMSHeader of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, CommandIdSupplier commandIdSupplier, StateIdSupplier stateIdSupplier, LengthSupplier lengthSupplier, Invoke invokeId) {
+        return new CalculatedAMSHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandIdSupplier, stateIdSupplier, lengthSupplier, invokeId);
     }
 
     @FunctionalInterface
@@ -68,7 +68,6 @@ public class CalculatedAMSHeader extends AMSHeader {
             stateIdSupplier.getStateId(),
             lengthSupplier.getLength(),
             code,
-            invokeId,
-            nData);
+            invokeId);
     }
 }

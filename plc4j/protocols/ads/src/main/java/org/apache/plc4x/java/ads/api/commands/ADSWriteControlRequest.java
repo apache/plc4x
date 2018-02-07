@@ -68,8 +68,8 @@ public class ADSWriteControlRequest extends AMSTCPPaket {
         this.data = data;
     }
 
-    public ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, org.apache.plc4x.java.ads.api.generic.types.Data nData, ADSState adsState, DeviceState deviceState, Length length, Data data) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, nData);
+    public ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.adsState = adsState;
         this.deviceState = deviceState;
         this.length = length;

@@ -67,13 +67,7 @@ public class AMSHeader implements ByteReadable {
      */
     protected final Invoke invokeId;
 
-    /**
-     * bytes	Data range. The data range contains the parameter of the considering ADS commands.
-     */
-    // TODO: check if this is indeed {@link ADSData} and the documentation is just confusing at this point
-    protected final Data nData;
-
-    public AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId, Data nData) {
+    public AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId) {
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
@@ -83,7 +77,6 @@ public class AMSHeader implements ByteReadable {
         this.dataLength = dataLength;
         this.code = code;
         this.invokeId = invokeId;
-        this.nData = nData;
     }
 
     @Override
@@ -97,7 +90,6 @@ public class AMSHeader implements ByteReadable {
             stateFlags,
             dataLength,
             code,
-            invokeId,
-            nData);
+            invokeId);
     }
 }

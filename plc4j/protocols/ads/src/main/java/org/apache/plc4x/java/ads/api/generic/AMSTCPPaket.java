@@ -43,7 +43,7 @@ public abstract class AMSTCPPaket implements ByteReadable {
         this.amsHeader = amsHeader;
     }
 
-    public AMSTCPPaket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Data nData) {
+    public AMSTCPPaket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         this.amsHeader = CalculatedAMSHeader.of(
             targetAmsNetId,
             targetAmsPort,
@@ -52,8 +52,7 @@ public abstract class AMSTCPPaket implements ByteReadable {
             this::getCommandId,
             this::getStateId,
             () -> DataLength.of(getAdsData().getLength()),
-            invokeId,
-            nData);
+            invokeId);
         this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getLength());
     }
 
