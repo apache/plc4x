@@ -59,11 +59,11 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
     private Channel channel;
 
     public ADSPlcConnection(String hostName, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
-        this(hostName, targetAmsNetId, targetAmsPort, null, null);
+        this(hostName, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
     }
 
     public ADSPlcConnection(String hostName, Integer port, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
-        this(hostName, port, targetAmsNetId, targetAmsPort, null, null);
+        this(hostName, port, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
     }
 
 
@@ -160,6 +160,14 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
             new PlcRequestContainer<>(writeRequest, writeFuture);
         channel.writeAndFlush(container);
         return writeFuture;
+    }
+
+    private static AMSNetId generateAMSNetId() {
+        return AMSNetId.of("0.0.0.0.0.0");
+    }
+
+    private static AMSPort generateAMSPort() {
+        return AMSPort.of(TCP_PORT);
     }
 
 }
