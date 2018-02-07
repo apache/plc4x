@@ -61,9 +61,9 @@ public class ADSDumper {
                 AMSPort.of(12),
                 AMSNetId.of("192.168.0.70.1.1"),
                 AMSPort.of(14),
-                Invoke.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
-                IndexGroup.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
-                IndexOffset.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
+                Invoke.of(0),
+                IndexGroup.of(1),
+                IndexOffset.of(3),
                 Length.of(randomString.getBytes().length),
                 Data.of(randomString.getBytes())
             );

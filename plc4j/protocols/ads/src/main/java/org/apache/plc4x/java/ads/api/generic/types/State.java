@@ -49,6 +49,17 @@ public enum State implements ByteReadable {
     ADS_RESPONSE_UDP(0x45),
     UNKNOWN();
 
+    // TODO: refactor as this is not really an enum, its more a flag collection:
+    //.... .... .... ...0 = RESPONSE: Not set
+    //.... .... .... ..0. = NO RETURN: Not set
+    //.... .... .... .1.. = ADS COMMAND: Set
+    //.... .... .... 0... = SYSTEM COMMAND: Not set
+    //.... .... ...0 .... = HIGH PRIORITY COMMAND: Not set
+    //.... .... ..0. .... = TIMESTAMP ADDED: Not set
+    //.... .... .0.. .... = UDP COMMAND: Not set
+    //.... .... 0... .... = INIT COMMAND: Not set
+    //0... .... .... .... = BROADCAST: Not set
+
     public static final int NUM_BYTES = 2;
 
     final byte[] value;
