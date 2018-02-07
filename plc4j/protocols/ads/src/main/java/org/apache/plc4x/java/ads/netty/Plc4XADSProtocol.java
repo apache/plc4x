@@ -21,7 +21,9 @@ package org.apache.plc4x.java.ads.netty;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.ads.api.commands.ADSReadRequest;
+import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
+import org.apache.plc4x.java.ads.api.commands.ADSWriteResponse;
 import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.IndexGroup;
 import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
@@ -77,7 +79,11 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, AMSTCPPaket amstcpPaket, List<Object> out) throws Exception {
-        // TODO: implement me
+        if (amstcpPaket instanceof ADSReadResponse) {
+            // TODO: implement me
+        } else if (amstcpPaket instanceof ADSWriteResponse) {
+            // TODO: implement me
+        }
     }
 
     private void encodeWriteRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
@@ -91,12 +97,9 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
             throw new PlcProtocolException("Address not of type ADSAddress: " + address.getClass());
         }
         ADSAddress adsAddress = (ADSAddress) address;
-        // TODO: we need a long parser her
-        Invoke invokeId = Invoke.of((byte) correlationBuilder.incrementAndGet());
-        // TODO: we need a long parser her
-        IndexGroup indexGroup = IndexGroup.of((byte) adsAddress.getIndexGroup());
-        // TODO: we need a long parser her
-        IndexOffset indexOffset = IndexOffset.of((byte) adsAddress.getIndexOffset());
+        Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
+        IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
+        IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
         // TODO: how to get length and data. Serialization of plc is the problem here
         Length length = Length.of(1);
         Data data = Data.of(new byte[]{0x42});
