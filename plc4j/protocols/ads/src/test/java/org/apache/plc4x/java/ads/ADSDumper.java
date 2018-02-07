@@ -18,14 +18,15 @@
  */
 package org.apache.plc4x.java.ads;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
 import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.IndexGroup;
 import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
+import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.api.generic.types.Length;
 import org.apache.plc4x.java.ads.util.TcpHexDumper;
 import org.pcap4j.core.PcapDumper;
 import org.pcap4j.core.PcapHandle;
@@ -53,7 +54,7 @@ public class ADSDumper {
         try (PcapHandle handle = Pcaps.openDead(DataLinkType.EN10MB, 65536);
              PcapDumper dumper = handle.dumpOpen(dumpFile.toAbsolutePath().toString())) {
 
-            String crhit= "Hallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine NachrichtHallo Christoph das ist eine Nachricht";
+            String randomString = RandomStringUtils.randomAscii(1024);
 
             ADSWriteRequest adsWriteRequest = new ADSWriteRequest(
                 AMSNetId.of("192.168.0.70.1.2"),
@@ -63,8 +64,8 @@ public class ADSDumper {
                 Invoke.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
                 IndexGroup.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
                 IndexOffset.of((byte) 0, (byte) 0, (byte) 0, (byte) 0),
-                Length.of(crhit.getBytes().length),
-                Data.of(crhit.getBytes())
+                Length.of(randomString.getBytes().length),
+                Data.of(randomString.getBytes())
             );
 
             try (TcpHexDumper tcpHexDumper = TcpHexDumper.runOn(55862); Socket localhost = new Socket("localhost", tcpHexDumper.getPort())) {
