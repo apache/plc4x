@@ -19,8 +19,10 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.types;
 
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -172,8 +174,7 @@ class IsotpTypeTests {
     void tpduValueForGivenExactFit() {
         TpduSize tpduSize = TpduSize.valueForGivenSize(256);
 
-        assertEquals(tpduSize, TpduSize.SIZE_256, "expected tpdu size of 256");
-        assertEquals(tpduSize.getValue(), 128, "the value is not 128");
+        assertEquals(TpduSize.SIZE_256, tpduSize, "expected tpdu size of 256");
     }
 
     /**
@@ -183,9 +184,10 @@ class IsotpTypeTests {
     @Test
     @Tag("fast")
     void tpduValueForGivenIntermediateSize() {
-        TpduSize tpduSize = TpduSize.valueForGivenSize(123);
+        TpduSize tpduSize = TpduSize.valueForGivenSize(222);
 
-        assertEquals(tpduSize, TpduSize.SIZE_256, "expected tpdu size of 256");
+        assertEquals(TpduSize.SIZE_256, tpduSize, "expected tpdu size of 256");
+        assertNotEquals(222, tpduSize.getValue(), "the value is not 222");
     }
 
     /**
@@ -195,9 +197,10 @@ class IsotpTypeTests {
     @Test
     @Tag("fast")
     void tpduValueForGivenTooSmallSize() {
-        TpduSize tpduSize = TpduSize.valueForGivenSize(-1);
+        Executable closureContainingCodeToTest = () -> TpduSize.valueForGivenSize(-1);
 
-        assertEquals(tpduSize, TpduSize.SIZE_256, "expected tpdu size of 256");
+        assertThrows(IllegalArgumentException.class, closureContainingCodeToTest,
+            "An exception should have been thrown.");
     }
 
     /**
@@ -209,7 +212,7 @@ class IsotpTypeTests {
     void tpduValueForGivenTooGreatSize() {
         TpduSize tpduSize = TpduSize.valueForGivenSize(10000);
 
-        assertEquals(tpduSize, TpduSize.SIZE_8192, "expected tpdu size of 8192");
+        assertEquals(TpduSize.SIZE_8192, tpduSize, "expected tpdu size of 8192");
     }
 
 }

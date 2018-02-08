@@ -102,7 +102,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                             paramMaxAmqCallee = Short.parseShort(paramValue);
                             break;
                         default:
-                            logger.debug("Unknown parameter {}={}", paramName, paramValue);
+                            logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
                     }
                 } else {
                     logger.debug("Unknown no-value parameter {}", paramName);
