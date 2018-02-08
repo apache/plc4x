@@ -51,12 +51,12 @@ public class KafkaBridge {
     private KafkaBridge(String propsPath) {
         if(StringUtils.isEmpty(propsPath)) {
             logger.error("Empty configuration file parameter");
-            throw new RuntimeException("Empty configuration file parameter");
+            throw new IllegalArgumentException("Empty configuration file parameter");
         }
         File propsFile = new File(propsPath);
         if(!(propsFile.exists() && propsFile.isFile())) {
             logger.error("Invalid configuration file {}", propsFile.getPath());
-            throw new RuntimeException("Invalid configuration file " + propsFile.getPath());
+            throw new IllegalArgumentException("Invalid configuration file " + propsFile.getPath());
         }
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
@@ -83,7 +83,7 @@ public class KafkaBridge {
                 ReadRequestItem readItem = new ReadRequestItem<>(address.getType(), plcAddress, address.getSize());
                 readRequestItems.put(address.getName(), readItem);
             } catch (PlcException e) {
-                logger.error("Error parsing address {}", address.getAddress());
+                logger.error("Error parsing address {}", address.getAddress(), e);
             }
         }
         // TODO: Here we somehow have to create an Edgent supplier, that can cope with batch reads ...
