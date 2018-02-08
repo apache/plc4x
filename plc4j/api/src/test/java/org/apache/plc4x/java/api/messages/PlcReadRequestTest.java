@@ -20,25 +20,25 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-class PlcReadRequestTest {
+public class PlcReadRequestTest {
 
     Address dummyAddress;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         dummyAddress = mock(Address.class);
     }
 
     @Test
-    void constuctor() {
+    public void constuctor() {
         new PlcReadRequest();
         new PlcReadRequest(new ReadRequestItem<>(String.class, dummyAddress));
         new PlcReadRequest(String.class, dummyAddress);
@@ -47,9 +47,11 @@ class PlcReadRequestTest {
     }
 
     @Test
-    void builder() {
+    public void builder() {
         { // empty
-            Assertions.assertThrows(IllegalStateException.class, () -> PlcReadRequest.builder().build());
+            assertThatThrownBy(() ->
+                PlcReadRequest.builder().build())
+                .isInstanceOf(IllegalStateException.class);
         }
         { // one item
             PlcReadRequest.builder()
@@ -73,20 +75,20 @@ class PlcReadRequestTest {
                 .build();
         }
         { // two different item typeSafe
-            Assertions.assertThrows(IllegalStateException.class, () -> {
+            assertThatThrownBy(() ->
                 PlcReadRequest.builder()
                     .addItem(String.class, dummyAddress)
                     .addItem(Byte.class, dummyAddress)
-                    .build(String.class);
-            });
+                    .build(String.class))
+                .isInstanceOf(IllegalStateException.class);
         }
         { // two different item typeSafe
-            Assertions.assertThrows(ClassCastException.class, () -> {
+            assertThatThrownBy(() ->
                 PlcReadRequest.builder()
                     .addItem(String.class, dummyAddress)
                     .addItem(Byte.class, dummyAddress)
-                    .build(Byte.class);
-            });
+                    .build(Byte.class))
+                .isInstanceOf(ClassCastException.class);
         }
         { // two equal item typeSafe
             PlcReadRequest.builder()

@@ -20,25 +20,25 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-class PlcWriteRequestTest {
+public class PlcWriteRequestTest {
 
     Address dummyAddress;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         dummyAddress = mock(Address.class);
     }
 
     @Test
-    void constuctor() {
+    public void constuctor() {
         new PlcWriteRequest();
         new PlcWriteRequest(new WriteRequestItem<>(String.class, dummyAddress, ""));
         new PlcWriteRequest(String.class, dummyAddress);
@@ -46,9 +46,11 @@ class PlcWriteRequestTest {
     }
 
     @Test
-    void builder() {
+    public void builder() {
         { // empty
-            Assertions.assertThrows(IllegalStateException.class, () -> PlcWriteRequest.builder().build());
+            assertThatThrownBy(() ->
+                PlcWriteRequest.builder().build())
+                .isInstanceOf(IllegalStateException.class);
         }
         { // one item implicit type
             PlcWriteRequest.builder()
@@ -72,20 +74,20 @@ class PlcWriteRequestTest {
                 .build();
         }
         { // two different item typeSafe
-            Assertions.assertThrows(IllegalStateException.class, () -> {
+            assertThatThrownBy(() ->
                 PlcWriteRequest.builder()
                     .addItem(String.class, dummyAddress)
                     .addItem(Byte.class, dummyAddress)
-                    .build(String.class);
-            });
+                    .build(String.class))
+                .isInstanceOf(IllegalStateException.class);
         }
         { // two different item typeSafe
-            Assertions.assertThrows(ClassCastException.class, () -> {
+            assertThatThrownBy(() ->
                 PlcWriteRequest.builder()
                     .addItem(String.class, dummyAddress)
                     .addItem(Byte.class, dummyAddress)
-                    .build(Byte.class);
-            });
+                    .build(Byte.class))
+                .isInstanceOf(ClassCastException.class);
         }
         { // two equal item typeSafe
             PlcWriteRequest.builder()

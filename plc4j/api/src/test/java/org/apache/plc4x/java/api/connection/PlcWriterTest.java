@@ -21,16 +21,17 @@ package org.apache.plc4x.java.api.connection;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.Mockito.mock;
 
-class PlcWriterTest {
+public class PlcWriterTest {
+
     @Test
-    void write() throws Exception {
+    public void write() throws Exception {
         PlcWriter dummyImplementation = writeRequest -> CompletableFuture.completedFuture(new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) writeRequest, Collections.emptyList()));
         dummyImplementation.write(new TypeSafePlcWriteRequest<>(String.class, mock(Address.class))).get();
     }

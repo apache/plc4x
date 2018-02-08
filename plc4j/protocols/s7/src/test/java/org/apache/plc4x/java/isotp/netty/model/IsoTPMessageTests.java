@@ -19,25 +19,26 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.isotp.netty.model.params.Parameter;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.ErrorTpdu;
 import org.apache.plc4x.java.isotp.netty.model.types.RejectCause;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduCode;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class IsoTPMessageTests {
+public class IsoTPMessageTests {
 
     @Test
-    @Tag("fast")
-    void isoTPMessage() {
+    @Category(FastTests.class)
+    public void isoTPMessage() {
         short destinationReference = 0x1;
         RejectCause rejectCause = RejectCause.REASON_NOT_SPECIFIED;
         List<Parameter> parameters = Collections.emptyList();
@@ -49,10 +50,10 @@ class IsoTPMessageTests {
         errorData.writeByte(0x72);
         userData.writeByte(0x32);
 
-        assertTrue(isoTpMessage.getTpdu().getTpduCode() == TpduCode.TPDU_ERROR, "Unexpected Tpdu");
+        assertThat(isoTpMessage.getTpdu().getTpduCode()).isEqualTo(TpduCode.TPDU_ERROR);
         // Question: do we need two user data fields?
-        assertTrue(tpdu.getUserData().readByte() == (byte) 0x72, "Unexpected user data");
-        assertTrue(isoTpMessage.getUserData().readByte() == (byte) 0x32, "Unexpected user data");
+        assertThat(tpdu.getUserData().readByte()).isEqualTo((byte) 0x72);
+        assertThat(isoTpMessage.getUserData().readByte()).isEqualTo((byte) 0x32);
     }
 
 

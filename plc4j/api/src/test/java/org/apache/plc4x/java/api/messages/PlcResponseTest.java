@@ -18,70 +18,72 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.plc4x.java.api.messages.items.RequestItem;
 import org.apache.plc4x.java.api.messages.items.ResponseItem;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-class PlcResponseTest {
+public class PlcResponseTest {
 
     private List<ResponseItem> responseItems;
 
     private PlcResponse SUT;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         responseItems = new ArrayList<>();
         SUT = new PlcResponse<PlcRequest, ResponseItem, RequestItem>(mock(PlcRequest.class), responseItems) {
         };
     }
 
     @Test
-    void getRequest() {
-        Assertions.assertNotNull(SUT.getRequest());
+    public void getRequest() {
+        assertThat(SUT.getRequest()).isNotNull();
     }
 
     @Test
-    void getResponseItems() {
-        Assertions.assertEquals(0, SUT.getResponseItems().size());
+    public void getResponseItems() {
+        assertThat(SUT.getResponseItems()).isEmpty();
     }
 
     @Test
-    void getResponseItem() {
-        Assertions.assertEquals(Optional.empty(), SUT.getResponseItem());
+    public void getResponseItem() {
+        assertThat(SUT.getResponseItem()).isEqualTo(Optional.empty());
         responseItems.add(mock(ResponseItem.class));
-        Assertions.assertTrue(SUT.getResponseItem().isPresent());
+        assertThat(SUT.getResponseItem().isPresent()).isTrue();
         responseItems.add(mock(ResponseItem.class));
-        Assertions.assertThrows(IllegalStateException.class, () -> {
-            SUT.getResponseItem();
-        });
+        assertThatThrownBy(() ->
+            SUT.getResponseItem()).
+            isInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    void getNumberOfItems() {
-        Assertions.assertEquals(0, SUT.getNumberOfItems());
+    public void getNumberOfItems() {
+        assertThat(SUT.getNumberOfItems()).isEqualTo(0);
     }
 
     @Test
-    void isMultiValue() {
-        Assertions.assertFalse(SUT.isMultiValue());
+    public void isMultiValue() {
+        assertThat(SUT.isMultiValue()).isFalse();
     }
 
     @Test
-    void isEmpty() {
-        Assertions.assertTrue(SUT.isEmpty());
+    public void isEmpty() {
+        assertThat(SUT.isEmpty()).isTrue();
     }
 
     @Test
-    void getValue() {
-        Assertions.assertEquals(Optional.empty(), SUT.getValue(null));
+    public void getValue() {
+        assertThat(SUT.getValue(null)).isEqualTo(Optional.empty());
     }
 
 }

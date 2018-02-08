@@ -24,21 +24,17 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4j-utils</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-api</artifactId>
-  <name>PLC4J: API</name>
-  <description>Central API Module.</description>
+  <artifactId>plc4j-utils-test-utils</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <name>PLC4J: Utils: Test Utils</name>
+  <description>A set of test utils. Especially defining the test-categories used to categorize tests.</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
 </project>

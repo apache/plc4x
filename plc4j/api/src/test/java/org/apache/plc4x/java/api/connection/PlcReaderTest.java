@@ -21,16 +21,17 @@ package org.apache.plc4x.java.api.connection;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.Mockito.mock;
 
-class PlcReaderTest {
+public class PlcReaderTest {
+
     @Test
-    void read() throws Exception {
+    public void read() throws Exception {
         ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, Collections.emptyList())))
             .read(new TypeSafePlcReadRequest<>(String.class, mock(Address.class))).get();
     }

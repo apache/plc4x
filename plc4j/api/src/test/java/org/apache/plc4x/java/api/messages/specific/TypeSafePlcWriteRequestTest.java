@@ -18,29 +18,31 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TypeSafePlcWriteRequestTest {
+public class TypeSafePlcWriteRequestTest {
 
     WriteRequestItem<String> writeRequestItemString;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         writeRequestItemString = new WriteRequestItem<>(String.class, mock(Address.class));
     }
 
     @Test
-    void constuctor() {
+    public void constuctor() {
         new TypeSafePlcWriteRequest<>(String.class);
         new TypeSafePlcWriteRequest<>(String.class, mock(PlcWriteRequest.class));
         PlcWriteRequest request = mock(PlcWriteRequest.class);
@@ -49,29 +51,27 @@ class TypeSafePlcWriteRequestTest {
         new TypeSafePlcWriteRequest<>(String.class, mock(Address.class));
         new TypeSafePlcWriteRequest<>(String.class, mock(Address.class), "");
         new TypeSafePlcWriteRequest<>(String.class, writeRequestItemString);
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            new TypeSafePlcWriteRequest<>(Byte.class, request);
-        });
+        assertThatThrownBy(() -> new TypeSafePlcWriteRequest<>(Byte.class, request)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void addItem() {
+    public void addItem() {
         new TypeSafePlcWriteRequest<>(String.class).addItem(writeRequestItemString);
     }
 
     @Test
-    void getCheckedWriteRequestItems() {
+    public void getCheckedWriteRequestItems() {
         new TypeSafePlcWriteRequest<>(String.class).getCheckedRequestItems();
     }
 
     @Test
-    void getRequestItem() {
+    public void getRequestItem() {
         new TypeSafePlcWriteRequest<>(String.class).getRequestItem();
     }
 
     @Test
-    void getDataType() {
-        Assertions.assertEquals(String.class, new TypeSafePlcWriteRequest<>(String.class).getDataType());
+    public void getDataType() {
+        assertThat(new TypeSafePlcWriteRequest<>(String.class).getDataType()).isEqualTo(String.class);
     }
 
 }

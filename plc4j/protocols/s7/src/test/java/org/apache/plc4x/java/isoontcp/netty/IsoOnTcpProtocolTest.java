@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.isoontcp.netty;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import ch.qos.logback.classic.Level;
@@ -32,15 +31,16 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.isoontcp.netty.model.IsoOnTcpMessage;
 import org.apache.plc4x.java.netty.NettyTestBase;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.LoggerFactory;
 
 
 public class IsoOnTcpProtocolTest extends NettyTestBase {
 
     @Test
-    @Tag("fast")
+    @Category(FastTests.class)
     public void encode() {
         IsoOnTcpMessage isoOnTcpMessage = new IsoOnTcpMessage(
             Unpooled.wrappedBuffer(new byte[]{(byte)0x01,(byte)0x02,(byte)0x03}));
@@ -50,18 +50,16 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
         Object obj = channel.readOutbound();
         assertThat(obj).isInstanceOf(ByteBuf.class);
         ByteBuf byteBuf = (ByteBuf) obj;
-        assertEquals(4 + 3, byteBuf.readableBytes(),
-            "The TCP on ISO Header should add 4 bytes to the data sent");
-        assertEquals(IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER, byteBuf.getByte(0));
-        assertEquals(4 + 3, byteBuf.getShort(2),
-            "The length value in the packet should reflect the size of the entire data being sent");
+        assertThat(byteBuf.readableBytes()).isEqualTo(4 + 3).withFailMessage("The TCP on ISO Header should add 4 bytes to the data sent");
+        assertThat(byteBuf.getByte(0)).isEqualTo(IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER);
+        assertThat(byteBuf.getShort(2)).isEqualTo((short) (4 + 3)).withFailMessage("The length value in the packet should reflect the size of the entire data being sent");
     }
 
     /**
      * Happy path test.
      */
     @Test
-    @Tag("fast")
+    @Category(FastTests.class)
     public void decode() {
         EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
         channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER,
@@ -71,8 +69,8 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
         Object obj = channel.readInbound();
         assertThat(obj).isInstanceOf(IsoOnTcpMessage.class);
         IsoOnTcpMessage isoOnTcpMessage = (IsoOnTcpMessage) obj;
-        assertNotNull(isoOnTcpMessage.getUserData());
-        assertEquals(9, isoOnTcpMessage.getUserData().readableBytes());
+        assertThat(isoOnTcpMessage.getUserData()).isNotNull();
+        assertThat(isoOnTcpMessage.getUserData().readableBytes()).isEqualTo(9);
     }
 
     /**
@@ -80,9 +78,10 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
      * an exception should be thrown.
      */
     @Test
-    @Tag("fast")
+    @Category(FastTests.class)
     public void decodeWrongMagicByte() {
         EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
+        // TODO: Check this is done the same way as in the rest of the project
         Throwable throwable = catchThrowable(() -> channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{0x12,
             (byte)0x00,(byte)0x00,(byte)0x0D,
             (byte)0x01,(byte)0x02,(byte)0x03,(byte)0x04,(byte)0x05,(byte)0x06,(byte)0x07,(byte)0x08,(byte)0x09})));
@@ -95,14 +94,14 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
      * the entire package should be, nothing should be read.
      */
     @Test
-    @Tag("fast")
+    @Category(FastTests.class)
     public void decodeWayTooShort() {
         EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
         channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER,
             (byte)0x00,(byte)0x00,(byte)0x0D}));
         channel.checkException();
         Object obj = channel.readInbound();
-        assertNull(obj, "Nothing should have been decoded");
+        assertThat(obj).isNull();
     }
 
     /**
@@ -110,7 +109,7 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
      * it should be, nothing should be read.
      */
     @Test
-    @Tag("fast")
+    @Category(FastTests.class)
     public void decodeTooShort() {
         EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
         channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER,
@@ -118,7 +117,7 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
             (byte)0x01,(byte)0x02,(byte)0x03,(byte)0x04,(byte)0x05,(byte)0x06,(byte)0x07,(byte)0x08}));
         channel.checkException();
         Object obj = channel.readInbound();
-        assertNull(obj, "Nothing should have been decoded");
+        assertThat(obj).isNull();
     }
 
     /**
@@ -126,7 +125,7 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
      * should be logged
      */
     @Test
-    @Tag("fast")
+    @Category(FastTests.class)
     public void decodeLogPacketIfTraceLogging() {
         // Setup the mock logger.
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -146,7 +145,7 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
                 (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, (byte) 0x08, (byte) 0x09}));
             channel.checkException();
             Object obj = channel.readInbound();
-            assertNotNull(obj, "Something should have been decoded");
+            assertThat(obj).isNotNull();
 
             // Check that the packet dump was logged.
             verify(mockAppender).doAppend(argThat(argument ->

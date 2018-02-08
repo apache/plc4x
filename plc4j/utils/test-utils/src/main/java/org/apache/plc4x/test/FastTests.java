@@ -16,25 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.camel;
+package org.apache.plc4x.test;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
-
-import java.lang.reflect.Constructor;
-
-public class ConstantsTest {
-
-    @Test
-    public void testConstantsNotInstanceable() throws Exception {
-        Assertions.assertThatThrownBy(() -> {
-            try {
-                Constructor<Constants> constructor = Constants.class.getDeclaredConstructor();
-                constructor.setAccessible(true);
-                constructor.newInstance();
-            } catch (Exception e) {
-                throw e.getCause();
-            }
-        }).isInstanceOf(IllegalStateException.class);
-    }
+public interface FastTests {
 }

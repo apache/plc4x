@@ -19,27 +19,28 @@ under the License.
 
 package org.apache.plc4x.java.netty.events;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-class S7StateTests {
+public class S7StateTests {
 
     @Test
-    @Tag("fast")
-    void testInitialS7ConnectionEvent() {
+    @Category(FastTests.class)
+    public void testInitialS7ConnectionEvent() {
         S7ConnectionEvent s7event = new S7ConnectionEvent();
 
-        assertTrue(s7event.getState() == S7ConnectionState.INITIAL, "Initial state not initial");
+        assertThat(s7event.getState()).isEqualTo(S7ConnectionState.INITIAL);
     }
 
     @Test
-    @Tag("fast")
-    void testS7ConnectionEvent() {
+    @Category(FastTests.class)
+    public void testS7ConnectionEvent() {
         S7ConnectionEvent s7event = new S7ConnectionEvent(S7ConnectionState.SETUP_COMPLETE);
 
-        assertTrue(s7event.getState() == S7ConnectionState.SETUP_COMPLETE, "State not correct");
+        assertThat(s7event.getState()).isEqualTo(S7ConnectionState.SETUP_COMPLETE);
     }
 
 }

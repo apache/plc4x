@@ -18,28 +18,30 @@ under the License.
 */
 package org.apache.plc4x.java.s7;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class S7PlcDriverTest {
 
-    @Disabled("We first have to find/build some tool to help test these connections.")
+    @Ignore("We first have to find/build some tool to help test these connections.")
     @Test
-    @Tag("fast")
-    void getConnection() throws PlcException {
+    @Category(FastTests.class)
+    public void getConnection() throws PlcException {
         S7PlcConnection s7Connection = (S7PlcConnection)
             new PlcDriverManager().getConnection("s7://localhost/1/2");
-        Assertions.assertEquals(s7Connection.getHostName(), "localhost");
-        Assertions.assertEquals(s7Connection.getRack(), 1);
-        Assertions.assertEquals(s7Connection.getSlot(), 2);
+        assertThat(s7Connection.getHostName()).isEqualTo("localhost");
+        assertThat(s7Connection.getRack()).isEqualTo(1);
+        assertThat(s7Connection.getSlot()).isEqualTo(2);
     }
 
     /**
@@ -48,10 +50,11 @@ public class S7PlcDriverTest {
      * @throws PlcException something went wrong
      */
     @Test
-    @Tag("fast")
-    void getConnectionInvalidUrl() throws PlcException {
-        Assertions.assertThrows(PlcConnectionException.class,
-            () -> new PlcDriverManager().getConnection("s7://localhost/hurz/2"));
+    @Category(FastTests.class)
+    public void getConnectionInvalidUrl() throws PlcException {
+        assertThatThrownBy(() ->
+            new PlcDriverManager().getConnection("s7://localhost/hurz/2"))
+            .isInstanceOf(PlcConnectionException.class);
     }
 
     /**
@@ -61,11 +64,12 @@ public class S7PlcDriverTest {
      * @throws PlcException something went wrong
      */
     @Test
-    @Tag("fast")
-    void getConnectionWithAuthentication() throws PlcException {
-        Assertions.assertThrows(PlcConnectionException.class,
-            () -> new PlcDriverManager().getConnection("s7://localhost/1/2",
-                new PlcUsernamePasswordAuthentication("user", "pass")));
+    @Category(FastTests.class)
+    public void getConnectionWithAuthentication() throws PlcException {
+        assertThatThrownBy(() ->
+            new PlcDriverManager().getConnection("s7://localhost/1/2",
+                new PlcUsernamePasswordAuthentication("user", "pass")))
+            .isInstanceOf(PlcConnectionException.class);
     }
 
 }

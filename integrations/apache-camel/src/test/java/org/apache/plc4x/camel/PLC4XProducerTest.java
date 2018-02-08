@@ -24,8 +24,8 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.model.Address;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -35,14 +35,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mockito.Mockito.*;
 
-class PLC4XProducerTest {
+public class PLC4XProducerTest {
 
     private PLC4XProducer SUT;
 
     private Exchange testExchange;
 
-    @BeforeEach
-    void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         PLC4XEndpoint endpointMock = mock(PLC4XEndpoint.class, RETURNS_DEEP_STUBS);
         when(endpointMock.getEndpointUri()).thenReturn("plc4x:mock:10.10.10.1/1/1");
         PlcDriverManager plcDriverManagerMock = mock(PlcDriverManager.class, RETURNS_DEEP_STUBS);
@@ -56,7 +56,7 @@ class PLC4XProducerTest {
     }
 
     @Test
-    void process() throws Exception {
+    public void process() throws Exception {
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOnly);
         SUT.process(testExchange);
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
@@ -70,7 +70,7 @@ class PLC4XProducerTest {
     }
 
     @Test
-    void process_Async() throws Exception {
+    public void process_Async() throws Exception {
         SUT.process(testExchange, doneSync -> {
         });
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOnly);
@@ -85,12 +85,12 @@ class PLC4XProducerTest {
     }
 
     @Test
-    void doStop() throws Exception {
+    public void doStop() throws Exception {
         SUT.doStop();
     }
 
     @Test
-    void doStopOpenRequest() throws Exception {
+    public void doStopOpenRequest() throws Exception {
         Field openRequests = SUT.getClass().getDeclaredField("openRequests");
         openRequests.setAccessible(true);
         AtomicInteger atomicInteger = (AtomicInteger) openRequests.get(SUT);
@@ -99,7 +99,7 @@ class PLC4XProducerTest {
     }
 
     @Test
-    void doStopBadConnection() throws Exception {
+    public void doStopBadConnection() throws Exception {
         Field openRequests = SUT.getClass().getDeclaredField("plcConnection");
         openRequests.setAccessible(true);
         PlcConnection plcConnectionMock = mock(PlcConnection.class);

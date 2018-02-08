@@ -19,34 +19,35 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.Component;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 
-class PLC4XEndpointTest {
+public class PLC4XEndpointTest {
 
     PLC4XEndpoint SUT;
 
-    @BeforeEach
-    void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         SUT = new PLC4XEndpoint("plc4x:mock:10.10.10.1/1/1", mock(Component.class));
     }
 
     @Test
-    void createProducer() throws Exception {
-        Assertions.assertNotNull(SUT.createProducer());
+    public void createProducer() throws Exception {
+        Assertions.assertThat(SUT.createProducer()).isNotNull();
     }
 
     @Test
-    void createConsumer() throws Exception {
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> SUT.createConsumer(null));
+    public void createConsumer() throws Exception {
+        Assertions.assertThatThrownBy(() -> SUT.createConsumer(null))
+            .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
-    void isSingleton() throws Exception {
-        Assertions.assertTrue(SUT.isSingleton());
+    public void isSingleton() throws Exception {
+        Assertions.assertThat(SUT.isSingleton()).isTrue();
     }
 
 }
