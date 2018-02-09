@@ -69,17 +69,19 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     private final int rack;
     private final int slot;
 
-    private final int paramPduSize;
+    private final TpduSize paramPduSize;
     private final short paramMaxAmqCaller;
     private final short paramMaxAmqCallee;
 
     private EventLoopGroup workerGroup;
-    private Channel channel;
+    protected Channel channel;
+    protected boolean connected;
 
     public S7PlcConnection(String hostName, int rack, int slot, String params) {
         this.hostName = hostName;
         this.rack = rack;
         this.slot = slot;
+        this.connected = false;
 
         int paramPduSize = 1024;
         short paramMaxAmqCaller = 8;
@@ -109,7 +111,10 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                 }
             }
         }
-        this.paramPduSize = paramPduSize;
+
+        // IsoTP uses pre defined sizes. Find the smallest box,
+        // that would be able to contain the requested pdu size.
+        this.paramPduSize = TpduSize.valueForGivenSize(paramPduSize);
         this.paramMaxAmqCaller = paramMaxAmqCaller;
         this.paramMaxAmqCallee = paramMaxAmqCallee;
 
@@ -129,7 +134,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         return slot;
     }
 
-    public int getParamPduSize() {
+    public TpduSize getParamPduSize() {
         return paramPduSize;
     }
 
@@ -139,6 +144,11 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     public int getParamMaxAmqCallee() {
         return paramMaxAmqCallee;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return connected;
     }
 
     @Override
@@ -153,42 +163,12 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
             InetAddress serverInetAddress = InetAddress.getByName(hostName);
 
-            // IsoTP uses pre defined sizes. Find the smallest box,
-            // that would be able to contain the requested pdu size.
-            TpduSize isoTpTpduSize = TpduSize.valueForGivenSize(paramPduSize);
-
-            // If the pdu size was very big, it might have exceeded the
-            // maximum of 8MB defined in the IsoTP protocol, so we have
-            // to generally downgrade the requested size.
-            int pduSize = (isoTpTpduSize.getValue() < paramPduSize) ? isoTpTpduSize.getValue() : paramPduSize;
-
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
             bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            bootstrap.handler(new ChannelInitializer() {
-                @Override
-                protected void initChannel(Channel channel) {
-                    // Build the protocol stack for communicating with the s7 protocol.
-                    ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast(new ChannelInboundHandlerAdapter() {
-                        @Override
-                        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-                            if(evt instanceof S7ConnectionEvent &&
-                                ((S7ConnectionEvent) evt).getState() == S7ConnectionState.SETUP_COMPLETE) {
-                                sessionSetupCompleteFuture.complete(null);
-                            } else {
-                                super.userEventTriggered(ctx, evt);
-                            }
-                        }
-                    });
-                    pipeline.addLast(new IsoOnTcpProtocol());
-                    pipeline.addLast(new IsoTPProtocol((byte) rack, (byte) slot, isoTpTpduSize));
-                    pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) pduSize));
-                    pipeline.addLast(new Plc4XS7Protocol());
-                }
-            });
+            bootstrap.handler(getChannelHandler(sessionSetupCompleteFuture));
             // Start the client.
             ChannelFuture f = bootstrap.connect(serverInetAddress, ISO_ON_TCP_PORT).sync();
             f.awaitUninterruptibly();
@@ -199,13 +179,14 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             channel.pipeline().fireUserEventTriggered(new S7ConnectionEvent());
 
             sessionSetupCompleteFuture.get();
+
+            connected = true;
         } catch (UnknownHostException e) {
             throw new PlcConnectionException("Unknown Host " + hostName, e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException(e);
-        }
-        catch (ExecutionException e) {
+        } catch (ExecutionException e) {
             throw new PlcConnectionException(e);
         }
     }
@@ -224,6 +205,8 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                 workerGroup.shutdownGracefully();
             });
             sendDisconnectRequestFuture.awaitUninterruptibly();
+
+            connected = false;
         } else if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
@@ -267,6 +250,31 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             new PlcRequestContainer<>(writeRequest, writeFuture);
         channel.writeAndFlush(container);
         return writeFuture;
+    }
+
+    ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+        return new ChannelInitializer() {
+            @Override
+            protected void initChannel(Channel channel) {
+                // Build the protocol stack for communicating with the s7 protocol.
+                ChannelPipeline pipeline = channel.pipeline();
+                pipeline.addLast(new ChannelInboundHandlerAdapter() {
+                    @Override
+                    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                        if(evt instanceof S7ConnectionEvent &&
+                            ((S7ConnectionEvent) evt).getState() == S7ConnectionState.SETUP_COMPLETE) {
+                            sessionSetupCompleteFuture.complete(null);
+                        } else {
+                            super.userEventTriggered(ctx, evt);
+                        }
+                    }
+                });
+                pipeline.addLast(new IsoOnTcpProtocol());
+                pipeline.addLast(new IsoTPProtocol((byte) rack, (byte) slot, paramPduSize));
+                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue()));
+                pipeline.addLast(new Plc4XS7Protocol());
+            }
+        };
     }
 
 }

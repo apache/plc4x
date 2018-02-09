@@ -41,6 +41,13 @@ public interface PlcConnection extends AutoCloseable {
     void connect() throws PlcConnectionException;
 
     /**
+     * Returns true if the PlcConnection is connected to a remote PLC.
+     *
+     * @return true, if connected, false, if not.
+     */
+    boolean isConnected();
+
+    /**
      * Closes the connection to the remote PLC.
      *
      * @throws Exception an exception if shutting down the connection failed.

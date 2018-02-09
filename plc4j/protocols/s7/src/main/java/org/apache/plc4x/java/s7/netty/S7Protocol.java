@@ -49,7 +49,7 @@ import java.util.List;
 
 public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
 
-    private static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
+    public static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
 
     private static final Logger logger = LoggerFactory.getLogger(S7Protocol.class);
 

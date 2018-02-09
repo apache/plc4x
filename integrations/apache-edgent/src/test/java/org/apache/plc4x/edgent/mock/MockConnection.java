@@ -54,6 +54,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
     private long curWriteCnt;
     private int writeExceptionTriggerCount;
     private String writeExceptionMsg;
+    private boolean connected;
 
     public MockConnection(String url) {
         this(url, null);
@@ -62,6 +63,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
     public MockConnection(String url, PlcAuthentication authentication) {
         this.url = url;
         this.authentication = authentication;
+        this.connected = false;
     }
 
     public PlcAuthentication getAuthentication() {
@@ -73,13 +75,18 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
     }
 
     @Override
-    public void connect() throws PlcConnectionException {
+    public boolean isConnected() {
+        return connected;
+    }
 
+    @Override
+    public void connect() throws PlcConnectionException {
+        connected = true;
     }
 
     @Override
     public void close() throws Exception {
-
+        connected = false;
     }
 
     @Override
