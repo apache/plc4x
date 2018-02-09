@@ -108,7 +108,7 @@ public class IsotpModelTests {
 
         ConnectionRequestTpdu tpdu = new ConnectionRequestTpdu(destinationReference, sourceReference, protocolClass, parameters, userData);
 
-        assertThat(tpdu.getTpduCode() == TpduCode.CONNECTION_REQUEST);
+        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.CONNECTION_REQUEST);
         assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x1).withFailMessage("Unexpected destination reference");
         assertThat(tpdu.getSourceReference()).isEqualTo((short) 0x2).withFailMessage("Unexpected source reference");
         assertThat(tpdu.getProtocolClass()).isEqualTo(ProtocolClass.CLASS_0);
@@ -129,7 +129,7 @@ public class IsotpModelTests {
 
         ConnectionConfirmTpdu tpdu = new ConnectionConfirmTpdu(destinationReference, sourceReference, protocolClass, parameters, userData);
 
-        assertThat(tpdu.getTpduCode() == TpduCode.CONNECTION_CONFIRM);
+        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.CONNECTION_CONFIRM);
         assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x3).withFailMessage("Unexpected destination reference");
         assertThat(tpdu.getSourceReference()).isEqualTo((short) 0x4).withFailMessage("Unexpected source reference");
         assertThat(tpdu.getProtocolClass()).isEqualTo(ProtocolClass.CLASS_1);
@@ -150,7 +150,7 @@ public class IsotpModelTests {
 
         DisconnectRequestTpdu tpdu = new DisconnectRequestTpdu(destinationReference, sourceReference, disconnectReason, parameters, userData);
 
-        assertThat(tpdu.getTpduCode() == TpduCode.DISCONNECT_REQUEST);
+        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.DISCONNECT_REQUEST);
         assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x1).withFailMessage("Unexpected destination reference");
         assertThat(tpdu.getSourceReference()).isEqualTo((short) 0x2).withFailMessage("Unexpected source reference");
         assertThat(tpdu.getDisconnectReason()).isEqualTo(DisconnectReason.ADDRESS_UNKNOWN);
@@ -170,7 +170,7 @@ public class IsotpModelTests {
 
         DisconnectConfirmTpdu tpdu = new DisconnectConfirmTpdu(destinationReference, sourceReference, parameters, userData);
 
-        assertThat(tpdu.getTpduCode() == TpduCode.DISCONNECT_CONFIRM);
+        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.DISCONNECT_CONFIRM);
         assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x3).withFailMessage("Unexpected destination reference");
         assertThat(tpdu.getSourceReference()).isEqualTo((short) 0x4).withFailMessage("Unexpected source reference");
         assertThat(tpdu.getParameters().isEmpty()).isTrue().withFailMessage("Unexpected parameters");
