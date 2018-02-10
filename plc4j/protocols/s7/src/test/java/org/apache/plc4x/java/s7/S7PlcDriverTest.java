@@ -39,19 +39,16 @@ public class S7PlcDriverTest {
     public void getConnection() throws PlcException {
         S7PlcConnection s7Connection = (S7PlcConnection)
             new PlcDriverManager().getConnection("s7://localhost/1/2");
-        assertThat(s7Connection.getHostName()).isEqualTo("localhost");
         assertThat(s7Connection.getRack()).isEqualTo(1);
         assertThat(s7Connection.getSlot()).isEqualTo(2);
     }
 
     /**
      * In this test case the 's7' driver should report an invalid url format.
-     *
-     * @throws PlcException something went wrong
      */
     @Test
     @Category(FastTests.class)
-    public void getConnectionInvalidUrl() throws PlcException {
+    public void getConnectionInvalidUrl() {
         assertThatThrownBy(() ->
             new PlcDriverManager().getConnection("s7://localhost/hurz/2"))
             .isInstanceOf(PlcConnectionException.class);
@@ -60,12 +57,10 @@ public class S7PlcDriverTest {
     /**
      * In this test case the 's7' driver should report an error as this protocol
      * doesn't support authentication.
-     *
-     * @throws PlcException something went wrong
      */
     @Test
     @Category(FastTests.class)
-    public void getConnectionWithAuthentication() throws PlcException {
+    public void getConnectionWithAuthentication() {
         assertThatThrownBy(() ->
             new PlcDriverManager().getConnection("s7://localhost/1/2",
                 new PlcUsernamePasswordAuthentication("user", "pass")))

@@ -18,18 +18,17 @@ under the License.
 */
 package org.apache.plc4x.java.s7.connection;
 
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.isoontcp.netty.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DisconnectRequestTpdu;
@@ -47,10 +46,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +62,6 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     private static final Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
 
-    private final String hostName;
     private final int rack;
     private final int slot;
 
@@ -73,15 +69,19 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     private final short paramMaxAmqCaller;
     private final short paramMaxAmqCallee;
 
-    private EventLoopGroup workerGroup;
-    protected Channel channel;
-    protected boolean connected;
+    public S7PlcConnection(InetAddress address, int rack, int slot, String params) {
+        this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);
 
-    public S7PlcConnection(String hostName, int rack, int slot, String params) {
-        this.hostName = hostName;
+        logger.info("Configured S7cConnection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
+            "max-amq-callee {}", address.getHostAddress(), rack, slot,
+            paramPduSize, paramMaxAmqCaller, paramMaxAmqCallee);
+    }
+
+    public S7PlcConnection(ChannelFactory channelFactory, int rack, int slot, String params) {
+        super(channelFactory);
+
         this.rack = rack;
         this.slot = slot;
-        this.connected = false;
 
         int paramPduSize = 1024;
         short paramMaxAmqCaller = 8;
@@ -117,13 +117,38 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         this.paramPduSize = TpduSize.valueForGivenSize(paramPduSize);
         this.paramMaxAmqCaller = paramMaxAmqCaller;
         this.paramMaxAmqCallee = paramMaxAmqCallee;
-
-        logger.info("Configured S7cConnection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
-            "max-amq-callee {}", hostName, rack, slot, paramPduSize, paramMaxAmqCaller, paramMaxAmqCallee);
     }
 
-    public String getHostName() {
-        return hostName;
+    @Override
+    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+        return new ChannelInitializer() {
+            @Override
+            protected void initChannel(Channel channel) {
+                // Build the protocol stack for communicating with the s7 protocol.
+                ChannelPipeline pipeline = channel.pipeline();
+                pipeline.addLast(new ChannelInboundHandlerAdapter() {
+                    @Override
+                    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                        if(evt instanceof S7ConnectionEvent &&
+                            ((S7ConnectionEvent) evt).getState() == S7ConnectionState.SETUP_COMPLETE) {
+                            sessionSetupCompleteFuture.complete(null);
+                        } else {
+                            super.userEventTriggered(ctx, evt);
+                        }
+                    }
+                });
+                pipeline.addLast(new IsoOnTcpProtocol());
+                pipeline.addLast(new IsoTPProtocol((byte) rack, (byte) slot, paramPduSize));
+                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue()));
+                pipeline.addLast(new Plc4XS7Protocol());
+            }
+        };
+    }
+
+    @Override
+    protected void sendChannelCreatedEvent() {
+        // Send an event to the pipeline telling the Protocol filters what's going on.
+        getChannel().pipeline().fireUserEventTriggered(new S7ConnectionEvent());
     }
 
     public int getRack() {
@@ -147,52 +172,8 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public boolean isConnected() {
-        return connected;
-    }
-
-    @Override
-    public void connect() throws PlcConnectionException {
-        workerGroup = new NioEventLoopGroup();
-
-        try {
-            // As we don't just want to wait till the connection is established,
-            // define a future we can use to signal back that the s7 session is
-            // finished initializing.
-            CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
-
-            InetAddress serverInetAddress = InetAddress.getByName(hostName);
-
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(workerGroup);
-            bootstrap.channel(NioSocketChannel.class);
-            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            bootstrap.handler(getChannelHandler(sessionSetupCompleteFuture));
-            // Start the client.
-            ChannelFuture f = bootstrap.connect(serverInetAddress, ISO_ON_TCP_PORT).sync();
-            f.awaitUninterruptibly();
-            // Wait till the session is finished initializing.
-            channel = f.channel();
-
-            // Send an event to the pipeline telling the Protocol filters what's going on.
-            channel.pipeline().fireUserEventTriggered(new S7ConnectionEvent());
-
-            sessionSetupCompleteFuture.get();
-
-            connected = true;
-        } catch (UnknownHostException e) {
-            throw new PlcConnectionException("Unknown Host " + hostName, e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException(e);
-        } catch (ExecutionException e) {
-            throw new PlcConnectionException(e);
-        }
-    }
-
-    @Override
     public void close() {
+        Channel channel = getChannel();
         if((channel != null) && channel.isOpen()) {
             // Send the PLC a message that the connection is being closed.
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
@@ -202,15 +183,13 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             sendDisconnectRequestFuture.addListener((ChannelFutureListener) future -> {
                 // Close the session itself.
                 channel.closeFuture().await();
-                workerGroup.shutdownGracefully();
+                channel.eventLoop().parent().shutdownGracefully();
             });
             sendDisconnectRequestFuture.awaitUninterruptibly();
-
-            connected = false;
-        } else if (workerGroup != null) {
-            workerGroup.shutdownGracefully();
         }
+        super.close();
     }
+
 
     @Override
     public Address parseAddress(String addressString) throws PlcException {
@@ -239,7 +218,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
         PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
             new PlcRequestContainer<>(readRequest, readFuture);
-        channel.writeAndFlush(container);
+        getChannel().writeAndFlush(container);
         return readFuture;
     }
 
@@ -248,33 +227,8 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
         PlcRequestContainer<PlcWriteRequest, PlcWriteResponse> container =
             new PlcRequestContainer<>(writeRequest, writeFuture);
-        channel.writeAndFlush(container);
+        getChannel().writeAndFlush(container);
         return writeFuture;
-    }
-
-    ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
-            @Override
-            protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the s7 protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new ChannelInboundHandlerAdapter() {
-                    @Override
-                    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-                        if(evt instanceof S7ConnectionEvent &&
-                            ((S7ConnectionEvent) evt).getState() == S7ConnectionState.SETUP_COMPLETE) {
-                            sessionSetupCompleteFuture.complete(null);
-                        } else {
-                            super.userEventTriggered(ctx, evt);
-                        }
-                    }
-                });
-                pipeline.addLast(new IsoOnTcpProtocol());
-                pipeline.addLast(new IsoTPProtocol((byte) rack, (byte) slot, paramPduSize));
-                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue()));
-                pipeline.addLast(new Plc4XS7Protocol());
-            }
-        };
     }
 
 }

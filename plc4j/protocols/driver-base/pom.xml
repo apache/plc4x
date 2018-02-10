@@ -28,26 +28,35 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-protocol-s7</artifactId>
-  <name>PLC4J: Protocol: S7</name>
-  <description>Implementation of a PLC4X driver able to speak with S7 devices using the S7 protocol.</description>
+  <artifactId>plc4j-protocol-driver-base</artifactId>
+  <name>PLC4J: Protocol: Driver-Base</name>
+  <description>Base classes needed to implement plc4x drivers.</description>
+
+  <build>
+    <plugins>
+      <!--
+        Also create a jar from the test-code as
+        we use this in other drivers test-suites.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
       <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-core</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -75,26 +84,6 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <type>test-jar</type>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

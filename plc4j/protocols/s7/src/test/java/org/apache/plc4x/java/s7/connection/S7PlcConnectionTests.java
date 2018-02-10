@@ -32,13 +32,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.InetAddress;
+
 public class S7PlcConnectionTests {
 
     private S7PlcConnection  s7PlcConnection;
 
     @Before
-    public void setUp() {
-        s7PlcConnection = new S7PlcConnection("localhost", 1, 2, "");
+    public void setUp() throws Exception {
+        InetAddress address = InetAddress.getByName("localhost");
+        s7PlcConnection = new S7PlcConnection(address, 1, 2, "");
     }
 
     @After
@@ -48,8 +51,6 @@ public class S7PlcConnectionTests {
 
     @Test
     public void initialState() {
-        assertThat(s7PlcConnection.getHostName()).isEqualToIgnoringCase("localhost")
-            .withFailMessage("Hostname is incorrect");
         assertThat(s7PlcConnection.getRack()).isEqualTo(1)
             .withFailMessage("Rack is incorrect");
         assertThat(s7PlcConnection.getSlot()).isEqualTo(2)

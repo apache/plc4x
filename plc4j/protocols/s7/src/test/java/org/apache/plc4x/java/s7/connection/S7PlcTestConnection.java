@@ -21,28 +21,22 @@ package org.apache.plc4x.java.s7.connection;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.base.connection.TestChannelFactory;
 import org.apache.plc4x.java.isotp.netty.model.types.*;
 import org.apache.plc4x.java.netty.events.S7ConnectionEvent;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
 public class S7PlcTestConnection extends S7PlcConnection {
 
-    public S7PlcTestConnection(String hostName, int rack, int slot, String params) {
-        super(hostName, rack, slot, params);
+    public S7PlcTestConnection(int rack, int slot, String params) {
+        super(new TestChannelFactory(), rack, slot, params);
     }
 
     @Override
-    public void connect() throws PlcConnectionException {
-        CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
-
-        // Create an embedded channel instance for testing.
-        EmbeddedChannel channel = new EmbeddedChannel(getChannelHandler(sessionSetupCompleteFuture));
+    protected void sendChannelCreatedEvent() {
+        EmbeddedChannel channel = (EmbeddedChannel) getChannel();
 
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new S7ConnectionEvent());
@@ -98,24 +92,6 @@ public class S7PlcTestConnection extends S7PlcConnection {
                 ParameterType.SETUP_COMMUNICATION.getCode(), 0x00, 0x00, 0x08, 0x00, 0x08, 0x01, 0x00
             });
         channel.writeInbound(Unpooled.wrappedBuffer(setupCommunicationResponse));
-
-        // Wait till the connection is established.
-        try {
-            sessionSetupCompleteFuture.get();
-
-            connected = true;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException(e);
-        } catch (ExecutionException e) {
-            throw new PlcConnectionException(e);
-        }
-
-        this.channel = channel;
-    }
-
-    public EmbeddedChannel getChannel() {
-        return (EmbeddedChannel) channel;
     }
 
     public static byte[] toByteArray(int[] in) {

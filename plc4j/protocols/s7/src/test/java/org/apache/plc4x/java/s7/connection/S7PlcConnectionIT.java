@@ -44,7 +44,7 @@ public class S7PlcConnectionIT {
     @Before
     public void setUp() {
         try {
-            s7PlcConnection = new S7PlcTestConnection("localhost", 1, 2, "");
+            s7PlcConnection = new S7PlcTestConnection(1, 2, "");
             s7PlcConnection.connect();
             channel = s7PlcConnection.getChannel();
         } catch (PlcConnectionException e) {
