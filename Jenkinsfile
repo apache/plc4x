@@ -34,7 +34,7 @@ node('ubuntu') {
     def mavenGoal = "install"
     def mavenLocalRepo = ""
     if(env.BRANCH_NAME == 'develop') {
-        mavenGoal = "deploy"
+        mavenGoal = "deploy sonar:sonar"
     } else {
         mavenLocalRepo = "-Dmaven.repo.local=.repository"
     }
@@ -52,7 +52,7 @@ node('ubuntu') {
 
         stage ('Build') {
             echo 'Building'
-            sh "${mvnHome}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} sonar:sonar site:site"
+            sh "${mvnHome}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} site:site"
         }
 
         stage ('Stage Site') {
