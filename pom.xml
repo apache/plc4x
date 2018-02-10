@@ -87,7 +87,7 @@
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
     <!-- Exclude all generated code -->
-    <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
+    <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
     <assertj.version>3.8.0</assertj.version>
     <commons-io.version>2.6</commons-io.version>
@@ -988,7 +988,7 @@
                 <id>pre-integration-test</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>prepare-agent</goal>
+                  <goal>prepare-agent-integration</goal>
                 </goals>
                 <configuration>
                   <!--
