@@ -55,6 +55,7 @@ public class TcpSocketChannelFactory implements ChannelFactory {
             // Wait till the session is finished initializing.
             return f.channel();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new PlcConnectionException("Error creating channel.", e);
         }
     }
