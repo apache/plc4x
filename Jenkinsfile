@@ -33,7 +33,7 @@ node('ubuntu') {
     // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
     def mavenGoal = "install"
     def mavenLocalRepo = ""
-    if(env.BRANCH_NAME == 'develop') {
+    if(env.BRANCH_NAME == 'master') {
         mavenGoal = "deploy sonar:sonar"
     } else {
         mavenLocalRepo = "-Dmaven.repo.local=.repository"
