@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.api.messages.items.RequestItem;
 import org.apache.plc4x.java.api.messages.items.ResponseItem;
 import org.junit.Before;
@@ -29,14 +27,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.Mockito.mock;
 
 public class PlcResponseTest {
 
     private List<ResponseItem> responseItems;
 
-    private PlcResponse SUT;
+    private PlcResponse<PlcRequest, ResponseItem, RequestItem> SUT;
 
     @Before
     public void setUp() {
@@ -47,43 +51,45 @@ public class PlcResponseTest {
 
     @Test
     public void getRequest() {
-        assertThat(SUT.getRequest()).isNotNull();
+        assertThat(SUT.getRequest(), notNullValue());
     }
 
     @Test
     public void getResponseItems() {
-        assertThat(SUT.getResponseItems()).isEmpty();
+        assertThat(SUT.getResponseItems(), empty());
     }
 
     @Test
     public void getResponseItem() {
-        assertThat(SUT.getResponseItem()).isEqualTo(Optional.empty());
+        assertThat(SUT.getResponseItem(), equalTo(Optional.empty()));
         responseItems.add(mock(ResponseItem.class));
-        assertThat(SUT.getResponseItem().isPresent()).isTrue();
+        assertThat(SUT.getResponseItem().isPresent(), is(true));
         responseItems.add(mock(ResponseItem.class));
-        assertThatThrownBy(() ->
-            SUT.getResponseItem()).
-            isInstanceOf(IllegalStateException.class);
+        try {
+            SUT.getResponseItem();
+            fail("PlcResponse.getResponseItem() should fail if contains multiple items.");
+        } catch (IllegalStateException e) {
+            // expected
+        }
     }
 
     @Test
     public void getNumberOfItems() {
-        assertThat(SUT.getNumberOfItems()).isEqualTo(0);
+        assertThat(SUT.getNumberOfItems(), equalTo(0));
     }
 
     @Test
     public void isMultiValue() {
-        assertThat(SUT.isMultiValue()).isFalse();
+        assertThat(SUT.isMultiValue(), is(false));
     }
 
     @Test
     public void isEmpty() {
-        assertThat(SUT.isEmpty()).isTrue();
+        assertThat(SUT.isEmpty(), is(true));
     }
 
     @Test
     public void getValue() {
-        assertThat(SUT.getValue(null)).isEqualTo(Optional.empty());
+        assertThat(SUT.getValue(null), equalTo(Optional.empty()));
     }
-
 }

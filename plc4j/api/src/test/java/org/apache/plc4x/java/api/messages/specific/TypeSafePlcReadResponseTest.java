@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 public class TypeSafePlcReadResponseTest {
@@ -41,16 +40,16 @@ public class TypeSafePlcReadResponseTest {
         readResponseItemString = new ReadResponseItem<>(mock(ReadRequestItem.class), ResponseCode.OK, Arrays.asList("", ""));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void constuctor() {
         TypeSafePlcReadRequest mock = mock(TypeSafePlcReadRequest.class);
         when(mock.getDataType()).thenReturn(String.class);
         new TypeSafePlcReadResponse<>(mock, readResponseItemString);
         new TypeSafePlcReadResponse<>(mock, Collections.singletonList(readResponseItemString));
-        assertThatThrownBy(() -> {
-            when(mock.getDataType()).thenReturn(Byte.class);
-            new TypeSafePlcReadResponse<>(mock, readResponseItemString);
-        }).isInstanceOf(IllegalArgumentException.class);
+        when(mock.getDataType()).thenReturn(Byte.class);
+
+        // expects an exception
+        new TypeSafePlcReadResponse<>(mock, readResponseItemString);
     }
 
     @Test

@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.model.Address;
@@ -28,7 +26,8 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +40,7 @@ public class TypeSafePlcWriteRequestTest {
         writeRequestItemString = new WriteRequestItem<>(String.class, mock(Address.class));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void constuctor() {
         new TypeSafePlcWriteRequest<>(String.class);
         new TypeSafePlcWriteRequest<>(String.class, mock(PlcWriteRequest.class));
@@ -51,7 +50,9 @@ public class TypeSafePlcWriteRequestTest {
         new TypeSafePlcWriteRequest<>(String.class, mock(Address.class));
         new TypeSafePlcWriteRequest<>(String.class, mock(Address.class), "");
         new TypeSafePlcWriteRequest<>(String.class, writeRequestItemString);
-        assertThatThrownBy(() -> new TypeSafePlcWriteRequest<>(Byte.class, request)).isInstanceOf(IllegalArgumentException.class);
+
+        // expects an exception
+        new TypeSafePlcWriteRequest<>(Byte.class, request);
     }
 
     @Test
@@ -71,7 +72,7 @@ public class TypeSafePlcWriteRequestTest {
 
     @Test
     public void getDataType() {
-        assertThat(new TypeSafePlcWriteRequest<>(String.class).getDataType()).isEqualTo(String.class);
+        assertThat(new TypeSafePlcWriteRequest<>(String.class).getDataType(), equalTo(String.class));
     }
 
 }

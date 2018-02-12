@@ -19,14 +19,15 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.params;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.netty.model.types.ParameterCode;
 import org.apache.plc4x.test.FastTests;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class TsapParameterTests {
 
@@ -43,10 +44,10 @@ public class TsapParameterTests {
         DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0);
         tsapParameter = new CalledTsapParameter(deviceGroup, (byte)1, (byte)4);
 
-        assertThat(tsapParameter.getDeviceGroup()).isEqualTo(DeviceGroup.valueOf((byte)0)).withFailMessage("Device group incorrect");
-        assertThat(tsapParameter.getRackNumber()).isEqualTo((byte)1).withFailMessage("Rack number not correct");
-        assertThat(tsapParameter.getSlotNumber()).isEqualTo((byte)4).withFailMessage("Slot number not coorect");
-        assertThat(tsapParameter.getType()).isEqualTo(ParameterCode.CALLED_TSAP);
+        assertThat("Device group incorrect", tsapParameter.getDeviceGroup(), equalTo(DeviceGroup.valueOf((byte)0)));
+        assertThat("Rack number not correct", tsapParameter.getRackNumber(), equalTo((byte)1));
+        assertThat("Slot number not coorect", tsapParameter.getSlotNumber(), equalTo((byte)4));
+        assertThat(tsapParameter.getType(), equalTo(ParameterCode.CALLED_TSAP));
     }
 
     @Test
@@ -55,10 +56,10 @@ public class TsapParameterTests {
         DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0);
         tsapParameter = new CallingTsapParameter(deviceGroup, (byte)2, (byte)5);
 
-        assertThat(tsapParameter.getDeviceGroup()).isEqualTo(DeviceGroup.valueOf((byte)0)).withFailMessage("Device group incorrect");
-        assertThat(tsapParameter.getRackNumber()).isEqualTo((byte)2).withFailMessage("Rack number not correct");
-        assertThat(tsapParameter.getSlotNumber()).isEqualTo((byte)5).withFailMessage("Slot number not coorect");
-        assertThat(tsapParameter.getType()).isEqualTo(ParameterCode.CALLING_TSAP);
+        assertThat("Device group incorrect", tsapParameter.getDeviceGroup(), equalTo(DeviceGroup.valueOf((byte)0)));
+        assertThat("Rack number not correct", tsapParameter.getRackNumber(), equalTo((byte)2));
+        assertThat("Slot number not coorect", tsapParameter.getSlotNumber(), equalTo((byte)5));
+        assertThat(tsapParameter.getType(), equalTo(ParameterCode.CALLING_TSAP));
     }
 
 }

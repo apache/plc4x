@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class PlcReadRequestTest {
@@ -49,9 +49,12 @@ public class PlcReadRequestTest {
     @Test
     public void builder() {
         { // empty
-            assertThatThrownBy(() ->
-                PlcReadRequest.builder().build())
-                .isInstanceOf(IllegalStateException.class);
+            try {
+                PlcReadRequest.builder().build();
+                fail("An empty builder should not be allowed to build a request");
+            } catch (IllegalStateException e) {
+                // expected
+            }
         }
         { // one item
             PlcReadRequest.builder()
@@ -75,20 +78,26 @@ public class PlcReadRequestTest {
                 .build();
         }
         { // two different item typeSafe
-            assertThatThrownBy(() ->
+            try {
                 PlcReadRequest.builder()
                     .addItem(String.class, dummyAddress)
                     .addItem(Byte.class, dummyAddress)
-                    .build(String.class))
-                .isInstanceOf(IllegalStateException.class);
+                    .build(String.class);
+                fail("Should not succeed in building with mixed types.");
+            } catch (IllegalStateException e) {
+                // expected
+            }
         }
         { // two different item typeSafe
-            assertThatThrownBy(() ->
+            try {
                 PlcReadRequest.builder()
                     .addItem(String.class, dummyAddress)
                     .addItem(Byte.class, dummyAddress)
-                    .build(Byte.class))
-                .isInstanceOf(ClassCastException.class);
+                    .build(Byte.class);
+                fail("Should not succeed in building with mismatch of types.");
+            } catch (ClassCastException e) {
+                // expected
+            }
         }
         { // two equal item typeSafe
             PlcReadRequest.builder()

@@ -18,7 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty;
 
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcRequestContainer;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.netty.NettyTestBase;
@@ -45,7 +48,8 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
@@ -99,14 +103,14 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             LinkedList<Object> out = new LinkedList<>();
             SUT.encode(null, createMockedContainer(new TypeSafePlcReadRequest(type, address)), out);
             // TODO: finish the asserts
-            assertThat(out).hasSize(1);
+            assertThat(out, hasSize(1));
         }
         // Write Request Tests
         {
             LinkedList<Object> out = new LinkedList<>();
             SUT.encode(null, createMockedContainer(new TypeSafePlcWriteRequest(type, address, fakeValueFor(type))), out);
             // TODO: finish the asserts
-            assertThat(out).hasSize(1);
+            assertThat(out, hasSize(1));
         }
     }
 
@@ -133,7 +137,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             LinkedList<Object> out = new LinkedList<>();
             SUT.decode(null, msg, out);
             // TODO: finish the asserts
-            assertThat(out).hasSize(0);
+            assertThat(out, hasSize(0));
         }
         // Write Test
         {
@@ -155,7 +159,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             LinkedList<Object> out = new LinkedList<>();
             SUT.decode(null, msg, out);
             // TODO: finish the asserts
-            assertThat(out).hasSize(0);
+            assertThat(out, hasSize(0));
         }
     }
 
@@ -204,7 +208,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
         } else if (type == String.class) {
             size = DataTransportSize.BYTE_WORD_DWORD;
-            data = new byte[]{(byte) 'S', (byte) 't', (byte) 'r', (byte) 'i' ,(byte) 'n', (byte) 'g', (byte) 0x0};
+            data = new byte[]{(byte) 'S', (byte) 't', (byte) 'r', (byte) 'i', (byte) 'n', (byte) 'g', (byte) 0x0};
         } else {
             throw new IllegalArgumentException("Type t not supported " + type);
         }

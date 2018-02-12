@@ -19,11 +19,12 @@ under the License.
 
 package org.apache.plc4x.java.netty.events;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class S7StateTests {
 
@@ -32,7 +33,7 @@ public class S7StateTests {
     public void testInitialS7ConnectionEvent() {
         S7ConnectionEvent s7event = new S7ConnectionEvent();
 
-        assertThat(s7event.getState()).isEqualTo(S7ConnectionState.INITIAL);
+        assertThat(s7event.getState(), equalTo(S7ConnectionState.INITIAL));
     }
 
     @Test
@@ -40,7 +41,7 @@ public class S7StateTests {
     public void testS7ConnectionEvent() {
         S7ConnectionEvent s7event = new S7ConnectionEvent(S7ConnectionState.SETUP_COMPLETE);
 
-        assertThat(s7event.getState()).isEqualTo(S7ConnectionState.SETUP_COMPLETE);
+        assertThat(s7event.getState(), equalTo(S7ConnectionState.SETUP_COMPLETE) );
     }
 
 }

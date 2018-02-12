@@ -37,7 +37,8 @@ import org.junit.experimental.categories.Category;
 import java.util.LinkedList;
 
 import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class S7ProtocolTest extends NettyTestBase {
@@ -67,7 +68,7 @@ public class S7ProtocolTest extends NettyTestBase {
                     DataTransportSize.BYTE_WORD_DWORD, new byte[]{0})
                 ))
             )), out);
-        assertThat(out).hasSize(1);
+        assertThat(out, hasSize(1));
     }
 
     @Test
@@ -88,7 +89,7 @@ public class S7ProtocolTest extends NettyTestBase {
         // userDataLength
         buffer.writeShort(0x0000);
         SUT.decode(null, new IsoTPMessage(mock(Tpdu.class), buffer), out);
-        assertThat(out).hasSize(1);
+        assertThat(out, hasSize(1));
     }
 
 }
