@@ -339,6 +339,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         } else if (valueType == Integer.class) {
             result = encodeInteger(values, length);
         } else if (valueType == Calendar.class) {
+            // TODO: Decide what to do here ...
             result = null;
         } else if (valueType == Float.class) {
             result = encodeFloat(values, length);

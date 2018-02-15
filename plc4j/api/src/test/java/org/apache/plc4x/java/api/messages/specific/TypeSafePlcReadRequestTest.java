@@ -18,29 +18,31 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TypeSafePlcReadRequestTest {
+public class TypeSafePlcReadRequestTest {
 
     ReadRequestItem<String> readRequestItemString;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         readRequestItemString = new ReadRequestItem<>(String.class, mock(Address.class));
     }
 
     @Test
-    void constuctor() {
+    public void constuctor() {
         new TypeSafePlcReadRequest<>(String.class);
         new TypeSafePlcReadRequest<>(String.class, mock(PlcReadRequest.class));
         PlcReadRequest request = mock(PlcReadRequest.class);
@@ -49,29 +51,29 @@ class TypeSafePlcReadRequestTest {
         new TypeSafePlcReadRequest<>(String.class, mock(Address.class));
         new TypeSafePlcReadRequest<>(String.class, mock(Address.class), 3);
         new TypeSafePlcReadRequest<>(String.class, readRequestItemString);
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            new TypeSafePlcReadRequest<>(Byte.class, request);
-        });
+        assertThatThrownBy(() ->
+            new TypeSafePlcReadRequest<>(Byte.class, request))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void addItem() {
+    public void addItem() {
         new TypeSafePlcReadRequest<>(String.class).addItem(readRequestItemString);
     }
 
     @Test
-    void getCheckedReadRequestItems() {
+    public void getCheckedReadRequestItems() {
         new TypeSafePlcReadRequest<>(String.class).getCheckedReadRequestItems();
     }
 
     @Test
-    void getRequestItem() {
+    public void getRequestItem() {
         new TypeSafePlcReadRequest<>(String.class).getRequestItem();
     }
 
     @Test
-    void getDataType() {
-        Assertions.assertEquals(String.class, new TypeSafePlcReadRequest<>(String.class).getDataType());
+    public void getDataType() {
+        assertThat(new TypeSafePlcReadRequest<>(String.class).getDataType()).isEqualTo(String.class);
     }
 
 }

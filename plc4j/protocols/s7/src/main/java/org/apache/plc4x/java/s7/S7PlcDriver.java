@@ -24,6 +24,8 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +38,7 @@ import java.util.regex.Pattern;
  */
 public class S7PlcDriver implements PlcDriver {
 
-    private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7://(?<host>.*)/(?<rack>\\d{1,4})/(?<slot>\\d{1,4})(\\?.*)?");
+    private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7://(?<host>.*)/(?<rack>\\d{1,4})/(?<slot>\\d{1,4})(?<params>\\?.*)?");
 
     @Override
     public String getProtocolCode() {
@@ -56,9 +58,17 @@ public class S7PlcDriver implements PlcDriver {
                 "Connection url doesn't match the format 's7://{host|ip}/{rack}/{slot}'");
         }
         String host = matcher.group("host");
+
         int rack = Integer.parseInt(matcher.group("rack"));
         int slot = Integer.parseInt(matcher.group("slot"));
-        return new S7PlcConnection(host, rack, slot);
+        String params = matcher.group("params").substring(1);
+
+        try {
+            InetAddress serverInetAddress = InetAddress.getByName(host);
+            return new S7PlcConnection(serverInetAddress, rack, slot, params);
+        } catch (UnknownHostException e) {
+            throw new PlcConnectionException("Error parsing address", e);
+        }
     }
 
     @Override

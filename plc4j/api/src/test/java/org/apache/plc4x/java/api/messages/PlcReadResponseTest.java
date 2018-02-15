@@ -20,7 +20,7 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,16 +28,16 @@ import java.util.List;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
-class PlcReadResponseTest {
+public class PlcReadResponseTest {
 
     @Test
-    void constuctor() {
+    public void constuctor() {
         new PlcReadResponse(mock(PlcReadRequest.class), mock(ReadResponseItem.class));
         new PlcReadResponse(mock(PlcReadRequest.class), (List) Collections.singletonList(mock(ReadResponseItem.class)));
     }
 
     @Test
-    void getValue() {
+    public void getValue() {
         new PlcReadResponse(mock(PlcReadRequest.class), (List) Collections.singletonList(mock(ReadResponseItem.class, RETURNS_DEEP_STUBS)))
             .getValue(mock(ReadRequestItem.class));
     }

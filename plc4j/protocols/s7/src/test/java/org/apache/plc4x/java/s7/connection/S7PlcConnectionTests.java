@@ -19,55 +19,70 @@ under the License.
 
 package org.apache.plc4x.java.s7.connection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
 import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.net.InetAddress;
 
-class S7PlcConnectionTests {
+public class S7PlcConnectionTests {
 
     private S7PlcConnection  s7PlcConnection;
 
-    @BeforeEach
-    void setUp() {
-        s7PlcConnection = new S7PlcConnection("localhost", 1, 2);
+    @Before
+    public void setUp() throws Exception {
+        InetAddress address = InetAddress.getByName("localhost");
+        s7PlcConnection = new S7PlcConnection(address, 1, 2, "");
     }
 
-    @AfterEach
-    void tearDown() {
+    @After
+    public void tearDown() {
         s7PlcConnection = null;
     }
 
     @Test
-    void initialState() {
-        assertTrue(s7PlcConnection.getHostName().equalsIgnoreCase("localhost"), "Hostname is incorrect");
-        assertTrue(s7PlcConnection.getRack() == 1, "Rack is incorrect");
-        assertTrue(s7PlcConnection.getSlot() == 2, "Slot is incorrect");
-        assertTrue(s7PlcConnection.getPduSize() == 1024, "Pdu size is incorrect"); // Why is this hard coded?
+    public void initialState() {
+        assertThat(s7PlcConnection.getRack()).isEqualTo(1)
+            .withFailMessage("Rack is incorrect");
+        assertThat(s7PlcConnection.getSlot()).isEqualTo(2)
+            .withFailMessage("Slot is incorrect");
+        assertThat(s7PlcConnection.getParamPduSize()).isEqualTo(TpduSize.SIZE_1024)
+            .withFailMessage("Pdu size is incorrect");
+        assertThat(s7PlcConnection.getParamMaxAmqCaller()).isEqualTo(8)
+            .withFailMessage("Max AMQ Caller size is incorrect");
+        assertThat(s7PlcConnection.getParamMaxAmqCallee()).isEqualTo(8)
+            .withFailMessage("Max AMQ Callee size is incorrect");
     }
 
     @Test
-    void emptyParseAddress() {
+    public void emptyParseAddress() {
         try {
             s7PlcConnection.parseAddress("");
         }
         catch (PlcException exception) {
-            assertTrue(exception.getMessage().startsWith("Address string doesn't match"), "Unexpected exception");
+            assertThat(exception.getMessage()).startsWith("Address string doesn't match");
         }
     }
 
     @Test
-    void parseDatablockAddress() {
+    public void parseDatablockAddress() {
         try {
-            S7DataBlockAddress address = (S7DataBlockAddress) s7PlcConnection.parseAddress("DATA_BLOCKS/20/100");
-            assertTrue(address.getDataBlockNumber() == 20, "unexpected data block");
-            assertTrue(address.getByteOffset() == 100, "unexpected byte offset");
+            S7DataBlockAddress address = (S7DataBlockAddress)
+                s7PlcConnection.parseAddress("DATA_BLOCKS/20/100");
+
+            assertThat(address.getDataBlockNumber()).isEqualTo((short) 20)
+                .withFailMessage("unexpected data block");
+            assertThat(address.getByteOffset()).isEqualTo((short) 100)
+                .withFailMessage("unexpected byte offset");
         }
         catch (PlcException exception) {
             fail("valid data block address");
@@ -75,11 +90,14 @@ class S7PlcConnectionTests {
     }
 
     @Test
-    void parseAddressAddress() {
+    public void parseAddressAddress() {
         try {
             S7Address address = (S7Address) s7PlcConnection.parseAddress("TIMERS/10");
-            assertTrue(address.getMemoryArea() == MemoryArea.TIMERS, "unexpected memory area");
-            assertTrue(address.getByteOffset() == 10, "unexpected byte offset");
+
+            assertThat(address.getMemoryArea()).isEqualTo(MemoryArea.TIMERS)
+                .withFailMessage("unexpected memory area");
+            assertThat(address.getByteOffset()).isEqualTo((short) 10)
+                .withFailMessage("unexpected byte offset");
         }
         catch (PlcException exception) {
             fail("valid timer block address");
@@ -87,17 +105,20 @@ class S7PlcConnectionTests {
     }
 
     @Test
-    void parseAddressBitAddress() {
+    public void parseAddressBitAddress() {
         try {
             S7BitAddress address = (S7BitAddress) s7PlcConnection.parseAddress("TIMERS/10/4");
-            assertTrue(address.getMemoryArea() == MemoryArea.TIMERS, "unexpected memory area");
-            assertTrue(address.getByteOffset() == 10, "unexpected byte offset");
-            assertTrue(address.getBitOffset() == 4, "unexpected but offset");
+
+            assertThat(address.getMemoryArea()).isEqualTo(MemoryArea.TIMERS)
+                .withFailMessage("unexpected memory area");
+            assertThat(address.getByteOffset()).isEqualTo((short) 10)
+                .withFailMessage("unexpected byte offset");
+            assertThat(address.getBitOffset()).isEqualTo((byte) 4)
+                .withFailMessage("unexpected but offset");
         }
         catch (PlcException exception) {
             fail("valid timer block bit address");
         }
     }
 
-    // TODO more tests for connect, close, read and write
 }

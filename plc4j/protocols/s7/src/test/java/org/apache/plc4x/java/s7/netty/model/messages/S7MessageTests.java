@@ -19,6 +19,8 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.messages;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.plc4x.java.s7.netty.model.params.CpuServicesParameter;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
@@ -28,18 +30,17 @@ import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class S7MessageTests {
+public class S7MessageTests {
 
     @Test
-    @Tag("fast")
-    void setupCommunictionsRequestMessage() {
+    @Category(FastTests.class)
+    public void setupCommunictionsRequestMessage() {
         short tpduReference = 1;
         short maxAmqCaller = 4;
         short maxAmqCallee = 8;
@@ -47,13 +48,13 @@ class S7MessageTests {
 
         SetupCommunicationRequestMessage setupMessage = new SetupCommunicationRequestMessage(tpduReference, maxAmqCaller, maxAmqCallee, pduLength);
 
-        assertTrue(setupMessage.getTpduReference() == tpduReference, "Unexpected tpdu value");
-        assertTrue(setupMessage.getMessageType() == MessageType.JOB, "Unexpected message type");
+        assertThat(setupMessage.getTpduReference()).isEqualTo(tpduReference).withFailMessage("Unexpected tpdu value");
+        assertThat(setupMessage.getMessageType()).isEqualTo(MessageType.JOB).withFailMessage("Unexpected message type");
     }
 
     @Test
-    @Tag("fast")
-    void s7RequestMessage() {
+    @Category(FastTests.class)
+    public void s7RequestMessage() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
         ArrayList<S7Parameter> s7Parameters = null;
@@ -61,15 +62,15 @@ class S7MessageTests {
 
         S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads);
 
-        assertTrue(message.getTpduReference() == tpduReference, "Unexpected tpdu value");
-        assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
-        assertTrue(message.getPayloads() == null, "Unexpected payloads");
-        assertTrue(message.getParameters() == null, "Unexpected parameters");
+        assertThat(message.getTpduReference()).isEqualTo(tpduReference).withFailMessage("Unexpected tpdu value");
+        assertThat(message.getMessageType()).isEqualTo(MessageType.USER_DATA).withFailMessage("Unexpected message type");
+        assertThat(message.getPayloads()).isNull();
+        assertThat(message.getParameters()).isNull();
     }
 
     @Test
-    @Tag("fast")
-    void s7ResponseMessage() {
+    @Category(FastTests.class)
+    public void s7ResponseMessage() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
         ArrayList<S7Parameter> s7Parameters = null;
@@ -79,17 +80,17 @@ class S7MessageTests {
 
         S7ResponseMessage message = new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode);
 
-        assertTrue(message.getTpduReference() == tpduReference, "Unexpected tpdu value");
-        assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
-        assertTrue(message.getErrorClass() == 0x1, "Unexpected error class");
-        assertTrue(message.getErrorCode() == 0x23, "Unexpected error code");
-        assertTrue(message.getPayloads() == null, "Unexpected payloads");
-        assertTrue(message.getParameters() == null, "Unexpected parameters");
+        assertThat(message.getTpduReference()).isEqualTo(tpduReference).withFailMessage("Unexpected tpdu value");
+        assertThat(message.getMessageType()).isEqualTo(MessageType.USER_DATA).withFailMessage("Unexpected message type");
+        assertThat(message.getErrorClass()).isEqualTo((byte) 0x1).withFailMessage("Unexpected error class");
+        assertThat(message.getErrorCode()).isEqualTo((byte) 0x23).withFailMessage("Unexpected error code");
+        assertThat(message.getPayloads()).isNull();
+        assertThat(message.getParameters()).isNull();
     }
 
     @Test
-    @Tag("fast")
-    void s7MessageParameters() {
+    @Category(FastTests.class)
+    public void s7MessageParameters() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
         ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
@@ -112,18 +113,18 @@ class S7MessageTests {
 
         S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads);
 
-        assertTrue(message.getTpduReference() == tpduReference, "Unexpected tpdu value");
-        assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
-        assertTrue(message.getParameters().size() == 1, "Unexpected number of parameters");
-        assertTrue(message.getParameters().containsAll(s7Parameters), "Unexpected parameters");
-        assertTrue(message.getParameter(VarParameter.class).get().equals(varParameter), "Parameter missing");
-        assertTrue(!message.getParameter(CpuServicesParameter.class).isPresent(), "Contains unexpected parameter");
-        assertTrue(message.getPayloads().size() == 0, "Unexpected number of payloads");
+        assertThat(message.getTpduReference()).isEqualTo(tpduReference).withFailMessage("Unexpected tpdu value");
+        assertThat(message.getMessageType()).isEqualTo(MessageType.USER_DATA).withFailMessage("Unexpected message type");
+        assertThat(message.getParameters()).hasSize(1).withFailMessage("Unexpected number of parameters");
+        assertThat(message.getParameters()).containsAll(s7Parameters).withFailMessage("Unexpected parameters");
+        assertThat(message.getParameter(VarParameter.class).get()).isEqualTo(varParameter).withFailMessage("Parameter missing");
+        assertThat(message.getParameter(CpuServicesParameter.class).isPresent()).isFalse().withFailMessage("Contains unexpected parameter");
+        assertThat(message.getPayloads()).isEmpty();
     }
 
     @Test
-    @Tag("fast")
-    void s7MessagePayload() {
+    @Category(FastTests.class)
+    public void s7MessagePayload() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
         ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
@@ -139,18 +140,18 @@ class S7MessageTests {
 
         S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads);
 
-        assertTrue(message.getTpduReference() == tpduReference, "Unexpected tpdu value");
-        assertTrue(message.getMessageType() == MessageType.USER_DATA, "Unexpected message type");
-        assertTrue(message.getPayloads().size() == 1, "Unexpected number of payloads");
-        assertTrue(message.getPayloads().containsAll(s7Payloads), "Unexpected payloads");
-        assertTrue(message.getPayload(VarPayload.class).get().equals(varPayload), "Payload missing");
-        assertTrue(!message.getPayload(VarParameter.class).isPresent(), "Contains unexpected payload"); // No other parameter classes
-        assertTrue(message.getParameters().size() == 0, "Unexpected number of parameters");
+        assertThat(message.getTpduReference()).isEqualTo(tpduReference).withFailMessage("Unexpected tpdu value");
+        assertThat(message.getMessageType()).isEqualTo(MessageType.USER_DATA).withFailMessage("Unexpected message type");
+        assertThat(message.getPayloads()).hasSize(1).withFailMessage("Unexpected number of payloads");
+        assertThat(message.getPayloads()).containsAll(s7Payloads).withFailMessage("Unexpected payloads");
+        assertThat(message.getPayload(VarPayload.class).get()).isEqualTo(varPayload).withFailMessage("Payload missing");
+        assertThat(message.getPayload(VarParameter.class).isPresent()).isFalse().withFailMessage("Contains unexpected payload"); // No other parameter classes
+        assertThat(message.getParameters()).isEmpty();
     }
 
     @Test
-    @Tag("fast")
-    void s7AnyVarParameterItem() {
+    @Category(FastTests.class)
+    public void s7AnyVarParameterItem() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
         ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
@@ -167,14 +168,14 @@ class S7MessageTests {
 
         S7AnyVarParameterItem parameterItem = new S7AnyVarParameterItem(specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset);
 
-        assertTrue(parameterItem.getSpecificationType() == specificationType, "Unexpected specification type");
-        assertTrue(parameterItem.getMemoryArea() == MemoryArea.DATA_BLOCKS, "Unexpected memory area");
-        assertTrue(parameterItem.getTransportSize() == transportSize, "Unexpected transport size");
-        assertTrue(parameterItem.getNumElements() == numElements, "Unexpected number elements");
-        assertTrue(parameterItem.getDataBlockNumber() == dataBlock, "Unexpected data block");
-        assertTrue(parameterItem.getByteOffset() == byteOffset, "Unexpected byte offset");
-        assertTrue(parameterItem.getBitOffset() == bitOffset, "Unexpected bit offset");
-        assertTrue(parameterItem.getAddressingMode() == VariableAddressingMode.S7ANY, "Unexpected adressing mode");
+        assertThat(parameterItem.getSpecificationType()).isEqualTo(specificationType).withFailMessage("Unexpected specification type");
+        assertThat(parameterItem.getMemoryArea()).isEqualTo(MemoryArea.DATA_BLOCKS).withFailMessage("Unexpected memory area");
+        assertThat(parameterItem.getTransportSize()).isEqualTo(transportSize).withFailMessage("Unexpected transport size");
+        assertThat(parameterItem.getNumElements()).isEqualTo(numElements).withFailMessage("Unexpected number elements");
+        assertThat(parameterItem.getDataBlockNumber()).isEqualTo(dataBlock).withFailMessage("Unexpected data block");
+        assertThat(parameterItem.getByteOffset()).isEqualTo(byteOffset).withFailMessage("Unexpected byte offset");
+        assertThat(parameterItem.getBitOffset()).isEqualTo(bitOffset).withFailMessage("Unexpected bit offset");
+        assertThat(parameterItem.getAddressingMode()).isEqualTo(VariableAddressingMode.S7ANY).withFailMessage("Unexpected adressing mode");
     }
 
 }

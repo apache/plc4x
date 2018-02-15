@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class S7PlcReaderSample {
 
@@ -39,60 +40,50 @@ public class S7PlcReaderSample {
      * @param args ignored.
      * @throws Exception something went wrong.
      */
-    public static void main(String[] args) throws Exception {
-        // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
-        logger.info("Connecting");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
-            logger.info("Connected");
+    @SuppressWarnings("unchecked")
+public static void main(String[] args) throws Exception {
+  try (PlcConnection plcConnection =
+    new PlcDriverManager().getConnection(args[0])) {
 
-            Optional<PlcReader> reader = plcConnection.getReader();
-            // Check if this connection support reading of data.
-            if (reader.isPresent()) {
-                PlcReader plcReader = reader.get();
+    Optional<PlcReader> reader = plcConnection.getReader();
 
-                // Prepare some address object for accessing fields in the PLC.
-                // ({memory-area}/{byte-offset}[/{bit-offset}]
-                // "bit-offset is only specified if the requested type is "bit"
-                // NOTICE: This format is probably only valid when using a S7 connection.
-                Address inputs = plcConnection.parseAddress("INPUTS/0");
-                Address outputs = plcConnection.parseAddress("OUTPUTS/0");
+    // Check if this connection support reading of data.
+    if (reader.isPresent()) {
+      PlcReader plcReader = reader.get();
 
-                //////////////////////////////////////////////////////////
-                // Read synchronously ...
-                // NOTICE: the ".get()" immediately lets this thread pause till
-                // the response is processed and available.
-                TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(new TypeSafePlcReadRequest<>(Byte.class, inputs)).get();
-                System.out.println("Inputs: " + plcReadResponse.getResponseItem()
-                    .orElseThrow(() -> new IllegalStateException("No response available"))
-                    .getValues().get(0));
+      // Parse an address string.
+      Address inputs = plcConnection.parseAddress(args[1]);
 
-                //////////////////////////////////////////////////////////
-                // Read asynchronously ...
-                /*Calendar start = Calendar.getInstance();
-                CompletableFuture<PlcReadResponse<Byte>> asyncResponse = plcReader.read(
-                    new BytePlcReadRequest(outputs));
+      //////////////////////////////////////////////////////////
+      // Read synchronously ...
+      // NOTICE: the ".get()" immediately lets this thread pause till
+      // the response is processed and available.
+      TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(
+        new TypeSafePlcReadRequest<>(Byte.class, inputs)).get();
 
-                asyncResponse.thenAccept(bytePlcReadResponse -> {
-                    Calendar end = Calendar.getInstance();
-                    Byte dataAsync = bytePlcReadResponse.getValue();
-                    System.out.println("Outputs: " + dataAsync + " (in " + (end.getTimeInMillis() - start.getTimeInMillis()) + "ms)");
-                });
+      System.out.println("Inputs: " + plcReadResponse.getResponseItem()
+        .orElseThrow(() -> new IllegalStateException("No response available"))
+        .getValues().get(0));
 
-                // Simulate doing something else ...
-                while (true) {
-                    Thread.sleep(1);
-                    if (asyncResponse.isDone()) {
-                        break;
-                    }
-                }*/
-            }
-        }
-        // Catch any exception or the application won't be able to finish if something goes wrong.
-        catch (Exception e) {
-            logger.error("S7 PLC reader sample", e);
-        }
-        // The application would cleanly terminate after several seconds ... this just speeds things up.
-        System.exit(0);
+      //////////////////////////////////////////////////////////
+      // Read asynchronously ...
+      CompletableFuture<TypeSafePlcReadResponse<Byte>> asyncResponse = plcReader.read(
+        new TypeSafePlcReadRequest(Byte.class, inputs));
+
+      asyncResponse.thenAccept(bytePlcReadResponse -> {
+        Byte dataAsync = bytePlcReadResponse.getResponseItem()
+          .orElseThrow(() -> new IllegalStateException("No response available"))
+          .getValues().get(0);
+        System.out.println("Inputs: " + dataAsync);
+      });
+
+      // do something else ...
     }
+  }
+  // Catch any exception or the application won't be able to finish if something goes wrong.
+  catch (Exception e) {
+    logger.error("S7 PLC reader sample", e);
+  }
+}
 
 }

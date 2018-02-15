@@ -99,6 +99,10 @@ public class PlcConnectionAdapter implements AutoCloseable {
         }
     }
 
+    public Address parseAddress(String addressString) throws PlcException {
+        return getConnection().parseAddress(addressString);
+    }
+
     <T> Supplier<T> newSupplier(Class<T> datatype, String addressStr) {
         PlcConnectionAdapter.checkDatatype(datatype);
         return new Supplier<T>() {

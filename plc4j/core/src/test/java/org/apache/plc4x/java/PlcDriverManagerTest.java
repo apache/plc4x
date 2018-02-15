@@ -22,9 +22,10 @@ import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthenticatio
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.mock.MockConnection;
+import org.apache.plc4x.test.FastTests;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -33,14 +34,14 @@ import java.net.URLClassLoader;
 
 import static org.assertj.core.api.Assertions.*;
 
-class PlcDriverManagerTest {
+public class PlcDriverManagerTest {
 
     /**
      * Tries to get the mock plc driver which is part of this testsuite.
      */
     @Test
-    @Tag("fast")
-    void getExistingDriverTest() throws PlcException {
+    @Category(FastTests.class)
+    public void getExistingDriverTest() throws PlcException {
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(mockConnection.getAuthentication())
@@ -59,8 +60,8 @@ class PlcDriverManagerTest {
      * Tries to get the mock plc driver with authentication which is part of this testsuite.
      */
     @Test
-    @Tag("fast")
-    void getExistingDriverWithAuthenticationTest() throws PlcException {
+    @Category(FastTests.class)
+    public void getExistingDriverWithAuthenticationTest() throws PlcException {
         PlcUsernamePasswordAuthentication authentication =
             new PlcUsernamePasswordAuthentication("user", "pass");
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url", authentication);
@@ -85,8 +86,8 @@ class PlcDriverManagerTest {
      * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
      */
     @Test
-    @Tag("fast")
-    void getNotExistingDriverTest() throws PlcException {
+    @Category(FastTests.class)
+    public void getNotExistingDriverTest() {
         assertThatThrownBy(() -> new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url"))
             .as("check rejection of invalid protocol")
             .isInstanceOf(PlcConnectionException.class);
@@ -96,8 +97,8 @@ class PlcDriverManagerTest {
      * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
      */
     @Test
-    @Tag("fast")
-    void getInvalidUriTest() throws PlcException {
+    @Category(FastTests.class)
+    public void getInvalidUriTest() {
         assertThatThrownBy(() -> new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog"))
             .as("check rejection of invalid uri")
             .isInstanceOf(PlcConnectionException.class);
@@ -109,8 +110,8 @@ class PlcDriverManagerTest {
      * an error.
      */
     @Test
-    @Tag("fast")
-    void getDuplicateDriver() throws PlcException, MalformedURLException {
+    @Category(FastTests.class)
+    public void getDuplicateDriver() throws MalformedURLException {
         // Save and replace the context classloader as we need to force the ServiceLoader to
         // use a different service file.
         ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();

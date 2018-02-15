@@ -19,148 +19,200 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.types;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-class IsotpTypeTests {
+public class IsotpTypeTests {
 
     @Test
-    @Tag("fast")
-    void deviceGroup() {
+    @Category(FastTests.class)
+    public void deviceGroup() {
         DeviceGroup deviceGroup;
 
         deviceGroup = DeviceGroup.PG_OR_PC;
-        assertTrue(deviceGroup.getCode() == (byte)1, "code is not 1");
+        assertThat(deviceGroup.getCode()).isEqualTo((byte)1);
 
         deviceGroup = DeviceGroup.OS;
-        assertTrue(deviceGroup.getCode() == (byte)2, "code is not 2");
+        assertThat(deviceGroup.getCode()).isEqualTo((byte)2);
 
         deviceGroup = DeviceGroup.OTHERS;
-        assertTrue(deviceGroup.getCode() == (byte)3, "code is not 3");
+        assertThat(deviceGroup.getCode()).isEqualTo((byte)3);
     }
 
     @Test
-    @Tag("fast")
-    void deviceGroupUnknown() {
+    @Category(FastTests.class)
+    public void deviceGroupUnknown() {
         DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0x40);
 
-        assertNull(deviceGroup, "expected device group to be null");
+        assertThat(deviceGroup).isNull();
     }
 
 
     @Test
-    @Tag("fast")
-    void disconnectReason() {
+    @Category(FastTests.class)
+    public void disconnectReason() {
         DisconnectReason disconnectReason = DisconnectReason.ADDRESS_UNKNOWN;
 
-        assertTrue(DisconnectReason.valueOf((byte)3) == DisconnectReason.ADDRESS_UNKNOWN, "3 incorrectly mapped");
-        assertTrue(disconnectReason.getCode() == (byte)3, "code is not 3");
+        assertThat(DisconnectReason.valueOf((byte)3)).isEqualTo(DisconnectReason.ADDRESS_UNKNOWN).withFailMessage("3 incorrectly mapped");
+        assertThat(disconnectReason.getCode()).isEqualTo((byte)3);
     }
 
     @Test
-    @Tag("fast")
-    void diosconectReasonUnknown() {
+    @Category(FastTests.class)
+    public void diosconectReasonUnknown() {
         DisconnectReason disconnectReason = DisconnectReason.valueOf((byte)4);
 
-        assertNull(disconnectReason, "expected disconnect reason to be null");
+        assertThat(disconnectReason).isNull();
     }
 
     @Test
-    @Tag("fast")
-    void parameterCode() {
+    @Category(FastTests.class)
+    public void parameterCode() {
         ParameterCode parameterCode = ParameterCode.CALLING_TSAP;
 
-        assertTrue(ParameterCode.valueOf((byte)0xC1) == ParameterCode.CALLING_TSAP, "0xC1 incorrectly mapped");
-        assertTrue(parameterCode.getCode() == (byte)0xC1, "code is not 0xC1");
+        assertThat(ParameterCode.valueOf((byte)0xC1)).isEqualTo(ParameterCode.CALLING_TSAP);
+        assertThat(parameterCode.getCode()).isEqualTo((byte)0xC1);
     }
 
     @Test
-    @Tag("fast")
-    void parameterCodeUnknown() {
+    @Category(FastTests.class)
+    public void parameterCodeUnknown() {
         ParameterCode parameterCode = ParameterCode.valueOf((byte)0x90);
 
-        assertNull(parameterCode, "expected parameter code to be null");
+        assertThat(parameterCode).isNull();
     }
 
     @Test
-    @Tag("fast")
-    void protocolClass() {
+    @Category(FastTests.class)
+    public void protocolClass() {
         ProtocolClass protocolClass;
 
         protocolClass = ProtocolClass.CLASS_1;
-        assertTrue(protocolClass.getCode() == (byte)0x10, "code is not 0x10");
+        assertThat(protocolClass.getCode()).isEqualTo((byte)0x10);
 
         protocolClass = ProtocolClass.CLASS_2;
-        assertTrue(protocolClass.getCode() == (byte)0x20, "code is not 0x20");
+        assertThat(protocolClass.getCode()).isEqualTo((byte)0x20);
 
         protocolClass = ProtocolClass.CLASS_3;
-        assertTrue(protocolClass.getCode() == (byte)0x30, "code is not 0x30");
+        assertThat(protocolClass.getCode()).isEqualTo((byte)0x30);
 
         protocolClass = ProtocolClass.CLASS_4;
-        assertTrue(protocolClass.getCode() == (byte)0x40, "code is not 0x40");
+        assertThat(protocolClass.getCode()).isEqualTo((byte)0x40);
     }
 
     @Test
-    @Tag("fast")
-    void protocolClassUnknown() {
+    @Category(FastTests.class)
+    public void protocolClassUnknown() {
         ProtocolClass protocolClass = ProtocolClass.valueOf((byte)0x50);
 
-        assertNull(protocolClass, "expected protocol class to be null");
+        assertThat(protocolClass).isNull();
     }
 
     @Test
-    @Tag("fast")
-    void rejectCause() {
+    @Category(FastTests.class)
+    public void rejectCause() {
         RejectCause rejectCause = RejectCause.INVALID_PARAMETER_TYPE;
 
-        assertTrue(RejectCause.valueOf((byte)0x03) == RejectCause.INVALID_PARAMETER_TYPE, "0x03 incorrectly mapped");
-        assertTrue(rejectCause.getCode() == (byte)0x03, "code is not 0x03");
+        assertThat(RejectCause.valueOf((byte)0x03)).isEqualTo(RejectCause.INVALID_PARAMETER_TYPE);
+        assertThat(rejectCause.getCode()).isEqualTo((byte)0x03);
     }
 
     @Test
-    @Tag("fast")
-    void rejectClauseUnknown() {
+    @Category(FastTests.class)
+    public void rejectClauseUnknown() {
         RejectCause rejectCause = RejectCause.valueOf((byte)0x90);
 
-        assertNull(rejectCause, "expected reject cause to be null");
+        assertThat(rejectCause).isNull();
     }
 
     @Test
-    @Tag("fast")
-    void tpduCode() {
+    @Category(FastTests.class)
+    public void tpduCode() {
         TpduCode tpduCode = TpduCode.DATA;
 
-        assertTrue(TpduCode.valueOf((byte)0xF0) == TpduCode.DATA, "0xF0 incorrectly mapped");
-        assertTrue(tpduCode.getCode() == (byte)0xF0, "code is not 0xF0");
+        assertThat(TpduCode.valueOf((byte)0xF0)).isEqualTo(TpduCode.DATA);
+        assertThat(tpduCode.getCode()).isEqualTo((byte)0xF0);
     }
 
     @Test
-    @Tag("fast")
-    void tpduCodeUnknown() {
+    @Category(FastTests.class)
+    public void tpduCodeUnknown() {
         TpduCode tpduCode = TpduCode.valueOf((byte)0x01);
 
-        assertTrue(TpduCode.valueOf((byte)0xFF) == TpduCode.TPDU_UNKNOWN, "0xFF incorrectly mapped");
-        assertTrue(tpduCode.getCode() == (byte)0xFF, "code is not 0xFF");
+        assertThat(TpduCode.valueOf((byte)0xFF)).isEqualTo(TpduCode.TPDU_UNKNOWN);
+        assertThat(tpduCode.getCode()).isEqualTo((byte)0xFF);
     }
     
     @Test
-    @Tag("fast")
-    void typduSize() {
+    @Category(FastTests.class)
+    public void typduSize() {
         TpduSize tpduSize = TpduSize.SIZE_128;
 
-        assertTrue(TpduSize.valueOf((byte)0x07) == TpduSize.SIZE_128, "0x07 incorrectly mapped");
-        assertTrue(tpduSize.getCode() == (byte)0x07, "code is not 0x07");
+        assertThat(TpduSize.valueOf((byte)0x07)).isEqualTo(TpduSize.SIZE_128);
+        assertThat(tpduSize.getCode()).isEqualTo((byte)0x07);
+        assertThat(tpduSize.getValue()).isEqualTo(128);
     }
 
     @Test
-    @Tag("fast")
-    void tpduSizeUnknown() {
+    @Category(FastTests.class)
+    public void tpduSizeUnknown() {
         TpduSize tpduSize = TpduSize.valueOf((byte)0x06);
 
-        assertNull(tpduSize, "expected tpdu size to be null");
+        assertThat(tpduSize).isNull();
     }
 
+    /**
+     * If we are requesting exactly the size of one of the iso tp
+     * pdu sizes, then exactly that box should be returned.
+     */
+    @Test
+    @Category(FastTests.class)
+    public void tpduValueForGivenExactFit() {
+        TpduSize tpduSize = TpduSize.valueForGivenSize(256);
+
+        assertThat(tpduSize).isEqualTo(TpduSize.SIZE_256);
+    }
+
+    /**
+     * In this case we have a given value that is in-between the boundaries of
+     * a pdu box, the method should return the next larger box.
+     */
+    @Test
+    @Category(FastTests.class)
+    public void tpduValueForGivenIntermediateSize() {
+        TpduSize tpduSize = TpduSize.valueForGivenSize(222);
+
+        assertThat(tpduSize).isEqualTo(TpduSize.SIZE_256);
+        assertThat(tpduSize.getValue()).isNotEqualTo(222);
+    }
+
+    /**
+     * This test should cause an exception as the tpdu size has to be greater
+     * than 0 in any case.
+     */
+    @Test
+    @Category(FastTests.class)
+    public void tpduValueForGivenTooSmallSize() {
+        assertThatThrownBy(() ->
+            TpduSize.valueForGivenSize(-1))
+            .isInstanceOf(IllegalArgumentException.class);
+
+    }
+
+    /**
+     * In this test the tpdu size is greater than the maximum defined by the iso tp
+     * protocol spec, so it is automatically downgraded to the maximum valid value.
+     */
+    @Test
+    @Category(FastTests.class)
+    public void tpduValueForGivenTooGreatSize() {
+        TpduSize tpduSize = TpduSize.valueForGivenSize(10000);
+
+        assertThat(tpduSize).isEqualTo(TpduSize.SIZE_8192);
+    }
 
 }

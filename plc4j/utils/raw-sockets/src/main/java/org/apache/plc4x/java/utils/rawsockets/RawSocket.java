@@ -102,9 +102,8 @@ public class RawSocket {
     }
 
     public void write(byte[] rawData) throws RawSocketException {
-        PcapHandle sendHandle = null;
-        try {
-            sendHandle = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
+        try(PcapHandle sendHandle =
+                nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT)) {
             UnknownPacket.Builder packetBuilder = new UnknownPacket.Builder();
             packetBuilder.rawData(rawData);
 
@@ -139,10 +138,6 @@ public class RawSocket {
             sendHandle.sendPacket(p);
         } catch (PcapNativeException | NotOpenException e) {
             throw new RawSocketException("Error sending packet.", e);
-        } finally {
-            if((sendHandle != null) && sendHandle.isOpen()) {
-                sendHandle.close();
-            }
         }
     }
 
@@ -164,11 +159,10 @@ public class RawSocket {
     }
 
     protected MacAddress lookupMacAddress(InetAddress remoteIpAddress) throws RawSocketException {
-        try {
-            PcapHandle receiveHandle
-                = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
-            PcapHandle sendHandle
-                = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
+        try (PcapHandle receiveHandle
+                 = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
+             PcapHandle sendHandle
+                 = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT)){
 
             // Setup the filter to accept only the arp packets sent back to the current
             // host from the address of the remote host we wanted to get the mac address
@@ -228,16 +222,6 @@ public class RawSocket {
             }
         } catch (PcapNativeException | InterruptedException | ExecutionException | NotOpenException e) {
             throw new RawSocketException("Error looking up mac address.", e);
-        } finally {
-            /*if (receiveHandle.isOpen()) {
-                receiveHandle.close();
-            }
-            if (sendHandle.isOpen()) {
-                sendHandle.close();
-            }
-            if (!pool.isShutdown()) {
-                pool.shutdownNow();
-            }*/
         }
     }
 

@@ -36,6 +36,7 @@
 
   <modules>
     <module>ads</module>
+    <module>driver-base</module>
     <module>s7</module>
   </modules>
 

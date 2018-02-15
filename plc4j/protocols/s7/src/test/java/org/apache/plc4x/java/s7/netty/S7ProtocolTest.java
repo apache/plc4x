@@ -29,9 +29,10 @@ import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.LinkedList;
 
@@ -43,13 +44,13 @@ public class S7ProtocolTest extends NettyTestBase {
 
     private S7Protocol SUT;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         SUT = new S7Protocol((short) 1, (short) 1, (short) 1);
     }
 
     @Test
-    @Tag("fast")
+    @Category(FastTests.class)
     public void encode() throws Exception {
         //TODO: finish me
         LinkedList<Object> out = new LinkedList<>();
@@ -70,7 +71,7 @@ public class S7ProtocolTest extends NettyTestBase {
     }
 
     @Test
-    @Tag("fast")
+    @Category(FastTests.class)
     public void decode() throws Exception {
         //TODO: finish me
         LinkedList<Object> out = new LinkedList<>();

@@ -20,13 +20,12 @@ package org.apache.plc4x.java.examples.dummydriver.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcRequestContainer;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,16 +39,25 @@ public class DummyProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestCont
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer in, List<Object> out) throws Exception {
         PlcRequest request = in.getRequest();
         if (request instanceof PlcReadRequest) {
-            encodeReadRequest(in, out);
-        } else if (request instanceof PlcWriteRequest) {
-            encodeWriteRequest(in, out);
+
+            // Simple ICMP (Ping packet)
+            byte[] rawData = new byte[] {
+                // Type (ICMP Ping Request) & Code (just 0)
+                (byte) 0x08, (byte) 0x00,
+                // Checksum
+                (byte) 0xe3, (byte) 0xe5,
+                // Identifier
+                (byte) 0x00, (byte) 0x01,
+                // Sequence Number
+                (byte) 0x00, (byte) 0x00,
+                // Payload (Just random data that was used to fit to the checksum)
+                (byte) 0x00, (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, (byte) 0x08, (byte) 0x09};
+
+            ByteBuf buf = Unpooled.buffer();
+            buf.writeBytes(rawData);
+
+            out.add(buf);
         }
-    }
-
-    private void encodeWriteRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
-    }
-
-    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
     }
 
     @Override

@@ -33,8 +33,8 @@ node('ubuntu') {
     // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
     def mavenGoal = "install"
     def mavenLocalRepo = ""
-    if(env.BRANCH_NAME == 'develop') {
-        mavenGoal = "deploy"
+    if(env.BRANCH_NAME == 'master') {
+        mavenGoal = "deploy sonar:sonar"
     } else {
         mavenLocalRepo = "-Dmaven.repo.local=.repository"
     }
@@ -52,7 +52,7 @@ node('ubuntu') {
 
         stage ('Build') {
             echo 'Building'
-            sh "${mvnHome}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} sonar:sonar site:site"
+            sh "${mvnHome}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} site:site"
         }
 
         stage ('Stage Site') {

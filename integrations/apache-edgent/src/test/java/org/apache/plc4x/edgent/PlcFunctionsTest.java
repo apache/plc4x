@@ -25,8 +25,9 @@ import org.apache.plc4x.edgent.mock.MockAddress;
 import org.apache.plc4x.edgent.mock.MockConnection;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.google.gson.JsonObject;
 
@@ -51,7 +52,7 @@ public class PlcFunctionsTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  @Tag("fast")
+  @Category(FastTests.class)
   public void testSupplier() throws Exception {
     String addressStr = "MyReadWriteAddress/0";
     MockAddress address = new MockAddress(addressStr);
@@ -86,7 +87,7 @@ public class PlcFunctionsTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  @Tag("fast")
+  @Category(FastTests.class)
   public void testNewConsumer1() throws Exception {
     String addressStr = "MyReadWriteAddress/0";
     MockAddress address = new MockAddress(addressStr);
@@ -120,7 +121,7 @@ public class PlcFunctionsTest {
    * test PlcConnectionAdapter.newConsumer(addressFn, valueFn)
    */
   @Test
-  @Tag("fast")
+  @Category(FastTests.class)
   public void testNewConsumer2() throws Exception {
     String addressStr = "MyReadWriteAddress/0";
     MockAddress address = new MockAddress(addressStr);

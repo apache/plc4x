@@ -37,6 +37,7 @@
 
   <modules>
     <module>raw-sockets</module>
+    <module>test-utils</module>
     <module>wireshark-utils</module>
   </modules>
 

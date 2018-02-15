@@ -19,35 +19,36 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.test.FastTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class S7PayloadTests {
+public class S7PayloadTests {
 
     @Test
-    @Tag("fast")
-    void varPayloadItem() {
+    @Category(FastTests.class)
+    public void varPayloadItem() {
         DataTransportErrorCode returnCode = DataTransportErrorCode.NOT_FOUND;
         DataTransportSize dataTransportSize = DataTransportSize.INTEGER;
         byte[] data = {(byte)0xFF};
 
         VarPayloadItem  varPayloadItem = new VarPayloadItem(returnCode, dataTransportSize, data);
-        assertTrue(varPayloadItem.getReturnCode() == DataTransportErrorCode.NOT_FOUND, "Unexpected data transport error code");
-        assertTrue(varPayloadItem.getDataTransportSize() == DataTransportSize.INTEGER, "Unexpected data transport size");
-        assertTrue(varPayloadItem.getData()[0] == (byte) 0xFF, "Unexpected user data");
+        assertThat(varPayloadItem.getReturnCode()).isEqualTo(DataTransportErrorCode.NOT_FOUND).withFailMessage("Unexpected data transport error code");
+        assertThat(varPayloadItem.getDataTransportSize()).isEqualTo(DataTransportSize.INTEGER).withFailMessage("Unexpected data transport size");
+        assertThat(varPayloadItem.getData()[0]).isEqualTo((byte) 0xFF).withFailMessage("Unexpected user data");
     }
 
     @Test
-    @Tag("fast")
-    void varPayload() {
+    @Category(FastTests.class)
+    public void varPayload() {
         ParameterType parameterType = ParameterType.DOWNLOAD_ENDED;
         ArrayList<VarPayloadItem> payloadItems = new ArrayList<>();
         byte[] data = {(byte)0xFF};
@@ -55,8 +56,8 @@ class S7PayloadTests {
         payloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BIT, data));
 
         VarPayload  varPayload = new VarPayload(parameterType, payloadItems);
-        assertTrue(varPayload.getType() == ParameterType.DOWNLOAD_ENDED, "Unexpected parameter type");
-        assertTrue(varPayload.getPayloadItems().containsAll(payloadItems) , "Unexpected pay load items");
+        assertThat(varPayload.getType()).isEqualTo(ParameterType.DOWNLOAD_ENDED).withFailMessage("Unexpected parameter type");
+        assertThat(varPayload.getPayloadItems()).containsAll(payloadItems).withFailMessage("Unexpected pay load items");
     }
 
 }

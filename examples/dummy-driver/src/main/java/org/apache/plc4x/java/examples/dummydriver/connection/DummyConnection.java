@@ -44,9 +44,11 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
 
     private EventLoopGroup workerGroup;
     private Channel channel;
+    private boolean connected;
 
     public DummyConnection(String hostName) {
         this.hostName = hostName;
+        this.connected = false;
     }
 
     public String getHostName() {
@@ -83,6 +85,8 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
             channel = f.channel();
 
             sessionSetupCompleteFuture.get();
+
+            connected = true;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException(e);
@@ -101,6 +105,13 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
         if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
+
+        connected = false;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return true;
     }
 
     @Override

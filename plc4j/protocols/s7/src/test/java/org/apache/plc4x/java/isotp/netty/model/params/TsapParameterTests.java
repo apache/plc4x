@@ -19,46 +19,46 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.params;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.netty.model.types.ParameterCode;
-import org.junit.jupiter.api.*;
+import org.apache.plc4x.test.FastTests;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import static org.junit.jupiter.api.Assertions.*;
+public class TsapParameterTests {
 
-class TsapParameterTests {
     private TsapParameter tsapParameter;
 
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
+    @After
+    public void tearDown() {
         tsapParameter = null;
     }
 
     @Test
-    @Tag("fast")
-    void calledPartameter() {
+    @Category(FastTests.class)
+    public void calledPartameter() {
         DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0);
         tsapParameter = new CalledTsapParameter(deviceGroup, (byte)1, (byte)4);
 
-        assertTrue(tsapParameter.getDeviceGroup() == DeviceGroup.valueOf((byte)0), "Device group incorrect");
-        assertTrue(tsapParameter.getRackNumber() == (byte)1, "Rack number not correct");
-        assertTrue(tsapParameter.getSlotNumber() == (byte)4, "Slot number not coorect");
-        assertTrue(tsapParameter.getType() == ParameterCode.CALLED_TSAP);
+        assertThat(tsapParameter.getDeviceGroup()).isEqualTo(DeviceGroup.valueOf((byte)0)).withFailMessage("Device group incorrect");
+        assertThat(tsapParameter.getRackNumber()).isEqualTo((byte)1).withFailMessage("Rack number not correct");
+        assertThat(tsapParameter.getSlotNumber()).isEqualTo((byte)4).withFailMessage("Slot number not coorect");
+        assertThat(tsapParameter.getType()).isEqualTo(ParameterCode.CALLED_TSAP);
     }
 
     @Test
-    @Tag("fast")
-    void callingPartameter() {
+    @Category(FastTests.class)
+    public void callingPartameter() {
         DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0);
         tsapParameter = new CallingTsapParameter(deviceGroup, (byte)2, (byte)5);
 
-        assertTrue(tsapParameter.getDeviceGroup() == DeviceGroup.valueOf((byte)0), "Device group incorrect");
-        assertTrue(tsapParameter.getRackNumber() == (byte)2, "Rack number not correct");
-        assertTrue(tsapParameter.getSlotNumber() == (byte)5, "Slot number not coorect");
-        assertTrue(tsapParameter.getType() == ParameterCode.CALLING_TSAP);
+        assertThat(tsapParameter.getDeviceGroup()).isEqualTo(DeviceGroup.valueOf((byte)0)).withFailMessage("Device group incorrect");
+        assertThat(tsapParameter.getRackNumber()).isEqualTo((byte)2).withFailMessage("Rack number not correct");
+        assertThat(tsapParameter.getSlotNumber()).isEqualTo((byte)5).withFailMessage("Slot number not coorect");
+        assertThat(tsapParameter.getType()).isEqualTo(ParameterCode.CALLING_TSAP);
     }
 
 }
