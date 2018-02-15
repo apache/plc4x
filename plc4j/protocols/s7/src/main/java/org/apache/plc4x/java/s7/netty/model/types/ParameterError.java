@@ -18,6 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum ParameterError {
     NO_ERROR((short) 0x0000),
     INVALID_BLOCK_TYPE_NUMBER((short) 0x0110),
@@ -42,6 +45,8 @@ public enum ParameterError {
     L7_UNKNOWN_REQUEST((short) 0xD802),
     L7_INVALID_REQUEST_STATUS((short) 0xD803);
 
+    private static Map<Short, ParameterError> map = null;
+
     private final short code;
 
     ParameterError(short code) {
@@ -50,6 +55,16 @@ public enum ParameterError {
 
     public short getCode() {
         return code;
+    }
+
+    public static ParameterError valueOf(short code) {
+        if (map == null) {
+            map = new HashMap<>();
+            for (ParameterError parameterError : ParameterError.values()) {
+                map.put(parameterError.code, parameterError);
+            }
+        }
+        return map.get(code);
     }
 
 }

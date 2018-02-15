@@ -18,6 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum HeaderErrorClass {
     NO_ERROR((byte) 0x00),
     APPLICATION_RELATIONSHIP_ERROR((byte) 0x81),
@@ -27,6 +30,8 @@ public enum HeaderErrorClass {
     ERROR_ON_SUPPLIES((byte) 0x85),
     ACCESS_ERROR((byte) 0x87);
 
+    private static Map<Byte, HeaderErrorClass> map = null;
+
     private final byte code;
 
     HeaderErrorClass(byte code) {
@@ -35,6 +40,16 @@ public enum HeaderErrorClass {
 
     public byte getCode() {
         return code;
+    }
+
+    public static HeaderErrorClass valueOf(byte code) {
+        if (map == null) {
+            map = new HashMap<>();
+            for (HeaderErrorClass headerErrorClass : HeaderErrorClass.values()) {
+                map.put(headerErrorClass.code, headerErrorClass);
+            }
+        }
+        return map.get(code);
     }
 
 }

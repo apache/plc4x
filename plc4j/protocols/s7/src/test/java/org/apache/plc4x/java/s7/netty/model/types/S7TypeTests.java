@@ -45,6 +45,10 @@ public class S7TypeTests {
         DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.INVALID_ADDRESS;
 
         assertThat(DataTransportErrorCode.valueOf((byte) 0xFE), nullValue());
+        assertThat(DataTransportErrorCode.valueOf((byte)0xFE)).isNull();
+
+        DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.INVALID_ADDRESS;
+        assertThat(dataTransportErrorCode.getCode()).isEqualTo((byte) 0x05).withFailMessage("code is not 0x05");
     }
 
     @Test
@@ -60,7 +64,10 @@ public class S7TypeTests {
     @Test
     @Category(FastTests.class)
     public void headerErrorClass() {
-        //TODO missing valueOf
+        assertThat(HeaderErrorClass.valueOf((byte) 0x87)).isEqualTo(HeaderErrorClass.ACCESS_ERROR).withFailMessage("0x87 incorrectly mapped");
+
+        HeaderErrorClass headerErrorClass = HeaderErrorClass.ACCESS_ERROR;
+        assertThat(headerErrorClass.getCode()).isEqualTo((byte) 0x87).withFailMessage("code is not 0x87");
     }
 
     @Test
@@ -70,12 +77,19 @@ public class S7TypeTests {
 
         assertThat("2 incorrectly mapped", MessageType.valueOf((byte) 2), equalTo(MessageType.ACK));
         assertThat("code is not 2", messageType.getCode(), equalTo((byte) 2));
+        assertThat(MessageType.valueOf((byte)2)).isEqualTo(MessageType.ACK).withFailMessage("2 incorrectly mapped");
+
+        MessageType messageType = MessageType.ACK;
+        assertThat(messageType.getCode()).isEqualTo((byte)2).withFailMessage("code is not 2");
     }
 
     @Test
     @Category(FastTests.class)
     public void parameterError() {
-        //TODO missing value of
+        assertThat(ParameterError.valueOf((short) 0x011C)).isEqualTo(ParameterError.PROTOCOL_ERROR).withFailMessage("0x011C incorrectly mapped");;
+
+        ParameterError parameterError = ParameterError.PROTOCOL_ERROR;
+        assertThat(parameterError.getCode()).isEqualTo((short) 0x011C).withFailMessage("code is not 0x011C");
     }
 
     @Test
