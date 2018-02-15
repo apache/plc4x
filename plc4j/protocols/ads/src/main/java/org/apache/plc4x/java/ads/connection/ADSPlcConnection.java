@@ -57,6 +57,7 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
 
     private EventLoopGroup workerGroup;
     private Channel channel;
+    private boolean connected;
 
     public ADSPlcConnection(String hostName, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
         this(hostName, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
@@ -78,6 +79,7 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
         this.sourceAmsPort = sourceAmsPort;
+        connected = false;
     }
 
     public String getHostName() {
@@ -126,12 +128,18 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
             f.awaitUninterruptibly();
             // Wait till the session is finished initializing.
             channel = f.channel();
+            connected = true;
         } catch (UnknownHostException e) {
             throw new PlcConnectionException("Unknown Host " + hostName, e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException(e);
         }
+    }
+
+    @Override
+    public boolean isConnected() {
+        return connected;
     }
 
     @Override

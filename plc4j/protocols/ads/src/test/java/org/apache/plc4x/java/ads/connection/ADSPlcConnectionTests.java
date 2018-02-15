@@ -22,44 +22,44 @@ package org.apache.plc4x.java.ads.connection;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.model.ADSAddress;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class ADSPlcConnectionTests {
+public class ADSPlcConnectionTests {
 
     private ADSPlcConnection adsPlcConnection;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         adsPlcConnection = new ADSPlcConnection("localhost", AMSNetId.of("0.0.0.0.0.0"), AMSPort.of(13));
     }
 
-    @AfterEach
-    void tearDown() {
+    @After
+    public void tearDown() {
         adsPlcConnection = null;
     }
 
     @Test
-    void initialState() {
-        assertTrue(adsPlcConnection.getHostName().equalsIgnoreCase("localhost"), "Hostname is incorrect");
+    public void initialState() {
+        assertTrue("Hostname is incorrect", adsPlcConnection.getHostName().equalsIgnoreCase("localhost"));
         assertEquals(adsPlcConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
         assertEquals(adsPlcConnection.getTargetAmsPort().toString(), "13");
     }
 
     @Test
-    void emptyParseAddress() throws Exception {
+    public void emptyParseAddress() throws Exception {
         try {
             adsPlcConnection.parseAddress("");
         } catch (IllegalArgumentException exception) {
-            assertTrue(exception.getMessage().startsWith("address  doesn't match "), "Unexpected exception");
+            assertTrue("Unexpected exception", exception.getMessage().startsWith("address  doesn't match "));
         }
     }
 
     @Test
-    void parseAddress() throws Exception {
+    public void parseAddress() throws Exception {
         try {
             ADSAddress address = (ADSAddress) adsPlcConnection.parseAddress("1/1");
             assertEquals(address.getIndexGroup(), 1);

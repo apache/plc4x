@@ -19,38 +19,41 @@
 package org.apache.plc4x.java.ads.api.generic.types;
 
 import org.apache.commons.codec.binary.Hex;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class AMSPortTest {
+import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.junit.Assert.assertEquals;
+
+
+public class AMSPortTest {
 
     byte NULL_BYTE = 0x0;
 
     @Test
-    void ofBytes() {
-        Assertions.assertEquals("0", AMSPort.of(NULL_BYTE, NULL_BYTE).toString());
-        Assertions.assertThrows(IllegalArgumentException.class, () -> AMSPort.of(NULL_BYTE, NULL_BYTE, NULL_BYTE));
+    public void ofBytes() {
+        assertEquals("0", AMSPort.of(NULL_BYTE, NULL_BYTE).toString());
+        assertThrows(IllegalArgumentException.class, () -> AMSPort.of(NULL_BYTE, NULL_BYTE, NULL_BYTE));
     }
 
     @Test
-    void ofInt() {
+    public void ofInt() {
         assertByte(AMSPort.of(1), "0x0100");
         assertByte(AMSPort.of(65535), "0xffff");
-        Assertions.assertThrows(IllegalArgumentException.class, () -> AMSPort.of(-1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> AMSPort.of(65536));
+        assertThrows(IllegalArgumentException.class, () -> AMSPort.of(-1));
+        assertThrows(IllegalArgumentException.class, () -> AMSPort.of(65536));
     }
 
     @Test
-    void ofString() {
+    public void ofString() {
         assertByte(AMSPort.of("1"), "0x0100");
     }
 
     @Test
-    void testToString() {
-        Assertions.assertEquals(AMSPort.of("1").toString(), "1");
+    public void testToString() {
+        assertEquals(AMSPort.of("1").toString(), "1");
     }
 
     void assertByte(AMSPort actual, String expected) {
-        Assertions.assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
+        assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
     }
 }

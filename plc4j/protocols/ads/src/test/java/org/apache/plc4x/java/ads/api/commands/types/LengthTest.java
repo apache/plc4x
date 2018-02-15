@@ -19,38 +19,40 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import org.apache.commons.codec.binary.Hex;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class LengthTest {
+import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.junit.Assert.assertEquals;
+
+public class LengthTest {
 
     byte NULL_BYTE = 0x0;
 
     @Test
-    void ofBytes() {
-        Assertions.assertEquals("0", Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).toString());
-        Assertions.assertThrows(IllegalArgumentException.class, () -> Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE));
+    public void ofBytes() {
+        assertEquals("0", Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).toString());
+        assertThrows(IllegalArgumentException.class, () -> Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE));
     }
 
     @Test
-    void ofLong() {
+    public void ofLong() {
         assertByte(Length.of(1), "0x01000000");
         assertByte(Length.of(65535), "0xffff0000");
-        Assertions.assertThrows(IllegalArgumentException.class, () -> Length.of(-1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> Length.of(4294967296L));
+        assertThrows(IllegalArgumentException.class, () -> Length.of(-1));
+        assertThrows(IllegalArgumentException.class, () -> Length.of(4294967296L));
     }
 
     @Test
-    void ofString() {
+    public void ofString() {
         assertByte(Length.of("1"), "0x01000000");
     }
 
     @Test
-    void testToString() {
-        Assertions.assertEquals(Length.of("1").toString(), "1");
+    public void testToString() {
+        assertEquals(Length.of("1").toString(), "1");
     }
 
     void assertByte(Length actual, String expected) {
-        Assertions.assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
+        assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
     }
 }

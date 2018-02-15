@@ -18,25 +18,20 @@
  */
 package org.apache.plc4x.java.ads.util;
 
-import org.junit.jupiter.api.extension.ExtendWith;
+public class Junit5Backport {
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    public static void assertThrows(Class<? extends Exception> exception, Acceptor acceptor) {
+        try {
+            acceptor.accept();
+        } catch (Exception e) {
+            if (!exception.isAssignableFrom(e.getClass())) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
-import static java.lang.annotation.ElementType.*;
-
-@Target({TYPE, METHOD, ANNOTATION_TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(TcpHexDumper.class)
-public @interface ExtendWithTcpHexDumper {
-    /**
-     * Can be used to set a fixed port for the dumper, otherwise he will use a random port.
-     */
-    int port() default 0;
-
-    /**
-     * The timeout for the pool shutdown. After this no dumps will be printed anymore.
-     */
-    int shutdownTimeout() default 10;
+    @FunctionalInterface
+    public interface Acceptor {
+        void accept() throws Exception;
+    }
 }

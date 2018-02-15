@@ -20,7 +20,7 @@ package org.apache.plc4x.java.ads.util;
 
 import org.apache.commons.io.HexDump;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.extension.*;
+import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,17 +34,23 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, ParameterResolver, Closeable {
+public class TcpHexDumper extends ExternalResource implements Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(TcpHexDumper.class);
 
-    private ExecutorService pool = Executors.newCachedThreadPool();
+    private ExecutorService pool;
 
-    private Integer portToUse;
+    private final Integer portToUse;
 
     private ServerSocket serverSocket;
 
-    int shutdownTimeout = 10;
+    int shutdownTimeout;
+
+    public TcpHexDumper(Integer portToUse) {
+        pool = Executors.newCachedThreadPool();
+        this.portToUse = portToUse;
+        this.shutdownTimeout = 10;
+    }
 
     public void init(int port) throws IOException, InterruptedException {
         if (serverSocket != null) {
@@ -99,60 +105,26 @@ public class TcpHexDumper implements BeforeEachCallback, AfterEachCallback, Para
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-        stop(true);
-    }
-
-    @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-        init(initPortToUse(context));
-        shutdownTimeout = initShutdownTimeout(context);
-    }
-
-    @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().getType()
-            .equals(int.class);
-    }
-
-    @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public void after() {
         try {
-            return initPortToUse(extensionContext);
-        } catch (IOException e) {
-            throw new ParameterResolutionException("Could not find a free port", e);
+            stop(true);
+        } catch (IOException | InterruptedException ignore) {
         }
     }
 
+    @Override
+    public void before() throws Throwable {
+        init(portToUse);
+    }
+
     public static TcpHexDumper runOn(int port) throws IOException, InterruptedException {
-        TcpHexDumper tcpHexDumper = new TcpHexDumper();
+        TcpHexDumper tcpHexDumper = new TcpHexDumper(port);
         tcpHexDumper.init(port);
         return tcpHexDumper;
     }
 
     public Integer getPort() {
         return serverSocket.getLocalPort();
-    }
-
-    private int initShutdownTimeout(ExtensionContext context) {
-        ExtendWithTcpHexDumper annotation = context.getRequiredTestClass().getAnnotation(ExtendWithTcpHexDumper.class);
-        return annotation.shutdownTimeout();
-    }
-
-    private int initPortToUse(ExtensionContext context) throws IOException {
-        if (portToUse == null) {
-            ExtendWithTcpHexDumper annotation = context.getRequiredTestClass().getAnnotation(ExtendWithTcpHexDumper.class);
-            int port = annotation.port();
-            portToUse = port != 0 ? port : findFreePort();
-        }
-        return portToUse;
-    }
-
-    private static int findFreePort() throws IOException {
-        try (ServerSocket socket = new ServerSocket(0)) {
-            socket.setReuseAddress(true);
-            return socket.getLocalPort();
-        }
     }
 
     @Override

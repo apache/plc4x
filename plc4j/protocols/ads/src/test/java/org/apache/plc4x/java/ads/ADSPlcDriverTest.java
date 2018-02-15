@@ -21,34 +21,27 @@ package org.apache.plc4x.java.ads;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.ads.connection.ADSPlcConnection;
-import org.apache.plc4x.java.ads.util.ExtendWithTcpHexDumper;
+import org.apache.plc4x.java.ads.util.TcpHexDumper;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Rule;
+import org.junit.Test;
 
-@ExtendWithTcpHexDumper(shutdownTimeout = 3)
+import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.junit.Assert.assertEquals;
+
 public class ADSPlcDriverTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(ADSPlcDriverTest.class);
-
-    int usedPort;
-
-    ADSPlcDriverTest(int port) {
-        usedPort = port;
-    }
+    @Rule
+    public TcpHexDumper tcpHexDumper = new TcpHexDumper(0);
 
     @Test
-    @Tag("fast")
-    void getConnection() throws Exception {
+    public void getConnection() throws Exception {
         ADSPlcConnection adsConnection = (ADSPlcConnection)
-            new PlcDriverManager().getConnection("ads://localhost:" + usedPort + "/0.0.0.0.0.0:13");
-        Assertions.assertEquals(adsConnection.getHostName(), "localhost");
-        Assertions.assertEquals(adsConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
-        Assertions.assertEquals(adsConnection.getTargetAmsPort().toString(), "13");
+            new PlcDriverManager().getConnection("ads://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13");
+        assertEquals(adsConnection.getHostName(), "localhost");
+        assertEquals(adsConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
+        assertEquals(adsConnection.getTargetAmsPort().toString(), "13");
         adsConnection.close();
     }
 
@@ -58,9 +51,8 @@ public class ADSPlcDriverTest {
      * @throws PlcException something went wrong
      */
     @Test
-    @Tag("fast")
-    void getConnectionInvalidUrl() throws PlcException {
-        Assertions.assertThrows(PlcConnectionException.class,
+    public void getConnectionInvalidUrl() throws PlcException {
+        assertThrows(PlcConnectionException.class,
             () -> new PlcDriverManager().getConnection("ads://localhost/hurz/2"));
     }
 
