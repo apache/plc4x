@@ -29,7 +29,7 @@ import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff
 public class AdsStampHeader implements ByteReadable {
 
     /**
-     * 8 bytes	The timestamp is coded after the Windos FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
+     * 8 bytes	The timestamp is coded after the Windows FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
      */
     private final TimeStamp timeStamp;
     /**
@@ -47,8 +47,18 @@ public class AdsStampHeader implements ByteReadable {
         this.adsNotificationSamples = Objects.requireNonNull(adsNotificationSamples);
     }
 
+    protected AdsStampHeader(TimeStamp timeStamp, List<AdsNotificationSample> adsNotificationSamples) {
+        this.timeStamp = Objects.requireNonNull(timeStamp);
+        this.adsNotificationSamples = Objects.requireNonNull(adsNotificationSamples);
+        this.samples = Samples.of(adsNotificationSamples.size());
+    }
+
     public static AdsStampHeader of(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {
         return new AdsStampHeader(timeStamp, samples, adsNotificationSamples);
+    }
+
+    public static AdsStampHeader of(TimeStamp timeStamp, List<AdsNotificationSample> adsNotificationSamples) {
+        return new AdsStampHeader(timeStamp, adsNotificationSamples);
     }
 
     @Override

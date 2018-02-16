@@ -33,21 +33,24 @@ public class DataLength extends UnsignedIntLEByteValue {
         super(value);
     }
 
-    protected DataLength(ByteBuf byteBuf) {
-        super(byteBuf);
+    protected DataLength(String length) {
+        super(length);
     }
 
-    public static DataLength of(String length) {
-        return of(Long.parseLong(length));
+    protected DataLength(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static DataLength of(byte... values) {
         return new DataLength(values);
     }
 
-    public static DataLength of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new DataLength(errorCode);
+    public static DataLength of(long value) {
+        return new DataLength(value);
+    }
+
+    public static DataLength of(String length) {
+        return new DataLength(length);
     }
 
     public static DataLength of(ByteBuf byteBuf) {

@@ -33,6 +33,10 @@ public class Result extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    public Result(String value) {
+        super(value);
+    }
+
     protected Result(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,9 +45,12 @@ public class Result extends UnsignedIntLEByteValue {
         return new Result(values);
     }
 
-    public static Result of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new Result(errorCode);
+    public static Result of(long value) {
+        return new Result(value);
+    }
+
+    public static Result of(String value) {
+        return new Result(value);
     }
 
     public static Result of(ByteBuf byteBuf) {

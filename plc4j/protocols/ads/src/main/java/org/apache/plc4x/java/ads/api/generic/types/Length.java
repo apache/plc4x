@@ -35,21 +35,24 @@ public class Length extends UnsignedIntLEByteValue {
         super(value);
     }
 
-    protected Length(ByteBuf byteBuf) {
-        super(byteBuf);
+    protected Length(String length) {
+        super(length);
     }
 
-    public static Length of(String length) {
-        return of(Long.parseLong(length));
+    protected Length(ByteBuf byteBuf) {
+        super(byteBuf);
     }
 
     public static Length of(byte... values) {
         return new Length(values);
     }
 
-    public static Length of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new Length(errorCode);
+    public static Length of(long value) {
+        return new Length(value);
+    }
+
+    public static Length of(String length) {
+        return new Length(length);
     }
 
     public static Length of(ByteBuf byteBuf) {

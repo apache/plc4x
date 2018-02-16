@@ -33,6 +33,10 @@ public class IndexOffset extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    protected IndexOffset(String value) {
+        super(value);
+    }
+
     protected IndexOffset(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,9 +45,12 @@ public class IndexOffset extends UnsignedIntLEByteValue {
         return new IndexOffset(values);
     }
 
-    public static IndexOffset of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new IndexOffset(errorCode);
+    public static IndexOffset of(long value) {
+        return new IndexOffset(value);
+    }
+
+    public static IndexOffset of(String value) {
+        return new IndexOffset(value);
     }
 
     public static IndexOffset of(ByteBuf byteBuf) {

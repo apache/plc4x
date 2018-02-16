@@ -21,11 +21,14 @@ package org.apache.plc4x.java.ads.api.commands.types;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
+import java.nio.charset.Charset;
+import java.util.Objects;
+
 public class Device extends ByteValue {
 
     public static final int NUM_BYTES = 16;
 
-    Device(byte... values) {
+    protected Device(byte... values) {
         super(values);
         assertLength(NUM_BYTES);
     }
@@ -38,5 +41,20 @@ public class Device extends ByteValue {
         byte[] values = new byte[NUM_BYTES];
         byteBuf.readBytes(values);
         return of(values);
+    }
+
+    public static Device of(String value) {
+        Objects.requireNonNull(value);
+        return new Device(value.getBytes());
+    }
+
+    public static Device of(String value, Charset charset) {
+        Objects.requireNonNull(value);
+        return new Device(value.getBytes(charset));
+    }
+
+    @Override
+    public String toString() {
+        return "Device{" + new String(value) + "} " + super.toString();
     }
 }

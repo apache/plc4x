@@ -33,6 +33,10 @@ public class DeviceState extends UnsignedShortLEByteValue {
         super(value);
     }
 
+    protected DeviceState(String value) {
+        super(value);
+    }
+
     protected DeviceState(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -42,7 +46,6 @@ public class DeviceState extends UnsignedShortLEByteValue {
     }
 
     public static DeviceState of(int value) {
-        checkUnsignedBounds(value, NUM_BYTES);
         return new DeviceState(value);
     }
 
@@ -50,7 +53,7 @@ public class DeviceState extends UnsignedShortLEByteValue {
         return new DeviceState(byteBuf);
     }
 
-    public static DeviceState of(String length) {
-        return of(Integer.parseInt(length));
+    public static DeviceState of(String value) {
+        return new DeviceState(value);
     }
 }

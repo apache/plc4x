@@ -33,6 +33,10 @@ public class WriteLength extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    protected WriteLength(String length) {
+        super(length);
+    }
+
     protected WriteLength(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,16 +45,15 @@ public class WriteLength extends UnsignedIntLEByteValue {
         return new WriteLength(values);
     }
 
-    public static WriteLength of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new WriteLength(errorCode);
+    public static WriteLength of(long value) {
+        return new WriteLength(value);
+    }
+
+    public static WriteLength of(String length) {
+        return new WriteLength(length);
     }
 
     public static WriteLength of(ByteBuf byteBuf) {
         return new WriteLength(byteBuf);
-    }
-
-    public static WriteLength of(String length) {
-        return of(Long.valueOf(length));
     }
 }

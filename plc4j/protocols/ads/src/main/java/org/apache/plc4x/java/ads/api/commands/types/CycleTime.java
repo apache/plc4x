@@ -37,13 +37,20 @@ public class CycleTime extends UnsignedIntLEByteValue {
         super(byteBuf);
     }
 
+    public CycleTime(String value) {
+        super(value);
+    }
+
     public static CycleTime of(byte... values) {
         return new CycleTime(values);
     }
 
-    public static CycleTime of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new CycleTime(errorCode);
+    public static CycleTime of(long value) {
+        return new CycleTime(value);
+    }
+
+    public static CycleTime of(String value) {
+        return new CycleTime(value);
     }
 
     public static CycleTime of(ByteBuf byteBuf) {

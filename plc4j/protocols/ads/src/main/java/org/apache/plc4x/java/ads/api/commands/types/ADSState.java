@@ -33,6 +33,10 @@ public class ADSState extends UnsignedShortLEByteValue {
         super(value);
     }
 
+    public ADSState(String value) {
+        super(value);
+    }
+
     protected ADSState(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -42,7 +46,6 @@ public class ADSState extends UnsignedShortLEByteValue {
     }
 
     public static ADSState of(int value) {
-        checkUnsignedBounds(value, NUM_BYTES);
         return new ADSState(value);
     }
 
@@ -50,7 +53,7 @@ public class ADSState extends UnsignedShortLEByteValue {
         return new ADSState(byteBuf);
     }
 
-    public static ADSState of(String length) {
-        return of(Integer.parseInt(length));
+    public static ADSState of(String value) {
+        return new ADSState(value);
     }
 }

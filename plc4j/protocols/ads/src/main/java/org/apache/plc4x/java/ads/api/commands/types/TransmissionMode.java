@@ -33,6 +33,10 @@ public class TransmissionMode extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    protected TransmissionMode(String value) {
+        super(value);
+    }
+
     protected TransmissionMode(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,9 +45,12 @@ public class TransmissionMode extends UnsignedIntLEByteValue {
         return new TransmissionMode(values);
     }
 
-    public static TransmissionMode of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new TransmissionMode(errorCode);
+    public static TransmissionMode of(long value) {
+        return new TransmissionMode(value);
+    }
+
+    public static TransmissionMode of(String value) {
+        return new TransmissionMode(value);
     }
 
     public static TransmissionMode of(ByteBuf byteBuf) {

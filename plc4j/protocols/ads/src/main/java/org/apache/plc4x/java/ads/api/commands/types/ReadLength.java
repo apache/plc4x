@@ -33,6 +33,10 @@ public class ReadLength extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    public ReadLength(String length) {
+        super(length);
+    }
+
     protected ReadLength(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,16 +45,15 @@ public class ReadLength extends UnsignedIntLEByteValue {
         return new ReadLength(values);
     }
 
-    public static ReadLength of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new ReadLength(errorCode);
+    public static ReadLength of(long value) {
+        return new ReadLength(value);
+    }
+
+    public static ReadLength of(String length) {
+        return new ReadLength(length);
     }
 
     public static ReadLength of(ByteBuf byteBuf) {
         return new ReadLength(byteBuf);
-    }
-
-    public static ReadLength of(String length) {
-        return of(Long.parseLong(length));
     }
 }

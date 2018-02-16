@@ -96,6 +96,10 @@ public class State extends UnsignedShortLEByteValue {
         super(value);
     }
 
+    protected State(String stateId) {
+        super(stateId);
+    }
+
     protected State(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -113,8 +117,8 @@ public class State extends UnsignedShortLEByteValue {
         return new State(byteBuf);
     }
 
-    public static State of(String length) {
-        return of(Integer.parseInt(length));
+    public static State of(String stateId) {
+        return new State(stateId);
     }
 
     public static State of(StateMask... stateMasks) {

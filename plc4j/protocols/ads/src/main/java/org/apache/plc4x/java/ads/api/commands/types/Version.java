@@ -33,6 +33,10 @@ public class Version extends UnsignedShortLEByteValue {
         super(value);
     }
 
+    protected Version(String value) {
+        super(value);
+    }
+
     protected Version(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -46,11 +50,11 @@ public class Version extends UnsignedShortLEByteValue {
         return new Version(value);
     }
 
-    public static Version of(ByteBuf byteBuf) {
-        return new Version(byteBuf);
+    public static Version of(String value) {
+        return new Version(value);
     }
 
-    public static Version of(String length) {
-        return of(Integer.parseInt(length));
+    public static Version of(ByteBuf byteBuf) {
+        return new Version(byteBuf);
     }
 }

@@ -35,16 +35,20 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
     }
 
     public UnsignedShortLEByteValue(int value) {
-        super(ofLong(value));
+        super(ofInt(value));
         checkUnsignedBounds(value, NUM_BYTES);
         intValue = value;
+    }
+
+    public UnsignedShortLEByteValue(String value) {
+        this(Integer.parseInt(value));
     }
 
     public UnsignedShortLEByteValue(ByteBuf byteBuf) {
         this(byteBuf.readUnsignedShortLE());
     }
 
-    protected static byte[] ofLong(long value) {
+    protected static byte[] ofInt(long value) {
         return ByteBuffer.allocate(NUM_BYTES)
             // LE
             .put((byte) (value & 0xff))

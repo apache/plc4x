@@ -21,11 +21,13 @@ package org.apache.plc4x.java.ads.api.commands.types;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
+import java.util.Arrays;
+
 public class MajorVersion extends ByteValue {
 
     public static final int NUM_BYTES = 1;
 
-    MajorVersion(byte... values) {
+    protected MajorVersion(byte... values) {
         super(values);
         assertLength(NUM_BYTES);
     }
@@ -34,9 +36,20 @@ public class MajorVersion extends ByteValue {
         return new MajorVersion(values);
     }
 
+    public static MajorVersion of(int value) {
+        return new MajorVersion((byte) value);
+    }
+
     public static MajorVersion of(ByteBuf byteBuf) {
         byte[] values = new byte[NUM_BYTES];
         byteBuf.readBytes(values);
         return of(values);
+    }
+
+    @Override
+    public String toString() {
+        return "MajorVersion{" +
+            "value=" + Arrays.toString(value) +
+            "} " + super.toString();
     }
 }

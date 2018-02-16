@@ -33,6 +33,10 @@ public class MaxDelay extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    protected MaxDelay(String value) {
+        super(value);
+    }
+
     protected MaxDelay(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,9 +45,12 @@ public class MaxDelay extends UnsignedIntLEByteValue {
         return new MaxDelay(values);
     }
 
-    public static MaxDelay of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new MaxDelay(errorCode);
+    public static MaxDelay of(long value) {
+        return new MaxDelay(value);
+    }
+
+    public static MaxDelay of(String value) {
+        return new MaxDelay(value);
     }
 
     public static MaxDelay of(ByteBuf byteBuf) {

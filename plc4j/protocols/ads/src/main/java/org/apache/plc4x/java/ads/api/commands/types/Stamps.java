@@ -33,6 +33,10 @@ public class Stamps extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    protected Stamps(String value) {
+        super(value);
+    }
+
     protected Stamps(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,9 +45,12 @@ public class Stamps extends UnsignedIntLEByteValue {
         return new Stamps(values);
     }
 
-    public static Stamps of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new Stamps(errorCode);
+    public static Stamps of(long value) {
+        return new Stamps(value);
+    }
+
+    public static Stamps of(String value) {
+        return new Stamps(value);
     }
 
     public static Stamps of(ByteBuf byteBuf) {

@@ -33,6 +33,10 @@ public class SampleSize extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    public SampleSize(String size) {
+        super(size);
+    }
+
     protected SampleSize(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,16 +45,15 @@ public class SampleSize extends UnsignedIntLEByteValue {
         return new SampleSize(values);
     }
 
-    public static SampleSize of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new SampleSize(errorCode);
+    public static SampleSize of(long value) {
+        return new SampleSize(value);
+    }
+
+    public static SampleSize of(String size) {
+        return new SampleSize(size);
     }
 
     public static SampleSize of(ByteBuf byteBuf) {
         return new SampleSize(byteBuf);
-    }
-
-    public static SampleSize of(String size) {
-        return of(Long.parseLong(size));
     }
 }

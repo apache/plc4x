@@ -40,6 +40,10 @@ public abstract class UnsignedIntLEByteValue extends ByteValue {
         longValue = value;
     }
 
+    public UnsignedIntLEByteValue(String value) {
+        this(Long.parseLong(value));
+    }
+
     public UnsignedIntLEByteValue(ByteBuf byteBuf) {
         this(byteBuf.readUnsignedIntLE());
     }

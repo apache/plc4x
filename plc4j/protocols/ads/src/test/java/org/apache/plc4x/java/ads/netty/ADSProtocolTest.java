@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,8 +84,7 @@ public class ADSProtocolTest {
                 Stamps.of(1),
                 Collections.singletonList(
                     // Nano times need to be offset by (1.1.1970 - 1.1.1601) years in nanos
-                    AdsStampHeader.of(TimeStamp.of(System.nanoTime()),
-                        Samples.of(1),
+                    AdsStampHeader.of(TimeStamp.of(new Date()),
                         Collections.singletonList(
                             AdsNotificationSample.of(NotificationHandle.of(0), data))
                     )

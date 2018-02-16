@@ -39,13 +39,20 @@ public class Invoke extends UnsignedIntLEByteValue {
         super(byteBuf);
     }
 
+    public Invoke(String invokeId) {
+        super(invokeId);
+    }
+
     public static Invoke of(byte... values) {
         return new Invoke(values);
     }
 
-    public static Invoke of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new Invoke(errorCode);
+    public static Invoke of(long invokeId) {
+        return new Invoke(invokeId);
+    }
+
+    public static Invoke of(String invokeId) {
+        return new Invoke(invokeId);
     }
 
     public static Invoke of(ByteBuf byteBuf) {

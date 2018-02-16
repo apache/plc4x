@@ -37,13 +37,20 @@ public class NotificationHandle extends UnsignedIntLEByteValue {
         super(byteBuf);
     }
 
+    protected NotificationHandle(String value) {
+        super(value);
+    }
+
     public static NotificationHandle of(byte... values) {
         return new NotificationHandle(values);
     }
 
-    public static NotificationHandle of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new NotificationHandle(errorCode);
+    public static NotificationHandle of(long value) {
+        return new NotificationHandle(value);
+    }
+
+    public static NotificationHandle of(String value) {
+        return new NotificationHandle(value);
     }
 
     public static NotificationHandle of(ByteBuf byteBuf) {

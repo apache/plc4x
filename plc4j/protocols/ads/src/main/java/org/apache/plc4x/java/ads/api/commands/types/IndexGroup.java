@@ -33,6 +33,10 @@ public class IndexGroup extends UnsignedIntLEByteValue {
         super(value);
     }
 
+    protected IndexGroup(String value) {
+        super(value);
+    }
+
     protected IndexGroup(ByteBuf byteBuf) {
         super(byteBuf);
     }
@@ -41,9 +45,12 @@ public class IndexGroup extends UnsignedIntLEByteValue {
         return new IndexGroup(values);
     }
 
-    public static IndexGroup of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
-        return new IndexGroup(errorCode);
+    public static IndexGroup of(long value) {
+        return new IndexGroup(value);
+    }
+
+    public static IndexGroup of(String value) {
+        return new IndexGroup(value);
     }
 
     public static IndexGroup of(ByteBuf byteBuf) {
