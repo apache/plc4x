@@ -18,9 +18,8 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import java.util.Objects;
-
 import static java.lang.Long.toHexString;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Based on spec from: https://infosys.beckhoff.com/content/1033/tcadscommon/html/ads_returncodes.htm
@@ -163,11 +162,11 @@ public enum AdsReturnCode {
     ADS_CODE_10065(0x2751, 10065, "No connection could be made because the target machine actively refused it", "", ""),
     UNKNOWN(0, 0, "", "", "");
 
-    long hex;
-    long dec;
-    String description;
-    String possibleCauses;
-    String solution;
+    private final long hex;
+    private final long dec;
+    private final String description;
+    private final String possibleCauses;
+    private final String solution;
 
     AdsReturnCode(long hex, long dec, String description, String possibleCauses, String solution) {
         this.hex = hex;
@@ -175,7 +174,7 @@ public enum AdsReturnCode {
         if (hex != dec) {
             throw new IllegalArgumentException("hex " + hex + " is different from dec " + dec);
         }
-        this.description = Objects.requireNonNull(description);
+        this.description = requireNonNull(description);
         this.possibleCauses = possibleCauses;
         this.solution = solution;
     }

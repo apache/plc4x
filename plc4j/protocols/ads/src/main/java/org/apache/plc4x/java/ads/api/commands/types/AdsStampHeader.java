@@ -22,8 +22,8 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import java.util.List;
-import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public class AdsStampHeader implements ByteReadable {
@@ -41,15 +41,15 @@ public class AdsStampHeader implements ByteReadable {
      */
     private final List<AdsNotificationSample> adsNotificationSamples;
 
-    protected AdsStampHeader(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {
-        this.timeStamp = Objects.requireNonNull(timeStamp);
-        this.samples = Objects.requireNonNull(samples);
-        this.adsNotificationSamples = Objects.requireNonNull(adsNotificationSamples);
+    private AdsStampHeader(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {
+        this.timeStamp = requireNonNull(timeStamp);
+        this.samples = requireNonNull(samples);
+        this.adsNotificationSamples = requireNonNull(adsNotificationSamples);
     }
 
-    protected AdsStampHeader(TimeStamp timeStamp, List<AdsNotificationSample> adsNotificationSamples) {
-        this.timeStamp = Objects.requireNonNull(timeStamp);
-        this.adsNotificationSamples = Objects.requireNonNull(adsNotificationSamples);
+    private AdsStampHeader(TimeStamp timeStamp, List<AdsNotificationSample> adsNotificationSamples) {
+        this.timeStamp = requireNonNull(timeStamp);
+        this.adsNotificationSamples = requireNonNull(adsNotificationSamples);
         this.samples = Samples.of(adsNotificationSamples.size());
     }
 

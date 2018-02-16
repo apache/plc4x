@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SampleSizeTest {
 
-    byte NULL_BYTE = 0x0;
+    private final byte NULL_BYTE = 0x0;
 
     @Test
     public void ofBytes() {
@@ -52,7 +52,7 @@ public class SampleSizeTest {
         assertEquals(SampleSize.of("1").toString(), "1");
     }
 
-    void assertByte(SampleSize actual, String expected) {
+    private void assertByte(SampleSize actual, String expected) {
         assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
     }
 

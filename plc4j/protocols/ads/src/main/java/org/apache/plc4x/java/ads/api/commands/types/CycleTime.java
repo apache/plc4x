@@ -25,19 +25,19 @@ public class CycleTime extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected CycleTime(byte... values) {
+    private CycleTime(byte... values) {
         super(values);
     }
 
-    protected CycleTime(long value) {
+    private CycleTime(long value) {
         super(value);
     }
 
-    protected CycleTime(ByteBuf byteBuf) {
+    private CycleTime(ByteBuf byteBuf) {
         super(byteBuf);
     }
 
-    public CycleTime(String value) {
+    private CycleTime(String value) {
         super(value);
     }
 

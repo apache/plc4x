@@ -25,19 +25,19 @@ public class Samples extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected Samples(byte... values) {
+    private Samples(byte... values) {
         super(values);
     }
 
-    protected Samples(long value) {
+    private Samples(long value) {
         super(value);
     }
 
-    protected Samples(String value) {
+    private Samples(String value) {
         super(value);
     }
 
-    protected Samples(ByteBuf byteBuf) {
+    private Samples(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

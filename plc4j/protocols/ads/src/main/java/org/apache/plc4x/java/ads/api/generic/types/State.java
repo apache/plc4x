@@ -68,11 +68,11 @@ public class State extends UnsignedShortLEByteValue {
             return (value & this.mask) != 0;
         }
 
-        public boolean applies(State state) {
+        boolean applies(State state) {
             return (state.getAsInt() & this.mask) != 0;
         }
 
-        public int getMask() {
+        int getMask() {
             return mask;
         }
 
@@ -86,21 +86,21 @@ public class State extends UnsignedShortLEByteValue {
 
     public static final State DEFAULT_RESPONSE = State.of(ADS_COMMAND, RESPONSE);
 
-    public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
+    private static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
 
-    protected State(byte... values) {
+    private State(byte... values) {
         super(values);
     }
 
-    protected State(int value) {
+    private State(int value) {
         super(value);
     }
 
-    protected State(String stateId) {
+    private State(String stateId) {
         super(stateId);
     }
 
-    protected State(ByteBuf byteBuf) {
+    private State(ByteBuf byteBuf) {
         super(byteBuf);
     }
 
@@ -108,7 +108,7 @@ public class State extends UnsignedShortLEByteValue {
         return new State(values);
     }
 
-    public static State of(int value) {
+    private static State of(int value) {
         checkUnsignedBounds(value, NUM_BYTES);
         return new State(value);
     }
@@ -121,11 +121,11 @@ public class State extends UnsignedShortLEByteValue {
         return new State(stateId);
     }
 
-    public static State of(StateMask... stateMasks) {
+    private static State of(StateMask... stateMasks) {
         return State.of(Stream.of(stateMasks).map(StateMask::getMask).reduce(0, (a, b) -> a | b));
     }
 
-    public EnumSet<StateMask> getStateMaskEnumSet() {
+    private EnumSet<StateMask> getStateMaskEnumSet() {
         List<StateMask> result = new LinkedList<>();
         if (isResponse()) {
             result.add(StateMask.RESPONSE);
@@ -157,7 +157,7 @@ public class State extends UnsignedShortLEByteValue {
         return EnumSet.copyOf(result);
     }
 
-    public boolean isResponse() {
+    private boolean isResponse() {
         return RESPONSE.applies(this);
     }
 
@@ -165,35 +165,35 @@ public class State extends UnsignedShortLEByteValue {
         return !isResponse();
     }
 
-    public boolean isNoReturn() {
+    private boolean isNoReturn() {
         return NO_RETURN.applies(this);
     }
 
-    public boolean isADSCommand() {
+    private boolean isADSCommand() {
         return ADS_COMMAND.applies(this);
     }
 
-    public boolean isSystemCommand() {
+    private boolean isSystemCommand() {
         return SYSTEM_COMMAND.applies(this);
     }
 
-    public boolean isHighPriorityCommand() {
+    private boolean isHighPriorityCommand() {
         return HIGH_PRIORITY_COMMAND.applies(this);
     }
 
-    public boolean isTimestampAdded() {
+    private boolean isTimestampAdded() {
         return TIMESTAMP_ADDED.applies(this);
     }
 
-    public boolean isUDPCommand() {
+    private boolean isUDPCommand() {
         return UDP_COMMAND.applies(this);
     }
 
-    public boolean isInitCommand() {
+    private boolean isInitCommand() {
         return INIT_COMMAND.applies(this);
     }
 
-    public boolean isBroadcast() {
+    private boolean isBroadcast() {
         return BROADCAST.applies(this);
     }
 

@@ -30,7 +30,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * With ADS Read Write data will be written to an ADS device. Additionally, data can be read from the ADS device.
@@ -60,21 +60,21 @@ public class ADSReadWriteResponse extends ADSAbstractResponse {
     //
     ///
 
-    protected ADSReadWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
+    private ADSReadWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
         super(amstcpHeader, amsHeader);
-        this.result = Objects.requireNonNull(result);
-        this.length = Objects.requireNonNull(length);
-        this.data = Objects.requireNonNull(data);
+        this.result = requireNonNull(result);
+        this.length = requireNonNull(length);
+        this.data = requireNonNull(data);
         this.lengthSupplier = null;
         this.calculated = false;
     }
 
-    protected ADSReadWriteResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Data data) {
+    private ADSReadWriteResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.result = Objects.requireNonNull(result);
+        this.result = requireNonNull(result);
         this.length = null;
-        this.data = Objects.requireNonNull(data);
-        this.lengthSupplier = () -> data.getCalculatedLength();
+        this.data = requireNonNull(data);
+        this.lengthSupplier = data;
         this.calculated = true;
     }
 

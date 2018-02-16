@@ -34,15 +34,15 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 @ADSCommandType(Command.ADS_Read_State)
 public class ADSReadStateRequest extends ADSAbstractRequest {
 
-    protected ADSReadStateRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+    private ADSReadStateRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         super(amstcpHeader, amsHeader);
     }
 
-    protected ADSReadStateRequest(AMSHeader amsHeader) {
+    private ADSReadStateRequest(AMSHeader amsHeader) {
         super(amsHeader);
     }
 
-    protected ADSReadStateRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+    private ADSReadStateRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
     }
 

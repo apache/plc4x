@@ -23,21 +23,21 @@ import org.apache.plc4x.java.ads.api.util.UnsignedShortLEByteValue;
 
 public class Version extends UnsignedShortLEByteValue {
 
-    public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
+    private static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
 
-    protected Version(byte... values) {
+    private Version(byte... values) {
         super(values);
     }
 
-    protected Version(int value) {
+    private Version(int value) {
         super(value);
     }
 
-    protected Version(String value) {
+    private Version(String value) {
         super(value);
     }
 
-    protected Version(ByteBuf byteBuf) {
+    private Version(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

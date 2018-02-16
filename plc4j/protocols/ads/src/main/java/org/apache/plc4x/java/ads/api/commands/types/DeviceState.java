@@ -25,19 +25,19 @@ public class DeviceState extends UnsignedShortLEByteValue {
 
     public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
 
-    protected DeviceState(byte... values) {
+    private DeviceState(byte... values) {
         super(values);
     }
 
-    protected DeviceState(int value) {
+    private DeviceState(int value) {
         super(value);
     }
 
-    protected DeviceState(String value) {
+    private DeviceState(String value) {
         super(value);
     }
 
-    protected DeviceState(ByteBuf byteBuf) {
+    private DeviceState(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

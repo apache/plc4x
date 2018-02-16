@@ -25,19 +25,19 @@ public class IndexGroup extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected IndexGroup(byte... values) {
+    private IndexGroup(byte... values) {
         super(values);
     }
 
-    protected IndexGroup(long value) {
+    private IndexGroup(long value) {
         super(value);
     }
 
-    protected IndexGroup(String value) {
+    private IndexGroup(String value) {
         super(value);
     }
 
-    protected IndexGroup(ByteBuf byteBuf) {
+    private IndexGroup(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

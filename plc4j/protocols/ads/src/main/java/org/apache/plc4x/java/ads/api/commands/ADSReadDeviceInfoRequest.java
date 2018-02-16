@@ -34,15 +34,15 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 @ADSCommandType(Command.ADS_Read_Device_Info)
 public class ADSReadDeviceInfoRequest extends ADSAbstractRequest {
 
-    protected ADSReadDeviceInfoRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+    private ADSReadDeviceInfoRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         super(amstcpHeader, amsHeader);
     }
 
-    protected ADSReadDeviceInfoRequest(AMSHeader amsHeader) {
+    private ADSReadDeviceInfoRequest(AMSHeader amsHeader) {
         super(amsHeader);
     }
 
-    protected ADSReadDeviceInfoRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+    private ADSReadDeviceInfoRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
     }
 

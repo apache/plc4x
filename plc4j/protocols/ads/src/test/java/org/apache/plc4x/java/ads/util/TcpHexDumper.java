@@ -38,7 +38,7 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(TcpHexDumper.class);
 
-    private ExecutorService pool;
+    private final ExecutorService pool;
 
     private final Integer portToUse;
 
@@ -46,7 +46,7 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
 
     private ServerSocket serverSocket;
 
-    public TcpHexDumper(Integer portToUse) {
+    private TcpHexDumper(Integer portToUse) {
         this(portToUse, 10);
     }
 
@@ -56,7 +56,7 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
         this.shutdownTimeout = shutdownTimeout;
     }
 
-    public void init(int port) throws IOException, InterruptedException {
+    private void init(int port) throws IOException, InterruptedException {
         if (serverSocket != null) {
             stop(true);
         }
@@ -94,11 +94,11 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
         logger.info("Started pool");
     }
 
-    public void stop() throws IOException, InterruptedException {
+    private void stop() throws IOException, InterruptedException {
         stop(false);
     }
 
-    public void stop(boolean await) throws IOException, InterruptedException {
+    private void stop(boolean await) throws IOException, InterruptedException {
         serverSocket.close();
         if (await) {
             pool.awaitTermination(shutdownTimeout, TimeUnit.SECONDS);

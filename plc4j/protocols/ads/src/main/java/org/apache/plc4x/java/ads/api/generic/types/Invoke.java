@@ -27,19 +27,19 @@ public class Invoke extends UnsignedIntLEByteValue {
 
     public static final Invoke NONE = of(0);
 
-    protected Invoke(byte... values) {
+    private Invoke(byte... values) {
         super(values);
     }
 
-    protected Invoke(long value) {
+    private Invoke(long value) {
         super(value);
     }
 
-    protected Invoke(ByteBuf byteBuf) {
+    private Invoke(ByteBuf byteBuf) {
         super(byteBuf);
     }
 
-    public Invoke(String invokeId) {
+    private Invoke(String invokeId) {
         super(invokeId);
     }
 

@@ -27,23 +27,23 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public abstract class AMSTCPPacket implements ByteReadable {
-    private final AMSTCPHeader amstcpHeader;
+    private final AMSTCPHeader amsTcpHeader;
 
     private final AMSHeader amsHeader;
 
-    public AMSTCPPacket(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
-        this.amstcpHeader = requireNonNull(amstcpHeader);
+    protected AMSTCPPacket(AMSTCPHeader amsTcpHeader, AMSHeader amsHeader) {
+        this.amsTcpHeader = requireNonNull(amsTcpHeader);
         this.amsHeader = requireNonNull(amsHeader);
     }
 
-    public AMSTCPPacket(AMSHeader amsHeader) {
+    protected AMSTCPPacket(AMSHeader amsHeader) {
         // It is important that we wrap the ads data call as this will initialized in the constructor
         // so this value will be null if we call adsData now.
-        this.amstcpHeader = AMSTCPHeader.of(requireNonNull(amsHeader), () -> getAdsData().getCalculatedLength());
+        this.amsTcpHeader = AMSTCPHeader.of(requireNonNull(amsHeader), () -> getAdsData().getCalculatedLength());
         this.amsHeader = requireNonNull(amsHeader);
     }
 
-    public AMSTCPPacket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
+    protected AMSTCPPacket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
         if (!getClass().isAnnotationPresent(ADSCommandType.class)) {
             throw new IllegalArgumentException(ADSCommandType.class + " need to be present.");
         }
@@ -57,22 +57,22 @@ public abstract class AMSTCPPacket implements ByteReadable {
             () -> getAdsData().getCalculatedLength(),
             requireNonNull(AMSError.NONE),
             requireNonNull(invokeId));
-        this.amstcpHeader = AMSTCPHeader.of(amsHeader, () -> getAdsData().getCalculatedLength());
+        this.amsTcpHeader = AMSTCPHeader.of(amsHeader, () -> getAdsData().getCalculatedLength());
     }
 
-    public AMSTCPHeader getAmstcpHeader() {
-        return amstcpHeader;
+    public AMSTCPHeader getAmsTcpHeader() {
+        return amsTcpHeader;
     }
 
     public AMSHeader getAmsHeader() {
         return amsHeader;
     }
 
-    public abstract ADSData getAdsData();
+    protected abstract ADSData getAdsData();
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(amstcpHeader, amsHeader, getAdsData());
+        return buildByteBuff(amsTcpHeader, amsHeader, getAdsData());
     }
 
     protected ADSData buildADSData(ByteReadable... byteReadables) {
@@ -82,7 +82,7 @@ public abstract class AMSTCPPacket implements ByteReadable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
-            "amstcpHeader=" + amstcpHeader +
+            "amsTcpHeader=" + amsTcpHeader +
             ", amsHeader=" + amsHeader +
             '}';
     }

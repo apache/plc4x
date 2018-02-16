@@ -21,10 +21,12 @@ package org.apache.plc4x.java.ads.api.commands.types;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.charset.Charset;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public class Data extends ByteValue {
-    Data(byte... values) {
+
+    private Data(byte... values) {
         super(values);
     }
 
@@ -33,12 +35,12 @@ public class Data extends ByteValue {
     }
 
     public static Data of(String value) {
-        Objects.requireNonNull(value);
+        requireNonNull(value);
         return new Data(value.getBytes());
     }
 
     public static Data of(String value, Charset charset) {
-        Objects.requireNonNull(value);
+        requireNonNull(value);
         return new Data(value.getBytes(charset));
     }
 

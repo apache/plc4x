@@ -41,7 +41,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ADSProtocol.class);
 
-    private ConcurrentMap<Invoke, AMSTCPPacket> requests;
+    private final ConcurrentMap<Invoke, AMSTCPPacket> requests;
 
     public ADSProtocol() {
         this.requests = new ConcurrentHashMap<>();

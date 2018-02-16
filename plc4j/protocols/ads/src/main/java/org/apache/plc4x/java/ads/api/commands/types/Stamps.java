@@ -25,19 +25,19 @@ public class Stamps extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected Stamps(byte... values) {
+    private Stamps(byte... values) {
         super(values);
     }
 
-    protected Stamps(long value) {
+    private Stamps(long value) {
         super(value);
     }
 
-    protected Stamps(String value) {
+    private Stamps(String value) {
         super(value);
     }
 
-    protected Stamps(ByteBuf byteBuf) {
+    private Stamps(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

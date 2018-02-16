@@ -26,7 +26,7 @@ import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A notification is created in an ADS device.
@@ -66,34 +66,34 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
      */
     private final Reserved reserved = Reserved.INSTANCE;
 
-    protected ADSAddDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+    private ADSAddDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amstcpHeader, amsHeader);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
-        this.length = Objects.requireNonNull(length);
-        this.transmissionMode = Objects.requireNonNull(transmissionMode);
-        this.maxDelay = Objects.requireNonNull(maxDelay);
-        this.cycleTime = Objects.requireNonNull(cycleTime);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
+        this.length = requireNonNull(length);
+        this.transmissionMode = requireNonNull(transmissionMode);
+        this.maxDelay = requireNonNull(maxDelay);
+        this.cycleTime = requireNonNull(cycleTime);
     }
 
-    protected ADSAddDeviceNotificationRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+    private ADSAddDeviceNotificationRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amsHeader);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
-        this.length = Objects.requireNonNull(length);
-        this.transmissionMode = Objects.requireNonNull(transmissionMode);
-        this.maxDelay = Objects.requireNonNull(maxDelay);
-        this.cycleTime = Objects.requireNonNull(cycleTime);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
+        this.length = requireNonNull(length);
+        this.transmissionMode = requireNonNull(transmissionMode);
+        this.maxDelay = requireNonNull(maxDelay);
+        this.cycleTime = requireNonNull(cycleTime);
     }
 
-    protected ADSAddDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+    private ADSAddDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
-        this.length = Objects.requireNonNull(length);
-        this.transmissionMode = Objects.requireNonNull(transmissionMode);
-        this.maxDelay = Objects.requireNonNull(maxDelay);
-        this.cycleTime = Objects.requireNonNull(cycleTime);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
+        this.length = requireNonNull(length);
+        this.transmissionMode = requireNonNull(transmissionMode);
+        this.maxDelay = requireNonNull(maxDelay);
+        this.cycleTime = requireNonNull(cycleTime);
     }
 
     @Override

@@ -28,9 +28,9 @@ public class AMSPort extends ByteValue {
 
     public static final Pattern AMS_PORT_PATTERN = Pattern.compile("\\d+");
 
-    public static final int NUM_BYTES = 2;
+    private static final int NUM_BYTES = 2;
 
-    AMSPort(byte... value) {
+    private AMSPort(byte... value) {
         super(value);
         assertLength(NUM_BYTES);
     }
@@ -61,6 +61,6 @@ public class AMSPort extends ByteValue {
 
     @Override
     public String toString() {
-        return "" + (getBytes()[1] << 8 | getBytes()[0]);
+        return Integer.toString((getBytes()[1] << 8 | getBytes()[0]) & 0xff);
     }
 }

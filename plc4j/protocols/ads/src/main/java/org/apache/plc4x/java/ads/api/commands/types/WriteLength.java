@@ -25,19 +25,19 @@ public class WriteLength extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected WriteLength(byte... values) {
+    private WriteLength(byte... values) {
         super(values);
     }
 
-    protected WriteLength(long value) {
+    private WriteLength(long value) {
         super(value);
     }
 
-    protected WriteLength(String length) {
+    private WriteLength(String length) {
         super(length);
     }
 
-    protected WriteLength(ByteBuf byteBuf) {
+    private WriteLength(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

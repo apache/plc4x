@@ -25,19 +25,19 @@ public class Length extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected Length(byte... values) {
+    private Length(byte... values) {
         super(values);
     }
 
-    protected Length(long value) {
+    private Length(long value) {
         super(value);
     }
 
-    protected Length(String length) {
+    private Length(String length) {
         super(length);
     }
 
-    protected Length(ByteBuf byteBuf) {
+    private Length(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

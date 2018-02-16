@@ -25,19 +25,19 @@ public class TransmissionMode extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected TransmissionMode(byte... values) {
+    private TransmissionMode(byte... values) {
         super(values);
     }
 
-    protected TransmissionMode(long value) {
+    private TransmissionMode(long value) {
         super(value);
     }
 
-    protected TransmissionMode(String value) {
+    private TransmissionMode(String value) {
         super(value);
     }
 
-    protected TransmissionMode(ByteBuf byteBuf) {
+    private TransmissionMode(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

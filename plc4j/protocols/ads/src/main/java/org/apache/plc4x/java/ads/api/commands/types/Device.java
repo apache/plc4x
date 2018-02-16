@@ -22,13 +22,14 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.charset.Charset;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public class Device extends ByteValue {
 
-    public static final int NUM_BYTES = 16;
+    private static final int NUM_BYTES = 16;
 
-    protected Device(byte... values) {
+    private Device(byte... values) {
         super(values);
         assertLength(NUM_BYTES);
     }
@@ -44,12 +45,12 @@ public class Device extends ByteValue {
     }
 
     public static Device of(String value) {
-        Objects.requireNonNull(value);
+        requireNonNull(value);
         return new Device(value.getBytes());
     }
 
     public static Device of(String value, Charset charset) {
-        Objects.requireNonNull(value);
+        requireNonNull(value);
         return new Device(value.getBytes(charset));
     }
 

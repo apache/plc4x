@@ -31,7 +31,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Changes the ADS status and the device status of an ADS device.
@@ -65,32 +65,32 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
     //
     ///
 
-    protected ADSWriteControlRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+    private ADSWriteControlRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(amstcpHeader, amsHeader);
-        this.adsState = Objects.requireNonNull(adsState);
-        this.deviceState = Objects.requireNonNull(deviceState);
-        this.length = Objects.requireNonNull(length);
-        this.data = Objects.requireNonNull(data);
+        this.adsState = requireNonNull(adsState);
+        this.deviceState = requireNonNull(deviceState);
+        this.length = requireNonNull(length);
+        this.data = requireNonNull(data);
         this.lengthSupplier = null;
         this.calculated = false;
     }
 
-    protected ADSWriteControlRequest(AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+    private ADSWriteControlRequest(AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(amsHeader);
-        this.adsState = Objects.requireNonNull(adsState);
-        this.deviceState = Objects.requireNonNull(deviceState);
-        this.length = Objects.requireNonNull(length);
-        this.data = Objects.requireNonNull(data);
+        this.adsState = requireNonNull(adsState);
+        this.deviceState = requireNonNull(deviceState);
+        this.length = requireNonNull(length);
+        this.data = requireNonNull(data);
         this.lengthSupplier = null;
         this.calculated = false;
     }
 
-    protected ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Data data) {
+    private ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.adsState = Objects.requireNonNull(adsState);
-        this.deviceState = Objects.requireNonNull(deviceState);
+        this.adsState = requireNonNull(adsState);
+        this.deviceState = requireNonNull(deviceState);
         this.length = null;
-        this.data = Objects.requireNonNull(data);
+        this.data = requireNonNull(data);
         this.lengthSupplier = data;
         this.calculated = true;
     }

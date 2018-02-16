@@ -30,13 +30,13 @@ public class TimeStamp extends ByteValue {
     /**
      * @see <a href="https://github.com/java-native-access/jna/blob/master/contrib/platform/src/com/sun/jna/platform/win32/WinBase.java">java-native-access WinBase</a>
      */
-    public final static BigInteger EPOCH_DIFF_IN_MILLIS = BigInteger.valueOf((369L * 365L + 89L) * 86400L * 1000L);
+    private final static BigInteger EPOCH_DIFF_IN_MILLIS = BigInteger.valueOf((369L * 365L + 89L) * 86400L * 1000L);
 
-    public static final int NUM_BYTES = 8;
+    private static final int NUM_BYTES = 8;
 
-    protected final BigInteger bigIntegerValue;
+    private final BigInteger bigIntegerValue;
 
-    protected TimeStamp(byte... values) {
+    private TimeStamp(byte... values) {
         super(values);
         assertLength(NUM_BYTES);
         bigIntegerValue = new BigInteger(new byte[]{
@@ -53,13 +53,14 @@ public class TimeStamp extends ByteValue {
         });
     }
 
-    protected TimeStamp(BigInteger value) {
+    private TimeStamp(BigInteger value) {
         super(ofBigInteger(value));
+        checkUnsignedBounds(value, NUM_BYTES);
         assertLength(NUM_BYTES);
         bigIntegerValue = value;
     }
 
-    protected static byte[] ofBigInteger(BigInteger value) {
+    private static byte[] ofBigInteger(BigInteger value) {
         byte[] valueBytes = value.toByteArray();
         int length = valueBytes.length;
         return ByteBuffer.allocate(NUM_BYTES)
@@ -76,7 +77,7 @@ public class TimeStamp extends ByteValue {
             .array();
     }
 
-    public static TimeStamp of(BigInteger value) {
+    private static TimeStamp of(BigInteger value) {
         return new TimeStamp(javaToWinTime(value));
     }
 
@@ -92,7 +93,7 @@ public class TimeStamp extends ByteValue {
         return of(javaToWinTime(BigInteger.valueOf(value)));
     }
 
-    public static TimeStamp of(byte... values) {
+    private static TimeStamp of(byte... values) {
         return new TimeStamp(values);
     }
 
@@ -107,20 +108,20 @@ public class TimeStamp extends ByteValue {
         return of(values);
     }
 
-    public BigInteger getBigIntegerValue() {
+    private BigInteger getBigIntegerValue() {
         return bigIntegerValue;
     }
 
-    public Date getAsDate() {
+    private Date getAsDate() {
         return new Date(winTimeToJava(bigIntegerValue).longValue());
     }
 
-    public static BigInteger javaToWinTime(BigInteger timeMillisSince19700101) {
+    private static BigInteger javaToWinTime(BigInteger timeMillisSince19700101) {
         BigInteger timeMillisSince16010101 = EPOCH_DIFF_IN_MILLIS.add(timeMillisSince19700101);
         return timeMillisSince16010101.multiply(BigInteger.valueOf(10_000));
     }
 
-    public static BigInteger winTimeToJava(BigInteger winTime) {
+    private static BigInteger winTimeToJava(BigInteger winTime) {
         BigInteger timeMillisSince16010101 = winTime.divide(BigInteger.valueOf(10_000));
         return timeMillisSince16010101.subtract(EPOCH_DIFF_IN_MILLIS);
     }

@@ -46,7 +46,7 @@ public class ADSDumper {
 
     private static final Logger logger = LoggerFactory.getLogger(ADSDumper.class);
 
-    public static final void main(String... args) throws Exception {
+    public static void main(String... args) throws Exception {
         Path dumpFile = Files.createTempFile("pcapdump", ".pcap");
 
         try (PcapHandle handle = Pcaps.openDead(DataLinkType.EN10MB, 65536);

@@ -46,7 +46,7 @@ public class Plc4XADSProtocolTest {
 
     private Plc4XADSProtocol SUT;
 
-    @Parameterized.Parameter(0)
+    @Parameterized.Parameter()
     public PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer;
 
     @Parameterized.Parameter(1)

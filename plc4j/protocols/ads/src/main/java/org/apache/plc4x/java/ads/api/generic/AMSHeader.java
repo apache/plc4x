@@ -32,41 +32,41 @@ public class AMSHeader implements ByteReadable {
     /**
      * This is the AMSNetId of the station, for which the packet is intended. Remarks see below.
      */
-    protected final AMSNetId targetAmsNetId;
+    private final AMSNetId targetAmsNetId;
     /**
      * This is the AMSPort of the station, for which the packet is intended.
      */
-    protected final AMSPort targetAmsPort;
+    private final AMSPort targetAmsPort;
     /**
      * This contains the AMSNetId of the station, from which the packet was sent.
      */
-    protected final AMSNetId sourceAmsNetId;
+    private final AMSNetId sourceAmsNetId;
     /**
      * This contains the AMSPort of the station, from which the packet was sent.
      */
-    protected final AMSPort sourceAmsPort;
+    private final AMSPort sourceAmsPort;
     /**
      * 2 bytes.
      */
-    protected final Command commandId;
+    private final Command commandId;
     /**
      * 2 bytes.
      */
-    protected final State stateFlags;
+    private final State stateFlags;
     /**
      * 4 bytes	Size of the data range. The unit is byte.
      */
-    protected final DataLength dataLength;
+    private final DataLength dataLength;
 
     /**
      * 4 bytes	AMS error number. See ADS Return Codes.
      */
-    protected final AMSError code;
+    private final AMSError code;
 
     /**
      * 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
      */
-    protected final Invoke invokeId;
+    private final Invoke invokeId;
 
     ////
     // Used when fields should be calculated. TODO: check if we better work with a subclass.
@@ -75,7 +75,7 @@ public class AMSHeader implements ByteReadable {
     //
     ///
 
-    protected AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId) {
+    private AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId) {
         this.targetAmsNetId = requireNonNull(targetAmsNetId);
         this.targetAmsPort = requireNonNull(targetAmsPort);
         this.sourceAmsNetId = requireNonNull(sourceAmsNetId);
@@ -89,7 +89,7 @@ public class AMSHeader implements ByteReadable {
         calculated = false;
     }
 
-    protected AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLengthSupplier dataLengthSupplier, AMSError code, Invoke invokeId) {
+    private AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLengthSupplier dataLengthSupplier, AMSError code, Invoke invokeId) {
         this.targetAmsNetId = requireNonNull(targetAmsNetId);
         this.targetAmsPort = requireNonNull(targetAmsPort);
         this.sourceAmsNetId = requireNonNull(sourceAmsNetId);

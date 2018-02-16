@@ -28,7 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * With ADS Read Write data will be written to an ADS device. Additionally, data can be read from the ADS device.
@@ -66,36 +66,36 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
     //
     ///
 
-    protected ADSReadWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+    private ADSReadWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(amstcpHeader, amsHeader);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
-        this.readLength = Objects.requireNonNull(readLength);
-        this.writeLength = Objects.requireNonNull(writeLength);
-        this.data = Objects.requireNonNull(data);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
+        this.readLength = requireNonNull(readLength);
+        this.writeLength = requireNonNull(writeLength);
+        this.data = requireNonNull(data);
         this.lengthSupplier = null;
         this.calculated = false;
     }
 
-    protected ADSReadWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+    private ADSReadWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(amsHeader);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
-        this.readLength = Objects.requireNonNull(readLength);
-        this.writeLength = Objects.requireNonNull(writeLength);
-        this.data = Objects.requireNonNull(data);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
+        this.readLength = requireNonNull(readLength);
+        this.writeLength = requireNonNull(writeLength);
+        this.data = requireNonNull(data);
         this.lengthSupplier = null;
         this.calculated = false;
     }
 
-    protected ADSReadWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, Data data) {
+    private ADSReadWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
-        this.readLength = Objects.requireNonNull(readLength);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
+        this.readLength = requireNonNull(readLength);
         this.writeLength = null;
-        this.data = Objects.requireNonNull(data);
-        this.lengthSupplier = () -> data.getCalculatedLength();
+        this.data = requireNonNull(data);
+        this.lengthSupplier = data;
         this.calculated = true;
     }
 

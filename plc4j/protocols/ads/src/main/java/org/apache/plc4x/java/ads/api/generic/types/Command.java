@@ -44,7 +44,7 @@ public enum Command implements ByteReadable {
      */
     UNKNOWN();
 
-    public static final int NUM_BYTES = 2;
+    private static final int NUM_BYTES = 2;
 
     final byte[] value;
 
@@ -91,7 +91,7 @@ public enum Command implements ByteReadable {
         return UNKNOWN;
     }
 
-    public static Command of(int intValue) {
+    private static Command of(int intValue) {
         // TODO: improve by using a map
         for (Command command : values()) {
             if (command.intValue == intValue) {

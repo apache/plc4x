@@ -25,19 +25,19 @@ public class Result extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected Result(byte... values) {
+    private Result(byte... values) {
         super(values);
     }
 
-    protected Result(long value) {
+    private Result(long value) {
         super(value);
     }
 
-    public Result(String value) {
+    private Result(String value) {
         super(value);
     }
 
-    protected Result(ByteBuf byteBuf) {
+    private Result(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

@@ -26,29 +26,29 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
 
     public static final int NUM_BYTES = 2;
 
-    protected final int intValue;
+    private final int intValue;
 
-    public UnsignedShortLEByteValue(byte... value) {
+    protected UnsignedShortLEByteValue(byte... value) {
         super(value);
         assertLength(NUM_BYTES);
-        intValue = getBytes()[1] << 8 | getBytes()[0];
+        intValue = (getBytes()[1] << 8 | getBytes()[0]) & 0xff;
     }
 
-    public UnsignedShortLEByteValue(int value) {
+    protected UnsignedShortLEByteValue(int value) {
         super(ofInt(value));
         checkUnsignedBounds(value, NUM_BYTES);
         intValue = value;
     }
 
-    public UnsignedShortLEByteValue(String value) {
+    protected UnsignedShortLEByteValue(String value) {
         this(Integer.parseInt(value));
     }
 
-    public UnsignedShortLEByteValue(ByteBuf byteBuf) {
+    protected UnsignedShortLEByteValue(ByteBuf byteBuf) {
         this(byteBuf.readUnsignedShortLE());
     }
 
-    protected static byte[] ofInt(long value) {
+    private static byte[] ofInt(long value) {
         return ByteBuffer.allocate(NUM_BYTES)
             // LE
             .put((byte) (value & 0xff))

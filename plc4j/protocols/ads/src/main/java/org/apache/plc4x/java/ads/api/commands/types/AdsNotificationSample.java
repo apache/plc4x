@@ -22,8 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
-import java.util.Objects;
-
+import static java.util.Objects.requireNonNull;
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public class AdsNotificationSample implements ByteReadable {
@@ -48,18 +47,18 @@ public class AdsNotificationSample implements ByteReadable {
     //
     ///
 
-    protected AdsNotificationSample(NotificationHandle notificationHandle, Data data) {
-        this.notificationHandle = Objects.requireNonNull(notificationHandle);
+    private AdsNotificationSample(NotificationHandle notificationHandle, Data data) {
+        this.notificationHandle = requireNonNull(notificationHandle);
         this.sampleSize = null;
-        this.data = Objects.requireNonNull(data);
+        this.data = requireNonNull(data);
         calculated = true;
-        lengthSupplier = () -> data.getCalculatedLength();
+        lengthSupplier = data;
     }
 
-    protected AdsNotificationSample(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
-        this.notificationHandle = Objects.requireNonNull(notificationHandle);
-        this.sampleSize = Objects.requireNonNull(sampleSize);
-        this.data = Objects.requireNonNull(data);
+    private AdsNotificationSample(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
+        this.notificationHandle = requireNonNull(notificationHandle);
+        this.sampleSize = requireNonNull(sampleSize);
+        this.data = requireNonNull(data);
         calculated = true;
         lengthSupplier = null;
     }

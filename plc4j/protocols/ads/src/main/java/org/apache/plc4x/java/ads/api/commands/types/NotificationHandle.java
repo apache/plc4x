@@ -25,19 +25,19 @@ public class NotificationHandle extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected NotificationHandle(byte... values) {
+    private NotificationHandle(byte... values) {
         super(values);
     }
 
-    protected NotificationHandle(long value) {
+    private NotificationHandle(long value) {
         super(value);
     }
 
-    protected NotificationHandle(ByteBuf byteBuf) {
+    private NotificationHandle(ByteBuf byteBuf) {
         super(byteBuf);
     }
 
-    protected NotificationHandle(String value) {
+    private NotificationHandle(String value) {
         super(value);
     }
 

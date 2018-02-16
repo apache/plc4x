@@ -25,19 +25,19 @@ public class MaxDelay extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected MaxDelay(byte... values) {
+    private MaxDelay(byte... values) {
         super(values);
     }
 
-    protected MaxDelay(long value) {
+    private MaxDelay(long value) {
         super(value);
     }
 
-    protected MaxDelay(String value) {
+    private MaxDelay(String value) {
         super(value);
     }
 
-    protected MaxDelay(ByteBuf byteBuf) {
+    private MaxDelay(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

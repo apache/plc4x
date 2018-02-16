@@ -27,7 +27,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Reads the name and the version number of the ADS device.
@@ -56,22 +56,22 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
     private final Device device;
 
 
-    protected ADSReadDeviceInfoResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+    private ADSReadDeviceInfoResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
         super(amstcpHeader, amsHeader);
-        this.result = Objects.requireNonNull(result);
-        this.majorVersion = Objects.requireNonNull(majorVersion);
-        this.minorVersion = Objects.requireNonNull(minorVersion);
-        this.version = Objects.requireNonNull(version);
-        this.device = Objects.requireNonNull(device);
+        this.result = requireNonNull(result);
+        this.majorVersion = requireNonNull(majorVersion);
+        this.minorVersion = requireNonNull(minorVersion);
+        this.version = requireNonNull(version);
+        this.device = requireNonNull(device);
     }
 
-    protected ADSReadDeviceInfoResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+    private ADSReadDeviceInfoResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.result = Objects.requireNonNull(result);
-        this.majorVersion = Objects.requireNonNull(majorVersion);
-        this.minorVersion = Objects.requireNonNull(minorVersion);
-        this.version = Objects.requireNonNull(version);
-        this.device = Objects.requireNonNull(device);
+        this.result = requireNonNull(result);
+        this.majorVersion = requireNonNull(majorVersion);
+        this.minorVersion = requireNonNull(minorVersion);
+        this.version = requireNonNull(version);
+        this.device = requireNonNull(device);
     }
 
     public static ADSReadDeviceInfoResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {

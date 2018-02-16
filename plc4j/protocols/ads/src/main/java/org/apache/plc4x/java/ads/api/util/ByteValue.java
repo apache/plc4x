@@ -29,19 +29,19 @@ public class ByteValue implements ByteReadable {
 
     protected final byte[] value;
 
-    public ByteValue(byte... value) {
+    protected ByteValue(byte... value) {
         Objects.requireNonNull(value);
         this.value = value;
     }
 
-    public void assertLength(int length) {
+    protected void assertLength(int length) {
         if (value.length != length) {
             throw new IllegalArgumentException("Expected length " + length + " got " + value.length);
         }
     }
 
     public static void checkUnsignedBounds(long value, int numberOfBytes) {
-        double upperBound = Math.pow(2, 8 * numberOfBytes);
+        double upperBound = Math.pow((double) 2, (double) (8 * numberOfBytes));
         if (value < 0 || value >= upperBound) {
             throw new IllegalArgumentException("Value must between 0 and " + upperBound + ". Was " + value);
         }

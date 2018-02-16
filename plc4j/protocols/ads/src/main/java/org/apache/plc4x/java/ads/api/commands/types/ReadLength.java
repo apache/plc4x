@@ -25,19 +25,19 @@ public class ReadLength extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected ReadLength(byte... values) {
+    private ReadLength(byte... values) {
         super(values);
     }
 
-    protected ReadLength(long value) {
+    private ReadLength(long value) {
         super(value);
     }
 
-    public ReadLength(String length) {
+    private ReadLength(String length) {
         super(length);
     }
 
-    protected ReadLength(ByteBuf byteBuf) {
+    private ReadLength(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

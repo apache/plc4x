@@ -25,19 +25,19 @@ public class IndexOffset extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected IndexOffset(byte... values) {
+    private IndexOffset(byte... values) {
         super(values);
     }
 
-    protected IndexOffset(long value) {
+    private IndexOffset(long value) {
         super(value);
     }
 
-    protected IndexOffset(String value) {
+    private IndexOffset(String value) {
         super(value);
     }
 
-    protected IndexOffset(ByteBuf byteBuf) {
+    private IndexOffset(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

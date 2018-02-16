@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 public class AMSPortTest {
 
-    byte NULL_BYTE = 0x0;
+    private final byte NULL_BYTE = 0x0;
 
     @Test
     public void ofBytes() {
@@ -53,7 +53,7 @@ public class AMSPortTest {
         assertEquals(AMSPort.of("1").toString(), "1");
     }
 
-    void assertByte(AMSPort actual, String expected) {
+    private void assertByte(AMSPort actual, String expected) {
         assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
     }
 }

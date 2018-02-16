@@ -40,7 +40,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
-    public static final int TCP_PORT = 48898;
+    private static final int TCP_PORT = 48898;
 
     private final AMSNetId targetAmsNetId;
 
@@ -59,7 +59,7 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
     }
 
 
-    public ADSPlcConnection(InetAddress address, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
+    private ADSPlcConnection(InetAddress address, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
         this(address, null, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 

@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ReadLengthTest {
 
-    byte NULL_BYTE = 0x0;
+    private final byte NULL_BYTE = 0x0;
 
     @Test
     public void ofBytes() {
@@ -53,7 +53,7 @@ public class ReadLengthTest {
         assertEquals(ReadLength.of("1").toString(), "1");
     }
 
-    void assertByte(ReadLength actual, String expected) {
+    private void assertByte(ReadLength actual, String expected) {
         assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
     }
 }

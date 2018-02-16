@@ -32,7 +32,8 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Data will carry forward independently from an ADS device to a Client
@@ -62,29 +63,29 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
     //
     ///
 
-    protected ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+    private ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amstcpHeader, amsHeader);
-        this.length = Objects.requireNonNull(length);
-        this.stamps = Objects.requireNonNull(stamps);
-        this.adsStampHeaders = Objects.requireNonNull(adsStampHeaders);
+        this.length = requireNonNull(length);
+        this.stamps = requireNonNull(stamps);
+        this.adsStampHeaders = requireNonNull(adsStampHeaders);
         calculated = false;
         lengthSupplier = null;
     }
 
-    protected ADSDeviceNotificationRequest(AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+    private ADSDeviceNotificationRequest(AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amsHeader);
-        this.length = Objects.requireNonNull(length);
-        this.stamps = Objects.requireNonNull(stamps);
-        this.adsStampHeaders = Objects.requireNonNull(adsStampHeaders);
+        this.length = requireNonNull(length);
+        this.stamps = requireNonNull(stamps);
+        this.adsStampHeaders = requireNonNull(adsStampHeaders);
         calculated = false;
         lengthSupplier = null;
     }
 
-    protected ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+    private ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.length = null;
-        this.stamps = Objects.requireNonNull(stamps);
-        this.adsStampHeaders = Objects.requireNonNull(adsStampHeaders);
+        this.stamps = requireNonNull(stamps);
+        this.adsStampHeaders = requireNonNull(adsStampHeaders);
         calculated = true;
         this.lengthSupplier = () -> {
             long aggregateLength = 0;

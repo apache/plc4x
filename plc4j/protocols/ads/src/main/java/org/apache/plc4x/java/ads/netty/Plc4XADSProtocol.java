@@ -62,7 +62,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPacket, PlcReq
 
     private static final AtomicLong correlationBuilder = new AtomicLong(1);
 
-    private ConcurrentMap<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requests;
+    private final ConcurrentMap<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requests;
 
     private final AMSNetId targetAmsNetId;
     private final AMSPort targetAmsPort;
@@ -173,7 +173,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPacket, PlcReq
     }
 
     @SuppressWarnings("unchecked")
-    private PlcResponse decodeWriteResponse(ADSWriteResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) throws PlcProtocolException {
+    private PlcResponse decodeWriteResponse(ADSWriteResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) {
         PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
         WriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(0);
 
@@ -187,7 +187,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPacket, PlcReq
     }
 
     @SuppressWarnings("unchecked")
-    private PlcResponse decodeReadResponse(ADSReadResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) throws PlcProtocolException {
+    private PlcResponse decodeReadResponse(ADSReadResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) {
         PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
         ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(0);
 

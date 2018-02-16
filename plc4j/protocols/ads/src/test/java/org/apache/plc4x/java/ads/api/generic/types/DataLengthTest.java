@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DataLengthTest {
 
-    byte NULL_BYTE = 0x0;
+    private final byte NULL_BYTE = 0x0;
 
     @Test
     public void ofBytes() {
@@ -53,7 +53,7 @@ public class DataLengthTest {
         assertEquals(DataLength.of("1").toString(), "1");
     }
 
-    void assertByte(DataLength actual, String expected) {
+    private void assertByte(DataLength actual, String expected) {
         assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
     }
 

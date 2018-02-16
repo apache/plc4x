@@ -32,9 +32,9 @@ import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff
  */
 public class AMSTCPHeader implements ByteReadable {
 
-    protected final Reserved reserved;
+    private final Reserved reserved;
 
-    protected final Length length;
+    private final Length length;
 
     ////
     // Used when fields should be calculated. TODO: check if we better work with a subclass.
@@ -43,14 +43,14 @@ public class AMSTCPHeader implements ByteReadable {
     //
     ///
 
-    protected AMSTCPHeader(Length length) {
+    private AMSTCPHeader(Length length) {
         this.reserved = requireNonNull(Reserved.CONSTANT);
         this.length = requireNonNull(length);
         lengthSuppliers = null;
         calculated = false;
     }
 
-    protected AMSTCPHeader(LengthSupplier... lengthSuppliers) {
+    private AMSTCPHeader(LengthSupplier... lengthSuppliers) {
         this.reserved = requireNonNull(Reserved.CONSTANT);
         this.length = null;
         this.lengthSuppliers = requireNonNull(lengthSuppliers);

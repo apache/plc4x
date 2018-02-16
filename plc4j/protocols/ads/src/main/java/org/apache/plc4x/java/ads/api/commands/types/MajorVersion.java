@@ -25,14 +25,14 @@ import java.util.Arrays;
 
 public class MajorVersion extends ByteValue {
 
-    public static final int NUM_BYTES = 1;
+    private static final int NUM_BYTES = 1;
 
-    protected MajorVersion(byte... values) {
+    private MajorVersion(byte... values) {
         super(values);
         assertLength(NUM_BYTES);
     }
 
-    public static MajorVersion of(byte... values) {
+    private static MajorVersion of(byte... values) {
         return new MajorVersion(values);
     }
 

@@ -24,19 +24,19 @@ import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
 public class AMSError extends UnsignedIntLEByteValue {
 
-    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
+    private static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
     public static final AMSError NONE = of(0);
 
-    protected AMSError(byte... values) {
+    private AMSError(byte... values) {
         super(values);
     }
 
-    protected AMSError(long value) {
+    private AMSError(long value) {
         super(value);
     }
 
-    protected AMSError(ByteBuf byteBuf) {
+    private AMSError(ByteBuf byteBuf) {
         super(byteBuf);
     }
 
@@ -44,7 +44,7 @@ public class AMSError extends UnsignedIntLEByteValue {
         return new AMSError(values);
     }
 
-    public static AMSError of(long errorCode) {
+    private static AMSError of(long errorCode) {
         checkUnsignedBounds(errorCode, NUM_BYTES);
         return new AMSError(errorCode);
     }
@@ -53,7 +53,7 @@ public class AMSError extends UnsignedIntLEByteValue {
         return new AMSError(byteBuf);
     }
 
-    public AdsReturnCode toAdsReturnCode() {
+    private AdsReturnCode toAdsReturnCode() {
         return AdsReturnCode.of(getAsLong());
     }
 

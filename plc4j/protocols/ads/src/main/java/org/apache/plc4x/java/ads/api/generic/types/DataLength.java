@@ -25,19 +25,19 @@ public class DataLength extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected DataLength(byte... values) {
+    private DataLength(byte... values) {
         super(values);
     }
 
-    protected DataLength(long value) {
+    private DataLength(long value) {
         super(value);
     }
 
-    protected DataLength(String length) {
+    private DataLength(String length) {
         super(length);
     }
 
-    protected DataLength(ByteBuf byteBuf) {
+    private DataLength(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

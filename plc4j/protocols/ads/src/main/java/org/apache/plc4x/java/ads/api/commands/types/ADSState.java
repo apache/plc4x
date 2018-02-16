@@ -25,19 +25,19 @@ public class ADSState extends UnsignedShortLEByteValue {
 
     public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
 
-    protected ADSState(byte... values) {
+    private ADSState(byte... values) {
         super(values);
     }
 
-    protected ADSState(int value) {
+    private ADSState(int value) {
         super(value);
     }
 
-    public ADSState(String value) {
+    private ADSState(String value) {
         super(value);
     }
 
-    protected ADSState(ByteBuf byteBuf) {
+    private ADSState(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

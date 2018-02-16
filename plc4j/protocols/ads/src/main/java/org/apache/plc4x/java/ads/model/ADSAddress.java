@@ -31,7 +31,7 @@ public class ADSAddress implements Address {
 
     private final long indexOffset;
 
-    protected ADSAddress(long indexGroup, long indexOffset) {
+    private ADSAddress(long indexGroup, long indexOffset) {
         ByteValue.checkUnsignedBounds(indexGroup, 4);
         this.indexGroup = indexGroup;
         ByteValue.checkUnsignedBounds(indexOffset, 4);

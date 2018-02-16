@@ -25,14 +25,14 @@ import java.util.Arrays;
 
 public class MinorVersion extends ByteValue {
 
-    public static final int NUM_BYTES = 1;
+    private static final int NUM_BYTES = 1;
 
-    MinorVersion(byte... values) {
+    private MinorVersion(byte... values) {
         super(values);
         assertLength(NUM_BYTES);
     }
 
-    public static MinorVersion of(byte... values) {
+    private static MinorVersion of(byte... values) {
         return new MinorVersion(values);
     }
 

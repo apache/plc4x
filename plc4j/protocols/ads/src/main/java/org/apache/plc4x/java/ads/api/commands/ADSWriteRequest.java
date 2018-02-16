@@ -28,7 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * With ADS Write data can be written to an ADS device. The data are addressed by the Index Group and the Index Offset.
@@ -60,33 +60,33 @@ public class ADSWriteRequest extends ADSAbstractRequest {
     //
     ///
 
-    protected ADSWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+    private ADSWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(amstcpHeader, amsHeader);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
-        this.length = Objects.requireNonNull(length);
-        this.data = Objects.requireNonNull(data);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
+        this.length = requireNonNull(length);
+        this.data = requireNonNull(data);
         this.lengthSupplier = null;
         this.calculated = false;
     }
 
-    protected ADSWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+    private ADSWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(amsHeader);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
-        this.length = Objects.requireNonNull(length);
-        this.data = Objects.requireNonNull(data);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
+        this.length = requireNonNull(length);
+        this.data = requireNonNull(data);
         this.lengthSupplier = null;
         this.calculated = false;
     }
 
-    protected ADSWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Data data) {
+    private ADSWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.indexGroup = Objects.requireNonNull(indexGroup);
-        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.indexGroup = requireNonNull(indexGroup);
+        this.indexOffset = requireNonNull(indexOffset);
         this.length = null;
-        this.data = Objects.requireNonNull(data);
-        this.lengthSupplier = () -> data.getCalculatedLength();
+        this.data = requireNonNull(data);
+        this.lengthSupplier = data;
         this.calculated = true;
     }
 

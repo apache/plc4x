@@ -28,7 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A notification is created in an ADS device.
@@ -46,16 +46,16 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
      */
     private final NotificationHandle notificationHandle;
 
-    protected ADSAddDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
+    private ADSAddDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
         super(amstcpHeader, amsHeader);
-        this.result = Objects.requireNonNull(result);
-        this.notificationHandle = Objects.requireNonNull(notificationHandle);
+        this.result = requireNonNull(result);
+        this.notificationHandle = requireNonNull(notificationHandle);
     }
 
-    protected ADSAddDeviceNotificationResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, NotificationHandle notificationHandle) {
+    private ADSAddDeviceNotificationResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, NotificationHandle notificationHandle) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.result = Objects.requireNonNull(result);
-        this.notificationHandle = Objects.requireNonNull(notificationHandle);
+        this.result = requireNonNull(result);
+        this.notificationHandle = requireNonNull(notificationHandle);
     }
 
     public static ADSAddDeviceNotificationResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {

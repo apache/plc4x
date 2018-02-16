@@ -27,7 +27,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * One before defined notification is deleted in an ADS device.
@@ -40,19 +40,19 @@ public class ADSDeleteDeviceNotificationRequest extends ADSAbstractRequest {
      */
     private final NotificationHandle notificationHandle;
 
-    protected ADSDeleteDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {
+    private ADSDeleteDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {
         super(amstcpHeader, amsHeader);
-        this.notificationHandle = Objects.requireNonNull(notificationHandle);
+        this.notificationHandle = requireNonNull(notificationHandle);
     }
 
-    protected ADSDeleteDeviceNotificationRequest(AMSHeader amsHeader, NotificationHandle notificationHandle) {
+    private ADSDeleteDeviceNotificationRequest(AMSHeader amsHeader, NotificationHandle notificationHandle) {
         super(amsHeader);
-        this.notificationHandle = Objects.requireNonNull(notificationHandle);
+        this.notificationHandle = requireNonNull(notificationHandle);
     }
 
-    protected ADSDeleteDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, NotificationHandle notificationHandle) {
+    private ADSDeleteDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, NotificationHandle notificationHandle) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.notificationHandle = Objects.requireNonNull(notificationHandle);
+        this.notificationHandle = requireNonNull(notificationHandle);
     }
 
     public static ADSDeleteDeviceNotificationRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {

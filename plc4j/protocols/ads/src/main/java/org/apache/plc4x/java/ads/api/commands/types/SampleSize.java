@@ -25,19 +25,19 @@ public class SampleSize extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
-    protected SampleSize(byte... values) {
+    private SampleSize(byte... values) {
         super(values);
     }
 
-    protected SampleSize(long value) {
+    private SampleSize(long value) {
         super(value);
     }
 
-    public SampleSize(String size) {
+    private SampleSize(String size) {
         super(size);
     }
 
-    protected SampleSize(ByteBuf byteBuf) {
+    private SampleSize(ByteBuf byteBuf) {
         super(byteBuf);
     }
 

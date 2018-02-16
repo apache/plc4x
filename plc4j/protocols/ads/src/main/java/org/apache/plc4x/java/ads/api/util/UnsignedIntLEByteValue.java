@@ -26,29 +26,29 @@ public abstract class UnsignedIntLEByteValue extends ByteValue {
 
     public static final int NUM_BYTES = 4;
 
-    protected final long longValue;
+    private final long longValue;
 
-    public UnsignedIntLEByteValue(byte... value) {
+    protected UnsignedIntLEByteValue(byte... value) {
         super(value);
         assertLength(NUM_BYTES);
         longValue = getBytes()[3] << 24 | getBytes()[2] << 16 | getBytes()[1] << 8 | getBytes()[0];
     }
 
-    public UnsignedIntLEByteValue(long value) {
+    protected UnsignedIntLEByteValue(long value) {
         super(ofLong(value));
         checkUnsignedBounds(value, NUM_BYTES);
         longValue = value;
     }
 
-    public UnsignedIntLEByteValue(String value) {
+    protected UnsignedIntLEByteValue(String value) {
         this(Long.parseLong(value));
     }
 
-    public UnsignedIntLEByteValue(ByteBuf byteBuf) {
+    protected UnsignedIntLEByteValue(ByteBuf byteBuf) {
         this(byteBuf.readUnsignedIntLE());
     }
 
-    protected static byte[] ofLong(long value) {
+    private static byte[] ofLong(long value) {
         return ByteBuffer.allocate(NUM_BYTES)
             // LE
             .put((byte) (value & 0xff))
