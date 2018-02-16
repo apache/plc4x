@@ -18,34 +18,29 @@ under the License.
 */
 package org.apache.plc4x.java.ads.connection;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.model.ADSAddress;
 import org.apache.plc4x.java.ads.netty.ADSProtocol;
 import org.apache.plc4x.java.ads.netty.Plc4XADSProtocol;
-import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
 
 public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
     public static final int TCP_PORT = 48898;
-
-    private final String hostName;
-
-    private final Integer suppliedPort;
 
     private final AMSNetId targetAmsNetId;
 
@@ -55,35 +50,25 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
 
     private final AMSPort sourceAmsPort;
 
-    private EventLoopGroup workerGroup;
-    private Channel channel;
-    private boolean connected;
-
-    public ADSPlcConnection(String hostName, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
-        this(hostName, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
+    public ADSPlcConnection(InetAddress address, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
+        this(address, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
     }
 
-    public ADSPlcConnection(String hostName, Integer port, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
-        this(hostName, port, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
+    public ADSPlcConnection(InetAddress address, Integer port, AMSNetId targetAmsNetId, AMSPort targetAmsPort) {
+        this(address, port, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
     }
 
 
-    public ADSPlcConnection(String hostName, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
-        this(hostName, null, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+    public ADSPlcConnection(InetAddress address, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
+        this(address, null, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 
-    public ADSPlcConnection(String hostName, Integer port, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
-        this.hostName = hostName;
-        this.suppliedPort = port;
+    public ADSPlcConnection(InetAddress address, Integer port, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
+        super(new TcpSocketChannelFactory(address, port));
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
         this.sourceAmsPort = sourceAmsPort;
-        connected = false;
-    }
-
-    public String getHostName() {
-        return hostName;
     }
 
     public AMSNetId getTargetAmsNetId() {
@@ -103,48 +88,16 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
     }
 
     @Override
-    public void connect() throws PlcConnectionException {
-        workerGroup = new NioEventLoopGroup();
-
-        try {
-            InetAddress serverInetAddress = InetAddress.getByName(hostName);
-
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(workerGroup);
-            bootstrap.channel(NioSocketChannel.class);
-            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            bootstrap.handler(new ChannelInitializer() {
-                @Override
-                protected void initChannel(Channel channel) throws Exception {
-                    // Build the protocol stack for communicating with the ads protocol.
-                    ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast(new Plc4XADSProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
-                    pipeline.addLast(new ADSProtocol());
-                }
-            });
-            // Start the client.
-            ChannelFuture f = bootstrap.connect(serverInetAddress, suppliedPort != null ? suppliedPort : TCP_PORT).sync();
-            f.awaitUninterruptibly();
-            // Wait till the session is finished initializing.
-            channel = f.channel();
-            connected = true;
-        } catch (UnknownHostException e) {
-            throw new PlcConnectionException("Unknown Host " + hostName, e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException(e);
-        }
-    }
-
-    @Override
-    public boolean isConnected() {
-        return connected;
-    }
-
-    @Override
-    public void close() throws Exception {
-        workerGroup.shutdownGracefully();
+    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+        return new ChannelInitializer() {
+            @Override
+            protected void initChannel(Channel channel) {
+                // Build the protocol stack for communicating with the ads protocol.
+                ChannelPipeline pipeline = channel.pipeline();
+                pipeline.addLast(new Plc4XADSProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
+                pipeline.addLast(new ADSProtocol());
+            }
+        };
     }
 
     @Override

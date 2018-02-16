@@ -73,12 +73,12 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);
 
         logger.info("Configured S7cConnection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
-            "max-amq-callee {}", address.getHostAddress(), rack, slot,
+                "max-amq-callee {}", address.getHostAddress(), rack, slot,
             paramPduSize, paramMaxAmqCaller, paramMaxAmqCallee);
     }
 
     public S7PlcConnection(ChannelFactory channelFactory, int rack, int slot, String params) {
-        super(channelFactory);
+        super(channelFactory, true);
 
         this.rack = rack;
         this.slot = slot;
@@ -87,11 +87,11 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         short paramMaxAmqCaller = 8;
         short paramMaxAmqCallee = 8;
 
-        if(!StringUtils.isEmpty(params)) {
+        if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
                 String[] paramElements = param.split("=");
                 String paramName = paramElements[0];
-                if(paramElements.length == 2) {
+                if (paramElements.length == 2) {
                     String paramValue = paramElements[1];
                     switch (paramName) {
                         case "pdu-size":
@@ -129,7 +129,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                 pipeline.addLast(new ChannelInboundHandlerAdapter() {
                     @Override
                     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-                        if(evt instanceof S7ConnectionEvent &&
+                        if (evt instanceof S7ConnectionEvent &&
                             ((S7ConnectionEvent) evt).getState() == S7ConnectionState.SETUP_COMPLETE) {
                             sessionSetupCompleteFuture.complete(null);
                         } else {
@@ -148,7 +148,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     @Override
     protected void sendChannelCreatedEvent() {
         // Send an event to the pipeline telling the Protocol filters what's going on.
-        getChannel().pipeline().fireUserEventTriggered(new S7ConnectionEvent());
+        channel.pipeline().fireUserEventTriggered(new S7ConnectionEvent());
     }
 
     public int getRack() {
@@ -173,8 +173,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     @Override
     public void close() {
-        Channel channel = getChannel();
-        if((channel != null) && channel.isOpen()) {
+        if ((channel != null) && channel.isOpen()) {
             // Send the PLC a message that the connection is being closed.
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
                 (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
@@ -206,7 +205,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         }
         MemoryArea memoryArea = MemoryArea.valueOf(addressMatcher.group("memoryArea"));
         int byteOffset = Integer.parseInt(addressMatcher.group("byteOffset"));
-        String bitOffset =  addressMatcher.group("bitOffset");
+        String bitOffset = addressMatcher.group("bitOffset");
         if (bitOffset != null) {
             return new S7BitAddress(memoryArea, (short) byteOffset, Byte.valueOf(bitOffset));
         }
@@ -218,7 +217,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
         PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
             new PlcRequestContainer<>(readRequest, readFuture);
-        getChannel().writeAndFlush(container);
+        channel.writeAndFlush(container);
         return readFuture;
     }
 
@@ -227,7 +226,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
         PlcRequestContainer<PlcWriteRequest, PlcWriteResponse> container =
             new PlcRequestContainer<>(writeRequest, writeFuture);
-        getChannel().writeAndFlush(container);
+        channel.writeAndFlush(container);
         return writeFuture;
     }
 

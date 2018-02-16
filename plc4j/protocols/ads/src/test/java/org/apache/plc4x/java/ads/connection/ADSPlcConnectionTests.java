@@ -26,6 +26,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.InetAddress;
+
 import static org.junit.Assert.*;
 
 public class ADSPlcConnectionTests {
@@ -33,8 +35,8 @@ public class ADSPlcConnectionTests {
     private ADSPlcConnection adsPlcConnection;
 
     @Before
-    public void setUp() {
-        adsPlcConnection = new ADSPlcConnection("localhost", AMSNetId.of("0.0.0.0.0.0"), AMSPort.of(13));
+    public void setUp() throws Exception {
+        adsPlcConnection = new ADSPlcConnection(InetAddress.getByName("localhost"), AMSNetId.of("0.0.0.0.0.0"), AMSPort.of(13));
     }
 
     @After
@@ -44,7 +46,6 @@ public class ADSPlcConnectionTests {
 
     @Test
     public void initialState() {
-        assertTrue("Hostname is incorrect", adsPlcConnection.getHostName().equalsIgnoreCase("localhost"));
         assertEquals(adsPlcConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
         assertEquals(adsPlcConnection.getTargetAmsPort().toString(), "13");
     }
