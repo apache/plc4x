@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 
 import java.util.Objects;
@@ -31,7 +31,7 @@ import java.util.Objects;
  * Unknown ADS Package
  */
 @ADSCommandType(Command.UNKNOWN)
-public class UnknownCommand extends AMSTCPPaket {
+public class UnknownCommand extends AMSTCPPacket {
 
     final ByteBuf remainingBytes;
 
@@ -45,7 +45,7 @@ public class UnknownCommand extends AMSTCPPaket {
         return () -> remainingBytes;
     }
 
-    public static AMSTCPPaket of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ByteBuf remainingBytes) {
+    public static AMSTCPPacket of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ByteBuf remainingBytes) {
         return new UnknownCommand(amstcpHeader, amsHeader, remainingBytes);
     }
 }

@@ -26,7 +26,7 @@ import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteResponse;
 import org.apache.plc4x.java.ads.api.commands.types.*;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
@@ -56,7 +56,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequestContainer<PlcRequest, PlcResponse>> {
+public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPacket, PlcRequestContainer<PlcRequest, PlcResponse>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XADSProtocol.class);
 
@@ -114,8 +114,8 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         }
         byte[] bytes = byteArrayOutputStream.toByteArray();
         Data data = Data.of(bytes);
-        AMSTCPPaket amstcpPaket = ADSWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
-        out.add(amstcpPaket);
+        AMSTCPPacket amstcpPacket = ADSWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
+        out.add(amstcpPacket);
         requests.put(invokeId.getAsLong(), msg);
     }
 
@@ -135,16 +135,16 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
         Length length = Length.of(readRequestItem.getSize());
-        AMSTCPPaket amstcpPaket = ADSReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
-        out.add(amstcpPaket);
+        AMSTCPPacket amstcpPacket = ADSReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
+        out.add(amstcpPacket);
         requests.put(invokeId.getAsLong(), msg);
     }
 
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, AMSTCPPaket amstcpPaket, List<Object> out) throws Exception {
-        PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requests.remove(amstcpPaket.getAmsHeader().getInvokeId().getAsLong());
+    protected void decode(ChannelHandlerContext channelHandlerContext, AMSTCPPacket amstcpPacket, List<Object> out) throws Exception {
+        PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requests.remove(amstcpPacket.getAmsHeader().getInvokeId().getAsLong());
         if (plcRequestContainer == null) {
-            LOGGER.info("Unmapped packet received {}", amstcpPaket);
+            LOGGER.info("Unmapped packet received {}", amstcpPacket);
             return;
         }
         PlcRequest request = plcRequestContainer.getRequest();
@@ -152,16 +152,16 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
 
         // Handle the response to a read request.
         if (request instanceof PlcReadRequest) {
-            if (amstcpPaket instanceof ADSReadResponse) {
-                response = decodeReadResponse((ADSReadResponse) amstcpPaket, plcRequestContainer);
+            if (amstcpPacket instanceof ADSReadResponse) {
+                response = decodeReadResponse((ADSReadResponse) amstcpPacket, plcRequestContainer);
             } else {
-                throw new PlcProtocolException("Wrong type correlated " + amstcpPaket);
+                throw new PlcProtocolException("Wrong type correlated " + amstcpPacket);
             }
         } else if (request instanceof PlcWriteRequest) {
-            if (amstcpPaket instanceof ADSWriteResponse) {
-                response = decodeWriteResponse((ADSWriteResponse) amstcpPaket, plcRequestContainer);
+            if (amstcpPacket instanceof ADSWriteResponse) {
+                response = decodeWriteResponse((ADSWriteResponse) amstcpPacket, plcRequestContainer);
             } else {
-                throw new PlcProtocolException("Wrong type correlated " + amstcpPaket);
+                throw new PlcProtocolException("Wrong type correlated " + amstcpPacket);
             }
         }
 

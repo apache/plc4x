@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.ads.netty;
 
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.model.ADSAddress;
@@ -90,7 +90,7 @@ public class Plc4XADSProtocolTest {
         ArrayList<Object> in = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, in);
         ArrayList<Object> out = new ArrayList<>();
-        SUT.decode(null, ((AMSTCPPaket) in.get(0)), out);
+        SUT.decode(null, ((AMSTCPPacket) in.get(0)), out);
         assertThat(out, hasSize(1));
     }
 }

@@ -26,24 +26,24 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import static java.util.Objects.requireNonNull;
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
-public abstract class AMSTCPPaket implements ByteReadable {
+public abstract class AMSTCPPacket implements ByteReadable {
     private final AMSTCPHeader amstcpHeader;
 
     private final AMSHeader amsHeader;
 
-    public AMSTCPPaket(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+    public AMSTCPPacket(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         this.amstcpHeader = requireNonNull(amstcpHeader);
         this.amsHeader = requireNonNull(amsHeader);
     }
 
-    public AMSTCPPaket(AMSHeader amsHeader) {
+    public AMSTCPPacket(AMSHeader amsHeader) {
         // It is important that we wrap the ads data call as this will initialized in the constructor
         // so this value will be null if we call adsData now.
         this.amstcpHeader = AMSTCPHeader.of(requireNonNull(amsHeader), () -> getAdsData().getCalculatedLength());
         this.amsHeader = requireNonNull(amsHeader);
     }
 
-    public AMSTCPPaket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
+    public AMSTCPPacket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
         if (!getClass().isAnnotationPresent(ADSCommandType.class)) {
             throw new IllegalArgumentException(ADSCommandType.class + " need to be present.");
         }

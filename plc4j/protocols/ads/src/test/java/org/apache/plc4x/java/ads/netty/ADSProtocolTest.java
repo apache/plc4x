@@ -21,7 +21,7 @@ package org.apache.plc4x.java.ads.netty;
 import org.apache.commons.io.HexDump;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
@@ -51,7 +51,7 @@ public class ADSProtocolTest {
     private ADSProtocol SUT;
 
     @Parameterized.Parameter
-    public AMSTCPPaket amstcpPaket;
+    public AMSTCPPacket amstcpPacket;
 
     @Parameterized.Parameters(name = "{0} {index}")
     public static Collection<Object[]> data() {
@@ -158,14 +158,14 @@ public class ADSProtocolTest {
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Unpooled.wrappedBuffer(new byte[]{42})
             )*/
-        ).map(amstcpPaket -> new Object[]{amstcpPaket}).collect(Collectors.toList());
+        ).map(amstcpPacket -> new Object[]{amstcpPacket}).collect(Collectors.toList());
     }
 
     @Before
     public void setUp() throws Exception {
         SUT = new ADSProtocol();
-        byte[] bytes = amstcpPaket.getBytes();
-        LOGGER.info("amstcpPaket:\n{} has \n{}bytes", amstcpPaket, bytes.length);
+        byte[] bytes = amstcpPacket.getBytes();
+        LOGGER.info("amstcpPacket:\n{} has \n{}bytes", amstcpPacket, bytes.length);
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             HexDump.dump(bytes, 0, byteArrayOutputStream, 0);
             byteArrayOutputStream.flush();
@@ -176,7 +176,7 @@ public class ADSProtocolTest {
     @Test
     public void encode() throws Exception {
         ArrayList<Object> out = new ArrayList<>();
-        SUT.encode(null, amstcpPaket, out);
+        SUT.encode(null, amstcpPacket, out);
         assertEquals(1, out.size());
         assertThat(out, hasSize(1));
     }
@@ -184,7 +184,7 @@ public class ADSProtocolTest {
     @Test
     public void decode() throws Exception {
         ArrayList<Object> out = new ArrayList<>();
-        SUT.decode(null, amstcpPaket.getByteBuf(), out);
+        SUT.decode(null, amstcpPacket.getByteBuf(), out);
         assertThat(out, hasSize(1));
     }
 
