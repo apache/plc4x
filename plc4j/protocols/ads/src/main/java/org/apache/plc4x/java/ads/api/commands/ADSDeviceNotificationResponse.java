@@ -19,16 +19,15 @@
 package org.apache.plc4x.java.ads.api.commands;
 
 import org.apache.plc4x.java.ads.api.generic.ADSData;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 
 /**
  * Data will carry forward independently from an ADS device to a Client
  */
 @ADSCommandType(Command.ADS_Device_Notification)
-public class ADSDeviceNotificationResponse extends AMSTCPPaket {
+public class ADSDeviceNotificationResponse extends ADSAbstractResponse {
 
-    public ADSDeviceNotificationResponse() {
+    private ADSDeviceNotificationResponse() {
         super(null, null);
         // There is no {@link ADSDeviceNotificationResponse} specified
     }

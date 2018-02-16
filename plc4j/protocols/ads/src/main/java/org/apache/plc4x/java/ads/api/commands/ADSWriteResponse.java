@@ -22,14 +22,16 @@ import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
 /**
  * With ADS Write data can be written to an ADS device.
  */
 @ADSCommandType(Command.ADS_Write)
-public class ADSWriteResponse extends AMSTCPPaket {
+public class ADSWriteResponse extends ADSAbstractResponse {
 
     /**
      * 4 bytes	ADS error number
@@ -41,6 +43,11 @@ public class ADSWriteResponse extends AMSTCPPaket {
         this.result = result;
     }
 
+    public ADSWriteResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+        this.result = result;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result);
@@ -48,5 +55,12 @@ public class ADSWriteResponse extends AMSTCPPaket {
 
     public Result getResult() {
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ADSWriteResponse{" +
+            "result=" + result +
+            "} " + super.toString();
     }
 }

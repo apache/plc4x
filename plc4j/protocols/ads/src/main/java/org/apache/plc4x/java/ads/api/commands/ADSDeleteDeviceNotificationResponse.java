@@ -22,14 +22,16 @@ import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
 /**
  * One before defined notification is deleted in an ADS device.
  */
 @ADSCommandType(Command.ADS_Delete_Device_Notification)
-public class ADSDeleteDeviceNotificationResponse extends AMSTCPPaket {
+public class ADSDeleteDeviceNotificationResponse extends ADSAbstractResponse {
 
     /**
      * 4 bytes	ADS error number
@@ -41,9 +43,20 @@ public class ADSDeleteDeviceNotificationResponse extends AMSTCPPaket {
         this.result = result;
     }
 
+    public ADSDeleteDeviceNotificationResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+        this.result = result;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result);
     }
 
+    @Override
+    public String toString() {
+        return "ADSDeleteDeviceNotificationResponse{" +
+            "result=" + result +
+            "} " + super.toString();
+    }
 }

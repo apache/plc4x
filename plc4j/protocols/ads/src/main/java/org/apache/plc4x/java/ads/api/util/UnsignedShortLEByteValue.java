@@ -58,6 +58,8 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
 
     @Override
     public String toString() {
-        return String.valueOf(getAsInt());
+        return getClass().getSimpleName() + "{" +
+            "intValue=" + getAsInt() +
+            "} " + super.toString();
     }
 }

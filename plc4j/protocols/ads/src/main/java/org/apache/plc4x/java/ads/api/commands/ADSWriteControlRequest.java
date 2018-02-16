@@ -25,7 +25,6 @@ import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -37,7 +36,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
  * These data were not analysed from the current ADS devices (PLC, NC, ...)
  */
 @ADSCommandType(Command.ADS_Write_Control)
-public class ADSWriteControlRequest extends AMSTCPPaket {
+public class ADSWriteControlRequest extends ADSAbstractRequest {
 
     /**
      * 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
@@ -85,4 +84,13 @@ public class ADSWriteControlRequest extends AMSTCPPaket {
         return buildADSData(adsState, deviceState, length, data);
     }
 
+    @Override
+    public String toString() {
+        return "ADSWriteControlRequest{" +
+            "adsState=" + adsState +
+            ", deviceState=" + deviceState +
+            ", length=" + length +
+            ", data=" + data +
+            "} " + super.toString();
+    }
 }

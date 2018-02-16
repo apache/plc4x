@@ -54,4 +54,19 @@ public class CalculatedAMSHeader extends AMSHeader {
             code,
             invokeId);
     }
+
+    @Override
+    public String toString() {
+        return "CalculatedAMSHeader{" +
+            "targetAmsNetId=" + targetAmsNetId +
+            ", targetAmsPort=" + targetAmsPort +
+            ", sourceAmsNetId=" + sourceAmsNetId +
+            ", sourceAmsPort=" + sourceAmsPort +
+            ", commandId=" + commandId +
+            ", stateFlags=" + stateFlags +
+            ", dataLength=" + lengthSupplier.getLength() +
+            ", code=" + code +
+            ", invokeId=" + invokeId +
+            '}';
+    }
 }

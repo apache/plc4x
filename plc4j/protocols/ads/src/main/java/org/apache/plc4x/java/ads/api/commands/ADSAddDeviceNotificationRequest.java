@@ -19,14 +19,11 @@
 package org.apache.plc4x.java.ads.api.commands;
 
 import org.apache.plc4x.java.ads.api.commands.types.*;
+import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
-import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
-import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
-import org.apache.plc4x.java.ads.api.generic.types.Command;
-import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 /**
@@ -36,7 +33,7 @@ import org.apache.plc4x.java.ads.api.util.ByteValue;
  * You can increase the payload by organizing the data in structures.
  */
 @ADSCommandType(Command.ADS_Add_Device_Notification)
-public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
+public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
 
     /**
      * 4 bytes	Index Group of the data, which should be sent per notification.
@@ -88,7 +85,7 @@ public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
     }
 
     public ADSAddDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
         this.length = length;
@@ -104,11 +101,26 @@ public class ADSAddDeviceNotificationRequest extends AMSTCPPaket {
 
     public static class Reserved extends ByteValue {
 
+        public static final int NUM_BYTES = 16;
+
         private static final Reserved INSTANCE = new Reserved();
 
         private Reserved() {
             super((byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00);
-            assertLength(16);
+            assertLength(NUM_BYTES);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ADSAddDeviceNotificationRequest{" +
+            "indexGroup=" + indexGroup +
+            ", indexOffset=" + indexOffset +
+            ", length=" + length +
+            ", transmissionMode=" + transmissionMode +
+            ", maxDelay=" + maxDelay +
+            ", cycleTime=" + cycleTime +
+            ", reserved=" + reserved +
+            "} " + super.toString();
     }
 }

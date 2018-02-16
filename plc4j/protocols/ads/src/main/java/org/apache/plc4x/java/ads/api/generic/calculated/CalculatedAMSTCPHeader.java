@@ -44,10 +44,23 @@ public class CalculatedAMSTCPHeader extends AMSTCPHeader {
 
     @Override
     public ByteBuf getByteBuf() {
+        return buildByteBuff(reserved, Length.of(getCalculatedLength()));
+    }
+
+    @Override
+    public long getCalculatedLength() {
         long aggregateLength = 0;
         for (LengthSupplier supplier : lengthSupplier) {
             aggregateLength += supplier.getCalculatedLength();
         }
-        return buildByteBuff(reserved, Length.of(aggregateLength));
+        return aggregateLength;
+    }
+
+    @Override
+    public String toString() {
+        return "CalculatedAMSTCPHeader{" +
+            "reserved=" + reserved +
+            ", length=" + getCalculatedLength() +
+            '}';
     }
 }

@@ -22,7 +22,6 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -34,7 +33,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
  * The data which can be read are addressed by the Index Group and the Index Offset
  */
 @ADSCommandType(Command.ADS_Read_Write)
-public class ADSReadWriteRequest extends AMSTCPPaket {
+public class ADSReadWriteRequest extends ADSAbstractRequest {
 
     /**
      * 4 bytes	Index Group, in which the data should be written.
@@ -86,7 +85,17 @@ public class ADSReadWriteRequest extends AMSTCPPaket {
 
     @Override
     public ADSData getAdsData() {
-        return ADSData.EMPTY;
+        return buildADSData(indexGroup, indexOffset, readLength, writeLength, data);
     }
 
+    @Override
+    public String toString() {
+        return "ADSReadWriteRequest{" +
+            "indexGroup=" + indexGroup +
+            ", indexOffset=" + indexOffset +
+            ", readLength=" + readLength +
+            ", writeLength=" + writeLength +
+            ", data=" + data +
+            "} " + super.toString();
+    }
 }

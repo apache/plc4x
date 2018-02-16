@@ -54,4 +54,13 @@ public class AdsStampHeader implements ByteReadable {
     public ByteBuf getByteBuf() {
         return buildByteBuff(timeStamp, samples, () -> buildByteBuff(adsNotificationSamples.toArray(new ByteReadable[adsNotificationSamples.size()])));
     }
+
+    @Override
+    public String toString() {
+        return "AdsStampHeader{" +
+            "timeStamp=" + timeStamp +
+            ", samples=" + samples +
+            ", adsNotificationSamples=" + adsNotificationSamples +
+            '}';
+    }
 }

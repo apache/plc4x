@@ -24,14 +24,16 @@ import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
 /**
  * With ADS Read data can be read from an ADS device
  */
 @ADSCommandType(Command.ADS_Read)
-public class ADSReadResponse extends AMSTCPPaket {
+public class ADSReadResponse extends ADSAbstractResponse {
 
     /**
      * 4 bytes	ADS error number
@@ -53,6 +55,13 @@ public class ADSReadResponse extends AMSTCPPaket {
         this.data = data;
     }
 
+    public ADSReadResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Length length, Data data) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+        this.result = result;
+        this.length = length;
+        this.data = data;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result, length, data);
@@ -68,5 +77,14 @@ public class ADSReadResponse extends AMSTCPPaket {
 
     public Data getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return "ADSReadResponse{" +
+            "result=" + result +
+            ", length=" + length +
+            ", data=" + data +
+            "} " + super.toString();
     }
 }

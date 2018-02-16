@@ -22,14 +22,16 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
 /**
  * Reads the name and the version number of the ADS device.
  */
 @ADSCommandType(Command.ADS_Read_Device_Info)
-public class ADSReadDeviceInfoResponse extends AMSTCPPaket {
+public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
     /**
      * 4 bytes	ADS error number.
      */
@@ -60,9 +62,28 @@ public class ADSReadDeviceInfoResponse extends AMSTCPPaket {
         this.device = device;
     }
 
+    public ADSReadDeviceInfoResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+        this.result = result;
+        this.majorVersion = majorVersion;
+        this.minorVersion = minorVersion;
+        this.version = version;
+        this.device = device;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result, majorVersion, minorVersion, version, device);
     }
 
+    @Override
+    public String toString() {
+        return "ADSReadDeviceInfoResponse{" +
+            "result=" + result +
+            ", majorVersion=" + majorVersion +
+            ", minorVersion=" + minorVersion +
+            ", version=" + version +
+            ", device=" + device +
+            "} " + super.toString();
+    }
 }

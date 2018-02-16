@@ -24,7 +24,10 @@ import io.netty.buffer.ByteBuf;
 public interface ByteReadable extends LengthSupplier {
 
     default byte[] getBytes() {
-        return getByteBuf().array();
+        ByteBuf byteBuf = getByteBuf();
+        byte[] result = new byte[byteBuf.writerIndex()];
+        byteBuf.readBytes(result);
+        return result;
     }
 
     ByteBuf getByteBuf();

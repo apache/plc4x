@@ -23,14 +23,16 @@ import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
 /**
  * A notification is created in an ADS device.
  */
 @ADSCommandType(Command.ADS_Add_Device_Notification)
-public class ADSAddDeviceNotificationResponse extends AMSTCPPaket {
+public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
 
     /**
      * 4 bytes	ADS error number
@@ -48,9 +50,22 @@ public class ADSAddDeviceNotificationResponse extends AMSTCPPaket {
         this.notificationHandle = notificationHandle;
     }
 
+    public ADSAddDeviceNotificationResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, NotificationHandle notificationHandle) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+        this.result = result;
+        this.notificationHandle = notificationHandle;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result, notificationHandle);
     }
 
+    @Override
+    public String toString() {
+        return "ADSAddDeviceNotificationResponse{" +
+            "result=" + result +
+            ", notificationHandle=" + notificationHandle +
+            "} " + super.toString();
+    }
 }

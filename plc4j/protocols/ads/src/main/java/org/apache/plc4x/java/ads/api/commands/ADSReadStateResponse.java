@@ -22,14 +22,16 @@ import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
+import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
 /**
  * Reads the ADS status and the device status of an ADS device.
  */
 @ADSCommandType(Command.ADS_Read_State)
-public class ADSReadStateResponse extends AMSTCPPaket {
+public class ADSReadStateResponse extends ADSAbstractResponse {
 
     /**
      * 4 bytes	ADS error number
@@ -41,9 +43,20 @@ public class ADSReadStateResponse extends AMSTCPPaket {
         this.result = result;
     }
 
+    public ADSReadStateResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+        this.result = result;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result);
     }
 
+    @Override
+    public String toString() {
+        return "ADSReadStateResponse{" +
+            "result=" + result +
+            "} " + super.toString();
+    }
 }

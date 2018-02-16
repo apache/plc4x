@@ -21,12 +21,13 @@ package org.apache.plc4x.java.ads.api.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 
 public class ByteValue implements ByteReadable {
 
-    final byte[] value;
+    protected final byte[] value;
 
     public ByteValue(byte... value) {
         Objects.requireNonNull(value);
@@ -42,6 +43,13 @@ public class ByteValue implements ByteReadable {
     public static void checkUnsignedBounds(long value, int numberOfBytes) {
         double upperBound = Math.pow(2, 8 * numberOfBytes);
         if (value < 0 || value >= upperBound) {
+            throw new IllegalArgumentException("Value must between 0 and " + upperBound + ". Was " + value);
+        }
+    }
+
+    public static void checkUnsignedBounds(BigInteger value, int numberOfBytes) {
+        BigInteger upperBound = BigInteger.valueOf(2).pow(8 * numberOfBytes);
+        if (value.compareTo(BigInteger.ZERO) < 0 || value.compareTo(upperBound) > 0) {
             throw new IllegalArgumentException("Value must between 0 and " + upperBound + ". Was " + value);
         }
     }
@@ -69,5 +77,12 @@ public class ByteValue implements ByteReadable {
     @Override
     public int hashCode() {
         return Arrays.hashCode(value);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+            "value=" + Arrays.toString(value) +
+            '}';
     }
 }

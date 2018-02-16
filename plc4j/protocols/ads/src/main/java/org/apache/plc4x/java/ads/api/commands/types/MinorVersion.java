@@ -35,6 +35,8 @@ public class MinorVersion extends ByteValue {
     }
 
     public static MinorVersion of(ByteBuf byteBuf) {
-        return of(byteBuf.readBytes(NUM_BYTES).array());
+        byte[] values = new byte[NUM_BYTES];
+        byteBuf.readBytes(values);
+        return of(values);
     }
 }

@@ -44,7 +44,7 @@ public abstract class AMSTCPPaket implements ByteReadable {
         this.amsHeader = amsHeader;
     }
 
-    public AMSTCPPaket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+    public AMSTCPPaket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
         if (!getClass().isAnnotationPresent(ADSCommandType.class)) {
             throw new IllegalArgumentException(ADSCommandType.class + " need to be present.");
         }
@@ -54,7 +54,7 @@ public abstract class AMSTCPPaket implements ByteReadable {
             sourceAmsNetId,
             sourceAmsPort,
             getClass().getAnnotation(ADSCommandType.class).value(),
-            State.DEFAULT,
+            stateId,
             () -> DataLength.of(getAdsData().getCalculatedLength()),
             invokeId);
         this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getCalculatedLength());
@@ -79,4 +79,11 @@ public abstract class AMSTCPPaket implements ByteReadable {
         return () -> buildByteBuff(byteReadables);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+            "amstcpHeader=" + amstcpHeader +
+            ", amsHeader=" + amsHeader +
+            '}';
+    }
 }

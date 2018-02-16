@@ -66,7 +66,9 @@ public class AMSNetId extends ByteValue {
     }
 
     public static AMSNetId of(ByteBuf byteBuf) {
-        return of(byteBuf.readBytes(NUM_BYTES).array());
+        byte[] values = new byte[NUM_BYTES];
+        byteBuf.readBytes(values);
+        return of(values);
     }
 
     @Override

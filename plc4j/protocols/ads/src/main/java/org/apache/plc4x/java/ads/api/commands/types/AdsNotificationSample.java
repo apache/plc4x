@@ -53,4 +53,12 @@ public class AdsNotificationSample implements ByteReadable {
         return buildByteBuff(notificationHandle, sampleSize, data);
     }
 
+    @Override
+    public String toString() {
+        return "AdsNotificationSample{" +
+            "notificationHandle=" + notificationHandle +
+            ", sampleSize=" + sampleSize +
+            ", data=" + data +
+            '}';
+    }
 }

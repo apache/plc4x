@@ -132,4 +132,19 @@ public class AMSHeader implements ByteReadable {
     public Invoke getInvokeId() {
         return invokeId;
     }
+
+    @Override
+    public String toString() {
+        return "AMSHeader{" +
+            "targetAmsNetId=" + targetAmsNetId +
+            ", targetAmsPort=" + targetAmsPort +
+            ", sourceAmsNetId=" + sourceAmsNetId +
+            ", sourceAmsPort=" + sourceAmsPort +
+            ", commandId=" + commandId +
+            ", stateFlags=" + stateFlags +
+            ", dataLength=" + dataLength +
+            ", code=" + code +
+            ", invokeId=" + invokeId +
+            '}';
+    }
 }

@@ -35,6 +35,8 @@ public class MajorVersion extends ByteValue {
     }
 
     public static MajorVersion of(ByteBuf byteBuf) {
-        return of(byteBuf.readBytes(NUM_BYTES).array());
+        byte[] values = new byte[NUM_BYTES];
+        byteBuf.readBytes(values);
+        return of(values);
     }
 }

@@ -18,8 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.ads.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.commons.lang3.SerializationUtils;
@@ -49,6 +47,8 @@ import org.apache.plc4x.java.api.types.ResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -102,13 +102,17 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
-        ByteBuf buffer = Unpooled.buffer();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         for (Object o : writeRequestItem.getValues()) {
             // TODO: we need custom serialization here as java types don't really help here
             byte[] serialize = SerializationUtils.serialize((Serializable) o);
-            buffer.writeBytes(serialize);
+            try {
+                byteArrayOutputStream.write(serialize);
+            } catch (IOException e) {
+                throw new PlcException(e);
+            }
         }
-        byte[] bytes = buffer.array();
+        byte[] bytes = byteArrayOutputStream.toByteArray();
         Length length = Length.of(bytes.length);
         Data data = Data.of(bytes);
         AMSTCPPaket amstcpPaket = new ADSWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, data);

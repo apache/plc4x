@@ -28,4 +28,9 @@ public class Data extends ByteValue {
     public static Data of(byte... values) {
         return new Data(values);
     }
+
+    @Override
+    public String toString() {
+        return "Data{" + new String(value) + "} " + super.toString();
+    }
 }

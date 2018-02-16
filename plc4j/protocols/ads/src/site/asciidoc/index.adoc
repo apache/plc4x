@@ -18,6 +18,8 @@
 
 == ADS Protocol Java Implementation
 
+// TODO: change this copy&paste from S7... document me
+
 The current version of the ADS protocol java driver is based upon Netty 4 (http://netty.io/).
 
 As the ADS protocol running on TCP is a hierarchy of protocols, the ADS driver is implemented by providing several Protocol implementations, each encoding one layer of the protocol stack.

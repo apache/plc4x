@@ -52,17 +52,27 @@ public class AMSTCPHeader implements ByteReadable {
      * Size: 2 bytes
      * These bytes must be set to 0.
      */
-    protected static class Reserved extends ByteValue {
+    public static class Reserved extends ByteValue {
+
+        public static final int NUM_BYTES = 2;
 
         private static final Reserved CONSTANT = new Reserved();
 
         private Reserved() {
             super((byte) 0x00, (byte) 0x00);
-            assertLength(2);
+            assertLength(NUM_BYTES);
         }
     }
 
-    public Length getLengthValue() {
-        return length;
+    public long getCalculatedLength() {
+        return length.getAsLong();
+    }
+
+    @Override
+    public String toString() {
+        return "AMSTCPHeader{" +
+            "reserved=" + reserved +
+            ", length=" + length +
+            '}';
     }
 }

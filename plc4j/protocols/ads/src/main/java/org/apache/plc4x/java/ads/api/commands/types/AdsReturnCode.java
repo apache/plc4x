@@ -188,12 +188,12 @@ public enum AdsReturnCode {
 
     @Override
     public String toString() {
-        return "AdsReturnCode{\n" +
+        return "AdsReturnCode{" +
             "hex=" + hex +
-            ",\n dec=" + dec +
-            ",\n description='" + description + '\'' +
-            ",\n possibleCauses='" + possibleCauses + '\'' +
-            ",\n solution='" + solution + '\'' +
+            ", dec=" + dec +
+            ", description='" + description + '\'' +
+            ", possibleCauses='" + possibleCauses + '\'' +
+            ", solution='" + solution + '\'' +
             '}';
     }
 }

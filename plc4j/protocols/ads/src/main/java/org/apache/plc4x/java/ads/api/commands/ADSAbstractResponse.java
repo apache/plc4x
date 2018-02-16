@@ -18,44 +18,28 @@
  */
 package org.apache.plc4x.java.ads.api.commands;
 
-import org.apache.plc4x.java.ads.api.commands.types.Result;
-import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
+import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
-import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.api.generic.types.State;
 
-/**
- * Changes the ADS status and the device status of an ADS device.
- */
-@ADSCommandType(Command.ADS_Write_Control)
-public class ADSWriteControlResponse extends ADSAbstractResponse {
-    /**
-     * 4 bytes	ADS error number
-     */
-    private final Result result;
-
-    public ADSWriteControlResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
+public abstract class ADSAbstractResponse extends AMSTCPPaket {
+    public ADSAbstractResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         super(amstcpHeader, amsHeader);
-        this.result = result;
     }
 
-    public ADSWriteControlResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
-        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.result = result;
+    public ADSAbstractResponse(AMSHeader amsHeader) {
+        super(amsHeader);
     }
 
-    @Override
-    public ADSData getAdsData() {
-        return buildADSData(result);
+    public ADSAbstractResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT_RESPONSE, invokeId);
     }
 
-    @Override
-    public String toString() {
-        return "ADSWriteControlResponse{" +
-            "result=" + result +
-            "} " + super.toString();
+    public ADSAbstractResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, stateId, invokeId);
     }
 }
