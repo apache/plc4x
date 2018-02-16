@@ -76,7 +76,6 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.11</version>
       <scope>test</scope>
     </dependency>
     <!-- Used to create a pcap dump file for wireshark. -->
