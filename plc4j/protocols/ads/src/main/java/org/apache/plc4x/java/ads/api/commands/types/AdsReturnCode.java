@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.api.commands.types;
 
 import java.util.Objects;
 
+import static java.lang.Long.toHexString;
+
 /**
  * Based on spec from: https://infosys.beckhoff.com/content/1033/tcadscommon/html/ads_returncodes.htm
  */
@@ -191,7 +193,7 @@ public enum AdsReturnCode {
     @Override
     public String toString() {
         return "AdsReturnCode{" +
-            "hex=" + hex +
+            "hex=" + String.format("0x%4s", toHexString(hex)).replace(' ', '0') +
             ", dec=" + dec +
             ", description='" + description + '\'' +
             ", possibleCauses='" + possibleCauses + '\'' +

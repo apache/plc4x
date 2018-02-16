@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.lang.Integer.toBinaryString;
 import static org.apache.plc4x.java.ads.api.generic.types.State.StateMask.*;
 
 /**
@@ -73,6 +74,11 @@ public class State extends UnsignedShortLEByteValue {
 
         public int getMask() {
             return mask;
+        }
+
+        @Override
+        public String toString() {
+            return name() + "/mask=" + String.format("0b%16s", toBinaryString(mask)).replace(' ', '0');
         }
     }
 
@@ -185,5 +191,10 @@ public class State extends UnsignedShortLEByteValue {
 
     public boolean isBroadcast() {
         return BROADCAST.applies(this);
+    }
+
+    @Override
+    public String toString() {
+        return "State{" + getStateMaskEnumSet() + "} " + super.toString();
     }
 }

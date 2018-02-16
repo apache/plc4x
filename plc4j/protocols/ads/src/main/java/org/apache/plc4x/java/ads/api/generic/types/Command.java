@@ -26,6 +26,8 @@ import org.apache.plc4x.java.ads.api.util.ByteValue;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import static java.lang.Integer.toHexString;
+
 public enum Command implements ByteReadable {
     Invalid(0x00),
     ADS_Read_Device_Info(0x01),
@@ -101,5 +103,10 @@ public enum Command implements ByteReadable {
 
     public static Command of(ByteBuf byteBuf) {
         return of(byteBuf.readUnsignedShortLE());
+    }
+
+    @Override
+    public String toString() {
+        return name() + "/hex=" + String.format("0x%2s", toHexString(intValue)).replace(' ', '0');
     }
 }
