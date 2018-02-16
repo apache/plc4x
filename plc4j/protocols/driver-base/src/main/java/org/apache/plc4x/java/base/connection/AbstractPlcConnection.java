@@ -32,14 +32,21 @@ import java.util.concurrent.ExecutionException;
 
 public abstract class AbstractPlcConnection implements PlcConnection {
 
-    private final ChannelFactory channelFactory;
-    private Channel channel;
-    private boolean connected;
+    protected final ChannelFactory channelFactory;
+    protected final boolean awaitSessionSetupComplete;
+    protected Channel channel;
+    protected boolean connected;
 
-    public AbstractPlcConnection(ChannelFactory channelFactory) {
+    protected AbstractPlcConnection(ChannelFactory channelFactory) {
+        this(channelFactory, false);
+    }
+
+    protected AbstractPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
         this.channelFactory = channelFactory;
+        this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         this.connected = false;
     }
+
 
     @Override
     public void connect() throws PlcConnectionException {
@@ -56,7 +63,9 @@ public abstract class AbstractPlcConnection implements PlcConnection {
             sendChannelCreatedEvent();
 
             // Wait till the connection is established.
-            sessionSetupCompleteFuture.get();
+            if (awaitSessionSetupComplete) {
+                sessionSetupCompleteFuture.get();
+            }
 
             // Set the connection to "connected"
             connected = true;
@@ -91,7 +100,7 @@ public abstract class AbstractPlcConnection implements PlcConnection {
 
     @Override
     public Optional<PlcLister> getLister() {
-        if(this instanceof PlcLister) {
+        if (this instanceof PlcLister) {
             return Optional.of((PlcLister) this);
         }
         return Optional.empty();
@@ -99,7 +108,7 @@ public abstract class AbstractPlcConnection implements PlcConnection {
 
     @Override
     public Optional<PlcReader> getReader() {
-        if(this instanceof PlcReader) {
+        if (this instanceof PlcReader) {
             return Optional.of((PlcReader) this);
         }
         return Optional.empty();
@@ -107,7 +116,7 @@ public abstract class AbstractPlcConnection implements PlcConnection {
 
     @Override
     public Optional<PlcWriter> getWriter() {
-        if(this instanceof PlcWriter) {
+        if (this instanceof PlcWriter) {
             return Optional.of((PlcWriter) this);
         }
         return Optional.empty();

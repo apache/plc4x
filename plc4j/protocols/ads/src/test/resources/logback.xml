@@ -17,27 +17,20 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
 
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+  </root>
 
-  <artifactId>plc4j-protocols</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: Protocols</name>
-  <description>Wrapper project for all PLC4J protocol implementations.</description>
-
-  <modules>
-    <module>ads</module>
-    <module>driver-base</module>
-    <module>s7</module>
-  </modules>
-
-</project>
+</configuration>
