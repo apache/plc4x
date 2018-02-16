@@ -67,7 +67,7 @@ public class ByteValue implements ByteReadable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ByteValue)) return false;
 
         ByteValue byteValue = (ByteValue) o;
 
