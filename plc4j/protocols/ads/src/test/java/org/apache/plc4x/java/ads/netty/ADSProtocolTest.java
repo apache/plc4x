@@ -39,7 +39,9 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class ADSProtocolTest {
@@ -176,17 +178,14 @@ public class ADSProtocolTest {
         ArrayList<Object> out = new ArrayList<>();
         SUT.encode(null, amstcpPaket, out);
         assertEquals(1, out.size());
-        // TODO: replace with hamcrest
-        //assertThat(out, hasSize(1));
+        assertThat(out, hasSize(1));
     }
 
     @Test
     public void decode() throws Exception {
         ArrayList<Object> out = new ArrayList<>();
         SUT.decode(null, amstcpPaket.getByteBuf(), out);
-        assertEquals(1, out.size());
-        // TODO: replace with hamcrest
-        //assertThat(out, hasSize(1));
+        assertThat(out, hasSize(1));
     }
 
 }

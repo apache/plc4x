@@ -22,9 +22,7 @@ import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.model.ADSAddress;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcRequestContainer;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,7 +37,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class Plc4XADSProtocolTest {
@@ -48,7 +47,7 @@ public class Plc4XADSProtocolTest {
     private Plc4XADSProtocol SUT;
 
     @Parameterized.Parameter(0)
-    public PlcRequestContainer plcRequestContainer;
+    public PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer;
 
     @Parameterized.Parameter(1)
     public CompletableFuture completableFuture;
@@ -82,9 +81,7 @@ public class Plc4XADSProtocolTest {
     public void encode() throws Exception {
         ArrayList<Object> out = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, out);
-        assertEquals(1, out.size());
-        // TODO: replace with hamcrest
-        //assertThat(out, hasSize(1));
+        assertThat(out, hasSize(1));
     }
 
     @Ignore("This doesn't work as the correlation requires a response to a request not another response")
@@ -94,8 +91,6 @@ public class Plc4XADSProtocolTest {
         SUT.encode(null, plcRequestContainer, in);
         ArrayList<Object> out = new ArrayList<>();
         SUT.decode(null, ((AMSTCPPaket) in.get(0)), out);
-        assertEquals(1, out.size());
-        // TODO: replace with hamcrest
-        //assertThat(out, hasSize(1));
+        assertThat(out, hasSize(1));
     }
 }
