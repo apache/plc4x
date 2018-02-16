@@ -64,7 +64,7 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
     }
 
     public ADSPlcConnection(InetAddress address, Integer port, AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort) {
-        super(new TcpSocketChannelFactory(address, port));
+        super(new TcpSocketChannelFactory(address, port != null ? port : TCP_PORT));
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;

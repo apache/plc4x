@@ -18,8 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.ads.netty;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.plc4x.java.ads.api.commands.ADSReadRequest;
 import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
@@ -46,6 +49,7 @@ import org.apache.plc4x.java.api.types.ResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -98,9 +102,15 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
-        // TODO: implement serialization
-        Length length = Length.of(1);
-        Data data = Data.of(new byte[]{0x42});
+        ByteBuf buffer = Unpooled.buffer();
+        for (Object o : writeRequestItem.getValues()) {
+            // TODO: we need custom serialization here as java types don't really help here
+            byte[] serialize = SerializationUtils.serialize((Serializable) o);
+            buffer.writeBytes(serialize);
+        }
+        byte[] bytes = buffer.array();
+        Length length = Length.of(bytes.length);
+        Data data = Data.of(bytes);
         AMSTCPPaket amstcpPaket = new ADSWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, data);
         out.add(amstcpPaket);
     }
@@ -177,18 +187,147 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
 
         ResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
         byte[] bytes = responseMessage.getData().getBytes();
+        // TODO: we need custom serialization here as java types don't really help here
+        Object deserialize = SerializationUtils.deserialize(bytes);
 
-        // TODO: implement deserialization
         if (plcReadRequest instanceof TypeSafePlcReadRequest) {
-            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, Collections.singletonList(bytes))));
+            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, Collections.singletonList(deserialize))));
         } else {
             return new PlcReadResponse(plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, Collections.singletonList(bytes))));
         }
     }
 
     private ResponseCode decodeResponseCode(Result result) {
-        // TODO: complete mapping
-        return result.getAsLong() == 0 ? ResponseCode.OK : ResponseCode.INTERNAL_ERROR;
+        switch (result.toAdsReturnCode()) {
+            case ADS_CODE_0:
+                return ResponseCode.OK;
+            case ADS_CODE_1:
+                return ResponseCode.INTERNAL_ERROR;
+            case ADS_CODE_2:
+            case ADS_CODE_3:
+            case ADS_CODE_4:
+            case ADS_CODE_5:
+                return ResponseCode.INTERNAL_ERROR;
+            case ADS_CODE_6:
+            case ADS_CODE_7:
+                return ResponseCode.INVALID_ADDRESS;
+            case ADS_CODE_8:
+            case ADS_CODE_9:
+            case ADS_CODE_10:
+            case ADS_CODE_11:
+            case ADS_CODE_12:
+            case ADS_CODE_13:
+            case ADS_CODE_14:
+            case ADS_CODE_15:
+            case ADS_CODE_16:
+            case ADS_CODE_17:
+            case ADS_CODE_18:
+            case ADS_CODE_19:
+            case ADS_CODE_20:
+            case ADS_CODE_21:
+            case ADS_CODE_22:
+            case ADS_CODE_23:
+            case ADS_CODE_24:
+            case ADS_CODE_25:
+            case ADS_CODE_26:
+            case ADS_CODE_27:
+            case ADS_CODE_28:
+            case ADS_CODE_1280:
+            case ADS_CODE_1281:
+            case ADS_CODE_1282:
+            case ADS_CODE_1283:
+            case ADS_CODE_1284:
+            case ADS_CODE_1285:
+            case ADS_CODE_1286:
+            case ADS_CODE_1287:
+            case ADS_CODE_1288:
+            case ADS_CODE_1289:
+            case ADS_CODE_1290:
+            case ADS_CODE_1291:
+            case ADS_CODE_1292:
+            case ADS_CODE_1293:
+            case ADS_CODE_1792:
+            case ADS_CODE_1793:
+            case ADS_CODE_1794:
+            case ADS_CODE_1795:
+            case ADS_CODE_1796:
+            case ADS_CODE_1797:
+            case ADS_CODE_1798:
+            case ADS_CODE_1799:
+            case ADS_CODE_1800:
+            case ADS_CODE_1801:
+            case ADS_CODE_1802:
+            case ADS_CODE_1803:
+            case ADS_CODE_1804:
+            case ADS_CODE_1805:
+            case ADS_CODE_1806:
+            case ADS_CODE_1807:
+            case ADS_CODE_1808:
+            case ADS_CODE_1809:
+            case ADS_CODE_1810:
+            case ADS_CODE_1811:
+            case ADS_CODE_1812:
+            case ADS_CODE_1813:
+            case ADS_CODE_1814:
+            case ADS_CODE_1815:
+            case ADS_CODE_1816:
+            case ADS_CODE_1817:
+            case ADS_CODE_1818:
+            case ADS_CODE_1819:
+            case ADS_CODE_1820:
+            case ADS_CODE_1821:
+            case ADS_CODE_1822:
+            case ADS_CODE_1823:
+            case ADS_CODE_1824:
+            case ADS_CODE_1825:
+            case ADS_CODE_1826:
+            case ADS_CODE_1827:
+            case ADS_CODE_1828:
+            case ADS_CODE_1836:
+            case ADS_CODE_1856:
+            case ADS_CODE_1857:
+            case ADS_CODE_1858:
+            case ADS_CODE_1859:
+            case ADS_CODE_1860:
+            case ADS_CODE_1861:
+            case ADS_CODE_1862:
+            case ADS_CODE_1863:
+            case ADS_CODE_1864:
+            case ADS_CODE_1872:
+            case ADS_CODE_1873:
+            case ADS_CODE_1874:
+            case ADS_CODE_1875:
+            case ADS_CODE_1876:
+            case ADS_CODE_1877:
+            case ADS_CODE_4096:
+            case ADS_CODE_4097:
+            case ADS_CODE_4098:
+            case ADS_CODE_4099:
+            case ADS_CODE_4100:
+            case ADS_CODE_4101:
+            case ADS_CODE_4102:
+            case ADS_CODE_4103:
+            case ADS_CODE_4104:
+            case ADS_CODE_4105:
+            case ADS_CODE_4106:
+            case ADS_CODE_4107:
+            case ADS_CODE_4108:
+            case ADS_CODE_4109:
+            case ADS_CODE_4110:
+            case ADS_CODE_4111:
+            case ADS_CODE_4112:
+            case ADS_CODE_4119:
+            case ADS_CODE_4120:
+            case ADS_CODE_4121:
+            case ADS_CODE_4122:
+            case ADS_CODE_10060:
+            case ADS_CODE_10061:
+            case ADS_CODE_10065:
+                return ResponseCode.INTERNAL_ERROR;
+            case UNKNOWN:
+                return ResponseCode.INTERNAL_ERROR;
+        }
+        throw new IllegalStateException(result.toAdsReturnCode() + " not mapped");
     }
 
 }

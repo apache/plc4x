@@ -27,6 +27,8 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,7 +72,11 @@ public class ADSPlcDriver implements PlcDriver {
         AMSNetId sourceAmsNetId = StringUtils.isNotBlank(sourceAmsNetIdString) ? AMSNetId.of(sourceAmsNetIdString) : null;
         String sourceAmsPortString = matcher.group("sourceAmsPort");
         AMSPort sourceAmsPort = StringUtils.isNotBlank(sourceAmsPortString) ? AMSPort.of(sourceAmsPortString) : null;
-        return new ADSPlcConnection(host, port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+        try {
+            return new ADSPlcConnection(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+        } catch (UnknownHostException e) {
+            throw new PlcConnectionException(e);
+        }
     }
 
     @Override

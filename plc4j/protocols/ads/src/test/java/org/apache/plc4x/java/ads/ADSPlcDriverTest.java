@@ -39,7 +39,6 @@ public class ADSPlcDriverTest {
     public void getConnection() throws Exception {
         ADSPlcConnection adsConnection = (ADSPlcConnection)
             new PlcDriverManager().getConnection("ads://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13");
-        assertEquals(adsConnection.getHostName(), "localhost");
         assertEquals(adsConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
         assertEquals(adsConnection.getTargetAmsPort().toString(), "13");
         adsConnection.close();
