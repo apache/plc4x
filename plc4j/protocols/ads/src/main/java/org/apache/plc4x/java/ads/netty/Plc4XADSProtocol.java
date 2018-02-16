@@ -56,7 +56,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequestContainer> {
+public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequestContainer<PlcRequest, PlcResponse>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XADSProtocol.class);
 
@@ -78,7 +78,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws Exception {
         PlcRequest request = msg.getRequest();
         if (request instanceof PlcReadRequest) {
             encodeReadRequest(msg, out);
@@ -88,7 +88,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
     }
 
 
-    private void encodeWriteRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+    private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
         if (writeRequest.getRequestItems().size() != 1) {
             throw new PlcProtocolException("Only one item supported");
@@ -113,13 +113,13 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
             }
         }
         byte[] bytes = byteArrayOutputStream.toByteArray();
-        Length length = Length.of(bytes.length);
         Data data = Data.of(bytes);
         AMSTCPPaket amstcpPaket = ADSWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
         out.add(amstcpPaket);
+        requests.put(invokeId.getAsLong(), msg);
     }
 
-    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+    private void encodeReadRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
 
         if (readRequest.getRequestItems().size() != 1) {
@@ -137,6 +137,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         Length length = Length.of(readRequestItem.getSize());
         AMSTCPPaket amstcpPaket = ADSReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         out.add(amstcpPaket);
+        requests.put(invokeId.getAsLong(), msg);
     }
 
     @Override
@@ -168,6 +169,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         if (response != null) {
             plcRequestContainer.getResponseFuture().complete(response);
         }
+        out.add(plcRequestContainer);
     }
 
     @SuppressWarnings("unchecked")
