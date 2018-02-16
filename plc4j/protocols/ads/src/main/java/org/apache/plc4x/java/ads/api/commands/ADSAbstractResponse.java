@@ -26,8 +26,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.generic.types.State;
 
-abstract class ADSAbstractResponse extends AMSTCPPacket {
-    ADSAbstractResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+public abstract class ADSAbstractResponse extends AMSTCPPacket {
+     protected ADSAbstractResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         super(amstcpHeader, amsHeader);
     }
 
@@ -35,7 +35,7 @@ abstract class ADSAbstractResponse extends AMSTCPPacket {
         super(amsHeader);
     }
 
-    ADSAbstractResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+    protected ADSAbstractResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT_RESPONSE, invokeId);
     }
 

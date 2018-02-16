@@ -19,9 +19,11 @@ under the License.
 package org.apache.plc4x.java.ads;
 
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.ads.connection.ADSPlcConnection;
 import org.apache.plc4x.java.ads.util.TcpHexDumper;
+import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.junit.Rule;
@@ -42,6 +44,18 @@ public class ADSPlcDriverTest {
         assertEquals(adsConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
         assertEquals(adsConnection.getTargetAmsPort().toString(), "13");
         adsConnection.close();
+    }
+
+    @Test(expected = PlcConnectionException.class)
+    public void getConnectionNoAuthSupported() throws Exception {
+        new PlcDriverManager().getConnection("ads://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13",
+            new PlcUsernamePasswordAuthentication("admin", "admin"));
+    }
+
+    @Test(expected = PlcConnectionException.class)
+    public void getConnectionUnknownHost() throws Exception {
+        new PlcDriverManager().getConnection("ads://:" + RandomStringUtils.randomAscii(12) + "/0.0.0.0.0.0:13",
+            new PlcUsernamePasswordAuthentication("admin", "admin"));
     }
 
     /**
