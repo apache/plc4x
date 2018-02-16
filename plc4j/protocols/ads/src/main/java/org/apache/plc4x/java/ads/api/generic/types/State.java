@@ -109,7 +109,6 @@ public class State extends UnsignedShortLEByteValue {
     }
 
     private static State of(int value) {
-        checkUnsignedBounds(value, NUM_BYTES);
         return new State(value);
     }
 

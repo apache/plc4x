@@ -44,9 +44,12 @@ public class AMSError extends UnsignedIntLEByteValue {
         return new AMSError(values);
     }
 
-    private static AMSError of(long errorCode) {
-        checkUnsignedBounds(errorCode, NUM_BYTES);
+    public static AMSError of(long errorCode) {
         return new AMSError(errorCode);
+    }
+
+    public static AMSError of(String errorCode) {
+        return of(Long.parseLong(errorCode));
     }
 
     public static AMSError of(ByteBuf byteBuf) {

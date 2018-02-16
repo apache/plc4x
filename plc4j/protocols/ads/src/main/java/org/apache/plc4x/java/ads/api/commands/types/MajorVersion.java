@@ -40,6 +40,10 @@ public class MajorVersion extends ByteValue {
         return new MajorVersion((byte) value);
     }
 
+    public static MajorVersion of(String value) {
+        return of(Integer.parseInt(value));
+    }
+
     public static MajorVersion of(ByteBuf byteBuf) {
         byte[] values = new byte[NUM_BYTES];
         byteBuf.readBytes(values);

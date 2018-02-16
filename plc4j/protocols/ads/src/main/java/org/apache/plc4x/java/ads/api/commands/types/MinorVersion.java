@@ -40,6 +40,10 @@ public class MinorVersion extends ByteValue {
         return new MinorVersion((byte) value);
     }
 
+    public static MinorVersion of(String value) {
+        return of(Integer.parseInt(value));
+    }
+
     public static MinorVersion of(ByteBuf byteBuf) {
         byte[] values = new byte[NUM_BYTES];
         byteBuf.readBytes(values);

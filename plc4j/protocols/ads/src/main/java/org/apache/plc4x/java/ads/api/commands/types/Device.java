@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.charset.Charset;
@@ -46,12 +47,12 @@ public class Device extends ByteValue {
 
     public static Device of(String value) {
         requireNonNull(value);
-        return new Device(value.getBytes());
+        return new Device(StringUtils.leftPad(value,NUM_BYTES).getBytes());
     }
 
     public static Device of(String value, Charset charset) {
         requireNonNull(value);
-        return new Device(value.getBytes(charset));
+        return new Device(StringUtils.leftPad(value,NUM_BYTES).getBytes(charset));
     }
 
     @Override

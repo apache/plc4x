@@ -89,8 +89,16 @@ public class TimeStamp extends ByteValue {
         return of(BigInteger.valueOf(value));
     }
 
+    public static TimeStamp of(String value) {
+        return of(Long.valueOf(value));
+    }
+
     public static TimeStamp ofWinTime(long value) {
         return of(javaToWinTime(BigInteger.valueOf(value)));
+    }
+
+    public static TimeStamp ofWinTime(String value) {
+        return of(Long.valueOf(value));
     }
 
     private static TimeStamp of(byte... values) {

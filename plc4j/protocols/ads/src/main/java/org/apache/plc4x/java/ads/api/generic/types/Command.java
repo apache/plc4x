@@ -101,6 +101,14 @@ public enum Command implements ByteReadable {
         return UNKNOWN;
     }
 
+    public static Command of(String value) {
+        return valueOf(value);
+    }
+
+    public static Command ofInt(String intValue) {
+        return of(Integer.parseInt(intValue));
+    }
+
     public static Command of(ByteBuf byteBuf) {
         return of(byteBuf.readUnsignedShortLE());
     }
