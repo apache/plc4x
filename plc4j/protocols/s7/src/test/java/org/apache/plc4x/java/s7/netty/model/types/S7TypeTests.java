@@ -19,11 +19,14 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.types;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class S7TypeTests {
 
@@ -32,13 +35,16 @@ public class S7TypeTests {
     public void dataTransportErrorCode() {
         DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.INVALID_ADDRESS;
 
-        assertThat(DataTransportErrorCode.valueOf((byte)5)).isEqualTo(DataTransportErrorCode.INVALID_ADDRESS).withFailMessage("5 incorrectly mapped");
-        assertThat(dataTransportErrorCode.getCode()).isEqualTo((byte)5).withFailMessage("code is not 5");
+        assertThat("5 incorrectly mapped", DataTransportErrorCode.valueOf((byte) 5), equalTo(DataTransportErrorCode.INVALID_ADDRESS));
+        assertThat("code is not 5", dataTransportErrorCode.getCode(), equalTo((byte) 5));
     }
 
     @Test
     @Category(FastTests.class)
     public void unknownDataTransportErrorCode() {
+        DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.INVALID_ADDRESS;
+
+        assertThat(DataTransportErrorCode.valueOf((byte) 0xFE), nullValue());
         assertThat(DataTransportErrorCode.valueOf((byte)0xFE)).isNull();
 
         DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.INVALID_ADDRESS;
@@ -50,9 +56,9 @@ public class S7TypeTests {
     public void dataTransportSize() {
         DataTransportSize dataTransportSize = DataTransportSize.DINTEGER;
 
-        assertThat(DataTransportSize.valueOf((byte)6)).isEqualTo(DataTransportSize.DINTEGER).withFailMessage("6 incorrectly mapped");
-        assertThat(dataTransportSize.getCode()).isEqualTo((byte)6).withFailMessage("code is not 6");
-        assertThat(dataTransportSize.isSizeInBits()).isFalse().withFailMessage("Unexpected return from bit size");
+        assertThat("6 incorrectly mapped", DataTransportSize.valueOf((byte) 6), equalTo(DataTransportSize.DINTEGER));
+        assertThat(dataTransportSize.getCode(), equalTo((byte) 6));
+        assertThat("Unexpected return from bit size", dataTransportSize.isSizeInBits(), is(false));
     }
 
     @Test
@@ -67,6 +73,10 @@ public class S7TypeTests {
     @Test
     @Category(FastTests.class)
     public void messageType() {
+        MessageType messageType = MessageType.ACK;
+
+        assertThat("2 incorrectly mapped", MessageType.valueOf((byte) 2), equalTo(MessageType.ACK));
+        assertThat("code is not 2", messageType.getCode(), equalTo((byte) 2));
         assertThat(MessageType.valueOf((byte)2)).isEqualTo(MessageType.ACK).withFailMessage("2 incorrectly mapped");
 
         MessageType messageType = MessageType.ACK;
@@ -87,8 +97,8 @@ public class S7TypeTests {
     public void parameterType() {
         ParameterType parameterType = ParameterType.UPLOAD;
 
-        assertThat(ParameterType.valueOf((byte)0x1E)).isEqualTo(ParameterType.UPLOAD).withFailMessage("0x1E incorrectly mapped");
-        assertThat(parameterType.getCode()).isEqualTo((byte)0x1E).withFailMessage("code is not 0x1E");
+        assertThat("0x1E incorrectly mapped", ParameterType.valueOf((byte) 0x1E), equalTo(ParameterType.UPLOAD));
+        assertThat("code is not 0x1E", parameterType.getCode(), equalTo((byte) 0x1E));
     }
 
     @Test
@@ -96,7 +106,8 @@ public class S7TypeTests {
     public void unknownParameterType() {
         ParameterType parameterType = ParameterType.UPLOAD;
 
-        assertThat(ParameterType.valueOf((byte)0xFF)).isNull();;
+        assertThat(ParameterType.valueOf((byte) 0xFF), nullValue());
+        ;
     }
 
     @Test
@@ -104,8 +115,8 @@ public class S7TypeTests {
     public void specificationType() {
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
 
-        assertThat(SpecificationType.valueOf((byte)0x12)).isEqualTo(SpecificationType.VARIABLE_SPECIFICATION).withFailMessage("0x12 incorrectly mapped");
-        assertThat(specificationType.getCode()).isEqualTo((byte)0x12).withFailMessage("code is not 0x12");
+        assertThat("0x12 incorrectly mapped", SpecificationType.valueOf((byte) 0x12), equalTo(SpecificationType.VARIABLE_SPECIFICATION));
+        assertThat("code is not 0x12", specificationType.getCode(), equalTo((byte) 0x12));
     }
 
     @Test
@@ -113,8 +124,8 @@ public class S7TypeTests {
     public void transportSize() {
         TransportSize transportSize = TransportSize.TIME;
 
-        assertThat(TransportSize.valueOf((byte)0x0B)).isEqualTo(TransportSize.TIME).withFailMessage("0x0B incorrectly mapped");
-        assertThat(transportSize.getCode()).isEqualTo((byte)0x0B).withFailMessage("code is not 0x0B");
+        assertThat("0x0B incorrectly mapped", TransportSize.valueOf((byte) 0x0B), equalTo(TransportSize.TIME));
+        assertThat("code is not 0x0B", transportSize.getCode(), equalTo((byte) 0x0B));
     }
 
     @Test
@@ -122,8 +133,8 @@ public class S7TypeTests {
     public void variableAddressingMode() {
         VariableAddressingMode variableAddressingMode = VariableAddressingMode.ALARM_ACK;
 
-        assertThat(VariableAddressingMode.valueOf((byte)0x19)).isEqualTo(VariableAddressingMode.ALARM_ACK).withFailMessage("0x19 incorrectly mapped");
-        assertThat(variableAddressingMode.getCode()).isEqualTo((byte)0x19).withFailMessage("code is not 0x19");
+        assertThat("0x19 incorrectly mapped", VariableAddressingMode.valueOf((byte) 0x19), equalTo(VariableAddressingMode.ALARM_ACK));
+        assertThat("code is not 0x19", variableAddressingMode.getCode(), equalTo((byte) 0x19));
     }
 
     @Test
@@ -131,14 +142,14 @@ public class S7TypeTests {
     public void memoryAccess() {
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
 
-        assertThat(MemoryArea.valueOf((byte)0x84)).isEqualTo(MemoryArea.DATA_BLOCKS).withFailMessage("0x84 incorrectly mapped");
-        assertThat(memoryArea.getCode()).isEqualTo((byte)0x84).withFailMessage("code is not 0x84");
+        assertThat("0x84 incorrectly mapped", MemoryArea.valueOf((byte) 0x84), equalTo(MemoryArea.DATA_BLOCKS));
+        assertThat("code is not 0x84", memoryArea.getCode(), equalTo((byte) 0x84));
     }
 
     @Test
     @Category(FastTests.class)
     public void unknownMemoryAccess() {
-        assertThat(MemoryArea.valueOf((byte)0xFF)).isNull();
-     }
+        assertThat(MemoryArea.valueOf((byte) 0xFF), nullValue());
+    }
 
 }

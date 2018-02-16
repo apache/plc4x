@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.model.Address;
@@ -28,7 +26,8 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +40,7 @@ public class TypeSafePlcReadRequestTest {
         readRequestItemString = new ReadRequestItem<>(String.class, mock(Address.class));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void constuctor() {
         new TypeSafePlcReadRequest<>(String.class);
         new TypeSafePlcReadRequest<>(String.class, mock(PlcReadRequest.class));
@@ -51,9 +50,9 @@ public class TypeSafePlcReadRequestTest {
         new TypeSafePlcReadRequest<>(String.class, mock(Address.class));
         new TypeSafePlcReadRequest<>(String.class, mock(Address.class), 3);
         new TypeSafePlcReadRequest<>(String.class, readRequestItemString);
-        assertThatThrownBy(() ->
-            new TypeSafePlcReadRequest<>(Byte.class, request))
-            .isInstanceOf(IllegalArgumentException.class);
+
+        // expected to fail
+        new TypeSafePlcReadRequest<>(Byte.class, request);
     }
 
     @Test
@@ -73,7 +72,7 @@ public class TypeSafePlcReadRequestTest {
 
     @Test
     public void getDataType() {
-        assertThat(new TypeSafePlcReadRequest<>(String.class).getDataType()).isEqualTo(String.class);
+        assertThat(new TypeSafePlcReadRequest<>(String.class).getDataType(), equalTo(String.class));
     }
 
 }

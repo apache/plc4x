@@ -19,8 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.api.messages;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
@@ -33,7 +31,16 @@ import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 
 public class APIMessageTests {
@@ -43,9 +50,9 @@ public class APIMessageTests {
     public void readRequestItemSize() {
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, address, 1);
-        assertThat(readRequestItem.getAddress()).isEqualTo(address).withFailMessage("Unexpected address");
-        assertThat(readRequestItem.getDatatype()).isEqualTo(Byte.class).withFailMessage("Unexpected data type");
-        assertThat(readRequestItem.getSize()).isEqualTo(1).withFailMessage("Unexpected size");
+        assertThat("Unexpected address", readRequestItem.getAddress(), equalTo(address));
+        assertThat("Unexpected data type", readRequestItem.getDatatype(), equalTo(Byte.class));
+        assertThat("Unexpected size", readRequestItem.getSize(), equalTo(1));
     }
 
     @Test
@@ -53,9 +60,9 @@ public class APIMessageTests {
     public void readRequestItem() {
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, address);
-        assertThat(readRequestItem.getAddress()).isEqualTo(address).withFailMessage("Unexpected address");
-        assertThat(readRequestItem.getDatatype()).isEqualTo(Byte.class).withFailMessage("Unexpected data type");
-        assertThat(readRequestItem.getSize()).isEqualTo(1).withFailMessage("Unexpected size");
+        assertThat("Unexpected address", readRequestItem.getAddress(), equalTo(address));
+        assertThat("Unexpected data type", readRequestItem.getDatatype(), equalTo(Byte.class));
+        assertThat("Unexpected size", readRequestItem.getSize(), equalTo(1));
     }
 
     @Test
@@ -64,9 +71,9 @@ public class APIMessageTests {
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, address, 1);
         ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK, Collections.emptyList());
-        assertThat(readResponseItem.getResponseCode()).isEqualTo(ResponseCode.OK).withFailMessage("Unexpected response code");
-        assertThat(readResponseItem.getValues()).isEmpty();
-        assertThat(readResponseItem.getRequestItem()).isEqualTo(readRequestItem).withFailMessage("Unexpected read request item");
+        assertThat("Unexpected response code", readResponseItem.getResponseCode(), equalTo(ResponseCode.OK));
+        assertThat(readResponseItem.getValues(), empty());
+        assertThat("Unexpected read request item", readResponseItem.getRequestItem(), equalTo(readRequestItem));
     }
 
     @Test
@@ -75,9 +82,9 @@ public class APIMessageTests {
         MockAddress address = new MockAddress("mock:/DATA");
         WriteRequestItem<Byte> writeRequestItem = new WriteRequestItem<>(Byte.class, address, (byte) 0x45);
 
-        assertThat(writeRequestItem.getAddress()).isEqualTo(address).withFailMessage("Unexpected address");
-        assertThat(writeRequestItem.getDatatype()).isEqualTo(Byte.class).withFailMessage("Unexpected data type");
-        assertThat(writeRequestItem.getValues().get(0)).isEqualTo((byte) 0x45).withFailMessage("Unexpected value");
+        assertThat("Unexpected address", writeRequestItem.getAddress(), equalTo(address));
+        assertThat("Unexpected data type", writeRequestItem.getDatatype(), equalTo(Byte.class));
+        assertThat("Unexpected value", writeRequestItem.getValues().get(0), equalTo((byte) 0x45));
     }
 
     @Test
@@ -86,10 +93,10 @@ public class APIMessageTests {
         MockAddress address = new MockAddress("mock:/DATA");
         Byte data[] = {(byte) 0x23, (byte) 0x84};
         WriteRequestItem<Byte> writeRequestItem = new WriteRequestItem<>(Byte.class, address, data);
-        assertThat(writeRequestItem.getAddress()).isEqualTo(address).withFailMessage("Unexpected address");
-        assertThat(writeRequestItem.getDatatype()).isEqualTo(Byte.class).withFailMessage("Unexpected data type");
-        assertThat(writeRequestItem.getValues().get(0)).isEqualTo((byte) 0x23).withFailMessage("Unexpected value");
-        assertThat(writeRequestItem.getValues().get(1)).isEqualTo((byte) 0x84).withFailMessage("Unexpected value");
+        assertThat("Unexpected address", writeRequestItem.getAddress(), equalTo(address));
+        assertThat("Unexpected data type", writeRequestItem.getDatatype(), equalTo(Byte.class));
+        assertThat("Unexpected value", writeRequestItem.getValues().get(0), equalTo((byte) 0x23));
+        assertThat("Unexpected value", writeRequestItem.getValues().get(1), equalTo((byte) 0x84));
     }
 
     @Test
@@ -98,16 +105,16 @@ public class APIMessageTests {
         MockAddress address = new MockAddress("mock:/DATA");
         WriteRequestItem<Byte> writeRequestItem = new WriteRequestItem<>(Byte.class, address, (byte) 0x3B);
         WriteResponseItem<Byte> writeResponseItem = new WriteResponseItem<>(writeRequestItem, ResponseCode.OK);
-        assertThat(writeResponseItem.getResponseCode()).isEqualTo(ResponseCode.OK).withFailMessage("Unexpected response code");
-        assertThat(writeResponseItem.getRequestItem()).isEqualTo(writeRequestItem).withFailMessage("Unexpected response item");
+        assertThat("Unexpected response code", writeResponseItem.getResponseCode(), equalTo(ResponseCode.OK));
+        assertThat("Unexpected response item", writeResponseItem.getRequestItem(), equalTo(writeRequestItem));
     }
 
     @Test
     @Category(FastTests.class)
     public void plcReadRequestEmpty() {
         PlcReadRequest plcReadRequest = new PlcReadRequest();
-        assertThat(plcReadRequest.getRequestItems()).isEmpty();
-        assertThat(plcReadRequest.getNumberOfItems()).isEqualTo(0).withFailMessage("Expected request items to be zero");
+        assertThat(plcReadRequest.getRequestItems(), empty());
+        assertThat("Expected request items to be zero", plcReadRequest.getNumberOfItems(), equalTo(0));
     }
 
     @Test
@@ -115,8 +122,8 @@ public class APIMessageTests {
     public void plcReadRequestAddress() {
         MockAddress address = new MockAddress("mock:/DATA");
         PlcReadRequest plcReadRequest = new TypeSafePlcReadRequest<>(Byte.class, address);
-        assertThat(plcReadRequest.getRequestItems()).hasSize(1).withFailMessage("Expected one request item");
-        assertThat(plcReadRequest.getNumberOfItems()).isEqualTo(1).withFailMessage("Expected one request item");
+        assertThat("Expected one request item", plcReadRequest.getRequestItems(), hasSize(1));
+        assertThat("Expected one request item", plcReadRequest.getNumberOfItems(), equalTo(1));
     }
 
     @Test
@@ -124,21 +131,21 @@ public class APIMessageTests {
     public void plcReadRequestSize() {
         MockAddress address = new MockAddress("mock:/DATA");
         PlcReadRequest plcReadRequest = PlcReadRequest.builder().addItem(Byte.class, address, (byte) 1).build(Byte.class);
-        assertThat(plcReadRequest.getRequestItems()).hasSize(1).withFailMessage("Expected one request item");
-        assertThat(plcReadRequest.getNumberOfItems()).isEqualTo(1).withFailMessage("Expected one request item");
+        assertThat("Expected one request item", plcReadRequest.getRequestItems(), hasSize(1));
+        assertThat("Expected one request item", plcReadRequest.getNumberOfItems(), equalTo(1));
     }
 
     @Test
     @Category(FastTests.class)
     public void plcReadRequestAddItem() {
         PlcReadRequest plcReadRequest = new PlcReadRequest();
-        assertThat(plcReadRequest.getRequestItems()).isEmpty();
-        assertThat(plcReadRequest.getNumberOfItems()).isEqualTo(0).withFailMessage("Expected request items to be zero");
+        assertThat(plcReadRequest.getRequestItems(), empty());
+        assertThat("Expected request items to be zero", plcReadRequest.getNumberOfItems(), equalTo(0));
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, address, (byte) 1);
         plcReadRequest.addItem(readRequestItem);
-        assertThat(plcReadRequest.getRequestItems()).hasSize(1).withFailMessage("Expected one request item");
-        assertThat(plcReadRequest.getNumberOfItems()).isEqualTo(1).withFailMessage("Expected one request item");
+        assertThat("Expected one request item", plcReadRequest.getRequestItems(), hasSize(1));
+        assertThat("Expected one request item", plcReadRequest.getNumberOfItems(), equalTo(1));
     }
 
     @Test
@@ -151,18 +158,18 @@ public class APIMessageTests {
         ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK, Collections.emptyList());
         responseItems.add(readResponseItem);
         PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
-        assertThat(plcReadResponse.getRequest().getNumberOfItems()).isEqualTo(0).withFailMessage("Unexpected number of response items");
-        assertThat(plcReadResponse.getRequest()).isEqualTo(plcReadRequest).withFailMessage("Unexpected read request");
-        assertThat(plcReadResponse.getResponseItems()).hasSize(1).withFailMessage("Unexpected number of response items");
-        assertThat(plcReadResponse.getResponseItems()).containsAll(responseItems).withFailMessage("Unexpected items in response items");
+        assertThat("Unexpected number of response items", plcReadResponse.getRequest().getNumberOfItems(), equalTo(0));
+        assertThat("Unexpected read request", plcReadResponse.getRequest(), equalTo(plcReadRequest));
+        assertThat("Unexpected number of response items", plcReadResponse.getResponseItems(), hasSize(1));
+        assertThat("Unexpected items in response items", plcReadResponse.getResponseItems(), contains(readResponseItem));
     }
 
     @Test
     @Category(FastTests.class)
     public void plcWriteRequestEmpty() {
         PlcWriteRequest plcWriteRequest = new PlcWriteRequest();
-        assertThat(plcWriteRequest.getRequestItems()).isEmpty();
-        assertThat(plcWriteRequest.getNumberOfItems()).isEqualTo(0).withFailMessage("Expected request items to be zero");
+        assertThat(plcWriteRequest.getRequestItems(), empty());
+        assertThat("Expected request items to be zero", plcWriteRequest.getNumberOfItems(), equalTo(0));
     }
 
     @Test
@@ -170,10 +177,10 @@ public class APIMessageTests {
     public void plcWriteRequestObject() {
         MockAddress address = new MockAddress("mock:/DATA");
         PlcWriteRequest plcWriteRequest = new TypeSafePlcWriteRequest<>(Byte.class, address, (byte) 0x33);
-        assertThat(plcWriteRequest.getRequestItems()).hasSize(1).withFailMessage("Expected no request item");
-        assertThat(plcWriteRequest.getNumberOfItems()).isEqualTo(1).withFailMessage("Expected one request item");
+        assertThat("Expected one request item", plcWriteRequest.getRequestItems(), hasSize(1));
+        assertThat("Expected one request item", plcWriteRequest.getNumberOfItems(), equalTo(1));
         List values = plcWriteRequest.getRequestItems().get(0).getValues();
-        assertThat((byte) values.get(0)).isEqualTo((byte) 0x33).withFailMessage("Expected value 0x33");
+        assertThat((byte) values.get(0), equalTo((byte) 0x33));
     }
 
     @Test
@@ -182,11 +189,11 @@ public class APIMessageTests {
         MockAddress address = new MockAddress("mock:/DATA");
         Byte[] data = {(byte) 0x22, (byte) 0x66};
         PlcWriteRequest plcWriteRequest = new TypeSafePlcWriteRequest<>(Byte.class, address, data);
-        assertThat(plcWriteRequest.getRequestItems()).hasSize(1).withFailMessage("Expected one request item");
-        assertThat(plcWriteRequest.getNumberOfItems()).isEqualTo(1).withFailMessage("Expected one request item");
+        assertThat("Expected one request item", plcWriteRequest.getRequestItems(), hasSize(1));
+        assertThat("Expected one request item", plcWriteRequest.getNumberOfItems(), equalTo(1));
         List values = plcWriteRequest.getRequestItems().get(0).getValues();
-        assertThat((Byte) values.get(0)).isEqualTo((byte) 0x22).withFailMessage("Expected value 0x22");
-        assertThat((Byte) values.get(1)).isEqualTo((byte) 0x66).withFailMessage("Expected value 0x66");
+        assertThat(values.get(0), equalTo((byte) 0x22));
+        assertThat(values.get(1), equalTo((byte) 0x66));
     }
 
     @Test
@@ -199,10 +206,10 @@ public class APIMessageTests {
         WriteResponseItem<Byte> writeResponseItem = new WriteResponseItem<>(writeRequestItem, ResponseCode.OK);
         responseItems.add(writeResponseItem);
         PlcWriteResponse plcReadResponse = new PlcWriteResponse(plcWriteRequest, responseItems);
-        assertThat(plcReadResponse.getRequest().getNumberOfItems()).isEqualTo(0).withFailMessage("Unexpected number of response items");
-        assertThat(plcReadResponse.getRequest()).isEqualTo(plcWriteRequest).withFailMessage("Unexpected read request");
-        assertThat(plcReadResponse.getResponseItems()).hasSize(1).withFailMessage("Unexpected number of response items");
-        assertThat(plcReadResponse.getResponseItems()).containsAll(responseItems).withFailMessage("Unexpected items in response items");
+        assertThat("Unexpected number of response items", plcReadResponse.getRequest().getNumberOfItems(), equalTo(0));
+        assertThat("Unexpected read request", plcReadResponse.getRequest(), equalTo(plcWriteRequest));
+        assertThat("Unexpected number of response items", plcReadResponse.getResponseItems(), hasSize(1));
+        assertThat("Unexpected items in response items", plcReadResponse.getResponseItems(), contains(writeResponseItem));
     }
 
     @Test
@@ -220,8 +227,8 @@ public class APIMessageTests {
         PlcWriteResponse plcWriteResponse = new PlcWriteResponse(plcWriteRequest, responseItems);
         Optional<WriteResponseItem<Byte>> responseValue1 = plcWriteResponse.getValue(writeRequestItem1);
         Optional<WriteResponseItem<Byte>> responseValue2 = plcWriteResponse.getValue(writeRequestItem2);
-        assertThat(responseValue1).isEqualTo(Optional.of(writeResponseItem1)).withFailMessage("Unexpected items in response items");
-        assertThat(responseValue2).isEqualTo(Optional.of(writeResponseItem2)).withFailMessage("Unexpected items in response items");
+        assertThat("Unexpected items in response items", responseValue1, equalTo(Optional.of(writeResponseItem1)));
+        assertThat("Unexpected items in response items", responseValue2, equalTo(Optional.of(writeResponseItem2)));
     }
 
     @Test
@@ -233,7 +240,7 @@ public class APIMessageTests {
         WriteRequestItem<Byte> nonExistingWriteRequestItem = new WriteRequestItem<>(Byte.class, address, (byte) 1);
         PlcWriteResponse plcWriteResponse = new PlcWriteResponse(plcWriteRequest, responseItems);
         Optional<WriteResponseItem<Byte>> responseValue1 = plcWriteResponse.getValue(nonExistingWriteRequestItem);
-        assertThat(responseValue1).isEqualTo(Optional.empty()).withFailMessage("Unexpected items in response items");
+        assertThat("Unexpected items in response items", responseValue1, equalTo(Optional.empty()));
     }
 
     @Test
@@ -251,8 +258,8 @@ public class APIMessageTests {
         PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
         Optional<ReadResponseItem<Byte>> responseValue1 = plcReadResponse.getValue(readRequestItem1);
         Optional<ReadResponseItem<Byte>> responseValue2 = plcReadResponse.getValue(readRequestItem2);
-        assertThat(responseValue1).isEqualTo(Optional.of(readResponseItem1)).withFailMessage("Unexpected items in response items");
-        assertThat(responseValue2).isEqualTo(Optional.of(readResponseItem2)).withFailMessage("Unexpected items in response items");
+        assertThat("Unexpected items in response items", responseValue1, equalTo(Optional.of(readResponseItem1)));
+        assertThat("Unexpected items in response items", responseValue2, equalTo(Optional.of(readResponseItem2)));
     }
 
     @Test
@@ -264,7 +271,7 @@ public class APIMessageTests {
         ReadRequestItem<Byte> nonExistingReadRequestItem = new ReadRequestItem<>(Byte.class, address, 1);
         PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
         Optional<ReadResponseItem<Byte>> responseValue1 = plcReadResponse.getValue(nonExistingReadRequestItem);
-        assertThat(responseValue1).isEqualTo(Optional.empty()).withFailMessage("Unexpected items in response items");
+        assertThat("Unexpected items in response items", responseValue1, equalTo(Optional.empty()));
     }
 
 }

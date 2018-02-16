@@ -35,7 +35,6 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.test.FastTests;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -45,7 +44,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsSame.sameInstance;
+import static org.hamcrest.object.IsCompatibleType.typeCompatibleWith;
+import static org.junit.Assert.assertThat;
 
 public class PlcConnectionAdapterTest {
 
@@ -61,9 +67,9 @@ public class PlcConnectionAdapterTest {
     public void testCtor1() throws Exception {
         MockConnection mockConnection = getMockConnection();
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(mockConnection);
-        Assertions.assertThat(mockConnection).isSameAs(adapter.getConnection());
+        assertThat(mockConnection, sameInstance(adapter.getConnection()));
         // and again... multiple adapter.getConnection() returns the same
-        Assertions.assertThat(mockConnection).isSameAs(adapter.getConnection());
+        assertThat(mockConnection, sameInstance(adapter.getConnection()));
         adapter.close();
     }
 
@@ -76,10 +82,10 @@ public class PlcConnectionAdapterTest {
         MockConnection mockConnection = getMockConnection();
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(mockConnection.getUrl());
         MockConnection mockConnection2 = (MockConnection) adapter.getConnection();
-        Assertions.assertThat(mockConnection).isNotSameAs(mockConnection2);
-        Assertions.assertThat(mockConnection.getUrl()).isSameAs(mockConnection2.getUrl());
+        assertThat(mockConnection, not(sameInstance(mockConnection2)));
+        assertThat(mockConnection.getUrl(), sameInstance(mockConnection2.getUrl()));
         // and again... multiple adapter.getConnection() returns the same
-        Assertions.assertThat(mockConnection2).isSameAs(adapter.getConnection());
+        assertThat(mockConnection2, sameInstance(adapter.getConnection()));
         adapter.close();
     }
 
@@ -93,12 +99,16 @@ public class PlcConnectionAdapterTest {
         PlcConnectionAdapter.checkDatatype(Float.class);
         PlcConnectionAdapter.checkDatatype(String.class);
         PlcConnectionAdapter.checkDatatype(Calendar.class);
-        assertThatThrownBy(() ->
-            PlcConnectionAdapter.checkDatatype(Long.class))
-            .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() ->
-            PlcConnectionAdapter.checkDatatype(Double.class))
-            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testLongDataTypeIsInvalid() {
+        PlcConnectionAdapter.checkDatatype(Long.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDoubleDataTypeIsInvalid() {
+        PlcConnectionAdapter.checkDatatype(Double.class);
     }
 
     private <T> void checkRead(MockConnection connection, TypeSafePlcReadRequest<T> request, T value) throws InterruptedException, ExecutionException {
@@ -108,9 +118,9 @@ public class PlcConnectionAdapterTest {
 
         CompletableFuture<TypeSafePlcReadResponse<T>> cf = connection.read(request);
 
-        Assertions.assertThat(cf.isDone()).isTrue();
+        assertThat(cf.isDone(), is(true));
         TypeSafePlcReadResponse<T> response = cf.get();
-        Assertions.assertThat(value).isEqualTo(response.getResponseItems().get(0).getValues().get(0));
+        assertThat(value, equalTo(response.getResponseItems().get(0).getValues().get(0)));
     }
 
     @SuppressWarnings("unchecked")
@@ -121,9 +131,9 @@ public class PlcConnectionAdapterTest {
 
         CompletableFuture<TypeSafePlcWriteResponse<T>> cf = connection.write(request);
 
-        Assertions.assertThat(cf.isDone()).isTrue();
+        assertThat(cf.isDone(), is(true));
         PlcWriteResponse response = cf.get();
-        Assertions.assertThat(response).isNotNull();
+        assertThat(response, notNullValue());
         T writtenData = (T) connection.getDataValue(request.getRequestItems().get(0).getAddress());
         if (writtenData.getClass().isArray()) {
             writtenData = (T) Array.get(writtenData, 0);
@@ -131,7 +141,7 @@ public class PlcConnectionAdapterTest {
         if (List.class.isAssignableFrom(writtenData.getClass())) {
             writtenData = (T) ((List) writtenData).get(0);
         }
-        Assertions.assertThat(value).isEqualTo(writtenData);
+        assertThat(value, equalTo(writtenData));
     }
 
     /*
@@ -150,8 +160,8 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcReadRequest<Boolean> request = PlcConnectionAdapter.newPlcReadRequest(Boolean.class, address);
             ReadRequestItem<Boolean> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Boolean> dataType = requestItem.getDatatype();
-            Assertions.assertThat(dataType).isEqualTo(Boolean.class);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, equalTo(Boolean.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkRead(connection, request, true);
             checkRead(connection, request, false);
         }
@@ -159,8 +169,8 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcReadRequest<Byte> request = PlcConnectionAdapter.newPlcReadRequest(Byte.class, address);
             ReadRequestItem<Byte> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Byte> dataType = requestItem.getDatatype();
-            Assertions.assertThat(dataType).isEqualTo(Byte.class);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, equalTo(Byte.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkRead(connection, request, (byte) 0x13);
             checkRead(connection, request, (byte) 0x23);
         }
@@ -168,8 +178,8 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcReadRequest<Short> request = PlcConnectionAdapter.newPlcReadRequest(Short.class, address);
             ReadRequestItem<Short> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Short> dataType = requestItem.getDatatype();
-            Assertions.assertThat(dataType).isEqualTo(Short.class);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, equalTo(Short.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkRead(connection, request, (short) 13);
             checkRead(connection, request, (short) 23);
         }
@@ -177,8 +187,8 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcReadRequest<Integer> request = PlcConnectionAdapter.newPlcReadRequest(Integer.class, address);
             ReadRequestItem<Integer> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Integer> dataType = requestItem.getDatatype();
-            Assertions.assertThat(dataType).isEqualTo(Integer.class);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, equalTo(Integer.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkRead(connection, request, 33);
             checkRead(connection, request, -133);
         }
@@ -186,8 +196,8 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcReadRequest<Float> request = PlcConnectionAdapter.newPlcReadRequest(Float.class, address);
             ReadRequestItem<Float> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Float> dataType = requestItem.getDatatype();
-            Assertions.assertThat(dataType).isEqualTo(Float.class);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, equalTo(Float.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkRead(connection, request, 43.5f);
             checkRead(connection, request, -143.5f);
         }
@@ -195,8 +205,8 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcReadRequest<String> request = PlcConnectionAdapter.newPlcReadRequest(String.class, address);
             ReadRequestItem<String> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<String> dataType = requestItem.getDatatype();
-            Assertions.assertThat(dataType).isEqualTo(String.class);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, equalTo(String.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkRead(connection, request, "ReadySetGo");
             checkRead(connection, request, "OneMoreTime");
         }
@@ -204,8 +214,8 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcReadRequest<Calendar> request = PlcConnectionAdapter.newPlcReadRequest(Calendar.class, address);
             ReadRequestItem<Calendar> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Calendar> dataType = requestItem.getDatatype();
-            Assertions.assertThat(dataType).isEqualTo(Calendar.class);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, equalTo(Calendar.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkRead(connection, request, Calendar.getInstance());
         }
         adapter.close();
@@ -228,48 +238,48 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcWriteRequest<Boolean> request = PlcConnectionAdapter.newPlcWriteRequest(address, true);
             WriteRequestItem<Boolean> requestItem = request.getCheckedRequestItems().get(0);
             Class<Boolean> dataType = requestItem.getDatatype();
-            Assertions.assertThat(Boolean.class).isAssignableFrom(dataType);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, typeCompatibleWith(Boolean.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkWrite(connection, request, true);
         }
         {
             TypeSafePlcWriteRequest<Byte> request = PlcConnectionAdapter.newPlcWriteRequest(address, (byte) 0x113);
             WriteRequestItem<Byte> requestItem = request.getCheckedRequestItems().get(0);
             Class<Byte> dataType = requestItem.getDatatype();
-            Assertions.assertThat(Byte.class).isAssignableFrom(dataType);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, typeCompatibleWith(Byte.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkWrite(connection, request, (byte) 0x113);
         }
         {
             TypeSafePlcWriteRequest<Short> request = PlcConnectionAdapter.newPlcWriteRequest(address, (short) 113);
             WriteRequestItem<Short> requestItem = request.getCheckedRequestItems().get(0);
             Class<Short> dataType = requestItem.getDatatype();
-            Assertions.assertThat(Short.class).isAssignableFrom(dataType);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, typeCompatibleWith(Short.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkWrite(connection, request, (short) 113);
         }
         {
             TypeSafePlcWriteRequest<Integer> request = PlcConnectionAdapter.newPlcWriteRequest(address, 1033);
             WriteRequestItem<Integer> requestItem = request.getCheckedRequestItems().get(0);
             Class<Integer> dataType = requestItem.getDatatype();
-            Assertions.assertThat(Integer.class).isAssignableFrom(dataType);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, typeCompatibleWith(Integer.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkWrite(connection, request, 1033);
         }
         {
             TypeSafePlcWriteRequest<Float> request = PlcConnectionAdapter.newPlcWriteRequest(address, 1043.5f);
             WriteRequestItem<Float> requestItem = request.getCheckedRequestItems().get(0);
             Class<Float> dataType = requestItem.getDatatype();
-            Assertions.assertThat(Float.class).isAssignableFrom(dataType);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, typeCompatibleWith(Float.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkWrite(connection, request, 1043.5f);
         }
         {
             TypeSafePlcWriteRequest<String> request = PlcConnectionAdapter.newPlcWriteRequest(address, "A written value");
             WriteRequestItem<String> requestItem = request.getCheckedRequestItems().get(0);
             Class<String> dataType = requestItem.getDatatype();
-            Assertions.assertThat(String.class).isAssignableFrom(dataType);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, typeCompatibleWith(String.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkWrite(connection, request, "A written value");
         }
         {
@@ -277,8 +287,8 @@ public class PlcConnectionAdapterTest {
             TypeSafePlcWriteRequest<Calendar> request = PlcConnectionAdapter.newPlcWriteRequest(address, calValue);
             WriteRequestItem<Calendar> requestItem = request.getCheckedRequestItems().get(0);
             Class<Calendar> dataType = requestItem.getDatatype();
-            Assertions.assertThat(Calendar.class).isAssignableFrom(dataType);
-            Assertions.assertThat(address).isSameAs(requestItem.getAddress());
+            assertThat(dataType, typeCompatibleWith(Calendar.class));
+            assertThat(address, sameInstance(requestItem.getAddress()));
             checkWrite(connection, request, calValue);
         }
         adapter.close();
@@ -298,7 +308,7 @@ public class PlcConnectionAdapterTest {
 
         {
             Supplier<Boolean> supplier = adapter.newSupplier(Boolean.class, addressStr);
-            Assertions.assertThat(supplier).isNotSameAs(adapter.newSupplier(Boolean.class, addressStr));
+            assertThat(supplier, not(sameInstance(adapter.newSupplier(Boolean.class, addressStr))));
             checkSupplier(connection, address, supplier, true, false);
         }
         {
@@ -356,12 +366,12 @@ public class PlcConnectionAdapterTest {
             T readData = supplier.get();
             // System.out.println("checkSupplier"+(readFailureCountTrigger > 0 ? "NEG" : "")+": value:"+value+" readData:"+readData);
             if (readFailureCountTrigger <= 0)
-                Assertions.assertThat(value).isEqualTo(readData);
+                assertThat(value, equalTo(readData));
             else {
                 if (++readCount != readFailureCountTrigger)
-                    Assertions.assertThat(value).isEqualTo(readData);
+                    assertThat(value, equalTo(readData));
                 else
-                    Assertions.assertThat(readData).isNull();
+                    assertThat(readData, nullValue());
             }
         }
     }
@@ -381,7 +391,7 @@ public class PlcConnectionAdapterTest {
         Consumer<?> consumer;
 
         consumer = adapter.newConsumer(Boolean.class, addressStr);
-        Assertions.assertThat(consumer).isNotSameAs(adapter.newConsumer(Boolean.class, addressStr));
+        assertThat(consumer, not(sameInstance(adapter.newConsumer(Boolean.class, addressStr))));
         checkConsumer(connection, address, consumer, true, false);
 
         consumer = adapter.newConsumer(Byte.class, addressStr);
@@ -444,12 +454,12 @@ public class PlcConnectionAdapterTest {
             }
             // System.out.println("checkConsumer"+(writeFailureCountTrigger > 0 ? "NEG" : "")+": value:"+value+" writtenData:"+writtenData);
             if (writeFailureCountTrigger <= 0)
-                Assertions.assertThat(value).isEqualTo(writtenData);
+                assertThat(value, equalTo(writtenData));
             else {
                 if (++writeCount != writeFailureCountTrigger)
-                    Assertions.assertThat(value).isEqualTo(writtenData);
+                    assertThat(value, equalTo(writtenData));
                 else
-                    Assertions.assertThat(previousValue).isEqualTo(writtenData);
+                    assertThat(previousValue, equalTo(writtenData));
             }
             previousValue = value;
         }
@@ -545,12 +555,12 @@ public class PlcConnectionAdapterTest {
             }
             // System.out.println("checkConsumerJson"+(writeFailureCountTrigger > 0 ? "NEG" : "")+": value:"+value+" writtenData:"+writtenData);
             if (writeFailureCountTrigger <= 0)
-                Assertions.assertThat(value).isEqualTo(writtenData);
+                assertThat(value, equalTo(writtenData));
             else {
                 if (++writeCount != writeFailureCountTrigger)
-                    Assertions.assertThat(value).isEqualTo(writtenData);
+                    assertThat(value, equalTo(writtenData));
                 else
-                    Assertions.assertThat(previousValue).isEqualTo(writtenData);
+                    assertThat(previousValue, equalTo(writtenData));
             }
             previousValue = value;
         }

@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class PlcWriteRequestTest {
@@ -38,7 +38,7 @@ public class PlcWriteRequestTest {
     }
 
     @Test
-    public void constuctor() {
+    public void constructor() {
         new PlcWriteRequest();
         new PlcWriteRequest(new WriteRequestItem<>(String.class, dummyAddress, ""));
         new PlcWriteRequest(String.class, dummyAddress);
@@ -48,9 +48,12 @@ public class PlcWriteRequestTest {
     @Test
     public void builder() {
         { // empty
-            assertThatThrownBy(() ->
-                PlcWriteRequest.builder().build())
-                .isInstanceOf(IllegalStateException.class);
+            try {
+                PlcWriteRequest.builder().build();
+                fail("An empty build should fail.");
+            } catch (IllegalStateException e) {
+                // expected
+            }
         }
         { // one item implicit type
             PlcWriteRequest.builder()
@@ -74,20 +77,26 @@ public class PlcWriteRequestTest {
                 .build();
         }
         { // two different item typeSafe
-            assertThatThrownBy(() ->
+            try {
                 PlcWriteRequest.builder()
                     .addItem(String.class, dummyAddress)
                     .addItem(Byte.class, dummyAddress)
-                    .build(String.class))
-                .isInstanceOf(IllegalStateException.class);
+                    .build(String.class);
+                fail("Mixed types build should fail.");
+            } catch (IllegalStateException e) {
+                // expected
+            }
         }
         { // two different item typeSafe
-            assertThatThrownBy(() ->
+            try {
                 PlcWriteRequest.builder()
                     .addItem(String.class, dummyAddress)
                     .addItem(Byte.class, dummyAddress)
-                    .build(Byte.class))
-                .isInstanceOf(ClassCastException.class);
+                    .build(Byte.class);
+                fail("Mismatch of types should have failed.");
+            } catch (ClassCastException e) {
+                // expected
+            }
         }
         { // two equal item typeSafe
             PlcWriteRequest.builder()

@@ -19,34 +19,35 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.params;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.isotp.netty.model.types.ParameterCode;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
 public class ParameterTests {
 
     @Test
     @Category(FastTests.class)
     public void checksumPartameter() {
-        ChecksumParameter checksumParameter = new ChecksumParameter((byte)1);
+        ChecksumParameter checksumParameter = new ChecksumParameter((byte) 1);
 
-        assertThat(checksumParameter.getChecksum()).isEqualTo((byte)1).withFailMessage("Checksum incorrect");
-        assertThat(checksumParameter.getType()).isEqualTo(ParameterCode.CHECKSUM);
+        assertThat("Checksum incorrect", checksumParameter.getChecksum(), equalTo((byte) 1));
+        assertThat(checksumParameter.getType(), equalTo(ParameterCode.CHECKSUM));
     }
 
     @Test
     @Category(FastTests.class)
     public void disconnectAdditionalInformationParameter() {
-        byte[] data = {(byte)1, (byte)2};
+        byte[] data = {(byte) 1, (byte) 2};
         DisconnectAdditionalInformationParameter disconnectParameter = new DisconnectAdditionalInformationParameter(data);
 
-        assertThat(disconnectParameter.getData()[0]).isEqualTo((byte)1).withFailMessage("Return parameter incorrect");
-        assertThat(disconnectParameter.getData()[1]).isEqualTo((byte)2).withFailMessage("Return parameter incorrect");
-        assertThat(disconnectParameter.getType()).isEqualTo(ParameterCode.DISCONNECT_ADDITIONAL_INFORMATION);
+        assertThat(disconnectParameter.getData()[0], equalTo((byte) 1));
+        assertThat(disconnectParameter.getData()[1], equalTo((byte) 2));
+        assertThat(disconnectParameter.getType(), equalTo(ParameterCode.DISCONNECT_ADDITIONAL_INFORMATION));
     }
 
     @Test
@@ -54,8 +55,8 @@ public class ParameterTests {
     public void tpduSizeParameter() {
         TpduSizeParameter tpduSizeParameter = new TpduSizeParameter(TpduSize.SIZE_512);
 
-        assertThat(tpduSizeParameter.getTpduSize()).isEqualTo(TpduSize.SIZE_512).withFailMessage("Tpdu size incorrect");
-        assertThat(tpduSizeParameter.getType()).isEqualTo(ParameterCode.TPDU_SIZE);
+        assertThat("Tpdu size incorrect", tpduSizeParameter.getTpduSize(), equalTo(TpduSize.SIZE_512));
+        assertThat(tpduSizeParameter.getType(), equalTo(ParameterCode.TPDU_SIZE));
     }
 
 }

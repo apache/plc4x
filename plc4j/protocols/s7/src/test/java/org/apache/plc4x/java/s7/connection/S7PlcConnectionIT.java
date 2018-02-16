@@ -20,7 +20,6 @@ package org.apache.plc4x.java.s7.connection;
 
 import io.netty.channel.Channel;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,7 +28,10 @@ import org.junit.rules.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class S7PlcConnectionIT {
 
@@ -49,7 +51,7 @@ public class S7PlcConnectionIT {
             channel = s7PlcConnection.getChannel();
         } catch (PlcConnectionException e) {
             logger.error("Error initializing connection", e);
-            Assertions.fail("Error initializing connection");
+            fail("Error initializing connection");
         }
     }
 
@@ -64,9 +66,8 @@ public class S7PlcConnectionIT {
 
     @Test
     public void connect() {
-        assertThat(s7PlcConnection).isNotNull();
-        assertThat(s7PlcConnection.isConnected()).isTrue()
-            .withFailMessage("The connection should be 'connected'");
+        assertThat(s7PlcConnection, notNullValue());
+        assertThat("The connection should be 'connected'", s7PlcConnection.isConnected(), is( true) );
     }
 
     // TODO more tests for connect, close, read and write

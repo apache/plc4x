@@ -18,11 +18,13 @@ under the License.
 */
 package org.apache.plc4x.java.api.authentication;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class PlcUsernamePasswordAuthenticationTest {
 
@@ -31,8 +33,8 @@ public class PlcUsernamePasswordAuthenticationTest {
     public void authenication() {
         PlcUsernamePasswordAuthentication authenication = new PlcUsernamePasswordAuthentication("user", "password");
 
-        assertThat(authenication.getUsername()).isEqualTo("user").withFailMessage("Unexpected user name");
-        assertThat(authenication.getPassword()).isEqualTo("password").withFailMessage("Unexpected password");
+        assertThat("Unexpected user name", authenication.getUsername(), equalTo("user"));
+        assertThat("Unexpected password", authenication.getPassword(), equalTo("password"));
     }
 
 }

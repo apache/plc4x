@@ -19,12 +19,14 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.types;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class IsotpTypeTests {
 
@@ -34,21 +36,21 @@ public class IsotpTypeTests {
         DeviceGroup deviceGroup;
 
         deviceGroup = DeviceGroup.PG_OR_PC;
-        assertThat(deviceGroup.getCode()).isEqualTo((byte)1);
+        assertThat(deviceGroup.getCode(), equalTo((byte) 1));
 
         deviceGroup = DeviceGroup.OS;
-        assertThat(deviceGroup.getCode()).isEqualTo((byte)2);
+        assertThat(deviceGroup.getCode(), equalTo((byte) 2));
 
         deviceGroup = DeviceGroup.OTHERS;
-        assertThat(deviceGroup.getCode()).isEqualTo((byte)3);
+        assertThat(deviceGroup.getCode(), equalTo((byte) 3));
     }
 
     @Test
     @Category(FastTests.class)
     public void deviceGroupUnknown() {
-        DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0x40);
+        DeviceGroup deviceGroup = DeviceGroup.valueOf((byte) 0x40);
 
-        assertThat(deviceGroup).isNull();
+        assertThat(deviceGroup, nullValue());
     }
 
 
@@ -57,16 +59,16 @@ public class IsotpTypeTests {
     public void disconnectReason() {
         DisconnectReason disconnectReason = DisconnectReason.ADDRESS_UNKNOWN;
 
-        assertThat(DisconnectReason.valueOf((byte)3)).isEqualTo(DisconnectReason.ADDRESS_UNKNOWN).withFailMessage("3 incorrectly mapped");
-        assertThat(disconnectReason.getCode()).isEqualTo((byte)3);
+        assertThat("3 incorrectly mapped", DisconnectReason.valueOf((byte) 3), equalTo(DisconnectReason.ADDRESS_UNKNOWN));
+        assertThat(disconnectReason.getCode(), equalTo((byte) 3));
     }
 
     @Test
     @Category(FastTests.class)
     public void diosconectReasonUnknown() {
-        DisconnectReason disconnectReason = DisconnectReason.valueOf((byte)4);
+        DisconnectReason disconnectReason = DisconnectReason.valueOf((byte) 4);
 
-        assertThat(disconnectReason).isNull();
+        assertThat(disconnectReason, nullValue());
     }
 
     @Test
@@ -74,16 +76,16 @@ public class IsotpTypeTests {
     public void parameterCode() {
         ParameterCode parameterCode = ParameterCode.CALLING_TSAP;
 
-        assertThat(ParameterCode.valueOf((byte)0xC1)).isEqualTo(ParameterCode.CALLING_TSAP);
-        assertThat(parameterCode.getCode()).isEqualTo((byte)0xC1);
+        assertThat(ParameterCode.valueOf((byte) 0xC1), equalTo(ParameterCode.CALLING_TSAP));
+        assertThat(parameterCode.getCode(), equalTo((byte) 0xC1));
     }
 
     @Test
     @Category(FastTests.class)
     public void parameterCodeUnknown() {
-        ParameterCode parameterCode = ParameterCode.valueOf((byte)0x90);
+        ParameterCode parameterCode = ParameterCode.valueOf((byte) 0x90);
 
-        assertThat(parameterCode).isNull();
+        assertThat(parameterCode, nullValue());
     }
 
     @Test
@@ -92,24 +94,24 @@ public class IsotpTypeTests {
         ProtocolClass protocolClass;
 
         protocolClass = ProtocolClass.CLASS_1;
-        assertThat(protocolClass.getCode()).isEqualTo((byte)0x10);
+        assertThat(protocolClass.getCode(), equalTo((byte) 0x10));
 
         protocolClass = ProtocolClass.CLASS_2;
-        assertThat(protocolClass.getCode()).isEqualTo((byte)0x20);
+        assertThat(protocolClass.getCode(), equalTo((byte) 0x20));
 
         protocolClass = ProtocolClass.CLASS_3;
-        assertThat(protocolClass.getCode()).isEqualTo((byte)0x30);
+        assertThat(protocolClass.getCode(), equalTo((byte) 0x30));
 
         protocolClass = ProtocolClass.CLASS_4;
-        assertThat(protocolClass.getCode()).isEqualTo((byte)0x40);
+        assertThat(protocolClass.getCode(), equalTo((byte) 0x40));
     }
 
     @Test
     @Category(FastTests.class)
     public void protocolClassUnknown() {
-        ProtocolClass protocolClass = ProtocolClass.valueOf((byte)0x50);
+        ProtocolClass protocolClass = ProtocolClass.valueOf((byte) 0x50);
 
-        assertThat(protocolClass).isNull();
+        assertThat(protocolClass, nullValue());
     }
 
     @Test
@@ -117,16 +119,16 @@ public class IsotpTypeTests {
     public void rejectCause() {
         RejectCause rejectCause = RejectCause.INVALID_PARAMETER_TYPE;
 
-        assertThat(RejectCause.valueOf((byte)0x03)).isEqualTo(RejectCause.INVALID_PARAMETER_TYPE);
-        assertThat(rejectCause.getCode()).isEqualTo((byte)0x03);
+        assertThat(RejectCause.valueOf((byte) 0x03), equalTo(RejectCause.INVALID_PARAMETER_TYPE));
+        assertThat(rejectCause.getCode(), equalTo((byte) 0x03));
     }
 
     @Test
     @Category(FastTests.class)
     public void rejectClauseUnknown() {
-        RejectCause rejectCause = RejectCause.valueOf((byte)0x90);
+        RejectCause rejectCause = RejectCause.valueOf((byte) 0x90);
 
-        assertThat(rejectCause).isNull();
+        assertThat(rejectCause, nullValue());
     }
 
     @Test
@@ -134,35 +136,35 @@ public class IsotpTypeTests {
     public void tpduCode() {
         TpduCode tpduCode = TpduCode.DATA;
 
-        assertThat(TpduCode.valueOf((byte)0xF0)).isEqualTo(TpduCode.DATA);
-        assertThat(tpduCode.getCode()).isEqualTo((byte)0xF0);
+        assertThat(TpduCode.valueOf((byte) 0xF0), equalTo(TpduCode.DATA));
+        assertThat(tpduCode.getCode(), equalTo((byte) 0xF0));
     }
 
     @Test
     @Category(FastTests.class)
     public void tpduCodeUnknown() {
-        TpduCode tpduCode = TpduCode.valueOf((byte)0x01);
+        TpduCode tpduCode = TpduCode.valueOf((byte) 0x01);
 
-        assertThat(TpduCode.valueOf((byte)0xFF)).isEqualTo(TpduCode.TPDU_UNKNOWN);
-        assertThat(tpduCode.getCode()).isEqualTo((byte)0xFF);
+        assertThat(TpduCode.valueOf((byte) 0xFF), equalTo(TpduCode.TPDU_UNKNOWN));
+        assertThat(tpduCode.getCode(), equalTo((byte) 0xFF));
     }
-    
+
     @Test
     @Category(FastTests.class)
     public void typduSize() {
         TpduSize tpduSize = TpduSize.SIZE_128;
 
-        assertThat(TpduSize.valueOf((byte)0x07)).isEqualTo(TpduSize.SIZE_128);
-        assertThat(tpduSize.getCode()).isEqualTo((byte)0x07);
-        assertThat(tpduSize.getValue()).isEqualTo(128);
+        assertThat(TpduSize.valueOf((byte) 0x07), equalTo(TpduSize.SIZE_128));
+        assertThat(tpduSize.getCode(), equalTo((byte) 0x07));
+        assertThat(tpduSize.getValue(), equalTo(128));
     }
 
     @Test
     @Category(FastTests.class)
     public void tpduSizeUnknown() {
-        TpduSize tpduSize = TpduSize.valueOf((byte)0x06);
+        TpduSize tpduSize = TpduSize.valueOf((byte) 0x06);
 
-        assertThat(tpduSize).isNull();
+        assertThat(tpduSize, nullValue());
     }
 
     /**
@@ -174,7 +176,7 @@ public class IsotpTypeTests {
     public void tpduValueForGivenExactFit() {
         TpduSize tpduSize = TpduSize.valueForGivenSize(256);
 
-        assertThat(tpduSize).isEqualTo(TpduSize.SIZE_256);
+        assertThat(tpduSize, equalTo(TpduSize.SIZE_256));
     }
 
     /**
@@ -186,21 +188,18 @@ public class IsotpTypeTests {
     public void tpduValueForGivenIntermediateSize() {
         TpduSize tpduSize = TpduSize.valueForGivenSize(222);
 
-        assertThat(tpduSize).isEqualTo(TpduSize.SIZE_256);
-        assertThat(tpduSize.getValue()).isNotEqualTo(222);
+        assertThat(tpduSize, equalTo(TpduSize.SIZE_256));
+        assertThat(tpduSize.getValue(), not(equalTo(222)));
     }
 
     /**
      * This test should cause an exception as the tpdu size has to be greater
      * than 0 in any case.
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     @Category(FastTests.class)
     public void tpduValueForGivenTooSmallSize() {
-        assertThatThrownBy(() ->
-            TpduSize.valueForGivenSize(-1))
-            .isInstanceOf(IllegalArgumentException.class);
-
+        TpduSize.valueForGivenSize(-1);
     }
 
     /**
@@ -211,8 +210,7 @@ public class IsotpTypeTests {
     @Category(FastTests.class)
     public void tpduValueForGivenTooGreatSize() {
         TpduSize tpduSize = TpduSize.valueForGivenSize(10000);
-
-        assertThat(tpduSize).isEqualTo(TpduSize.SIZE_8192);
+        assertThat(tpduSize, equalTo(TpduSize.SIZE_8192));
     }
 
 }

@@ -18,9 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.s7;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -31,6 +28,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
 public class S7PlcDriverTest {
 
     @Ignore("We first have to find/build some tool to help test these connections.")
@@ -39,32 +39,28 @@ public class S7PlcDriverTest {
     public void getConnection() throws PlcException {
         S7PlcConnection s7Connection = (S7PlcConnection)
             new PlcDriverManager().getConnection("s7://localhost/1/2");
-        assertThat(s7Connection.getRack()).isEqualTo(1);
-        assertThat(s7Connection.getSlot()).isEqualTo(2);
+        assertThat(s7Connection.getRack(), equalTo(1));
+        assertThat(s7Connection.getSlot(), equalTo(2));
     }
 
     /**
      * In this test case the 's7' driver should report an invalid url format.
      */
-    @Test
+    @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
-    public void getConnectionInvalidUrl() {
-        assertThatThrownBy(() ->
-            new PlcDriverManager().getConnection("s7://localhost/hurz/2"))
-            .isInstanceOf(PlcConnectionException.class);
+    public void getConnectionInvalidUrl() throws PlcConnectionException {
+        new PlcDriverManager().getConnection("s7://localhost/hurz/2");
     }
 
     /**
      * In this test case the 's7' driver should report an error as this protocol
      * doesn't support authentication.
      */
-    @Test
+    @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
-    public void getConnectionWithAuthentication() {
-        assertThatThrownBy(() ->
-            new PlcDriverManager().getConnection("s7://localhost/1/2",
-                new PlcUsernamePasswordAuthentication("user", "pass")))
-            .isInstanceOf(PlcConnectionException.class);
+    public void getConnectionWithAuthentication() throws PlcConnectionException {
+        new PlcDriverManager().getConnection("s7://localhost/1/2",
+            new PlcUsernamePasswordAuthentication("user", "pass"));
     }
 
 }

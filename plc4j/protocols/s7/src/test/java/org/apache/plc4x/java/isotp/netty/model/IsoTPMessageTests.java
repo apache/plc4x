@@ -19,8 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.isotp.netty.model.params.Parameter;
@@ -33,6 +31,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Collections;
 import java.util.List;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class IsoTPMessageTests {
 
@@ -50,10 +51,10 @@ public class IsoTPMessageTests {
         errorData.writeByte(0x72);
         userData.writeByte(0x32);
 
-        assertThat(isoTpMessage.getTpdu().getTpduCode()).isEqualTo(TpduCode.TPDU_ERROR);
+        assertThat(isoTpMessage.getTpdu().getTpduCode(), equalTo(TpduCode.TPDU_ERROR));
         // Question: do we need two user data fields?
-        assertThat(tpdu.getUserData().readByte()).isEqualTo((byte) 0x72);
-        assertThat(isoTpMessage.getUserData().readByte()).isEqualTo((byte) 0x32);
+        assertThat(tpdu.getUserData().readByte(), equalTo((byte) 0x72));
+        assertThat(isoTpMessage.getUserData().readByte(), equalTo((byte) 0x32));
     }
 
 

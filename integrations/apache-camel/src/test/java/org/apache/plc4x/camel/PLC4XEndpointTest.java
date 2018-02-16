@@ -19,10 +19,12 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.Component;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class PLC4XEndpointTest {
@@ -36,18 +38,17 @@ public class PLC4XEndpointTest {
 
     @Test
     public void createProducer() throws Exception {
-        Assertions.assertThat(SUT.createProducer()).isNotNull();
+        assertThat(SUT.createProducer(), notNullValue());
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void createConsumer() throws Exception {
-        Assertions.assertThatThrownBy(() -> SUT.createConsumer(null))
-            .isInstanceOf(UnsupportedOperationException.class);
+        SUT.createConsumer(null);
     }
 
     @Test
     public void isSingleton() throws Exception {
-        Assertions.assertThat(SUT.isSingleton()).isTrue();
+        assertThat(SUT.isSingleton(), is(true));
     }
 
 }

@@ -19,8 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.tpdus;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.isotp.netty.model.params.CallingTsapParameter;
@@ -36,6 +34,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+
 public class IsotpModelTests {
 
     @Test
@@ -50,11 +56,11 @@ public class IsotpModelTests {
 
         ErrorTpdu tpdu = new ErrorTpdu(destinationReference, rejectCause, parameters, userData);
 
-        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.TPDU_ERROR);
-        assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x1).withFailMessage("Unexpected destination reference");
-        assertThat(tpdu.getRejectCause()).isEqualTo(RejectCause.REASON_NOT_SPECIFIED);
-        assertThat(tpdu.getParameters()).isEmpty();
-        assertThat(tpdu.getUserData().readByte()).isEqualTo((byte) 0x7F).withFailMessage("Unexpected user data");
+        assertThat(tpdu.getTpduCode(), equalTo(TpduCode.TPDU_ERROR));
+        assertThat("Unexpected destination reference", tpdu.getDestinationReference(), equalTo((short) 0x1));
+        assertThat(tpdu.getRejectCause(), equalTo(RejectCause.REASON_NOT_SPECIFIED));
+        assertThat(tpdu.getParameters(), empty() );
+        assertThat("Unexpected user data", tpdu.getUserData().readByte(), equalTo((byte) 0x7F));
     }
 
     @Test
@@ -72,10 +78,10 @@ public class IsotpModelTests {
         parameters.add(new TpduSizeParameter(TpduSize.SIZE_1024));
         parameters.add(new ChecksumParameter((byte) 0xFF));
 
-        assertThat(tpdu.getParameters()).hasSize(2).withFailMessage("Unexpected number of parameters");
-        assertThat(tpdu.getParameters()).containsAll(parameters).withFailMessage("Unexpected parameter");
-        assertThat(tpdu.getParameter(ChecksumParameter.class).isPresent()).isTrue().withFailMessage("Checksum parameter should exist");
-        assertThat(!tpdu.getParameter(CallingTsapParameter.class).isPresent()).isTrue().withFailMessage("CallingTsapParameter parameter should not exist");
+        assertThat("Unexpected number of parameters", tpdu.getParameters(), hasSize(2));
+        assertThat("Unexpected parameter", tpdu.getParameters(), contains(parameters.toArray()));
+        assertThat("Checksum parameter should exist", tpdu.getParameter(ChecksumParameter.class).isPresent(), is(true));
+        assertThat("CallingTsapParameter parameter should not exist", !tpdu.getParameter(CallingTsapParameter.class).isPresent(), is(true));
     }
 
     @Test
@@ -88,11 +94,11 @@ public class IsotpModelTests {
 
         DataTpdu tpdu = new DataTpdu(true, (byte) 0x7F, parameters, userData);
 
-        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.DATA);
-        assertThat(tpdu.isEot()).isTrue().withFailMessage("Unexpected eot reference");
-        assertThat(tpdu.getTpduRef()).isEqualTo((byte) 0x7F);
-        assertThat(tpdu.getParameters().isEmpty()).isTrue().withFailMessage("Unexpected parameters");
-        assertThat(tpdu.getUserData().readByte()).isEqualTo((byte) 0x66).withFailMessage("Unexpected user data");
+        assertThat(tpdu.getTpduCode(), equalTo(TpduCode.DATA));
+        assertThat("Unexpected eot reference", tpdu.isEot(), is(true));
+        assertThat(tpdu.getTpduRef(), equalTo((byte) 0x7F));
+        assertThat("Unexpected parameters", tpdu.getParameters().isEmpty(), is(true));
+        assertThat("Unexpected user data", tpdu.getUserData().readByte(), equalTo((byte) 0x66));
     }
 
     @Test
@@ -108,12 +114,12 @@ public class IsotpModelTests {
 
         ConnectionRequestTpdu tpdu = new ConnectionRequestTpdu(destinationReference, sourceReference, protocolClass, parameters, userData);
 
-        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.CONNECTION_REQUEST);
-        assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x1).withFailMessage("Unexpected destination reference");
-        assertThat(tpdu.getSourceReference()).isEqualTo((short) 0x2).withFailMessage("Unexpected source reference");
-        assertThat(tpdu.getProtocolClass()).isEqualTo(ProtocolClass.CLASS_0);
-        assertThat(tpdu.getParameters().isEmpty()).isTrue().withFailMessage("Unexpected parameters");
-        assertThat(tpdu.getUserData().readByte()).isEqualTo((byte) 0x33).withFailMessage("Unexpected user data");
+        assertThat(tpdu.getTpduCode(), equalTo(TpduCode.CONNECTION_REQUEST));
+        assertThat("Unexpected destination reference", tpdu.getDestinationReference(), equalTo((short) 0x1));
+        assertThat("Unexpected source reference", tpdu.getSourceReference(), equalTo((short) 0x2));
+        assertThat(tpdu.getProtocolClass(), equalTo(ProtocolClass.CLASS_0));
+        assertThat("Unexpected parameters", tpdu.getParameters().isEmpty(), is(true));
+        assertThat("Unexpected user data", tpdu.getUserData().readByte(), equalTo((byte) 0x33));
     }
 
     @Test
@@ -129,12 +135,12 @@ public class IsotpModelTests {
 
         ConnectionConfirmTpdu tpdu = new ConnectionConfirmTpdu(destinationReference, sourceReference, protocolClass, parameters, userData);
 
-        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.CONNECTION_CONFIRM);
-        assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x3).withFailMessage("Unexpected destination reference");
-        assertThat(tpdu.getSourceReference()).isEqualTo((short) 0x4).withFailMessage("Unexpected source reference");
-        assertThat(tpdu.getProtocolClass()).isEqualTo(ProtocolClass.CLASS_1);
-        assertThat(tpdu.getParameters().isEmpty()).isTrue().withFailMessage("Unexpected parameters");
-        assertThat(tpdu.getUserData().readByte()).isEqualTo((byte) 0x44).withFailMessage("Unexpected user data");
+        assertThat(tpdu.getTpduCode(), equalTo(TpduCode.CONNECTION_CONFIRM));
+        assertThat("Unexpected destination reference", tpdu.getDestinationReference(), equalTo((short) 0x3));
+        assertThat("Unexpected source reference", tpdu.getSourceReference(), equalTo((short) 0x4));
+        assertThat(tpdu.getProtocolClass(), equalTo(ProtocolClass.CLASS_1));
+        assertThat("Unexpected parameters", tpdu.getParameters().isEmpty(), is(true));
+        assertThat("Unexpected user data", tpdu.getUserData().readByte(), equalTo((byte) 0x44));
     }
 
     @Test
@@ -150,12 +156,12 @@ public class IsotpModelTests {
 
         DisconnectRequestTpdu tpdu = new DisconnectRequestTpdu(destinationReference, sourceReference, disconnectReason, parameters, userData);
 
-        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.DISCONNECT_REQUEST);
-        assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x1).withFailMessage("Unexpected destination reference");
-        assertThat(tpdu.getSourceReference()).isEqualTo((short) 0x2).withFailMessage("Unexpected source reference");
-        assertThat(tpdu.getDisconnectReason()).isEqualTo(DisconnectReason.ADDRESS_UNKNOWN);
-        assertThat(tpdu.getParameters().isEmpty()).isTrue().withFailMessage("Unexpected parameters");
-        assertThat(tpdu.getUserData().readByte()).isEqualTo((byte) 0x22).withFailMessage("Unexpected user data");
+        assertThat(tpdu.getTpduCode(), equalTo(TpduCode.DISCONNECT_REQUEST));
+        assertThat("Unexpected destination reference", tpdu.getDestinationReference(), equalTo((short) 0x1));
+        assertThat("Unexpected source reference", tpdu.getSourceReference(), equalTo((short) 0x2));
+        assertThat(tpdu.getDisconnectReason(), equalTo(DisconnectReason.ADDRESS_UNKNOWN));
+        assertThat("Unexpected parameters", tpdu.getParameters(), empty());
+        assertThat("Unexpected user data", tpdu.getUserData().readByte(), equalTo((byte) 0x22));
     }
 
     @Test
@@ -170,11 +176,11 @@ public class IsotpModelTests {
 
         DisconnectConfirmTpdu tpdu = new DisconnectConfirmTpdu(destinationReference, sourceReference, parameters, userData);
 
-        assertThat(tpdu.getTpduCode()).isEqualTo(TpduCode.DISCONNECT_CONFIRM);
-        assertThat(tpdu.getDestinationReference()).isEqualTo((short) 0x3).withFailMessage("Unexpected destination reference");
-        assertThat(tpdu.getSourceReference()).isEqualTo((short) 0x4).withFailMessage("Unexpected source reference");
-        assertThat(tpdu.getParameters().isEmpty()).isTrue().withFailMessage("Unexpected parameters");
-        assertThat(tpdu.getUserData().readByte()).isEqualTo((byte) 0x11).withFailMessage("Unexpected user data");
+        assertThat(tpdu.getTpduCode(), equalTo(TpduCode.DISCONNECT_CONFIRM));
+        assertThat("Unexpected destination reference", tpdu.getDestinationReference(), equalTo((short) 0x3));
+        assertThat("Unexpected source reference", tpdu.getSourceReference(), equalTo((short) 0x4));
+        assertThat("Unexpected parameters", tpdu.getParameters().isEmpty(), is(true));
+        assertThat("Unexpected user data", tpdu.getUserData().readByte(), equalTo((byte) 0x11));
     }
 
 }

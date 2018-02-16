@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.api.messages.items.RequestItem;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class PlcRequestTest {
 
     private List<RequestItem> requestItems;
 
-    private PlcRequest SUT;
+    private PlcRequest<RequestItem> SUT;
 
     @Before
     public void setUp() {
@@ -51,38 +53,47 @@ public class PlcRequestTest {
 
     @Test
     public void getRequestItems() {
-        assertThat(SUT.getRequestItems()).isEmpty();
+        assertThat(SUT.getRequestItems(), empty());
     }
 
     @Test
     public void getRequestItem() {
-        assertThat(SUT.getRequestItem()).isEqualTo(Optional.empty());
+        assertThat(SUT.getRequestItem(), equalTo(Optional.empty()));
         requestItems.add(mock(RequestItem.class));
-        assertThat(SUT.getRequestItem().isPresent()).isTrue();
+        assertThat(SUT.getRequestItem().isPresent(), is(true));
         requestItems.add(mock(RequestItem.class));
-        assertThatThrownBy(() -> SUT.getRequestItem()).isInstanceOf(IllegalStateException.class);
+        try {
+            SUT.getRequestItem();
+            fail("Too many items in PlcRequest should have failed.");
+        } catch (IllegalStateException e) {
+            // expected
+        }
     }
 
     @Test
     public void setRequestItem() {
         SUT.setRequestItem(mock(RequestItem.class));
         requestItems.add(mock(RequestItem.class));
-        assertThatThrownBy(() -> SUT.setRequestItem(mock(RequestItem.class))).isInstanceOf(IllegalStateException.class);
+        try {
+            SUT.setRequestItem(mock(RequestItem.class));
+        } catch (IllegalStateException e) {
+            // expected
+        }
     }
 
     @Test
     public void getNumberOfItems() {
-        assertThat(SUT.getNumberOfItems()).isEqualTo(0);
+        assertThat(SUT.getNumberOfItems(), equalTo(0));
     }
 
     @Test
     public void isMultiValue() {
-        assertThat(SUT.isMultiValue()).isFalse();
+        assertThat(SUT.isMultiValue(), is(false));
     }
 
     @Test
     public void isEmpty() {
-        assertThat(SUT.isEmpty()).isTrue();
+        assertThat(SUT.isEmpty(), is(true));
     }
 
 }

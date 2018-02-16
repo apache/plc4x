@@ -19,8 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
@@ -30,6 +28,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
+
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class S7PayloadTests {
 
@@ -41,9 +43,9 @@ public class S7PayloadTests {
         byte[] data = {(byte)0xFF};
 
         VarPayloadItem  varPayloadItem = new VarPayloadItem(returnCode, dataTransportSize, data);
-        assertThat(varPayloadItem.getReturnCode()).isEqualTo(DataTransportErrorCode.NOT_FOUND).withFailMessage("Unexpected data transport error code");
-        assertThat(varPayloadItem.getDataTransportSize()).isEqualTo(DataTransportSize.INTEGER).withFailMessage("Unexpected data transport size");
-        assertThat(varPayloadItem.getData()[0]).isEqualTo((byte) 0xFF).withFailMessage("Unexpected user data");
+        assertThat("Unexpected data transport error code", varPayloadItem.getReturnCode(), equalTo(DataTransportErrorCode.NOT_FOUND));
+        assertThat("Unexpected data transport size", varPayloadItem.getDataTransportSize(), equalTo(DataTransportSize.INTEGER));
+        assertThat("Unexpected user data", varPayloadItem.getData()[0], equalTo((byte) 0xFF));
     }
 
     @Test
@@ -56,8 +58,8 @@ public class S7PayloadTests {
         payloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BIT, data));
 
         VarPayload  varPayload = new VarPayload(parameterType, payloadItems);
-        assertThat(varPayload.getType()).isEqualTo(ParameterType.DOWNLOAD_ENDED).withFailMessage("Unexpected parameter type");
-        assertThat(varPayload.getPayloadItems()).containsAll(payloadItems).withFailMessage("Unexpected pay load items");
+        assertThat("Unexpected parameter type", varPayload.getType(), equalTo(ParameterType.DOWNLOAD_ENDED));
+        assertThat("Unexpected pay load items", varPayload.getPayloadItems(), contains(payloadItems.toArray()));
     }
 
 }

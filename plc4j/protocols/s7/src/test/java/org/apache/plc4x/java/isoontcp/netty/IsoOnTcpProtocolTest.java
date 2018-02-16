@@ -18,9 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.isoontcp.netty;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -32,9 +29,18 @@ import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.isoontcp.netty.model.IsoOnTcpMessage;
 import org.apache.plc4x.java.netty.NettyTestBase;
 import org.apache.plc4x.test.FastTests;
+import org.hamcrest.core.StringContains;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 
 public class IsoOnTcpProtocolTest extends NettyTestBase {
@@ -43,16 +49,16 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
     @Category(FastTests.class)
     public void encode() {
         IsoOnTcpMessage isoOnTcpMessage = new IsoOnTcpMessage(
-            Unpooled.wrappedBuffer(new byte[]{(byte)0x01,(byte)0x02,(byte)0x03}));
+            Unpooled.wrappedBuffer(new byte[]{(byte) 0x01, (byte) 0x02, (byte) 0x03}));
         EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
         channel.writeOutbound(isoOnTcpMessage);
         channel.checkException();
         Object obj = channel.readOutbound();
-        assertThat(obj).isInstanceOf(ByteBuf.class);
+        assertThat(obj, instanceOf(ByteBuf.class));
         ByteBuf byteBuf = (ByteBuf) obj;
-        assertThat(byteBuf.readableBytes()).isEqualTo(4 + 3).withFailMessage("The TCP on ISO Header should add 4 bytes to the data sent");
-        assertThat(byteBuf.getByte(0)).isEqualTo(IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER);
-        assertThat(byteBuf.getShort(2)).isEqualTo((short) (4 + 3)).withFailMessage("The length value in the packet should reflect the size of the entire data being sent");
+        assertThat("The TCP on ISO Header should add 4 bytes to the data sent", byteBuf.readableBytes(), equalTo(4 + 3));
+        assertThat(byteBuf.getByte(0), equalTo(IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER) );
+        assertThat("The length value in the packet should reflect the size of the entire data being sent", byteBuf.getShort(2), equalTo((short) (4 + 3)) );
     }
 
     /**
@@ -63,14 +69,14 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
     public void decode() {
         EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
         channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER,
-            (byte)0x00,(byte)0x00,(byte)0x0D,
-            (byte)0x01,(byte)0x02,(byte)0x03,(byte)0x04,(byte)0x05,(byte)0x06,(byte)0x07,(byte)0x08,(byte)0x09}));
+            (byte) 0x00, (byte) 0x00, (byte) 0x0D,
+            (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, (byte) 0x08, (byte) 0x09}));
         channel.checkException();
         Object obj = channel.readInbound();
-        assertThat(obj).isInstanceOf(IsoOnTcpMessage.class);
+        assertThat(obj, instanceOf(IsoOnTcpMessage.class));
         IsoOnTcpMessage isoOnTcpMessage = (IsoOnTcpMessage) obj;
-        assertThat(isoOnTcpMessage.getUserData()).isNotNull();
-        assertThat(isoOnTcpMessage.getUserData().readableBytes()).isEqualTo(9);
+        assertThat(isoOnTcpMessage.getUserData(), notNullValue());
+        assertThat(isoOnTcpMessage.getUserData().readableBytes(), equalTo(9) );
     }
 
     /**
@@ -80,13 +86,18 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
     @Test
     @Category(FastTests.class)
     public void decodeWrongMagicByte() {
-        EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
-        // TODO: Check this is done the same way as in the rest of the project
-        Throwable throwable = catchThrowable(() -> channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{0x12,
-            (byte)0x00,(byte)0x00,(byte)0x0D,
-            (byte)0x01,(byte)0x02,(byte)0x03,(byte)0x04,(byte)0x05,(byte)0x06,(byte)0x07,(byte)0x08,(byte)0x09})));
-        assertThat(throwable).isInstanceOf(PlcProtocolException.class);
-        assertThat(throwable.getMessage()).contains("ISO on TCP magic number");
+        try {
+            EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
+            // TODO: Check this is done the same way as in the rest of the project
+
+            channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{0x12,
+                (byte) 0x00, (byte) 0x00, (byte) 0x0D,
+                (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, (byte) 0x08, (byte) 0x09}));
+        } catch( Throwable throwable )
+        {
+            assertThat(throwable.getMessage(), containsString("ISO on TCP magic number") );
+            assertThat(throwable, instanceOf(PlcProtocolException.class) );
+        }
     }
 
     /**
@@ -98,10 +109,10 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
     public void decodeWayTooShort() {
         EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
         channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER,
-            (byte)0x00,(byte)0x00,(byte)0x0D}));
+            (byte) 0x00, (byte) 0x00, (byte) 0x0D}));
         channel.checkException();
         Object obj = channel.readInbound();
-        assertThat(obj).isNull();
+        assertThat(obj, nullValue() );
     }
 
     /**
@@ -113,11 +124,11 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
     public void decodeTooShort() {
         EmbeddedChannel channel = new EmbeddedChannel(new IsoOnTcpProtocol());
         channel.writeInbound(Unpooled.wrappedBuffer(new byte[]{IsoOnTcpProtocol.ISO_ON_TCP_MAGIC_NUMBER,
-            (byte)0x00,(byte)0x00,(byte)0x0D,
-            (byte)0x01,(byte)0x02,(byte)0x03,(byte)0x04,(byte)0x05,(byte)0x06,(byte)0x07,(byte)0x08}));
+            (byte) 0x00, (byte) 0x00, (byte) 0x0D,
+            (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, (byte) 0x08}));
         channel.checkException();
         Object obj = channel.readInbound();
-        assertThat(obj).isNull();
+        assertThat(obj, nullValue() );
     }
 
     /**
@@ -145,7 +156,7 @@ public class IsoOnTcpProtocolTest extends NettyTestBase {
                 (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, (byte) 0x08, (byte) 0x09}));
             channel.checkException();
             Object obj = channel.readInbound();
-            assertThat(obj).isNotNull();
+            assertThat(obj, notNullValue());
 
             // Check that the packet dump was logged.
             verify(mockAppender).doAppend(argThat(argument ->

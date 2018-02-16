@@ -19,9 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.s7.connection;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 import org.apache.plc4x.java.s7.model.S7Address;
@@ -33,6 +30,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.InetAddress;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class S7PlcConnectionTests {
 
@@ -51,16 +53,11 @@ public class S7PlcConnectionTests {
 
     @Test
     public void initialState() {
-        assertThat(s7PlcConnection.getRack()).isEqualTo(1)
-            .withFailMessage("Rack is incorrect");
-        assertThat(s7PlcConnection.getSlot()).isEqualTo(2)
-            .withFailMessage("Slot is incorrect");
-        assertThat(s7PlcConnection.getParamPduSize()).isEqualTo(TpduSize.SIZE_1024)
-            .withFailMessage("Pdu size is incorrect");
-        assertThat(s7PlcConnection.getParamMaxAmqCaller()).isEqualTo(8)
-            .withFailMessage("Max AMQ Caller size is incorrect");
-        assertThat(s7PlcConnection.getParamMaxAmqCallee()).isEqualTo(8)
-            .withFailMessage("Max AMQ Callee size is incorrect");
+        assertThat("Rack is incorrect", s7PlcConnection.getRack(), equalTo(1) );
+        assertThat("Slot is incorrect", s7PlcConnection.getSlot(), equalTo(2) );
+        assertThat("Pdu size is incorrect", s7PlcConnection.getParamPduSize(), equalTo(TpduSize.SIZE_1024));
+        assertThat("Max AMQ Caller size is incorrect", s7PlcConnection.getParamMaxAmqCaller(), equalTo(8) );
+        assertThat("Max AMQ Callee size is incorrect", s7PlcConnection.getParamMaxAmqCallee(), equalTo(8) );
     }
 
     @Test
@@ -69,7 +66,7 @@ public class S7PlcConnectionTests {
             s7PlcConnection.parseAddress("");
         }
         catch (PlcException exception) {
-            assertThat(exception.getMessage()).startsWith("Address string doesn't match");
+            assertThat(exception.getMessage(), startsWith("Address string doesn't match") );
         }
     }
 
@@ -79,10 +76,8 @@ public class S7PlcConnectionTests {
             S7DataBlockAddress address = (S7DataBlockAddress)
                 s7PlcConnection.parseAddress("DATA_BLOCKS/20/100");
 
-            assertThat(address.getDataBlockNumber()).isEqualTo((short) 20)
-                .withFailMessage("unexpected data block");
-            assertThat(address.getByteOffset()).isEqualTo((short) 100)
-                .withFailMessage("unexpected byte offset");
+            assertThat("unexpected data block", address.getDataBlockNumber(), equalTo((short) 20) );
+            assertThat("unexpected byte offset", address.getByteOffset(), equalTo((short) 100) );
         }
         catch (PlcException exception) {
             fail("valid data block address");
@@ -94,10 +89,8 @@ public class S7PlcConnectionTests {
         try {
             S7Address address = (S7Address) s7PlcConnection.parseAddress("TIMERS/10");
 
-            assertThat(address.getMemoryArea()).isEqualTo(MemoryArea.TIMERS)
-                .withFailMessage("unexpected memory area");
-            assertThat(address.getByteOffset()).isEqualTo((short) 10)
-                .withFailMessage("unexpected byte offset");
+            assertThat("unexpected memory area", address.getMemoryArea(), equalTo(MemoryArea.TIMERS) );
+            assertThat("unexpected byte offset", address.getByteOffset(), equalTo((short) 10) );
         }
         catch (PlcException exception) {
             fail("valid timer block address");
@@ -109,12 +102,9 @@ public class S7PlcConnectionTests {
         try {
             S7BitAddress address = (S7BitAddress) s7PlcConnection.parseAddress("TIMERS/10/4");
 
-            assertThat(address.getMemoryArea()).isEqualTo(MemoryArea.TIMERS)
-                .withFailMessage("unexpected memory area");
-            assertThat(address.getByteOffset()).isEqualTo((short) 10)
-                .withFailMessage("unexpected byte offset");
-            assertThat(address.getBitOffset()).isEqualTo((byte) 4)
-                .withFailMessage("unexpected but offset");
+            assertThat("unexpected memory area", address.getMemoryArea(), equalTo(MemoryArea.TIMERS) );
+            assertThat("unexpected byte offset", address.getByteOffset(), equalTo((short) 10) );
+            assertThat("unexpected but offset", address.getBitOffset(), equalTo((byte) 4) );
         }
         catch (PlcException exception) {
             fail("valid timer block bit address");

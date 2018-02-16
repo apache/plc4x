@@ -23,7 +23,6 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.mock.MockConnection;
 import org.apache.plc4x.test.FastTests;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -32,7 +31,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class PlcDriverManagerTest {
 
@@ -43,17 +46,9 @@ public class PlcDriverManagerTest {
     @Category(FastTests.class)
     public void getExistingDriverTest() throws PlcException {
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
-        SoftAssertions softAssertions = new SoftAssertions();
-        softAssertions.assertThat(mockConnection.getAuthentication())
-            .as("check authentication object")
-            .isNull();
-        softAssertions.assertThat(mockConnection.isConnected())
-            .as("check connection state")
-            .isTrue();
-        softAssertions.assertThat(mockConnection.isClosed())
-            .as("check closed state")
-            .isFalse();
-        softAssertions.assertAll();
+        assertThat(mockConnection.getAuthentication(), nullValue());
+        assertThat(mockConnection.isConnected(), is(true));
+        assertThat(mockConnection.isClosed(), is(false));
     }
 
     /**
@@ -66,42 +61,28 @@ public class PlcDriverManagerTest {
             new PlcUsernamePasswordAuthentication("user", "pass");
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url", authentication);
 
-        SoftAssertions softAssertions = new SoftAssertions();
-        softAssertions.assertThat(mockConnection.getAuthentication())
-            .as("check authentication object")
-            .isNotNull();
-        softAssertions.assertThat(mockConnection.getAuthentication())
-            .as("check authentication object type")
-            .isInstanceOf(PlcUsernamePasswordAuthentication.class);
-        softAssertions.assertThat(mockConnection.isConnected())
-            .as("check connection state")
-            .isTrue();
-        softAssertions.assertThat(mockConnection.isClosed())
-            .as("check closed state")
-            .isFalse();
-        softAssertions.assertAll();
+        assertThat(mockConnection.getAuthentication(), notNullValue());
+        assertThat(mockConnection.getAuthentication(), instanceOf(PlcUsernamePasswordAuthentication.class));
+        assertThat(mockConnection.isConnected(), is(true));
+        assertThat(mockConnection.isClosed(), is(false));
     }
 
     /**
      * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
      */
-    @Test
+    @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
-    public void getNotExistingDriverTest() {
-        assertThatThrownBy(() -> new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url"))
-            .as("check rejection of invalid protocol")
-            .isInstanceOf(PlcConnectionException.class);
+    public void getNotExistingDriverTest() throws PlcConnectionException {
+        new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url");
     }
 
     /**
      * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
      */
-    @Test
+    @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
-    public void getInvalidUriTest() {
-        assertThatThrownBy(() -> new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog"))
-            .as("check rejection of invalid uri")
-            .isInstanceOf(PlcConnectionException.class);
+    public void getInvalidUriTest() throws PlcConnectionException {
+        new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog");
     }
 
     /**
@@ -109,9 +90,9 @@ public class PlcDriverManagerTest {
      * contains multiple implementation instances of the same protocol. This should result in
      * an error.
      */
-    @Test
+    @Test(expected = IllegalStateException.class)
     @Category(FastTests.class)
-    public void getDuplicateDriver() throws MalformedURLException {
+    public void getDuplicateDriver() throws MalformedURLException, PlcConnectionException {
         // Save and replace the context classloader as we need to force the ServiceLoader to
         // use a different service file.
         ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();
@@ -119,9 +100,8 @@ public class PlcDriverManagerTest {
         urls[0] = new File("src/test/resources/test").toURI().toURL();
         ClassLoader fakeClassLoader = new URLClassLoader(urls, originalClassloader);
 
-        assertThatThrownBy(() -> new PlcDriverManager(fakeClassLoader).getConnection("mock://some-cool-url"))
-            .as("check detection of duplicated driver detection")
-            .isInstanceOf(IllegalStateException.class);
+        // expect exception
+        new PlcDriverManager(fakeClassLoader).getConnection("mock://some-cool-url");
     }
 
 }

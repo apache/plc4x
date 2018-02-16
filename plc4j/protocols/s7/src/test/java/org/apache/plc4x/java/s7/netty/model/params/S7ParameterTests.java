@@ -19,8 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.params;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
@@ -32,6 +30,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
+
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class S7ParameterTests {
 
@@ -51,15 +53,15 @@ public class S7ParameterTests {
         parameterItems.add(new S7AnyVarParameterItem(specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset));
 
         VarParameter varParameter = new VarParameter(parameterType, parameterItems);
-        assertThat(varParameter.getType()).isEqualTo(ParameterType.READ_VAR).withFailMessage("Unexpected parameter type");
-        assertThat(varParameter.getItems()).containsAll(parameterItems).withFailMessage("Unexpected paramater items");
+        assertThat("Unexpected parameter type", varParameter.getType(), equalTo(ParameterType.READ_VAR));
+        assertThat("Unexpected paramater items", varParameter.getItems(), contains(parameterItems.toArray()));
     }
 
     @Test
     @Category(FastTests.class)
     public void cpuServicesParameter() {
         CpuServicesParameter cpuParameter = new CpuServicesParameter();
-        assertThat(cpuParameter.getType()).isEqualTo(ParameterType.CPU_SERVICES).withFailMessage("Unexpected parameter type");
+        assertThat("Unexpected parameter type", cpuParameter.getType(), equalTo(ParameterType.CPU_SERVICES));
     }
     
     @Test
@@ -70,10 +72,10 @@ public class S7ParameterTests {
         short pduLength = 512;
 
         SetupCommunicationParameter setupParameter = new SetupCommunicationParameter(maxAmqCaller, maxAmqCallee, pduLength);
-        assertThat(setupParameter.getType()).isEqualTo(ParameterType.SETUP_COMMUNICATION).withFailMessage("Unexpected parameter type");
-        assertThat(setupParameter.getMaxAmqCallee()).isEqualTo(maxAmqCallee).withFailMessage("Unexpected value for maxAmqCallee");
-        assertThat(setupParameter.getMaxAmqCaller()).isEqualTo(maxAmqCaller).withFailMessage("Unexpected value for maxAmqCaller");
-        assertThat(setupParameter.getPduLength()).isEqualTo(pduLength).withFailMessage("Unexpected value for pduLength");
+        assertThat("Unexpected parameter type", setupParameter.getType(), equalTo(ParameterType.SETUP_COMMUNICATION));
+        assertThat("Unexpected value for maxAmqCallee", setupParameter.getMaxAmqCallee(), equalTo(maxAmqCallee));
+        assertThat("Unexpected value for maxAmqCaller", setupParameter.getMaxAmqCaller(), equalTo(maxAmqCaller));
+        assertThat("Unexpected value for pduLength", setupParameter.getPduLength(), equalTo(pduLength));
     }
 
 }
