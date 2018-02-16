@@ -77,6 +77,10 @@ public class TimeStamp extends ByteValue {
     }
 
     public static TimeStamp of(BigInteger value) {
+        return new TimeStamp(javaToWinTime(value));
+    }
+
+    public static TimeStamp ofWinTime(BigInteger value) {
         return new TimeStamp(value);
     }
 
@@ -84,14 +88,17 @@ public class TimeStamp extends ByteValue {
         return of(BigInteger.valueOf(value));
     }
 
+    public static TimeStamp ofWinTime(long value) {
+        return of(javaToWinTime(BigInteger.valueOf(value)));
+    }
+
     public static TimeStamp of(byte... values) {
         return new TimeStamp(values);
     }
 
     public static TimeStamp of(Date timestamp) {
-        BigInteger timeMillisSince19700101 = BigInteger.valueOf(timestamp.getTime());
-        BigInteger timeMillisSince16010101 = EPOCH_DIFF_IN_MILLIS.add(timeMillisSince19700101);
-        return new TimeStamp(timeMillisSince16010101.multiply(BigInteger.valueOf(10_000)));
+        BigInteger winStamp = javaToWinTime(BigInteger.valueOf(timestamp.getTime()));
+        return new TimeStamp(winStamp);
     }
 
     public static TimeStamp of(ByteBuf byteBuf) {
@@ -105,9 +112,17 @@ public class TimeStamp extends ByteValue {
     }
 
     public Date getAsDate() {
-        BigInteger timeMillisSince16010101 = bigIntegerValue.divide(BigInteger.valueOf(10_000));
-        BigInteger timeMillisSince19700101 = timeMillisSince16010101.subtract(EPOCH_DIFF_IN_MILLIS);
-        return new Date(timeMillisSince19700101.longValue());
+        return new Date(winTimeToJava(bigIntegerValue).longValue());
+    }
+
+    public static BigInteger javaToWinTime(BigInteger timeMillisSince19700101) {
+        BigInteger timeMillisSince16010101 = EPOCH_DIFF_IN_MILLIS.add(timeMillisSince19700101);
+        return timeMillisSince16010101.multiply(BigInteger.valueOf(10_000));
+    }
+
+    public static BigInteger winTimeToJava(BigInteger winTime) {
+        BigInteger timeMillisSince16010101 = winTime.divide(BigInteger.valueOf(10_000));
+        return timeMillisSince16010101.subtract(EPOCH_DIFF_IN_MILLIS);
     }
 
     @Override
