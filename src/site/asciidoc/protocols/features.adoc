@@ -29,6 +29,12 @@ The following table contains a list of operations and the protocols that support
 |icon:remove[role="red"]
 |icon:check[role="green"]
 
+|Beckhoff ADS
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:question[role="yellow"]
+|icon:question[role="yellow"]
+
 |Modbus
 |icon:check[role="green"]
 |icon:check[role="green"]
