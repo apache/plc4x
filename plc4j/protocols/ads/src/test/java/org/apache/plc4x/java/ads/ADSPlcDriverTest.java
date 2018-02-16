@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class ADSPlcDriverTest {
 
     @Rule
-    public TcpHexDumper tcpHexDumper = new TcpHexDumper(0);
+    public TcpHexDumper tcpHexDumper = new TcpHexDumper(0, 2);
 
     @Test
     public void getConnection() throws Exception {

@@ -42,14 +42,18 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
 
     private final Integer portToUse;
 
+    private final Integer shutdownTimeout;
+
     private ServerSocket serverSocket;
 
-    int shutdownTimeout;
-
     public TcpHexDumper(Integer portToUse) {
+        this(portToUse, 10);
+    }
+
+    public TcpHexDumper(Integer portToUse, Integer shutdownTimeout) {
         pool = Executors.newCachedThreadPool();
         this.portToUse = portToUse;
-        this.shutdownTimeout = 10;
+        this.shutdownTimeout = shutdownTimeout;
     }
 
     public void init(int port) throws IOException, InterruptedException {
