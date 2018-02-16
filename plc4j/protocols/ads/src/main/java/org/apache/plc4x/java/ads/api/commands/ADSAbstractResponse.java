@@ -27,19 +27,19 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.generic.types.State;
 
 public abstract class ADSAbstractResponse extends AMSTCPPaket {
-    public ADSAbstractResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+    protected ADSAbstractResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         super(amstcpHeader, amsHeader);
     }
 
-    public ADSAbstractResponse(AMSHeader amsHeader) {
+    protected ADSAbstractResponse(AMSHeader amsHeader) {
         super(amsHeader);
     }
 
-    public ADSAbstractResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+    protected ADSAbstractResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT_RESPONSE, invokeId);
     }
 
-    public ADSAbstractResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
+    protected ADSAbstractResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, stateId, invokeId);
     }
 }

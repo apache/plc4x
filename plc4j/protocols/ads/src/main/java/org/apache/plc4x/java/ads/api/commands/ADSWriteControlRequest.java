@@ -55,7 +55,7 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
      */
     private final Data data;
 
-    public ADSWriteControlRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+    protected ADSWriteControlRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(amstcpHeader, amsHeader);
         this.adsState = adsState;
         this.deviceState = deviceState;
@@ -63,7 +63,7 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         this.data = data;
     }
 
-    public ADSWriteControlRequest(AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+    protected ADSWriteControlRequest(AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(amsHeader);
         this.adsState = adsState;
         this.deviceState = deviceState;
@@ -71,12 +71,24 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         this.data = data;
     }
 
-    public ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+    protected ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.adsState = adsState;
         this.deviceState = deviceState;
         this.length = length;
         this.data = data;
+    }
+
+    public static ADSWriteControlRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+        return new ADSWriteControlRequest(amstcpHeader, amsHeader, adsState, deviceState, length, data);
+    }
+
+    public static ADSWriteControlRequest of(AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+        return new ADSWriteControlRequest(amsHeader, adsState, deviceState, length, data);
+    }
+
+    public static ADSWriteControlRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+        return new ADSWriteControlRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, adsState, deviceState, length, data);
     }
 
     @Override

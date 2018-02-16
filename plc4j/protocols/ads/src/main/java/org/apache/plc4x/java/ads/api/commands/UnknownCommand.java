@@ -33,7 +33,7 @@ public class UnknownCommand extends AMSTCPPaket {
 
     final ByteBuf remainingBytes;
 
-    public UnknownCommand(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ByteBuf remainingBytes) {
+    protected UnknownCommand(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ByteBuf remainingBytes) {
         super(amstcpHeader, amsHeader);
         this.remainingBytes = remainingBytes;
     }
@@ -43,4 +43,7 @@ public class UnknownCommand extends AMSTCPPaket {
         return () -> remainingBytes;
     }
 
+    public static AMSTCPPaket of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ByteBuf remainingBytes) {
+        return new UnknownCommand(amstcpHeader, amsHeader, remainingBytes);
+    }
 }

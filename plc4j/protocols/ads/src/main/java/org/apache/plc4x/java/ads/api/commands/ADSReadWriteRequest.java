@@ -56,7 +56,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
      */
     private final Data data;
 
-    public ADSReadWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+    protected ADSReadWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(amstcpHeader, amsHeader);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
@@ -65,7 +65,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
         this.data = data;
     }
 
-    public ADSReadWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+    protected ADSReadWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(amsHeader);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
@@ -74,13 +74,25 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
         this.data = data;
     }
 
-    public ADSReadWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+    protected ADSReadWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
         this.readLength = readLength;
         this.writeLength = writeLength;
         this.data = data;
+    }
+
+    public static ADSReadWriteRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+        return new ADSReadWriteRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, readLength, writeLength, data);
+    }
+
+    public static ADSReadWriteRequest of(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+        return new ADSReadWriteRequest(amsHeader, indexGroup, indexOffset, readLength, writeLength, data);
+    }
+
+    public static ADSReadWriteRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
+        return new ADSReadWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, readLength, writeLength, data);
     }
 
     @Override

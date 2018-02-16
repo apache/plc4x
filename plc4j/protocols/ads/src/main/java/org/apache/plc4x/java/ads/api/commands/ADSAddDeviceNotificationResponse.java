@@ -44,16 +44,24 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
      */
     private final NotificationHandle notificationHandle;
 
-    public ADSAddDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
+    protected ADSAddDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
         super(amstcpHeader, amsHeader);
         this.result = result;
         this.notificationHandle = notificationHandle;
     }
 
-    public ADSAddDeviceNotificationResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, NotificationHandle notificationHandle) {
+    protected ADSAddDeviceNotificationResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, NotificationHandle notificationHandle) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.result = result;
         this.notificationHandle = notificationHandle;
+    }
+
+    public static ADSAddDeviceNotificationResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
+        return new ADSAddDeviceNotificationResponse(amstcpHeader, amsHeader, result, notificationHandle);
+    }
+
+    public static ADSAddDeviceNotificationResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, NotificationHandle notificationHandle) {
+        return new ADSAddDeviceNotificationResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, notificationHandle);
     }
 
     @Override

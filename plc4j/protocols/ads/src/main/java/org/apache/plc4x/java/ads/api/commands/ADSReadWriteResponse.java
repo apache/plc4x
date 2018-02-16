@@ -50,18 +50,26 @@ public class ADSReadWriteResponse extends ADSAbstractResponse {
      */
     private final Data data;
 
-    public ADSReadWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
+    protected ADSReadWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
         super(amstcpHeader, amsHeader);
         this.result = result;
         this.length = length;
         this.data = data;
     }
 
-    public ADSReadWriteResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Length length, Data data) {
+    protected ADSReadWriteResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Length length, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.result = result;
         this.length = length;
         this.data = data;
+    }
+
+    public static ADSReadWriteResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
+        return new ADSReadWriteResponse(amstcpHeader, amsHeader, result, length, data);
+    }
+
+    public static ADSReadWriteResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Length length, Data data) {
+        return new ADSReadWriteResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, length, data);
     }
 
     @Override

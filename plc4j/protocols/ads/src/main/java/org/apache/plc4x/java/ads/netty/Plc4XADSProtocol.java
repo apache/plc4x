@@ -115,7 +115,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         byte[] bytes = byteArrayOutputStream.toByteArray();
         Length length = Length.of(bytes.length);
         Data data = Data.of(bytes);
-        AMSTCPPaket amstcpPaket = new ADSWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, data);
+        AMSTCPPaket amstcpPaket = ADSWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, data);
         out.add(amstcpPaket);
     }
 
@@ -135,7 +135,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPaket, PlcRequ
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
         Length length = Length.of(readRequestItem.getSize());
-        AMSTCPPaket amstcpPaket = new ADSReadRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
+        AMSTCPPaket amstcpPaket = ADSReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         out.add(amstcpPaket);
     }
 

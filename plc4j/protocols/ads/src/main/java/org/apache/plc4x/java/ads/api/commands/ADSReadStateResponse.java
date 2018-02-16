@@ -38,14 +38,22 @@ public class ADSReadStateResponse extends ADSAbstractResponse {
      */
     private final Result result;
 
-    public ADSReadStateResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
+    protected ADSReadStateResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
         super(amstcpHeader, amsHeader);
         this.result = result;
     }
 
-    public ADSReadStateResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
+    protected ADSReadStateResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.result = result;
+    }
+
+    public static ADSReadStateResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
+        return new ADSReadStateResponse(amstcpHeader, amsHeader, result);
+    }
+
+    public static ADSReadStateResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
+        return new ADSReadStateResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result);
     }
 
     @Override

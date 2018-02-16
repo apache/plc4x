@@ -33,16 +33,29 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
  */
 @ADSCommandType(Command.ADS_Read_State)
 public class ADSReadStateRequest extends ADSAbstractRequest {
-    public ADSReadStateRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+
+    protected ADSReadStateRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         super(amstcpHeader, amsHeader);
     }
 
-    public ADSReadStateRequest(AMSHeader amsHeader) {
+    protected ADSReadStateRequest(AMSHeader amsHeader) {
         super(amsHeader);
     }
 
-    public ADSReadStateRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+    protected ADSReadStateRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+    }
+
+    public static ADSReadStateRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        return new ADSReadStateRequest(amstcpHeader, amsHeader);
+    }
+
+    public static ADSReadStateRequest of(AMSHeader amsHeader) {
+        return new ADSReadStateRequest(amsHeader);
+    }
+
+    public static ADSReadStateRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+        return new ADSReadStateRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
     }
 
     @Override

@@ -33,16 +33,29 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
  */
 @ADSCommandType(Command.ADS_Read_Device_Info)
 public class ADSReadDeviceInfoRequest extends ADSAbstractRequest {
-    public ADSReadDeviceInfoRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+
+    protected ADSReadDeviceInfoRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
         super(amstcpHeader, amsHeader);
     }
 
-    public ADSReadDeviceInfoRequest(AMSHeader amsHeader) {
+    protected ADSReadDeviceInfoRequest(AMSHeader amsHeader) {
         super(amsHeader);
     }
 
-    public ADSReadDeviceInfoRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+    protected ADSReadDeviceInfoRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
+    }
+
+    public static ADSReadDeviceInfoRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        return new ADSReadDeviceInfoRequest(amstcpHeader, amsHeader);
+    }
+
+    public static ADSReadDeviceInfoRequest of(AMSHeader amsHeader) {
+        return new ADSReadDeviceInfoRequest(amsHeader);
+    }
+
+    public static ADSReadDeviceInfoRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
+        return new ADSReadDeviceInfoRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
     }
 
     @Override

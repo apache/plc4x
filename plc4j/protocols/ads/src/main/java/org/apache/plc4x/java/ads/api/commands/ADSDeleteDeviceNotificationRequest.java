@@ -38,19 +38,31 @@ public class ADSDeleteDeviceNotificationRequest extends ADSAbstractRequest {
      */
     private final NotificationHandle notificationHandle;
 
-    public ADSDeleteDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {
+    protected ADSDeleteDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {
         super(amstcpHeader, amsHeader);
         this.notificationHandle = notificationHandle;
     }
 
-    public ADSDeleteDeviceNotificationRequest(AMSHeader amsHeader, NotificationHandle notificationHandle) {
+    protected ADSDeleteDeviceNotificationRequest(AMSHeader amsHeader, NotificationHandle notificationHandle) {
         super(amsHeader);
         this.notificationHandle = notificationHandle;
     }
 
-    public ADSDeleteDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, NotificationHandle notificationHandle) {
+    protected ADSDeleteDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, NotificationHandle notificationHandle) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.notificationHandle = notificationHandle;
+    }
+
+    public static ADSDeleteDeviceNotificationRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {
+        return new ADSDeleteDeviceNotificationRequest(amstcpHeader, amsHeader, notificationHandle);
+    }
+
+    public static ADSDeleteDeviceNotificationRequest of(AMSHeader amsHeader, NotificationHandle notificationHandle) {
+        return new ADSDeleteDeviceNotificationRequest(amsHeader, notificationHandle);
+    }
+
+    public static ADSDeleteDeviceNotificationRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, NotificationHandle notificationHandle) {
+        return new ADSDeleteDeviceNotificationRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, notificationHandle);
     }
 
     @Override

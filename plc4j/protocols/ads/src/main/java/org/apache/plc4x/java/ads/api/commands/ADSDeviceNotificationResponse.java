@@ -27,7 +27,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Command;
 @ADSCommandType(Command.ADS_Device_Notification)
 public class ADSDeviceNotificationResponse extends ADSAbstractResponse {
 
-    private ADSDeviceNotificationResponse() {
+    protected ADSDeviceNotificationResponse() {
         super(null, null);
         // There is no {@link ADSDeviceNotificationResponse} specified
     }

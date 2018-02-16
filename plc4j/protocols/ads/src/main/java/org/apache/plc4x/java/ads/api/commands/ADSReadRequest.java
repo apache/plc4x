@@ -50,25 +50,37 @@ public class ADSReadRequest extends ADSAbstractRequest {
      */
     private final Length length;
 
-    public ADSReadRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
+    protected ADSReadRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
         super(amstcpHeader, amsHeader);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
         this.length = length;
     }
 
-    public ADSReadRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
+    protected ADSReadRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
         super(amsHeader);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
         this.length = length;
     }
 
-    public ADSReadRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
+    protected ADSReadRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
         this.length = length;
+    }
+
+    public static ADSReadRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
+        return new ADSReadRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, length);
+    }
+
+    public static ADSReadRequest of(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
+        return new ADSReadRequest(amsHeader, indexGroup, indexOffset, length);
+    }
+
+    public static ADSReadRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
+        return new ADSReadRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
     }
 
     @Override

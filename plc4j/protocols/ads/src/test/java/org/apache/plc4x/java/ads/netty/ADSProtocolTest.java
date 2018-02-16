@@ -60,23 +60,23 @@ public class ADSProtocolTest {
         Invoke invokeId = Invoke.of(15);
         Data data = Data.of("Hello World!".getBytes());
         return Stream.of(
-            new ADSAddDeviceNotificationRequest(
+            ADSAddDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(1), IndexOffset.of(1), Length.of(1), TransmissionMode.of(1), MaxDelay.of(1), CycleTime.of(1)),
-            new ADSAddDeviceNotificationResponse(
+            ADSAddDeviceNotificationResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 NotificationHandle.of(0)
             ),
-            new ADSDeleteDeviceNotificationRequest(
+            ADSDeleteDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 NotificationHandle.of(0)
             ),
-            new ADSDeleteDeviceNotificationResponse(
+            ADSDeleteDeviceNotificationResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
             ),
-            new ADSDeviceNotificationRequest(
+            ADSDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 // TODO: must be calculated when using this constructor
                 Length.of(32),
@@ -90,10 +90,10 @@ public class ADSProtocolTest {
                     )
                 )
             ),
-            new ADSReadDeviceInfoRequest(
+            ADSReadDeviceInfoRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId
             ),
-            new ADSReadDeviceInfoResponse(
+            ADSReadDeviceInfoResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 MajorVersion.of((byte) 1),
@@ -104,26 +104,26 @@ public class ADSProtocolTest {
                     (byte) 9, (byte) 10, (byte) 11, (byte) 12, (byte) 13, (byte) 14, (byte) 15, (byte) 16
                 )
             ),
-            new ADSReadRequest(
+            ADSReadRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 Length.of(1)
             ),
-            new ADSReadResponse(
+            ADSReadResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 Length.of(data.getCalculatedLength()),
                 data
             ),
-            new ADSReadStateRequest(
+            ADSReadStateRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId
             ),
-            new ADSReadStateResponse(
+            ADSReadStateResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
             ),
-            new ADSReadWriteRequest(
+            ADSReadWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
@@ -131,35 +131,35 @@ public class ADSProtocolTest {
                 WriteLength.of(data.getCalculatedLength()),
                 data
             ),
-            new ADSReadWriteResponse(
+            ADSReadWriteResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 Length.of(data.getCalculatedLength()),
                 data
             ),
-            new ADSWriteControlRequest(
+            ADSWriteControlRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 ADSState.of(0xaffe),
                 DeviceState.of(0xaffe),
                 Length.of(data.getCalculatedLength()),
                 data
             ),
-            new ADSWriteControlResponse(
+            ADSWriteControlResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
             ),
-            new ADSWriteRequest(
+            ADSWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 Length.of(data.getCalculatedLength()),
                 data
             ),
-            new ADSWriteResponse(
+            ADSWriteResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
             )/*,
-            new UnknownCommand(
+            UnknownCommand.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Unpooled.wrappedBuffer(new byte[]{42})
             )*/

@@ -53,7 +53,7 @@ public class ADSWriteRequest extends ADSAbstractRequest {
      */
     private final Data data;
 
-    public ADSWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+    protected ADSWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(amstcpHeader, amsHeader);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
@@ -61,7 +61,7 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         this.data = data;
     }
 
-    public ADSWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+    protected ADSWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(amsHeader);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
@@ -69,12 +69,24 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         this.data = data;
     }
 
-    public ADSWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+    protected ADSWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
         this.length = length;
         this.data = data;
+    }
+
+    public static ADSWriteRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+        return new ADSWriteRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, length, data);
+    }
+
+    public static ADSWriteRequest of(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+        return new ADSWriteRequest(amsHeader, indexGroup, indexOffset, length, data);
+    }
+
+    public static ADSWriteRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+        return new ADSWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, data);
     }
 
     @Override
@@ -91,4 +103,5 @@ public class ADSWriteRequest extends ADSAbstractRequest {
             ", data=" + data +
             "} " + super.toString();
     }
+
 }

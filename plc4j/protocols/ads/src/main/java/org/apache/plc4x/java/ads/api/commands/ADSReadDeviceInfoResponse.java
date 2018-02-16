@@ -53,7 +53,8 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
      */
     private final Device device;
 
-    public ADSReadDeviceInfoResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+
+    protected ADSReadDeviceInfoResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
         super(amstcpHeader, amsHeader);
         this.result = result;
         this.majorVersion = majorVersion;
@@ -62,13 +63,21 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
         this.device = device;
     }
 
-    public ADSReadDeviceInfoResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+    protected ADSReadDeviceInfoResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.result = result;
         this.majorVersion = majorVersion;
         this.minorVersion = minorVersion;
         this.version = version;
         this.device = device;
+    }
+
+    public static ADSReadDeviceInfoResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+        return new ADSReadDeviceInfoResponse(amstcpHeader, amsHeader, result, majorVersion, minorVersion, version, device);
+    }
+
+    public static ADSReadDeviceInfoResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+        return new ADSReadDeviceInfoResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, majorVersion, minorVersion, version, device);
     }
 
     @Override

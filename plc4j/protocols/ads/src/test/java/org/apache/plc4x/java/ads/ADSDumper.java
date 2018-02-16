@@ -55,7 +55,7 @@ public class ADSDumper {
 
             String randomString = RandomStringUtils.randomAscii(1024);
 
-            ADSWriteRequest adsWriteRequest = new ADSWriteRequest(
+            ADSWriteRequest adsWriteRequest = ADSWriteRequest.of(
                 AMSNetId.of("192.168.0.70.1.2"),
                 AMSPort.of(12),
                 AMSNetId.of("192.168.0.70.1.1"),

@@ -38,14 +38,22 @@ public class ADSWriteResponse extends ADSAbstractResponse {
      */
     private final Result result;
 
-    public ADSWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
+    protected ADSWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
         super(amstcpHeader, amsHeader);
         this.result = result;
     }
 
-    public ADSWriteResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
+    protected ADSWriteResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.result = result;
+    }
+
+    public static ADSWriteResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
+        return new ADSWriteResponse(amstcpHeader, amsHeader, result);
+    }
+
+    public static ADSWriteResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
+        return new ADSWriteResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result);
     }
 
     @Override

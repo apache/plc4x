@@ -53,25 +53,37 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
      */
     private final List<AdsStampHeader> adsStampHeaders;
 
-    public ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+    protected ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amstcpHeader, amsHeader);
         this.length = length;
         this.stamps = stamps;
         this.adsStampHeaders = adsStampHeaders;
     }
 
-    public ADSDeviceNotificationRequest(AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+    protected ADSDeviceNotificationRequest(AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amsHeader);
         this.length = length;
         this.stamps = stamps;
         this.adsStampHeaders = adsStampHeaders;
     }
 
-    public ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+    protected ADSDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.length = length;
         this.stamps = stamps;
         this.adsStampHeaders = adsStampHeaders;
+    }
+
+    public static ADSDeviceNotificationRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+        return new ADSDeviceNotificationRequest(amstcpHeader, amsHeader, length, stamps, adsStampHeaders);
+    }
+
+    public static ADSDeviceNotificationRequest of(AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+        return new ADSDeviceNotificationRequest(amsHeader, length, stamps, adsStampHeaders);
+    }
+
+    public static ADSDeviceNotificationRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
+        return new ADSDeviceNotificationRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, length, stamps, adsStampHeaders);
     }
 
     @Override

@@ -64,7 +64,7 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
      */
     private final Reserved reserved = Reserved.INSTANCE;
 
-    public ADSAddDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+    protected ADSAddDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amstcpHeader, amsHeader);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
@@ -74,7 +74,7 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
         this.cycleTime = cycleTime;
     }
 
-    public ADSAddDeviceNotificationRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+    protected ADSAddDeviceNotificationRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amsHeader);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
@@ -84,7 +84,7 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
         this.cycleTime = cycleTime;
     }
 
-    public ADSAddDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+    protected ADSAddDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId);
         this.indexGroup = indexGroup;
         this.indexOffset = indexOffset;
@@ -97,6 +97,18 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime, reserved);
+    }
+
+    public static ADSAddDeviceNotificationRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+        return new ADSAddDeviceNotificationRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
+    }
+
+    public static ADSAddDeviceNotificationRequest of(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+        return new ADSAddDeviceNotificationRequest(amsHeader, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
+    }
+
+    public static ADSAddDeviceNotificationRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
+        return new ADSAddDeviceNotificationRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
     }
 
     public static class Reserved extends ByteValue {
