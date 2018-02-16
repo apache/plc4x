@@ -102,7 +102,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                 encodeDisconnect(in, buf);
                 break;
             case TPDU_ERROR:
-                enocdeError(in, buf);
+                encodeError(in, buf);
                 break;
             default:
                 if (logger.isErrorEnabled()) {
@@ -116,7 +116,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         out.add(new IsoOnTcpMessage(buf));
     }
 
-    private void enocdeError(Tpdu in, ByteBuf buf) {
+    private void encodeError(Tpdu in, ByteBuf buf) {
         ErrorTpdu errorTpdu = (ErrorTpdu) in;
         buf.writeShort(errorTpdu.getDestinationReference());
         buf.writeByte(errorTpdu.getRejectCause().getCode());
