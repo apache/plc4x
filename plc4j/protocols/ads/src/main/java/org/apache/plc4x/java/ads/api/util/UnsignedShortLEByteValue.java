@@ -61,6 +61,24 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UnsignedShortLEByteValue)) return false;
+        if (!super.equals(o)) return false;
+
+        UnsignedShortLEByteValue that = (UnsignedShortLEByteValue) o;
+
+        return intValue == that.intValue;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + intValue;
+        return result;
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
             "intValue=" + getAsInt() +
