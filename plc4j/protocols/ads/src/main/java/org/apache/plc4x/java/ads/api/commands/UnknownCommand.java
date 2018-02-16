@@ -25,6 +25,8 @@ import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPaket;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 
+import java.util.Objects;
+
 /**
  * Unknown ADS Package
  */
@@ -35,7 +37,7 @@ public class UnknownCommand extends AMSTCPPaket {
 
     protected UnknownCommand(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ByteBuf remainingBytes) {
         super(amstcpHeader, amsHeader);
-        this.remainingBytes = remainingBytes;
+        this.remainingBytes = Objects.requireNonNull(remainingBytes);
     }
 
     @Override

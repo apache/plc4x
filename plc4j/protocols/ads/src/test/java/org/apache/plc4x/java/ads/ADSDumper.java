@@ -23,7 +23,6 @@ import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
 import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.IndexGroup;
 import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
-import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
@@ -63,7 +62,6 @@ public class ADSDumper {
                 Invoke.of(0),
                 IndexGroup.of(1),
                 IndexOffset.of(3),
-                Length.of(randomString.getBytes().length),
                 Data.of(randomString.getBytes())
             );
 

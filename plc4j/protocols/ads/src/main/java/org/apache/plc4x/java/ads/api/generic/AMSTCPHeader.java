@@ -22,7 +22,9 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.generic.types.Length;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 /**
@@ -34,18 +36,38 @@ public class AMSTCPHeader implements ByteReadable {
 
     protected final Length length;
 
+    ////
+    // Used when fields should be calculated. TODO: check if we better work with a subclass.
+    private final LengthSupplier[] lengthSuppliers;
+    private final boolean calculated;
+    //
+    ///
+
     protected AMSTCPHeader(Length length) {
-        this.reserved = Reserved.CONSTANT;
-        this.length = length;
+        this.reserved = requireNonNull(Reserved.CONSTANT);
+        this.length = requireNonNull(length);
+        lengthSuppliers = null;
+        calculated = false;
+    }
+
+    protected AMSTCPHeader(LengthSupplier... lengthSuppliers) {
+        this.reserved = requireNonNull(Reserved.CONSTANT);
+        this.length = null;
+        this.lengthSuppliers = requireNonNull(lengthSuppliers);
+        calculated = true;
     }
 
     public static AMSTCPHeader of(long length) {
         return new AMSTCPHeader(Length.of(length));
     }
 
+    public static AMSTCPHeader of(LengthSupplier... lengthSuppliers) {
+        return new AMSTCPHeader(lengthSuppliers);
+    }
+
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(reserved, length);
+        return buildByteBuff(reserved, (calculated ? Length.of(getCalculatedLength()) : length));
     }
 
     /**
@@ -65,14 +87,22 @@ public class AMSTCPHeader implements ByteReadable {
     }
 
     public long getCalculatedLength() {
-        return length.getAsLong();
+        if (calculated) {
+            long aggregateLength = 0;
+            for (LengthSupplier supplier : lengthSuppliers) {
+                aggregateLength += supplier.getCalculatedLength();
+            }
+            return aggregateLength;
+        } else {
+            return length.getAsLong();
+        }
     }
 
     @Override
     public String toString() {
         return "AMSTCPHeader{" +
             "reserved=" + reserved +
-            ", length=" + length +
+            ", length=" + (calculated ? Length.of(getCalculatedLength()) : length) +
             '}';
     }
 }

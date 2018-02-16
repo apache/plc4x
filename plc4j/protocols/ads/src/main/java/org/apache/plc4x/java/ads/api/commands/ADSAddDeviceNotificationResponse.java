@@ -28,6 +28,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
+import java.util.Objects;
+
 /**
  * A notification is created in an ADS device.
  */
@@ -46,14 +48,14 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
 
     protected ADSAddDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
         super(amstcpHeader, amsHeader);
-        this.result = result;
-        this.notificationHandle = notificationHandle;
+        this.result = Objects.requireNonNull(result);
+        this.notificationHandle = Objects.requireNonNull(notificationHandle);
     }
 
     protected ADSAddDeviceNotificationResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, NotificationHandle notificationHandle) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.result = result;
-        this.notificationHandle = notificationHandle;
+        this.result = Objects.requireNonNull(result);
+        this.notificationHandle = Objects.requireNonNull(notificationHandle);
     }
 
     public static ADSAddDeviceNotificationResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {

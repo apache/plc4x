@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
@@ -41,9 +42,9 @@ public class AdsStampHeader implements ByteReadable {
     private final List<AdsNotificationSample> adsNotificationSamples;
 
     protected AdsStampHeader(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {
-        this.timeStamp = timeStamp;
-        this.samples = samples;
-        this.adsNotificationSamples = adsNotificationSamples;
+        this.timeStamp = Objects.requireNonNull(timeStamp);
+        this.samples = Objects.requireNonNull(samples);
+        this.adsNotificationSamples = Objects.requireNonNull(adsNotificationSamples);
     }
 
     public static AdsStampHeader of(TimeStamp timeStamp, Samples samples, List<AdsNotificationSample> adsNotificationSamples) {

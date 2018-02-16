@@ -26,6 +26,8 @@ import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
+import java.util.Objects;
+
 /**
  * A notification is created in an ADS device.
  * <p>
@@ -66,32 +68,32 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
 
     protected ADSAddDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amstcpHeader, amsHeader);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
-        this.transmissionMode = transmissionMode;
-        this.maxDelay = maxDelay;
-        this.cycleTime = cycleTime;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = Objects.requireNonNull(length);
+        this.transmissionMode = Objects.requireNonNull(transmissionMode);
+        this.maxDelay = Objects.requireNonNull(maxDelay);
+        this.cycleTime = Objects.requireNonNull(cycleTime);
     }
 
     protected ADSAddDeviceNotificationRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amsHeader);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
-        this.transmissionMode = transmissionMode;
-        this.maxDelay = maxDelay;
-        this.cycleTime = cycleTime;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = Objects.requireNonNull(length);
+        this.transmissionMode = Objects.requireNonNull(transmissionMode);
+        this.maxDelay = Objects.requireNonNull(maxDelay);
+        this.cycleTime = Objects.requireNonNull(cycleTime);
     }
 
     protected ADSAddDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
-        this.transmissionMode = transmissionMode;
-        this.maxDelay = maxDelay;
-        this.cycleTime = cycleTime;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = Objects.requireNonNull(length);
+        this.transmissionMode = Objects.requireNonNull(transmissionMode);
+        this.maxDelay = Objects.requireNonNull(maxDelay);
+        this.cycleTime = Objects.requireNonNull(cycleTime);
     }
 
     @Override

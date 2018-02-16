@@ -27,6 +27,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
+import java.util.Objects;
+
 /**
  * With ADS Write data can be written to an ADS device.
  */
@@ -40,12 +42,12 @@ public class ADSWriteResponse extends ADSAbstractResponse {
 
     protected ADSWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
         super(amstcpHeader, amsHeader);
-        this.result = result;
+        this.result = Objects.requireNonNull(result);
     }
 
     protected ADSWriteResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.result = result;
+        this.result = Objects.requireNonNull(result);
     }
 
     public static ADSWriteResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {

@@ -18,10 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.commands;
 
-import org.apache.plc4x.java.ads.api.commands.types.Data;
-import org.apache.plc4x.java.ads.api.commands.types.IndexGroup;
-import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
-import org.apache.plc4x.java.ads.api.commands.types.Length;
+import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
@@ -29,6 +26,9 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.api.util.LengthSupplier;
+
+import java.util.Objects;
 
 /**
  * With ADS Write data can be written to an ADS device. The data are addressed by the Index Group and the Index Offset.
@@ -53,28 +53,41 @@ public class ADSWriteRequest extends ADSAbstractRequest {
      */
     private final Data data;
 
+    ////
+    // Used when fields should be calculated. TODO: check if we better work with a subclass.
+    private final LengthSupplier lengthSupplier;
+    private final boolean calculated;
+    //
+    ///
+
     protected ADSWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(amstcpHeader, amsHeader);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
-        this.data = data;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = Objects.requireNonNull(length);
+        this.data = Objects.requireNonNull(data);
+        this.lengthSupplier = null;
+        this.calculated = false;
     }
 
     protected ADSWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(amsHeader);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
-        this.data = data;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = Objects.requireNonNull(length);
+        this.data = Objects.requireNonNull(data);
+        this.lengthSupplier = null;
+        this.calculated = false;
     }
 
-    protected ADSWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
+    protected ADSWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
-        this.data = data;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = null;
+        this.data = Objects.requireNonNull(data);
+        this.lengthSupplier = () -> data.getCalculatedLength();
+        this.calculated = true;
     }
 
     public static ADSWriteRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
@@ -85,13 +98,13 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         return new ADSWriteRequest(amsHeader, indexGroup, indexOffset, length, data);
     }
 
-    public static ADSWriteRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
-        return new ADSWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, data);
+    public static ADSWriteRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Data data) {
+        return new ADSWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
     }
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(indexGroup, indexOffset, length, data);
+        return buildADSData(indexGroup, indexOffset, (calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : length), data);
     }
 
     @Override
@@ -99,7 +112,7 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         return "ADSWriteRequest{" +
             "indexGroup=" + indexGroup +
             ", indexOffset=" + indexOffset +
-            ", length=" + length +
+            ", length=" + (calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : length) +
             ", data=" + data +
             "} " + super.toString();
     }

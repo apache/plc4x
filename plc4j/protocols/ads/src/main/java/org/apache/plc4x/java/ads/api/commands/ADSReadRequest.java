@@ -29,6 +29,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
+import java.util.Objects;
+
 /**
  * With ADS Read data can be read from an ADS device.  The data are addressed by the Index Group and the Index Offset
  */
@@ -52,23 +54,23 @@ public class ADSReadRequest extends ADSAbstractRequest {
 
     protected ADSReadRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
         super(amstcpHeader, amsHeader);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = Objects.requireNonNull(length);
     }
 
     protected ADSReadRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
         super(amsHeader);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = Objects.requireNonNull(length);
     }
 
     protected ADSReadRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.indexGroup = indexGroup;
-        this.indexOffset = indexOffset;
-        this.length = length;
+        this.indexGroup = Objects.requireNonNull(indexGroup);
+        this.indexOffset = Objects.requireNonNull(indexOffset);
+        this.length = Objects.requireNonNull(length);
     }
 
     public static ADSReadRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {

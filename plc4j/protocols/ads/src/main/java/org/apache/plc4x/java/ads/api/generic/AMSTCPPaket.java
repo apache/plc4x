@@ -20,11 +20,10 @@ package org.apache.plc4x.java.ads.api.generic;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.commands.ADSCommandType;
-import org.apache.plc4x.java.ads.api.generic.calculated.CalculatedAMSHeader;
-import org.apache.plc4x.java.ads.api.generic.calculated.CalculatedAMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public abstract class AMSTCPPaket implements ByteReadable {
@@ -33,31 +32,32 @@ public abstract class AMSTCPPaket implements ByteReadable {
     private final AMSHeader amsHeader;
 
     public AMSTCPPaket(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
-        this.amstcpHeader = amstcpHeader;
-        this.amsHeader = amsHeader;
+        this.amstcpHeader = requireNonNull(amstcpHeader);
+        this.amsHeader = requireNonNull(amsHeader);
     }
 
     public AMSTCPPaket(AMSHeader amsHeader) {
         // It is important that we wrap the ads data call as this will initialized in the constructor
         // so this value will be null if we call adsData now.
-        this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getCalculatedLength());
-        this.amsHeader = amsHeader;
+        this.amstcpHeader = AMSTCPHeader.of(requireNonNull(amsHeader), () -> getAdsData().getCalculatedLength());
+        this.amsHeader = requireNonNull(amsHeader);
     }
 
     public AMSTCPPaket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
         if (!getClass().isAnnotationPresent(ADSCommandType.class)) {
             throw new IllegalArgumentException(ADSCommandType.class + " need to be present.");
         }
-        this.amsHeader = CalculatedAMSHeader.of(
-            targetAmsNetId,
-            targetAmsPort,
-            sourceAmsNetId,
-            sourceAmsPort,
-            getClass().getAnnotation(ADSCommandType.class).value(),
-            stateId,
-            () -> DataLength.of(getAdsData().getCalculatedLength()),
-            invokeId);
-        this.amstcpHeader = CalculatedAMSTCPHeader.of(amsHeader, () -> getAdsData().getCalculatedLength());
+        this.amsHeader = AMSHeader.of(
+            requireNonNull(targetAmsNetId),
+            requireNonNull(targetAmsPort),
+            requireNonNull(sourceAmsNetId),
+            requireNonNull(sourceAmsPort),
+            requireNonNull(getClass().getAnnotation(ADSCommandType.class).value()),
+            requireNonNull(stateId),
+            () -> getAdsData().getCalculatedLength(),
+            requireNonNull(AMSError.NONE),
+            requireNonNull(invokeId));
+        this.amstcpHeader = AMSTCPHeader.of(amsHeader, () -> getAdsData().getCalculatedLength());
     }
 
     public AMSTCPHeader getAmstcpHeader() {

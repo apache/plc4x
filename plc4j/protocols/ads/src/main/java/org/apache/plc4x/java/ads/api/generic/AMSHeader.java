@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 /**
@@ -67,20 +68,47 @@ public class AMSHeader implements ByteReadable {
      */
     protected final Invoke invokeId;
 
+    ////
+    // Used when fields should be calculated. TODO: check if we better work with a subclass.
+    private final DataLengthSupplier lengthSupplier;
+    private final boolean calculated;
+    //
+    ///
+
     protected AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId) {
-        this.targetAmsNetId = targetAmsNetId;
-        this.targetAmsPort = targetAmsPort;
-        this.sourceAmsNetId = sourceAmsNetId;
-        this.sourceAmsPort = sourceAmsPort;
-        this.commandId = commandId;
-        this.stateFlags = stateFlags;
-        this.dataLength = dataLength;
-        this.code = code;
-        this.invokeId = invokeId;
+        this.targetAmsNetId = requireNonNull(targetAmsNetId);
+        this.targetAmsPort = requireNonNull(targetAmsPort);
+        this.sourceAmsNetId = requireNonNull(sourceAmsNetId);
+        this.sourceAmsPort = requireNonNull(sourceAmsPort);
+        this.commandId = requireNonNull(commandId);
+        this.stateFlags = requireNonNull(stateFlags);
+        this.dataLength = requireNonNull(dataLength);
+        this.code = requireNonNull(code);
+        this.invokeId = requireNonNull(invokeId);
+        lengthSupplier = null;
+        calculated = false;
+    }
+
+    protected AMSHeader(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLengthSupplier dataLengthSupplier, AMSError code, Invoke invokeId) {
+        this.targetAmsNetId = requireNonNull(targetAmsNetId);
+        this.targetAmsPort = requireNonNull(targetAmsPort);
+        this.sourceAmsNetId = requireNonNull(sourceAmsNetId);
+        this.sourceAmsPort = requireNonNull(sourceAmsPort);
+        this.commandId = requireNonNull(commandId);
+        this.stateFlags = requireNonNull(stateFlags);
+        this.dataLength = null;
+        this.code = requireNonNull(code);
+        this.invokeId = requireNonNull(invokeId);
+        lengthSupplier = requireNonNull(dataLengthSupplier);
+        calculated = true;
     }
 
     public static AMSHeader of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AMSError code, Invoke invokeId) {
         return new AMSHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateFlags, dataLength, code, invokeId);
+    }
+
+    public static AMSHeader of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Command commandId, State stateFlags, DataLengthSupplier dataLengthSupplier, AMSError code, Invoke invokeId) {
+        return new AMSHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateFlags, dataLengthSupplier, code, invokeId);
     }
 
     @Override
@@ -92,7 +120,7 @@ public class AMSHeader implements ByteReadable {
             sourceAmsPort,
             commandId,
             stateFlags,
-            dataLength,
+            calculated ? DataLength.of(lengthSupplier.getCalculatedLength()) : dataLength,
             code,
             invokeId);
     }
@@ -122,7 +150,7 @@ public class AMSHeader implements ByteReadable {
     }
 
     public DataLength getDataLength() {
-        return dataLength;
+        return calculated ? DataLength.of(lengthSupplier.getCalculatedLength()) : dataLength;
     }
 
     public AMSError getCode() {
@@ -142,9 +170,14 @@ public class AMSHeader implements ByteReadable {
             ", sourceAmsPort=" + sourceAmsPort +
             ", commandId=" + commandId +
             ", stateFlags=" + stateFlags +
-            ", dataLength=" + dataLength +
+            ", dataLength=" + (calculated ? DataLength.of(lengthSupplier.getCalculatedLength()) : dataLength) +
             ", code=" + code +
             ", invokeId=" + invokeId +
             '}';
+    }
+
+    @FunctionalInterface
+    public interface DataLengthSupplier {
+        long getCalculatedLength();
     }
 }

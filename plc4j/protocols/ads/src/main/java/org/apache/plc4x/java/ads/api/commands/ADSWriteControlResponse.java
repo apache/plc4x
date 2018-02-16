@@ -27,6 +27,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 
+import java.util.Objects;
+
 /**
  * Changes the ADS status and the device status of an ADS device.
  */
@@ -39,12 +41,12 @@ public class ADSWriteControlResponse extends ADSAbstractResponse {
 
     protected ADSWriteControlResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
         super(amstcpHeader, amsHeader);
-        this.result = result;
+        this.result = Objects.requireNonNull(result);
     }
 
     protected ADSWriteControlResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.result = result;
+        this.result = Objects.requireNonNull(result);
     }
 
     public static ADSWriteControlResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {

@@ -29,6 +29,9 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.api.util.LengthSupplier;
+
+import java.util.Objects;
 
 /**
  * Changes the ADS status and the device status of an ADS device.
@@ -55,28 +58,41 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
      */
     private final Data data;
 
+    ////
+    // Used when fields should be calculated. TODO: check if we better work with a subclass.
+    private final LengthSupplier lengthSupplier;
+    private final boolean calculated;
+    //
+    ///
+
     protected ADSWriteControlRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(amstcpHeader, amsHeader);
-        this.adsState = adsState;
-        this.deviceState = deviceState;
-        this.length = length;
-        this.data = data;
+        this.adsState = Objects.requireNonNull(adsState);
+        this.deviceState = Objects.requireNonNull(deviceState);
+        this.length = Objects.requireNonNull(length);
+        this.data = Objects.requireNonNull(data);
+        this.lengthSupplier = null;
+        this.calculated = false;
     }
 
     protected ADSWriteControlRequest(AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(amsHeader);
-        this.adsState = adsState;
-        this.deviceState = deviceState;
-        this.length = length;
-        this.data = data;
+        this.adsState = Objects.requireNonNull(adsState);
+        this.deviceState = Objects.requireNonNull(deviceState);
+        this.length = Objects.requireNonNull(length);
+        this.data = Objects.requireNonNull(data);
+        this.lengthSupplier = null;
+        this.calculated = false;
     }
 
-    protected ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Length length, Data data) {
+    protected ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.adsState = adsState;
-        this.deviceState = deviceState;
-        this.length = length;
-        this.data = data;
+        this.adsState = Objects.requireNonNull(adsState);
+        this.deviceState = Objects.requireNonNull(deviceState);
+        this.length = null;
+        this.data = Objects.requireNonNull(data);
+        this.lengthSupplier = data;
+        this.calculated = true;
     }
 
     public static ADSWriteControlRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
@@ -87,13 +103,13 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         return new ADSWriteControlRequest(amsHeader, adsState, deviceState, length, data);
     }
 
-    public static ADSWriteControlRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Length length, Data data) {
-        return new ADSWriteControlRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, adsState, deviceState, length, data);
+    public static ADSWriteControlRequest of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Data data) {
+        return new ADSWriteControlRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, adsState, deviceState, data);
     }
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(adsState, deviceState, length, data);
+        return buildADSData(adsState, deviceState, (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length), data);
     }
 
     @Override
@@ -101,7 +117,7 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         return "ADSWriteControlRequest{" +
             "adsState=" + adsState +
             ", deviceState=" + deviceState +
-            ", length=" + length +
+            ", length=" + (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length) +
             ", data=" + data +
             "} " + super.toString();
     }

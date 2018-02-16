@@ -78,15 +78,13 @@ public class ADSProtocolTest {
             ),
             ADSDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
-                // TODO: must be calculated when using this constructor
-                Length.of(32),
                 Stamps.of(1),
                 Collections.singletonList(
                     // Nano times need to be offset by (1.1.1970 - 1.1.1601) years in nanos
                     AdsStampHeader.of(TimeStamp.of(System.nanoTime()),
                         Samples.of(1),
                         Collections.singletonList(
-                            AdsNotificationSample.of(NotificationHandle.of(0), SampleSize.of(data.getCalculatedLength()), data))
+                            AdsNotificationSample.of(NotificationHandle.of(0), data))
                     )
                 )
             ),
@@ -113,7 +111,6 @@ public class ADSProtocolTest {
             ADSReadResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
-                Length.of(data.getCalculatedLength()),
                 data
             ),
             ADSReadStateRequest.of(
@@ -128,20 +125,17 @@ public class ADSProtocolTest {
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 ReadLength.of(data.getCalculatedLength()),
-                WriteLength.of(data.getCalculatedLength()),
                 data
             ),
             ADSReadWriteResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
-                Length.of(data.getCalculatedLength()),
                 data
             ),
             ADSWriteControlRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 ADSState.of(0xaffe),
                 DeviceState.of(0xaffe),
-                Length.of(data.getCalculatedLength()),
                 data
             ),
             ADSWriteControlResponse.of(
@@ -152,7 +146,6 @@ public class ADSProtocolTest {
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
-                Length.of(data.getCalculatedLength()),
                 data
             ),
             ADSWriteResponse.of(

@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
+import java.util.Objects;
+
 /**
  * Based on spec from: https://infosys.beckhoff.com/content/1033/tcadscommon/html/ads_returncodes.htm
  */
@@ -171,7 +173,7 @@ public enum AdsReturnCode {
         if (hex != dec) {
             throw new IllegalArgumentException("hex " + hex + " is different from dec " + dec);
         }
-        this.description = description;
+        this.description = Objects.requireNonNull(description);
         this.possibleCauses = possibleCauses;
         this.solution = solution;
     }

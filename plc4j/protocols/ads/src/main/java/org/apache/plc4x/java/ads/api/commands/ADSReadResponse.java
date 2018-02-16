@@ -28,6 +28,9 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.api.util.LengthSupplier;
+
+import java.util.Objects;
 
 /**
  * With ADS Read data can be read from an ADS device
@@ -48,31 +51,42 @@ public class ADSReadResponse extends ADSAbstractResponse {
      */
     private final Data data;
 
+    ////
+    // Used when fields should be calculated. TODO: check if we better work with a subclass.
+    private final LengthSupplier lengthSupplier;
+    private final boolean calculated;
+    //
+    ///
+
     protected ADSReadResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
         super(amstcpHeader, amsHeader);
-        this.result = result;
-        this.length = length;
-        this.data = data;
+        this.result = Objects.requireNonNull(result);
+        this.length = Objects.requireNonNull(length);
+        this.data = Objects.requireNonNull(data);
+        this.lengthSupplier = null;
+        this.calculated = false;
     }
 
-    protected ADSReadResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Length length, Data data) {
+    protected ADSReadResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Data data) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-        this.result = result;
-        this.length = length;
-        this.data = data;
+        this.result = Objects.requireNonNull(result);
+        this.length = null;
+        this.data = Objects.requireNonNull(data);
+        this.lengthSupplier = () -> data.getCalculatedLength();
+        this.calculated = Objects.requireNonNull(true);
     }
 
     public static ADSReadResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
         return new ADSReadResponse(amstcpHeader, amsHeader, result, length, data);
     }
 
-    public static ADSReadResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Length length, Data data) {
-        return new ADSReadResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, length, data);
+    public static ADSReadResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Data data) {
+        return new ADSReadResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, data);
     }
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(result, length, data);
+        return buildADSData(result, (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length), data);
     }
 
     public Result getResult() {
@@ -80,7 +94,7 @@ public class ADSReadResponse extends ADSAbstractResponse {
     }
 
     public Length getLength() {
-        return length;
+        return (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length);
     }
 
     public Data getData() {
@@ -91,7 +105,7 @@ public class ADSReadResponse extends ADSAbstractResponse {
     public String toString() {
         return "ADSReadResponse{" +
             "result=" + result +
-            ", length=" + length +
+            ", length=" + (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length) +
             ", data=" + data +
             "} " + super.toString();
     }

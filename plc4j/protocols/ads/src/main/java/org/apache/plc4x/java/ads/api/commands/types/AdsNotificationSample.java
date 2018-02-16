@@ -20,6 +20,9 @@ package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
+import org.apache.plc4x.java.ads.api.util.LengthSupplier;
+
+import java.util.Objects;
 
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
@@ -38,10 +41,31 @@ public class AdsNotificationSample implements ByteReadable {
      */
     private final Data data;
 
+    ////
+    // Used when fields should be calculated. TODO: check if we better work with a subclass.
+    private final LengthSupplier lengthSupplier;
+    private final boolean calculated;
+    //
+    ///
+
+    protected AdsNotificationSample(NotificationHandle notificationHandle, Data data) {
+        this.notificationHandle = Objects.requireNonNull(notificationHandle);
+        this.sampleSize = null;
+        this.data = Objects.requireNonNull(data);
+        calculated = true;
+        lengthSupplier = () -> data.getCalculatedLength();
+    }
+
     protected AdsNotificationSample(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
-        this.notificationHandle = notificationHandle;
-        this.sampleSize = sampleSize;
-        this.data = data;
+        this.notificationHandle = Objects.requireNonNull(notificationHandle);
+        this.sampleSize = Objects.requireNonNull(sampleSize);
+        this.data = Objects.requireNonNull(data);
+        calculated = true;
+        lengthSupplier = null;
+    }
+
+    public static AdsNotificationSample of(NotificationHandle notificationHandle, Data data) {
+        return new AdsNotificationSample(notificationHandle, data);
     }
 
     public static AdsNotificationSample of(NotificationHandle notificationHandle, SampleSize sampleSize, Data data) {
@@ -50,14 +74,14 @@ public class AdsNotificationSample implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(notificationHandle, sampleSize, data);
+        return buildByteBuff(notificationHandle, (calculated ? SampleSize.of(lengthSupplier.getCalculatedLength()) : sampleSize), data);
     }
 
     @Override
     public String toString() {
         return "AdsNotificationSample{" +
             "notificationHandle=" + notificationHandle +
-            ", sampleSize=" + sampleSize +
+            ", sampleSize=" + (calculated ? SampleSize.of(lengthSupplier.getCalculatedLength()) : sampleSize) +
             ", data=" + data +
             '}';
     }
