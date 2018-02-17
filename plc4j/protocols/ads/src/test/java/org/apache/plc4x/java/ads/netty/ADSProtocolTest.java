@@ -54,7 +54,10 @@ public class ADSProtocolTest {
     @Parameterized.Parameter
     public AMSTCPPacket amstcpPacket;
 
-    @Parameterized.Parameters(name = "{0} {index}")
+    @Parameterized.Parameter(1)
+    public String clazzName;
+
+    @Parameterized.Parameters(name = "{index} {1}")
     public static Collection<Object[]> data() {
         AMSNetId targetAmsNetId = AMSNetId.of("1.2.3.4.5.6");
         AMSPort targetAmsPort = AMSPort.of(7);
@@ -155,7 +158,7 @@ public class ADSProtocolTest {
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId,
                 Unpooled.wrappedBuffer(new byte[]{42})
             )*/
-        ).map(amstcpPacket -> new Object[]{amstcpPacket}).collect(Collectors.toList());
+        ).map(amstcpPacket -> new Object[]{amstcpPacket, amstcpPacket.getClass().getSimpleName()}).collect(Collectors.toList());
     }
 
     @Before

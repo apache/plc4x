@@ -66,9 +66,15 @@ public class Plc4XADSProtocolTest {
     public CompletableFuture completableFuture;
 
     @Parameterized.Parameter(2)
+    public String plcRequestContainerClassName;
+
+    @Parameterized.Parameter(3)
     public AMSTCPPacket amstcpPacket;
 
-    @Parameterized.Parameters(name = "{2} {index}")
+    @Parameterized.Parameter(4)
+    public String aMSTCPPacketClassName;
+
+    @Parameterized.Parameters(name = " {index} {2} {4}")
     public static Collection<Object[]> data() {
         AMSNetId targetAmsNetId = AMSNetId.of("1.2.3.4.5.6");
         AMSPort targetAmsPort = AMSPort.of(7);
@@ -93,7 +99,7 @@ public class Plc4XADSProtocolTest {
                         .build(), new CompletableFuture<>()),
                 ADSReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), data)
             )
-        ).map(pair -> new Object[]{pair.left, pair.left.getResponseFuture(), pair.right}).collect(Collectors.toList());
+        ).map(pair -> new Object[]{pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getClass().getSimpleName()}).collect(Collectors.toList());
     }
 
     @Before
