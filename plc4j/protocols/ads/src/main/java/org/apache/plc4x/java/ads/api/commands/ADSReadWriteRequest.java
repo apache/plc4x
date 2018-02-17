@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * The data which can be read are addressed by the Index Group and the Index Offset
  */
-@ADSCommandType(Command.ADS_Read_Write)
+@ADSCommandType(Command.ADS_READ_WRITE)
 public class ADSReadWriteRequest extends ADSAbstractRequest {
 
     /**
@@ -113,7 +113,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(indexGroup, indexOffset, readLength, (calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : writeLength), data);
+        return buildADSData(indexGroup, indexOffset, readLength, calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : writeLength, data);
     }
 
     @Override

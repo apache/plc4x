@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * One before defined notification is deleted in an ADS device.
  */
-@ADSCommandType(Command.ADS_Delete_Device_Notification)
+@ADSCommandType(Command.ADS_DELETE_DEVICE_NOTIFICATION)
 public class ADSDeleteDeviceNotificationResponse extends ADSAbstractResponse {
 
     /**

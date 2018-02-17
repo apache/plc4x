@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
  * Note: We recommend to announce not more then 550 notifications per device.
  * You can increase the payload by organizing the data in structures.
  */
-@ADSCommandType(Command.ADS_Add_Device_Notification)
+@ADSCommandType(Command.ADS_ADD_DEVICE_NOTIFICATION)
 public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
 
     /**

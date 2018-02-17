@@ -54,7 +54,7 @@ public class ADSPlcDriverTest {
 
     @Test(expected = PlcConnectionException.class)
     public void getConnectionUnknownHost() throws Exception {
-        new PlcDriverManager().getConnection("ads://:" + RandomStringUtils.randomAscii(12) + "/0.0.0.0.0.0:13",
+        new PlcDriverManager().getConnection("ads://:" + RandomStringUtils.randomAlphabetic(12) + "/0.0.0.0.0.0:13",
             new PlcUsernamePasswordAuthentication("admin", "admin"));
     }
 

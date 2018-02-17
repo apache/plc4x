@@ -74,7 +74,7 @@ public class GenericTypesFactoryMethodTest {
         if (clazz == AMSNetId.class) {
             testString = "1.1.1.1.1.1";
         } else if (clazz == Command.class) {
-            testString = Command.ADS_Add_Device_Notification.name();
+            testString = Command.ADS_ADD_DEVICE_NOTIFICATION.name();
         }
         ofMethod.invoke(null, testString);
     }

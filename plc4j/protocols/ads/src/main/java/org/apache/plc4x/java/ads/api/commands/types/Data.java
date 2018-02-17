@@ -47,12 +47,10 @@ public class Data extends ByteValue {
         return new Data(value.getBytes(charset));
     }
 
-    public String dump() {
+    public String dump() throws IOException {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             HexDump.dump(value, 0, byteArrayOutputStream, 0);
             return toString() + HexDump.EOL + byteArrayOutputStream.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

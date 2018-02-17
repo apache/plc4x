@@ -29,16 +29,16 @@ import java.util.Arrays;
 import static java.lang.Integer.toHexString;
 
 public enum Command implements ByteReadable {
-    Invalid(0x00),
-    ADS_Read_Device_Info(0x01),
-    ADS_Read(0x02),
-    ADS_Write(0x03),
-    ADS_Read_State(0x04),
-    ADS_Write_Control(0x05),
-    ADS_Add_Device_Notification(0x06),
-    ADS_Delete_Device_Notification(0x07),
-    ADS_Device_Notification(0x08),
-    ADS_Read_Write(0x09),
+    INVALID(0x00),
+    ADS_READ_DEVICE_INFO(0x01),
+    ADS_READ(0x02),
+    ADS_WRITE(0x03),
+    ADS_READ_STATE(0x04),
+    ADS_WRITE_CONTROL(0x05),
+    ADS_ADD_DEVICE_NOTIFICATION(0x06),
+    ADS_DELETE_DEVICE_NOTIFICATION(0x07),
+    ADS_DEVICE_NOTIFICATION(0x08),
+    ADS_READ_WRITE(0x09),
     /**
      * Other commands are not defined or are used internally. Therefore the Command Id  is only allowed to contain the above enumerated values!
      */

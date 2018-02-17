@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * With ADS Read data can be read from an ADS device
  */
-@ADSCommandType(Command.ADS_Read)
+@ADSCommandType(Command.ADS_READ)
 public class ADSReadResponse extends ADSAbstractResponse {
 
     /**
@@ -86,7 +86,7 @@ public class ADSReadResponse extends ADSAbstractResponse {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(result, (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length), data);
+        return buildADSData(result, calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, data);
     }
 
     public Result getResult() {
@@ -94,7 +94,7 @@ public class ADSReadResponse extends ADSAbstractResponse {
     }
 
     public Length getLength() {
-        return (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length);
+        return calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length;
     }
 
     public Data getData() {

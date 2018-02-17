@@ -31,7 +31,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
  * <p>
  * No additional data required
  */
-@ADSCommandType(Command.ADS_Read_Device_Info)
+@ADSCommandType(Command.ADS_READ_DEVICE_INFO)
 public class ADSReadDeviceInfoRequest extends ADSAbstractRequest {
 
     private ADSReadDeviceInfoRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {

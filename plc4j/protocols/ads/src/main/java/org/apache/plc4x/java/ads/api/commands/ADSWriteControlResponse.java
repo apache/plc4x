@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Changes the ADS status and the device status of an ADS device.
  */
-@ADSCommandType(Command.ADS_Write_Control)
+@ADSCommandType(Command.ADS_WRITE_CONTROL)
 public class ADSWriteControlResponse extends ADSAbstractResponse {
     /**
      * 4 bytes	ADS error number

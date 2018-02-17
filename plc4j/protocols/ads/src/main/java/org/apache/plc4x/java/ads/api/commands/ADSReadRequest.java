@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * With ADS Read data can be read from an ADS device.  The data are addressed by the Index Group and the Index Offset
  */
-@ADSCommandType(Command.ADS_Read)
+@ADSCommandType(Command.ADS_READ)
 public class ADSReadRequest extends ADSAbstractRequest {
 
     /**

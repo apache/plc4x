@@ -67,7 +67,7 @@ public class AMSTCPHeader implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(reserved, (calculated ? Length.of(getCalculatedLength()) : length));
+        return buildByteBuff(reserved, calculated ? Length.of(getCalculatedLength()) : length);
     }
 
     /**

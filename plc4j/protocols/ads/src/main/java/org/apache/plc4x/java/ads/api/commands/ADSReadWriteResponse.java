@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * With ADS Read Write data will be written to an ADS device. Additionally, data can be read from the ADS device.
  */
-@ADSCommandType(Command.ADS_Read_Write)
+@ADSCommandType(Command.ADS_READ_WRITE)
 public class ADSReadWriteResponse extends ADSAbstractResponse {
 
     /**
@@ -88,7 +88,7 @@ public class ADSReadWriteResponse extends ADSAbstractResponse {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(result, (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length), data);
+        return buildADSData(result, calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, data);
     }
 
     @Override

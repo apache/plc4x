@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Reads the name and the version number of the ADS device.
  */
-@ADSCommandType(Command.ADS_Read_Device_Info)
+@ADSCommandType(Command.ADS_READ_DEVICE_INFO)
 public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
     /**
      * 4 bytes	ADS error number.

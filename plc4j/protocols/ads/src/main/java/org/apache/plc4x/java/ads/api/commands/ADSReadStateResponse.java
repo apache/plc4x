@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Reads the ADS status and the device status of an ADS device.
  */
-@ADSCommandType(Command.ADS_Read_State)
+@ADSCommandType(Command.ADS_READ_STATE)
 public class ADSReadStateResponse extends ADSAbstractResponse {
 
     /**

@@ -31,7 +31,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
  * <p>
  * No additional data required
  */
-@ADSCommandType(Command.ADS_Read_State)
+@ADSCommandType(Command.ADS_READ_STATE)
 public class ADSReadStateRequest extends ADSAbstractRequest {
 
     private ADSReadStateRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {

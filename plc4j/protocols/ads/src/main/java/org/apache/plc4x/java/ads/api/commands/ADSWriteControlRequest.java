@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
  * Additionally it is possible to send data to the ADS device to transfer further information.
  * These data were not analysed from the current ADS devices (PLC, NC, ...)
  */
-@ADSCommandType(Command.ADS_Write_Control)
+@ADSCommandType(Command.ADS_WRITE_CONTROL)
 public class ADSWriteControlRequest extends ADSAbstractRequest {
 
     /**
@@ -109,7 +109,7 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(adsState, deviceState, (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length), data);
+        return buildADSData(adsState, deviceState, calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, data);
     }
 
     @Override

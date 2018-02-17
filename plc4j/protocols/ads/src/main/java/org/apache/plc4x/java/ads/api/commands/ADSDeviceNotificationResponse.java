@@ -24,7 +24,7 @@ import org.apache.plc4x.java.ads.api.generic.types.Command;
 /**
  * Data will carry forward independently from an ADS device to a Client
  */
-@ADSCommandType(Command.ADS_Device_Notification)
+@ADSCommandType(Command.ADS_DEVICE_NOTIFICATION)
 public class ADSDeviceNotificationResponse extends ADSAbstractResponse {
 
     protected ADSDeviceNotificationResponse() {

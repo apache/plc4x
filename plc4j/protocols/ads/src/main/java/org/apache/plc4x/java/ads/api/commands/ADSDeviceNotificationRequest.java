@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * The data which are transfered at the Device Notification  are multiple nested into one another. The Notification Stream contains an array with elements of type AdsStampHeader. This array again contains elements of type AdsNotificationSample.
  */
-@ADSCommandType(Command.ADS_Device_Notification)
+@ADSCommandType(Command.ADS_DEVICE_NOTIFICATION)
 public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
 
     /**
@@ -110,7 +110,7 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData((calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length), stamps, buildADSData(adsStampHeaders.toArray(new ByteReadable[adsStampHeaders.size()])));
+        return buildADSData(calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, stamps, buildADSData(adsStampHeaders.toArray(new ByteReadable[adsStampHeaders.size()])));
     }
 
     @Override

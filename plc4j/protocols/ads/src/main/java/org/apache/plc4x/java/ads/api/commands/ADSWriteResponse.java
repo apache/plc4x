@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * With ADS Write data can be written to an ADS device.
  */
-@ADSCommandType(Command.ADS_Write)
+@ADSCommandType(Command.ADS_WRITE)
 public class ADSWriteResponse extends ADSAbstractResponse {
 
     /**

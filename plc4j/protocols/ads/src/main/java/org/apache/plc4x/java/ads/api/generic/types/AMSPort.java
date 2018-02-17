@@ -61,6 +61,6 @@ public class AMSPort extends ByteValue {
 
     @Override
     public String toString() {
-        return Integer.toString((getBytes()[1] << 8 | getBytes()[0]) & 0xff);
+        return Integer.toString(getBytes()[1] << 8 | getBytes()[0] & 0xff);
     }
 }

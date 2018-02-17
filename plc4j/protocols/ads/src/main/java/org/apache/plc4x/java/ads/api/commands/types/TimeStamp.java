@@ -135,6 +135,24 @@ public class TimeStamp extends ByteValue {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TimeStamp)) return false;
+        if (!super.equals(o)) return false;
+
+        TimeStamp timeStamp = (TimeStamp) o;
+
+        return bigIntegerValue.equals(timeStamp.bigIntegerValue);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + bigIntegerValue.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "TimeStamp{winTime=" + getBigIntegerValue() + "/date=" + getAsDate() + "} " + super.toString();
     }

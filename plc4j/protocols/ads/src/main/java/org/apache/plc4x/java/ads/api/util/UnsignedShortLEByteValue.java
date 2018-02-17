@@ -24,19 +24,19 @@ import java.nio.ByteBuffer;
 
 public abstract class UnsignedShortLEByteValue extends ByteValue {
 
-    public static final int NUM_BYTES = 2;
+    public static final int UNSIGNED_SHORT_LE_NUM_BYTES = 2;
 
     private final int intValue;
 
     protected UnsignedShortLEByteValue(byte... value) {
         super(value);
-        assertLength(NUM_BYTES);
-        intValue = (getBytes()[1] << 8 | getBytes()[0]) & 0xff;
+        assertLength(UNSIGNED_SHORT_LE_NUM_BYTES);
+        intValue = getBytes()[1] << 8 | getBytes()[0] & 0xff;
     }
 
     protected UnsignedShortLEByteValue(int value) {
         super(ofInt(value));
-        checkUnsignedBounds(value, NUM_BYTES);
+        checkUnsignedBounds(value, UNSIGNED_SHORT_LE_NUM_BYTES);
         intValue = value;
     }
 
@@ -49,7 +49,7 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
     }
 
     private static byte[] ofInt(long value) {
-        return ByteBuffer.allocate(NUM_BYTES)
+        return ByteBuffer.allocate(UNSIGNED_SHORT_LE_NUM_BYTES)
             // LE
             .put((byte) (value & 0xff))
             .put((byte) (value >> 8 & 0xff))

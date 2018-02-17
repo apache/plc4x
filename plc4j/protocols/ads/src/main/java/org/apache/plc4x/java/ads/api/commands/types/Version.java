@@ -23,7 +23,7 @@ import org.apache.plc4x.java.ads.api.util.UnsignedShortLEByteValue;
 
 public class Version extends UnsignedShortLEByteValue {
 
-    public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
+    public static final int NUM_BYTES = UnsignedShortLEByteValue.UNSIGNED_SHORT_LE_NUM_BYTES;
 
     private Version(byte... values) {
         super(values);

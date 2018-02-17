@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * With ADS Write data can be written to an ADS device. The data are addressed by the Index Group and the Index Offset.
  */
-@ADSCommandType(Command.ADS_Write)
+@ADSCommandType(Command.ADS_WRITE)
 public class ADSWriteRequest extends ADSAbstractRequest {
 
     /**
@@ -104,7 +104,7 @@ public class ADSWriteRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(indexGroup, indexOffset, (calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : length), data);
+        return buildADSData(indexGroup, indexOffset, calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : length, data);
     }
 
     @Override

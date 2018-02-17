@@ -84,179 +84,39 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
         AMSHeader amsHeader = AMSHeader.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateId, dataLength, errorCode, invoke);
         final AMSTCPPacket amstcpPacket;
         switch (commandId) {
-            case Invalid:
-                amstcpPacket = UnknownCommand.of(amstcpHeader, amsHeader, commandBuffer);
+            case INVALID:
+                amstcpPacket = handleInvalidCommand(commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Read_Device_Info:
-                if (stateId.isRequest()) {
-                    amstcpPacket = ADSReadDeviceInfoRequest.of(amstcpHeader, amsHeader);
-                } else {
-                    Result result = Result.of(commandBuffer);
-                    MajorVersion majorVersion = MajorVersion.of(commandBuffer);
-                    MinorVersion minorVersion = MinorVersion.of(commandBuffer);
-                    Version version = Version.of(commandBuffer);
-                    Device device = Device.of(commandBuffer);
-                    amstcpPacket = ADSReadDeviceInfoResponse.of(amstcpHeader, amsHeader, result, majorVersion, minorVersion, version, device);
-                }
+            case ADS_READ_DEVICE_INFO:
+                amstcpPacket = handleADSReadDeviceInfoCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Read:
-                if (stateId.isRequest()) {
-                    IndexGroup indexGroup = IndexGroup.of(commandBuffer);
-                    IndexOffset indexOffset = IndexOffset.of(commandBuffer);
-                    Length length = Length.of(commandBuffer);
-                    amstcpPacket = ADSReadRequest.of(amstcpHeader, amsHeader, indexGroup, indexOffset, length);
-                } else {
-                    Result result = Result.of(commandBuffer);
-                    Length length = Length.of(commandBuffer);
-                    if (length.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
-                    }
-                    byte[] dataToRead = new byte[(int) length.getAsLong()];
-                    commandBuffer.readBytes(dataToRead);
-                    Data data = Data.of(dataToRead);
-                    amstcpPacket = ADSReadResponse.of(amstcpHeader, amsHeader, result, length, data);
-                }
+            case ADS_READ:
+                amstcpPacket = handleADSReadCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Write:
-                if (stateId.isRequest()) {
-                    IndexGroup indexGroup = IndexGroup.of(commandBuffer);
-                    IndexOffset indexOffset = IndexOffset.of(commandBuffer);
-                    Length length = Length.of(commandBuffer);
-                    if (length.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
-                    }
-                    byte[] dataToRead = new byte[(int) length.getAsLong()];
-                    commandBuffer.readBytes(dataToRead);
-                    Data data = Data.of(dataToRead);
-                    amstcpPacket = ADSWriteRequest.of(amstcpHeader, amsHeader, indexGroup, indexOffset, length, data);
-                } else {
-                    Result result = Result.of(commandBuffer);
-                    amstcpPacket = ADSWriteResponse.of(amstcpHeader, amsHeader, result);
-                }
+            case ADS_WRITE:
+                amstcpPacket = handleADSWriteCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Read_State:
-                if (stateId.isRequest()) {
-                    amstcpPacket = ADSReadStateRequest.of(amstcpHeader, amsHeader);
-                } else {
-                    Result result = Result.of(commandBuffer);
-                    amstcpPacket = ADSReadStateResponse.of(amstcpHeader, amsHeader, result);
-                }
+            case ADS_READ_STATE:
+                amstcpPacket = handleADSReadStateCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Write_Control:
-                if (stateId.isRequest()) {
-                    ADSState adsState = ADSState.of(commandBuffer);
-                    DeviceState deviceState = DeviceState.of(commandBuffer);
-                    Length length = Length.of(commandBuffer);
-                    if (length.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
-                    }
-                    byte[] dataToRead = new byte[(int) length.getAsLong()];
-                    commandBuffer.readBytes(dataToRead);
-                    Data data = Data.of(dataToRead);
-                    amstcpPacket = ADSWriteControlRequest.of(amstcpHeader, amsHeader, adsState, deviceState, length, data);
-                } else {
-                    Result result = Result.of(commandBuffer);
-                    amstcpPacket = ADSWriteControlResponse.of(amstcpHeader, amsHeader, result);
-                }
+            case ADS_WRITE_CONTROL:
+                amstcpPacket = handleADSWriteControlCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Add_Device_Notification:
-                if (stateId.isRequest()) {
-                    IndexGroup indexGroup = IndexGroup.of(commandBuffer);
-                    IndexOffset indexOffset = IndexOffset.of(commandBuffer);
-                    Length length = Length.of(commandBuffer);
-                    TransmissionMode transmissionMode = TransmissionMode.of(commandBuffer);
-                    MaxDelay maxDelay = MaxDelay.of(commandBuffer);
-                    CycleTime cycleTime = CycleTime.of(commandBuffer);
-                    commandBuffer.skipBytes(ADSAddDeviceNotificationRequest.Reserved.NUM_BYTES);
-                    amstcpPacket = ADSAddDeviceNotificationRequest.of(amstcpHeader, amsHeader, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
-                } else {
-                    Result result = Result.of(commandBuffer);
-                    NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
-                    amstcpPacket = ADSAddDeviceNotificationResponse.of(amstcpHeader, amsHeader, result, notificationHandle);
-                }
+            case ADS_ADD_DEVICE_NOTIFICATION:
+                amstcpPacket = handleADSAddDeviceNotificationCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Delete_Device_Notification:
-                if (stateId.isRequest()) {
-                    NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
-                    amstcpPacket = ADSDeleteDeviceNotificationRequest.of(amstcpHeader, amsHeader, notificationHandle);
-                } else {
-                    Result result = Result.of(commandBuffer);
-                    amstcpPacket = ADSDeleteDeviceNotificationResponse.of(amstcpHeader, amsHeader, result);
-                }
+            case ADS_DELETE_DEVICE_NOTIFICATION:
+                amstcpPacket = handADSDeleteDeviceNotificationCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Device_Notification:
-                if (stateId.isRequest()) {
-                    Length length = Length.of(commandBuffer);
-                    if (length.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
-                    }
-                    Stamps stamps = Stamps.of(commandBuffer);
-                    if (stamps.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + stamps.getAsLong());
-                    }
-                    ByteBuf adsDeviceNotificationBuffer = commandBuffer.readBytes((int) length.getAsLong());
-                    List<AdsStampHeader> adsStampHeaders = new ArrayList<>((int) stamps.getAsLong());
-                    for (int i = 1; i <= stamps.getAsLong(); i++) {
-                        TimeStamp timeStamp = TimeStamp.of(adsDeviceNotificationBuffer);
-                        Samples samples = Samples.of(adsDeviceNotificationBuffer);
-
-                        List<AdsNotificationSample> adsNotificationSamples = new LinkedList<>();
-                        for (int j = 1; j <= samples.getAsLong(); j++) {
-                            NotificationHandle notificationHandle = NotificationHandle.of(adsDeviceNotificationBuffer);
-                            SampleSize sampleSize = SampleSize.of(adsDeviceNotificationBuffer);
-                            if (sampleSize.getAsLong() > Integer.MAX_VALUE) {
-                                throw new IllegalStateException("Overflow in datalength: " + sampleSize.getAsLong());
-                            }
-                            // TODO: do we need a special marker class for: Notice: If your handle becomes invalid, one notification without data will be send once as advice.
-                            byte[] dataToRead = new byte[(int) sampleSize.getAsLong()];
-                            adsDeviceNotificationBuffer.readBytes(dataToRead);
-                            Data data = Data.of(dataToRead);
-                            AdsNotificationSample adsNotificationSample = AdsNotificationSample.of(notificationHandle, sampleSize, data);
-                            adsNotificationSamples.add(adsNotificationSample);
-
-                        }
-                        AdsStampHeader adsStampHeader = AdsStampHeader.of(timeStamp, samples, adsNotificationSamples);
-                        adsStampHeaders.add(adsStampHeader);
-                    }
-                    amstcpPacket = ADSDeviceNotificationRequest.of(amstcpHeader, amsHeader, length, stamps, adsStampHeaders);
-                } else {
-                    amstcpPacket = UnknownCommand.of(amstcpHeader, amsHeader, commandBuffer);
-                }
+            case ADS_DEVICE_NOTIFICATION:
+                amstcpPacket = handleADSDeviceNotificationCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
-            case ADS_Read_Write:
-                if (stateId.isRequest()) {
-                    IndexGroup indexGroup = IndexGroup.of(commandBuffer);
-                    IndexOffset indexOffset = IndexOffset.of(commandBuffer);
-                    ReadLength readLength = ReadLength.of(commandBuffer);
-                    if (readLength.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + readLength.getAsLong());
-                    }
-                    WriteLength writeLength = WriteLength.of(commandBuffer);
-                    if (writeLength.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + writeLength.getAsLong());
-                    }
-                    if (readLength.getAsLong() + writeLength.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + readLength.getAsLong() + writeLength.getAsLong());
-                    }
-                    byte[] dataToRead = new byte[(int) readLength.getAsLong()];
-                    commandBuffer.readBytes(dataToRead);
-                    Data data = Data.of(dataToRead);
-                    amstcpPacket = ADSReadWriteRequest.of(amstcpHeader, amsHeader, indexGroup, indexOffset, readLength, writeLength, data);
-                } else {
-                    Result result = Result.of(commandBuffer);
-                    Length length = Length.of(commandBuffer);
-                    if (length.getAsLong() > Integer.MAX_VALUE) {
-                        throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
-                    }
-                    byte[] dataToRead = new byte[(int) length.getAsLong()];
-                    commandBuffer.readBytes(dataToRead);
-                    Data data = Data.of(dataToRead);
-                    amstcpPacket = ADSReadWriteResponse.of(amstcpHeader, amsHeader, result, length, data);
-                }
+            case ADS_READ_WRITE:
+                amstcpPacket = handleADSReadWriteCommand(stateId, commandBuffer, amstcpHeader, amsHeader);
                 break;
             case UNKNOWN:
             default:
-                amstcpPacket = UnknownCommand.of(amstcpHeader, amsHeader, commandBuffer);
+                amstcpPacket = handleUnknownCommand(commandBuffer, amstcpHeader, amsHeader);
         }
         out.add(amstcpPacket);
         LOGGER.trace("Set amstcpPacket {} to out", amstcpPacket);
@@ -265,4 +125,218 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
         }
     }
 
+    private AMSTCPPacket handleInvalidCommand(ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        amstcpPacket = UnknownCommand.of(amstcpHeader, amsHeader, commandBuffer);
+        return amstcpPacket;
+    }
+
+    private AMSTCPPacket handleADSReadDeviceInfoCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            amstcpPacket = ADSReadDeviceInfoRequest.of(amstcpHeader, amsHeader);
+        } else {
+            Result result = Result.of(commandBuffer);
+            MajorVersion majorVersion = MajorVersion.of(commandBuffer);
+            MinorVersion minorVersion = MinorVersion.of(commandBuffer);
+            Version version = Version.of(commandBuffer);
+            Device device = Device.of(commandBuffer);
+            amstcpPacket = ADSReadDeviceInfoResponse.of(amstcpHeader, amsHeader, result, majorVersion, minorVersion, version, device);
+        }
+        return amstcpPacket;
+    }
+
+    private AMSTCPPacket handleADSReadCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            IndexGroup indexGroup = IndexGroup.of(commandBuffer);
+            IndexOffset indexOffset = IndexOffset.of(commandBuffer);
+            Length length = Length.of(commandBuffer);
+            amstcpPacket = ADSReadRequest.of(amstcpHeader, amsHeader, indexGroup, indexOffset, length);
+        } else {
+            Result result = Result.of(commandBuffer);
+            Length length = Length.of(commandBuffer);
+            if (length.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
+            }
+            byte[] dataToRead = new byte[(int) length.getAsLong()];
+            commandBuffer.readBytes(dataToRead);
+            Data data = Data.of(dataToRead);
+            amstcpPacket = ADSReadResponse.of(amstcpHeader, amsHeader, result, length, data);
+        }
+        return amstcpPacket;
+    }
+
+    private AMSTCPPacket handleADSWriteCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            IndexGroup indexGroup = IndexGroup.of(commandBuffer);
+            IndexOffset indexOffset = IndexOffset.of(commandBuffer);
+            Length length = Length.of(commandBuffer);
+            if (length.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
+            }
+            byte[] dataToRead = new byte[(int) length.getAsLong()];
+            commandBuffer.readBytes(dataToRead);
+            Data data = Data.of(dataToRead);
+            amstcpPacket = ADSWriteRequest.of(amstcpHeader, amsHeader, indexGroup, indexOffset, length, data);
+        } else {
+            Result result = Result.of(commandBuffer);
+            amstcpPacket = ADSWriteResponse.of(amstcpHeader, amsHeader, result);
+        }
+        return amstcpPacket;
+    }
+
+
+    private AMSTCPPacket handleADSReadStateCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            amstcpPacket = ADSReadStateRequest.of(amstcpHeader, amsHeader);
+        } else {
+            Result result = Result.of(commandBuffer);
+            amstcpPacket = ADSReadStateResponse.of(amstcpHeader, amsHeader, result);
+        }
+        return amstcpPacket;
+    }
+
+    private AMSTCPPacket handleADSWriteControlCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            ADSState adsState = ADSState.of(commandBuffer);
+            DeviceState deviceState = DeviceState.of(commandBuffer);
+            Length length = Length.of(commandBuffer);
+            if (length.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
+            }
+            byte[] dataToRead = new byte[(int) length.getAsLong()];
+            commandBuffer.readBytes(dataToRead);
+            Data data = Data.of(dataToRead);
+            amstcpPacket = ADSWriteControlRequest.of(amstcpHeader, amsHeader, adsState, deviceState, length, data);
+        } else {
+            Result result = Result.of(commandBuffer);
+            amstcpPacket = ADSWriteControlResponse.of(amstcpHeader, amsHeader, result);
+        }
+        return amstcpPacket;
+    }
+
+    private AMSTCPPacket handleADSAddDeviceNotificationCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            IndexGroup indexGroup = IndexGroup.of(commandBuffer);
+            IndexOffset indexOffset = IndexOffset.of(commandBuffer);
+            Length length = Length.of(commandBuffer);
+            TransmissionMode transmissionMode = TransmissionMode.of(commandBuffer);
+            MaxDelay maxDelay = MaxDelay.of(commandBuffer);
+            CycleTime cycleTime = CycleTime.of(commandBuffer);
+            commandBuffer.skipBytes(ADSAddDeviceNotificationRequest.Reserved.NUM_BYTES);
+            amstcpPacket = ADSAddDeviceNotificationRequest.of(amstcpHeader, amsHeader, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
+        } else {
+            Result result = Result.of(commandBuffer);
+            NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
+            amstcpPacket = ADSAddDeviceNotificationResponse.of(amstcpHeader, amsHeader, result, notificationHandle);
+        }
+        return amstcpPacket;
+    }
+
+    private AMSTCPPacket handADSDeleteDeviceNotificationCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
+            amstcpPacket = ADSDeleteDeviceNotificationRequest.of(amstcpHeader, amsHeader, notificationHandle);
+        } else {
+            Result result = Result.of(commandBuffer);
+            amstcpPacket = ADSDeleteDeviceNotificationResponse.of(amstcpHeader, amsHeader, result);
+        }
+        return amstcpPacket;
+    }
+
+    private AMSTCPPacket handleADSDeviceNotificationCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            Length length = Length.of(commandBuffer);
+            if (length.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
+            }
+            Stamps stamps = Stamps.of(commandBuffer);
+            if (stamps.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + stamps.getAsLong());
+            }
+            ByteBuf adsDeviceNotificationBuffer = commandBuffer.readBytes((int) length.getAsLong());
+            List<AdsStampHeader> adsStampHeaders = new ArrayList<>((int) stamps.getAsLong());
+            for (int i = 1; i <= stamps.getAsLong(); i++) {
+                AdsStampHeader adsStampHeader = handleStampHeader(adsDeviceNotificationBuffer);
+                adsStampHeaders.add(adsStampHeader);
+            }
+            amstcpPacket = ADSDeviceNotificationRequest.of(amstcpHeader, amsHeader, length, stamps, adsStampHeaders);
+        } else {
+            amstcpPacket = UnknownCommand.of(amstcpHeader, amsHeader, commandBuffer);
+        }
+        return amstcpPacket;
+    }
+
+    private AdsStampHeader handleStampHeader(ByteBuf adsDeviceNotificationBuffer) {
+        TimeStamp timeStamp = TimeStamp.of(adsDeviceNotificationBuffer);
+        Samples samples = Samples.of(adsDeviceNotificationBuffer);
+
+        List<AdsNotificationSample> adsNotificationSamples = new LinkedList<>();
+        for (int i = 1; i <= samples.getAsLong(); i++) {
+            AdsNotificationSample adsNotificationSample = handleAdsNotificartionSample(adsDeviceNotificationBuffer);
+            adsNotificationSamples.add(adsNotificationSample);
+
+        }
+        return AdsStampHeader.of(timeStamp, samples, adsNotificationSamples);
+    }
+
+    private AdsNotificationSample handleAdsNotificartionSample(ByteBuf adsDeviceNotificationBuffer) {
+        NotificationHandle notificationHandle = NotificationHandle.of(adsDeviceNotificationBuffer);
+        SampleSize sampleSize = SampleSize.of(adsDeviceNotificationBuffer);
+        if (sampleSize.getAsLong() > Integer.MAX_VALUE) {
+            throw new IllegalStateException("Overflow in datalength: " + sampleSize.getAsLong());
+        }
+        // TODO: do we need a special marker class for: Notice: If your handle becomes invalid, one notification without data will be send once as advice.
+        byte[] dataToRead = new byte[(int) sampleSize.getAsLong()];
+        adsDeviceNotificationBuffer.readBytes(dataToRead);
+        Data data = Data.of(dataToRead);
+        return AdsNotificationSample.of(notificationHandle, sampleSize, data);
+    }
+
+    private AMSTCPPacket handleADSReadWriteCommand(State stateId, ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        if (stateId.isRequest()) {
+            IndexGroup indexGroup = IndexGroup.of(commandBuffer);
+            IndexOffset indexOffset = IndexOffset.of(commandBuffer);
+            ReadLength readLength = ReadLength.of(commandBuffer);
+            if (readLength.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + readLength.getAsLong());
+            }
+            WriteLength writeLength = WriteLength.of(commandBuffer);
+            if (writeLength.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + writeLength.getAsLong());
+            }
+            if (readLength.getAsLong() + writeLength.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + readLength.getAsLong() + writeLength.getAsLong());
+            }
+            byte[] dataToRead = new byte[(int) readLength.getAsLong()];
+            commandBuffer.readBytes(dataToRead);
+            Data data = Data.of(dataToRead);
+            amstcpPacket = ADSReadWriteRequest.of(amstcpHeader, amsHeader, indexGroup, indexOffset, readLength, writeLength, data);
+        } else {
+            Result result = Result.of(commandBuffer);
+            Length length = Length.of(commandBuffer);
+            if (length.getAsLong() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
+            }
+            byte[] dataToRead = new byte[(int) length.getAsLong()];
+            commandBuffer.readBytes(dataToRead);
+            Data data = Data.of(dataToRead);
+            amstcpPacket = ADSReadWriteResponse.of(amstcpHeader, amsHeader, result, length, data);
+        }
+        return amstcpPacket;
+    }
+
+    private AMSTCPPacket handleUnknownCommand(ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
+        AMSTCPPacket amstcpPacket;
+        amstcpPacket = UnknownCommand.of(amstcpHeader, amsHeader, commandBuffer);
+        return amstcpPacket;
+    }
 }

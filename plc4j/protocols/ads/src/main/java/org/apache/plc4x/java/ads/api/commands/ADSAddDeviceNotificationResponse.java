@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A notification is created in an ADS device.
  */
-@ADSCommandType(Command.ADS_Add_Device_Notification)
+@ADSCommandType(Command.ADS_ADD_DEVICE_NOTIFICATION)
 public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
 
     /**
