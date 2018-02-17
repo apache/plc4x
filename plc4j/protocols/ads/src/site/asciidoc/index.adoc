@@ -36,10 +36,10 @@ The complete pipeline for the ADS protocol looks like this:
         label = "PLC4X ADS Driver"
         color = "#77FF77";
 
-        ADSPlcConnection -> Plc4XADSProtocol -> ADSProtocol -> IsoTPProtocol -> IsoOnTcpProtocol -> Socket
+        ADSPlcConnection -> Plc4XADSProtocol -> ADSProtocol -> Socket
 
         group {
-            Plc4XADSProtocol; ADSProtocol; IsoTPProtocol; IsoOnTcpProtocol;
+            Plc4XADSProtocol; ADSProtocol;
         }
     }
 }
@@ -54,36 +54,19 @@ In order to implement the ADS Protocol as described in link:../../../protocols/a
 [seqdiag,ads-netty-setup-communication]
 ....
 {
-    Application; ADSPlcConnection; Plc4XADSProtocol; ADSProtocol; IsoTPProtocol; IsoOnTcpProtocol; Socket; PLC;
+    Application; ADSPlcConnection; Plc4XADSProtocol; ADSProtocol; Socket; PLC;
 
     group Pipeline {
        "Plc4XADSProtocol";
         "ADSProtocol";
-        "IsoTPProtocol";
-        "IsoOnTcpProtocol";
     }
 
     Application -> ADSPlcConnection [label = "Calls 'connect'"]
-    ADSPlcConnection --> IsoTPProtocol [label = "Fires ADSConnectionEvent(INITIAL) event to the pipeline", note = "IsoTPProtocol listens for ADSConnectionEvent(INITIAL) events"]
-    IsoTPProtocol -> IsoOnTcpProtocol [label = "Creates new IsoOnTcp\nconnection request message"]
-    IsoOnTcpProtocol -> Socket [label = "Creates the byte array\ncontaining the TCP on ISO\nmessage"]
-    Socket -> PLC [label = "Sends the raw byte data to\nthe PLC"]
-
-    Socket <- PLC [label = "Sends the response to the\nSocket"]
-    IsoOnTcpProtocol <- Socket [label = "Passes the binary data to\nthe pipeline"]
-    IsoTPProtocol <- IsoOnTcpProtocol [label = "Creates new IsoOnTcp message containing binary user data"]
-
-    IsoTPProtocol --> ADSProtocol [label = "Sends ADSConnectionEvent(\nISO_TP_CONNECTION_RESPONSE_\nRECEIVED) event to the\npipeline", note = "ADSProtocol listens for ADSConnectionEvent(ISO_TP_CONNECTION_RESPONSE_RECEIVED) events"]
-
-    IsoTPProtocol <- ADSProtocol [label = "Creates new ISO TP Data\nmessage containing an\n ADS SetupCommunictaion\nmessage"]
-    IsoTPProtocol -> IsoOnTcpProtocol [label = "Creates new IsoOnTcp message"]
-    IsoOnTcpProtocol -> Socket [label = "Creates the byte array\ncontaining the TCP on ISO\nmessage"]
+    ADSPlcConnection -->  Socket [label = "Creates the byte array\ncontaining the TCP on ISO\nmessage"]
     Socket -> PLC [label = "Sends the raw byte data to\nthe PLC"]
 
     Socket <-- PLC [label = "Sends the response to the\nSocket"]
-    IsoOnTcpProtocol <- Socket [label = "Passes the binary data to\nthe pipeline"]
-    IsoTPProtocol <- IsoOnTcpProtocol [label = "Creates new IsoOnTcp message containing binary user data"]
-    IsoTPProtocol -> ADSProtocol
+    Socket -> ADSProtocol [label = "Passes the binary data to\nthe pipeline"]
     ADSPlcConnection <- ADSProtocol [label = "Sends ADSConnectionEvent(SETUP_COMPLETE) event to the\npipeline", note = "ADSPlcConnection listens for ADSConnectionEvent(SETUP_COMPLETE) events"]
 
 }
