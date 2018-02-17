@@ -19,6 +19,10 @@
 package org.apache.plc4x.java.ads.api.util;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.commons.io.HexDump;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 @FunctionalInterface
 public interface ByteReadable extends LengthSupplier {
@@ -36,4 +40,10 @@ public interface ByteReadable extends LengthSupplier {
         return getBytes().length;
     }
 
+    default String dump() throws IOException {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            HexDump.dump(getBytes(), 0, byteArrayOutputStream, 0);
+            return toString() + HexDump.EOL + byteArrayOutputStream.toString();
+        }
+    }
 }

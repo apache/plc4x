@@ -18,11 +18,8 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
-import org.apache.commons.io.HexDump;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 import static java.util.Objects.requireNonNull;
@@ -45,13 +42,6 @@ public class Data extends ByteValue {
     public static Data of(String value, Charset charset) {
         requireNonNull(value);
         return new Data(value.getBytes(charset));
-    }
-
-    public String dump() throws IOException {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            HexDump.dump(value, 0, byteArrayOutputStream, 0);
-            return toString() + HexDump.EOL + byteArrayOutputStream.toString();
-        }
     }
 
     @Override
