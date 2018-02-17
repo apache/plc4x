@@ -50,7 +50,6 @@ public class Data extends ByteValue {
     public String dump() {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             HexDump.dump(value, 0, byteArrayOutputStream, 0);
-            byteArrayOutputStream.flush();
             return toString() + HexDump.EOL + byteArrayOutputStream.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);

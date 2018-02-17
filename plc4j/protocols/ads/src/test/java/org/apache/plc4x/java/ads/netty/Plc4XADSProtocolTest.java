@@ -128,7 +128,6 @@ public class Plc4XADSProtocolTest {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             byte[] bytes = amstcpPacket.getByteBuf().array();
             HexDump.dump(bytes, 0, byteArrayOutputStream, 0);
-            byteArrayOutputStream.flush();
             LOGGER.info("{}\nHexDump:\n{}", amstcpPacket, byteArrayOutputStream);
         }
         SUT.decode(null, amstcpPacket, out);
