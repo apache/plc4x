@@ -63,6 +63,11 @@ public abstract class UnsignedIntLEByteValue extends ByteValue {
     }
 
     @Override
+    public long getCalculatedLength() {
+        return UNSIGNED_INT_LE_NUM_BYTES;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UnsignedIntLEByteValue)) return false;

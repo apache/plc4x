@@ -51,6 +51,11 @@ public class MajorVersion extends ByteValue {
     }
 
     @Override
+    public long getCalculatedLength() {
+        return NUM_BYTES;
+    }
+
+    @Override
     public String toString() {
         return "MajorVersion{" +
             "value=" + Arrays.toString(value) +

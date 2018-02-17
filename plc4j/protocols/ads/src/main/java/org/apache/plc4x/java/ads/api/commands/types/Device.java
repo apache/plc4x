@@ -56,6 +56,11 @@ public class Device extends ByteValue {
     }
 
     @Override
+    public long getCalculatedLength() {
+        return NUM_BYTES;
+    }
+
+    @Override
     public String toString() {
         // TODO: this might break some outputs like surefire if this id can contain non printable characters
         return "Device{" + new String(value) + "} " + super.toString();

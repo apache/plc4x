@@ -135,6 +135,11 @@ public class TimeStamp extends ByteValue {
     }
 
     @Override
+    public long getCalculatedLength() {
+        return NUM_BYTES;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TimeStamp)) return false;

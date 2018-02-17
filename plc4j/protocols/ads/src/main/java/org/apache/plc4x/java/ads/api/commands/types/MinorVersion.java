@@ -51,6 +51,11 @@ public class MinorVersion extends ByteValue {
     }
 
     @Override
+    public long getCalculatedLength() {
+        return NUM_BYTES;
+    }
+
+    @Override
     public String toString() {
         return "MinorVersion{" +
             "value=" + Arrays.toString(value) +
