@@ -102,6 +102,30 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         return new ADSWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
     }
 
+    public IndexGroup getIndexGroup() {
+        return indexGroup;
+    }
+
+    public IndexOffset getIndexOffset() {
+        return indexOffset;
+    }
+
+    public Length getLength() {
+        return length;
+    }
+
+    public Data getData() {
+        return data;
+    }
+
+    public LengthSupplier getLengthSupplier() {
+        return lengthSupplier;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : length, data);

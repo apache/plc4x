@@ -27,9 +27,12 @@ import org.junit.runners.Parameterized;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
@@ -51,19 +54,31 @@ public class GenericFactoryMethodTest {
 
     @Test
     public void testOf() throws Exception {
+        List<Method> getters = Arrays
+            .stream(clazz.getDeclaredMethods())
+            .filter(method -> method.getName().startsWith("get") && method.getParameterCount() == 0)
+            .collect(Collectors.toList());
         for (Method method : clazz.getDeclaredMethods()) {
-            if (method.getName().equals("of")) {
-                method.invoke(null, Arrays.stream(method.getParameterTypes()).map(aClass -> {
-                    if (aClass == Command.class) {
-                        return Command.UNKNOWN;
-                    } else if (aClass == LengthSupplier[].class) {
-                        return new LengthSupplier[]{() -> 0};
-                    } else if (aClass == long.class) {
-                        return 1L;
-                    } else {
-                        return mock(aClass, RETURNS_DEEP_STUBS);
-                    }
-                }).toArray());
+            if (!method.getName().equals("of")) {
+                continue;
+            }
+            Object invoke = method.invoke(null, Arrays.stream(method.getParameterTypes()).map(aClass -> {
+                if (aClass == Command.class) {
+                    return Command.INVALID;
+                } else if (aClass == LengthSupplier[].class) {
+                    return new LengthSupplier[]{() -> 0};
+                } else if (aClass == long.class) {
+                    return 1L;
+                } else {
+                    return mock(aClass, RETURNS_DEEP_STUBS);
+                }
+            }).toArray());
+            assertThat(invoke, notNullValue());
+            assertThat(invoke, instanceOf(clazz));
+            assertThat(invoke.toString(), not(isEmptyString()));
+            // Testing getters for the coverage (sonar)
+            for (Method getter : getters) {
+                getter.invoke(invoke);
             }
         }
     }

@@ -76,6 +76,26 @@ public class AdsNotificationSample implements ByteReadable {
         return buildByteBuff(notificationHandle, calculated ? SampleSize.of(lengthSupplier.getCalculatedLength()) : sampleSize, data);
     }
 
+    public NotificationHandle getNotificationHandle() {
+        return notificationHandle;
+    }
+
+    public SampleSize getSampleSize() {
+        return sampleSize;
+    }
+
+    public Data getData() {
+        return data;
+    }
+
+    public LengthSupplier getLengthSupplier() {
+        return lengthSupplier;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
     @Override
     public String toString() {
         return "AdsNotificationSample{" +

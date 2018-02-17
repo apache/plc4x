@@ -111,6 +111,34 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
         return new ADSReadWriteRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, readLength, data);
     }
 
+    public IndexGroup getIndexGroup() {
+        return indexGroup;
+    }
+
+    public IndexOffset getIndexOffset() {
+        return indexOffset;
+    }
+
+    public ReadLength getReadLength() {
+        return readLength;
+    }
+
+    public WriteLength getWriteLength() {
+        return writeLength;
+    }
+
+    public Data getData() {
+        return data;
+    }
+
+    public LengthSupplier getLengthSupplier() {
+        return lengthSupplier;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, readLength, calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : writeLength, data);

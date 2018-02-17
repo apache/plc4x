@@ -113,16 +113,32 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
         return new ADSAddDeviceNotificationRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
     }
 
-    public static class Reserved extends ByteValue {
+    public IndexGroup getIndexGroup() {
+        return indexGroup;
+    }
 
-        public static final int NUM_BYTES = 16;
+    public IndexOffset getIndexOffset() {
+        return indexOffset;
+    }
 
-        private static final Reserved INSTANCE = new Reserved();
+    public Length getLength() {
+        return length;
+    }
 
-        private Reserved() {
-            super((byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00);
-            assertLength(NUM_BYTES);
-        }
+    public TransmissionMode getTransmissionMode() {
+        return transmissionMode;
+    }
+
+    public MaxDelay getMaxDelay() {
+        return maxDelay;
+    }
+
+    public CycleTime getCycleTime() {
+        return cycleTime;
+    }
+
+    public Reserved getReserved() {
+        return reserved;
     }
 
     @Override
@@ -136,5 +152,17 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
             ", cycleTime=" + cycleTime +
             ", reserved=" + reserved +
             "} " + super.toString();
+    }
+
+    public static class Reserved extends ByteValue {
+
+        public static final int NUM_BYTES = 16;
+
+        private static final Reserved INSTANCE = new Reserved();
+
+        private Reserved() {
+            super((byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00);
+            assertLength(NUM_BYTES);
+        }
     }
 }

@@ -65,6 +65,18 @@ public class AMSTCPHeader implements ByteReadable {
         return new AMSTCPHeader(lengthSuppliers);
     }
 
+    public Length getLength() {
+        return length;
+    }
+
+    public LengthSupplier[] getLengthSuppliers() {
+        return lengthSuppliers;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
     @Override
     public ByteBuf getByteBuf() {
         return buildByteBuff(reserved, calculated ? Length.of(getCalculatedLength()) : length);

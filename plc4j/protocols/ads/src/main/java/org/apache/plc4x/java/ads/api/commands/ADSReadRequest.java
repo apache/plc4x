@@ -85,6 +85,18 @@ public class ADSReadRequest extends ADSAbstractRequest {
         return new ADSReadRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
     }
 
+    public IndexGroup getIndexGroup() {
+        return indexGroup;
+    }
+
+    public IndexOffset getIndexOffset() {
+        return indexOffset;
+    }
+
+    public Length getLength() {
+        return length;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, length);

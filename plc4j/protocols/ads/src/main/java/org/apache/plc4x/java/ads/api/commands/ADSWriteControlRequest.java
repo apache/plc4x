@@ -107,6 +107,30 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         return new ADSWriteControlRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, adsState, deviceState, data);
     }
 
+    public ADSState getAdsState() {
+        return adsState;
+    }
+
+    public DeviceState getDeviceState() {
+        return deviceState;
+    }
+
+    public Length getLength() {
+        return length;
+    }
+
+    public Data getData() {
+        return data;
+    }
+
+    public LengthSupplier getLengthSupplier() {
+        return lengthSupplier;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(adsState, deviceState, calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, data);

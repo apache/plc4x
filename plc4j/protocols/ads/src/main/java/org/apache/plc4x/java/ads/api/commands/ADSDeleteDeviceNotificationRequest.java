@@ -67,6 +67,10 @@ public class ADSDeleteDeviceNotificationRequest extends ADSAbstractRequest {
         return new ADSDeleteDeviceNotificationRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, notificationHandle);
     }
 
+    public NotificationHandle getNotificationHandle() {
+        return notificationHandle;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(notificationHandle);

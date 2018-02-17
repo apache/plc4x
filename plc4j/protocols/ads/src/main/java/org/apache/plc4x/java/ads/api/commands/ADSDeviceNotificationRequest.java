@@ -108,6 +108,26 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
         return new ADSDeviceNotificationRequest(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, stamps, adsStampHeaders);
     }
 
+    public Length getLength() {
+        return length;
+    }
+
+    public Stamps getStamps() {
+        return stamps;
+    }
+
+    public List<AdsStampHeader> getAdsStampHeaders() {
+        return adsStampHeaders;
+    }
+
+    public LengthSupplier getLengthSupplier() {
+        return lengthSupplier;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, stamps, buildADSData(adsStampHeaders.toArray(new ByteReadable[adsStampHeaders.size()])));

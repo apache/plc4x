@@ -82,6 +82,26 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
         return new ADSReadDeviceInfoResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, majorVersion, minorVersion, version, device);
     }
 
+    public Result getResult() {
+        return result;
+    }
+
+    public MajorVersion getMajorVersion() {
+        return majorVersion;
+    }
+
+    public MinorVersion getMinorVersion() {
+        return minorVersion;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public Device getDevice() {
+        return device;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result, majorVersion, minorVersion, version, device);

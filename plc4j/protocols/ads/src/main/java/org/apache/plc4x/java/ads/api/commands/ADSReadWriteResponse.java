@@ -86,6 +86,26 @@ public class ADSReadWriteResponse extends ADSAbstractResponse {
         return new ADSReadWriteResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, data);
     }
 
+    public Result getResult() {
+        return result;
+    }
+
+    public Length getLength() {
+        return length;
+    }
+
+    public Data getData() {
+        return data;
+    }
+
+    public LengthSupplier getLengthSupplier() {
+        return lengthSupplier;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result, calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, data);

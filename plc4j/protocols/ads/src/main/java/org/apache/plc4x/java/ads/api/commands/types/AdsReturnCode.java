@@ -189,6 +189,26 @@ public enum AdsReturnCode {
         return UNKNOWN;
     }
 
+    public long getHex() {
+        return hex;
+    }
+
+    public long getDec() {
+        return dec;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPossibleCauses() {
+        return possibleCauses;
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
     @Override
     public String toString() {
         return "AdsReturnCode{" +

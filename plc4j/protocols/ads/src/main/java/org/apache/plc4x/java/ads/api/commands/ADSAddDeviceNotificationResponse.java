@@ -66,6 +66,14 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
         return new ADSAddDeviceNotificationResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, notificationHandle);
     }
 
+    public Result getResult() {
+        return result;
+    }
+
+    public NotificationHandle getNotificationHandle() {
+        return notificationHandle;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result, notificationHandle);

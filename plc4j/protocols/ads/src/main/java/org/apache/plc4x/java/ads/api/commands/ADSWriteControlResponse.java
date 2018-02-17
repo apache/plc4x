@@ -57,6 +57,10 @@ public class ADSWriteControlResponse extends ADSAbstractResponse {
         return new ADSWriteControlResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result);
     }
 
+    public Result getResult() {
+        return result;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result);

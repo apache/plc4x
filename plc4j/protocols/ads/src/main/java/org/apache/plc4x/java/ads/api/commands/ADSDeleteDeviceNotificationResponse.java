@@ -58,6 +58,10 @@ public class ADSDeleteDeviceNotificationResponse extends ADSAbstractResponse {
         return new ADSDeleteDeviceNotificationResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result);
     }
 
+    public Result getResult() {
+        return result;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result);

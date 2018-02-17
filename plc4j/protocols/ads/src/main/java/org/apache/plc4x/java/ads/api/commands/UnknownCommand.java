@@ -57,4 +57,9 @@ public class UnknownCommand extends AMSTCPPacket {
     public static UnknownCommand of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId, ByteBuf remainingBytes) {
         return new UnknownCommand(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, stateId, invokeId, remainingBytes);
     }
+
+    @Override
+    public String toString() {
+        return "UnknownCommand";
+    }
 }

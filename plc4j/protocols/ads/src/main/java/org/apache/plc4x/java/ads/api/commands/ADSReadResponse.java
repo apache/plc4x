@@ -84,6 +84,14 @@ public class ADSReadResponse extends ADSAbstractResponse {
         return new ADSReadResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, data);
     }
 
+    public LengthSupplier getLengthSupplier() {
+        return lengthSupplier;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
     @Override
     public ADSData getAdsData() {
         return buildADSData(result, calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, data);
