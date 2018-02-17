@@ -23,7 +23,7 @@ import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
-import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.generic.types.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,6 +40,11 @@ public class UnknownCommand extends AMSTCPPacket {
         this.remainingBytes = requireNonNull(remainingBytes);
     }
 
+    private UnknownCommand(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId, ByteBuf remainingBytes) {
+        super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, stateId, invokeId);
+        this.remainingBytes = requireNonNull(remainingBytes);
+    }
+
     @Override
     public ADSData getAdsData() {
         return () -> remainingBytes;
@@ -47,5 +52,9 @@ public class UnknownCommand extends AMSTCPPacket {
 
     public static AMSTCPPacket of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ByteBuf remainingBytes) {
         return new UnknownCommand(amstcpHeader, amsHeader, remainingBytes);
+    }
+
+    public static UnknownCommand of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId, ByteBuf remainingBytes) {
+        return new UnknownCommand(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, stateId, invokeId, remainingBytes);
     }
 }

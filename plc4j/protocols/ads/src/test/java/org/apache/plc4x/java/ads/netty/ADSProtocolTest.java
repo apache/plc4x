@@ -155,7 +155,7 @@ public class ADSProtocolTest {
                 Result.of(0)
             )/*,
             UnknownCommand.of(
-                targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
+                targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId,
                 Unpooled.wrappedBuffer(new byte[]{42})
             )*/
         ).map(amstcpPacket -> new Object[]{amstcpPacket}).collect(Collectors.toList());

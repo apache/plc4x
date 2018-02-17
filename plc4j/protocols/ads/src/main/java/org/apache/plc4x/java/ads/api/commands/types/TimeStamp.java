@@ -94,7 +94,7 @@ public class TimeStamp extends ByteValue {
     }
 
     public static TimeStamp ofWinTime(long value) {
-        return of(javaToWinTime(BigInteger.valueOf(value)));
+        return of(BigInteger.valueOf(value));
     }
 
     public static TimeStamp ofWinTime(String value) {

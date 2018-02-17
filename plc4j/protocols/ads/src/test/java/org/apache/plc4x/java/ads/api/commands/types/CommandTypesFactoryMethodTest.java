@@ -26,12 +26,13 @@ import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assume.assumeThat;
 
 @RunWith(Parameterized.class)
@@ -85,6 +86,30 @@ public class CommandTypesFactoryMethodTest {
     public void testOfString() throws Exception {
         Method ofMethod = clazz.getDeclaredMethod("of", String.class);
         ofMethod.invoke(null, "1");
+    }
+
+    @Test
+    public void testOfStringCharset() throws Exception {
+        assumeThat(clazz, isOneOf(Device.class, Data.class));
+        Method ofMethod = clazz.getDeclaredMethod("of", String.class, Charset.class);
+        ofMethod.invoke(null, "1", Charset.defaultCharset());
+    }
+
+    @Test
+    public void testOfWintime() throws Exception {
+        assumeThat(clazz, isOneOf(TimeStamp.class));
+        {
+            Method ofMethod = clazz.getDeclaredMethod("ofWinTime", BigInteger.class);
+            ofMethod.invoke(null, BigInteger.valueOf(1));
+        }
+        {
+            Method ofMethod = clazz.getDeclaredMethod("ofWinTime", String.class);
+            ofMethod.invoke(null, "1");
+        }
+        {
+            Method ofMethod = clazz.getDeclaredMethod("ofWinTime", long.class);
+            ofMethod.invoke(null, 1L);
+        }
     }
 
     @Test
