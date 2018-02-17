@@ -145,9 +145,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
             case ADS_Write_Control:
                 if (stateId.isRequest()) {
                     ADSState adsState = ADSState.of(commandBuffer);
-                    LOGGER.info("" + adsState);
                     DeviceState deviceState = DeviceState.of(commandBuffer);
-                    LOGGER.info("" + deviceState);
                     Length length = Length.of(commandBuffer);
                     if (length.getAsLong() > Integer.MAX_VALUE) {
                         throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
