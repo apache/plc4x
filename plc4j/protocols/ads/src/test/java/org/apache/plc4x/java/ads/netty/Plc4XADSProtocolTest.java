@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.ads.netty;
 
-import org.apache.commons.io.HexDump;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
@@ -39,7 +38,6 @@ import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -116,12 +114,7 @@ public class Plc4XADSProtocolTest {
         ArrayList<Object> out = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, out);
         assertThat(out, hasSize(1));
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            byte[] bytes = ((AMSTCPPacket) out.get(0)).getByteBuf().array();
-            HexDump.dump(bytes, 0, byteArrayOutputStream, 0);
-            byteArrayOutputStream.flush();
-            LOGGER.info("{}\nHexDump:\n{}", amstcpPacket, byteArrayOutputStream);
-        }
+        LOGGER.info("{}\nHexDump:\n{}", amstcpPacket, amstcpPacket.dump());
     }
 
     @Test
@@ -131,11 +124,7 @@ public class Plc4XADSProtocolTest {
         assertThat(in, hasSize(1));
         syncInvoiceId();
         ArrayList<Object> out = new ArrayList<>();
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            byte[] bytes = amstcpPacket.getByteBuf().array();
-            HexDump.dump(bytes, 0, byteArrayOutputStream, 0);
-            LOGGER.info("{}\nHexDump:\n{}", amstcpPacket, byteArrayOutputStream);
-        }
+        LOGGER.info("{}\nHexDump:\n{}", amstcpPacket, amstcpPacket.dump());
         SUT.decode(null, amstcpPacket, out);
         assertThat(out, hasSize(1));
         assertThat(out.get(0), instanceOf(PlcRequestContainer.class));

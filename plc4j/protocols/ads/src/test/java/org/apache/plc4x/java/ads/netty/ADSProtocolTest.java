@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.ads.netty;
 
-import org.apache.commons.io.HexDump;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
@@ -32,7 +31,6 @@ import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -165,12 +163,7 @@ public class ADSProtocolTest {
     public void setUp() throws Exception {
         SUT = new ADSProtocol();
         byte[] bytes = amstcpPacket.getBytes();
-        LOGGER.info("amstcpPacket:\n{} has \n{}bytes", amstcpPacket, bytes.length);
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            HexDump.dump(bytes, 0, byteArrayOutputStream, 0);
-            byteArrayOutputStream.flush();
-            LOGGER.info("HexDump:\n{}", byteArrayOutputStream);
-        }
+        LOGGER.info("amstcpPacket:\n{} has \n{}bytes\nHexDump:\n{}", amstcpPacket, bytes.length, amstcpPacket.dump());
     }
 
     @Test
