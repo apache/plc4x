@@ -23,7 +23,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
-import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
@@ -62,7 +61,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) throws Exception {
         // Reserved
         byteBuf.skipBytes(AMSTCPHeader.Reserved.NUM_BYTES);
-        long packetLength = byteBuf.readUnsignedIntLE();
+        TcpLength packetLength = TcpLength.of(byteBuf);
         AMSNetId targetAmsNetId = AMSNetId.of(byteBuf);
         AMSPort targetAmsPort = AMSPort.of(byteBuf);
         AMSNetId sourceAmsNetId = AMSNetId.of(byteBuf);

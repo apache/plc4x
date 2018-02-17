@@ -48,7 +48,7 @@ public class GenericTypesFactoryMethodTest {
             Command.class,
             DataLength.class,
             Invoke.class,
-            Length.class,
+            TcpLength.class,
             State.class
         ).map(clazz -> new Object[]{clazz}).collect(Collectors.toList());
     }

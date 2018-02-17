@@ -74,6 +74,7 @@ public enum Command implements ByteReadable {
         return value;
     }
 
+    @Override
     public ByteBuf getByteBuf() {
         if (this == UNKNOWN) {
             throw new IllegalStateException("Unknown enum can't be serialized");

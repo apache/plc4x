@@ -21,41 +21,41 @@ package org.apache.plc4x.java.ads.api.generic.types;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
-public class Length extends UnsignedIntLEByteValue {
+public class TcpLength extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.UNSIGNED_INT_LE_NUM_BYTES;
 
-    public static final Length NONE = of(0);
+    public static final TcpLength NONE = of(0);
 
-    private Length(byte... values) {
+    private TcpLength(byte... values) {
         super(values);
     }
 
-    private Length(long value) {
+    private TcpLength(long value) {
         super(value);
     }
 
-    private Length(String length) {
+    private TcpLength(String length) {
         super(length);
     }
 
-    private Length(ByteBuf byteBuf) {
+    private TcpLength(ByteBuf byteBuf) {
         super(byteBuf);
     }
 
-    public static Length of(byte... values) {
-        return new Length(values);
+    public static TcpLength of(byte... values) {
+        return new TcpLength(values);
     }
 
-    public static Length of(long value) {
-        return new Length(value);
+    public static TcpLength of(long value) {
+        return new TcpLength(value);
     }
 
-    public static Length of(String length) {
-        return new Length(length);
+    public static TcpLength of(String length) {
+        return new TcpLength(length);
     }
 
-    public static Length of(ByteBuf byteBuf) {
-        return new Length(byteBuf);
+    public static TcpLength of(ByteBuf byteBuf) {
+        return new TcpLength(byteBuf);
     }
 }

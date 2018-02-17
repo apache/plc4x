@@ -26,34 +26,34 @@ import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.assertEquals;
 
 
-public class LengthTest {
+public class TcpLengthTest {
     private final byte NULL_BYTE = 0x0;
 
     @Test
     public void ofBytes() {
-        assertEquals("0", Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).toString());
-        assertThrows(IllegalArgumentException.class, () -> Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE));
+        assertEquals("0", TcpLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).toString());
+        assertThrows(IllegalArgumentException.class, () -> TcpLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE));
     }
 
     @Test
     public void ofLong() {
-        assertByte(Length.of(1), "0x01000000");
-        assertByte(Length.of(65535), "0xffff0000");
-        assertThrows(IllegalArgumentException.class, () -> Length.of(-1));
-        assertThrows(IllegalArgumentException.class, () -> Length.of(4294967296L));
+        assertByte(TcpLength.of(1), "0x01000000");
+        assertByte(TcpLength.of(65535), "0xffff0000");
+        assertThrows(IllegalArgumentException.class, () -> TcpLength.of(-1));
+        assertThrows(IllegalArgumentException.class, () -> TcpLength.of(4294967296L));
     }
 
     @Test
     public void ofString() {
-        assertByte(Length.of("1"), "0x01000000");
+        assertByte(TcpLength.of("1"), "0x01000000");
     }
 
     @Test
     public void testToString() {
-        assertEquals(Length.of("1").toString(), "1");
+        assertEquals(TcpLength.of("1").toString(), "1");
     }
 
-    private void assertByte(Length actual, String expected) {
+    private void assertByte(TcpLength actual, String expected) {
         assertEquals(expected, "0x" + Hex.encodeHexString(actual.getBytes()));
     }
 

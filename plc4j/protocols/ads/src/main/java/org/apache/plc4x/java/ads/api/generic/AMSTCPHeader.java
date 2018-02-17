@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.generic.types.Length;
+import org.apache.plc4x.java.ads.api.generic.types.TcpLength;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
@@ -28,13 +28,13 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 /**
- * AMS/TCP Header	6 bytes	contains the length of the data packet.
+ * AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
  */
 public class AMSTCPHeader implements ByteReadable {
 
     private final Reserved reserved;
 
-    private final Length length;
+    private final TcpLength tcpLength;
 
     ////
     // Used when fields should be calculated. TODO: check if we better work with a subclass.
@@ -43,30 +43,30 @@ public class AMSTCPHeader implements ByteReadable {
     //
     ///
 
-    private AMSTCPHeader(Length length) {
+    private AMSTCPHeader(TcpLength tcpLength) {
         this.reserved = requireNonNull(Reserved.CONSTANT);
-        this.length = requireNonNull(length);
+        this.tcpLength = requireNonNull(tcpLength);
         lengthSuppliers = null;
         calculated = false;
     }
 
     private AMSTCPHeader(LengthSupplier... lengthSuppliers) {
         this.reserved = requireNonNull(Reserved.CONSTANT);
-        this.length = null;
+        this.tcpLength = null;
         this.lengthSuppliers = requireNonNull(lengthSuppliers);
         calculated = true;
     }
 
     public static AMSTCPHeader of(long length) {
-        return new AMSTCPHeader(Length.of(length));
+        return new AMSTCPHeader(TcpLength.of(length));
     }
 
     public static AMSTCPHeader of(LengthSupplier... lengthSuppliers) {
         return new AMSTCPHeader(lengthSuppliers);
     }
 
-    public Length getLength() {
-        return length;
+    public TcpLength getTcpLength() {
+        return tcpLength;
     }
 
     public LengthSupplier[] getLengthSuppliers() {
@@ -79,7 +79,7 @@ public class AMSTCPHeader implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(reserved, calculated ? Length.of(getCalculatedLength()) : length);
+        return buildByteBuff(reserved, calculated ? TcpLength.of(getCalculatedLength()) : tcpLength);
     }
 
     /**
@@ -98,6 +98,7 @@ public class AMSTCPHeader implements ByteReadable {
         }
     }
 
+    @Override
     public long getCalculatedLength() {
         if (calculated) {
             long aggregateLength = 0;
@@ -106,7 +107,7 @@ public class AMSTCPHeader implements ByteReadable {
             }
             return aggregateLength;
         } else {
-            return length.getAsLong();
+            return tcpLength.getAsLong();
         }
     }
 
@@ -114,7 +115,7 @@ public class AMSTCPHeader implements ByteReadable {
     public String toString() {
         return "AMSTCPHeader{" +
             "reserved=" + reserved +
-            ", length=" + (calculated ? Length.of(getCalculatedLength()) : length) +
+            ", tcpLength=" + (calculated ? TcpLength.of(getCalculatedLength()) : tcpLength) +
             '}';
     }
 }
