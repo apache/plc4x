@@ -19,7 +19,7 @@
  *
  */
 // TODO: migrate to declarative pipeline if possible (https://jenkins.io/doc/book/pipeline/jenkinsfile/)
-node('ubuntu') {
+node('ubuntu && !H33') {
 
     currentBuild.result = "SUCCESS"
 
