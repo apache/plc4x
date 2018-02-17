@@ -30,9 +30,9 @@ public class TimeStamp extends ByteValue {
     /**
      * @see <a href="https://github.com/java-native-access/jna/blob/master/contrib/platform/src/com/sun/jna/platform/win32/WinBase.java">java-native-access WinBase</a>
      */
-    private final static BigInteger EPOCH_DIFF_IN_MILLIS = BigInteger.valueOf((369L * 365L + 89L) * 86400L * 1000L);
+    public final static BigInteger EPOCH_DIFF_IN_MILLIS = BigInteger.valueOf((369L * 365L + 89L) * 86400L * 1000L);
 
-    private static final int NUM_BYTES = 8;
+    public static final int NUM_BYTES = 8;
 
     private final BigInteger bigIntegerValue;
 
@@ -77,7 +77,7 @@ public class TimeStamp extends ByteValue {
             .array();
     }
 
-    private static TimeStamp of(BigInteger value) {
+    public static TimeStamp of(BigInteger value) {
         return new TimeStamp(javaToWinTime(value));
     }
 
@@ -101,7 +101,7 @@ public class TimeStamp extends ByteValue {
         return of(Long.valueOf(value));
     }
 
-    private static TimeStamp of(byte... values) {
+    public static TimeStamp of(byte... values) {
         return new TimeStamp(values);
     }
 

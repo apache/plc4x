@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 
 public class Device extends ByteValue {
 
-    private static final int NUM_BYTES = 16;
+    public static final int NUM_BYTES = 16;
 
     private Device(byte... values) {
         super(values);
@@ -47,12 +47,12 @@ public class Device extends ByteValue {
 
     public static Device of(String value) {
         requireNonNull(value);
-        return new Device(StringUtils.leftPad(value,NUM_BYTES).getBytes());
+        return new Device(StringUtils.leftPad(value, NUM_BYTES).getBytes());
     }
 
     public static Device of(String value, Charset charset) {
         requireNonNull(value);
-        return new Device(StringUtils.leftPad(value,NUM_BYTES).getBytes(charset));
+        return new Device(StringUtils.leftPad(value, NUM_BYTES).getBytes(charset));
     }
 
     @Override

@@ -86,7 +86,7 @@ public class State extends UnsignedShortLEByteValue {
 
     public static final State DEFAULT_RESPONSE = State.of(ADS_COMMAND, RESPONSE);
 
-    private static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
+    public static final int NUM_BYTES = UnsignedShortLEByteValue.NUM_BYTES;
 
     private State(byte... values) {
         super(values);
@@ -108,7 +108,7 @@ public class State extends UnsignedShortLEByteValue {
         return new State(values);
     }
 
-    private static State of(int value) {
+    public static State of(int value) {
         return new State(value);
     }
 

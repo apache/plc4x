@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -76,5 +77,13 @@ public class GenericTypesFactoryMethodTest {
             testString = Command.ADS_Add_Device_Notification.name();
         }
         ofMethod.invoke(null, testString);
+    }
+
+    @Test
+    public void testOfBytes() throws Exception {
+        Field num_bytes_field = clazz.getDeclaredField("NUM_BYTES");
+        Integer numberOfBytes = (Integer) num_bytes_field.get(null);
+        Method ofMethod = clazz.getDeclaredMethod("of", byte[].class);
+        ofMethod.invoke(null, (Object) new byte[numberOfBytes]);
     }
 }

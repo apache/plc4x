@@ -28,7 +28,7 @@ public class AMSPort extends ByteValue {
 
     public static final Pattern AMS_PORT_PATTERN = Pattern.compile("\\d+");
 
-    private static final int NUM_BYTES = 2;
+    public static final int NUM_BYTES = 2;
 
     private AMSPort(byte... value) {
         super(value);

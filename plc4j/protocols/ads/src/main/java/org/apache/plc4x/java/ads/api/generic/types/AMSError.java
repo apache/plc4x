@@ -24,7 +24,7 @@ import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
 public class AMSError extends UnsignedIntLEByteValue {
 
-    private static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
+    public static final int NUM_BYTES = UnsignedIntLEByteValue.NUM_BYTES;
 
     public static final AMSError NONE = of(0);
 

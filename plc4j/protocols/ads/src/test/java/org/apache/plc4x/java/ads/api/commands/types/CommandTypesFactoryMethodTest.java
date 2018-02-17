@@ -24,12 +24,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assume.assumeThat;
 
 @RunWith(Parameterized.class)
@@ -83,5 +85,14 @@ public class CommandTypesFactoryMethodTest {
     public void testOfString() throws Exception {
         Method ofMethod = clazz.getDeclaredMethod("of", String.class);
         ofMethod.invoke(null, "1");
+    }
+
+    @Test
+    public void testOfBytes() throws Exception {
+        assumeThat(clazz, not(Data.class));
+        Field num_bytes_field = clazz.getDeclaredField("NUM_BYTES");
+        Integer numberOfBytes = (Integer) num_bytes_field.get(null);
+        Method ofMethod = clazz.getDeclaredMethod("of", byte[].class);
+        ofMethod.invoke(null, (Object) new byte[numberOfBytes]);
     }
 }

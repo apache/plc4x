@@ -44,7 +44,7 @@ public enum Command implements ByteReadable {
      */
     UNKNOWN();
 
-    private static final int NUM_BYTES = 2;
+    public static final int NUM_BYTES = 2;
 
     final byte[] value;
 

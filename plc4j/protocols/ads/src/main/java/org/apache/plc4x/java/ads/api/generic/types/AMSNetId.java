@@ -41,14 +41,14 @@ public class AMSNetId extends ByteValue {
     public static final Pattern AMS_NET_ID_PATTERN =
         Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
 
-    private static final int NUM_BYTES = 6;
+    public static final int NUM_BYTES = 6;
 
     private AMSNetId(byte... values) {
         super(values);
         assertLength(NUM_BYTES);
     }
 
-    private static AMSNetId of(byte... values) {
+    public static AMSNetId of(byte... values) {
         return new AMSNetId(values);
     }
 
