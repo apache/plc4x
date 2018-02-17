@@ -26,9 +26,12 @@ import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,6 +47,7 @@ public class CommandTypesFactoryMethodTest {
     @Parameterized.Parameters(name = "{index} {0}")
     public static Collection<Object[]> data() {
         return Stream.of(
+            AdsReturnCode.class,
             ADSState.class,
             CycleTime.class,
             Data.class,
@@ -85,7 +89,24 @@ public class CommandTypesFactoryMethodTest {
     @Test
     public void testOfString() throws Exception {
         Method ofMethod = clazz.getDeclaredMethod("of", String.class);
-        ofMethod.invoke(null, "1");
+        ofMethod.invoke(null, clazz != AdsReturnCode.class ? "1" : "ADS_CODE_0");
+    }
+
+    @Test
+    public void testGetter() throws Exception {
+        List<Method> getters = Arrays
+            .stream(clazz.getDeclaredMethods())
+            .filter(method -> (
+                method.getName().startsWith("get") || method.getName().startsWith("is"))
+                && Modifier.isPublic(method.getModifiers())
+                && method.getParameterCount() == 0)
+            .collect(Collectors.toList());
+        Method ofMethod = clazz.getDeclaredMethod("of", String.class);
+        Object invoke = ofMethod.invoke(null, clazz != AdsReturnCode.class ? "1" : "ADS_CODE_0");
+        // Testing getters for the coverage (sonar)
+        for (Method getter : getters) {
+            getter.invoke(invoke);
+        }
     }
 
     @Test
@@ -115,6 +136,7 @@ public class CommandTypesFactoryMethodTest {
     @Test
     public void testOfBytes() throws Exception {
         assumeThat(clazz, not(Data.class));
+        assumeThat(clazz, not(AdsReturnCode.class));
         Field num_bytes_field = clazz.getDeclaredField("NUM_BYTES");
         Integer numberOfBytes = (Integer) num_bytes_field.get(null);
         Method ofMethod = clazz.getDeclaredMethod("of", byte[].class);

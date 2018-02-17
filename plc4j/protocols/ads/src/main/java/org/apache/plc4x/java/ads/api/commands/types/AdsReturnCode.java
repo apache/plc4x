@@ -189,6 +189,14 @@ public enum AdsReturnCode {
         return UNKNOWN;
     }
 
+    public static AdsReturnCode of(String name) {
+        return valueOf(name);
+    }
+
+    public static AdsReturnCode ofInt(String value) {
+        return of(Long.parseLong(value));
+    }
+
     public long getHex() {
         return hex;
     }

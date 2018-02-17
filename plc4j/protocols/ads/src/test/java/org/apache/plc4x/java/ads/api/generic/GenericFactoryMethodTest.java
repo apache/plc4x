@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -56,7 +57,10 @@ public class GenericFactoryMethodTest {
     public void testOf() throws Exception {
         List<Method> getters = Arrays
             .stream(clazz.getDeclaredMethods())
-            .filter(method -> method.getName().startsWith("get") && method.getParameterCount() == 0)
+            .filter(method -> (
+                method.getName().startsWith("get") || method.getName().startsWith("is"))
+                && Modifier.isPublic(method.getModifiers())
+                && method.getParameterCount() == 0)
             .collect(Collectors.toList());
         for (Method method : clazz.getDeclaredMethods()) {
             if (!method.getName().equals("of")) {
