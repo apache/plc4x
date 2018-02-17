@@ -30,6 +30,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@SuppressWarnings("squid:S00107")
 public @interface ADSCommandType {
     Command value();
 }
