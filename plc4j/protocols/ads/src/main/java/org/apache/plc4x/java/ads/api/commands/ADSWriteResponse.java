@@ -68,6 +68,24 @@ public class ADSWriteResponse extends ADSAbstractResponse {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSWriteResponse)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSWriteResponse that = (ADSWriteResponse) o;
+
+        return result.equals(that.result);
+    }
+
+    @Override
+    public int hashCode() {
+        int result1 = super.hashCode();
+        result1 = 31 * result1 + result.hashCode();
+        return result1;
+    }
+
+    @Override
     public String toString() {
         return "ADSWriteResponse{" +
             "result=" + result +

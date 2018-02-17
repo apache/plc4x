@@ -59,6 +59,24 @@ public class UnknownCommand extends AMSTCPPacket {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UnknownCommand)) return false;
+        if (!super.equals(o)) return false;
+
+        UnknownCommand that = (UnknownCommand) o;
+
+        return remainingBytes.equals(that.remainingBytes);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + remainingBytes.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "UnknownCommand";
     }

@@ -56,19 +56,13 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
      */
     private final List<AdsStampHeader> adsStampHeaders;
 
-    ////
-    // Used when fields should be calculated. TODO: check if we better work with a subclass.
     private final LengthSupplier lengthSupplier;
-    private final boolean calculated;
-    //
-    ///
 
     private ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amstcpHeader, amsHeader);
         this.length = requireNonNull(length);
         this.stamps = requireNonNull(stamps);
         this.adsStampHeaders = requireNonNull(adsStampHeaders);
-        calculated = false;
         lengthSupplier = null;
     }
 
@@ -77,7 +71,6 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
         this.length = requireNonNull(length);
         this.stamps = requireNonNull(stamps);
         this.adsStampHeaders = requireNonNull(adsStampHeaders);
-        calculated = false;
         lengthSupplier = null;
     }
 
@@ -86,7 +79,6 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
         this.length = null;
         this.stamps = requireNonNull(stamps);
         this.adsStampHeaders = requireNonNull(adsStampHeaders);
-        calculated = true;
         this.lengthSupplier = () -> {
             long aggregateLength = 0;
             for (LengthSupplier supplier : adsStampHeaders) {
@@ -109,7 +101,7 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
     }
 
     public Length getLength() {
-        return length;
+        return lengthSupplier == null ? length : Length.of(lengthSupplier);
     }
 
     public Stamps getStamps() {
@@ -124,19 +116,37 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
         return lengthSupplier;
     }
 
-    public boolean isCalculated() {
-        return calculated;
+    @Override
+    public ADSData getAdsData() {
+        return buildADSData(getLength(), stamps, buildADSData(adsStampHeaders.toArray(new ByteReadable[adsStampHeaders.size()])));
     }
 
     @Override
-    public ADSData getAdsData() {
-        return buildADSData(calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, stamps, buildADSData(adsStampHeaders.toArray(new ByteReadable[adsStampHeaders.size()])));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSDeviceNotificationRequest)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSDeviceNotificationRequest that = (ADSDeviceNotificationRequest) o;
+
+        if (!getLength().equals(that.getLength())) return false;
+        if (!stamps.equals(that.stamps)) return false;
+        return adsStampHeaders.equals(that.adsStampHeaders);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + getLength().hashCode();
+        result = 31 * result + stamps.hashCode();
+        result = 31 * result + adsStampHeaders.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
         return "ADSDeviceNotificationRequest{" +
-            "length=" + (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length) +
+            "length=" + getLength() +
             ", stamps=" + stamps +
             ", adsStampHeaders=" + adsStampHeaders +
             "} " + super.toString();

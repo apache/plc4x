@@ -77,6 +77,24 @@ public class ADSDeleteDeviceNotificationRequest extends ADSAbstractRequest {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSDeleteDeviceNotificationRequest)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSDeleteDeviceNotificationRequest that = (ADSDeleteDeviceNotificationRequest) o;
+
+        return notificationHandle.equals(that.notificationHandle);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + notificationHandle.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "ADSDeleteDeviceNotificationRequest{" +
             "notificationHandle=" + notificationHandle +

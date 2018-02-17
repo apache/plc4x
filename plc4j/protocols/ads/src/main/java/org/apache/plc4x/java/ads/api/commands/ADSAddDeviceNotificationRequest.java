@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.api.commands;
 
 import org.apache.plc4x.java.ads.api.commands.types.*;
-import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
@@ -64,7 +63,7 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
     /**
      * 16bytes	Must be set to 0
      */
-    private final Reserved reserved = Reserved.INSTANCE;
+    private final Reserved reserved;
 
     private ADSAddDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amstcpHeader, amsHeader);
@@ -74,6 +73,7 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
         this.transmissionMode = requireNonNull(transmissionMode);
         this.maxDelay = requireNonNull(maxDelay);
         this.cycleTime = requireNonNull(cycleTime);
+        this.reserved = Reserved.INSTANCE;
     }
 
     private ADSAddDeviceNotificationRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
@@ -84,6 +84,7 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
         this.transmissionMode = requireNonNull(transmissionMode);
         this.maxDelay = requireNonNull(maxDelay);
         this.cycleTime = requireNonNull(cycleTime);
+        this.reserved = Reserved.INSTANCE;
     }
 
     private ADSAddDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
@@ -94,6 +95,7 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
         this.transmissionMode = requireNonNull(transmissionMode);
         this.maxDelay = requireNonNull(maxDelay);
         this.cycleTime = requireNonNull(cycleTime);
+        this.reserved = Reserved.INSTANCE;
     }
 
     @Override
@@ -139,6 +141,36 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
 
     public Reserved getReserved() {
         return reserved;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSAddDeviceNotificationRequest)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSAddDeviceNotificationRequest that = (ADSAddDeviceNotificationRequest) o;
+
+        if (!indexGroup.equals(that.indexGroup)) return false;
+        if (!indexOffset.equals(that.indexOffset)) return false;
+        if (!length.equals(that.length)) return false;
+        if (!transmissionMode.equals(that.transmissionMode)) return false;
+        if (!maxDelay.equals(that.maxDelay)) return false;
+        if (!cycleTime.equals(that.cycleTime)) return false;
+        return reserved.equals(that.reserved);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + indexGroup.hashCode();
+        result = 31 * result + indexOffset.hashCode();
+        result = 31 * result + length.hashCode();
+        result = 31 * result + transmissionMode.hashCode();
+        result = 31 * result + maxDelay.hashCode();
+        result = 31 * result + cycleTime.hashCode();
+        result = 31 * result + reserved.hashCode();
+        return result;
     }
 
     @Override

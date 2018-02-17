@@ -59,12 +59,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
      */
     private final Data data;
 
-    ////
-    // Used when fields should be calculated. TODO: check if we better work with a subclass.
-    private final LengthSupplier lengthSupplier;
-    private final boolean calculated;
-    //
-    ///
+    private final LengthSupplier writeLengthSupplier;
 
     private ADSReadWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(amstcpHeader, amsHeader);
@@ -73,8 +68,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
         this.readLength = requireNonNull(readLength);
         this.writeLength = requireNonNull(writeLength);
         this.data = requireNonNull(data);
-        this.lengthSupplier = null;
-        this.calculated = false;
+        this.writeLengthSupplier = null;
     }
 
     private ADSReadWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
@@ -84,8 +78,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
         this.readLength = requireNonNull(readLength);
         this.writeLength = requireNonNull(writeLength);
         this.data = requireNonNull(data);
-        this.lengthSupplier = null;
-        this.calculated = false;
+        this.writeLengthSupplier = null;
     }
 
     private ADSReadWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, Data data) {
@@ -95,8 +88,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
         this.readLength = requireNonNull(readLength);
         this.writeLength = null;
         this.data = requireNonNull(data);
-        this.lengthSupplier = data;
-        this.calculated = true;
+        this.writeLengthSupplier = data;
     }
 
     public static ADSReadWriteRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
@@ -124,24 +116,42 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
     }
 
     public WriteLength getWriteLength() {
-        return writeLength;
+        return writeLengthSupplier == null ? writeLength : WriteLength.of(writeLengthSupplier.getCalculatedLength());
     }
 
     public Data getData() {
         return data;
     }
 
-    public LengthSupplier getLengthSupplier() {
-        return lengthSupplier;
-    }
-
-    public boolean isCalculated() {
-        return calculated;
+    @Override
+    public ADSData getAdsData() {
+        return buildADSData(indexGroup, indexOffset, readLength, getWriteLength(), data);
     }
 
     @Override
-    public ADSData getAdsData() {
-        return buildADSData(indexGroup, indexOffset, readLength, calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : writeLength, data);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSReadWriteRequest)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSReadWriteRequest that = (ADSReadWriteRequest) o;
+
+        if (!indexGroup.equals(that.indexGroup)) return false;
+        if (!indexOffset.equals(that.indexOffset)) return false;
+        if (!readLength.equals(that.readLength)) return false;
+        if (!getWriteLength().equals(that.getWriteLength())) return false;
+        return data.equals(that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + indexGroup.hashCode();
+        result = 31 * result + indexOffset.hashCode();
+        result = 31 * result + readLength.hashCode();
+        result = 31 * result + getWriteLength().hashCode();
+        result = 31 * result + data.hashCode();
+        return result;
     }
 
     @Override
@@ -150,7 +160,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
             "indexGroup=" + indexGroup +
             ", indexOffset=" + indexOffset +
             ", readLength=" + readLength +
-            ", writeLength=" + (calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : writeLength) +
+            ", writeLength=" + getWriteLength() +
             ", data=" + data +
             "} " + super.toString();
     }

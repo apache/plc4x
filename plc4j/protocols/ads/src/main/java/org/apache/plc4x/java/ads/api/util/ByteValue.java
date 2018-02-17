@@ -82,6 +82,6 @@ public class ByteValue implements ByteReadable {
     @Override
     public String toString() {
         // TODO: maybe we could find a way to implement this to string
-        return getClass().getSimpleName() + "{value=" + value.length + "bytes}";
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + "{value=" + value.length + "bytes}";
     }
 }

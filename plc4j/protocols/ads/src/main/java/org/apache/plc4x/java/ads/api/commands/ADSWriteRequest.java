@@ -18,7 +18,10 @@
  */
 package org.apache.plc4x.java.ads.api.commands;
 
-import org.apache.plc4x.java.ads.api.commands.types.*;
+import org.apache.plc4x.java.ads.api.commands.types.Data;
+import org.apache.plc4x.java.ads.api.commands.types.IndexGroup;
+import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
+import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
@@ -53,12 +56,7 @@ public class ADSWriteRequest extends ADSAbstractRequest {
      */
     private final Data data;
 
-    ////
-    // Used when fields should be calculated. TODO: check if we better work with a subclass.
     private final LengthSupplier lengthSupplier;
-    private final boolean calculated;
-    //
-    ///
 
     private ADSWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
         super(amstcpHeader, amsHeader);
@@ -67,7 +65,6 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         this.length = requireNonNull(length);
         this.data = requireNonNull(data);
         this.lengthSupplier = null;
-        this.calculated = false;
     }
 
     private ADSWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
@@ -77,7 +74,6 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         this.length = requireNonNull(length);
         this.data = requireNonNull(data);
         this.lengthSupplier = null;
-        this.calculated = false;
     }
 
     private ADSWriteRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, IndexGroup indexGroup, IndexOffset indexOffset, Data data) {
@@ -87,7 +83,6 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         this.length = null;
         this.data = requireNonNull(data);
         this.lengthSupplier = data;
-        this.calculated = true;
     }
 
     public static ADSWriteRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, Data data) {
@@ -111,24 +106,40 @@ public class ADSWriteRequest extends ADSAbstractRequest {
     }
 
     public Length getLength() {
-        return length;
+        return lengthSupplier == null ? length : Length.of(lengthSupplier);
     }
 
     public Data getData() {
         return data;
     }
 
-    public LengthSupplier getLengthSupplier() {
-        return lengthSupplier;
-    }
-
-    public boolean isCalculated() {
-        return calculated;
+    @Override
+    public ADSData getAdsData() {
+        return buildADSData(indexGroup, indexOffset, getLength(), data);
     }
 
     @Override
-    public ADSData getAdsData() {
-        return buildADSData(indexGroup, indexOffset, calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : length, data);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSWriteRequest)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSWriteRequest that = (ADSWriteRequest) o;
+
+        if (!indexGroup.equals(that.indexGroup)) return false;
+        if (!indexOffset.equals(that.indexOffset)) return false;
+        if (!getLength().equals(that.getLength())) return false;
+        return data.equals(that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + indexGroup.hashCode();
+        result = 31 * result + indexOffset.hashCode();
+        result = 31 * result + getLength().hashCode();
+        result = 31 * result + data.hashCode();
+        return result;
     }
 
     @Override
@@ -136,7 +147,7 @@ public class ADSWriteRequest extends ADSAbstractRequest {
         return "ADSWriteRequest{" +
             "indexGroup=" + indexGroup +
             ", indexOffset=" + indexOffset +
-            ", length=" + (calculated ? WriteLength.of(lengthSupplier.getCalculatedLength()) : length) +
+            ", length=" + getLength() +
             ", data=" + data +
             "} " + super.toString();
     }

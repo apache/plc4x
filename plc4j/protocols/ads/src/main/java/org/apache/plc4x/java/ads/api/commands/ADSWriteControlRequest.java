@@ -58,12 +58,7 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
      */
     private final Data data;
 
-    ////
-    // Used when fields should be calculated. TODO: check if we better work with a subclass.
     private final LengthSupplier lengthSupplier;
-    private final boolean calculated;
-    //
-    ///
 
     private ADSWriteControlRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
         super(amstcpHeader, amsHeader);
@@ -72,7 +67,6 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         this.length = requireNonNull(length);
         this.data = requireNonNull(data);
         this.lengthSupplier = null;
-        this.calculated = false;
     }
 
     private ADSWriteControlRequest(AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
@@ -82,7 +76,6 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         this.length = requireNonNull(length);
         this.data = requireNonNull(data);
         this.lengthSupplier = null;
-        this.calculated = false;
     }
 
     private ADSWriteControlRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, ADSState adsState, DeviceState deviceState, Data data) {
@@ -92,7 +85,6 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         this.length = null;
         this.data = requireNonNull(data);
         this.lengthSupplier = data;
-        this.calculated = true;
     }
 
     public static ADSWriteControlRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, ADSState adsState, DeviceState deviceState, Length length, Data data) {
@@ -116,24 +108,40 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
     }
 
     public Length getLength() {
-        return length;
+        return lengthSupplier == null ? length : Length.of(lengthSupplier);
     }
 
     public Data getData() {
         return data;
     }
 
-    public LengthSupplier getLengthSupplier() {
-        return lengthSupplier;
-    }
-
-    public boolean isCalculated() {
-        return calculated;
+    @Override
+    public ADSData getAdsData() {
+        return buildADSData(adsState, deviceState, getLength(), data);
     }
 
     @Override
-    public ADSData getAdsData() {
-        return buildADSData(adsState, deviceState, calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, data);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSWriteControlRequest)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSWriteControlRequest that = (ADSWriteControlRequest) o;
+
+        if (!adsState.equals(that.adsState)) return false;
+        if (!deviceState.equals(that.deviceState)) return false;
+        if (!getLength().equals(that.getLength())) return false;
+        return data.equals(that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + adsState.hashCode();
+        result = 31 * result + deviceState.hashCode();
+        result = 31 * result + getLength().hashCode();
+        result = 31 * result + data.hashCode();
+        return result;
     }
 
     @Override
@@ -141,7 +149,7 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
         return "ADSWriteControlRequest{" +
             "adsState=" + adsState +
             ", deviceState=" + deviceState +
-            ", length=" + (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length) +
+            ", length=" + getLength() +
             ", data=" + data +
             "} " + super.toString();
     }

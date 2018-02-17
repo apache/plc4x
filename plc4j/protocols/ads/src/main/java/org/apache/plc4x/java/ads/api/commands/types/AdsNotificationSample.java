@@ -40,18 +40,12 @@ public class AdsNotificationSample implements ByteReadable {
      */
     private final Data data;
 
-    ////
-    // Used when fields should be calculated. TODO: check if we better work with a subclass.
     private final LengthSupplier lengthSupplier;
-    private final boolean calculated;
-    //
-    ///
 
     private AdsNotificationSample(NotificationHandle notificationHandle, Data data) {
         this.notificationHandle = requireNonNull(notificationHandle);
         this.sampleSize = null;
         this.data = requireNonNull(data);
-        calculated = true;
         lengthSupplier = data;
     }
 
@@ -59,7 +53,6 @@ public class AdsNotificationSample implements ByteReadable {
         this.notificationHandle = requireNonNull(notificationHandle);
         this.sampleSize = requireNonNull(sampleSize);
         this.data = requireNonNull(data);
-        calculated = true;
         lengthSupplier = null;
     }
 
@@ -73,7 +66,7 @@ public class AdsNotificationSample implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(notificationHandle, calculated ? SampleSize.of(lengthSupplier.getCalculatedLength()) : sampleSize, data);
+        return buildByteBuff(notificationHandle, getSampleSize(), data);
     }
 
     public NotificationHandle getNotificationHandle() {
@@ -81,26 +74,38 @@ public class AdsNotificationSample implements ByteReadable {
     }
 
     public SampleSize getSampleSize() {
-        return sampleSize;
+        return lengthSupplier == null ? sampleSize : SampleSize.of(lengthSupplier);
     }
 
     public Data getData() {
         return data;
     }
 
-    public LengthSupplier getLengthSupplier() {
-        return lengthSupplier;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AdsNotificationSample)) return false;
+
+        AdsNotificationSample that = (AdsNotificationSample) o;
+
+        if (!notificationHandle.equals(that.notificationHandle)) return false;
+        if (!data.equals(that.data)) return false;
+        return getSampleSize().equals(that.getSampleSize());
     }
 
-    public boolean isCalculated() {
-        return calculated;
+    @Override
+    public int hashCode() {
+        int result = notificationHandle.hashCode();
+        result = 31 * result + data.hashCode();
+        result = 31 * result + getSampleSize().hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
         return "AdsNotificationSample{" +
             "notificationHandle=" + notificationHandle +
-            ", sampleSize=" + (calculated ? SampleSize.of(lengthSupplier.getCalculatedLength()) : sampleSize) +
+            ", sampleSize=" + getSampleSize() +
             ", data=" + data +
             '}';
     }

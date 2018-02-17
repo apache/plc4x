@@ -65,15 +65,15 @@ public class TimeStamp extends ByteValue {
         int length = valueBytes.length;
         return ByteBuffer.allocate(NUM_BYTES)
             // LE
-            .put(length > 0 ? valueBytes[0] : 0)
-            .put(length > 1 ? valueBytes[1] : 0)
-            .put(length > 2 ? valueBytes[2] : 0)
-            .put(length > 3 ? valueBytes[3] : 0)
-
-            .put(length > 4 ? valueBytes[4] : 0)
-            .put(length > 5 ? valueBytes[5] : 0)
-            .put(length > 6 ? valueBytes[6] : 0)
             .put(length > 7 ? valueBytes[7] : 0)
+            .put(length > 6 ? valueBytes[6] : 0)
+            .put(length > 5 ? valueBytes[5] : 0)
+            .put(length > 4 ? valueBytes[4] : 0)
+
+            .put(length > 3 ? valueBytes[3] : 0)
+            .put(length > 2 ? valueBytes[2] : 0)
+            .put(length > 1 ? valueBytes[1] : 0)
+            .put(length > 0 ? valueBytes[0] : 0)
             .array();
     }
 

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
 public class SampleSize extends UnsignedIntLEByteValue {
@@ -49,6 +50,10 @@ public class SampleSize extends UnsignedIntLEByteValue {
         return new SampleSize(value);
     }
 
+    public static SampleSize of(LengthSupplier lengthSupplier) {
+        return new SampleSize(lengthSupplier.getCalculatedLength());
+    }
+
     public static SampleSize of(String size) {
         return new SampleSize(size);
     }
@@ -56,4 +61,5 @@ public class SampleSize extends UnsignedIntLEByteValue {
     public static SampleSize of(ByteBuf byteBuf) {
         return new SampleSize(byteBuf);
     }
+
 }

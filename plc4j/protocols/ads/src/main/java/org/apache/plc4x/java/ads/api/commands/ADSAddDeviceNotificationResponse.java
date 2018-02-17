@@ -80,6 +80,26 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSAddDeviceNotificationResponse)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSAddDeviceNotificationResponse that = (ADSAddDeviceNotificationResponse) o;
+
+        if (!result.equals(that.result)) return false;
+        return notificationHandle.equals(that.notificationHandle);
+    }
+
+    @Override
+    public int hashCode() {
+        int result1 = super.hashCode();
+        result1 = 31 * result1 + result.hashCode();
+        result1 = 31 * result1 + notificationHandle.hashCode();
+        return result1;
+    }
+
+    @Override
     public String toString() {
         return "ADSAddDeviceNotificationResponse{" +
             "result=" + result +

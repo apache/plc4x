@@ -103,6 +103,28 @@ public class ADSReadRequest extends ADSAbstractRequest {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSReadRequest)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSReadRequest that = (ADSReadRequest) o;
+
+        if (!indexGroup.equals(that.indexGroup)) return false;
+        if (!indexOffset.equals(that.indexOffset)) return false;
+        return length.equals(that.length);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + indexGroup.hashCode();
+        result = 31 * result + indexOffset.hashCode();
+        result = 31 * result + length.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "ADSReadRequest{" +
             "indexGroup=" + indexGroup +

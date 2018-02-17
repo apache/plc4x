@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.netty;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
@@ -38,7 +39,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -181,4 +182,20 @@ public class ADSProtocolTest {
         assertThat(out, hasSize(1));
     }
 
+    @Test
+    public void roundTrip() throws Exception {
+        ArrayList<Object> outbound = new ArrayList<>();
+        SUT.encode(null, amstcpPacket, outbound);
+        assertEquals(1, outbound.size());
+        assertThat(outbound, hasSize(1));
+        assertThat(outbound.get(0), instanceOf(ByteBuf.class));
+        ByteBuf byteBuf = (ByteBuf) outbound.get(0);
+        ArrayList<Object> inbound = new ArrayList<>();
+        SUT.decode(null, byteBuf, inbound);
+        assertEquals(1, inbound.size());
+        assertThat(inbound, hasSize(1));
+        assertThat(inbound.get(0), instanceOf(AMSTCPPacket.class));
+        AMSTCPPacket inboundAmstcpPacket = (AMSTCPPacket) inbound.get(0);
+        assertThat("inbound divers from outbound", this.amstcpPacket, equalTo(inboundAmstcpPacket));
+    }
 }

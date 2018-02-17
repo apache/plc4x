@@ -108,6 +108,32 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSReadDeviceInfoResponse)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSReadDeviceInfoResponse that = (ADSReadDeviceInfoResponse) o;
+
+        if (!result.equals(that.result)) return false;
+        if (!majorVersion.equals(that.majorVersion)) return false;
+        if (!minorVersion.equals(that.minorVersion)) return false;
+        if (!version.equals(that.version)) return false;
+        return device.equals(that.device);
+    }
+
+    @Override
+    public int hashCode() {
+        int result1 = super.hashCode();
+        result1 = 31 * result1 + result.hashCode();
+        result1 = 31 * result1 + majorVersion.hashCode();
+        result1 = 31 * result1 + minorVersion.hashCode();
+        result1 = 31 * result1 + version.hashCode();
+        result1 = 31 * result1 + device.hashCode();
+        return result1;
+    }
+
+    @Override
     public String toString() {
         return "ADSReadDeviceInfoResponse{" +
             "result=" + result +

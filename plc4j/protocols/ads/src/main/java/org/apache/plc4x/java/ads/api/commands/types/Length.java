@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
 public class Length extends UnsignedIntLEByteValue {
@@ -47,6 +48,10 @@ public class Length extends UnsignedIntLEByteValue {
 
     public static Length of(long value) {
         return new Length(value);
+    }
+
+    public static Length of(LengthSupplier lengthSupplier) {
+        return new Length(lengthSupplier.getCalculatedLength());
     }
 
     public static Length of(ByteBuf byteBuf) {

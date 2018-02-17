@@ -51,12 +51,7 @@ public class ADSReadResponse extends ADSAbstractResponse {
      */
     private final Data data;
 
-    ////
-    // Used when fields should be calculated. TODO: check if we better work with a subclass.
     private final LengthSupplier lengthSupplier;
-    private final boolean calculated;
-    //
-    ///
 
     private ADSReadResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
         super(amstcpHeader, amsHeader);
@@ -64,7 +59,6 @@ public class ADSReadResponse extends ADSAbstractResponse {
         this.length = requireNonNull(length);
         this.data = requireNonNull(data);
         this.lengthSupplier = null;
-        this.calculated = false;
     }
 
     private ADSReadResponse(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Data data) {
@@ -73,7 +67,6 @@ public class ADSReadResponse extends ADSAbstractResponse {
         this.length = null;
         this.data = requireNonNull(data);
         this.lengthSupplier = data;
-        this.calculated = true;
     }
 
     public static ADSReadResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
@@ -84,17 +77,9 @@ public class ADSReadResponse extends ADSAbstractResponse {
         return new ADSReadResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, data);
     }
 
-    public LengthSupplier getLengthSupplier() {
-        return lengthSupplier;
-    }
-
-    public boolean isCalculated() {
-        return calculated;
-    }
-
     @Override
     public ADSData getAdsData() {
-        return buildADSData(result, calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length, data);
+        return buildADSData(result, getLength(), data);
     }
 
     public Result getResult() {
@@ -102,7 +87,7 @@ public class ADSReadResponse extends ADSAbstractResponse {
     }
 
     public Length getLength() {
-        return calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length;
+        return lengthSupplier == null ? length : Length.of(lengthSupplier);
     }
 
     public Data getData() {
@@ -110,10 +95,32 @@ public class ADSReadResponse extends ADSAbstractResponse {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ADSReadResponse)) return false;
+        if (!super.equals(o)) return false;
+
+        ADSReadResponse that = (ADSReadResponse) o;
+
+        if (!result.equals(that.result)) return false;
+        if (!getLength().equals(that.getLength())) return false;
+        return data.equals(that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result1 = super.hashCode();
+        result1 = 31 * result1 + result.hashCode();
+        result1 = 31 * result1 + getLength().hashCode();
+        result1 = 31 * result1 + data.hashCode();
+        return result1;
+    }
+
+    @Override
     public String toString() {
         return "ADSReadResponse{" +
             "result=" + result +
-            ", length=" + (calculated ? Length.of(lengthSupplier.getCalculatedLength()) : length) +
+            ", length=" + getLength() +
             ", data=" + data +
             "} " + super.toString();
     }

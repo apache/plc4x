@@ -36,25 +36,23 @@ public class AMSTCPHeader implements ByteReadable {
 
     private final TcpLength tcpLength;
 
-    ////
-    // Used when fields should be calculated. TODO: check if we better work with a subclass.
     private final LengthSupplier[] lengthSuppliers;
-    private final boolean calculated;
-    //
-    ///
 
     private AMSTCPHeader(TcpLength tcpLength) {
         this.reserved = requireNonNull(Reserved.CONSTANT);
         this.tcpLength = requireNonNull(tcpLength);
         lengthSuppliers = null;
-        calculated = false;
+
     }
 
     private AMSTCPHeader(LengthSupplier... lengthSuppliers) {
         this.reserved = requireNonNull(Reserved.CONSTANT);
         this.tcpLength = null;
         this.lengthSuppliers = requireNonNull(lengthSuppliers);
-        calculated = true;
+    }
+
+    public static AMSTCPHeader of(TcpLength tcpLength) {
+        return new AMSTCPHeader(tcpLength);
     }
 
     public static AMSTCPHeader of(long length) {
@@ -66,20 +64,12 @@ public class AMSTCPHeader implements ByteReadable {
     }
 
     public TcpLength getTcpLength() {
-        return tcpLength;
-    }
-
-    public LengthSupplier[] getLengthSuppliers() {
-        return lengthSuppliers;
-    }
-
-    public boolean isCalculated() {
-        return calculated;
+        return lengthSuppliers == null ? tcpLength : TcpLength.of(getCalculatedLength());
     }
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(reserved, calculated ? TcpLength.of(getCalculatedLength()) : tcpLength);
+        return buildByteBuff(reserved, getTcpLength());
     }
 
     /**
@@ -100,22 +90,39 @@ public class AMSTCPHeader implements ByteReadable {
 
     @Override
     public long getCalculatedLength() {
-        if (calculated) {
+        if (lengthSuppliers == null) {
+            return tcpLength.getAsLong();
+        } else {
             long aggregateLength = 0;
             for (LengthSupplier supplier : lengthSuppliers) {
                 aggregateLength += supplier.getCalculatedLength();
             }
             return aggregateLength;
-        } else {
-            return tcpLength.getAsLong();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AMSTCPHeader)) return false;
+
+        AMSTCPHeader that = (AMSTCPHeader) o;
+
+        return getTcpLength().equals(that.getTcpLength());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = reserved != null ? reserved.hashCode() : 0;
+        result = 31 * result + (getTcpLength() != null ? getTcpLength().hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "AMSTCPHeader{" +
             "reserved=" + reserved +
-            ", tcpLength=" + (calculated ? TcpLength.of(getCalculatedLength()) : tcpLength) +
+            ", tcpLength=" + getTcpLength() +
             '}';
     }
 }
