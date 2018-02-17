@@ -46,6 +46,6 @@ public class Data extends ByteValue {
 
     @Override
     public String toString() {
-        return "Data{" + new String(value) + "} " + super.toString();
+        return "Data{" + value.length + "bytes} ";
     }
 }
