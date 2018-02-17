@@ -81,8 +81,7 @@ public class ByteValue implements ByteReadable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-            "value=" + Arrays.toString(value) +
-            '}';
+        // TODO: maybe we could find a way to implement this to string
+        return getClass().getSimpleName() + "{value=" + value.length + "bytes}";
     }
 }
