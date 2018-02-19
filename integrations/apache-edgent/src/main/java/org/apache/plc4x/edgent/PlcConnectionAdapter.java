@@ -65,11 +65,12 @@ import com.google.gson.JsonObject;
 public class PlcConnectionAdapter implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(PlcConnectionAdapter.class);
-
+    private static final Class[] allowedDataTypes = new Class[]{Boolean.class, Byte.class, Short.class, Integer.class, Float.class,  String.class, Calendar.class};
+    
     private String plcConnectionUrl;
     private PlcConnection plcConnection;
-  
-  /*
+
+    /*
    * NOTES:
    * - if we get to the point of the application needing some feedback (possibly control)
    *   of read or write errors, my thinking is to enhance the PlcConnectionAdapter
@@ -202,14 +203,10 @@ public class PlcConnectionAdapter implements AutoCloseable {
     }
 
     static void checkDatatype(Class<?> cls) {
-        if (cls == Boolean.class
-            || cls == Byte.class
-            || cls == Short.class
-            || cls == Integer.class
-            || cls == Float.class
-            || cls == String.class
-            || cls == Calendar.class)
-            return;
+        for (Class check: allowedDataTypes) {
+            if (check == cls)
+                return;
+        }
         throw new IllegalArgumentException("Not a legal plc data type: " + cls.getSimpleName());
     }
 
