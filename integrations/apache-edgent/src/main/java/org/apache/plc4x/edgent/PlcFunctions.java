@@ -25,6 +25,8 @@ import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
 
 import com.google.gson.JsonObject;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 /**
  * WIP - A plc4x Apache Edgent {@link Supplier} and {@link Consumer} connector factory.
@@ -109,6 +111,9 @@ public class PlcFunctions {
   }
   public static Supplier<Calendar> calendarSupplier(PlcConnectionAdapter adapter, String addressStr) {
     return adapter.newSupplier(Calendar.class, addressStr);
+  }
+  public static Supplier<PlcReadResponse> batchSupplier(PlcConnectionAdapter adapter, PlcReadRequest readRequest) {
+    return adapter.newSupplier(readRequest);
   }
 
   /**

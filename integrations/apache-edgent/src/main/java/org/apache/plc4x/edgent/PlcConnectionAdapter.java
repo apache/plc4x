@@ -28,6 +28,8 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
@@ -123,6 +125,26 @@ public class PlcConnectionAdapter implements AutoCloseable {
                         .getValues().get(0);
                 } catch (Exception e) {
                     logger.error("reading from plc device {} {} failed", connection, address, e);
+                    return null;
+                }
+            }
+        };
+    }
+
+    Supplier<PlcReadResponse> newSupplier(PlcReadRequest readRequest) {
+        return new Supplier<PlcReadResponse>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public PlcReadResponse get() {
+                PlcConnection connection = null;
+                try {
+                    connection = getConnection();
+                    PlcReader reader = connection.getReader()
+                        .orElseThrow(() -> new NullPointerException("No reader available"));
+                    return reader.read(readRequest).get();
+                } catch (Exception e) {
+                    logger.error("reading from plc device {} {} failed", connection, readRequest, e);
                     return null;
                 }
             }
