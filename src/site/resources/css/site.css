@@ -51,3 +51,9 @@ under the License.
 #bannerRight > img {
     width: 400px;
 }
+
+.apacheEvents {
+    position: relative;
+    left: 180px;
+    top: 20px;
+}

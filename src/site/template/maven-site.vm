@@ -1559,6 +1559,13 @@
                     </div>
                     <div class="pull-right">
                     #*					*##banner ( $decoration.bannerRight "bannerRight" )
+                    #if ( $config.showApacheEvents )
+                        <p class="apacheEvents">
+                            <a href="http://www.apache.org/events/current-event.html">
+                                <img src="http://www.apache.org/events/current-event-234x60.png"/>
+                            </a>
+                        </p>
+                    #end
                     </div>
                 </div>
             </div>
