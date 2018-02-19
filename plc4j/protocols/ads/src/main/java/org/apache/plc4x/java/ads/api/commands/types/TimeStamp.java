@@ -30,7 +30,7 @@ public class TimeStamp extends ByteValue {
     /**
      * @see <a href="https://github.com/java-native-access/jna/blob/master/contrib/platform/src/com/sun/jna/platform/win32/WinBase.java">java-native-access WinBase</a>
      */
-    public final static BigInteger EPOCH_DIFF_IN_MILLIS = BigInteger.valueOf((369L * 365L + 89L) * 86400L * 1000L);
+    public static final BigInteger EPOCH_DIFF_IN_MILLIS = BigInteger.valueOf((369L * 365L + 89L) * 86400L * 1000L);
 
     public static final int NUM_BYTES = 8;
 
@@ -60,22 +60,27 @@ public class TimeStamp extends ByteValue {
         bigIntegerValue = value;
     }
 
+    private static byte checkByte(byte[] valueBytes, int length, int i) {
+        return length > i ? valueBytes[i] : 0;
+    }
+    
     private static byte[] ofBigInteger(BigInteger value) {
         byte[] valueBytes = value.toByteArray();
         int length = valueBytes.length;
         return ByteBuffer.allocate(NUM_BYTES)
             // LE
-            .put(length > 7 ? valueBytes[7] : 0)
-            .put(length > 6 ? valueBytes[6] : 0)
-            .put(length > 5 ? valueBytes[5] : 0)
-            .put(length > 4 ? valueBytes[4] : 0)
+            .put(checkByte(valueBytes, length, 7))
+            .put(checkByte(valueBytes, length, 6))
+            .put(checkByte(valueBytes, length, 5))
+            .put(checkByte(valueBytes, length, 4))
 
-            .put(length > 3 ? valueBytes[3] : 0)
-            .put(length > 2 ? valueBytes[2] : 0)
-            .put(length > 1 ? valueBytes[1] : 0)
-            .put(length > 0 ? valueBytes[0] : 0)
+            .put(checkByte(valueBytes, length, 3))
+            .put(checkByte(valueBytes, length, 2))
+            .put(checkByte(valueBytes, length, 1))
+            .put(checkByte(valueBytes, length, 0))
             .array();
     }
+
 
     public static TimeStamp of(BigInteger value) {
         return new TimeStamp(javaToWinTime(value));
@@ -141,9 +146,12 @@ public class TimeStamp extends ByteValue {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TimeStamp)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof TimeStamp))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         TimeStamp timeStamp = (TimeStamp) o;
 

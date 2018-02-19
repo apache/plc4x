@@ -123,14 +123,20 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSDeviceNotificationRequest)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSDeviceNotificationRequest))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSDeviceNotificationRequest that = (ADSDeviceNotificationRequest) o;
 
-        if (!getLength().equals(that.getLength())) return false;
-        if (!stamps.equals(that.stamps)) return false;
+        if (!getLength().equals(that.getLength()))
+            return false;
+        if (!stamps.equals(that.stamps))
+            return false;
+        
         return adsStampHeaders.equals(that.adsStampHeaders);
     }
 

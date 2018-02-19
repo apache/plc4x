@@ -98,14 +98,19 @@ public class ADSReadWriteResponse extends ADSAbstractResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSReadWriteResponse)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSReadWriteResponse))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSReadWriteResponse that = (ADSReadWriteResponse) o;
 
-        if (!result.equals(that.result)) return false;
-        if (!getLength().equals(that.getLength())) return false;
+        if (!result.equals(that.result))
+            return false;
+        if (!getLength().equals(that.getLength()))
+            return false;
         return data.equals(that.data);
     }
 

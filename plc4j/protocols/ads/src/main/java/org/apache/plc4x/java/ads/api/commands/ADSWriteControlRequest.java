@@ -122,15 +122,22 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSWriteControlRequest)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSWriteControlRequest))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSWriteControlRequest that = (ADSWriteControlRequest) o;
 
-        if (!adsState.equals(that.adsState)) return false;
-        if (!deviceState.equals(that.deviceState)) return false;
-        if (!getLength().equals(that.getLength())) return false;
+        if (!adsState.equals(that.adsState))
+            return false;
+        if (!deviceState.equals(that.deviceState))
+            return false;
+        if (!getLength().equals(that.getLength()))
+            return false;
+        
         return data.equals(that.data);
     }
 

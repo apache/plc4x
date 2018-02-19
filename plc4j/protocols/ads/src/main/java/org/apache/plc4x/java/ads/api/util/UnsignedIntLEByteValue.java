@@ -69,9 +69,12 @@ public abstract class UnsignedIntLEByteValue extends ByteValue {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UnsignedIntLEByteValue)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof UnsignedIntLEByteValue))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         UnsignedIntLEByteValue that = (UnsignedIntLEByteValue) o;
 

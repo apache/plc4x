@@ -83,13 +83,18 @@ public class AdsNotificationSample implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AdsNotificationSample)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof AdsNotificationSample))
+            return false;
 
         AdsNotificationSample that = (AdsNotificationSample) o;
 
-        if (!notificationHandle.equals(that.notificationHandle)) return false;
-        if (!data.equals(that.data)) return false;
+        if (!notificationHandle.equals(that.notificationHandle))
+            return false;
+        if (!data.equals(that.data))
+            return false;
+
         return getSampleSize().equals(that.getSampleSize());
     }
 

@@ -109,16 +109,24 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSReadDeviceInfoResponse)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSReadDeviceInfoResponse))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSReadDeviceInfoResponse that = (ADSReadDeviceInfoResponse) o;
 
-        if (!result.equals(that.result)) return false;
-        if (!majorVersion.equals(that.majorVersion)) return false;
-        if (!minorVersion.equals(that.minorVersion)) return false;
-        if (!version.equals(that.version)) return false;
+        if (!result.equals(that.result))
+            return false;
+        if (!majorVersion.equals(that.majorVersion))
+            return false;
+        if (!minorVersion.equals(that.minorVersion))
+            return false;
+        if (!version.equals(that.version))
+            return false;
+        
         return device.equals(that.device);
     }
 

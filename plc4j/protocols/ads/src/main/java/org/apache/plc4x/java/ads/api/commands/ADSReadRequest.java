@@ -104,14 +104,20 @@ public class ADSReadRequest extends ADSAbstractRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSReadRequest)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSReadRequest))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSReadRequest that = (ADSReadRequest) o;
 
-        if (!indexGroup.equals(that.indexGroup)) return false;
-        if (!indexOffset.equals(that.indexOffset)) return false;
+        if (!indexGroup.equals(that.indexGroup))
+            return false;
+        if (!indexOffset.equals(that.indexOffset))
+            return false;
+        
         return length.equals(that.length);
     }
 

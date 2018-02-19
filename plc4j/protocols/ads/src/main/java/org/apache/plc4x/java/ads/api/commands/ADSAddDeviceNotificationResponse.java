@@ -81,13 +81,18 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSAddDeviceNotificationResponse)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSAddDeviceNotificationResponse))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSAddDeviceNotificationResponse that = (ADSAddDeviceNotificationResponse) o;
 
-        if (!result.equals(that.result)) return false;
+        if (!result.equals(that.result))
+            return false;
+        
         return notificationHandle.equals(that.notificationHandle);
     }
 

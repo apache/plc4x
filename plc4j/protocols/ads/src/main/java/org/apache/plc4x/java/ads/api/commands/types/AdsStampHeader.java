@@ -80,13 +80,18 @@ public class AdsStampHeader implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AdsStampHeader)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof AdsStampHeader))
+            return false;
 
         AdsStampHeader that = (AdsStampHeader) o;
 
-        if (!timeStamp.equals(that.timeStamp)) return false;
-        if (!samples.equals(that.samples)) return false;
+        if (!timeStamp.equals(that.timeStamp))
+            return false;
+        if (!samples.equals(that.samples))
+            return false;
+        
         return adsNotificationSamples.equals(that.adsNotificationSamples);
     }
 

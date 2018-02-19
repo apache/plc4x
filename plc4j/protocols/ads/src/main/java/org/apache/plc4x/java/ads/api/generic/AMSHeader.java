@@ -158,19 +158,30 @@ public class AMSHeader implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AMSHeader)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof AMSHeader))
+            return false;
 
         AMSHeader amsHeader = (AMSHeader) o;
 
-        if (!targetAmsNetId.equals(amsHeader.targetAmsNetId)) return false;
-        if (!targetAmsPort.equals(amsHeader.targetAmsPort)) return false;
-        if (!sourceAmsNetId.equals(amsHeader.sourceAmsNetId)) return false;
-        if (!sourceAmsPort.equals(amsHeader.sourceAmsPort)) return false;
-        if (commandId != amsHeader.commandId) return false;
-        if (!stateFlags.equals(amsHeader.stateFlags)) return false;
-        if (!code.equals(amsHeader.code)) return false;
-        if (!invokeId.equals(amsHeader.invokeId)) return false;
+        if (!targetAmsNetId.equals(amsHeader.targetAmsNetId))
+            return false;
+        if (!targetAmsPort.equals(amsHeader.targetAmsPort))
+            return false;
+        if (!sourceAmsNetId.equals(amsHeader.sourceAmsNetId))
+            return false;
+        if (!sourceAmsPort.equals(amsHeader.sourceAmsPort))
+            return false;
+        if (commandId != amsHeader.commandId)
+            return false;
+        if (!stateFlags.equals(amsHeader.stateFlags))
+            return false;
+        if (!code.equals(amsHeader.code))
+            return false;
+        if (!invokeId.equals(amsHeader.invokeId))
+            return false;
+        
         return getDataLength().equals(((AMSHeader) o).getDataLength());
     }
 

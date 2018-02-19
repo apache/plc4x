@@ -67,9 +67,12 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UnsignedShortLEByteValue)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof UnsignedShortLEByteValue))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         UnsignedShortLEByteValue that = (UnsignedShortLEByteValue) o;
 

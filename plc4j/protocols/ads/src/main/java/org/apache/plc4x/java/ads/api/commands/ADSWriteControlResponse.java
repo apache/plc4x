@@ -68,9 +68,12 @@ public class ADSWriteControlResponse extends ADSAbstractResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSWriteControlResponse)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSWriteControlResponse))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSWriteControlResponse that = (ADSWriteControlResponse) o;
 

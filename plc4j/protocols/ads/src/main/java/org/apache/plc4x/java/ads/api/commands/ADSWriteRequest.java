@@ -120,15 +120,22 @@ public class ADSWriteRequest extends ADSAbstractRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSWriteRequest)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSWriteRequest))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSWriteRequest that = (ADSWriteRequest) o;
 
-        if (!indexGroup.equals(that.indexGroup)) return false;
-        if (!indexOffset.equals(that.indexOffset)) return false;
-        if (!getLength().equals(that.getLength())) return false;
+        if (!indexGroup.equals(that.indexGroup))
+            return false;
+        if (!indexOffset.equals(that.indexOffset))
+            return false;
+        if (!getLength().equals(that.getLength()))
+            return false;
+        
         return data.equals(that.data);
     }
 

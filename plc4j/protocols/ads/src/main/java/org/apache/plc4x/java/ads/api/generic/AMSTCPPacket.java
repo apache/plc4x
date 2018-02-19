@@ -81,12 +81,15 @@ public abstract class AMSTCPPacket implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AMSTCPPacket)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof AMSTCPPacket))
+            return false;
 
         AMSTCPPacket that = (AMSTCPPacket) o;
 
-        if (!amsTcpHeader.equals(that.amsTcpHeader)) return false;
+        if (!amsTcpHeader.equals(that.amsTcpHeader))
+            return false;
         return amsHeader.equals(that.amsHeader);
     }
 
