@@ -49,10 +49,9 @@ public enum TpduSize {
     }
 
     public static TpduSize valueForGivenSize(int pduSize) {
-        if(pduSize < 0) {
+        if(pduSize <= 0) {
             throw new IllegalArgumentException("PduSize has to be greater than 0");
         }
-        assert pduSize > 0;
         for (TpduSize tpduSize : values()) {
             if(tpduSize.getValue() >= pduSize) {
                 return tpduSize;
