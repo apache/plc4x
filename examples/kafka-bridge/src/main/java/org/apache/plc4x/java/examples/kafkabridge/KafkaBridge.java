@@ -94,9 +94,7 @@ public class KafkaBridge {
         TStream<Byte> source = top.poll(plcSupplier, config.getPollingInterval(), TimeUnit.MILLISECONDS);
 
         // Convert the byte into a string.
-        TStream<String> stringSource = source.map(value -> {
-            return Byte.toString(value);
-        });
+        TStream<String> stringSource = source.map(value -> Byte.toString(value));
 
         // Publish the stream to the topic.  The String tuple is the message value.
         kafka.publish(stringSource, config.getKafkaConfig().getTopicName());
