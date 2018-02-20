@@ -145,18 +145,28 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ADSAddDeviceNotificationRequest)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ADSAddDeviceNotificationRequest))
+            return false;
+        if (!super.equals(o))
+            return false;
 
         ADSAddDeviceNotificationRequest that = (ADSAddDeviceNotificationRequest) o;
 
-        if (!indexGroup.equals(that.indexGroup)) return false;
-        if (!indexOffset.equals(that.indexOffset)) return false;
-        if (!length.equals(that.length)) return false;
-        if (!transmissionMode.equals(that.transmissionMode)) return false;
-        if (!maxDelay.equals(that.maxDelay)) return false;
-        if (!cycleTime.equals(that.cycleTime)) return false;
+        if (!indexGroup.equals(that.indexGroup))
+            return false;
+        if (!indexOffset.equals(that.indexOffset))
+            return false;
+        if (!length.equals(that.length))
+            return false;
+        if (!transmissionMode.equals(that.transmissionMode))
+            return false;
+        if (!maxDelay.equals(that.maxDelay))
+            return false;
+        if (!cycleTime.equals(that.cycleTime))
+            return false;
+
         return reserved.equals(that.reserved);
     }
 
