@@ -29,7 +29,6 @@ import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.isoontcp.netty.model.IsoOnTcpMessage;
 import org.apache.plc4x.java.netty.NettyTestBase;
 import org.apache.plc4x.test.FastTests;
-import org.hamcrest.core.StringContains;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.LoggerFactory;
