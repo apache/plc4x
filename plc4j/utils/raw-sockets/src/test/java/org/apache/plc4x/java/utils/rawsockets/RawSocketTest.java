@@ -15,18 +15,32 @@
  */
 package org.apache.plc4x.java.utils.rawsockets;
 
+import org.junit.Test;
+import org.pcap4j.core.PcapAddress;
+import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
+
+import java.net.Inet4Address;
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.fail;
 
 public class RawSocketTest {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void testPingPacket() throws Exception {
         // Protocol number 1 = ICMP (Ping)
         RawSocket rawSocket = new RawSocket(1);
 
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
         // Simply print the result to the console
         rawSocket.addListener(rawData -> {
             System.out.println("Got response:");
             System.out.println(Arrays.toString(rawData));
+            result.complete(true);
         });
 
         // Connect to the remote address
@@ -34,7 +48,18 @@ public class RawSocketTest {
         // does the ARP MAC address lookup and sets up the listener
         // to accept packets sent from that mac address to the
         // current machines with the given IP protocol id.
-        rawSocket.connect("10.10.56.1");
+        // In this test we simply look for a real network device
+        // (The loopback device doesn't have a MAC address)
+        // and ping itself.
+        for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
+            if(!dev.getLinkLayerAddresses().isEmpty()) {
+                for (PcapAddress pcapAddress : dev.getAddresses()) {
+                    if(pcapAddress.getAddress() instanceof Inet4Address) {
+                        rawSocket.connect("plc4x.apache.org");
+                    }
+                }
+            }
+        }
 
         // Simple ICMP (Ping packet)
         byte[] rawData = new byte[] {
@@ -51,6 +76,12 @@ public class RawSocketTest {
 
         // Write the raw packet to the remote host.
         rawSocket.write(rawData);
+
+        try {
+            result.get(3, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            fail("Request timed out.");
+        }
     }
 
 }
