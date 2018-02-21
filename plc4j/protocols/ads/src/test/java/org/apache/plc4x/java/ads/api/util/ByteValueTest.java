@@ -65,7 +65,7 @@ public class ByteValueTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkUnsignedBoundsBigTooBig() {
-        ByteValue.checkUnsignedBounds(new BigInteger(Long.toString(upperBound)), 4);
+        ByteValue.checkUnsignedBounds(new BigInteger(Long.toString(upperBound)).add(BigInteger.ONE), 4);
     }
 
     @Test
