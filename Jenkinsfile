@@ -18,60 +18,62 @@
  *  limitations under the License.
  *
  */
-// TODO: migrate to declarative pipeline if possible (https://jenkins.io/doc/book/pipeline/jenkinsfile/)
-node('ubuntu && !H33') {
-
-    currentBuild.result = "SUCCESS"
-
-    echo 'Building Branch: ' + env.BRANCH_NAME
-
-    // Setup the required environment variables.
-    def mvnHome = "${tool 'Maven 3 (latest)'}"
-    env.JAVA_HOME="${tool 'JDK 1.8 (latest)'}"
-    env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
-
-    // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
-    def mavenGoal = "install"
-    def mavenLocalRepo = ""
-    if(env.BRANCH_NAME == 'master') {
-        mavenGoal = "deploy sonar:sonar"
-    } else {
-        mavenLocalRepo = "-Dmaven.repo.local=.repository"
+pipeline {
+    agent {
+        node {
+            label 'ubuntu && !H33'
+        }
     }
 
-    try {
-        stage ('Cleanup') {
-            echo 'Cleaning up the workspace'
-            deleteDir()
+    environment {
+        CC = 'clang'
+        MVN_HOME = "${tool 'Maven 3 (latest)'}"
+        JAVA_HOME = "${tool 'JDK 1.8 (latest)'}"
+        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        stage('Initialization') {
+            steps {
+                echo 'Building Branch: ' + env.BRANCH_NAME
+            }
         }
 
-        stage ('Checkout') {
-            echo 'Checking out branch ' + env.BRANCH_NAME
-            checkout scm
+        stage('Cleanup') {
+            steps {
+                echo 'Cleaning up the workspace'
+                deleteDir()
+            }
         }
 
-        stage ('Build') {
-            echo 'Building'
-            sh "${mvnHome}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} site:site"
+        stage('Checkout') {
+            steps {
+                echo 'Checking out branch ' + env.BRANCH_NAME
+                checkout scm
+            }
         }
 
-        stage ('Stage Site') {
-            echo 'Staging Site'
-            sh "${mvnHome}/bin/mvn -Pjenkins-build ${mavenLocalRepo} site:stage"
+        stage('Build') {
+            steps {
+                // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
+                def mavenGoal = "install"
+                def mavenLocalRepo = ""
+                if (env.BRANCH_NAME == 'master') {
+                    mavenGoal = "deploy sonar:sonar"
+                } else {
+                    mavenLocalRepo = "-Dmaven.repo.local=.repository"
+                }
+                echo 'Building'
+                sh "${MVN_HOME}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} site:site"
+            }
+        }
+
+        stage('Stage Site') {
+            steps {
+                echo 'Staging Site'
+                sh "${MVN_HOME}/bin/mvn -Pjenkins-build ${mavenLocalRepo} site:stage"
+            }
         }
 
     }
-
-
-    catch (err) {
-        currentBuild.result = "FAILURE"
-/*            mail body: "project build error is here: ${env.BUILD_URL}" ,
-            from: 'xxxx@yyyy.com',
-            replyTo: 'dev@plc4x.apache.org',
-            subject: 'Autobuild for Branch ' env.BRANCH_NAME
-            to: 'commits@plc4x.apache.org'
-*/
-        throw err
-    }
-
 }
