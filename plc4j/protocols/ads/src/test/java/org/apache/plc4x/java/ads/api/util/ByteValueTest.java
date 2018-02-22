@@ -79,7 +79,7 @@ public class ByteValueTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkUnsignedBoundsLongTooBigHex() {
-        ByteValue.checkUnsignedBounds(0x1_FF_FF, 2);
+        ByteValue.checkUnsignedBounds(0x1_00_00, 2);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class ByteValueTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkUnsignedBoundsBigTooBigHex() {
-        ByteValue.checkUnsignedBounds(BigInteger.valueOf(0x1_FF_FF), 2);
+        ByteValue.checkUnsignedBounds(BigInteger.valueOf(0x1_00_00), 2);
     }
 
     @Test
