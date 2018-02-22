@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.ads.netty;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteResponse;
@@ -41,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
@@ -57,47 +57,77 @@ public class Plc4XADSProtocolTest {
 
     private Plc4XADSProtocol SUT;
 
-    @Parameterized.Parameter()
-    public PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer;
+    @Parameterized.Parameter
+    public String payloadClazzName;
 
     @Parameterized.Parameter(1)
-    public CompletableFuture completableFuture;
+    public PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer;
 
     @Parameterized.Parameter(2)
-    public String plcRequestContainerClassName;
+    public CompletableFuture completableFuture;
 
     @Parameterized.Parameter(3)
-    public AMSTCPPacket amstcpPacket;
+    public String plcRequestContainerClassName;
 
     @Parameterized.Parameter(4)
+    public AMSTCPPacket amstcpPacket;
+
+    @Parameterized.Parameter(5)
     public String aMSTCPPacketClassName;
 
-    @Parameterized.Parameters(name = " {index} {2} {4}")
+    @Parameterized.Parameters(name = "{index} Type:{0} {3} {5}")
     public static Collection<Object[]> data() {
         AMSNetId targetAmsNetId = AMSNetId.of("1.2.3.4.5.6");
         AMSPort targetAmsPort = AMSPort.of(7);
         AMSNetId sourceAmsNetId = AMSNetId.of("8.9.10.11.12.13");
         AMSPort sourceAmsPort = AMSPort.of(14);
         Invoke invokeId = Invoke.of(2);
-        Data data = Data.of(SerializationUtils.serialize("Hello World!"));
-        return Stream.of(
-            ImmutablePair.of(
-                new PlcRequestContainer<>(
-                    PlcWriteRequest
-                        .builder()
-                        .addItem(ADSAddress.of(1, 2), "HelloWorld!")
-                        .build(), new CompletableFuture<>()),
-                ADSWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
-            ),
-            ImmutablePair.of(
-                new PlcRequestContainer<>(
-                    PlcReadRequest
-                        .builder()
-                        .addItem(String.class, ADSAddress.of(1, 2))
-                        .build(), new CompletableFuture<>()),
-                ADSReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), data)
-            )
-        ).map(pair -> new Object[]{pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getClass().getSimpleName()}).collect(Collectors.toList());
+        return Stream.of(Boolean.class,
+            Byte.class,
+            Short.class,
+            Calendar.class,
+            Float.class,
+            Integer.class,
+            String.class)
+            .map(clazz -> {
+                if (clazz == Boolean.class) {
+                    return ImmutablePair.of(Boolean.TRUE, new byte[]{0x0});
+                } else if (clazz == Byte.class) {
+                    return ImmutablePair.of(Byte.valueOf("0"), new byte[]{0x0});
+                } else if (clazz == Short.class) {
+                    return ImmutablePair.of(Short.valueOf("0"), new byte[]{0x0, 0x0});
+                } else if (clazz == Calendar.class) {
+                    return ImmutablePair.of(Calendar.getInstance(), new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0});
+                } else if (clazz == Float.class) {
+                    return ImmutablePair.of(Float.valueOf("0"), new byte[]{0x0, 0x0, 0x0, 0x0});
+                } else if (clazz == Integer.class) {
+                    return ImmutablePair.of(Integer.valueOf("0"), new byte[]{0x0, 0x0, 0x0, 0x0});
+                } else if (clazz == String.class) {
+                    return ImmutablePair.of(String.valueOf("Hello World!"), new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00});
+                } else {
+                    throw new IllegalArgumentException("Unmapped type " + clazz);
+                }
+            })
+            .map(pair -> Stream.of(
+                ImmutablePair.of(
+                    new PlcRequestContainer<>(
+                        PlcWriteRequest
+                            .builder()
+                            .addItem(ADSAddress.of(1, 2), pair.left)
+                            .build(), new CompletableFuture<>()),
+                    ADSWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
+                ),
+                ImmutablePair.of(
+                    new PlcRequestContainer<>(
+                        PlcReadRequest
+                            .builder()
+                            .addItem(pair.left.getClass(), ADSAddress.of(1, 2))
+                            .build(), new CompletableFuture<>()),
+                    ADSReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.right))
+                )
+            ))
+            .flatMap(stream -> stream)
+            .map(pair -> new Object[]{pair.left.getRequest().getRequestItem().orElseThrow(IllegalStateException::new).getDatatype().getSimpleName(), pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getClass().getSimpleName()}).collect(Collectors.toList());
     }
 
     @Before

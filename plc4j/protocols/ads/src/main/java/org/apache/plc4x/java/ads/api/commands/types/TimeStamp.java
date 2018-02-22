@@ -63,7 +63,7 @@ public class TimeStamp extends ByteValue {
     private static byte checkByte(byte[] valueBytes, int length, int i) {
         return length > i ? valueBytes[i] : 0;
     }
-    
+
     private static byte[] ofBigInteger(BigInteger value) {
         byte[] valueBytes = value.toByteArray();
         int length = valueBytes.length;
@@ -129,12 +129,12 @@ public class TimeStamp extends ByteValue {
         return new Date(winTimeToJava(bigIntegerValue).longValue());
     }
 
-    private static BigInteger javaToWinTime(BigInteger timeMillisSince19700101) {
+    public static BigInteger javaToWinTime(BigInteger timeMillisSince19700101) {
         BigInteger timeMillisSince16010101 = EPOCH_DIFF_IN_MILLIS.add(timeMillisSince19700101);
         return timeMillisSince16010101.multiply(BigInteger.valueOf(10_000));
     }
 
-    private static BigInteger winTimeToJava(BigInteger winTime) {
+    public static BigInteger winTimeToJava(BigInteger winTime) {
         BigInteger timeMillisSince16010101 = winTime.divide(BigInteger.valueOf(10_000));
         return timeMillisSince16010101.subtract(EPOCH_DIFF_IN_MILLIS);
     }

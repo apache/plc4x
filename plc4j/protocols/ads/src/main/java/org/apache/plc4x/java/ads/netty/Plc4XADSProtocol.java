@@ -20,7 +20,6 @@ package org.apache.plc4x.java.ads.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.plc4x.java.ads.api.commands.ADSReadRequest;
 import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
@@ -47,14 +46,14 @@ import org.apache.plc4x.java.api.types.ResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static org.apache.plc4x.java.ads.netty.util.LittleEndianDecoder.decodeData;
+import static org.apache.plc4x.java.ads.netty.util.LittleEndianEncoder.encodeData;
 
 public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPacket, PlcRequestContainer<PlcRequest, PlcResponse>> {
 
@@ -102,17 +101,7 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPacket, PlcReq
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        for (Object o : writeRequestItem.getValues()) {
-            // TODO: we need custom serialization here as java types don't really help here
-            byte[] serialize = SerializationUtils.serialize((Serializable) o);
-            try {
-                byteArrayOutputStream.write(serialize);
-            } catch (IOException e) {
-                throw new PlcException(e);
-            }
-        }
-        byte[] bytes = byteArrayOutputStream.toByteArray();
+        byte[] bytes = encodeData(writeRequestItem.getDatatype(), writeRequestItem.getValues().toArray());
         Data data = Data.of(bytes);
         AMSTCPPacket amstcpPacket = ADSWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
         out.add(amstcpPacket);
@@ -187,19 +176,18 @@ public class Plc4XADSProtocol extends MessageToMessageCodec<AMSTCPPacket, PlcReq
     }
 
     @SuppressWarnings("unchecked")
-    private PlcResponse decodeReadResponse(ADSReadResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) {
+    private PlcResponse decodeReadResponse(ADSReadResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) throws PlcProtocolException {
         PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
         ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(0);
 
         ResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
         byte[] bytes = responseMessage.getData().getBytes();
-        // TODO: we need custom serialization here as java types don't really help here
-        Object deserialize = SerializationUtils.deserialize(bytes);
+        List decoded = decodeData(requestItem.getDatatype(), bytes);
 
         if (plcReadRequest instanceof TypeSafePlcReadRequest) {
-            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, Collections.singletonList(deserialize))));
+            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, decoded)));
         } else {
-            return new PlcReadResponse(plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, Collections.singletonList(bytes))));
+            return new PlcReadResponse(plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, decoded)));
         }
     }
 
