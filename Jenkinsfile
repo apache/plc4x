@@ -27,6 +27,9 @@ pipeline {
 
     environment {
         PLC4X_BUILD = true
+        JENKINS_PROFILE = 'jenkins-build'
+        MVN_LOCAL_REPO_OPT = '-Dmaven.repo.local=.repository'
+        MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
     }
 
     tools {
@@ -68,7 +71,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh "mvn -Pjenkins-build -Dmaven.test.failure.ignore=true -Dmaven.repo.local=.repository clean install"
+                sh 'mvn -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
             }
             post {
                 always {
@@ -84,7 +87,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh "mvn -Pjenkins-build -Dmaven.test.failure.ignore=true clean deploy sonar:sonar site:site"
+                sh 'mvn -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} clean install'
             }
             post {
                 always {
@@ -94,13 +97,43 @@ pipeline {
             }
         }
 
+        stage('Code Quality') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo 'Building'
+                sh 'mvn -P${JENKINS_PROFILE} sonar:sonar'
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo 'Building'
+                sh 'mvn -P${JENKINS_PROFILE} deploy'
+            }
+        }
+
+        stage('Build site') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo 'Building'
+                sh 'mvn -P${JENKINS_PROFILE} site:site'
+            }
+        }
+
         stage('Stage Site') {
             when {
                 branch 'master'
             }
             steps {
                 echo 'Staging Site'
-                sh "mvn -Pjenkins-build -Dmaven.repo.local=.repository site:stage"
+                sh 'mvn -P${JENKINS_PROFILE} ${MVN_LOCAL_REPO_OPT} site:stage'
             }
         }
 
