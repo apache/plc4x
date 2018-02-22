@@ -26,12 +26,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeThat;
 
 public class RawSocketTest {
 
     @Test
     public void testPingPacket() throws Exception {
+        // TODO: cdutz: jenkins won't allow access on the inet device. Maybe try to fix this on a branch.
+        assumeThat(System.getenv("PLC4X_BUILD_ON_JENKINS"), is(not(equalToIgnoringCase("true"))));
         // Protocol number 1 = ICMP (Ping)
         RawSocket rawSocket = new RawSocket(1);
 

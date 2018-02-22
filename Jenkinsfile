@@ -26,7 +26,7 @@ pipeline {
     }
 
     environment {
-        PLC4X_BUILD = true
+        PLC4X_BUILD_ON_JENKINS = true
         JENKINS_PROFILE = 'jenkins-build'
         MVN_LOCAL_REPO_OPT = '-Dmaven.repo.local=.repository'
         MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
