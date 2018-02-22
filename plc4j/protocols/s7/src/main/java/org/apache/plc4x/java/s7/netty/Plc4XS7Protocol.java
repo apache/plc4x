@@ -49,6 +49,9 @@ import org.apache.plc4x.java.s7.netty.model.types.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.apache.plc4x.java.s7.netty.util.BigEndianDecoder.decodeData;
+import static org.apache.plc4x.java.s7.netty.util.BigEndianEncoder.encodeData;
+
 public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequestContainer> {
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(1);
@@ -323,106 +326,6 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         return null;
     }
 
-    private byte[] encodeData(Object[] values) {
-        final int length = values.length;
-        if (length == 0) {
-            return new byte[]{};
-        }
-        byte[] result = null;
-        Class valueType = values[0].getClass();
-        if (valueType == Boolean.class) {
-            result = encodeBoolean(values, length);
-        } else if (valueType == Byte.class) {
-            result = encodeByte(values, length);
-        } else if (valueType == Short.class) {
-            result = encodeShort(values, length);
-        } else if (valueType == Integer.class) {
-            result = encodeInteger(values, length);
-        } else if (valueType == Calendar.class) {
-            // TODO: Decide what to do here ...
-            result = null;
-        } else if (valueType == Float.class) {
-            result = encodeFloat(values, length);
-        } else if (valueType == String.class) {
-            result = encodeString(values, length);
-        }
-        return result;
-    }
-
-    private byte[] encodeString(Object[] values, int length) {
-        byte[] result;
-        int size = 0;
-        for (Object value : values) {
-            size = size + ((String) value).length();
-        }
-        result = new byte[size + length];
-        int j = 0;
-        for (Object value : values) {
-            String str = (String) value;
-            for (int i = 0; i < str.length(); i++) {
-                result[j++] = (byte) str.charAt(i);
-            }
-            result[j++] = (byte) 0x0;
-        }
-        return result;
-    }
-
-    private byte[] encodeFloat(Object[] values, int length) {
-        byte[] result;
-        result = new byte[length * 4];
-        for (int i = 0; i < length; i++) {
-            float floatValue = (float) values[i];
-            int intValue = Float.floatToIntBits(floatValue);
-            result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
-            result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
-            result[(i * 4) + 2] = (byte) ((intValue & 0x0000ff00) >> 8);
-            result[(i * 4) + 3] = (byte) (intValue & 0xff);
-        }
-        return result;
-    }
-
-    private byte[] encodeInteger(Object[] values, int length) {
-        byte[] result;
-        result = new byte[length * 4];
-        for (int i = 0; i < length; i++) {
-            int intValue = (int) values[i];
-            result[i * 4] = (byte) ((intValue & 0xff000000) >> 24);
-            result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
-            result[(i * 4) + 2] = (byte) ((intValue & 0x0000ff00) >> 8);
-            result[(i * 4) + 3] = (byte) (intValue & 0xff);
-        }
-        return result;
-    }
-
-    private byte[] encodeShort(Object[] values, int length) {
-        byte[] result;
-        result = new byte[length * 2];
-        for (int i = 0; i < length; i++) {
-            short intValue = (short) values[i];
-            result[i * 2] = (byte) ((intValue & 0xff00) >> 8);
-            result[(i * 2) + 1] = (byte) (intValue & 0xff);
-        }
-        return result;
-    }
-
-    private byte[] encodeByte(Object[] values, int length) {
-        byte[] result;
-        result = new byte[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = (byte) values[i];
-        }
-        return result;
-    }
-
-    private byte[] encodeBoolean(Object[] values, int length) {
-        byte[] result;// TODO: Check if this is true and the result is not Math.ceil(values.lenght / 8)
-        result = new byte[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = (byte) (((Boolean) values[i]) ? 0x01 : 0x00);
-        }
-        return result;
-    }
-
     ////////////////////////////////////////////////////////////////////////////////
     // Decoding helpers.
     ////////////////////////////////////////////////////////////////////////////////
@@ -441,49 +344,6 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             default:
                 return ResponseCode.INTERNAL_ERROR;
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> List<T> decodeData(Class<T> datatype, byte[] s7Data) throws PlcProtocolException {
-
-        List<Object> result = new LinkedList<>();
-        int i = 0;
-        final int length = s7Data.length;
-        while (i < length) {
-            if (datatype == Boolean.class) {
-                result.add((s7Data[i] & 0x01) == 0x01);
-                i += 1;
-            } else if (datatype == Byte.class) {
-                result.add(s7Data[i]);
-                i += 1;
-            } else if (datatype == Short.class) {
-                result.add((short) (((s7Data[i] & 0xff) << 8) | (s7Data[i + 1] & 0xff)));
-                i += 2;
-            } else if (datatype == Integer.class) {
-                result.add(((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
-                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff));
-                i += 4;
-            } else if (datatype == Float.class) {
-                // Description of the Real number format:
-                // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
-                // https://de.wikipedia.org/wiki/IEEE_754
-                int intValue = ((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
-                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff);
-                result.add(Float.intBitsToFloat(intValue));
-                i += 4;
-            } else if (datatype == String.class) {
-                StringBuilder builder = new StringBuilder();
-                while (s7Data[i] != (byte) 0x0 && i < length) {
-                    builder.append((char) s7Data[i]);
-                    i++;
-                }
-                i++; // skip terminating character
-                result.add(builder.toString());
-            } else {
-                throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
-            }
-        }
-        return (List<T>) result;
     }
 
 }
