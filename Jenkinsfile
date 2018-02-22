@@ -61,7 +61,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh "${MVN_HOME}/bin/mvn -Pjenkins-build -Dmaven.repo.local=.repository clean install"
+                sh "${MVN_HOME}/bin/mvn -Pjenkins-build -Dmaven.test.failure.ignore=true -Dmaven.repo.local=.repository clean install"
             }
             post {
                 always {
