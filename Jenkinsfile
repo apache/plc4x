@@ -95,7 +95,7 @@ pipeline {
             }
             steps {
                 echo 'Staging Site'
-                sh "mvn -Pjenkins-build ${mavenLocalRepo} site:stage"
+                sh "mvn -Pjenkins-build -Dmaven.repo.local=.repository site:stage"
             }
         }
 
