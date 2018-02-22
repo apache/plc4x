@@ -55,16 +55,18 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
-                def mavenGoal = "install"
-                def mavenLocalRepo = ""
-                if (env.BRANCH_NAME == 'master') {
-                    mavenGoal = "deploy sonar:sonar"
-                } else {
-                    mavenLocalRepo = "-Dmaven.repo.local=.repository"
-                }
                 echo 'Building'
-                sh "${MVN_HOME}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} site:site"
+                script {
+                    // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
+                    def mavenGoal = "install"
+                    def mavenLocalRepo = ""
+                    if (env.BRANCH_NAME == 'master') {
+                        mavenGoal = "deploy sonar:sonar"
+                    } else {
+                        mavenLocalRepo = "-Dmaven.repo.local=.repository"
+                    }
+                    sh "${MVN_HOME}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} site:site"
+                }
             }
         }
 
