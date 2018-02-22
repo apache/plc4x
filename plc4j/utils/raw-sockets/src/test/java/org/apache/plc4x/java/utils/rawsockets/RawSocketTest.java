@@ -52,9 +52,11 @@ public class RawSocketTest {
         // (The loopback device doesn't have a MAC address)
         // and ping itself.
         for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
-            if(!dev.getLinkLayerAddresses().isEmpty()) {
+            System.out.println("Trying to read on device " + dev);
+            if (!dev.getLinkLayerAddresses().isEmpty()) {
                 for (PcapAddress pcapAddress : dev.getAddresses()) {
-                    if(pcapAddress.getAddress() instanceof Inet4Address) {
+                    if (pcapAddress.getAddress() instanceof Inet4Address) {
+                        System.out.println("Trying to connect on PcapAddress " + pcapAddress);
                         rawSocket.connect("plc4x.apache.org");
                     }
                 }
@@ -62,7 +64,7 @@ public class RawSocketTest {
         }
 
         // Simple ICMP (Ping packet)
-        byte[] rawData = new byte[] {
+        byte[] rawData = new byte[]{
             // Type (ICMP Ping Request) & Code (just 0)
             (byte) 0x08, (byte) 0x00,
             // Checksum
