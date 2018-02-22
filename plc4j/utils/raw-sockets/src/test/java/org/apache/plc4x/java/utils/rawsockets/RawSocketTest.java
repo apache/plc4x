@@ -66,6 +66,8 @@ public class RawSocketTest {
                 }
             }
         }
+        // On travis we won't have any interface at all so we don't need to run there
+        assumeThat(rawSocket, notNullValue());
 
         // Simple ICMP (Ping packet)
         byte[] rawData = new byte[]{
