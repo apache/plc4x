@@ -49,7 +49,7 @@ public class ByteValue implements ByteReadable {
 
     public static void checkUnsignedBounds(BigInteger value, int numberOfBytes) {
         BigInteger upperBound = BigInteger.valueOf(2).pow(8 * numberOfBytes);
-        if (value.compareTo(BigInteger.ZERO) < 0 || value.compareTo(upperBound) > 0) {
+        if (value.compareTo(BigInteger.ZERO) < 0 || value.compareTo(upperBound) >= 0) {
             throw new IllegalArgumentException("Value must between 0 and " + upperBound + ". Was " + value);
         }
     }
