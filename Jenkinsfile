@@ -68,6 +68,11 @@ pipeline {
                     sh "${MVN_HOME}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} site:site"
                 }
             }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
         }
 
         stage('Stage Site') {
