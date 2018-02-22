@@ -28,8 +28,13 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
-import java.util.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class RawSocket {
@@ -39,7 +44,7 @@ public class RawSocket {
     private static final int SNAPLEN = 65536;
     private static final int READ_TIMEOUT = 10;
 
-    private static final Map<InetAddress, MacAddress>  arpCache = new HashMap<>();
+    private static final Map<InetAddress, MacAddress> arpCache = new HashMap<>();
 
     // The id of the protocol we will be communicating in.
     private final int protocolNumber;
@@ -79,11 +84,11 @@ public class RawSocket {
 
             // Check if we can connect directly to the destination.
             FirstHop firstHop = getFirstHop(remoteIpAddress);
-            if(firstHop == null) {
+            if (firstHop == null) {
                 // If this wouldn't work, try to figure out the default
                 // gateway and use that as next hop.
                 InetAddress defaultGatewayAddress = getDefaultGatewayAddress();
-                if(defaultGatewayAddress != null) {
+                if (defaultGatewayAddress != null) {
                     firstHop = getFirstHop(defaultGatewayAddress);
                     if (firstHop == null) {
                         // If this didn't work, we simply can't reach the
@@ -120,7 +125,7 @@ public class RawSocket {
 
             receiveHandle.setFilter(filterString, BpfProgram.BpfCompileMode.OPTIMIZE);
             PacketListener packetListener = packet -> {
-                for(RawSocketListener listener : listeners) {
+                for (RawSocketListener listener : listeners) {
                     listener.packetReceived(packet.getRawData());
                 }
             };
@@ -143,8 +148,8 @@ public class RawSocket {
     }
 
     public void write(byte[] rawData) throws RawSocketException {
-        try(PcapHandle sendHandle =
-                nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT)) {
+        try (PcapHandle sendHandle =
+                 nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT)) {
             UnknownPacket.Builder packetBuilder = new UnknownPacket.Builder();
             packetBuilder.rawData(rawData);
 
@@ -191,7 +196,7 @@ public class RawSocket {
     }
 
     private MacAddress getMacAddress(PcapNetworkInterface dev, InetAddress localIpAddress, InetAddress remoteIpAddress) throws RawSocketException {
-        if(!arpCache.containsKey(remoteIpAddress)) {
+        if (!arpCache.containsKey(remoteIpAddress)) {
             MacAddress macAddress = lookupMacAddress(dev, localIpAddress, remoteIpAddress);
             arpCache.put(remoteIpAddress, macAddress);
             return macAddress;
@@ -267,7 +272,7 @@ public class RawSocket {
                 if (sendHandle.isOpen()) {
                     sendHandle.close();
                 }
-                if(receiveHandle.isOpen()) {
+                if (receiveHandle.isOpen()) {
                     // Terminate the receive loop first.
                     receiveHandle.breakLoop();
                     receiveHandle.close();
@@ -331,6 +336,7 @@ public class RawSocket {
      *
      * @return InetAddress representing the address of the internet gateway.
      */
+    @SuppressWarnings("squid:S1313")
     private InetAddress getDefaultGatewayAddress() {
         try {
             Runtime rt = Runtime.getRuntime();
@@ -362,6 +368,7 @@ public class RawSocket {
                 }
             }
         } catch (IOException e) {
+            logger.debug("error caught", e);
             return null;
         }
 
