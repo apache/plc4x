@@ -26,10 +26,12 @@ pipeline {
     }
 
     environment {
-        CC = 'clang'
-        MVN_HOME = "${tool 'Maven 3 (latest)'}"
-        JAVA_HOME = "${tool 'JDK 1.8 (latest)'}"
-        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+        PLC4X_BUILD = true
+    }
+
+    tools {
+        maven 'Maven 3 (latest)'
+        jdk 'JDK 1.8 (latest)'
     }
 
     stages {
@@ -61,7 +63,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh "${MVN_HOME}/bin/mvn -Pjenkins-build -Dmaven.test.failure.ignore=true -Dmaven.repo.local=.repository clean install"
+                sh "mvn -Pjenkins-build -Dmaven.test.failure.ignore=true -Dmaven.repo.local=.repository clean install"
             }
             post {
                 always {
@@ -71,13 +73,13 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build master') {
             when {
                 branch 'master'
             }
             steps {
                 echo 'Building'
-                sh "${MVN_HOME}/bin/mvn -Pjenkins-build clean deploy sonar:sonar site:site"
+                sh "mvn -Pjenkins-build clean deploy sonar:sonar site:site"
             }
             post {
                 always {
@@ -93,7 +95,7 @@ pipeline {
             }
             steps {
                 echo 'Staging Site'
-                sh "${MVN_HOME}/bin/mvn -Pjenkins-build ${mavenLocalRepo} site:stage"
+                sh "mvn -Pjenkins-build ${mavenLocalRepo} site:stage"
             }
         }
 
