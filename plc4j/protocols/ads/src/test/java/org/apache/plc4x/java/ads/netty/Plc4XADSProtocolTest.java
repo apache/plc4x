@@ -20,6 +20,7 @@ package org.apache.plc4x.java.ads.netty;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
+import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
 import org.apache.plc4x.java.ads.api.commands.ADSWriteResponse;
 import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
@@ -30,6 +31,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.ADSAddress;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.ResponseItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,13 +50,14 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class Plc4XADSProtocolTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ADSProtocolTest.class);
+
+    public static final Calendar calenderInstance = Calendar.getInstance();
 
     private Plc4XADSProtocol SUT;
 
@@ -91,17 +95,18 @@ public class Plc4XADSProtocolTest {
             String.class)
             .map(clazz -> {
                 if (clazz == Boolean.class) {
-                    return ImmutablePair.of(Boolean.TRUE, new byte[]{0x0});
+                    return ImmutablePair.of(Boolean.TRUE, new byte[]{0x01});
                 } else if (clazz == Byte.class) {
-                    return ImmutablePair.of(Byte.valueOf("0"), new byte[]{0x0});
+                    return ImmutablePair.of(Byte.valueOf("1"), new byte[]{0x1});
                 } else if (clazz == Short.class) {
-                    return ImmutablePair.of(Short.valueOf("0"), new byte[]{0x0, 0x0});
+                    return ImmutablePair.of(Short.valueOf("1"), new byte[]{0x1, 0x0});
                 } else if (clazz == Calendar.class) {
-                    return ImmutablePair.of(Calendar.getInstance(), new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0});
+                    return ImmutablePair.of(calenderInstance, new byte[]{0x0, 0x0, 0x0, 0x0, 0x4, 0x3, 0x2, 0x1});
                 } else if (clazz == Float.class) {
+                    // TODO: put a float representation on the right that is something other than 0
                     return ImmutablePair.of(Float.valueOf("0"), new byte[]{0x0, 0x0, 0x0, 0x0});
                 } else if (clazz == Integer.class) {
-                    return ImmutablePair.of(Integer.valueOf("0"), new byte[]{0x0, 0x0, 0x0, 0x0});
+                    return ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0});
                 } else if (clazz == String.class) {
                     return ImmutablePair.of(String.valueOf("Hello World!"), new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00});
                 } else {
@@ -144,7 +149,28 @@ public class Plc4XADSProtocolTest {
         ArrayList<Object> out = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, out);
         assertThat(out, hasSize(1));
+        assertThat(out.get(0), instanceOf(AMSTCPPacket.class));
+        AMSTCPPacket amstcpPacket = (AMSTCPPacket) out.get(0);
         LOGGER.info("{}\nHexDump:\n{}", amstcpPacket, amstcpPacket.dump());
+        if (amstcpPacket instanceof ADSWriteRequest) {
+            ADSWriteRequest adsWriteRequest = (ADSWriteRequest) amstcpPacket;
+            byte[] value = adsWriteRequest.getData().getBytes();
+            if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x1}));
+            } else if (payloadClazzName.equals(Byte.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x1}));
+            } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x1, 0x0}));
+            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x0}));
+            } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x0, 0x0, 0x0, 0x0}));
+            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x1, 0x0, 0x0, 0x0}));
+            } else if (payloadClazzName.equals(String.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
+            }
+        }
     }
 
     @Test
@@ -158,6 +184,30 @@ public class Plc4XADSProtocolTest {
         SUT.decode(null, amstcpPacket, out);
         assertThat(out, hasSize(1));
         assertThat(out.get(0), instanceOf(PlcRequestContainer.class));
+        PlcRequestContainer<?, ?> plcRequestContainer = (PlcRequestContainer) out.get(0);
+        LOGGER.info("PlcRequestContainer {}", plcRequestContainer);
+        PlcResponse plcResponse = plcRequestContainer.getResponseFuture().get();
+        ResponseItem responseItem = (ResponseItem) plcResponse.getResponseItem().get();
+        LOGGER.info("ResponseItem {}", responseItem);
+        if (amstcpPacket instanceof ADSReadResponse) {
+            ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
+            Object value = readResponseItem.getValues().get(0);
+            if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
+                assertThat(value, equalTo(Boolean.TRUE));
+            } else if (payloadClazzName.equals(Byte.class.getSimpleName())) {
+                assertThat(value, equalTo(Byte.valueOf("1")));
+            } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
+                assertThat(value, equalTo(Short.valueOf("1")));
+            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
+                assertThat(value, equalTo(calenderInstance));
+            } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
+                assertThat(value, equalTo(Float.valueOf("0")));
+            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
+                assertThat(value, equalTo(Integer.valueOf("1")));
+            } else if (payloadClazzName.equals(String.class.getSimpleName())) {
+                assertThat(value, equalTo(String.valueOf("Hello World!")));
+            }
+        }
     }
 
     private void syncInvoiceId() throws Exception {

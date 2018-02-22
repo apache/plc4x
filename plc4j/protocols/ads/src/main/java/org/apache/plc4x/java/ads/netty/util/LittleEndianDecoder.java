@@ -42,8 +42,8 @@ public class LittleEndianDecoder {
             byte byteOne = adsData[i];
             if (datatype == String.class) {
                 StringBuilder builder = new StringBuilder();
-                while (byteOne != (byte) 0x0 && i < length) {
-                    builder.append((char) byteOne);
+                while (adsData[i] != (byte) 0x0 && i < length) {
+                    builder.append((char) adsData[i]);
                     i++;
                 }
                 i++; // skip terminating character
