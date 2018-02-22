@@ -54,19 +54,30 @@ pipeline {
         }
 
         stage('Build') {
+            when {
+                expression {
+                    env.BRANCH_NAME != 'master'
+                }
+            }
             steps {
                 echo 'Building'
-                script {
-                    // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
-                    def mavenGoal = "install"
-                    def mavenLocalRepo = ""
-                    if (env.BRANCH_NAME == 'master') {
-                        mavenGoal = "deploy sonar:sonar"
-                    } else {
-                        mavenLocalRepo = "-Dmaven.repo.local=.repository"
-                    }
-                    sh "${MVN_HOME}/bin/mvn -Pjenkins-build ${mavenLocalRepo} clean ${mavenGoal} site:site"
+                sh "${MVN_HOME}/bin/mvn -Pjenkins-build -Dmaven.repo.local=.repository clean install"
+            }
+            post {
+                always {
+                    junit(testResults: '**/surefire-reports/*.xml', allowEmptyResults: true)
+                    junit(testResults: '**/failsafe-reports/*.xml', allowEmptyResults: true)
                 }
+            }
+        }
+
+        stage('Build') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo 'Building'
+                sh "${MVN_HOME}/bin/mvn -Pjenkins-build clean deploy sonar:sonar site:site"
             }
             post {
                 always {
@@ -77,6 +88,9 @@ pipeline {
         }
 
         stage('Stage Site') {
+            when {
+                branch 'master'
+            }
             steps {
                 echo 'Staging Site'
                 sh "${MVN_HOME}/bin/mvn -Pjenkins-build ${mavenLocalRepo} site:stage"
