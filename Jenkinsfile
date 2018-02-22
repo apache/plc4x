@@ -34,6 +34,11 @@ pipeline {
         jdk 'JDK 1.8 (latest)'
     }
 
+    options {
+        timeout(time: 1, unit: 'HOURS')
+        skipStagesAfterUnstable()
+    }
+
     stages {
         stage('Initialization') {
             steps {
@@ -79,7 +84,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh "mvn -Pjenkins-build clean deploy sonar:sonar site:site"
+                sh "mvn -Pjenkins-build -Dmaven.test.failure.ignore=true clean deploy sonar:sonar site:site"
             }
             post {
                 always {
