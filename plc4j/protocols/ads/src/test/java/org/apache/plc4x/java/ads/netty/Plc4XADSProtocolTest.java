@@ -103,8 +103,7 @@ public class Plc4XADSProtocolTest {
                 } else if (clazz == Calendar.class) {
                     return ImmutablePair.of(calenderInstance, new byte[]{0x0, 0x0, 0x0, 0x0, 0x4, 0x3, 0x2, 0x1});
                 } else if (clazz == Float.class) {
-                    // TODO: put a float representation on the right that is something other than 0
-                    return ImmutablePair.of(Float.valueOf("0"), new byte[]{0x0, 0x0, 0x0, 0x0});
+                    return ImmutablePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F});
                 } else if (clazz == Integer.class) {
                     return ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0});
                 } else if (clazz == String.class) {
@@ -164,7 +163,7 @@ public class Plc4XADSProtocolTest {
             } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x0}));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
-                assertThat(value, equalTo(new byte[]{0x0, 0x0, 0x0, 0x0}));
+                assertThat(value, equalTo(new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x1, 0x0, 0x0, 0x0}));
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
@@ -201,7 +200,7 @@ public class Plc4XADSProtocolTest {
             } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
                 assertThat(value, equalTo(calenderInstance));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
-                assertThat(value, equalTo(Float.valueOf("0")));
+                assertThat(value, equalTo(Float.valueOf("1")));
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertThat(value, equalTo(Integer.valueOf("1")));
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
