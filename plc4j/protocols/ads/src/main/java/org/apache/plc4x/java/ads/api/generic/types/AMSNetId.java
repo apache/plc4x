@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * The AMSNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AMSNetId would be e.g.. 172.16.17.10.1.1. The storage arrangement in this example is as follows:
+ * The AMSNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AMSNetId would be e.g. "172.16.17.10.1.1". The storage arrangement in this example is as follows:
  * <p>
  * _____0     1     2     3     4     5
  * __+-----------------------------------+
@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * __+-----------------------------------+
  * <p>
  * <p>
- * The AMSNetId is purely logical and has usually no relation to the IP address. The AMSNetId is configurated at the target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering documentation for notes about settings of the AMS NetId.
+ * The AMSNetId is purely logical and has usually no relation to the IP address. The AMSNetId is configured at the target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering documentation for notes about settings of the AMS NetId.
  */
 public class AMSNetId extends ByteValue {
 

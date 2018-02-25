@@ -51,7 +51,7 @@ public enum Command implements ByteReadable {
     final int intValue;
 
     Command() {
-        // Only used for unkown enum
+        // Only used for unknown enum
         value = new byte[0];
         intValue = 0;
     }
