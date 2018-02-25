@@ -180,7 +180,7 @@ public class APIMessageTests {
         assertThat("Expected one request item", plcWriteRequest.getRequestItems(), hasSize(1));
         assertThat("Expected one request item", plcWriteRequest.getNumberOfItems(), equalTo(1));
         List values = plcWriteRequest.getRequestItems().get(0).getValues();
-        assertThat((byte) values.get(0), equalTo((byte) 0x33));
+        assertThat(values.get(0), equalTo((byte) 0x33));
     }
 
     @Test
