@@ -43,6 +43,16 @@ public class AMSPortTest {
         assertThrows(IllegalArgumentException.class, () -> AMSPort.of(65536));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void noStrings() {
+        AMSPort.of("port20");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void noHex() {
+        AMSPort.of("0x0100");
+    }
+    
     @Test
     public void ofString() {
         assertByte(AMSPort.of("1"), "0x0100");
