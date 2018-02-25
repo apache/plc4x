@@ -86,7 +86,7 @@ public class LittleEndianEncoder {
             // TODO: check how ads expects this data
             .map(Float::floatToIntBits)
             .map(intValue -> new byte[]{
-                (byte) ((intValue & 0x000000ff)),
+                (byte) (intValue & 0x000000ff),
                 (byte) ((intValue & 0x0000ff00) >> 8),
                 (byte) ((intValue & 0x00ff0000) >> 16),
                 (byte) ((intValue & 0xff000000) >> 24),
@@ -96,7 +96,7 @@ public class LittleEndianEncoder {
     public static Stream<byte[]> encodeInteger(Stream<Integer> integerStream) {
         return integerStream
             .map(intValue -> new byte[]{
-                (byte) ((intValue & 0x000000ff)),
+                (byte) (intValue & 0x000000ff),
                 (byte) ((intValue & 0x0000ff00) >> 8),
                 (byte) ((intValue & 0x00ff0000) >> 16),
                 (byte) ((intValue & 0xff000000) >> 24),
@@ -112,7 +112,7 @@ public class LittleEndianEncoder {
             .map(TimeStamp::javaToWinTime)
             .map(BigInteger::longValue)
             .map(time -> new byte[]{
-                (byte) ((time & 0x00000000_000000ffL)),
+                (byte) (time & 0x00000000_000000ffL),
                 (byte) ((time & 0x00000000_0000ff00L) >> 8),
                 (byte) ((time & 0x00000000_00ff0000L) >> 16),
                 (byte) ((time & 0x00000000_ff000000L) >> 24),
@@ -128,7 +128,7 @@ public class LittleEndianEncoder {
     public static Stream<byte[]> encodeShort(Stream<Short> shortStream) {
         return shortStream
             .map(shortValue -> new byte[]{
-                (byte) ((shortValue & 0x00ff)),
+                (byte) (shortValue & 0x00ff),
                 (byte) ((shortValue & 0xff00) >> 8),
             });
     }
