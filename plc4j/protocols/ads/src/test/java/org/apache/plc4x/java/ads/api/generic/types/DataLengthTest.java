@@ -30,9 +30,23 @@ public class DataLengthTest {
     private final byte NULL_BYTE = 0x0;
 
     @Test
-    public void ofBytes() {
+    public void ofBytesJustRight() {
         assertEquals("0", DataLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).toString());
-        assertThrows(IllegalArgumentException.class, () -> DataLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ofBytesTooMany() {
+        DataLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ofBytesTooFew() {
+        DataLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ofBytesNone() {
+        DataLength.of();
     }
 
     @Test
