@@ -17,6 +17,8 @@ package org.apache.plc4x.java.utils.rawsockets;
 
 public class RawSocketException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     public RawSocketException() {
         super();
     }

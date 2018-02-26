@@ -18,15 +18,16 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.RequestItem;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.plc4x.java.api.messages.items.RequestItem;
+
 /**
  * Base type for all messages sent from the plc4x system to a connected plc.
+ * @param <REQUEST_ITEM> 
  */
 public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements PlcMessage {
 

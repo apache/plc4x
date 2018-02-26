@@ -18,11 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
 
@@ -30,7 +30,6 @@ public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
         super(request, responseItem);
     }
 
-    @SuppressWarnings("unchecked")
     public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
         super(request, responseItems);
     }

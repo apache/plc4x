@@ -29,7 +29,6 @@
   </parent>
 
   <artifactId>plc4j-utils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>PLC4J: Utils</name>

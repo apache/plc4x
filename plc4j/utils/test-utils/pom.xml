@@ -29,7 +29,6 @@
   </parent>
 
   <artifactId>plc4j-utils-test-utils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
 
   <name>PLC4J: Utils: Test Utils</name>
   <description>A set of test utils. Especially defining the test-categories used to categorize tests.</description>
