@@ -65,7 +65,7 @@ import com.google.gson.JsonObject;
 public class PlcConnectionAdapter implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(PlcConnectionAdapter.class);
-    private static final Class[] allowedDataTypes = new Class[]{Boolean.class, Byte.class, Short.class, Integer.class, Float.class,  String.class, Calendar.class};
+    private static final Class<?>[] allowedDataTypes = new Class[]{Boolean.class, Byte.class, Short.class, Integer.class, Float.class,  String.class, Calendar.class};
     
     private String plcConnectionUrl;
     private PlcConnection plcConnection;
@@ -203,7 +203,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
     }
 
     static void checkDatatype(Class<?> cls) {
-        for (Class check: allowedDataTypes) {
+        for (Class<?> check: allowedDataTypes) {
             if (check == cls)
                 return;
         }
