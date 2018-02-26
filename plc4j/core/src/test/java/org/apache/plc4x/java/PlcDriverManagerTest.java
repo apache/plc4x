@@ -18,6 +18,17 @@ under the License.
 */
 package org.apache.plc4x.java;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -26,21 +37,11 @@ import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
-
 public class PlcDriverManagerTest {
 
     /**
      * Tries to get the mock plc driver which is part of this testsuite.
+     * @throws PlcException 
      */
     @Test
     @Category(FastTests.class)
@@ -53,6 +54,7 @@ public class PlcDriverManagerTest {
 
     /**
      * Tries to get the mock plc driver with authentication which is part of this testsuite.
+     * @throws PlcException 
      */
     @Test
     @Category(FastTests.class)
@@ -69,6 +71,7 @@ public class PlcDriverManagerTest {
 
     /**
      * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
+     * @throws PlcConnectionException 
      */
     @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
@@ -78,6 +81,7 @@ public class PlcDriverManagerTest {
 
     /**
      * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
+     * @throws PlcConnectionException 
      */
     @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
@@ -89,6 +93,8 @@ public class PlcDriverManagerTest {
      * In this test the {@link PlcDriverManager} will be configured with a service list that
      * contains multiple implementation instances of the same protocol. This should result in
      * an error.
+     * @throws MalformedURLException 
+     * @throws PlcConnectionException 
      */
     @Test(expected = IllegalStateException.class)
     @Category(FastTests.class)

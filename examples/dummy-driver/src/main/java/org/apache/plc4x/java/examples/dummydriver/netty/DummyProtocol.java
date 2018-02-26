@@ -18,26 +18,27 @@ under the License.
 */
 package org.apache.plc4x.java.examples.dummydriver.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
+import java.util.List;
+
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToMessageCodec;
 
-public class DummyProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestContainer> {
+public class DummyProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestContainer<?, ?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(DummyProtocol.class);
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer in, List<Object> out) throws Exception {
-        PlcRequest request = in.getRequest();
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<?, ?> in, List<Object> out) throws Exception {
+        PlcRequest<?> request = in.getRequest();
         if (request instanceof PlcReadRequest) {
 
             // Simple ICMP (Ping packet)

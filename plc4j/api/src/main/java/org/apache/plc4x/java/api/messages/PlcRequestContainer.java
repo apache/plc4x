@@ -21,7 +21,7 @@ package org.apache.plc4x.java.api.messages;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
+public class PlcRequestContainer<T extends PlcRequest<?>, R extends PlcResponse<?, ?, ?>> {
 
     private final T request;
     private final CompletableFuture<R> responseFuture;

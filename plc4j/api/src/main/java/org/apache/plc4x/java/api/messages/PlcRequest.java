@@ -29,7 +29,7 @@ import org.apache.plc4x.java.api.messages.items.RequestItem;
  * Base type for all messages sent from the plc4x system to a connected plc.
  * @param <REQUEST_ITEM> 
  */
-public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements PlcMessage {
+public abstract class PlcRequest<REQUEST_ITEM extends RequestItem<?>> implements PlcMessage {
 
     protected final List<REQUEST_ITEM> requestItems;
 
@@ -88,7 +88,7 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
 
         List<REQUEST_ITEM> requests = new LinkedList<>();
 
-        void checkType(Class dataType) {
+        void checkType(Class<?> dataType) {
             if (firstType == null) {
                 firstType = dataType;
             }

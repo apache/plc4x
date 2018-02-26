@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, WriteResponseItem<?>, WriteRequestItem<?>> {
 
@@ -37,6 +37,7 @@ public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, WriteResponse
 
     @SuppressWarnings("unchecked")
     public <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item) {
-        return (Optional) super.getValue(item);
+        Optional<WriteResponseItem<?>> value = super.getValue(item); 
+        return (Optional<WriteResponseItem<T>>) ((Object) value); 
     }
 }

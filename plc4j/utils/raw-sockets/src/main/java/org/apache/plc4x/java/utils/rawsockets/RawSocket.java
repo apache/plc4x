@@ -15,16 +15,6 @@
  */
 package org.apache.plc4x.java.utils.rawsockets;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.pcap4j.core.*;
-import org.pcap4j.packet.*;
-import org.pcap4j.packet.namednumber.*;
-import org.pcap4j.util.ByteArrays;
-import org.pcap4j.util.LinkLayerAddress;
-import org.pcap4j.util.MacAddress;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,7 +25,39 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import org.apache.commons.lang3.SystemUtils;
+import org.pcap4j.core.BpfProgram;
+import org.pcap4j.core.NotOpenException;
+import org.pcap4j.core.PacketListener;
+import org.pcap4j.core.PcapAddress;
+import org.pcap4j.core.PcapHandle;
+import org.pcap4j.core.PcapNativeException;
+import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
+import org.pcap4j.packet.AbstractPacket;
+import org.pcap4j.packet.ArpPacket;
+import org.pcap4j.packet.EthernetPacket;
+import org.pcap4j.packet.IpV4Packet;
+import org.pcap4j.packet.IpV4Rfc791Tos;
+import org.pcap4j.packet.Packet;
+import org.pcap4j.packet.UnknownPacket;
+import org.pcap4j.packet.namednumber.ArpHardwareType;
+import org.pcap4j.packet.namednumber.ArpOperation;
+import org.pcap4j.packet.namednumber.EtherType;
+import org.pcap4j.packet.namednumber.IpNumber;
+import org.pcap4j.packet.namednumber.IpVersion;
+import org.pcap4j.util.ByteArrays;
+import org.pcap4j.util.LinkLayerAddress;
+import org.pcap4j.util.MacAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RawSocket {
 
@@ -336,7 +358,7 @@ public class RawSocket {
      *
      * @return InetAddress representing the address of the internet gateway.
      */
-    @SuppressWarnings("squid:S1313")
+    @SuppressWarnings("squid:S1313")  // silence sonar warning
     private InetAddress getDefaultGatewayAddress() {
         try {
             Runtime rt = Runtime.getRuntime();

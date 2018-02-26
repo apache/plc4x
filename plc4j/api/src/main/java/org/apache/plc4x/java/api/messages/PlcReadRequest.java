@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
-
-import java.util.List;
-import java.util.Objects;
 
 public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
@@ -66,7 +66,7 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
             return this;
         }
 
-        public final Builder addItem(ReadRequestItem readRequestItem) {
+        public final Builder addItem(ReadRequestItem<?> readRequestItem) {
             checkType(readRequestItem.getDatatype());
             requests.add(readRequestItem);
             return this;
@@ -82,7 +82,7 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
             } else {
                 plcReadRequest = new TypeSafePlcReadRequest<>(firstType);
             }
-            for (ReadRequestItem request : requests) {
+            for (ReadRequestItem<?> request : requests) {
                 plcReadRequest.addItem(request);
             }
             return plcReadRequest;
