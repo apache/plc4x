@@ -108,28 +108,38 @@ public class PlcConnectionAdapter implements AutoCloseable {
 
     <T> Supplier<T> newSupplier(Class<T> datatype, String addressStr) {
         PlcConnectionAdapter.checkDatatype(datatype);
-        return new Supplier<T>() {
-            private static final long serialVersionUID = 1L;
+        // satisfy sonar's "Reduce number of anonymous class lines" code smell
+        return new MySupplier<T>(datatype, addressStr);
+    }
+    
+    private class MySupplier<T> implements Supplier<T> {
+        private static final long serialVersionUID = 1L;
+        private Class<T> datatype;
+        private String addressStr;
+      
+        MySupplier(Class<T> datatype, String addressStr) {
+            this.datatype = datatype;
+            this.addressStr = addressStr;
+        }
 
-            @Override
-            public T get() {
-                PlcConnection connection = null;
-                Address address = null;
-                try {
-                    connection = getConnection();
-                    address = connection.parseAddress(addressStr);
-                    PlcReader reader = connection.getReader()
-                        .orElseThrow(() -> new NullPointerException("No reader available"));
-                    TypeSafePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
-                    return reader.read(readRequest).get().getResponseItem()
-                        .orElseThrow(() -> new IllegalStateException("No response available"))
-                        .getValues().get(0);
-                } catch (Exception e) {
-                    logger.error("reading from plc device {} {} failed", connection, address, e);
-                    return null;
-                }
+        @Override
+        public T get() {
+            PlcConnection connection = null;
+            Address address = null;
+            try {
+                connection = getConnection();
+                address = connection.parseAddress(addressStr);
+                PlcReader reader = connection.getReader()
+                  .orElseThrow(() -> new NullPointerException("No reader available"));
+                TypeSafePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
+                return reader.read(readRequest).get().getResponseItem()
+                  .orElseThrow(() -> new IllegalStateException("No response available"))
+                  .getValues().get(0);
+            } catch (Exception e) {
+                logger.error("reading from plc device {} {} failed", connection, address, e);
+                return null;
             }
-        };
+        }
     }
 
     Supplier<PlcReadResponse> newSupplier(PlcReadRequest readRequest) {
