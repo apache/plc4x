@@ -18,13 +18,18 @@ under the License.
 */
 package org.apache.plc4x.java.examples.dummydriver.connection;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcRequestContainer;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.examples.dummydriver.model.DummyAddress;
 import org.apache.plc4x.java.examples.dummydriver.netty.DummyProtocol;
@@ -33,17 +38,24 @@ import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.DefaultEventLoopGroup;
+import io.netty.channel.EventLoopGroup;
 
 public class DummyConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(DummyConnection.class);
 
     private final String hostName;
 
     private EventLoopGroup workerGroup;
     private Channel channel;
+    @SuppressWarnings("unused")
     private boolean connected;
 
     public DummyConnection(String hostName) {
@@ -71,7 +83,7 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(RawSocketChannel.class);
-            bootstrap.handler(new ChannelInitializer() {
+            bootstrap.handler(new ChannelInitializer<Channel>() {
                 @Override
                 protected void initChannel(Channel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();

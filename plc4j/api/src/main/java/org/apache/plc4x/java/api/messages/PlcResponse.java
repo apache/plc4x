@@ -18,16 +18,19 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.RequestItem;
-import org.apache.plc4x.java.api.messages.items.ResponseItem;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.plc4x.java.api.messages.items.RequestItem;
+import org.apache.plc4x.java.api.messages.items.ResponseItem;
+
 /**
  * Base type for all response messages sent as response for a prior request
  * from a plc to the plc4x system.
+ * @param <REQUEST> 
+ * @param <RESPONSE_ITEM> 
+ * @param <REQUEST_ITEM> 
  */
 public abstract class PlcResponse<REQUEST extends PlcRequest, RESPONSE_ITEM extends ResponseItem, REQUEST_ITEM extends RequestItem> implements PlcMessage {
 

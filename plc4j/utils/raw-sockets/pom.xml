@@ -29,7 +29,6 @@
   </parent>
 
   <artifactId>plc4j-utils-raw-sockets</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
 
   <name>PLC4J: Utils: Raw-Sockets</name>
   <description>An implementation of a Netty Channel that allows implementing protocols below the TCP and UCP level.</description>

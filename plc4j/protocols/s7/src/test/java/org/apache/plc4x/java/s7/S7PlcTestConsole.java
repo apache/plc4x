@@ -18,6 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.s7;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
+
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -26,10 +30,6 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
 
 public class S7PlcTestConsole {
 
@@ -66,6 +66,7 @@ public class S7PlcTestConsole {
                         e.printStackTrace();
                     }
                 }
+                scanner.close();
             }
         }
         // Catch any exception or the application won't be able to finish if something goes wrong.
