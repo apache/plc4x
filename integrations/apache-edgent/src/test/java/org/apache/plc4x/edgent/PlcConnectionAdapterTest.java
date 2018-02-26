@@ -18,7 +18,21 @@ under the License.
 */
 package org.apache.plc4x.edgent;
 
-import com.google.gson.JsonObject;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsSame.sameInstance;
+import static org.hamcrest.object.IsCompatibleType.typeCompatibleWith;
+import static org.junit.Assert.assertThat;
+
+import java.lang.reflect.Array;
+import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
@@ -38,25 +52,12 @@ import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.lang.reflect.Array;
-import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.hamcrest.object.IsCompatibleType.typeCompatibleWith;
-import static org.junit.Assert.assertThat;
+import com.google.gson.JsonObject;
 
 public class PlcConnectionAdapterTest {
 
     protected MockConnection getMockConnection() throws PlcConnectionException {
-        return (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
+        return (MockConnection) new PlcDriverManager().getConnection("mock-for-edgent-integration://some-cool-url");
     }
 
     /*
@@ -123,7 +124,6 @@ public class PlcConnectionAdapterTest {
         assertThat(value, equalTo(response.getResponseItems().get(0).getValues().get(0)));
     }
 
-    @SuppressWarnings("unchecked")
     private <T> void checkWrite(MockConnection connection, TypeSafePlcWriteRequest<T> request, T value) throws InterruptedException, ExecutionException {
         // this is really a tests of our mock tooling but knowing it's behaving as expected
         // will help identify problems in the adapter/supplier/consumer
@@ -134,12 +134,14 @@ public class PlcConnectionAdapterTest {
         assertThat(cf.isDone(), is(true));
         PlcWriteResponse response = cf.get();
         assertThat(response, notNullValue());
-        T writtenData = (T) connection.getDataValue(request.getRequestItems().get(0).getAddress());
+        Object writtenData = connection.getDataValue(request.getRequestItems().get(0).getAddress());
         if (writtenData.getClass().isArray()) {
-            writtenData = (T) Array.get(writtenData, 0);
+            writtenData = Array.get(writtenData, 0);
         }
         if (List.class.isAssignableFrom(writtenData.getClass())) {
-            writtenData = (T) ((List) writtenData).get(0);
+            @SuppressWarnings("unchecked")
+            List<Object> writtenDataList = (List<Object>) writtenData;
+            writtenData = writtenDataList.get(0);
         }
         assertThat(value, equalTo(writtenData));
     }
@@ -147,7 +149,6 @@ public class PlcConnectionAdapterTest {
     /*
      * Verify the adapter yields the appropriate PlcReadRequest for each type and that it works.
      */
-    @SuppressWarnings("unchecked")
     @Test
     @Category(FastTests.class)
     public void testNewPlcReadRequest() throws Exception {
@@ -225,7 +226,6 @@ public class PlcConnectionAdapterTest {
     /*
      * Verify the adapter yields the appropriate PlcWriteRequest for each type and that it works.
      */
-    @SuppressWarnings("unchecked")
     @Test
     @Category(FastTests.class)
     public void testNewPlcWriteRequest() throws Exception {
@@ -297,7 +297,6 @@ public class PlcConnectionAdapterTest {
     /*
      * test PlcConnectionAdapter.newSupplier
      */
-    @SuppressWarnings("unchecked")
     @Test
     @Category(FastTests.class)
     public void testNewSupplier() throws Exception {
@@ -337,7 +336,6 @@ public class PlcConnectionAdapterTest {
     /*
      * test PlcConnectionAdapter.newSupplier with read exception
      */
-    @SuppressWarnings("unchecked")
     @Test
     @Category(FastTests.class)
     public void testNewSupplierNeg() throws Exception {
@@ -379,7 +377,6 @@ public class PlcConnectionAdapterTest {
     /*
      * test PlcConnectionAdapter.newConsumer(address)
      */
-    @SuppressWarnings("unchecked")
     @Test
     @Category(FastTests.class)
     public void testNewConsumer1() throws Exception {
@@ -415,7 +412,6 @@ public class PlcConnectionAdapterTest {
     /*
      * test PlcConnectionAdapter.newConsumer(address) with write exception
      */
-    @SuppressWarnings("unchecked")
     @Test
     @Category(FastTests.class)
     public void testNewConsumer1Neg() throws Exception {
@@ -436,7 +432,6 @@ public class PlcConnectionAdapterTest {
         checkConsumer(0, connection, address, consumer, values);
     }
 
-    @SuppressWarnings("unchecked")
     private static <T> void checkConsumer(int writeFailureCountTrigger, MockConnection connection, Address address, Consumer<T> consumer, Object... values) throws Exception {
         // verify that a write failure doesn't kill the consumer
         // it logs (not verified) but keeps working for the subsequent writes
@@ -444,13 +439,17 @@ public class PlcConnectionAdapterTest {
         int writeCount = 0;
         Object previousValue = null;
         for (Object value : values) {
-            consumer.accept((T) value);
-            T writtenData = (T) connection.getDataValue(address);
+            @SuppressWarnings("unchecked")
+            T tValue = (T) value;
+            consumer.accept(tValue);
+            Object writtenData = connection.getDataValue(address);
             if (List.class.isAssignableFrom(writtenData.getClass())) {
-                writtenData = (T) ((List) writtenData).get(0);
+              @SuppressWarnings("unchecked")
+              List<Object> writtenDataList = (List<Object>) writtenData;
+                writtenData = writtenDataList.get(0);
             }
             if (writtenData.getClass().isArray()) {
-                writtenData = (T) Array.get(writtenData, 0);
+                writtenData = Array.get(writtenData, 0);
             }
             // System.out.println("checkConsumer"+(writeFailureCountTrigger > 0 ? "NEG" : "")+": value:"+value+" writtenData:"+writtenData);
             if (writeFailureCountTrigger <= 0)
@@ -545,13 +544,15 @@ public class PlcConnectionAdapterTest {
 
             consumer.accept(jo);
 
-            @SuppressWarnings("unchecked")
-            T writtenData = (T) connection.getDataValue(address);
+            Object writtenData = connection.getDataValue(address);
             if (writtenData.getClass().isArray()) {
-                writtenData = (T) Array.get(writtenData, 0);
+                Object[] writtenDataArray = (Object[]) writtenData;
+                writtenData = Array.get((Object[]) writtenDataArray, 0);
             }
             if (List.class.isAssignableFrom(writtenData.getClass())) {
-                writtenData = (T) ((List) writtenData).get(0);
+                @SuppressWarnings("unchecked")
+                List<Object> writtenDataList = (List<Object>) writtenData;
+                writtenData = writtenDataList.get(0);
             }
             // System.out.println("checkConsumerJson"+(writeFailureCountTrigger > 0 ? "NEG" : "")+": value:"+value+" writtenData:"+writtenData);
             if (writeFailureCountTrigger <= 0)

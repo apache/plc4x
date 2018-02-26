@@ -18,6 +18,13 @@ under the License.
 */
 package org.apache.plc4x.edgent.mock;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -39,9 +46,6 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.types.ResponseCode;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class MockConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
@@ -103,15 +107,19 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             cf.completeExceptionally(new PlcIoException(readExceptionMsg));
             return cf;
         }
-        List<ReadResponseItem<?>> responseItems = new LinkedList<>();
-        for (ReadRequestItem requestItem : readRequest.getRequestItems()) {
-            ReadResponseItem responseItem = new ReadResponseItem(requestItem, ResponseCode.OK,
+        List<ReadResponseItem<Object>> responseItems = new LinkedList<>();
+        for (ReadRequestItem<?> reqItem : readRequest.getRequestItems()) {
+            @SuppressWarnings("unchecked")
+            ReadRequestItem<Object> requestItem = (ReadRequestItem<Object>) reqItem;
+            ReadResponseItem<Object> responseItem = new ReadResponseItem<>(requestItem, ResponseCode.OK,
                 Collections.singletonList(getDataValue(requestItem.getAddress())));
             responseItems.add(responseItem);
         }
         PlcReadResponse response;
         if (readRequest instanceof TypeSafePlcReadRequest) {
-            response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) readRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+            @SuppressWarnings("unchecked")
+            TypeSafePlcReadRequest<Object> readReq = (TypeSafePlcReadRequest<Object>) readRequest;
+            response = new TypeSafePlcReadResponse<Object>(readReq, responseItems);
         } else {
             response = new PlcReadResponse(readRequest, responseItems);
         }
@@ -128,15 +136,17 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
             cf.completeExceptionally(new PlcIoException(writeExceptionMsg));
             return cf;
         }
-        List<WriteResponseItem<?>> responseItems = new LinkedList<>();
-        for (WriteRequestItem requestItem : writeRequest.getRequestItems()) {
+        List<WriteResponseItem<Object>> responseItems = new LinkedList<>();
+        for (WriteRequestItem<?> reqItem : writeRequest.getRequestItems()) {
+            WriteRequestItem<Object> requestItem = (WriteRequestItem<Object>) reqItem;
             setDataValue(requestItem.getAddress(), requestItem.getValues());
-            WriteResponseItem<?> responseItem = new WriteResponseItem<>(requestItem, ResponseCode.OK);
+            WriteResponseItem<Object> responseItem = new WriteResponseItem<>(requestItem, ResponseCode.OK);
             responseItems.add(responseItem);
         }
         PlcWriteResponse response;
         if (writeRequest instanceof TypeSafePlcWriteRequest) {
-            response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) writeRequest, responseItems.isEmpty() ? null : responseItems.get(0));
+            TypeSafePlcWriteRequest<Object> writeReq = (TypeSafePlcWriteRequest<Object>) writeRequest;
+            response = new TypeSafePlcWriteResponse<Object>(writeReq, responseItems);
         } else {
             response = new PlcWriteResponse(writeRequest, responseItems);
         }

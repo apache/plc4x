@@ -27,7 +27,7 @@ public class MockDriver implements PlcDriver {
 
     @Override
     public String getProtocolCode() {
-        return "mock";
+        return "mock-for-edgent-integration";
     }
 
     @Override

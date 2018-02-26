@@ -33,18 +33,8 @@ import com.google.gson.JsonObject;
 
 public class PlcFunctionsTest {
   
-  // TODO figure out how to get these run via Eclipse (org.junit.jupiter.api?) and remove this
-  // Ah... Junit 5... needs newer Eclipse (newer than neon 1.a)
-  public static void main(String[] args) throws Exception {
-    PlcFunctionsTest t = new PlcFunctionsTest();
-    t.testSupplier();
-    t.testNewConsumer1();
-    t.testNewConsumer2();
-    System.out.println("SUCCESS");
-  }
-  
   protected MockConnection getMockConnection() throws PlcConnectionException {
-    return (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
+    return (MockConnection) new PlcDriverManager().getConnection("mock-for-edgent-integration://some-cool-url");
   }
 
   /*
@@ -59,7 +49,7 @@ public class PlcFunctionsTest {
     PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
     MockConnection connection = (MockConnection) adapter.getConnection();
 
-    Supplier supplier;
+    Supplier<?> supplier;
     
     supplier = PlcFunctions.booleanSupplier(adapter, addressStr);
     PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Boolean>)supplier, true, false);
@@ -85,7 +75,6 @@ public class PlcFunctionsTest {
   /*
    * test PlcConnectionAdapter.newConsumer(address)
    */
-  @SuppressWarnings("unchecked")
   @Test
   @Category(FastTests.class)
   public void testNewConsumer1() throws Exception {
