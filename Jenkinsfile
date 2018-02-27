@@ -151,6 +151,8 @@ pipeline {
             }
             steps {
                 echo 'Deploy Site'
+                // We need to regenerate the site for deploy as we switch the node. We could save time by stash/unstash.
+                sh 'mvn -P${JENKINS_PROFILE} site:site'
                 sh 'mvn -P${JENKINS_PROFILE} site:deploy'
             }
         }
