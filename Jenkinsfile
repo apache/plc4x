@@ -28,7 +28,9 @@ pipeline {
     environment {
         PLC4X_BUILD_ON_JENKINS = true
         JENKINS_PROFILE = 'jenkins-build'
+        // On non master build we don't want to pollute the global m2 repo
         MVN_LOCAL_REPO_OPT = '-Dmaven.repo.local=.repository'
+        // Testfails will be handled by the jenkins junit steps and mark the build as unstable.
         MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
     }
 
@@ -39,6 +41,7 @@ pipeline {
 
     options {
         timeout(time: 1, unit: 'HOURS')
+        // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
     }
 
