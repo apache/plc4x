@@ -109,7 +109,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
     <T> Supplier<T> newSupplier(Class<T> datatype, String addressStr) {
         PlcConnectionAdapter.checkDatatype(datatype);
         // satisfy sonar's "Reduce number of anonymous class lines" code smell
-        return new MySupplier<T>(datatype, addressStr);
+        return new MySupplier<>(datatype, addressStr);
     }
     
     private class MySupplier<T> implements Supplier<T> {
