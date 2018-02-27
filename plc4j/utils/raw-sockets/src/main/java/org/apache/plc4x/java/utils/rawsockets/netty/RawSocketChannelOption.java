@@ -24,6 +24,7 @@ public class RawSocketChannelOption<T> extends ChannelOption<T> {
 
     public static final ChannelOption<Boolean> SOME_OPTION = valueOf(RawSocketChannelOption.class, "SOME_OPTION");
 
+    @SuppressWarnings("deprecation")
     protected RawSocketChannelOption() {
         super(null);
     }

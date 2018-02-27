@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.types.ResponseCode;
 
 import java.util.Objects;
 
-public abstract class ResponseItem<REQUEST_ITEM extends RequestItem> {
+public abstract class ResponseItem<REQUEST_ITEM extends RequestItem<?>> {
 
     private final REQUEST_ITEM requestItem;
 

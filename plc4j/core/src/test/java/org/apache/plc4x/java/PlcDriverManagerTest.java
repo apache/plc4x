@@ -39,7 +39,7 @@ import static org.junit.Assert.assertThat;
 
 public class PlcDriverManagerTest {
 
-    /**
+    /*
      * Tries to get the mock plc driver which is part of this testsuite.
      */
     @Test
@@ -51,7 +51,7 @@ public class PlcDriverManagerTest {
         assertThat(mockConnection.isClosed(), is(false));
     }
 
-    /**
+    /*
      * Tries to get the mock plc driver with authentication which is part of this testsuite.
      */
     @Test
@@ -67,7 +67,7 @@ public class PlcDriverManagerTest {
         assertThat(mockConnection.isClosed(), is(false));
     }
 
-    /**
+    /*
      * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
      */
     @Test(expected = PlcConnectionException.class)
@@ -76,7 +76,7 @@ public class PlcDriverManagerTest {
         new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url");
     }
 
-    /**
+    /*
      * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
      */
     @Test(expected = PlcConnectionException.class)
@@ -85,7 +85,7 @@ public class PlcDriverManagerTest {
         new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog");
     }
 
-    /**
+    /*
      * In this test the {@link PlcDriverManager} will be configured with a service list that
      * contains multiple implementation instances of the same protocol. This should result in
      * an error.

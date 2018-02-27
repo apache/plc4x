@@ -31,13 +31,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class DummyProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestContainer> {
+public class DummyProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestContainer<?, ?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(DummyProtocol.class);
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer in, List<Object> out) throws Exception {
-        PlcRequest request = in.getRequest();
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<?, ?> in, List<Object> out) throws Exception {
+        PlcRequest<?> request = in.getRequest();
         if (request instanceof PlcReadRequest) {
 
             // Simple ICMP (Ping packet)

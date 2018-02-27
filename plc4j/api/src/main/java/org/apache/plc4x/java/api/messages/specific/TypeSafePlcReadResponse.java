@@ -59,17 +59,49 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
         return (Optional<ReadResponseItem<T>>) super.getResponseItem();
     }
 
+    /**
+     * Cast or convert a PlcReadResponse to a TypeSafePlcReadReadResponse<T>.
+     * 
+     * WARNING: this is inherently a non-type-safe operation.  It was introduced
+     * to serve the implementation of PlcReader.read(TypeSafePlcReadRequest<T>).
+     * Additional use of it is not recommended.  This interface is subject to change.
+     * 
+     * @param plcReadResponse the response implicitly with items of type T
+     * @return TypeSafePlcReadReadResponse<T>
+     */
     @SuppressWarnings("unchecked")
     public static <T> TypeSafePlcReadResponse<T> of(PlcReadResponse plcReadResponse) {
+        // BUG: there seems to be no checking that the readResponse/items
+        // in fact are for type T.
+        // I don't even think it's possible to do that with the current 'of()' signature
+        // and plcReadResponse content.
+        //
+        // The only consolation is that currently, 'of()' is only really used in the
+        // impl of PlcReader.read(TypeSafePlcReadRequest<T>) and that case guarantees
+        // that all items are a T.  plcReadResponse isa TypeSafePlcReadResponse in
+        // this case.
+        //
+        // Maybe we just need to doc that this conversion is unsafe and/or rename
+        // the method to "unsafeOf()"? 
+        // Or, if there were an AbstractPlcReader<T>, that could internally implement
+        // this method without exposing this generally it, the PlcReader interface
+        // could remove the default implementation of read(TypeSafePlcReadRequest<T>),
+        // and protocol implementations could extend AbstractPlcReader.
+        //
+        // FWIW, in one case there is some checking that all of the items in a response
+        // are at least of the same type.
+      
         if (plcReadResponse instanceof TypeSafePlcReadResponse) {
-            return (TypeSafePlcReadResponse) plcReadResponse;
+            // Warning: no validation that everything in the response is a T.
+            return (TypeSafePlcReadResponse<T>) plcReadResponse;
         }
         if (plcReadResponse.getRequest() instanceof TypeSafePlcReadRequest) {
-            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadResponse.getRequest(), plcReadResponse.getResponseItems());
+            // Warning: no validation that everything in the response is a T.
+            return new TypeSafePlcReadResponse<T>((TypeSafePlcReadRequest<T>) plcReadResponse.getRequest(), (List<ReadResponseItem<T>>) plcReadResponse.getResponseItems());
         }
         List<? extends ReadResponseItem<?>> responseItems = plcReadResponse.getResponseItems();
         Objects.requireNonNull(responseItems, "Response items on " + plcReadResponse + " must not be null");
-        Class type = null;
+        Class<?> type = null;
         for (ReadResponseItem<?> responseItem : responseItems) {
             if (!responseItem.getValues().isEmpty()) {
                 type = responseItem.getValues().get(0).getClass();
@@ -84,7 +116,9 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
         if (type == null) {
             type = Object.class;
         }
-        return new TypeSafePlcReadResponse(new TypeSafePlcReadRequest(type, plcReadResponse.getRequest()), responseItems);
+        // Warning: no validation that everything in the response is a T.
+        // Verified that everything in the response was the same type, but why bother?
+        return new TypeSafePlcReadResponse<T>(new TypeSafePlcReadRequest<T>((Class<T>) type, plcReadResponse.getRequest()), (List<ReadResponseItem<T>>) responseItems);
     }
 
     private static void checkList(List<?> list, Class<?> type) {

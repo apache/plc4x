@@ -336,7 +336,7 @@ public class RawSocket {
      *
      * @return InetAddress representing the address of the internet gateway.
      */
-    @SuppressWarnings("squid:S1313")
+    @SuppressWarnings("squid:S1313")  // silence sonar warning
     private InetAddress getDefaultGatewayAddress() {
         try {
             Runtime rt = Runtime.getRuntime();

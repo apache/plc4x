@@ -82,7 +82,7 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
             } else {
                 plcWriteRequest = new TypeSafePlcWriteRequest<>(firstType);
             }
-            for (WriteRequestItem request : requests) {
+            for (WriteRequestItem<?> request : requests) {
                 plcWriteRequest.addItem(request);
             }
             return plcWriteRequest;

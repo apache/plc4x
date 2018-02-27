@@ -66,7 +66,7 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
             return this;
         }
 
-        public final Builder addItem(ReadRequestItem readRequestItem) {
+        public final Builder addItem(ReadRequestItem<?> readRequestItem) {
             checkType(readRequestItem.getDatatype());
             requests.add(readRequestItem);
             return this;
@@ -82,7 +82,7 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
             } else {
                 plcReadRequest = new TypeSafePlcReadRequest<>(firstType);
             }
-            for (ReadRequestItem request : requests) {
+            for (ReadRequestItem<?> request : requests) {
                 plcReadRequest.addItem(request);
             }
             return plcReadRequest;

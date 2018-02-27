@@ -32,7 +32,7 @@ import org.apache.plc4x.java.api.messages.items.ResponseItem;
  * @param <RESPONSE_ITEM> 
  * @param <REQUEST_ITEM> 
  */
-public abstract class PlcResponse<REQUEST extends PlcRequest, RESPONSE_ITEM extends ResponseItem, REQUEST_ITEM extends RequestItem> implements PlcMessage {
+public abstract class PlcResponse<REQUEST extends PlcRequest<?>, RESPONSE_ITEM extends ResponseItem<?>, REQUEST_ITEM extends RequestItem<?>> implements PlcMessage {
 
     private final REQUEST request;
 

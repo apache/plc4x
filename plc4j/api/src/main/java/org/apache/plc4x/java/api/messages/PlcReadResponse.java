@@ -37,6 +37,9 @@ public class PlcReadResponse extends PlcResponse<PlcReadRequest, ReadResponseIte
 
     @SuppressWarnings("unchecked")
     public <T> Optional<ReadResponseItem<T>> getValue(ReadRequestItem<T> item) {
-        return (Optional) super.getValue(item);
+        Optional<ReadResponseItem<?>> value = super.getValue(item);
+        // Directly casting to Optional<ReadResponseItem<T>> yields a compile time error.
+        // First casting to Object eliminates it.
+        return (Optional<ReadResponseItem<T>>) ((Object) value);
     }
 }
