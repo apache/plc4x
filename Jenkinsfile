@@ -127,13 +127,28 @@ pipeline {
             }
         }
 
-        stage('Stage Site') {
+        stage('Stage site') {
             when {
                 branch 'master'
             }
             steps {
                 echo 'Staging Site'
-                sh 'mvn -P${JENKINS_PROFILE} ${MVN_LOCAL_REPO_OPT} site:stage'
+                sh 'mvn -P${JENKINS_PROFILE} site:stage'
+            }
+        }
+
+        stage('Deploy site') {
+            when {
+                branch 'master'
+            }
+            agent {
+                node {
+                    label 'git-websites'
+                }
+            }
+            steps {
+                echo 'Deploy Site'
+                sh 'mvn -P${JENKINS_PROFILE} site:deploy'
             }
         }
 
