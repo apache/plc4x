@@ -34,4 +34,17 @@
 - Development should be done in Java 8
 - Providing Java 7 compatible versions should be possible by using the retrolambda plugin
   - Usage of default implementations does cause more problems than it solves in this case. 
-  
+
+## IDE specific
+- For formatting there is a .editorconfig defined. Intellij Idea come with a plugin for this preinstalled, for eclipse an installation is required (http://editorconfig.org/).
+- Import organizing uses the Intellij Idea default:
+  - Import order
+    - all other imports
+    - blank
+    - import javax.*
+    - import java.*
+    - blank
+    - all other static imports
+  - Star imports
+    - number of imports needed for .* = 5
+    - number of static-imports needed for .* = 3
