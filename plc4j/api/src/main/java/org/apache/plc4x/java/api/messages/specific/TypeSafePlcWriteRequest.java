@@ -71,6 +71,8 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
 
     @SuppressWarnings("unchecked")
     public List<WriteRequestItem<T>> getCheckedRequestItems() {
+        // Directly casting to List<WriteRequestItem<T>> yields a compile time error.
+        // First casting to Object eliminates it.
         return (List<WriteRequestItem<T>>) ((Object) getRequestItems());
     }
 

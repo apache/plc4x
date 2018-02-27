@@ -37,7 +37,9 @@ public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, WriteResponse
 
     @SuppressWarnings("unchecked")
     public <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item) {
-        Optional<WriteResponseItem<?>> value = super.getValue(item); 
+        Optional<WriteResponseItem<?>> value = super.getValue(item);
+        // Directly casting to Optional<WriteResponseItem<T>> yields a compile time error.
+        // First casting to Object eliminates it.
         return (Optional<WriteResponseItem<T>>) ((Object) value); 
     }
 }
