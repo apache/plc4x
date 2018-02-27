@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import java.util.List;
-import java.util.Objects;
-
 import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.model.Address;
+
+import java.util.List;
+import java.util.Objects;
 
 public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
 

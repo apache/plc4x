@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import java.util.List;
-import java.util.Objects;
-
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
+
+import java.util.List;
+import java.util.Objects;
 
 public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 

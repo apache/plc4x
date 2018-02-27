@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 
 public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, WriteResponseItem<?>, WriteRequestItem<?>> {
 

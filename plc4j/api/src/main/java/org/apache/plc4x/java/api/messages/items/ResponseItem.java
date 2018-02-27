@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import java.util.Objects;
-
 import org.apache.plc4x.java.api.types.ResponseCode;
+
+import java.util.Objects;
 
 public abstract class ResponseItem<REQUEST_ITEM extends RequestItem<?>> {
 
