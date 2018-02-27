@@ -57,20 +57,20 @@ public class LittleEndianDecoder {
             } else {
                 byte byteTwo = adsData[i + 1];
                 if (datatype == Short.class) {
-                    result.add((short) (((byteOne & 0xff) & 0xff) | ((byteTwo & 0xff) << 8)));
+                    result.add((short) ((byteOne & 0xff) | ((byteTwo & 0xff) << 8)));
                     i += 2;
                 } else {
                     byte byteThree = adsData[i + 2];
                     byte byteFour = adsData[i + 3];
                     if (datatype == Integer.class) {
-                        result.add(((byteOne & 0xff)) | ((byteTwo & 0xff) << 8) | ((byteThree & 0xff) << 16) | ((byteFour & 0xff)) << 24);
+                        result.add((byteOne & 0xff) | ((byteTwo & 0xff) << 8) | ((byteThree & 0xff) << 16) | (byteFour & 0xff) << 24);
                         i += 4;
                     } else if (datatype == Float.class) {
                         // TODO: check how ads expects this data
                         // Description of the Real number format:
                         // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
                         // https://de.wikipedia.org/wiki/IEEE_754
-                        int intValue = ((byteOne & 0xff)) | ((byteTwo & 0xff) << 8) | ((byteThree & 0xff) << 16) | ((byteFour & 0xff) << 24);
+                        int intValue = (byteOne & 0xff) | ((byteTwo & 0xff) << 8) | ((byteThree & 0xff) << 16) | ((byteFour & 0xff) << 24);
                         result.add(Float.intBitsToFloat(intValue));
                         i += 4;
                     } else {
@@ -87,7 +87,6 @@ public class LittleEndianDecoder {
                                     byteSeven,
                                     byteSix,
                                     byteFive,
-
                                     byteFour,
                                     byteThree,
                                     byteTwo,
