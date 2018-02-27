@@ -137,6 +137,7 @@ pipeline {
             steps {
                 echo 'Staging Site'
                 sh 'mvn -P${JENKINS_PROFILE} site:stage'
+                stash includes: 'target/**/*', name: 'buildDir'
             }
         }
 
@@ -151,9 +152,9 @@ pipeline {
             }
             steps {
                 echo 'Deploy Site'
+                unstash 'buildDir'
                 // We need to regenerate the site for deploy as we switch the node. We could save time by stash/unstash.
-                sh 'mvn -P${JENKINS_PROFILE} site:site'
-                sh 'mvn -P${JENKINS_PROFILE} site:deploy'
+                sh 'mvn -P${JENKINS_PROFILE} scm-publish:publish-scm'
             }
         }
 
