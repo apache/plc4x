@@ -29,8 +29,12 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.net.UnknownHostException;
+
 import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class ADSPlcDriverTest {
 
@@ -54,8 +58,12 @@ public class ADSPlcDriverTest {
 
     @Test(expected = PlcConnectionException.class)
     public void getConnectionUnknownHost() throws Exception {
-        new PlcDriverManager().getConnection("ads://:" + RandomStringUtils.randomAlphabetic(12) + "/0.0.0.0.0.0:13",
-            new PlcUsernamePasswordAuthentication("admin", "admin"));
+        new PlcDriverManager().getConnection("ads://nowhere:8080/0.0.0.0.0.0:13");
+    }
+
+    @Test(expected = PlcConnectionException.class)
+    public void getConnectionUnknownPort() throws Exception {
+        new PlcDriverManager().getConnection("ads://nowhere:unknown/0.0.0.0.0.0:13");
     }
 
     /**
@@ -63,10 +71,17 @@ public class ADSPlcDriverTest {
      *
      * @throws PlcException something went wrong
      */
-    @Test
+    @Test(expected = PlcConnectionException.class)
     public void getConnectionInvalidUrl() throws PlcException {
-        assertThrows(PlcConnectionException.class,
-            () -> new PlcDriverManager().getConnection("ads://localhost/hurz/2"));
+        new PlcDriverManager().getConnection("ads://localhost/hurz/2");
     }
+
+    @Test
+    public void  getProtocol() {
+        ADSPlcDriver driver = new ADSPlcDriver();
+        assertThat(driver.getProtocolCode(), is("ads"));
+        assertThat(driver.getProtocolName(), is("Beckhoff Twincat ADS"));
+    }
+
 
 }
