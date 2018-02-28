@@ -41,6 +41,8 @@ public class PlcDriverManagerTest {
 
     /**
      * Tries to get the mock plc driver which is part of this testsuite.
+     *
+     * @throws PlcException something went wrong
      */
     @Test
     @Category(FastTests.class)
@@ -53,6 +55,8 @@ public class PlcDriverManagerTest {
 
     /**
      * Tries to get the mock plc driver with authentication which is part of this testsuite.
+     *
+     * @throws PlcException something went wrong
      */
     @Test
     @Category(FastTests.class)
@@ -68,7 +72,9 @@ public class PlcDriverManagerTest {
     }
 
     /**
-     * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
+     * In this test case a driver is requested which is not registered with the PlcDriverManager.
+     *
+     * @throws PlcConnectionException something went wrong
      */
     @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
@@ -77,7 +83,9 @@ public class PlcDriverManagerTest {
     }
 
     /**
-     * In this test case a driver is requested which is not registered with the {@link PlcDriverManager}.
+     * In this test case a driver is requested which is not registered with the PlcDriverManager.
+     *
+     * @throws PlcConnectionException something went wrong
      */
     @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
@@ -86,9 +94,12 @@ public class PlcDriverManagerTest {
     }
 
     /**
-     * In this test the {@link PlcDriverManager} will be configured with a service list that
+     * In this test the PlcDriverManager will be configured with a service list that
      * contains multiple implementation instances of the same protocol. This should result in
      * an error.
+     *
+     * @throws MalformedURLException something went wrong
+     * @throws PlcConnectionException something went wrong
      */
     @Test(expected = IllegalStateException.class)
     @Category(FastTests.class)
