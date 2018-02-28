@@ -126,7 +126,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh 'mvn -P${JENKINS_PROFILE} site:site'
+                sh 'mvn -P${JENKINS_PROFILE} site'
             }
         }
 
