@@ -116,7 +116,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh 'mvn -P${JENKINS_PROFILE} deploy'
+                sh 'mvn -P${JENKINS_PROFILE} -DskipTests deploy'
             }
         }
 
@@ -125,7 +125,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                echo 'Building'
+                echo 'Building Site'
                 sh 'mvn -P${JENKINS_PROFILE} site'
             }
         }
@@ -136,13 +136,8 @@ pipeline {
             }
             steps {
                 echo 'Staging Site'
-                // Commented out as long as the build doesn't run on our own VM
-                // The site generation requires installing some graphical tools,
-                // that are only present on git-websites nodes. But instead of
-                // having these installed on all nodes or moving this step to the
-                // other nodes, we'll just wait for our own VM.
-                //sh 'mvn -P${JENKINS_PROFILE} site:stage'
-                //stash includes: 'target/**/*', name: 'buildDir'
+                sh 'mvn -P${JENKINS_PROFILE} site:stage'
+                stash includes: 'target/staging/**/*', name: 'siteStageDir'
             }
         }
 
@@ -156,9 +151,8 @@ pipeline {
                 }
             }
             steps {
-                echo 'Deploy Site'
-                // Commented out as long as the build doesn't run on our own VM
-                //unstash 'buildDir'
+                echo 'Deploying Site'
+                unstash 'siteStageDir'
                 // We need to regenerate the site for deploy as we switch the node. We could save time by stash/unstash.
                 //sh 'mvn -P${JENKINS_PROFILE} scm-publish:publish-scm'
             }
