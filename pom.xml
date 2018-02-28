@@ -322,6 +322,25 @@
         </executions>
       </plugin>
 
+      <!-- Tell the deploy plugin to deploy everything at the end and only if the full build was successful -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <deployAtEnd>true</deployAtEnd>
+        </configuration>
+      </plugin>
+
+      <!--
+        ===================================
+        ==                               ==
+        ==    SITE GENERATION PLUGINS    ==
+        ==                               ==
+        ===================================
+
+        Starting here the following plugins are used for generating the projects website.
+      -->
+
       <!--
           The reflow maven skin used for the site-generation requires some static resources.
           The following plugins configure the acquisition and location of these resources.
