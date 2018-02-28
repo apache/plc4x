@@ -86,7 +86,6 @@
 
   <body>
     <head>
-      <link rel="stylesheet" href="$resourcePath/css/font-awesome.min.css"/>
     </head>
 
     <menu ref="parent" inherit="top"/>
