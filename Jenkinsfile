@@ -116,7 +116,7 @@ pipeline {
             }
             steps {
                 echo 'Deploying'
-                sh 'mvn -P${JENKINS_PROFILE} -DskipTests deploy'
+                sh 'mvn -P${JENKINS_PROFILE} -Drat.skip=true -Djqassistant.skip=true -Dmaven.resources.skip=true -Dmaven.test.skip=true -Dmaven.install.skip=true deploy'
             }
         }
 
