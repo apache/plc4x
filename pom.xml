@@ -322,15 +322,6 @@
         </executions>
       </plugin>
 
-      <!-- Tell the deploy plugin to deploy everything at the end and only if the full build was successful -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <deployAtEnd>true</deployAtEnd>
-        </configuration>
-      </plugin>
-
       <!--
         ===================================
         ==                               ==

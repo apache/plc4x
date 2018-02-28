@@ -115,7 +115,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                echo 'Building'
+                echo 'Deploying'
                 sh 'mvn -P${JENKINS_PROFILE} -DskipTests deploy'
             }
         }
