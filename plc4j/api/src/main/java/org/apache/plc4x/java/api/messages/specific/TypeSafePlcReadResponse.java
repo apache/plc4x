@@ -59,32 +59,35 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
         return (Optional<ReadResponseItem<T>>) super.getResponseItem();
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> TypeSafePlcReadResponse<T> of(PlcReadResponse plcReadResponse) {
+    public static <T> TypeSafePlcReadResponse<T> of(PlcReadResponse plcReadResponse, Class<T> clazz) {
+        Objects.requireNonNull(plcReadResponse, "PlcReadResponse must not be null");
+        Objects.requireNonNull(clazz, "Class must not be null");
         if (plcReadResponse instanceof TypeSafePlcReadResponse) {
-            return (TypeSafePlcReadResponse) plcReadResponse;
+            @SuppressWarnings("unchecked")
+            TypeSafePlcReadResponse<T> typeSafePlcReadResponse = (TypeSafePlcReadResponse<T>) plcReadResponse;
+            Class type = typeSafePlcReadResponse.getRequest().getDataType();
+            if (type != clazz) {
+                throw new IllegalArgumentException("Expected type " + clazz + " doesn't match found type " + type);
+            }
+            return typeSafePlcReadResponse;
         }
-        if (plcReadResponse.getRequest() instanceof TypeSafePlcReadRequest) {
-            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadResponse.getRequest(), plcReadResponse.getResponseItems());
-        }
-        List<? extends ReadResponseItem<?>> responseItems = plcReadResponse.getResponseItems();
+        @SuppressWarnings("unchecked")
+        List<ReadResponseItem<T>> responseItems = (List<ReadResponseItem<T>>) plcReadResponse.getResponseItems();
         Objects.requireNonNull(responseItems, "Response items on " + plcReadResponse + " must not be null");
-        Class type = null;
+        if (plcReadResponse.getRequest() instanceof TypeSafePlcReadRequest) {
+            @SuppressWarnings("unchecked")
+            TypeSafePlcReadRequest<T> typeSafePlcReadRequest = (TypeSafePlcReadRequest<T>) plcReadResponse.getRequest();
+            Class type = typeSafePlcReadRequest.getDataType();
+            if (type != clazz) {
+                throw new IllegalArgumentException("Expected type " + clazz + " doesn't match found type " + type);
+            }
+            return new TypeSafePlcReadResponse<>(typeSafePlcReadRequest, responseItems);
+        }
         for (ReadResponseItem<?> responseItem : responseItems) {
-            if (!responseItem.getValues().isEmpty()) {
-                type = responseItem.getValues().get(0).getClass();
-                break;
-            }
+            checkList(responseItem.getValues(), clazz);
         }
-        if (type != null) {
-            for (ReadResponseItem<?> responseItem : responseItems) {
-                checkList(responseItem.getValues(), type);
-            }
-        }
-        if (type == null) {
-            type = Object.class;
-        }
-        return new TypeSafePlcReadResponse(new TypeSafePlcReadRequest(type, plcReadResponse.getRequest()), responseItems);
+        TypeSafePlcReadRequest<T> request = new TypeSafePlcReadRequest<>(clazz, plcReadResponse.getRequest());
+        return new TypeSafePlcReadResponse<>(request, responseItems);
     }
 
     private static void checkList(List<?> list, Class<?> type) {

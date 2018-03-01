@@ -49,7 +49,8 @@ public interface PlcReader {
      */
     default <T> CompletableFuture<TypeSafePlcReadResponse<T>> read(TypeSafePlcReadRequest<T> readRequest) {
         Objects.requireNonNull(readRequest, "Read request must not be null");
-        return read((PlcReadRequest) readRequest).thenApply(TypeSafePlcReadResponse::of);
+        return read((PlcReadRequest) readRequest)
+            .thenApply(readResponse -> TypeSafePlcReadResponse.of(readResponse, readRequest.getDataType()));
     }
 
 }

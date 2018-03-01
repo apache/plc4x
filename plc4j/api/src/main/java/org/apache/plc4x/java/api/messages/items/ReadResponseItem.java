@@ -20,6 +20,7 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.types.ResponseCode;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,7 +31,17 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
     public ReadResponseItem(ReadRequestItem<T> requestItem, ResponseCode responseCode, List<T> values) {
         super(requestItem, responseCode);
         Objects.requireNonNull(values, "Values must not be null");
+        for (T value : values) {
+            if (!requestItem.getDatatype().isAssignableFrom(value.getClass())) {
+                throw new IllegalArgumentException("Datatype of " + value + " doesn't macht required datatype of " + requestItem.getDatatype());
+            }
+        }
         this.values = values;
+    }
+
+    @SafeVarargs
+    public ReadResponseItem(ReadRequestItem<T> requestItem, ResponseCode responseCode, T... values) {
+        this(requestItem, responseCode, Arrays.asList(values));
     }
 
     public List<T> getValues() {

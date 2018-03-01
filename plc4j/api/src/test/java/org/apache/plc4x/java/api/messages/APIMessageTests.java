@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +69,7 @@ public class APIMessageTests {
     public void readResponseItem() {
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, address, 1);
-        ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK, Collections.emptyList());
+        ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK);
         assertThat("Unexpected response code", readResponseItem.getResponseCode(), equalTo(ResponseCode.OK));
         assertThat(readResponseItem.getValues(), empty());
         assertThat("Unexpected read request item", readResponseItem.getRequestItem(), equalTo(readRequestItem));
@@ -155,7 +154,7 @@ public class APIMessageTests {
         List<ReadResponseItem<?>> responseItems = new ArrayList<>();
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem = new ReadRequestItem<>(Byte.class, address, 1);
-        ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK, Collections.emptyList());
+        ReadResponseItem<Byte> readResponseItem = new ReadResponseItem<>(readRequestItem, ResponseCode.OK);
         responseItems.add(readResponseItem);
         PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
         assertThat("Unexpected number of response items", plcReadResponse.getRequest().getNumberOfItems(), equalTo(0));
@@ -251,8 +250,8 @@ public class APIMessageTests {
         MockAddress address = new MockAddress("mock:/DATA");
         ReadRequestItem<Byte> readRequestItem1 = new ReadRequestItem<>(Byte.class, address, 1);
         ReadRequestItem<Byte> readRequestItem2 = new ReadRequestItem<>(Byte.class, address, 1);
-        ReadResponseItem<Byte> readResponseItem1 = new ReadResponseItem<>(readRequestItem1, ResponseCode.OK, Collections.emptyList());
-        ReadResponseItem<Byte> readResponseItem2 = new ReadResponseItem<>(readRequestItem2, ResponseCode.OK, Collections.emptyList());
+        ReadResponseItem<Byte> readResponseItem1 = new ReadResponseItem<>(readRequestItem1, ResponseCode.OK);
+        ReadResponseItem<Byte> readResponseItem2 = new ReadResponseItem<>(readRequestItem2, ResponseCode.OK);
         responseItems.add(readResponseItem1);
         responseItems.add(readResponseItem2);
         PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);

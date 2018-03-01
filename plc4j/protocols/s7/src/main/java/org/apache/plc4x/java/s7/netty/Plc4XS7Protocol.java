@@ -161,8 +161,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             // Handle the response to a read request.
             if (request instanceof PlcReadRequest) {
                 response = decodeReadRequest(responseMessage, requestContainer);
-            }
-            else if (request instanceof PlcWriteRequest) {
+            } else if (request instanceof PlcWriteRequest) {
                 response = decodeWriteRequest(responseMessage, requestContainer);
             }
 
@@ -238,7 +237,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
             ReadResponseItem responseItem;
             // Something went wrong.
             if (responseCode != ResponseCode.OK) {
-                responseItem = new ReadResponseItem<>(requestItem, responseCode, null);
+                responseItem = new ReadResponseItem<>(requestItem, responseCode);
             }
             // All Ok.
             else {

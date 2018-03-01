@@ -25,7 +25,6 @@ import org.apache.plc4x.java.api.types.ResponseCode;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,35 +36,44 @@ public class TypeSafePlcReadResponseTest {
 
     @Before
     public void setUp() {
-        readResponseItemString = new ReadResponseItem<>(mock(ReadRequestItem.class), ResponseCode.OK, Arrays.asList("", ""));
+        ReadRequestItem<String> mock = mock(ReadRequestItem.class);
+        when(mock.getDatatype()).thenReturn(String.class);
+        readResponseItemString = new ReadResponseItem<>(mock, ResponseCode.OK, "", "");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void constuctor() {
-        TypeSafePlcReadRequest mock = mock(TypeSafePlcReadRequest.class);
+        TypeSafePlcReadRequest<String> mock = mock(TypeSafePlcReadRequest.class);
         when(mock.getDataType()).thenReturn(String.class);
         new TypeSafePlcReadResponse<>(mock, readResponseItemString);
         new TypeSafePlcReadResponse<>(mock, Collections.singletonList(readResponseItemString));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constuctorWrong() {
+        TypeSafePlcReadRequest<Byte> mock = mock(TypeSafePlcReadRequest.class);
         when(mock.getDataType()).thenReturn(Byte.class);
 
         // expects an exception
-        new TypeSafePlcReadResponse<>(mock, readResponseItemString);
+        new TypeSafePlcReadResponse(mock, readResponseItemString);
     }
 
     @Test
     public void of() {
         {
-            TypeSafePlcReadResponse.of(mock(PlcReadResponse.class, RETURNS_DEEP_STUBS));
+            TypeSafePlcReadResponse.of(mock(PlcReadResponse.class, RETURNS_DEEP_STUBS), String.class);
         }
         {
             PlcReadResponse response = mock(PlcReadResponse.class, RETURNS_DEEP_STUBS);
-            when(response.getRequest()).thenReturn(mock(TypeSafePlcReadRequest.class, RETURNS_DEEP_STUBS));
-            TypeSafePlcReadResponse.of(response);
+            TypeSafePlcReadRequest typeSafePlcReadRequest = mock(TypeSafePlcReadRequest.class, RETURNS_DEEP_STUBS);
+            when(typeSafePlcReadRequest.getDataType()).thenReturn(String.class);
+            when(response.getRequest()).thenReturn(typeSafePlcReadRequest);
+            TypeSafePlcReadResponse.of(response, String.class);
         }
         {
             PlcReadResponse response = mock(PlcReadResponse.class, RETURNS_DEEP_STUBS);
             when(response.getResponseItems()).thenReturn((List) Collections.singletonList(readResponseItemString));
-            TypeSafePlcReadResponse.of(response);
+            TypeSafePlcReadResponse.of(response, String.class);
         }
     }
 
