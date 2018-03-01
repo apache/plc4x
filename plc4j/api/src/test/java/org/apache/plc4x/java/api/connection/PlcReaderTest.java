@@ -19,13 +19,21 @@
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.types.ResponseCode;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class PlcReaderTest {
@@ -34,6 +42,18 @@ public class PlcReaderTest {
     public void read() throws Exception {
         ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, Collections.emptyList())))
             .read(new TypeSafePlcReadRequest<>(String.class, mock(Address.class))).get();
+    }
+
+    @Test
+    public void readWrongType() throws Exception {
+        try {
+            ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, (List) Collections.singletonList(new ReadResponseItem(readRequest.getRequestItem().get(), ResponseCode.OK, Collections.singletonList(1))))))
+                .read(new TypeSafePlcReadRequest<>(String.class, mock(Address.class))).get();
+            fail("Should throw an exception");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause(), instanceOf(IllegalArgumentException.class));
+            assertThat(e.getCause().getMessage(), equalTo("Unexpected data type class java.lang.Integer on readRequestItem. Expected class java.lang.String"));
+        }
     }
 
 }
