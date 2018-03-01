@@ -57,6 +57,10 @@ public class Result extends UnsignedIntLEByteValue {
         return new Result(byteBuf);
     }
 
+    public static Result of(AdsReturnCode adsReturnCode) {
+        return of(adsReturnCode.getHex());
+    }
+
     public AdsReturnCode toAdsReturnCode() {
         return AdsReturnCode.of(getAsLong());
     }

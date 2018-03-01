@@ -46,6 +46,13 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
         this.requests = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Resets this protocol and discard all send requests.
+     */
+    public void reset() {
+        requests.clear();
+    }
+
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, AMSTCPPacket amstcpPacket, List<Object> out) throws Exception {
         Invoke invokeId = amstcpPacket.getAmsHeader().getInvokeId();
@@ -54,7 +61,6 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
         }
         out.add(amstcpPacket.getByteBuf());
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
@@ -76,6 +82,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
             LOGGER.debug("Correlated packet received {}", correlatedAmstcpPacket);
         }
         if (dataLength.getAsLong() > Integer.MAX_VALUE) {
+            byteBuf.release();
             throw new IllegalStateException("Overflow in datalength: " + dataLength.getAsLong());
         }
         ByteBuf commandBuffer = byteBuf.readBytes((int) dataLength.getAsLong());
@@ -120,8 +127,12 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
         out.add(amstcpPacket);
         LOGGER.trace("Set amstcpPacket {} to out", amstcpPacket);
         if (commandBuffer.readableBytes() > 0) {
+            commandBuffer.release();
+            byteBuf.release();
             throw new IllegalStateException("Unread bytes left: " + commandBuffer.readableBytes());
         }
+        commandBuffer.release();
+        byteBuf.release();
     }
 
     private AMSTCPPacket handleInvalidCommand(ByteBuf commandBuffer, AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
@@ -266,6 +277,7 @@ public class ADSProtocol extends MessageToMessageCodec<ByteBuf, AMSTCPPacket> {
                 AdsStampHeader adsStampHeader = handleStampHeader(adsDeviceNotificationBuffer);
                 adsStampHeaders.add(adsStampHeader);
             }
+            adsDeviceNotificationBuffer.release();
             amstcpPacket = ADSDeviceNotificationRequest.of(amstcpHeader, amsHeader, length, stamps, adsStampHeaders);
         } else {
             amstcpPacket = UnknownCommand.of(amstcpHeader, amsHeader, commandBuffer);

@@ -38,6 +38,7 @@
     <module>ads</module>
     <module>driver-base</module>
     <module>s7</module>
+    <module>benchmarks</module>
   </modules>
 
 </project>
