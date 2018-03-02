@@ -65,6 +65,11 @@ public class ByteValue implements ByteReadable {
     }
 
     @Override
+    public long getCalculatedLength() {
+        return value.length;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;

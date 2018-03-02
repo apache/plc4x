@@ -82,6 +82,11 @@ public enum Command implements ByteReadable {
         return Unpooled.buffer().writeBytes(value);
     }
 
+    @Override
+    public long getCalculatedLength() {
+        return NUM_BYTES;
+    }
+
     public static Command of(byte... bytes) {
         // TODO: improve by using a map
         for (Command command : values()) {
