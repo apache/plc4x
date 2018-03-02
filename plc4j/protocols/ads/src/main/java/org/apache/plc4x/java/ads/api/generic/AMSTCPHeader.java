@@ -19,13 +19,13 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.ads.api.generic.types.TcpLength;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 /**
  * AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
@@ -69,7 +69,7 @@ public class AMSTCPHeader implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(reserved, getTcpLength());
+        return Unpooled.wrappedBuffer(reserved.getByteBuf(), getTcpLength().getByteBuf());
     }
 
     /**

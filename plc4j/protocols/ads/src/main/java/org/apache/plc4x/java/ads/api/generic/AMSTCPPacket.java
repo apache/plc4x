@@ -19,12 +19,12 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.ads.api.commands.ADSCommandType;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public abstract class AMSTCPPacket implements ByteReadable {
     private final AMSTCPHeader amsTcpHeader;
@@ -72,11 +72,11 @@ public abstract class AMSTCPPacket implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(amsTcpHeader, amsHeader, getAdsData());
+        return Unpooled.wrappedBuffer(amsTcpHeader.getByteBuf(), amsHeader.getByteBuf(), getAdsData().getByteBuf());
     }
 
-    protected ADSData buildADSData(ByteReadable... byteReadables) {
-        return () -> buildByteBuff(byteReadables);
+    protected ADSData buildADSData(ByteBuf... byteReadables) {
+        return () -> Unpooled.wrappedBuffer(byteReadables);
     }
 
     @Override

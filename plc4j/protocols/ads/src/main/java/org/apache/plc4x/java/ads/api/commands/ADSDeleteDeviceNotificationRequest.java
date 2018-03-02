@@ -73,7 +73,9 @@ public class ADSDeleteDeviceNotificationRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(notificationHandle);
+        return buildADSData(
+            notificationHandle.getByteBuf()
+        );
     }
 
     @Override

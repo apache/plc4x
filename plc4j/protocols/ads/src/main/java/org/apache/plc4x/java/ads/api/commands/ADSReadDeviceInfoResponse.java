@@ -104,7 +104,13 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(result, majorVersion, minorVersion, version, device);
+        return buildADSData(
+            result.getByteBuf(),
+            majorVersion.getByteBuf(),
+            minorVersion.getByteBuf(),
+            version.getByteBuf(),
+            device.getByteBuf()
+        );
     }
 
     @Override
@@ -126,7 +132,7 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
             return false;
         if (!version.equals(that.version))
             return false;
-        
+
         return device.equals(that.device);
     }
 

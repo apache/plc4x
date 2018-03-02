@@ -23,8 +23,8 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import java.util.List;
 
+import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.util.Objects.requireNonNull;
-import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public class AdsStampHeader implements ByteReadable {
 
@@ -63,7 +63,11 @@ public class AdsStampHeader implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(timeStamp, samples, () -> buildByteBuff(adsNotificationSamples.toArray(new ByteReadable[adsNotificationSamples.size()])));
+        return wrappedBuffer(
+            timeStamp.getByteBuf(),
+            samples.getByteBuf(),
+            wrappedBuffer(adsNotificationSamples.stream().map(ByteReadable::getByteBuf).toArray(ByteBuf[]::new))
+        );
     }
 
     public TimeStamp getTimeStamp() {
@@ -91,7 +95,7 @@ public class AdsStampHeader implements ByteReadable {
             return false;
         if (!samples.equals(that.samples))
             return false;
-        
+
         return adsNotificationSamples.equals(that.adsNotificationSamples);
     }
 
