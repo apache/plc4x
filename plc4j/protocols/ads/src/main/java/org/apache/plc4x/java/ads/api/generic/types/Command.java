@@ -79,7 +79,7 @@ public enum Command implements ByteReadable {
         if (this == UNKNOWN) {
             throw new IllegalStateException("Unknown enum can't be serialized");
         }
-        return Unpooled.buffer().writeBytes(value);
+        return Unpooled.wrappedBuffer(value);
     }
 
     @Override

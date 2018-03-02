@@ -61,7 +61,7 @@ public class ByteValue implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return Unpooled.buffer().writeBytes(value);
+        return Unpooled.wrappedBuffer(value);
     }
 
     @Override

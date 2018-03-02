@@ -38,7 +38,7 @@ public interface ByteReadable extends LengthSupplier {
 
     @Override
     default long getCalculatedLength() {
-        return getBytes().length;
+        return getByteBuf().readableBytes();
     }
 
     default String dump() throws IOException {

@@ -21,6 +21,8 @@ package org.apache.plc4x.java.ads.api.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.util.Arrays;
+
 public class ByteReadableUtils {
 
     private ByteReadableUtils() {
@@ -28,10 +30,6 @@ public class ByteReadableUtils {
     }
 
     public static ByteBuf buildByteBuff(ByteReadable... byteReadables) {
-        ByteBuf buffer = Unpooled.buffer();
-        for (ByteReadable byteReadable : byteReadables) {
-            buffer.writeBytes(byteReadable.getByteBuf());
-        }
-        return buffer;
+        return Unpooled.wrappedBuffer(Arrays.stream(byteReadables).map(ByteReadable::getByteBuf).toArray(ByteBuf[]::new));
     }
 }
