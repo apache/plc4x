@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.netty.util;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -68,12 +69,12 @@ public class LittleEndianEncoder {
                     try {
                         bos.write(byteValue);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        throw new PlcRuntimeException(e);
                     }
                 },
                 (a, b) -> {
                 }).toByteArray();
-        } catch (RuntimeException e) {
+        } catch (PlcRuntimeException e) {
             throw new PlcProtocolException("Error encoding data", e);
         }
     }
