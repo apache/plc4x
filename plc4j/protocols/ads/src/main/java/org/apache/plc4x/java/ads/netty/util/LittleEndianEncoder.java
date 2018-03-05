@@ -20,6 +20,7 @@ package org.apache.plc4x.java.ads.netty.util;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class LittleEndianEncoder {
         // Utility class
     }
 
-    public static byte[] encodeData(Class<?> valueType, Object[] values) {
+    public static byte[] encodeData(Class<?> valueType, Object[] values) throws PlcProtocolException {
         if (values.length == 0) {
             return new byte[]{};
         }
@@ -56,21 +57,25 @@ public class LittleEndianEncoder {
         } else if (valueType == String.class) {
             result = encodeString(Arrays.stream(values).map(String.class::cast));
         } else {
-            throw new IllegalArgumentException("Unsupported type" + valueType);
+            throw new PlcProtocolException("Unsupported datatype " + valueType);
         }
 
         // TODO: maybe we can replace this by a smarter flatmap
-        return result.collect(
-            ByteArrayOutputStream::new,
-            (bos, byteValue) -> {
-                try {
-                    bos.write(byteValue);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            },
-            (a, b) -> {
-            }).toByteArray();
+        try {
+            return result.collect(
+                ByteArrayOutputStream::new,
+                (bos, byteValue) -> {
+                    try {
+                        bos.write(byteValue);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                (a, b) -> {
+                }).toByteArray();
+        } catch (RuntimeException e) {
+            throw new PlcProtocolException("Error encoding data", e);
+        }
     }
 
     public static Stream<byte[]> encodeString(Stream<String> stringStream) {
