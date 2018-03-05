@@ -61,7 +61,7 @@ public class S7PlcDriver implements PlcDriver {
 
         int rack = Integer.parseInt(matcher.group("rack"));
         int slot = Integer.parseInt(matcher.group("slot"));
-        String params = matcher.group("params").substring(1);
+        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
 
         try {
             InetAddress serverInetAddress = InetAddress.getByName(host);
