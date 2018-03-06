@@ -18,112 +18,43 @@ under the License.
 */
 package org.apache.plc4x.java.examples.dummydriver.connection;
 
+import java.net.InetAddress;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
+import io.netty.channel.*;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcRequestContainer;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.examples.dummydriver.model.DummyAddress;
-import org.apache.plc4x.java.examples.dummydriver.netty.DummyProtocol;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.DefaultEventLoopGroup;
-import io.netty.channel.EventLoopGroup;
 
 public class DummyConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(DummyConnection.class);
 
-    private final String hostName;
-
-    private EventLoopGroup workerGroup;
-    private Channel channel;
     @SuppressWarnings("unused")
     private boolean connected;
 
-    public DummyConnection(String hostName) {
-        this.hostName = hostName;
-        this.connected = false;
-    }
-
-    public String getHostName() {
-        return hostName;
+    public DummyConnection(InetAddress host) {
+        super(new TcpSocketChannelFactory(host, 42));
     }
 
     @Override
-    public void connect() throws PlcConnectionException {
-        workerGroup = new DefaultEventLoopGroup() {
+    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+        return new ChannelInitializer() {
+            @Override
+            protected void initChannel(Channel channel) {
+            }
         };
-
-        try {
-            // As we don't just want to wait till the connection is established,
-            // define a future we can use to signal back that the s7 session is
-            // finished initializing.
-            CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
-
-            RawSocketAddress serverSocketAddress = new RawSocketAddress(hostName);
-
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(workerGroup);
-            bootstrap.channel(RawSocketChannel.class);
-            bootstrap.handler(new ChannelInitializer<Channel>() {
-                @Override
-                protected void initChannel(Channel channel) throws Exception {
-                    ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast(new DummyProtocol());
-                }
-            });
-            // Start the client.
-            ChannelFuture f = bootstrap.connect(serverSocketAddress).sync();
-            f.awaitUninterruptibly();
-            // Wait till the session is finished initializing.
-            channel = f.channel();
-
-            sessionSetupCompleteFuture.get();
-
-            connected = true;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException(e);
-        }
-        catch (ExecutionException e) {
-            throw new PlcConnectionException(e);
-        }
-    }
-
-    @Override
-    public void close() throws Exception {
-        if((channel != null) && channel.isOpen()) {
-            channel.closeFuture().await();
-        }
-
-        if (workerGroup != null) {
-            workerGroup.shutdownGracefully();
-        }
-
-        connected = false;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return true;
     }
 
     @Override

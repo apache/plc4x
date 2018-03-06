@@ -18,49 +18,40 @@ under the License.
 */
 package org.apache.plc4x.java.mock;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelInitializer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.TestChannelFactory;
+
+import java.util.concurrent.CompletableFuture;
 
 public class MockConnection extends AbstractPlcConnection {
 
     private final PlcAuthentication authentication;
 
-    boolean connected = false;
-    boolean closed = true;
-
     public MockConnection(PlcAuthentication authentication) {
+        super(new TestChannelFactory());
         this.authentication = authentication;
+    }
+
+    @Override
+    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+        return new ChannelInitializer() {
+            @Override
+            protected void initChannel(Channel channel) {
+            }
+        };
     }
 
     public PlcAuthentication getAuthentication() {
         return authentication;
     }
 
-    public boolean isConnected() {
-        return connected;
-    }
-
-    public boolean isClosed() {
-        return closed;
-    }
-
     @Override
-    public void connect() throws PlcConnectionException {
-        connected = true;
-        closed = false;
-    }
-
-    @Override
-    public void close() throws Exception {
-        connected = false;
-        closed = true;
-    }
-
-    @Override
-    public Address parseAddress(String addressString) throws PlcException {
+    public Address parseAddress(String addressString) {
         return null;
     }
 

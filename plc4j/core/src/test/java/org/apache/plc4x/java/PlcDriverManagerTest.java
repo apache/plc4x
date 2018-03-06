@@ -50,7 +50,6 @@ public class PlcDriverManagerTest {
         MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
         assertThat(mockConnection.getAuthentication(), nullValue());
         assertThat(mockConnection.isConnected(), is(true));
-        assertThat(mockConnection.isClosed(), is(false));
     }
 
     /**
@@ -68,7 +67,6 @@ public class PlcDriverManagerTest {
         assertThat(mockConnection.getAuthentication(), notNullValue());
         assertThat(mockConnection.getAuthentication(), instanceOf(PlcUsernamePasswordAuthentication.class));
         assertThat(mockConnection.isConnected(), is(true));
-        assertThat(mockConnection.isClosed(), is(false));
     }
 
     /**

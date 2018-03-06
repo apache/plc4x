@@ -26,11 +26,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -47,7 +44,7 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.types.ResponseCode;
 
-public class MockConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
+public class MockConnection extends org.apache.plc4x.java.base.connection.MockConnection implements PlcReader, PlcWriter {
 
     private final String url;
     private final PlcAuthentication authentication;
@@ -65,13 +62,10 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
     }
 
     public MockConnection(String url, PlcAuthentication authentication) {
+        super();
         this.url = url;
         this.authentication = authentication;
         this.connected = false;
-    }
-
-    public PlcAuthentication getAuthentication() {
-        return authentication;
     }
 
     public String getUrl() {
@@ -79,22 +73,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
     }
 
     @Override
-    public boolean isConnected() {
-        return connected;
-    }
-
-    @Override
-    public void connect() throws PlcConnectionException {
-        connected = true;
-    }
-
-    @Override
-    public void close() throws Exception {
-        connected = false;
-    }
-
-    @Override
-    public Address parseAddress(String addressString) throws PlcException {
+    public Address parseAddress(String addressString) {
         return new MockAddress(addressString);
     }
 
@@ -119,7 +98,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
         if (readRequest instanceof TypeSafePlcReadRequest) {
             @SuppressWarnings("unchecked")
             TypeSafePlcReadRequest<Object> readReq = (TypeSafePlcReadRequest<Object>) readRequest;
-            response = new TypeSafePlcReadResponse<Object>(readReq, responseItems);
+            response = new TypeSafePlcReadResponse<>(readReq, responseItems);
         } else {
             response = new PlcReadResponse(readRequest, responseItems);
         }
@@ -146,7 +125,7 @@ public class MockConnection extends AbstractPlcConnection implements PlcReader, 
         PlcWriteResponse response;
         if (writeRequest instanceof TypeSafePlcWriteRequest) {
             TypeSafePlcWriteRequest<Object> writeReq = (TypeSafePlcWriteRequest<Object>) writeRequest;
-            response = new TypeSafePlcWriteResponse<Object>(writeReq, responseItems);
+            response = new TypeSafePlcWriteResponse<>(writeReq, responseItems);
         } else {
             response = new PlcWriteResponse(writeRequest, responseItems);
         }

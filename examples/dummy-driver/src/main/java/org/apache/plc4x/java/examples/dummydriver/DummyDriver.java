@@ -24,6 +24,8 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.examples.dummydriver.connection.DummyConnection;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +51,12 @@ public class DummyDriver implements PlcDriver {
                 "Connection url doesn't match the format 'dummy://{host|ip}'");
         }
         String host = matcher.group("host");
-        return new DummyConnection(host);
+        try {
+            InetAddress hostAddress = InetAddress.getByName(host);
+            return new DummyConnection(hostAddress);
+        } catch (UnknownHostException e) {
+            throw new PlcConnectionException("Error", e);
+        }
     }
 
     @Override
