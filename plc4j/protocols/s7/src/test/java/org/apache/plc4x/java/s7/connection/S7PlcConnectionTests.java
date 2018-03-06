@@ -43,7 +43,8 @@ public class S7PlcConnectionTests {
     @Before
     public void setUp() throws Exception {
         InetAddress address = InetAddress.getByName("localhost");
-        s7PlcConnection = new S7PlcConnection(address, 1, 2, "");
+        s7PlcConnection = new S7PlcConnection(address, 1, 2,
+            "pdu-size=1&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag");
     }
 
     @After
@@ -55,9 +56,9 @@ public class S7PlcConnectionTests {
     public void initialState() {
         assertThat("Rack is incorrect", s7PlcConnection.getRack(), equalTo(1) );
         assertThat("Slot is incorrect", s7PlcConnection.getSlot(), equalTo(2) );
-        assertThat("Pdu size is incorrect", s7PlcConnection.getParamPduSize(), equalTo(TpduSize.SIZE_1024));
-        assertThat("Max AMQ Caller size is incorrect", s7PlcConnection.getParamMaxAmqCaller(), equalTo(8) );
-        assertThat("Max AMQ Callee size is incorrect", s7PlcConnection.getParamMaxAmqCallee(), equalTo(8) );
+        assertThat("Pdu size is incorrect", s7PlcConnection.getParamPduSize(), equalTo(TpduSize.SIZE_128));
+        assertThat("Max AMQ Caller size is incorrect", s7PlcConnection.getParamMaxAmqCaller(), equalTo(2) );
+        assertThat("Max AMQ Callee size is incorrect", s7PlcConnection.getParamMaxAmqCallee(), equalTo(3) );
     }
 
     @Test
