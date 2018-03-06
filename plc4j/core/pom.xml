@@ -47,7 +47,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-base</artifactId>
+      <artifactId>plc4j-protocol-driver-base</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
