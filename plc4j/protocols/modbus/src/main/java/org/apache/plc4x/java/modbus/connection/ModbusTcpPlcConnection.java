@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.modbus.connection;
 
 import io.netty.channel.*;
+import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.modbus.netty.ModbusProtocol;
 import org.apache.plc4x.java.modbus.netty.ModbusTcpProtocol;
@@ -36,9 +37,12 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
     private static final Logger logger = LoggerFactory.getLogger(ModbusTcpPlcConnection.class);
 
     public ModbusTcpPlcConnection(InetAddress address, String params) {
-        super(new TcpSocketChannelFactory(address, MODBUS_TCP_PORT), params);
-
+        this(new TcpSocketChannelFactory(address, MODBUS_TCP_PORT), params);
         logger.info("Configured ModbusTcpPlcConnection with: host-name {}", address.getHostAddress());
+    }
+
+    ModbusTcpPlcConnection(ChannelFactory channelFactory, String params) {
+        super(channelFactory, params);
     }
 
     @Override
@@ -46,7 +50,7 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
         return new ChannelInitializer() {
             @Override
             protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the s7 protocol.
+                // Build the protocol stack for communicating with the Modbus protocol.
                 ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast(new ModbusTcpProtocol());
                 pipeline.addLast(new ModbusProtocol());

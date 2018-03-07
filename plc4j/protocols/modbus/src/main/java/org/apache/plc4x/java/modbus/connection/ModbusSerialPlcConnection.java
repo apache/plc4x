@@ -22,6 +22,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
 import org.apache.plc4x.java.modbus.netty.ModbusProtocol;
 import org.apache.plc4x.java.modbus.netty.ModbusSerialProtocol;
@@ -37,8 +38,11 @@ public class ModbusSerialPlcConnection extends BaseModbusPlcConnection {
 
     public ModbusSerialPlcConnection(String port, String params) {
         super(new SerialChannelFactory(port), params);
-
         logger.info("Configured ModbusSerialPlcConnection with: serial-port {}", port);
+    }
+
+    ModbusSerialPlcConnection(ChannelFactory channelFactory, String params) {
+        super(channelFactory, params);
     }
 
     @Override
@@ -46,7 +50,7 @@ public class ModbusSerialPlcConnection extends BaseModbusPlcConnection {
         return new ChannelInitializer() {
             @Override
             protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the s7 protocol.
+                // Build the protocol stack for communicating with the Modbus protocol.
                 ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast(new ModbusSerialProtocol());
                 pipeline.addLast(new ModbusProtocol());
