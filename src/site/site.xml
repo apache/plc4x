@@ -88,7 +88,6 @@
     <head>
     </head>
 
-    <menu ref="parent" inherit="top"/>
     <menu name="Users">
       <item name="Getting Started" href="users/gettingstarted.html"/>
       <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
@@ -109,15 +108,16 @@
       <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
       <item name="S7/Profinet" href="protocols/s7/index.html"/>
     </menu>
-    <menu name="Reports" ref="reports" inherit="top"/>
-    <menu name="Apache">
+    <menu name="Reports" ref="reports" inherit="bottom"/>
+    <menu name="Apache" inherit="bottom">
       <item name="Apache Software Foundation" href="http://www.apache.org/"/>
       <item name="How Apache Works" href="https://www.apache.org/foundation/how-it-works.html"/>
       <item name="Apache License" href="http://www.apache.org/licenses/"/>
       <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
       <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
     </menu>
-    <menu ref="modules" inherit="top"/>
+    <menu name="Parent" ref="parent" inherit="top"/>
+    <menu ref="modules" inherit="bottom"/>
   </body>
 
 </project>

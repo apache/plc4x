@@ -25,9 +25,6 @@
     <menu name="Developers">
       <item name="Implementing Drivers" href="developers/implementing-drivers.html"/>
     </menu>
-    <menu name="Reports" ref="reports" inherit="top"/>
-    <menu ref="modules" inherit="top"/>
-    <menu ref="parent" inherit="top"/>
   </body>
 
 </project>
