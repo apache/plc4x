@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
  * Implementation of the ADS protocol, based on:
  * - ADS Protocol
  * - TCP
+ * - Serial
  */
 public class AdsPlcDriver implements PlcDriver {
 
