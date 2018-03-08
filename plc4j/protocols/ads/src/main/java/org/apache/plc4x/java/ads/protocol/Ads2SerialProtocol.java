@@ -67,6 +67,8 @@ public class Ads2SerialProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket
         }
         byte asLong = (byte) (invokeId.getAsLong() % 255);
         out.add(amsPacket.toAmsSerialFrame(asLong).getByteBuf());
+        // TODO: we need to remember the fragment and maybe even need to spilt up the package
+        // TODO: if we exceed 255 byte
     }
 
     @Override
@@ -93,6 +95,10 @@ public class Ads2SerialProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket
                 ByteBuf fakeTcpHeader = AmsTcpHeader.of(0).getByteBuf();
                 ads2TcpProtocol.decode(channelHandlerContext, Unpooled.wrappedBuffer(fakeTcpHeader, userData.getByteBuf()), out);
                 AmsPacket amsPacket = (AmsPacket) out.get(0);
+                AmsPacket correlatedAmsPacket = requests.remove(amsPacket.getAmsHeader().getInvokeId());
+                if (correlatedAmsPacket != null) {
+                    LOGGER.debug("Correlated packet received {}", correlatedAmsPacket);
+                }
                 AmsSerialFrame amsSerialFrame = amsPacket.toAmsSerialFrame(fragmentNumber.getBytes()[0]);
                 LOGGER.debug("Ams Serial Frame received {}", amsSerialFrame);
                 break;

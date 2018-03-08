@@ -90,9 +90,9 @@ public class Ads2TcpProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
         DataLength dataLength = DataLength.of(byteBuf);
         AmsError errorCode = AmsError.of(byteBuf);
         Invoke invoke = Invoke.of(byteBuf);
-        AmsPacket correlatedamsPacket = requests.remove(invoke);
-        if (correlatedamsPacket != null) {
-            LOGGER.debug("Correlated packet received {}", correlatedamsPacket);
+        AmsPacket correlatedAmsPacket = requests.remove(invoke);
+        if (correlatedAmsPacket != null) {
+            LOGGER.debug("Correlated packet received {}", correlatedAmsPacket);
         }
         if (dataLength.getAsLong() > Integer.MAX_VALUE) {
             byteBuf.release();
