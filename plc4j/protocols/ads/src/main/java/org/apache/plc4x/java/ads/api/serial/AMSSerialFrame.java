@@ -74,6 +74,7 @@ public class AMSSerialFrame implements ByteReadable {
     /**
      * The AMS packet to be sent.
      */
+    private AMSPacket amsPacket;
     private final UserData userData;
 
     private final CRC crc;
@@ -98,8 +99,10 @@ public class AMSSerialFrame implements ByteReadable {
             throw new IllegalArgumentException("Paket length must not exceed 255");
         }
         this.userDataLength = UserDataLength.of((byte) calculatedLength);
+        this.amsPacket = amsPacket;
         byte[] amsPacketBytes = amsPacket.getBytes();
         this.userData = UserData.of(amsPacketBytes);
+        // TODO: java has no CRC-16 implementation so we better be of implementing it by ourself.
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance("CRC-16");
@@ -126,8 +129,13 @@ public class AMSSerialFrame implements ByteReadable {
         return new AMSSerialFrame(fragmentNumber, amsPacket);
     }
 
+    public AMSPacket getAmsPacket() {
+        return amsPacket;
+    }
+
     @Override
     public ByteBuf getByteBuf() {
         return buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
     }
+
 }

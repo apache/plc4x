@@ -109,6 +109,7 @@ public class ADS2SerialProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket
                 break;
         }
 
+        // TODO: java has no CRC-16 implementation so we better be of implementing it by ourself.
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance("CRC-16");
