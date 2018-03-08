@@ -46,6 +46,8 @@ import java.util.stream.Stream;
  * The AMSNetId is purely logical and has usually no relation to the IP address. The AMSNetId is configured at the
  * target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
  * documentation for notes about settings of the AMS NetId.
+ *
+ * @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
  */
 public class AMSNetId extends ByteValue {
 

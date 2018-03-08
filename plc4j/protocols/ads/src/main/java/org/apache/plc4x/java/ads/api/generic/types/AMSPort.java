@@ -46,6 +46,8 @@ import java.util.regex.Pattern;
  * <tr><td>10000<tr><td>System Service</td></tr>
  * <tr><td>14000<tr><td>Scope</td></tr>
  * </table>
+ *
+ * @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
  */
 public class AMSPort extends ByteValue {
 
