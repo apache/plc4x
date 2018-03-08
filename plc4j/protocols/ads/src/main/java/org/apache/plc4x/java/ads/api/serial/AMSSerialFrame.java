@@ -22,10 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.generic.AMSPacket;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.apache.plc4x.java.ads.protocol.util.DigestUtil;
 
 /**
  * An AMS packet can be transferred via RS232 with the help of an AMS serial frame.
@@ -102,23 +99,7 @@ public class AMSSerialFrame implements ByteReadable {
         this.amsPacket = amsPacket;
         byte[] amsPacketBytes = amsPacket.getBytes();
         this.userData = UserData.of(amsPacketBytes);
-        // TODO: java has no CRC-16 implementation so we better be of implementing it by ourself.
-        MessageDigest messageDigest;
-        try {
-            messageDigest = MessageDigest.getInstance("CRC-16");
-        } catch (NoSuchAlgorithmException e) {
-            throw new PlcRuntimeException(e);
-        }
-        messageDigest.update(magicCookie.getBytes());
-        messageDigest.update(transmitterAddress.getBytes());
-        messageDigest.update(receiverAddress.getBytes());
-        messageDigest.update(fragmentNumber.getBytes());
-        messageDigest.update(userDataLength.getBytes());
-        byte[] digest = messageDigest.digest(amsPacketBytes);
-        if (digest.length > 2) {
-            throw new PlcRuntimeException("Digest length too great " + digest.length);
-        }
-        this.crc = CRC.of(digest[0], digest[1]);
+        this.crc = CRC.of(DigestUtil.calculateCrc16(() -> buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData)));
     }
 
     public static AMSSerialFrame of(MagicCookie magicCookie, TransmitterAddress transmitterAddress, ReceiverAddress receiverAddress, FragmentNumber fragmentNumber, UserDataLength userDataLength, UserData userData, CRC crc) {
@@ -138,4 +119,47 @@ public class AMSSerialFrame implements ByteReadable {
         return buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AMSSerialFrame)) return false;
+
+        AMSSerialFrame that = (AMSSerialFrame) o;
+
+        if (!magicCookie.equals(that.magicCookie)) return false;
+        if (!transmitterAddress.equals(that.transmitterAddress)) return false;
+        if (!receiverAddress.equals(that.receiverAddress)) return false;
+        if (!fragmentNumber.equals(that.fragmentNumber)) return false;
+        if (!userDataLength.equals(that.userDataLength)) return false;
+        if (!amsPacket.equals(that.amsPacket)) return false;
+        if (!userData.equals(that.userData)) return false;
+        return crc.equals(that.crc);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = magicCookie.hashCode();
+        result = 31 * result + transmitterAddress.hashCode();
+        result = 31 * result + receiverAddress.hashCode();
+        result = 31 * result + fragmentNumber.hashCode();
+        result = 31 * result + userDataLength.hashCode();
+        result = 31 * result + amsPacket.hashCode();
+        result = 31 * result + userData.hashCode();
+        result = 31 * result + crc.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "AMSSerialFrame{" +
+            "magicCookie=" + magicCookie +
+            ", transmitterAddress=" + transmitterAddress +
+            ", receiverAddress=" + receiverAddress +
+            ", fragmentNumber=" + fragmentNumber +
+            ", userDataLength=" + userDataLength +
+            ", amsPacket=" + amsPacket +
+            ", userData=" + userData +
+            ", crc=" + crc +
+            '}';
+    }
 }

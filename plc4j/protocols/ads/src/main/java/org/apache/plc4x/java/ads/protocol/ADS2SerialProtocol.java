@@ -29,14 +29,11 @@ import org.apache.plc4x.java.ads.api.serial.AMSSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.AMSSerialResetFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.api.tcp.AMSTCPHeader;
+import org.apache.plc4x.java.ads.protocol.util.DigestUtil;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -108,24 +105,8 @@ public class ADS2SerialProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket
                 LOGGER.debug("Ams Serial Reset Frame received {}", amsSerialResetFrame);
                 break;
         }
-
-        // TODO: java has no CRC-16 implementation so we better be of implementing it by ourself.
-        MessageDigest messageDigest;
-        try {
-            messageDigest = MessageDigest.getInstance("CRC-16");
-        } catch (NoSuchAlgorithmException e) {
-            throw new PlcRuntimeException(e);
-        }
-        messageDigest.update(magicCookie.getBytes());
-        messageDigest.update(transmitterAddress.getBytes());
-        messageDigest.update(receiverAddress.getBytes());
-        messageDigest.update(fragmentNumber.getBytes());
-        messageDigest.update(userDataLength.getBytes());
-        byte[] digest = messageDigest.digest(userData.getBytes());
-        if (digest.length > 2) {
-            throw new PlcRuntimeException("Digest length too great " + digest.length);
-        }
-        if (!Arrays.equals(digest, crc.getBytes())) {
+        int calculatedCrc16 = DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData);
+        if (!crc.equals(CRC.of(calculatedCrc16))) {
             throw new PlcProtocolException("CRC checksum wrong");
         }
 

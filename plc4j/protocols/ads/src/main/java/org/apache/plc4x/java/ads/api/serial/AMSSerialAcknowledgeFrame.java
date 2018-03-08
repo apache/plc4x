@@ -111,4 +111,42 @@ public class AMSSerialAcknowledgeFrame implements ByteReadable {
     public ByteBuf getByteBuf() {
         return buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, crc);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AMSSerialAcknowledgeFrame)) return false;
+
+        AMSSerialAcknowledgeFrame that = (AMSSerialAcknowledgeFrame) o;
+
+        if (!magicCookie.equals(that.magicCookie)) return false;
+        if (!transmitterAddress.equals(that.transmitterAddress)) return false;
+        if (!receiverAddress.equals(that.receiverAddress)) return false;
+        if (!fragmentNumber.equals(that.fragmentNumber)) return false;
+        if (!userDataLength.equals(that.userDataLength)) return false;
+        return crc.equals(that.crc);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = magicCookie.hashCode();
+        result = 31 * result + transmitterAddress.hashCode();
+        result = 31 * result + receiverAddress.hashCode();
+        result = 31 * result + fragmentNumber.hashCode();
+        result = 31 * result + userDataLength.hashCode();
+        result = 31 * result + crc.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "AMSSerialAcknowledgeFrame{" +
+            "magicCookie=" + magicCookie +
+            ", transmitterAddress=" + transmitterAddress +
+            ", receiverAddress=" + receiverAddress +
+            ", fragmentNumber=" + fragmentNumber +
+            ", userDataLength=" + userDataLength +
+            ", crc=" + crc +
+            '}';
+    }
 }
