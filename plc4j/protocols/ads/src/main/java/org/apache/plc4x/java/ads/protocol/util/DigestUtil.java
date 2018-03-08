@@ -21,6 +21,9 @@ package org.apache.plc4x.java.ads.protocol.util;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
+import static java.util.Arrays.stream;
+import static org.apache.commons.lang3.ArrayUtils.toObject;
+
 /**
  * TODO: temporary due to unclear licence
  * From https://stackoverflow.com/a/18333436/850036
@@ -31,6 +34,11 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
  * https://github.com/openhab/jamod/blob/64cdbd16fbb7febd39470f873a00be986b052e39/src/main/java/net/wimpi/modbus/util/ModbusUtil.java
  */
 public class DigestUtil {
+
+    private static final int PRESET_VALUE = 0xFFFF;
+
+    // CRC-16-IBM reversed
+    private static final int POLYNOMIAL = 0xA001;
 
     private DigestUtil() {
         // Utility class
@@ -49,7 +57,18 @@ public class DigestUtil {
     }
 
     public static int calculateCrc16(byte[] bytes) {
-        // TODO: implement me
-        return 0;
+        return (~stream(toObject(bytes))
+            .mapToInt(Byte::intValue)
+            .reduce(PRESET_VALUE, (int crcValue, int aByte) -> {
+                crcValue ^= aByte & 0xFF;
+                for (int j = 0; j < 8; j++) {
+                    if ((crcValue & 1) != 0) {
+                        crcValue = (crcValue >>> 1) ^ POLYNOMIAL;
+                    } else {
+                        crcValue = crcValue >>> 1;
+                    }
+                }
+                return crcValue;
+            })) & 0xFFFF;
     }
 }

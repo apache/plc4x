@@ -29,8 +29,6 @@ import java.util.stream.Stream;
  * It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
  * methods between multiple TwinCAT PC's on the network.
  * <p>
- * <img src="https://infosys.beckhoff.com/content/1033/tcadscommon/images/TcMultiplePC.gif"/>
- * <p>
  * Every PC on the network can be uniquely identified by a TCP/IP address, such as "172.1.2.16". The AdsAmsNetId is an
  * extension of the TCP/IP address and identifies a TwinCAT message router, e.g. "172.1.2.16.1.1". TwinCAT message
  * routers exist on every TwinCAT PC, and on every Beckhoff BCxxxx bus controller (e.g. BC3100, BC8100, BC9000, ...).

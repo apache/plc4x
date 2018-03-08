@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
  * The ADS devices in a TwinCAT message router are uniquely identified by a number referred to as the ADS-PortNr. For ADS devices this has a fixed specification, whereas pure ADS client applications (e.g. a visualisation system) are allocated a variable ADS port number when they first access the message router.
  * <p>
  * The following ADS port numbers are already assigned:
+ * <p>
  * <table border="1">
  * <th><td>ADS-PortNr</td><td>ADS device description</td></th>
  * <tr><td>100<tr><td>Logger (only NT-Log)</td></tr>
@@ -46,6 +47,7 @@ import java.util.regex.Pattern;
  * <tr><td>10000<tr><td>System Service</td></tr>
  * <tr><td>14000<tr><td>Scope</td></tr>
  * </table>
+ * </p>
  *
  * @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
  */
