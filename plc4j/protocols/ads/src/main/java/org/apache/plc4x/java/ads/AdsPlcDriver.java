@@ -21,8 +21,7 @@ package org.apache.plc4x.java.ads;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
-import org.apache.plc4x.java.ads.connection.AdsSerialPlcConnection;
-import org.apache.plc4x.java.ads.connection.AdsTcpPlcConnection;
+import org.apache.plc4x.java.ads.connection.AdsConnectionFactory;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcConnection;
@@ -48,6 +47,16 @@ public class AdsPlcDriver implements PlcDriver {
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(?<host>[\\w.]+)(:(?<port>\\d*))?");
     public static final Pattern SERIAL_PATTERN = Pattern.compile("(?<serialDefinition>serial:.*)");
     public static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads:/?/?(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/" + ADS_ADDRESS_PATTERN);
+
+    private AdsConnectionFactory adsConnectionFactory;
+
+    public AdsPlcDriver() {
+        this.adsConnectionFactory = new AdsConnectionFactory();
+    }
+
+    public AdsPlcDriver(AdsConnectionFactory adsConnectionFactory) {
+        this.adsConnectionFactory = adsConnectionFactory;
+    }
 
     @Override
     public String getProtocolCode() {
@@ -79,26 +88,10 @@ public class AdsPlcDriver implements PlcDriver {
 
         if (serialDefinition != null) {
             String serialPort = serialDefinition.substring(serialDefinition.indexOf(':'));
-            if (sourceAmsNetId == null || sourceAmsPort == null) {
-                return new AdsSerialPlcConnection(serialPort, targetAmsNetId, targetAmsPort);
-            } else {
-                return new AdsSerialPlcConnection(serialPort, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
-            }
+            return adsConnectionFactory.adsSerialPlcConnectionOf(serialPort, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
         } else {
             try {
-                if (sourceAmsNetId == null || sourceAmsPort == null) {
-                    if (port == null) {
-                        return new AdsTcpPlcConnection(InetAddress.getByName(host), targetAmsNetId, targetAmsPort);
-                    } else {
-                        return new AdsTcpPlcConnection(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort);
-                    }
-                } else {
-                    if (port == null) {
-                        return new AdsTcpPlcConnection(InetAddress.getByName(host), targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
-                    } else {
-                        return new AdsTcpPlcConnection(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
-                    }
-                }
+                return adsConnectionFactory.adsTcpPlcConnectionOf(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
             } catch (UnknownHostException e) {
                 throw new PlcConnectionException(e);
             }

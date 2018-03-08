@@ -32,12 +32,20 @@ import java.util.concurrent.CompletableFuture;
 
 public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
 
-    public AdsSerialPlcConnection(String serialPort, AmsNetId targetAmsNetId, AmsPort targetAmsPort) {
+    private AdsSerialPlcConnection(String serialPort, AmsNetId targetAmsNetId, AmsPort targetAmsPort) {
         this(serialPort, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
     }
 
-    public AdsSerialPlcConnection(String serialPort, AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort) {
+    private AdsSerialPlcConnection(String serialPort, AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort) {
         super(new SerialChannelFactory(serialPort), targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+    }
+
+    public static AdsSerialPlcConnection of(String serialPort, AmsNetId targetAmsNetId, AmsPort targetAmsPort) {
+        return new AdsSerialPlcConnection(serialPort, targetAmsNetId, targetAmsPort);
+    }
+
+    public static AdsSerialPlcConnection of(String serialPort, AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort) {
+        return new AdsSerialPlcConnection(serialPort, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 
     @Override

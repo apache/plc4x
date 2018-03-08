@@ -36,7 +36,7 @@ public class AdsTcpPlcConnectionTests {
 
     @Before
     public void setUp() throws Exception {
-        adsTcpPlcConnection = new AdsTcpPlcConnection(InetAddress.getByName("localhost"), AmsNetId.of("0.0.0.0.0.0"), AmsPort.of(13));
+        adsTcpPlcConnection = AdsTcpPlcConnection.of(InetAddress.getByName("localhost"), AmsNetId.of("0.0.0.0.0.0"), AmsPort.of(13));
     }
 
     @After

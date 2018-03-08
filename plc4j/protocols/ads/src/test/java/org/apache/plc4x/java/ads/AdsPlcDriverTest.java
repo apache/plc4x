@@ -20,19 +20,23 @@ package org.apache.plc4x.java.ads;
 
 
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.ads.connection.AdsConnectionFactory;
 import org.apache.plc4x.java.ads.connection.AdsTcpPlcConnection;
 import org.apache.plc4x.java.ads.util.TcpHexDumper;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static org.apache.plc4x.java.ads.AdsPlcDriver.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class AdsPlcDriverTest {
 
@@ -58,6 +62,24 @@ public class AdsPlcDriverTest {
         assertMatching(ADS_URI_PATTERN, "ads://serial:/dev/com1/0.0.0.0.0.0:13");
         assertMatching(ADS_URI_PATTERN, "ads://serial:COM1/0.0.0.0.0.0:13");
         assertMatching(ADS_URI_PATTERN, "ads://serial:/dev/ttyUSB0/0.0.0.0.0.0:13");
+    }
+
+    @Test
+    public void testDriverWithCompleteUrls() throws Exception {
+        AdsPlcDriver SUT = new AdsPlcDriver(mock(AdsConnectionFactory.class));
+        Stream.of(
+            "ads://www.google.de/0.0.0.0.0.0:13",
+            "ads://www.google.de:443/0.0.0.0.0.0:13",
+            "ads://serial:/dev/com1/0.0.0.0.0.0:13",
+            "ads://serial:COM1/0.0.0.0.0.0:13",
+            "ads://serial:/dev/ttyUSB0/0.0.0.0.0.0:13"
+        ).forEach(url -> {
+            try {
+                SUT.connect(url);
+            } catch (PlcConnectionException e) {
+                throw new PlcRuntimeException(e);
+            }
+        });
     }
 
     private void assertMatching(Pattern pattern, String match) {
