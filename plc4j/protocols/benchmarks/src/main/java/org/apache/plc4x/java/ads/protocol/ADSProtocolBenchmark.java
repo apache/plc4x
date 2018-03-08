@@ -130,7 +130,7 @@ public class ADSProtocolBenchmark {
         return AdsWriteResponse.of(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
             result
-        ).getBytes();
+        ).toAmstcpPacket().getBytes();
     }
 
     private static AdsReadRequest buildAdsReadRequest() {
@@ -159,6 +159,6 @@ public class ADSProtocolBenchmark {
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
             result,
             data
-        ).getBytes();
+        ).toAmstcpPacket().getBytes();
     }
 }
