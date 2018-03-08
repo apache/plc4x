@@ -78,9 +78,9 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
         DataLength dataLength = DataLength.of(byteBuf);
         AMSError errorCode = AMSError.of(byteBuf);
         Invoke invoke = Invoke.of(byteBuf);
-        AMSPacket correlatedAMSPacket = requests.remove(invoke);
-        if (correlatedAMSPacket != null) {
-            LOGGER.debug("Correlated packet received {}", correlatedAMSPacket);
+        AMSPacket correlatedamsPacket = requests.remove(invoke);
+        if (correlatedamsPacket != null) {
+            LOGGER.debug("Correlated packet received {}", correlatedamsPacket);
         }
         if (dataLength.getAsLong() > Integer.MAX_VALUE) {
             byteBuf.release();
@@ -127,7 +127,7 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
                 amsPacket = handleUnknownCommand(commandBuffer, amsHeader);
         }
         out.add(amsPacket);
-        LOGGER.trace("Set AMSPacket {} to out", amsPacket);
+        LOGGER.trace("Set amsPacket {} to out", amsPacket);
         if (commandBuffer.readableBytes() > 0) {
             commandBuffer.release();
             byteBuf.release();
@@ -142,27 +142,27 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
     }
 
     private AMSPacket handleADSReadDeviceInfoCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
-            AMSPacket = ADSReadDeviceInfoRequest.of(amsHeader);
+            amsPacket = ADSReadDeviceInfoRequest.of(amsHeader);
         } else {
             Result result = Result.of(commandBuffer);
             MajorVersion majorVersion = MajorVersion.of(commandBuffer);
             MinorVersion minorVersion = MinorVersion.of(commandBuffer);
             Version version = Version.of(commandBuffer);
             Device device = Device.of(commandBuffer);
-            AMSPacket = ADSReadDeviceInfoResponse.of(amsHeader, result, majorVersion, minorVersion, version, device);
+            amsPacket = ADSReadDeviceInfoResponse.of(amsHeader, result, majorVersion, minorVersion, version, device);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
     private AMSPacket handleADSReadCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
             IndexGroup indexGroup = IndexGroup.of(commandBuffer);
             IndexOffset indexOffset = IndexOffset.of(commandBuffer);
             Length length = Length.of(commandBuffer);
-            AMSPacket = ADSReadRequest.of(amsHeader, indexGroup, indexOffset, length);
+            amsPacket = ADSReadRequest.of(amsHeader, indexGroup, indexOffset, length);
         } else {
             Result result = Result.of(commandBuffer);
             Length length = Length.of(commandBuffer);
@@ -172,13 +172,13 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
             byte[] dataToRead = new byte[(int) length.getAsLong()];
             commandBuffer.readBytes(dataToRead);
             Data data = Data.of(dataToRead);
-            AMSPacket = ADSReadResponse.of(amsHeader, result, length, data);
+            amsPacket = ADSReadResponse.of(amsHeader, result, length, data);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
     private AMSPacket handleADSWriteCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
             IndexGroup indexGroup = IndexGroup.of(commandBuffer);
             IndexOffset indexOffset = IndexOffset.of(commandBuffer);
@@ -189,28 +189,28 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
             byte[] dataToRead = new byte[(int) length.getAsLong()];
             commandBuffer.readBytes(dataToRead);
             Data data = Data.of(dataToRead);
-            AMSPacket = ADSWriteRequest.of(amsHeader, indexGroup, indexOffset, length, data);
+            amsPacket = ADSWriteRequest.of(amsHeader, indexGroup, indexOffset, length, data);
         } else {
             Result result = Result.of(commandBuffer);
-            AMSPacket = ADSWriteResponse.of(amsHeader, result);
+            amsPacket = ADSWriteResponse.of(amsHeader, result);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
 
     private AMSPacket handleADSReadStateCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
-            AMSPacket = ADSReadStateRequest.of(amsHeader);
+            amsPacket = ADSReadStateRequest.of(amsHeader);
         } else {
             Result result = Result.of(commandBuffer);
-            AMSPacket = ADSReadStateResponse.of(amsHeader, result);
+            amsPacket = ADSReadStateResponse.of(amsHeader, result);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
     private AMSPacket handleADSWriteControlCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
             ADSState adsState = ADSState.of(commandBuffer);
             DeviceState deviceState = DeviceState.of(commandBuffer);
@@ -221,16 +221,16 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
             byte[] dataToRead = new byte[(int) length.getAsLong()];
             commandBuffer.readBytes(dataToRead);
             Data data = Data.of(dataToRead);
-            AMSPacket = ADSWriteControlRequest.of(amsHeader, adsState, deviceState, length, data);
+            amsPacket = ADSWriteControlRequest.of(amsHeader, adsState, deviceState, length, data);
         } else {
             Result result = Result.of(commandBuffer);
-            AMSPacket = ADSWriteControlResponse.of(amsHeader, result);
+            amsPacket = ADSWriteControlResponse.of(amsHeader, result);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
     private AMSPacket handleADSAddDeviceNotificationCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
             IndexGroup indexGroup = IndexGroup.of(commandBuffer);
             IndexOffset indexOffset = IndexOffset.of(commandBuffer);
@@ -239,29 +239,29 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
             MaxDelay maxDelay = MaxDelay.of(commandBuffer);
             CycleTime cycleTime = CycleTime.of(commandBuffer);
             commandBuffer.skipBytes(ADSAddDeviceNotificationRequest.Reserved.NUM_BYTES);
-            AMSPacket = ADSAddDeviceNotificationRequest.of(amsHeader, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
+            amsPacket = ADSAddDeviceNotificationRequest.of(amsHeader, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
         } else {
             Result result = Result.of(commandBuffer);
             NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
-            AMSPacket = ADSAddDeviceNotificationResponse.of(amsHeader, result, notificationHandle);
+            amsPacket = ADSAddDeviceNotificationResponse.of(amsHeader, result, notificationHandle);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
     private AMSPacket handADSDeleteDeviceNotificationCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
             NotificationHandle notificationHandle = NotificationHandle.of(commandBuffer);
-            AMSPacket = ADSDeleteDeviceNotificationRequest.of(amsHeader, notificationHandle);
+            amsPacket = ADSDeleteDeviceNotificationRequest.of(amsHeader, notificationHandle);
         } else {
             Result result = Result.of(commandBuffer);
-            AMSPacket = ADSDeleteDeviceNotificationResponse.of(amsHeader, result);
+            amsPacket = ADSDeleteDeviceNotificationResponse.of(amsHeader, result);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
     private AMSPacket handleADSDeviceNotificationCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
             Length length = Length.of(commandBuffer);
             if (length.getAsLong() > Integer.MAX_VALUE) {
@@ -278,11 +278,11 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
                 adsStampHeaders.add(adsStampHeader);
             }
             adsDeviceNotificationBuffer.release();
-            AMSPacket = ADSDeviceNotificationRequest.of(amsHeader, length, stamps, adsStampHeaders);
+            amsPacket = ADSDeviceNotificationRequest.of(amsHeader, length, stamps, adsStampHeaders);
         } else {
-            AMSPacket = UnknownCommand.of(amsHeader, commandBuffer);
+            amsPacket = UnknownCommand.of(amsHeader, commandBuffer);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
     private AdsStampHeader handleStampHeader(ByteBuf adsDeviceNotificationBuffer) {
@@ -312,7 +312,7 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
     }
 
     private AMSPacket handleADSReadWriteCommand(State stateId, ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
+        AMSPacket amsPacket;
         if (stateId.isRequest()) {
             IndexGroup indexGroup = IndexGroup.of(commandBuffer);
             IndexOffset indexOffset = IndexOffset.of(commandBuffer);
@@ -330,7 +330,7 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
             byte[] dataToRead = new byte[(int) readLength.getAsLong()];
             commandBuffer.readBytes(dataToRead);
             Data data = Data.of(dataToRead);
-            AMSPacket = ADSReadWriteRequest.of(amsHeader, indexGroup, indexOffset, readLength, writeLength, data);
+            amsPacket = ADSReadWriteRequest.of(amsHeader, indexGroup, indexOffset, readLength, writeLength, data);
         } else {
             Result result = Result.of(commandBuffer);
             Length length = Length.of(commandBuffer);
@@ -340,14 +340,12 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
             byte[] dataToRead = new byte[(int) length.getAsLong()];
             commandBuffer.readBytes(dataToRead);
             Data data = Data.of(dataToRead);
-            AMSPacket = ADSReadWriteResponse.of(amsHeader, result, length, data);
+            amsPacket = ADSReadWriteResponse.of(amsHeader, result, length, data);
         }
-        return AMSPacket;
+        return amsPacket;
     }
 
     private AMSPacket handleUnknownCommand(ByteBuf commandBuffer, AMSHeader amsHeader) {
-        AMSPacket AMSPacket;
-        AMSPacket = UnknownCommand.of(amsHeader, commandBuffer);
-        return AMSPacket;
+        return UnknownCommand.of(amsHeader, commandBuffer);
     }
 }
