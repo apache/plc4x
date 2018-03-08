@@ -30,16 +30,16 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 public class SerialChannelFactory implements ChannelFactory {
 
-    private final String port;
+    private final String serialPort;
 
-    public SerialChannelFactory(String port) {
-        this.port = port;
+    public SerialChannelFactory(String serialPort) {
+        this.serialPort = serialPort;
     }
 
     @Override
     public Channel createChannel(ChannelHandler channelHandler)
         throws PlcConnectionException {
-        JSerialCommDeviceAddress address = new JSerialCommDeviceAddress(port);
+        JSerialCommDeviceAddress address = new JSerialCommDeviceAddress(serialPort);
 
         try {
             Bootstrap bootstrap = new Bootstrap();

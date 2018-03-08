@@ -19,9 +19,8 @@ under the License.
 package org.apache.plc4x.java.ads;
 
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.ads.connection.ADSPlcConnection;
+import org.apache.plc4x.java.ads.connection.ADSTcpPlcConnection;
 import org.apache.plc4x.java.ads.util.TcpHexDumper;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -29,9 +28,6 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.net.UnknownHostException;
-
-import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -43,7 +39,7 @@ public class ADSPlcDriverTest {
 
     @Test
     public void getConnection() throws Exception {
-        ADSPlcConnection adsConnection = (ADSPlcConnection)
+        ADSTcpPlcConnection adsConnection = (ADSTcpPlcConnection)
             new PlcDriverManager().getConnection("ads://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13");
         assertEquals(adsConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
         assertEquals(adsConnection.getTargetAmsPort().toString(), "13");

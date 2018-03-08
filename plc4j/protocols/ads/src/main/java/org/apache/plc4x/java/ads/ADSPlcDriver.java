@@ -21,7 +21,7 @@ package org.apache.plc4x.java.ads;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
-import org.apache.plc4x.java.ads.connection.ADSPlcConnection;
+import org.apache.plc4x.java.ads.connection.ADSTcpPlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcConnection;
@@ -73,7 +73,7 @@ public class ADSPlcDriver implements PlcDriver {
         String sourceAmsPortString = matcher.group("sourceAmsPort");
         AMSPort sourceAmsPort = StringUtils.isNotBlank(sourceAmsPortString) ? AMSPort.of(sourceAmsPortString) : null;
         try {
-            return new ADSPlcConnection(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+            return new ADSTcpPlcConnection(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
         } catch (UnknownHostException e) {
             throw new PlcConnectionException(e);
         }

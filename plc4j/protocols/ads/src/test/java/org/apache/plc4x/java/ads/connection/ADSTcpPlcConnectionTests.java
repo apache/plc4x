@@ -30,30 +30,30 @@ import java.net.InetAddress;
 
 import static org.junit.Assert.*;
 
-public class ADSPlcConnectionTests {
+public class ADSTcpPlcConnectionTests {
 
-    private ADSPlcConnection adsPlcConnection;
+    private ADSTcpPlcConnection adsTcpPlcConnection;
 
     @Before
     public void setUp() throws Exception {
-        adsPlcConnection = new ADSPlcConnection(InetAddress.getByName("localhost"), AMSNetId.of("0.0.0.0.0.0"), AMSPort.of(13));
+        adsTcpPlcConnection = new ADSTcpPlcConnection(InetAddress.getByName("localhost"), AMSNetId.of("0.0.0.0.0.0"), AMSPort.of(13));
     }
 
     @After
     public void tearDown() {
-        adsPlcConnection = null;
+        adsTcpPlcConnection = null;
     }
 
     @Test
     public void initialState() {
-        assertEquals(adsPlcConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
-        assertEquals(adsPlcConnection.getTargetAmsPort().toString(), "13");
+        assertEquals(adsTcpPlcConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
+        assertEquals(adsTcpPlcConnection.getTargetAmsPort().toString(), "13");
     }
 
     @Test
     public void emptyParseAddress() throws Exception {
         try {
-            adsPlcConnection.parseAddress("");
+            adsTcpPlcConnection.parseAddress("");
         } catch (IllegalArgumentException exception) {
             assertTrue("Unexpected exception", exception.getMessage().startsWith("address  doesn't match "));
         }
@@ -62,7 +62,7 @@ public class ADSPlcConnectionTests {
     @Test
     public void parseAddress() throws Exception {
         try {
-            ADSAddress address = (ADSAddress) adsPlcConnection.parseAddress("1/1");
+            ADSAddress address = (ADSAddress) adsTcpPlcConnection.parseAddress("1/1");
             assertEquals(address.getIndexGroup(), 1);
             assertEquals(address.getIndexOffset(), 1);
         } catch (IllegalArgumentException exception) {
