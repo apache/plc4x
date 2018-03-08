@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.netty.util;
+package org.apache.plc4x.java.ads.protocol.util;
 
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;

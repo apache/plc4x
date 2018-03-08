@@ -28,6 +28,7 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.protocol.ADSProtocol;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
