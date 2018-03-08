@@ -76,10 +76,7 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(
-            result.getByteBuf(),
-            notificationHandle.getByteBuf()
-        );
+        return buildADSData(result, notificationHandle);
     }
 
     @Override

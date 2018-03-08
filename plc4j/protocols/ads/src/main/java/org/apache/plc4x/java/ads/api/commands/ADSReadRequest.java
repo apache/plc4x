@@ -99,11 +99,7 @@ public class ADSReadRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(
-            indexGroup.getByteBuf(),
-            indexOffset.getByteBuf(),
-            length.getByteBuf()
-        );
+        return buildADSData(indexGroup, indexOffset, length);
     }
 
     @Override
@@ -121,7 +117,7 @@ public class ADSReadRequest extends ADSAbstractRequest {
             return false;
         if (!indexOffset.equals(that.indexOffset))
             return false;
-
+        
         return length.equals(that.length);
     }
 

@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.ads.api.commands;
 
-import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.commands.types.AdsStampHeader;
 import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.commands.types.Stamps;
@@ -34,7 +33,6 @@ import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
 import java.util.List;
 
-import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -120,10 +118,7 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(
-            getLength().getByteBuf(),
-            stamps.getByteBuf(),
-            wrappedBuffer(adsStampHeaders.stream().map(ByteReadable::getByteBuf).toArray(ByteBuf[]::new)));
+        return buildADSData(getLength(), stamps, buildADSData(adsStampHeaders.toArray(new ByteReadable[adsStampHeaders.size()])));
     }
 
     @Override
@@ -141,7 +136,7 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
             return false;
         if (!stamps.equals(that.stamps))
             return false;
-
+        
         return adsStampHeaders.equals(that.adsStampHeaders);
     }
 

@@ -22,8 +22,8 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
-import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.util.Objects.requireNonNull;
+import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public class AdsNotificationSample implements ByteReadable {
 
@@ -66,11 +66,7 @@ public class AdsNotificationSample implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return wrappedBuffer(
-            notificationHandle.getByteBuf(),
-            getSampleSize().getByteBuf(),
-            data.getByteBuf()
-        );
+        return buildByteBuff(notificationHandle, getSampleSize(), data);
     }
 
     public NotificationHandle getNotificationHandle() {

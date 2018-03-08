@@ -79,11 +79,7 @@ public class ADSReadResponse extends ADSAbstractResponse {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(
-            result.getByteBuf(),
-            getLength().getByteBuf(),
-            data.getByteBuf()
-        );
+        return buildADSData(result, getLength(), data);
     }
 
     public Result getResult() {
@@ -113,7 +109,7 @@ public class ADSReadResponse extends ADSAbstractResponse {
             return false;
         if (!getLength().equals(that.getLength()))
             return false;
-
+        
         return data.equals(that.data);
     }
 

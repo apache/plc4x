@@ -64,7 +64,7 @@ public class ADSWriteResponse extends ADSAbstractResponse {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(result.getByteBuf());
+        return buildADSData(result);
     }
 
     @Override

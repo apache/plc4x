@@ -125,13 +125,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(
-            indexGroup.getByteBuf(),
-            indexOffset.getByteBuf(),
-            readLength.getByteBuf(),
-            getWriteLength().getByteBuf(),
-            data.getByteBuf()
-        );
+        return buildADSData(indexGroup, indexOffset, readLength, getWriteLength(), data);
     }
 
     @Override

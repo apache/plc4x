@@ -100,15 +100,7 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(
-            indexGroup.getByteBuf(),
-            indexOffset.getByteBuf(),
-            length.getByteBuf(),
-            transmissionMode.getByteBuf(),
-            maxDelay.getByteBuf(),
-            cycleTime.getByteBuf(),
-            reserved.getByteBuf()
-        );
+        return buildADSData(indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime, reserved);
     }
 
     public static ADSAddDeviceNotificationRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {

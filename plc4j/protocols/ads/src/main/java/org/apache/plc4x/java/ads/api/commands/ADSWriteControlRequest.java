@@ -117,12 +117,7 @@ public class ADSWriteControlRequest extends ADSAbstractRequest {
 
     @Override
     public ADSData getAdsData() {
-        return buildADSData(
-            adsState.getByteBuf(),
-            deviceState.getByteBuf(),
-            getLength().getByteBuf(),
-            data.getByteBuf()
-        );
+        return buildADSData(adsState, deviceState, getLength(), data);
     }
 
     @Override

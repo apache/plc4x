@@ -19,12 +19,12 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
 import static java.util.Objects.requireNonNull;
+import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 /**
  * AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
@@ -108,16 +108,16 @@ public class AMSHeader implements ByteReadable {
 
     @Override
     public ByteBuf getByteBuf() {
-        return Unpooled.wrappedBuffer(
-            targetAmsNetId.getByteBuf(),
-            targetAmsPort.getByteBuf(),
-            sourceAmsNetId.getByteBuf(),
-            sourceAmsPort.getByteBuf(),
-            commandId.getByteBuf(),
-            stateFlags.getByteBuf(),
-            getDataLength().getByteBuf(),
-            code.getByteBuf(),
-            invokeId.getByteBuf());
+        return buildByteBuff(
+            targetAmsNetId,
+            targetAmsPort,
+            sourceAmsNetId,
+            sourceAmsPort,
+            commandId,
+            stateFlags,
+            getDataLength(),
+            code,
+            invokeId);
     }
 
     public AMSNetId getTargetAmsNetId() {
