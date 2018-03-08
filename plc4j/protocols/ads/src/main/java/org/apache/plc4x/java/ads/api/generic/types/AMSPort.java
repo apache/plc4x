@@ -24,6 +24,29 @@ import org.apache.plc4x.java.ads.api.util.ByteValue;
 import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
+/**
+ * The ADS devices in a TwinCAT message router are uniquely identified by a number referred to as the ADS-PortNr. For ADS devices this has a fixed specification, whereas pure ADS client applications (e.g. a visualisation system) are allocated a variable ADS port number when they first access the message router.
+ * <p>
+ * The following ADS port numbers are already assigned:
+ * <table border="1">
+ * <th><td>ADS-PortNr</td><td>ADS device description</td></th>
+ * <tr><td>100<tr><td>Logger (only NT-Log)</td></tr>
+ * <tr><td>110<tr><td>Eventlogger</td></tr>
+ * <tr><td>300<tr><td>IO</td></tr>
+ * <tr><td>301<tr><td>additional Task 1</td></tr>
+ * <tr><td>302<tr><td>additional Task 2</td></tr>
+ * <tr><td><tr><td></td></tr>
+ * <tr><td>500<tr><td>NC</td></tr>
+ * <tr><td>801<tr><td>PLC RuntimeSystem 1</td></tr>
+ * <tr><td>811<tr><td>PLC RuntimeSystem 2</td></tr>
+ * <tr><td>821<tr><td>PLC RuntimeSystem 3</td></tr>
+ * <tr><td>831<tr><td>PLC RuntimeSystem 4</td></tr>
+ * <tr><td><tr><td></td></tr>
+ * <tr><td>900<tr><td>Camshaft controller</td></tr>
+ * <tr><td>10000<tr><td>System Service</td></tr>
+ * <tr><td>14000<tr><td>Scope</td></tr>
+ * </table>
+ */
 public class AMSPort extends ByteValue {
 
     public static final Pattern AMS_PORT_PATTERN = Pattern.compile("\\d+");
