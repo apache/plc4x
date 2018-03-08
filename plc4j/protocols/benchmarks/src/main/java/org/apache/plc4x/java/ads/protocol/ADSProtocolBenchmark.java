@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.java.ads.netty;
+package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.ads.api.commands.ADSReadRequest;
@@ -28,7 +28,6 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.protocol.ADS2TcpProtocol;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
