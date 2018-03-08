@@ -24,7 +24,6 @@ import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public abstract class AMSTCPPacket implements ByteReadable {
     private final AMSTCPHeader amsTcpHeader;

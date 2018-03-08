@@ -24,7 +24,6 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 /**
  * AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.

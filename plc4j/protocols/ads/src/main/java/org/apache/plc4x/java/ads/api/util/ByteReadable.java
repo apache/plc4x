@@ -19,13 +19,14 @@
 package org.apache.plc4x.java.ads.api.util;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import org.apache.commons.io.HexDump;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
-@FunctionalInterface
-public interface ByteReadable extends LengthSupplier {
+public interface ByteReadable extends ByteBufSupplier, LengthSupplier {
 
     default byte[] getBytes() {
         ByteBuf byteBuf = getByteBuf();
@@ -34,11 +35,13 @@ public interface ByteReadable extends LengthSupplier {
         return result;
     }
 
-    ByteBuf getByteBuf();
-
     @Override
     default long getCalculatedLength() {
         return getByteBuf().readableBytes();
+    }
+
+    default ByteBuf buildByteBuff(ByteReadable... byteReadables) {
+        return Unpooled.wrappedBuffer(Arrays.stream(byteReadables).map(ByteReadable::getByteBuf).toArray(ByteBuf[]::new));
     }
 
     default String dump() throws IOException {

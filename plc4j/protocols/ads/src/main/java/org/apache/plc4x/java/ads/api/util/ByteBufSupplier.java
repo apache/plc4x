@@ -19,17 +19,9 @@
 package org.apache.plc4x.java.ads.api.util;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import java.util.Arrays;
+@FunctionalInterface
+public interface ByteBufSupplier {
 
-public class ByteReadableUtils {
-
-    private ByteReadableUtils() {
-        // Singleton
-    }
-
-    public static ByteBuf buildByteBuff(ByteReadable... byteReadables) {
-        return Unpooled.wrappedBuffer(Arrays.stream(byteReadables).map(ByteReadable::getByteBuf).toArray(ByteBuf[]::new));
-    }
+    ByteBuf getByteBuf();
 }

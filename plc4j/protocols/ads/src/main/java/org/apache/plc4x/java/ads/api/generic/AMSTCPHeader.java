@@ -25,7 +25,6 @@ import org.apache.plc4x.java.ads.api.util.ByteValue;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 /**
  * AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.

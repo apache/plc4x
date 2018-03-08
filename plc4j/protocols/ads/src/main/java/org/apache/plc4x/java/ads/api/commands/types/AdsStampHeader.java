@@ -24,7 +24,6 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.plc4x.java.ads.api.util.ByteReadableUtils.buildByteBuff;
 
 public class AdsStampHeader implements ByteReadable {
 
