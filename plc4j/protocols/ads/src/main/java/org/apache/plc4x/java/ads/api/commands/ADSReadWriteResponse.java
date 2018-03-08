@@ -23,7 +23,6 @@ import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -55,8 +54,8 @@ public class ADSReadWriteResponse extends ADSAbstractResponse {
 
     private final LengthSupplier lengthSupplier;
 
-    private ADSReadWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
-        super(amstcpHeader, amsHeader);
+    private ADSReadWriteResponse(AMSHeader amsHeader, Result result, Length length, Data data) {
+        super(amsHeader);
         this.result = requireNonNull(result);
         this.length = requireNonNull(length);
         this.data = requireNonNull(data);
@@ -71,8 +70,8 @@ public class ADSReadWriteResponse extends ADSAbstractResponse {
         this.lengthSupplier = data;
     }
 
-    public static ADSReadWriteResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, Length length, Data data) {
-        return new ADSReadWriteResponse(amstcpHeader, amsHeader, result, length, data);
+    public static ADSReadWriteResponse of(AMSHeader amsHeader, Result result, Length length, Data data) {
+        return new ADSReadWriteResponse(amsHeader, result, length, data);
     }
 
     public static ADSReadWriteResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, Data data) {

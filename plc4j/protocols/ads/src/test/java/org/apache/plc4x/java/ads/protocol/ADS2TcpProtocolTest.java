@@ -21,10 +21,11 @@ package org.apache.plc4x.java.ads.protocol;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
+import org.apache.plc4x.java.ads.api.generic.AMSPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.api.tcp.AMSTCPPacket;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,11 +45,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class ADSProtocolTest {
+public class ADS2TcpProtocolTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ADSProtocolTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ADS2TcpProtocolTest.class);
 
-    private ADSProtocol SUT;
+    private ADS2TcpProtocol SUT;
 
     @Parameterized.Parameter
     public AMSTCPPacket amstcpPacket;
@@ -67,20 +68,20 @@ public class ADSProtocolTest {
         return Stream.of(
             ADSAddDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
-                IndexGroup.of(1), IndexOffset.of(1), Length.of(1), TransmissionMode.of(1), MaxDelay.of(1), CycleTime.of(1)),
+                IndexGroup.of(1), IndexOffset.of(1), Length.of(1), TransmissionMode.of(1), MaxDelay.of(1), CycleTime.of(1)).toAmstcpPacket(),
             ADSAddDeviceNotificationResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 NotificationHandle.of(0)
-            ),
+            ).toAmstcpPacket(),
             ADSDeleteDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 NotificationHandle.of(0)
-            ),
+            ).toAmstcpPacket(),
             ADSDeleteDeviceNotificationResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
-            ),
+            ).toAmstcpPacket(),
             ADSDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Stamps.of(1),
@@ -91,10 +92,10 @@ public class ADSProtocolTest {
                             AdsNotificationSample.of(NotificationHandle.of(0), data))
                     )
                 )
-            ),
+            ).toAmstcpPacket(),
             ADSReadDeviceInfoRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId
-            ),
+            ).toAmstcpPacket(),
             ADSReadDeviceInfoResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
@@ -102,57 +103,58 @@ public class ADSProtocolTest {
                 MinorVersion.of((byte) 2),
                 Version.of(3),
                 Device.of("Random DeviceId")
-            ),
+            ).toAmstcpPacket(),
             ADSReadRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 Length.of(1)
-            ),
+            ).toAmstcpPacket(),
             ADSReadResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 data
-            ),
+            ).toAmstcpPacket(),
             ADSReadStateRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId
-            ),
+            ).toAmstcpPacket(),
             ADSReadStateResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
-            ),
+            ).toAmstcpPacket(),
             ADSReadWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 ReadLength.of(data.getCalculatedLength()),
                 data
-            ),
+            ).toAmstcpPacket(),
             ADSReadWriteResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 data
-            ),
+            ).toAmstcpPacket(),
             ADSWriteControlRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 ADSState.of(0xaffe),
                 DeviceState.of(0xaffe),
                 data
-            ),
+            ).toAmstcpPacket(),
             ADSWriteControlResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
-            ),
+            ).toAmstcpPacket(),
             ADSWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 data
-            ),
+            ).toAmstcpPacket(),
             ADSWriteResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
-            )/*,
+            ).toAmstcpPacket()
+            /*,
             UnknownCommand.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId,
                 Unpooled.wrappedBuffer(new byte[]{42})
@@ -162,15 +164,15 @@ public class ADSProtocolTest {
 
     @Before
     public void setUp() throws Exception {
-        SUT = new ADSProtocol();
+        SUT = new ADS2TcpProtocol();
         byte[] bytes = amstcpPacket.getBytes();
-        LOGGER.info("amstcpPacket:\n{} has \n{}bytes\nHexDump:\n{}", amstcpPacket, bytes.length, amstcpPacket.dump());
+        LOGGER.info("amsPacket:\n{} has \n{}bytes\nHexDump:\n{}", amstcpPacket, bytes.length, amstcpPacket.dump());
     }
 
     @Test
     public void encode() throws Exception {
         ArrayList<Object> out = new ArrayList<>();
-        SUT.encode(null, amstcpPacket, out);
+        SUT.encode(null, amstcpPacket.getAmsPacket(), out);
         assertEquals(1, out.size());
         assertThat(out, hasSize(1));
     }
@@ -185,7 +187,7 @@ public class ADSProtocolTest {
     @Test
     public void roundTrip() throws Exception {
         ArrayList<Object> outbound = new ArrayList<>();
-        SUT.encode(null, amstcpPacket, outbound);
+        SUT.encode(null, amstcpPacket.getAmsPacket(), outbound);
         assertEquals(1, outbound.size());
         assertThat(outbound, hasSize(1));
         assertThat(outbound.get(0), instanceOf(ByteBuf.class));
@@ -194,8 +196,8 @@ public class ADSProtocolTest {
         SUT.decode(null, byteBuf, inbound);
         assertEquals(1, inbound.size());
         assertThat(inbound, hasSize(1));
-        assertThat(inbound.get(0), instanceOf(AMSTCPPacket.class));
-        AMSTCPPacket inboundAmstcpPacket = (AMSTCPPacket) inbound.get(0);
-        assertThat("inbound divers from outbound", this.amstcpPacket, equalTo(inboundAmstcpPacket));
+        assertThat(inbound.get(0), instanceOf(AMSPacket.class));
+        AMSPacket inboundAmsPacket = (AMSPacket) inbound.get(0);
+        assertThat("inbound divers from outbound", this.amstcpPacket, equalTo(inboundAmsPacket.toAmstcpPacket()));
     }
 }

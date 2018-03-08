@@ -20,6 +20,7 @@ package org.apache.plc4x.java.ads.api.generic.types;
 
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.ads.api.tcp.types.TcpLength;
 import org.junit.Test;
 
 import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;

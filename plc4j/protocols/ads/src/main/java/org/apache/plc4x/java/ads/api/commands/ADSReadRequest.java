@@ -23,7 +23,6 @@ import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
 import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -52,13 +51,6 @@ public class ADSReadRequest extends ADSAbstractRequest {
      */
     private final Length length;
 
-    private ADSReadRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
-        super(amstcpHeader, amsHeader);
-        this.indexGroup = requireNonNull(indexGroup);
-        this.indexOffset = requireNonNull(indexOffset);
-        this.length = requireNonNull(length);
-    }
-
     private ADSReadRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
         super(amsHeader);
         this.indexGroup = requireNonNull(indexGroup);
@@ -71,10 +63,6 @@ public class ADSReadRequest extends ADSAbstractRequest {
         this.indexGroup = requireNonNull(indexGroup);
         this.indexOffset = requireNonNull(indexOffset);
         this.length = requireNonNull(length);
-    }
-
-    public static ADSReadRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
-        return new ADSReadRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, length);
     }
 
     public static ADSReadRequest of(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length) {
@@ -117,7 +105,7 @@ public class ADSReadRequest extends ADSAbstractRequest {
             return false;
         if (!indexOffset.equals(that.indexOffset))
             return false;
-        
+
         return length.equals(that.length);
     }
 

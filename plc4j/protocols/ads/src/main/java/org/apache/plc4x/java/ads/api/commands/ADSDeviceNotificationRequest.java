@@ -23,7 +23,6 @@ import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.commands.types.Stamps;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -58,14 +57,6 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
 
     private final LengthSupplier lengthSupplier;
 
-    private ADSDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
-        super(amstcpHeader, amsHeader);
-        this.length = requireNonNull(length);
-        this.stamps = requireNonNull(stamps);
-        this.adsStampHeaders = requireNonNull(adsStampHeaders);
-        lengthSupplier = null;
-    }
-
     private ADSDeviceNotificationRequest(AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amsHeader);
         this.length = requireNonNull(length);
@@ -86,10 +77,6 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
             }
             return aggregateLength;
         };
-    }
-
-    public static ADSDeviceNotificationRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
-        return new ADSDeviceNotificationRequest(amstcpHeader, amsHeader, length, stamps, adsStampHeaders);
     }
 
     public static ADSDeviceNotificationRequest of(AMSHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
@@ -136,7 +123,7 @@ public class ADSDeviceNotificationRequest extends ADSAbstractRequest {
             return false;
         if (!stamps.equals(that.stamps))
             return false;
-        
+
         return adsStampHeaders.equals(that.adsStampHeaders);
     }
 

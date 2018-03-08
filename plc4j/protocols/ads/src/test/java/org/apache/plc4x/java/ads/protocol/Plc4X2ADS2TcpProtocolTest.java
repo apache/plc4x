@@ -25,7 +25,7 @@ import org.apache.plc4x.java.ads.api.commands.ADSWriteResponse;
 import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
+import org.apache.plc4x.java.ads.api.generic.AMSPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
@@ -54,12 +54,12 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class Plc4XADSProtocolTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ADSProtocolTest.class);
+public class Plc4X2ADS2TcpProtocolTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ADS2TcpProtocolTest.class);
 
     public static final Calendar calenderInstance = Calendar.getInstance();
 
-    private Plc4XADSProtocol SUT;
+    private Plc4X2ADSProtocol SUT;
 
     @Parameterized.Parameter
     public String payloadClazzName;
@@ -74,10 +74,10 @@ public class Plc4XADSProtocolTest {
     public String plcRequestContainerClassName;
 
     @Parameterized.Parameter(4)
-    public AMSTCPPacket amstcpPacket;
+    public AMSPacket amsPacket;
 
     @Parameterized.Parameter(5)
-    public String aMSTCPPacketClassName;
+    public String amsPacketClassName;
 
     @Parameterized.Parameters(name = "{index} Type:{0} {3} {5}")
     public static Collection<Object[]> data() {
@@ -140,7 +140,7 @@ public class Plc4XADSProtocolTest {
         AMSPort targetAmsPort = AMSPort.of(7);
         AMSNetId sourceAmsNetId = AMSNetId.of("8.9.10.11.12.13");
         AMSPort sourceAmsPort = AMSPort.of(14);
-        SUT = new Plc4XADSProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+        SUT = new Plc4X2ADSProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 
     @Test
@@ -148,11 +148,11 @@ public class Plc4XADSProtocolTest {
         ArrayList<Object> out = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, out);
         assertThat(out, hasSize(1));
-        assertThat(out.get(0), instanceOf(AMSTCPPacket.class));
-        AMSTCPPacket amstcpPacket = (AMSTCPPacket) out.get(0);
-        LOGGER.info("{}\nHexDump:\n{}", amstcpPacket, amstcpPacket.dump());
-        if (amstcpPacket instanceof ADSWriteRequest) {
-            ADSWriteRequest adsWriteRequest = (ADSWriteRequest) amstcpPacket;
+        assertThat(out.get(0), instanceOf(AMSPacket.class));
+        AMSPacket amsPacket = (AMSPacket) out.get(0);
+        LOGGER.info("{}\nHexDump:\n{}", amsPacket, amsPacket.dump());
+        if (amsPacket instanceof ADSWriteRequest) {
+            ADSWriteRequest adsWriteRequest = (ADSWriteRequest) amsPacket;
             byte[] value = adsWriteRequest.getData().getBytes();
             if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x1}));
@@ -179,8 +179,8 @@ public class Plc4XADSProtocolTest {
         assertThat(in, hasSize(1));
         syncInvoiceId();
         ArrayList<Object> out = new ArrayList<>();
-        LOGGER.info("{}\nHexDump:\n{}", amstcpPacket, amstcpPacket.dump());
-        SUT.decode(null, amstcpPacket, out);
+        LOGGER.info("{}\nHexDump:\n{}", amsPacket, amsPacket.dump());
+        SUT.decode(null, amsPacket, out);
         assertThat(out, hasSize(1));
         assertThat(out.get(0), instanceOf(PlcRequestContainer.class));
         PlcRequestContainer<?, ?> plcRequestContainer = (PlcRequestContainer) out.get(0);
@@ -188,7 +188,7 @@ public class Plc4XADSProtocolTest {
         PlcResponse plcResponse = plcRequestContainer.getResponseFuture().get();
         ResponseItem responseItem = (ResponseItem) plcResponse.getResponseItem().get();
         LOGGER.info("ResponseItem {}", responseItem);
-        if (amstcpPacket instanceof ADSReadResponse) {
+        if (amsPacket instanceof ADSReadResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
             if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
@@ -214,7 +214,7 @@ public class Plc4XADSProtocolTest {
         correlationBuilderField.setAccessible(true);
         AtomicLong correlationBuilder = (AtomicLong) correlationBuilderField.get(SUT);
 
-        AMSHeader amsHeader = amstcpPacket.getAmsHeader();
+        AMSHeader amsHeader = amsPacket.getAmsHeader();
         Field invokeIdField = amsHeader.getClass().getDeclaredField("invokeId");
         Field modifiersField = Field.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);

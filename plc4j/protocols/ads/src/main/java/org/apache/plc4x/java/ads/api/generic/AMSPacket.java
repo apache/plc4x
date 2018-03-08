@@ -19,25 +19,81 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.ads.api.commands.ADSCommandType;
+import org.apache.plc4x.java.ads.api.generic.types.*;
+import org.apache.plc4x.java.ads.api.serial.AMSSerialFrame;
+import org.apache.plc4x.java.ads.api.serial.types.FragmentNumber;
+import org.apache.plc4x.java.ads.api.tcp.AMSTCPPacket;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
-public class AMSPacket implements ByteReadable {
+import static java.util.Objects.requireNonNull;
 
-    private final AMSHeader amsHeader;
+public abstract class AMSPacket implements ByteReadable {
 
-    private final ADSData adsData;
+    protected final AMSHeader amsHeader;
 
-    private AMSPacket(AMSHeader amsHeader, ADSData adsData) {
+    protected AMSPacket(AMSHeader amsHeader) {
         this.amsHeader = amsHeader;
-        this.adsData = adsData;
     }
 
-    public static AMSPacket of(AMSHeader amsHeader, ADSData adsData) {
-        return new AMSPacket(amsHeader, adsData);
+    protected AMSPacket(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId) {
+        if (!getClass().isAnnotationPresent(ADSCommandType.class)) {
+            throw new IllegalArgumentException(ADSCommandType.class + " need to be present.");
+        }
+        this.amsHeader = AMSHeader.of(
+            requireNonNull(targetAmsNetId),
+            requireNonNull(targetAmsPort),
+            requireNonNull(sourceAmsNetId),
+            requireNonNull(sourceAmsPort),
+            requireNonNull(getClass().getAnnotation(ADSCommandType.class).value()),
+            requireNonNull(stateId),
+            () -> getAdsData().getCalculatedLength(),
+            requireNonNull(AMSError.NONE),
+            requireNonNull(invokeId));
+    }
+
+    public AMSHeader getAmsHeader() {
+        return amsHeader;
+    }
+
+    public abstract ADSData getAdsData();
+
+    protected ADSData buildADSData(ByteReadable... byteReadables) {
+        return () -> buildByteBuff(byteReadables);
+    }
+
+    public AMSTCPPacket toAmstcpPacket() {
+        return AMSTCPPacket.of(this);
+    }
+
+    public AMSSerialFrame toAmsSerialFrame(byte fragmentNumber) {
+        return AMSSerialFrame.of(FragmentNumber.of(fragmentNumber), this);
     }
 
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(amsHeader, adsData);
+        return buildByteBuff(amsHeader, getAdsData());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AMSPacket)) return false;
+
+        AMSPacket amsPacket = (AMSPacket) o;
+
+        return amsHeader.equals(amsPacket.amsHeader);
+    }
+
+    @Override
+    public int hashCode() {
+        return amsHeader.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+            "amsHeader=" + amsHeader +
+            '}';
     }
 }

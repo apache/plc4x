@@ -20,7 +20,6 @@ package org.apache.plc4x.java.ads.api.commands;
 
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -34,20 +33,12 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 @ADSCommandType(Command.ADS_READ_STATE)
 public class ADSReadStateRequest extends ADSAbstractRequest {
 
-    private ADSReadStateRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
-        super(amstcpHeader, amsHeader);
-    }
-
     private ADSReadStateRequest(AMSHeader amsHeader) {
         super(amsHeader);
     }
 
     private ADSReadStateRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-    }
-
-    public static ADSReadStateRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
-        return new ADSReadStateRequest(amstcpHeader, amsHeader);
     }
 
     public static ADSReadStateRequest of(AMSHeader amsHeader) {

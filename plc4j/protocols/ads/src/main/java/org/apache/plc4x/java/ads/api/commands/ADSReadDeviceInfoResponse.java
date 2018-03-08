@@ -21,7 +21,6 @@ package org.apache.plc4x.java.ads.api.commands;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -55,9 +54,8 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
      */
     private final Device device;
 
-
-    private ADSReadDeviceInfoResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
-        super(amstcpHeader, amsHeader);
+    private ADSReadDeviceInfoResponse(AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+        super(amsHeader);
         this.result = requireNonNull(result);
         this.majorVersion = requireNonNull(majorVersion);
         this.minorVersion = requireNonNull(minorVersion);
@@ -74,8 +72,8 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
         this.device = requireNonNull(device);
     }
 
-    public static ADSReadDeviceInfoResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
-        return new ADSReadDeviceInfoResponse(amstcpHeader, amsHeader, result, majorVersion, minorVersion, version, device);
+    public static ADSReadDeviceInfoResponse of(AMSHeader amsHeader, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
+        return new ADSReadDeviceInfoResponse(amsHeader, result, majorVersion, minorVersion, version, device);
     }
 
     public static ADSReadDeviceInfoResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, MajorVersion majorVersion, MinorVersion minorVersion, Version version, Device device) {
@@ -126,7 +124,7 @@ public class ADSReadDeviceInfoResponse extends ADSAbstractResponse {
             return false;
         if (!version.equals(that.version))
             return false;
-        
+
         return device.equals(that.device);
     }
 

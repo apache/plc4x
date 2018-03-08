@@ -28,7 +28,7 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.protocol.ADSProtocol;
+import org.apache.plc4x.java.ads.protocol.ADS2TcpProtocol;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
@@ -39,7 +39,7 @@ public class ADSProtocolBenchmark {
 
     @State(Scope.Benchmark)
     public static class MyState {
-        ADSProtocol SUT = new ADSProtocol();
+        ADS2TcpProtocol SUT = new ADS2TcpProtocol();
         ADSWriteRequest adsWriteRequest = buildAdsWriteRequest();
         byte[] adsWriteResponse = buildADSWriteResponse();
         ADSReadRequest adsReadRequest = buildAdsReadRequest();

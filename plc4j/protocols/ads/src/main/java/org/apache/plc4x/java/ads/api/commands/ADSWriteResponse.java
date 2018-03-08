@@ -21,7 +21,6 @@ package org.apache.plc4x.java.ads.api.commands;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -40,8 +39,8 @@ public class ADSWriteResponse extends ADSAbstractResponse {
      */
     private final Result result;
 
-    private ADSWriteResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
-        super(amstcpHeader, amsHeader);
+    private ADSWriteResponse(AMSHeader amsHeader, Result result) {
+        super(amsHeader);
         this.result = requireNonNull(result);
     }
 
@@ -50,8 +49,8 @@ public class ADSWriteResponse extends ADSAbstractResponse {
         this.result = requireNonNull(result);
     }
 
-    public static ADSWriteResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
-        return new ADSWriteResponse(amstcpHeader, amsHeader, result);
+    public static ADSWriteResponse of(AMSHeader amsHeader, Result result) {
+        return new ADSWriteResponse(amsHeader, result);
     }
 
     public static ADSWriteResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {

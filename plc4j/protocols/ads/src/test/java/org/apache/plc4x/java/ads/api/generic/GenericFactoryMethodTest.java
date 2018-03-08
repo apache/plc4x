@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import org.apache.plc4x.java.ads.api.generic.types.Command;
+import org.apache.plc4x.java.ads.api.tcp.AMSTCPHeader;
+import org.apache.plc4x.java.ads.api.tcp.AMSTCPPacket;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 import org.junit.Test;
 import org.junit.runner.RunWith;

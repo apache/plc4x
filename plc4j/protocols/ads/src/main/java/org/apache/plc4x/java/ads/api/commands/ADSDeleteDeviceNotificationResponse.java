@@ -21,7 +21,6 @@ package org.apache.plc4x.java.ads.api.commands;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -40,8 +39,8 @@ public class ADSDeleteDeviceNotificationResponse extends ADSAbstractResponse {
      */
     private final Result result;
 
-    private ADSDeleteDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
-        super(amstcpHeader, amsHeader);
+    private ADSDeleteDeviceNotificationResponse(AMSHeader amsHeader, Result result) {
+        super(amsHeader);
         this.result = requireNonNull(result);
     }
 
@@ -50,8 +49,8 @@ public class ADSDeleteDeviceNotificationResponse extends ADSAbstractResponse {
         this.result = requireNonNull(result);
     }
 
-    public static ADSDeleteDeviceNotificationResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result) {
-        return new ADSDeleteDeviceNotificationResponse(amstcpHeader, amsHeader, result);
+    public static ADSDeleteDeviceNotificationResponse of(AMSHeader amsHeader, Result result) {
+        return new ADSDeleteDeviceNotificationResponse(amsHeader, result);
     }
 
     public static ADSDeleteDeviceNotificationResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result) {

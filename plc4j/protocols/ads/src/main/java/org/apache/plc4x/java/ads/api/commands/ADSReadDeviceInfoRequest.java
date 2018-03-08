@@ -20,7 +20,6 @@ package org.apache.plc4x.java.ads.api.commands;
 
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -34,20 +33,12 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 @ADSCommandType(Command.ADS_READ_DEVICE_INFO)
 public class ADSReadDeviceInfoRequest extends ADSAbstractRequest {
 
-    private ADSReadDeviceInfoRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
-        super(amstcpHeader, amsHeader);
-    }
-
     private ADSReadDeviceInfoRequest(AMSHeader amsHeader) {
         super(amsHeader);
     }
 
     private ADSReadDeviceInfoRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
-    }
-
-    public static ADSReadDeviceInfoRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader) {
-        return new ADSReadDeviceInfoRequest(amstcpHeader, amsHeader);
     }
 
     public static ADSReadDeviceInfoRequest of(AMSHeader amsHeader) {

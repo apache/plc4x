@@ -21,7 +21,6 @@ package org.apache.plc4x.java.ads.api.commands;
 import org.apache.plc4x.java.ads.api.commands.types.NotificationHandle;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -40,11 +39,6 @@ public class ADSDeleteDeviceNotificationRequest extends ADSAbstractRequest {
      */
     private final NotificationHandle notificationHandle;
 
-    private ADSDeleteDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {
-        super(amstcpHeader, amsHeader);
-        this.notificationHandle = requireNonNull(notificationHandle);
-    }
-
     private ADSDeleteDeviceNotificationRequest(AMSHeader amsHeader, NotificationHandle notificationHandle) {
         super(amsHeader);
         this.notificationHandle = requireNonNull(notificationHandle);
@@ -53,10 +47,6 @@ public class ADSDeleteDeviceNotificationRequest extends ADSAbstractRequest {
     private ADSDeleteDeviceNotificationRequest(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, NotificationHandle notificationHandle) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.notificationHandle = requireNonNull(notificationHandle);
-    }
-
-    public static ADSDeleteDeviceNotificationRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, NotificationHandle notificationHandle) {
-        return new ADSDeleteDeviceNotificationRequest(amstcpHeader, amsHeader, notificationHandle);
     }
 
     public static ADSDeleteDeviceNotificationRequest of(AMSHeader amsHeader, NotificationHandle notificationHandle) {

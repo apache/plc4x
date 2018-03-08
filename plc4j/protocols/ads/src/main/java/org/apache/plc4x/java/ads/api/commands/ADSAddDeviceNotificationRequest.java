@@ -21,7 +21,6 @@ package org.apache.plc4x.java.ads.api.commands;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
@@ -65,17 +64,6 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
      */
     private final Reserved reserved;
 
-    private ADSAddDeviceNotificationRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
-        super(amstcpHeader, amsHeader);
-        this.indexGroup = requireNonNull(indexGroup);
-        this.indexOffset = requireNonNull(indexOffset);
-        this.length = requireNonNull(length);
-        this.transmissionMode = requireNonNull(transmissionMode);
-        this.maxDelay = requireNonNull(maxDelay);
-        this.cycleTime = requireNonNull(cycleTime);
-        this.reserved = Reserved.INSTANCE;
-    }
-
     private ADSAddDeviceNotificationRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
         super(amsHeader);
         this.indexGroup = requireNonNull(indexGroup);
@@ -101,10 +89,6 @@ public class ADSAddDeviceNotificationRequest extends ADSAbstractRequest {
     @Override
     public ADSData getAdsData() {
         return buildADSData(indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime, reserved);
-    }
-
-    public static ADSAddDeviceNotificationRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {
-        return new ADSAddDeviceNotificationRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime);
     }
 
     public static ADSAddDeviceNotificationRequest of(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, Length length, TransmissionMode transmissionMode, MaxDelay maxDelay, CycleTime cycleTime) {

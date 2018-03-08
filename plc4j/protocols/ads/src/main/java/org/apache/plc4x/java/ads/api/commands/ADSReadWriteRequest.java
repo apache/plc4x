@@ -21,7 +21,6 @@ package org.apache.plc4x.java.ads.api.commands;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -61,16 +60,6 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
 
     private final LengthSupplier writeLengthSupplier;
 
-    private ADSReadWriteRequest(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
-        super(amstcpHeader, amsHeader);
-        this.indexGroup = requireNonNull(indexGroup);
-        this.indexOffset = requireNonNull(indexOffset);
-        this.readLength = requireNonNull(readLength);
-        this.writeLength = requireNonNull(writeLength);
-        this.data = requireNonNull(data);
-        this.writeLengthSupplier = null;
-    }
-
     private ADSReadWriteRequest(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(amsHeader);
         this.indexGroup = requireNonNull(indexGroup);
@@ -89,10 +78,6 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
         this.writeLength = null;
         this.data = requireNonNull(data);
         this.writeLengthSupplier = data;
-    }
-
-    public static ADSReadWriteRequest of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
-        return new ADSReadWriteRequest(amstcpHeader, amsHeader, indexGroup, indexOffset, readLength, writeLength, data);
     }
 
     public static ADSReadWriteRequest of(AMSHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
@@ -147,7 +132,7 @@ public class ADSReadWriteRequest extends ADSAbstractRequest {
             return false;
         if (!getWriteLength().equals(that.getWriteLength()))
             return false;
-        
+
         return data.equals(that.data);
     }
 

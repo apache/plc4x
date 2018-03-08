@@ -16,10 +16,10 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.api.generic;
+package org.apache.plc4x.java.ads.api.tcp;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.generic.types.TcpLength;
+import org.apache.plc4x.java.ads.api.tcp.types.TcpLength;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;

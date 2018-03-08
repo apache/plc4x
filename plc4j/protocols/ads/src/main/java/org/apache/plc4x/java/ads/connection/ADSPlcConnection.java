@@ -25,8 +25,8 @@ import io.netty.channel.ChannelPipeline;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.model.ADSAddress;
-import org.apache.plc4x.java.ads.protocol.ADSProtocol;
-import org.apache.plc4x.java.ads.protocol.Plc4XADSProtocol;
+import org.apache.plc4x.java.ads.protocol.ADS2TcpProtocol;
+import org.apache.plc4x.java.ads.protocol.Plc4X2ADSProtocol;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -94,8 +94,8 @@ public class ADSPlcConnection extends AbstractPlcConnection implements PlcReader
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the ads protocol.
                 ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new Plc4XADSProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
-                pipeline.addLast(new ADSProtocol());
+                pipeline.addLast(new Plc4X2ADSProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
+                pipeline.addLast(new ADS2TcpProtocol());
             }
         };
     }

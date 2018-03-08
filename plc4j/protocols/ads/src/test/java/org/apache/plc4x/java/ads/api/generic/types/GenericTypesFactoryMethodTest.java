@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.generic.types;
 
+import org.apache.plc4x.java.ads.api.tcp.types.TcpLength;
 import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 import org.apache.plc4x.java.ads.api.util.UnsignedShortLEByteValue;
 import org.junit.Test;

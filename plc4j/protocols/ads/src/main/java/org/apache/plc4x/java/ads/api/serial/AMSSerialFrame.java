@@ -20,7 +20,6 @@ package org.apache.plc4x.java.ads.api.serial;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.generic.AMSPacket;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPPacket;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -89,12 +88,11 @@ public class AMSSerialFrame implements ByteReadable {
         this.crc = crc;
     }
 
-    private AMSSerialFrame(FragmentNumber fragmentNumber, AMSTCPPacket amstcpPacket) {
+    private AMSSerialFrame(FragmentNumber fragmentNumber, AMSPacket amsPacket) {
         this.magicCookie = MagicCookie.of(ID);
         this.transmitterAddress = TransmitterAddress.RS232_COMM_ADDRESS;
         this.receiverAddress = ReceiverAddress.RS232_COMM_ADDRESS;
         this.fragmentNumber = fragmentNumber;
-        AMSPacket amsPacket = amstcpPacket.getAMSPacket();
         long calculatedLength = amsPacket.getCalculatedLength();
         if (calculatedLength > 255) {
             throw new IllegalArgumentException("Paket length must not exceed 255");
@@ -125,8 +123,8 @@ public class AMSSerialFrame implements ByteReadable {
         return new AMSSerialFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
     }
 
-    public static AMSSerialFrame of(FragmentNumber fragmentNumber, AMSTCPPacket amstcpPacket) {
-        return new AMSSerialFrame(fragmentNumber, amstcpPacket);
+    public static AMSSerialFrame of(FragmentNumber fragmentNumber, AMSPacket amsPacket) {
+        return new AMSSerialFrame(fragmentNumber, amsPacket);
     }
 
     @Override

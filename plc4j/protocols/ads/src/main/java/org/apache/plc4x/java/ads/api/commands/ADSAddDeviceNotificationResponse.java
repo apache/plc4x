@@ -22,7 +22,6 @@ import org.apache.plc4x.java.ads.api.commands.types.NotificationHandle;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.ADSData;
 import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSTCPHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
 import org.apache.plc4x.java.ads.api.generic.types.Command;
@@ -46,8 +45,8 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
      */
     private final NotificationHandle notificationHandle;
 
-    private ADSAddDeviceNotificationResponse(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
-        super(amstcpHeader, amsHeader);
+    private ADSAddDeviceNotificationResponse(AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
+        super(amsHeader);
         this.result = requireNonNull(result);
         this.notificationHandle = requireNonNull(notificationHandle);
     }
@@ -58,8 +57,8 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
         this.notificationHandle = requireNonNull(notificationHandle);
     }
 
-    public static ADSAddDeviceNotificationResponse of(AMSTCPHeader amstcpHeader, AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
-        return new ADSAddDeviceNotificationResponse(amstcpHeader, amsHeader, result, notificationHandle);
+    public static ADSAddDeviceNotificationResponse of(AMSHeader amsHeader, Result result, NotificationHandle notificationHandle) {
+        return new ADSAddDeviceNotificationResponse(amsHeader, result, notificationHandle);
     }
 
     public static ADSAddDeviceNotificationResponse of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, Invoke invokeId, Result result, NotificationHandle notificationHandle) {
@@ -92,7 +91,7 @@ public class ADSAddDeviceNotificationResponse extends ADSAbstractResponse {
 
         if (!result.equals(that.result))
             return false;
-        
+
         return notificationHandle.equals(that.notificationHandle);
     }
 
