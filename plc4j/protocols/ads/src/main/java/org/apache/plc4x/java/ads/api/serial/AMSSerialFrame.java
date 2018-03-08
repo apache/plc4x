@@ -111,7 +111,6 @@ public class AMSSerialFrame implements ByteReadable {
         messageDigest.update(receiverAddress.getBytes());
         messageDigest.update(fragmentNumber.getBytes());
         messageDigest.update(userDataLength.getBytes());
-        messageDigest.update(amsPacketBytes);
         byte[] digest = messageDigest.digest(amsPacketBytes);
         if (digest.length > 2) {
             throw new PlcRuntimeException("Digest length too great " + digest.length);

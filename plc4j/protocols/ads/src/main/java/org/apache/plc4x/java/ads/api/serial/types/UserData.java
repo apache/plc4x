@@ -26,6 +26,8 @@ import static java.util.Objects.requireNonNull;
 
 public class UserData extends ByteValue {
 
+    public static final UserData EMPTY = UserData.of();
+
     private UserData(byte... values) {
         super(values);
     }

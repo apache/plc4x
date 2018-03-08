@@ -43,8 +43,15 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
 
     private final ConcurrentMap<Invoke, AMSPacket> requests;
 
+    private final boolean ignoreBrokenPackages;
+
     public ADS2TcpProtocol() {
+        this(false);
+    }
+
+    public ADS2TcpProtocol(boolean ignoreBrokenPackages) {
         this.requests = new ConcurrentHashMap<>();
+        this.ignoreBrokenPackages = ignoreBrokenPackages;
     }
 
     /**
@@ -66,9 +73,14 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
     @SuppressWarnings("unchecked")
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) throws Exception {
+        // Tcp decoding
         // Reserved
         byteBuf.skipBytes(AMSTCPHeader.Reserved.NUM_BYTES);
         TcpLength packetLength = TcpLength.of(byteBuf);
+        AMSTCPHeader amstcpHeader = AMSTCPHeader.of(packetLength);
+        LOGGER.debug("AMS TCP Header {}", amstcpHeader);
+
+        // Ams decoding
         AMSNetId targetAmsNetId = AMSNetId.of(byteBuf);
         AMSPort targetAmsPort = AMSPort.of(byteBuf);
         AMSNetId sourceAmsNetId = AMSNetId.of(byteBuf);
@@ -87,8 +99,6 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
             throw new IllegalStateException("Overflow in datalength: " + dataLength.getAsLong());
         }
         ByteBuf commandBuffer = byteBuf.readBytes((int) dataLength.getAsLong());
-        AMSTCPHeader amstcpHeader = AMSTCPHeader.of(packetLength);
-        LOGGER.debug("AMS TCP Header {}", amstcpHeader);
         AMSHeader amsHeader = AMSHeader.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateId, dataLength, errorCode, invoke);
         final AMSPacket amsPacket;
         switch (commandId) {
@@ -128,7 +138,7 @@ public class ADS2TcpProtocol extends MessageToMessageCodec<ByteBuf, AMSPacket> {
         }
         out.add(amsPacket);
         LOGGER.trace("Set amsPacket {} to out", amsPacket);
-        if (commandBuffer.readableBytes() > 0) {
+        if (!ignoreBrokenPackages && commandBuffer.readableBytes() > 0) {
             commandBuffer.release();
             byteBuf.release();
             throw new IllegalStateException("Unread bytes left: " + commandBuffer.readableBytes());

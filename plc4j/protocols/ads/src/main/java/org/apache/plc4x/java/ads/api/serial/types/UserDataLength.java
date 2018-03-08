@@ -41,4 +41,7 @@ public class UserDataLength extends ByteValue {
         return new UserDataLength(byteBuf);
     }
 
+    public byte getAsByte() {
+        return value[0];
+    }
 }
