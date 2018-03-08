@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.ads.api.commands;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.generic.ADSData;
-import org.apache.plc4x.java.ads.api.generic.AMSHeader;
-import org.apache.plc4x.java.ads.api.generic.AMSPacket;
+import org.apache.plc4x.java.ads.api.generic.AdsData;
+import org.apache.plc4x.java.ads.api.generic.AmsHeader;
+import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.generic.types.*;
 
 import static java.util.Objects.requireNonNull;
@@ -29,31 +29,31 @@ import static java.util.Objects.requireNonNull;
 /**
  * Unknown ADS Package
  */
-@ADSCommandType(Command.UNKNOWN)
-public class UnknownCommand extends AMSPacket {
+@AdsCommandType(Command.UNKNOWN)
+public class UnknownCommand extends AmsPacket {
 
     private final ByteBuf remainingBytes;
 
-    private UnknownCommand(AMSHeader amsHeader, ByteBuf remainingBytes) {
+    private UnknownCommand(AmsHeader amsHeader, ByteBuf remainingBytes) {
         super(amsHeader);
         this.remainingBytes = requireNonNull(remainingBytes);
     }
 
-    private UnknownCommand(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId, ByteBuf remainingBytes) {
+    private UnknownCommand(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, State stateId, Invoke invokeId, ByteBuf remainingBytes) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, stateId, invokeId);
         this.remainingBytes = requireNonNull(remainingBytes);
     }
 
     @Override
-    public ADSData getAdsData() {
+    public AdsData getAdsData() {
         return () -> remainingBytes;
     }
 
-    public static UnknownCommand of(AMSHeader amsHeader, ByteBuf remainingBytes) {
+    public static UnknownCommand of(AmsHeader amsHeader, ByteBuf remainingBytes) {
         return new UnknownCommand(amsHeader, remainingBytes);
     }
 
-    public static UnknownCommand of(AMSNetId targetAmsNetId, AMSPort targetAmsPort, AMSNetId sourceAmsNetId, AMSPort sourceAmsPort, State stateId, Invoke invokeId, ByteBuf remainingBytes) {
+    public static UnknownCommand of(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, State stateId, Invoke invokeId, ByteBuf remainingBytes) {
         return new UnknownCommand(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, stateId, invokeId, remainingBytes);
     }
 

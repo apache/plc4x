@@ -48,7 +48,7 @@ public class CommandTypesFactoryMethodTest {
     public static Collection<Object[]> data() {
         return Stream.of(
             AdsReturnCode.class,
-            ADSState.class,
+            AdsState.class,
             CycleTime.class,
             Data.class,
             Device.class,

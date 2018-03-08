@@ -20,13 +20,13 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.Unpooled;
-import org.apache.plc4x.java.ads.api.commands.ADSReadRequest;
-import org.apache.plc4x.java.ads.api.commands.ADSReadResponse;
-import org.apache.plc4x.java.ads.api.commands.ADSWriteRequest;
-import org.apache.plc4x.java.ads.api.commands.ADSWriteResponse;
+import org.apache.plc4x.java.ads.api.commands.AdsReadRequest;
+import org.apache.plc4x.java.ads.api.commands.AdsReadResponse;
+import org.apache.plc4x.java.ads.api.commands.AdsWriteRequest;
+import org.apache.plc4x.java.ads.api.commands.AdsWriteResponse;
 import org.apache.plc4x.java.ads.api.commands.types.*;
-import org.apache.plc4x.java.ads.api.generic.types.AMSNetId;
-import org.apache.plc4x.java.ads.api.generic.types.AMSPort;
+import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
+import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
@@ -38,10 +38,10 @@ public class ADSProtocolBenchmark {
 
     @State(Scope.Benchmark)
     public static class MyState {
-        ADS2TcpProtocol SUT = new ADS2TcpProtocol();
-        ADSWriteRequest adsWriteRequest = buildAdsWriteRequest();
+        Ads2TcpProtocol SUT = new Ads2TcpProtocol();
+        AdsWriteRequest adsWriteRequest = buildAdsWriteRequest();
         byte[] adsWriteResponse = buildADSWriteResponse();
-        ADSReadRequest adsReadRequest = buildAdsReadRequest();
+        AdsReadRequest adsReadRequest = buildAdsReadRequest();
         byte[] adsReadResponse = buildADSReadResponse();
 
         @Setup(Level.Trial)
@@ -105,14 +105,14 @@ public class ADSProtocolBenchmark {
         blackhole.consume(out.remove());
     }
 
-    private static ADSWriteRequest buildAdsWriteRequest() {
-        AMSNetId targetAmsNetId = AMSNetId.of("1.2.3.4.5.6");
-        AMSPort targetAmsPort = AMSPort.of(7);
-        AMSNetId sourceAmsNetId = AMSNetId.of("8.9.10.11.12.13");
-        AMSPort sourceAmsPort = AMSPort.of(14);
+    private static AdsWriteRequest buildAdsWriteRequest() {
+        AmsNetId targetAmsNetId = AmsNetId.of("1.2.3.4.5.6");
+        AmsPort targetAmsPort = AmsPort.of(7);
+        AmsNetId sourceAmsNetId = AmsNetId.of("8.9.10.11.12.13");
+        AmsPort sourceAmsPort = AmsPort.of(14);
         Invoke invokeId = Invoke.of(15);
         Data data = Data.of("Hello World!".getBytes());
-        return ADSWriteRequest.of(
+        return AdsWriteRequest.of(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
             IndexGroup.of(1),
             IndexOffset.of(1),
@@ -121,25 +121,25 @@ public class ADSProtocolBenchmark {
     }
 
     private static byte[] buildADSWriteResponse() {
-        AMSNetId targetAmsNetId = AMSNetId.of("1.2.3.4.5.6");
-        AMSPort targetAmsPort = AMSPort.of(7);
-        AMSNetId sourceAmsNetId = AMSNetId.of("8.9.10.11.12.13");
-        AMSPort sourceAmsPort = AMSPort.of(14);
+        AmsNetId targetAmsNetId = AmsNetId.of("1.2.3.4.5.6");
+        AmsPort targetAmsPort = AmsPort.of(7);
+        AmsNetId sourceAmsNetId = AmsNetId.of("8.9.10.11.12.13");
+        AmsPort sourceAmsPort = AmsPort.of(14);
         Invoke invokeId = Invoke.of(15);
         Result result = Result.of(AdsReturnCode.ADS_CODE_0);
-        return ADSWriteResponse.of(
+        return AdsWriteResponse.of(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
             result
         ).getBytes();
     }
 
-    private static ADSReadRequest buildAdsReadRequest() {
-        AMSNetId targetAmsNetId = AMSNetId.of("1.2.3.4.5.6");
-        AMSPort targetAmsPort = AMSPort.of(7);
-        AMSNetId sourceAmsNetId = AMSNetId.of("8.9.10.11.12.13");
-        AMSPort sourceAmsPort = AMSPort.of(14);
+    private static AdsReadRequest buildAdsReadRequest() {
+        AmsNetId targetAmsNetId = AmsNetId.of("1.2.3.4.5.6");
+        AmsPort targetAmsPort = AmsPort.of(7);
+        AmsNetId sourceAmsNetId = AmsNetId.of("8.9.10.11.12.13");
+        AmsPort sourceAmsPort = AmsPort.of(14);
         Invoke invokeId = Invoke.of(15);
-        return ADSReadRequest.of(
+        return AdsReadRequest.of(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
             IndexGroup.of(1),
             IndexOffset.of(1),
@@ -148,14 +148,14 @@ public class ADSProtocolBenchmark {
     }
 
     private static byte[] buildADSReadResponse() {
-        AMSNetId targetAmsNetId = AMSNetId.of("1.2.3.4.5.6");
-        AMSPort targetAmsPort = AMSPort.of(7);
-        AMSNetId sourceAmsNetId = AMSNetId.of("8.9.10.11.12.13");
-        AMSPort sourceAmsPort = AMSPort.of(14);
+        AmsNetId targetAmsNetId = AmsNetId.of("1.2.3.4.5.6");
+        AmsPort targetAmsPort = AmsPort.of(7);
+        AmsNetId sourceAmsNetId = AmsNetId.of("8.9.10.11.12.13");
+        AmsPort sourceAmsPort = AmsPort.of(14);
         Invoke invokeId = Invoke.of(15);
         Result result = Result.of(AdsReturnCode.ADS_CODE_0);
         Data data = Data.of("Hello World!".getBytes());
-        return ADSReadResponse.of(
+        return AdsReadResponse.of(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
             result,
             data

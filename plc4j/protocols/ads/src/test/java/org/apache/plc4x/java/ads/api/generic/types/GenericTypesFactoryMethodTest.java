@@ -43,9 +43,9 @@ public class GenericTypesFactoryMethodTest {
     @Parameterized.Parameters(name = "{index} {0}")
     public static Collection<Object[]> data() {
         return Stream.of(
-            AMSError.class,
-            AMSNetId.class,
-            AMSPort.class,
+            AmsError.class,
+            AmsNetId.class,
+            AmsPort.class,
             Command.class,
             DataLength.class,
             Invoke.class,
@@ -72,7 +72,7 @@ public class GenericTypesFactoryMethodTest {
     public void testOfString() throws Exception {
         Method ofMethod = clazz.getDeclaredMethod("of", String.class);
         String testString = "1";
-        if (clazz == AMSNetId.class) {
+        if (clazz == AmsNetId.class) {
             testString = "1.1.1.1.1.1";
         } else if (clazz == Command.class) {
             testString = Command.ADS_ADD_DEVICE_NOTIFICATION.name();
