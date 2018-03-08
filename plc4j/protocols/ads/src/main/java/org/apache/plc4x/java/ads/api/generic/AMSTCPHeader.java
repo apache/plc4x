@@ -31,21 +31,31 @@ import static java.util.Objects.requireNonNull;
  */
 public class AMSTCPHeader implements ByteReadable {
 
+    /**
+     * These bytes must be set to 0.
+     */
     private final Reserved reserved;
 
+    /**
+     * This array contains the length of the data packet. It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
+     * is null if length is supplied by {@link #lengthSuppliers}.
+     */
     private final TcpLength tcpLength;
 
+    /**
+     * This array contains the length of the data packet. It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
+     * is null if length is supplied by {@link #tcpLength}.
+     */
     private final LengthSupplier[] lengthSuppliers;
 
     private AMSTCPHeader(TcpLength tcpLength) {
-        this.reserved = requireNonNull(Reserved.CONSTANT);
+        this.reserved = Reserved.CONSTANT;
         this.tcpLength = requireNonNull(tcpLength);
-        lengthSuppliers = null;
-
+        this.lengthSuppliers = null;
     }
 
     private AMSTCPHeader(LengthSupplier... lengthSuppliers) {
-        this.reserved = requireNonNull(Reserved.CONSTANT);
+        this.reserved = Reserved.CONSTANT;
         this.tcpLength = null;
         this.lengthSuppliers = requireNonNull(lengthSuppliers);
     }
@@ -114,8 +124,8 @@ public class AMSTCPHeader implements ByteReadable {
 
     @Override
     public int hashCode() {
-        int result = reserved != null ? reserved.hashCode() : 0;
-        result = 31 * result + (getTcpLength() != null ? getTcpLength().hashCode() : 0);
+        int result = reserved.hashCode();
+        result = 31 * result + getTcpLength().hashCode();
         return result;
     }
 
