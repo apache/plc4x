@@ -25,6 +25,7 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import static java.util.Objects.requireNonNull;
 
+// TODO: maybe don't let all commands extend from tcp as in serial these look different...
 public abstract class AMSTCPPacket implements ByteReadable {
     private final AMSTCPHeader amsTcpHeader;
 
@@ -76,6 +77,10 @@ public abstract class AMSTCPPacket implements ByteReadable {
 
     protected ADSData buildADSData(ByteReadable... byteReadables) {
         return () -> buildByteBuff(byteReadables);
+    }
+
+    public AMSPacket getAMSPacket() {
+        return AMSPacket.of(amsHeader, getAdsData());
     }
 
     @Override
