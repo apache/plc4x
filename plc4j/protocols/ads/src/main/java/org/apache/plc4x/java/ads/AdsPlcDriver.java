@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
+import org.apache.plc4x.java.ads.connection.AdsSerialPlcConnection;
 import org.apache.plc4x.java.ads.connection.AdsTcpPlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -39,12 +40,14 @@ import java.util.regex.Pattern;
  */
 public class AdsPlcDriver implements PlcDriver {
 
-    private static final Pattern ADS_ADDRESS_PATTERN =
+    public static final Pattern ADS_ADDRESS_PATTERN =
         Pattern.compile("(?<targetAmsNetId>" + AmsNetId.AMS_NET_ID_PATTERN + "):(?<targetAmsPort>" + AmsPort.AMS_PORT_PATTERN + ")"
             + "(/"
             + "(?<sourceAmsNetId>" + AmsNetId.AMS_NET_ID_PATTERN + "):(?<sourceAmsPort>" + AmsPort.AMS_PORT_PATTERN + ")"
             + ")?");
-    private static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads://(?<host>\\w+)(:(?<port>\\d*))?/" + ADS_ADDRESS_PATTERN);
+    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(?<host>[\\w.]+)(:(?<port>\\d*))?");
+    public static final Pattern SERIAL_PATTERN = Pattern.compile("(?<serialDefinition>serial:.*)");
+    public static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads:/?/?(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/" + ADS_ADDRESS_PATTERN);
 
     @Override
     public String getProtocolCode() {
@@ -61,9 +64,10 @@ public class AdsPlcDriver implements PlcDriver {
         Matcher matcher = ADS_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url " + url + " doesn't match 'ads://{host|ip}/{targetAmsNetId}:{targetAmsPort}/{sourceAmsNetId}:{sourceAmsPort}' RAW:" + ADS_URI_PATTERN);
+                "Connection url " + url + " doesn't match 'ads://{{host|ip}|serial:definition}/{targetAmsNetId}:{targetAmsPort}/{sourceAmsNetId}:{sourceAmsPort}' RAW:" + ADS_URI_PATTERN);
         }
         String host = matcher.group("host");
+        String serialDefinition = matcher.group("serialDefinition");
         String portString = matcher.group("port");
         Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
         AmsNetId targetAmsNetId = AmsNetId.of(matcher.group("targetAmsNetId"));
@@ -72,10 +76,32 @@ public class AdsPlcDriver implements PlcDriver {
         AmsNetId sourceAmsNetId = StringUtils.isNotBlank(sourceAmsNetIdString) ? AmsNetId.of(sourceAmsNetIdString) : null;
         String sourceAmsPortString = matcher.group("sourceAmsPort");
         AmsPort sourceAmsPort = StringUtils.isNotBlank(sourceAmsPortString) ? AmsPort.of(sourceAmsPortString) : null;
-        try {
-            return new AdsTcpPlcConnection(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
-        } catch (UnknownHostException e) {
-            throw new PlcConnectionException(e);
+
+        if (serialDefinition != null) {
+            String serialPort = serialDefinition.substring(serialDefinition.indexOf(':'));
+            if (sourceAmsNetId == null || sourceAmsPort == null) {
+                return new AdsSerialPlcConnection(serialPort, targetAmsNetId, targetAmsPort);
+            } else {
+                return new AdsSerialPlcConnection(serialPort, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+            }
+        } else {
+            try {
+                if (sourceAmsNetId == null || sourceAmsPort == null) {
+                    if (port == null) {
+                        return new AdsTcpPlcConnection(InetAddress.getByName(host), targetAmsNetId, targetAmsPort);
+                    } else {
+                        return new AdsTcpPlcConnection(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort);
+                    }
+                } else {
+                    if (port == null) {
+                        return new AdsTcpPlcConnection(InetAddress.getByName(host), targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+                    } else {
+                        return new AdsTcpPlcConnection(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+                    }
+                }
+            } catch (UnknownHostException e) {
+                throw new PlcConnectionException(e);
+            }
         }
     }
 

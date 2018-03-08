@@ -28,14 +28,43 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.regex.Pattern;
+
+import static org.apache.plc4x.java.ads.AdsPlcDriver.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class AdsPlcDriverTest {
 
     @Rule
     public TcpHexDumper tcpHexDumper = new TcpHexDumper(0, 2);
+
+    @Test
+    public void testAdsAddressPattern() throws Exception {
+        assertMatching(ADS_ADDRESS_PATTERN, "0.0.0.0.0.0:13");
+        assertMatching(ADS_ADDRESS_PATTERN, "0.0.0.0.0.0:13/0.0.0.0.0.0:13");
+
+        assertMatching(INET_ADDRESS_PATTERN, "localhost");
+        assertMatching(INET_ADDRESS_PATTERN, "localhost:3131");
+        assertMatching(INET_ADDRESS_PATTERN, "www.google.de");
+        assertMatching(INET_ADDRESS_PATTERN, "www.google.de:443");
+
+        assertMatching(SERIAL_PATTERN, "serial:/dev/com1");
+        assertMatching(SERIAL_PATTERN, "serial:COM1");
+        assertMatching(SERIAL_PATTERN, "serial:/dev/ttyUSB0");
+
+        assertMatching(ADS_URI_PATTERN, "ads://www.google.de/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads://www.google.de:443/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads://serial:/dev/com1/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads://serial:COM1/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads://serial:/dev/ttyUSB0/0.0.0.0.0.0:13");
+    }
+
+    private void assertMatching(Pattern pattern, String match) {
+        if (!pattern.matcher(match).matches()) {
+            fail(pattern + "doesn't match " + match);
+        }
+    }
 
     @Test
     public void getConnection() throws Exception {
@@ -73,7 +102,7 @@ public class AdsPlcDriverTest {
     }
 
     @Test
-    public void  getProtocol() {
+    public void getProtocol() {
         AdsPlcDriver driver = new AdsPlcDriver();
         assertThat(driver.getProtocolCode(), is("ads"));
         assertThat(driver.getProtocolName(), is("Beckhoff Twincat ADS"));
