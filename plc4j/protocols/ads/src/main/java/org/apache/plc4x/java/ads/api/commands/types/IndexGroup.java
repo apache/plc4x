@@ -57,7 +57,7 @@ public class IndexGroup extends UnsignedIntLEByteValue {
         return new IndexGroup(byteBuf);
     }
 
-    public static class ReservedGroups {
+    public static final class ReservedGroups {
         public static final IndexGroup ADSIGRP_SYMTAB = IndexGroup.of(0xF000);
         public static final IndexGroup ADSIGRP_SYMNAME = IndexGroup.of(0xF001);
         public static final IndexGroup ADSIGRP_SYMVAL = IndexGroup.of(0xF002);
@@ -84,5 +84,31 @@ public class IndexGroup extends UnsignedIntLEByteValue {
         public static final IndexGroup ADSIGRP_DEVICE_DATA = IndexGroup.of(0xF100);
         public static final IndexGroup ADSIOFFS_DEVDATA_ADSSTATE = IndexGroup.of(0x0000);
         public static final IndexGroup ADSIOFFS_DEVDATA_DEVSTATE = IndexGroup.of(0x0002);
+    }
+
+    public static final class SystemServiceGroups {
+        public static final IndexGroup SYSTEMSERVICE_OPENCREATE = IndexGroup.of(100);
+        public static final IndexGroup SYSTEMSERVICE_OPENREAD = IndexGroup.of(101);
+        public static final IndexGroup SYSTEMSERVICE_OPENWRITE = IndexGroup.of(102);
+        public static final IndexGroup SYSTEMSERVICE_CREATEFILE = IndexGroup.of(110);
+        public static final IndexGroup SYSTEMSERVICE_CLOSEHANDLE = IndexGroup.of(111);
+        public static final IndexGroup SYSTEMSERVICE_FOPEN = IndexGroup.of(120);
+        public static final IndexGroup SYSTEMSERVICE_FCLOSE = IndexGroup.of(121);
+        public static final IndexGroup SYSTEMSERVICE_FREAD = IndexGroup.of(122);
+        public static final IndexGroup SYSTEMSERVICE_FWRITE = IndexGroup.of(123);
+        public static final IndexGroup SYSTEMSERVICE_FSEEK = IndexGroup.of(124);
+        public static final IndexGroup SYSTEMSERVICE_FTELL = IndexGroup.of(125);
+        public static final IndexGroup SYSTEMSERVICE_FGETS = IndexGroup.of(126);
+        public static final IndexGroup SYSTEMSERVICE_FPUTS = IndexGroup.of(127);
+        public static final IndexGroup SYSTEMSERVICE_FSCANF = IndexGroup.of(128);
+        public static final IndexGroup SYSTEMSERVICE_FPRINTF = IndexGroup.of(129);
+        public static final IndexGroup SYSTEMSERVICE_FEOF = IndexGroup.of(130);
+        public static final IndexGroup SYSTEMSERVICE_FDELETE = IndexGroup.of(131);
+        public static final IndexGroup SYSTEMSERVICE_FRENAME = IndexGroup.of(132);
+        public static final IndexGroup SYSTEMSERVICE_REG_HKEYLOCALMACHINE = IndexGroup.of(200);
+        public static final IndexGroup SYSTEMSERVICE_SENDEMAIL = IndexGroup.of(300);
+        public static final IndexGroup SYSTEMSERVICE_TIMESERVICES = IndexGroup.of(400);
+        public static final IndexGroup SYSTEMSERVICE_STARTPROCESS = IndexGroup.of(500);
+        public static final IndexGroup SYSTEMSERVICE_CHANGENETID = IndexGroup.of(600);
     }
 }

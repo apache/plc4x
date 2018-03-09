@@ -56,4 +56,11 @@ public class IndexOffset extends UnsignedIntLEByteValue {
     public static IndexOffset of(ByteBuf byteBuf) {
         return new IndexOffset(byteBuf);
     }
+
+    public static final class SystemServiceOffsets {
+        public static final IndexOffset TIMESERVICE_DATEANDTIME = IndexOffset.of(1);
+        public static final IndexOffset TIMESERVICE_SYSTEMTIMES = IndexOffset.of(2);
+        public static final IndexOffset TIMESERVICE_RTCTIMEDIFF = IndexOffset.of(3);
+        public static final IndexOffset TIMESERVICE_ADJUSTTIMETORTC = IndexOffset.of(4);
+    }
 }
