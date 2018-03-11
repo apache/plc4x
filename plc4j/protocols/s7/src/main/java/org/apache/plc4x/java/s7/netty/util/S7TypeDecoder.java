@@ -73,6 +73,7 @@ public class S7TypeDecoder {
                 } catch (UnsupportedEncodingException e) {
                     throw new PlcProtocolException("Error decoding String value");
                 }
+                i += s7Data.length;
             } else {
                 throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
             }

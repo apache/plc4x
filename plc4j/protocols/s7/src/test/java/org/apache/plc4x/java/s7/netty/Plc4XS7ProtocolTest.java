@@ -66,13 +66,13 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
         List<Object[]> arguments = new LinkedList<>();
         // Build the cross product of all variables and address types.
         Arrays.asList(
-            Boolean.class,
+            /*Boolean.class,
             Byte.class,
             Short.class,
             // TODO: enable once Calender in implemented
             //Calendar.class,
             Float.class,
-            Integer.class,
+            Integer.class,*/
             String.class)
             .forEach(
                 aClass -> Arrays.asList(
@@ -208,7 +208,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
         } else if (type == String.class) {
             size = DataTransportSize.BYTE_WORD_DWORD;
-            data = new byte[]{(byte) 'S', (byte) 't', (byte) 'r', (byte) 'i', (byte) 'n', (byte) 'g', (byte) 0x0};
+            data = new byte[]{(byte) 0xDE, (byte) 0x23, (byte) 'S', (byte) 't', (byte) 'r', (byte) 'i', (byte) 'n', (byte) 'g', (byte) 0x0};
         } else {
             throw new IllegalArgumentException("Type t not supported " + type);
         }
