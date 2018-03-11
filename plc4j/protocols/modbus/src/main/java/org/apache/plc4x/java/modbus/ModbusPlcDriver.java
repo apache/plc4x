@@ -33,38 +33,44 @@ import java.util.regex.Pattern;
 /**
  * Implementation of the Modbus protocol, based on:
  * - Modbus Protocol (http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf)
- * - Modbus TCP Protocol (http://www.modbus.org/docs/Modbus_Messaging_Implementation_Guide_V1_0b.pdf)
- * - TCP
  */
-public class ModbusTcpPlcDriver implements PlcDriver {
+public class ModbusPlcDriver implements PlcDriver {
 
-    private static final Pattern MODBUS_TCP_URI_PATTERN = Pattern.compile("^modbus-tcp://(?<host>.*)(?<params>\\?.*)?");
+    private static final Pattern MODBUS_SERIAL_URI_PATTERN = Pattern.compile("^modbus:(?<subType>.*)://(?<port>.*)|(?<host>.*)(?<params>\\?.*)?");
 
     @Override
     public String getProtocolCode() {
-        return "modbus-tcp";
+        return "modbus";
     }
 
     @Override
     public String getProtocolName() {
-        return "Modbus (TCP)";
+        return "Modbus (TCP / Serial)";
     }
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = MODBUS_TCP_URI_PATTERN.matcher(url);
+        Matcher matcher = MODBUS_SERIAL_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 'modbus-tcp://{host|ip}'");
+                "Connection url doesn't match the format 'modbus:{type}//{port|host}'");
         }
 
-        String host = matcher.group("host");
+        String subType = matcher.group("subType");
         String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
-        try {
-            InetAddress serverInetAddress = InetAddress.getByName(host);
-            return new ModbusTcpPlcConnection(serverInetAddress, params);
-        } catch (UnknownHostException e) {
-            throw new PlcConnectionException("Error parsing address", e);
+        if("tcp".equalsIgnoreCase(subType)) {
+            String hostName = matcher.group("host");
+            try {
+                InetAddress host = InetAddress.getByName(hostName);
+                return new ModbusTcpPlcConnection(host, params);
+            } catch (UnknownHostException e) {
+                throw new PlcConnectionException("Unknown host" + hostName, e);
+            }
+        } else if("serial".equalsIgnoreCase(subType)) {
+            String port = matcher.group("port");
+            return new ModbusSerialPlcConnection(port, params);
+        } else {
+            throw new PlcConnectionException("Unknown sub-type " + subType);
         }
     }
 
