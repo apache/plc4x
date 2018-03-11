@@ -21,35 +21,41 @@
 The following table contains a list of operations and the protocols that support them:
 
 |===
-|Protocol |Read Address Value |Write Address Value |List Resources |Telegrams/Broadcased Values
+|Protocol |Read Single Address Value |Read Multiple Address Values |Write Single Address Value |Write Multiple Address Value
 
 |S7
 |icon:check[role="green"]
 |icon:check[role="green"]
-|icon:remove[role="red"]
 |icon:check[role="green"]
+|icon:exclamation[role="yellow"]
 
 |Beckhoff ADS
 |icon:check[role="green"]
 |icon:check[role="green"]
-|icon:question[role="yellow"]
-|icon:question[role="yellow"]
+|icon:check[role="green"]
+|icon:check[role="green"]
 
 |Modbus
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:question[role="yellow"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
 
 |OPC-UA
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
 
 |IEC 60870-5-104
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:question[role="yellow"]
-|icon:question[role="yellow"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
 |===
+
+Legend:
+
+- icon:check[role="green"] Implemented and fully supported
+- icon:exclamation[role="yellow"] Implemented and supported by simulation
+- icon:question[role="red"] Not implemented yet

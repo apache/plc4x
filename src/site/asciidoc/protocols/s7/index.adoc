@@ -88,9 +88,9 @@ The `S7 Comm` protocols are generally split up into to flavours: The classic `S7
 |===
 |Name |ISO |RFC |Link
 |Transmission Control Protocol (TCP) |- | RFC 793 |https://tools.ietf.org/html/rfc793
-|ISO Transport Protocol (Class 4) |ISO DP 8073 | RFC 905 |https://tools.ietf.org/html/rfc905
 |ISO on TCP |- | RFC 1006| https://tools.ietf.org/html/rfc1006
-|S7 Comm (0x32) |- |- |http://gmiru.com/article/s7comm/ http://gmiru.com/article/s7comm-part2/
+|ISO Transport Protocol (Class 4) |ISO DP 8073 | RFC 905 |https://tools.ietf.org/html/rfc905
+|S7 Comm (0x32) |- |- |http://gmiru.com/article/s7comm/ http://gmiru.com/article/s7comm-part2/ https://www.eng.tau.ac.il/~yash/jdsfl2014.pdf
 |S7 Comm Plus (0x72) |- |- |https://opensource-security.de/thesis/MA_Maik_Brueggemann.pdf
 |RPC |- | RFC 1057 & RFC 5531 |https://tools.ietf.org/html/rfc1057 https://tools.ietf.org/html/rfc5531
 |DCOM |- |- | https://msdn.microsoft.com/library/cc201989.aspx
