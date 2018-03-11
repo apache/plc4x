@@ -43,15 +43,15 @@ import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
 
-    public static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
+    private static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
 
     private static final Logger logger = LoggerFactory.getLogger(S7Protocol.class);
+
+    private Map<Short, List<S7Message>> messageFragments = new HashMap<>();
 
     private short maxAmqCaller;
     private short maxAmqCallee;
@@ -81,13 +81,45 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
     protected void encode(ChannelHandlerContext ctx, S7Message in, List<Object> out) {
         logger.debug("S7 Message sent");
 
-        ByteBuf buf = Unpooled.buffer();
+        List<S7Message> messages = splitMessage(in);
+        messageFragments.put(in.getTpduReference(), messages);
 
-        encodeHeader(in, buf);
-        encodeParameters(in, buf);
-        encodePayloads(in, buf);
+        for (S7Message message : messages) {
+            ByteBuf buf = Unpooled.buffer();
 
-        out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf));
+            encodeHeader(message, buf);
+            encodeParameters(message, buf);
+            encodePayloads(message, buf);
+
+            out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf));
+        }
+    }
+
+    /**
+     * While a SetupCommunication message is no problem, when reading multiple
+     * addresses in one request, the size of the PDU could be exceeded, therefore we need
+     * to split up one incoming message. When writing, the S7 PLCs only seem to accept
+     * writing of single elements, so we have to break up writing of multiple values into
+     * multiple single-value write operations.
+     *
+     * @param message incoming message
+     * @return List of outgoing messages
+     */
+    private List<S7Message> splitMessage(S7Message message) {
+        // The following considerations have to be taken into account:
+        // - The size of all parameters and payloads of a message cannot exceed the negotiated PDU size
+        // - When reading data, the size of the returned data cannot exceed the negotiated PDU size
+        //
+        // Examples:
+        // - Size of the request exceeds the maximum
+        //  When having a negotiated max PDU size of 256, the maximum size of individual addresses can be at most 18
+        //  If more are sent, the S7 will respond with a frame error.
+        // - Size of the response exceeds the maximum
+        //  When reading two Strings of each 200 bytes length, the size of the request is ok, however the PLC would
+        //  have to send back 400 bytes of String data, which would exceed the PDU size. In this case the first String
+        //  is correctly returned, but for the second item the PLC will return a code of 0x03 = Access Denied
+
+        return Collections.singletonList(message);
     }
 
     private void encodePayloads(S7Message in, ByteBuf buf) {

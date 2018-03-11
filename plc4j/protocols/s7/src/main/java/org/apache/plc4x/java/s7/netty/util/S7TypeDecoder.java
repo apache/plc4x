@@ -20,12 +20,13 @@ package org.apache.plc4x.java.s7.netty.util;
 
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BigEndianDecoder {
+public class S7TypeDecoder {
 
-    private BigEndianDecoder() {
+    private S7TypeDecoder() {
         // Utility class
     }
 
@@ -58,13 +59,20 @@ public class BigEndianDecoder {
                 result.add(Float.intBitsToFloat(intValue));
                 i += 4;
             } else if (datatype == String.class) {
-                StringBuilder builder = new StringBuilder();
-                while (s7Data[i] != (byte) 0x0 && i < length) {
-                    builder.append((char) s7Data[i]);
-                    i++;
+                // Every string value had a prefix of two bytes for which I have no idea, what the meaning is.
+                // This code assumes the string values doesn't contain UTF-8 values with a code of 0x00 as it
+                // uses this as termination char.
+                try {
+                    int j = 0;
+                    for(; j < s7Data.length; j++) {
+                        if(s7Data[j] == 0) {
+                            break;
+                        }
+                    }
+                    result.add(new String(s7Data, 2, j - 2, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    throw new PlcProtocolException("Error decoding String value");
                 }
-                i++; // skip terminating character
-                result.add(builder.toString());
             } else {
                 throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
             }

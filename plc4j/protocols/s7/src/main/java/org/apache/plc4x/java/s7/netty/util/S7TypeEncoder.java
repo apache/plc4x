@@ -20,9 +20,9 @@ package org.apache.plc4x.java.s7.netty.util;
 
 import java.util.Calendar;
 
-public class BigEndianEncoder {
+public class S7TypeEncoder {
 
-    private BigEndianEncoder() {
+    private S7TypeEncoder() {
         // Utility class
     }
 

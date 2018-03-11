@@ -49,8 +49,8 @@ import org.apache.plc4x.java.s7.netty.model.types.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.apache.plc4x.java.s7.netty.util.BigEndianDecoder.decodeData;
-import static org.apache.plc4x.java.s7.netty.util.BigEndianEncoder.encodeData;
+import static org.apache.plc4x.java.s7.netty.util.S7TypeDecoder.decodeData;
+import static org.apache.plc4x.java.s7.netty.util.S7TypeEncoder.encodeData;
 
 public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequestContainer> {
 
