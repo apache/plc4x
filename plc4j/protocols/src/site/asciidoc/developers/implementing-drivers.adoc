@@ -178,11 +178,6 @@ For the S7 driver for example all it contains is this line:
 
     org.apache.plc4x.java.s7.S7PlcDriver
 
-As the Modbus driver contains two variants, it contains two lines - one for each variant:
-
-    org.apache.plc4x.java.modbus.ModbusTcpPlcDriver
-    org.apache.plc4x.java.modbus.ModbusSerialPlcDriver
-
 A driver implementation must implement the `org.apache.plc4x.java.api.PlcDriver` interface.
 This defines the necessary methods for the `DriverManager` to find the correct implementation and create a new connection instance.
 
