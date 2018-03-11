@@ -48,31 +48,31 @@ public class AdsPlcDriverTest {
         assertMatching(ADS_ADDRESS_PATTERN, "0.0.0.0.0.0:13");
         assertMatching(ADS_ADDRESS_PATTERN, "0.0.0.0.0.0:13/0.0.0.0.0.0:13");
 
-        assertMatching(INET_ADDRESS_PATTERN, "localhost");
-        assertMatching(INET_ADDRESS_PATTERN, "localhost:3131");
-        assertMatching(INET_ADDRESS_PATTERN, "www.google.de");
-        assertMatching(INET_ADDRESS_PATTERN, "www.google.de:443");
+        assertMatching(INET_ADDRESS_PATTERN, "tcp://localhost");
+        assertMatching(INET_ADDRESS_PATTERN, "tcp://localhost:3131");
+        assertMatching(INET_ADDRESS_PATTERN, "tcp://www.google.de");
+        assertMatching(INET_ADDRESS_PATTERN, "tcp://www.google.de:443");
 
-        assertMatching(SERIAL_PATTERN, "serial:/dev/com1");
-        assertMatching(SERIAL_PATTERN, "serial:COM1");
-        assertMatching(SERIAL_PATTERN, "serial:/dev/ttyUSB0");
+        assertMatching(SERIAL_PATTERN, "serial:///dev/com1");
+        assertMatching(SERIAL_PATTERN, "serial://COM1");
+        assertMatching(SERIAL_PATTERN, "serial:///dev/ttyUSB0");
 
-        assertMatching(ADS_URI_PATTERN, "ads://www.google.de/0.0.0.0.0.0:13");
-        assertMatching(ADS_URI_PATTERN, "ads://www.google.de:443/0.0.0.0.0.0:13");
-        assertMatching(ADS_URI_PATTERN, "ads://serial:/dev/com1/0.0.0.0.0.0:13");
-        assertMatching(ADS_URI_PATTERN, "ads://serial:COM1/0.0.0.0.0.0:13");
-        assertMatching(ADS_URI_PATTERN, "ads://serial:/dev/ttyUSB0/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads:tcp://www.google.de/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads:tcp://www.google.de:443/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads:serial:///dev/com1/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads:serial://COM1/0.0.0.0.0.0:13");
+        assertMatching(ADS_URI_PATTERN, "ads:serial:///dev/ttyUSB0/0.0.0.0.0.0:13");
     }
 
     @Test
     public void testDriverWithCompleteUrls() throws Exception {
         AdsPlcDriver SUT = new AdsPlcDriver(mock(AdsConnectionFactory.class));
         Stream.of(
-            "ads://www.google.de/0.0.0.0.0.0:13",
-            "ads://www.google.de:443/0.0.0.0.0.0:13",
-            "ads://serial:/dev/com1/0.0.0.0.0.0:13",
-            "ads://serial:COM1/0.0.0.0.0.0:13",
-            "ads://serial:/dev/ttyUSB0/0.0.0.0.0.0:13"
+            "ads:tcp://www.google.de/0.0.0.0.0.0:13",
+            "ads:tcp://www.google.de:443/0.0.0.0.0.0:13",
+            "ads:serial:///dev/com1/0.0.0.0.0.0:13",
+            "ads:serial://COM1/0.0.0.0.0.0:13",
+            "ads:serial:///dev/ttyUSB0/0.0.0.0.0.0:13"
         ).forEach(url -> {
             try {
                 SUT.connect(url);
@@ -91,7 +91,7 @@ public class AdsPlcDriverTest {
     @Test
     public void getConnection() throws Exception {
         AdsTcpPlcConnection adsConnection = (AdsTcpPlcConnection)
-            new PlcDriverManager().getConnection("ads://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13");
+            new PlcDriverManager().getConnection("ads:tcp://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13");
         assertEquals(adsConnection.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
         assertEquals(adsConnection.getTargetAmsPort().toString(), "13");
         adsConnection.close();
@@ -99,18 +99,18 @@ public class AdsPlcDriverTest {
 
     @Test(expected = PlcConnectionException.class)
     public void getConnectionNoAuthSupported() throws Exception {
-        new PlcDriverManager().getConnection("ads://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13",
+        new PlcDriverManager().getConnection("ads:tcp://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13",
             new PlcUsernamePasswordAuthentication("admin", "admin"));
     }
 
     @Test(expected = PlcConnectionException.class)
     public void getConnectionUnknownHost() throws Exception {
-        new PlcDriverManager().getConnection("ads://nowhere:8080/0.0.0.0.0.0:13");
+        new PlcDriverManager().getConnection("ads:tcp://nowhere:8080/0.0.0.0.0.0:13");
     }
 
     @Test(expected = PlcConnectionException.class)
     public void getConnectionUnknownPort() throws Exception {
-        new PlcDriverManager().getConnection("ads://nowhere:unknown/0.0.0.0.0.0:13");
+        new PlcDriverManager().getConnection("ads:tcp://nowhere:unknown/0.0.0.0.0.0:13");
     }
 
     /**
@@ -120,7 +120,7 @@ public class AdsPlcDriverTest {
      */
     @Test(expected = PlcConnectionException.class)
     public void getConnectionInvalidUrl() throws PlcException {
-        new PlcDriverManager().getConnection("ads://localhost/hurz/2");
+        new PlcDriverManager().getConnection("ads:tcp://localhost/hurz/2");
     }
 
     @Test

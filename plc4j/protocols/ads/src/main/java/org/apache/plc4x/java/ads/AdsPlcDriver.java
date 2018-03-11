@@ -45,9 +45,9 @@ public class AdsPlcDriver implements PlcDriver {
             + "(/"
             + "(?<sourceAmsNetId>" + AmsNetId.AMS_NET_ID_PATTERN + "):(?<sourceAmsPort>" + AmsPort.AMS_PORT_PATTERN + ")"
             + ")?");
-    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(?<host>tcp:[\\w.]+)(:(?<port>\\d*))?");
-    public static final Pattern SERIAL_PATTERN = Pattern.compile("(?<serialDefinition>serial:.*)");
-    public static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads:/?/?(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/" + ADS_ADDRESS_PATTERN);
+    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");
+    public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>.*)");
+    public static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads:(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/" + ADS_ADDRESS_PATTERN);
 
     private AdsConnectionFactory adsConnectionFactory;
 
@@ -88,8 +88,7 @@ public class AdsPlcDriver implements PlcDriver {
         AmsPort sourceAmsPort = StringUtils.isNotBlank(sourceAmsPortString) ? AmsPort.of(sourceAmsPortString) : null;
 
         if (serialDefinition != null) {
-            String serialPort = serialDefinition.substring(serialDefinition.indexOf(':'));
-            return adsConnectionFactory.adsSerialPlcConnectionOf(serialPort, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+            return adsConnectionFactory.adsSerialPlcConnectionOf(serialDefinition, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
         } else {
             try {
                 return adsConnectionFactory.adsTcpPlcConnectionOf(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
