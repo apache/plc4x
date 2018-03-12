@@ -31,7 +31,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeThat;
 
-public class RawSocketTest {
+public class RawIpSocketTest {
 
     @Test
     @Ignore("Need to make tests run in Docker container first as this test requires libpcap or the entrie application to be run as 'root'")
@@ -39,11 +39,11 @@ public class RawSocketTest {
         // TODO: cdutz: jenkins won't allow access on the inet device. Maybe try to fix this on a branch.
         assumeThat(System.getenv("PLC4X_BUILD_ON_JENKINS"), is(not(equalToIgnoringCase("true"))));
         // Protocol number 1 = ICMP (Ping)
-        RawSocket rawSocket = new RawSocket(1);
+        RawIpSocket rawIpSocket = new RawIpSocket(1);
 
         CompletableFuture<Boolean> result = new CompletableFuture<>();
         // Simply print the result to the console
-        rawSocket.addListener(rawData -> {
+        rawIpSocket.addListener(rawData -> {
             System.out.println("Got response:");
             System.out.println(Arrays.toString(rawData));
             result.complete(true);
@@ -63,13 +63,13 @@ public class RawSocketTest {
                 for (PcapAddress pcapAddress : dev.getAddresses()) {
                     if (pcapAddress.getAddress() instanceof Inet4Address) {
                         System.out.println("Trying to connect on PcapAddress " + pcapAddress);
-                        rawSocket.connect("plc4x.apache.org");
+                        rawIpSocket.connect("plc4x.apache.org");
                     }
                 }
             }
         }
         // On travis we won't have any interface at all so we don't need to run there
-        assumeThat(rawSocket, notNullValue());
+        assumeThat(rawIpSocket, notNullValue());
 
         // Simple ICMP (Ping packet)
         byte[] rawData = new byte[]{
@@ -85,7 +85,7 @@ public class RawSocketTest {
             (byte) 0x00, (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, (byte) 0x08, (byte) 0x09};
 
         // Write the raw packet to the remote host.
-        rawSocket.write(rawData);
+        rawIpSocket.write(rawData);
 
         try {
             result.get(3, TimeUnit.SECONDS);

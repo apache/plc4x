@@ -37,9 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-public class RawSocket {
+public class RawIpSocket {
 
-    private static final Logger logger = LoggerFactory.getLogger(RawSocket.class);
+    private static final Logger logger = LoggerFactory.getLogger(RawIpSocket.class);
 
     private static final int SNAPLEN = 65536;
     private static final int READ_TIMEOUT = 10;
@@ -59,7 +59,7 @@ public class RawSocket {
 
     private final List<RawSocketListener> listeners = new LinkedList<>();
 
-    public RawSocket(int protocolNumber) {
+    public RawIpSocket(int protocolNumber) {
         this.protocolNumber = protocolNumber;
     }
 
