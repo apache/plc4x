@@ -88,6 +88,37 @@ The values might be lower than in the request, but never higher.
 
 TIP: One thing about `Setup Communication Responses` which is kind of strange, is that usually S7 response messages have additional `error class` and `error code` fields, which this type of response doesn't seem to have.
 
+=== Sizes of requests
+
+During the connection to a S7 PLC the client and PLC agree on 3 important parameters:
+
+- PDU Size
+- Max AMQ Caller
+- Max AMQ Callee
+
+The PDU Size is the size of a data packet the PLC is willing to accept.
+Here note, that in reality there are two PDU sizes involved: On `ISO TP/COTP` protocol level and a second time on the `S7` protocol level.
+Most implementations treat them as somewhat equal, but this doesn't have to be the case.
+A PLC could accept a higher PDU size on `ISO TP` level than on `S7` level.
+
+The `Max AMQ`  parameters define how many unacknowledged requests a PLC (Callee) is able to accept from a client (Caller).
+
+If the `ISO TP` PDU size is bigger than the `S7` one, then theoretically multiple `S7` PDUs can be contained in one `ISO TP` packet.
+But at max `Max AMQ` packets.
+Most drivers don't utilize this option however.
+
+When issuing a read request there are other things that have to be taken into consideration:
+
+The data retrieved by a read request has to fit into a PDU.
+So if a block of data requested in a read request, that would read a big block of data that would exceed the agreed upon PDU size, the PLC will respond with an `Access Violation` and not return any data.
+
+Another example would be if you read different memory blocks, each smaller than the max PDU size, the read PDU could be quite small, but if these blocks are quite large, the read response could exceed the max PDU size.
+In this case the item responses that exceed the size will simply be responded with an `Access violation` by the PLC.
+
+When communicating with a `S7 1200` for example the `ISO TP` PDU size is set to 256 bytes, then the maximum size of the `S7` is , this limits the maximum amount of separate blocks accessible in the read request to 18.
+The typical `Max AMQ` of `8` further complicates things as we can't simply split up the one message into multiple ones.
+If the number of messages exceeds this number, we have to queue these PDUs and wait till the PLC confirmed these and can then continue sending further fragments.
+
 === Links
 
 Providing some additional information without directly being used:
