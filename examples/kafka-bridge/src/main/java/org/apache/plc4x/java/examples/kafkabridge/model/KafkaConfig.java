@@ -20,12 +20,16 @@ package org.apache.plc4x.java.examples.kafkabridge.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
+
 public class KafkaConfig {
 
     @JsonProperty("topic-name")
     private String topicName;
     @JsonProperty("bootstrap-servers")
     private String bootstrapServers;
+    @JsonProperty("properties")
+    private Map<String, String> properties;
 
     public String getTopicName() {
         return topicName;
@@ -43,4 +47,11 @@ public class KafkaConfig {
         this.bootstrapServers = bootstrapServers;
     }
 
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
 }

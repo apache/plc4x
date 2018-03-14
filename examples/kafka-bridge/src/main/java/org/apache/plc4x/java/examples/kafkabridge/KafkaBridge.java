@@ -105,6 +105,9 @@ public class KafkaBridge {
     private Map<String,Object> createKafkaConfig() {
         Map<String,Object> kafkaConfig = new HashMap<>();
         kafkaConfig.put("bootstrap.servers", config.getKafkaConfig().getBootstrapServers());
+        if(config.getKafkaConfig().getProperties() != null) {
+            kafkaConfig.putAll(config.getKafkaConfig().getProperties());
+        }
         return kafkaConfig;
     }
 
