@@ -1561,8 +1561,8 @@
                     #*					*##banner ( $decoration.bannerRight "bannerRight" )
                     #if ( $config.showApacheEvents )
                         <p class="apacheEvents">
-                            <a href="http://www.apache.org/events/current-event.html">
-                                <img src="http://www.apache.org/events/current-event-234x60.png"/>
+                            <a href="//www.apache.org/events/current-event.html">
+                                <img src="//www.apache.org/events/current-event-234x60.png"/>
                             </a>
                         </p>
                     #end
