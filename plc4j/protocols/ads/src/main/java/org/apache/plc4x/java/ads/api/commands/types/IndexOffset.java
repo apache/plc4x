@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.api.commands.types;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
+@SuppressWarnings("unused") // Due to predefined IndexOffsets
 public class IndexOffset extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.UNSIGNED_INT_LE_NUM_BYTES;

@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
  *
  * @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
  */
+@SuppressWarnings("unused") // Due to predefined ports
 public class AmsPort extends ByteValue {
 
     public static final Pattern AMS_PORT_PATTERN = Pattern.compile("\\d+");
