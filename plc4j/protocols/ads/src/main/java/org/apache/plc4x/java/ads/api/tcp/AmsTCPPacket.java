@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.api.tcp;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.generic.AdsData;
 import org.apache.plc4x.java.ads.api.generic.AmsHeader;
 import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
@@ -33,14 +32,14 @@ public class AmsTCPPacket implements ByteReadable {
 
     private AmsTCPPacket(AmsTcpHeader amsTcpHeader, AmsPacket amsPacket) {
         this.amsTcpHeader = requireNonNull(amsTcpHeader);
-        this.amsPacket = amsPacket;
+        this.amsPacket = requireNonNull(amsPacket);
     }
 
     private AmsTCPPacket(AmsPacket amsPacket) {
-        this.amsPacket = amsPacket;
+        this.amsPacket = requireNonNull(amsPacket);
         // It is important that we wrap the ads data call as this will initialized in the constructor
         // so this value will be null if we call adsData now.
-        this.amsTcpHeader = AmsTcpHeader.of(requireNonNull(amsPacket.getAmsHeader()), () -> getAdsData().getCalculatedLength());
+        this.amsTcpHeader = AmsTcpHeader.of(requireNonNull(amsPacket.getAmsHeader()), amsPacket);
     }
 
     public AmsTcpHeader getAmsTcpHeader() {
@@ -53,10 +52,6 @@ public class AmsTCPPacket implements ByteReadable {
 
     public AmsHeader getAmsHeader() {
         return amsPacket.getAmsHeader();
-    }
-
-    public AdsData getAdsData() {
-        return amsPacket.getAdsData();
     }
 
     @Override
