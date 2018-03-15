@@ -57,6 +57,9 @@ public class Ads2SerialProtocolTest {
     @Parameterized.Parameter(1)
     public String clazzName;
 
+    @Parameterized.Parameter(2)
+    public AmsPacket amsPacket;
+
     @Parameterized.Parameters(name = "{index} {1}")
     public static Collection<Object[]> data() {
         AmsNetId targetAmsNetId = AmsNetId.of("1.2.3.4.5.6");
@@ -68,20 +71,20 @@ public class Ads2SerialProtocolTest {
         return Stream.of(
             AdsAddDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
-                IndexGroup.of(1), IndexOffset.of(1), Length.of(1), TransmissionMode.of(1), MaxDelay.of(1), CycleTime.of(1)).toAmsSerialFrame((byte) 0),
+                IndexGroup.of(1), IndexOffset.of(1), Length.of(1), TransmissionMode.of(1), MaxDelay.of(1), CycleTime.of(1)),
             AdsAddDeviceNotificationResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 NotificationHandle.of(0)
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsDeleteDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 NotificationHandle.of(0)
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsDeleteDeviceNotificationResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsDeviceNotificationRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Stamps.of(1),
@@ -92,10 +95,10 @@ public class Ads2SerialProtocolTest {
                             AdsNotificationSample.of(NotificationHandle.of(0), data))
                     )
                 )
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsReadDeviceInfoRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsReadDeviceInfoResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
@@ -103,63 +106,63 @@ public class Ads2SerialProtocolTest {
                 MinorVersion.of((byte) 2),
                 Version.of(3),
                 Device.of("Random DeviceId")
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsReadRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 Length.of(1)
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsReadResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 data
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsReadStateRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsReadStateResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsReadWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 ReadLength.of(data.getCalculatedLength()),
                 data
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsReadWriteResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0),
                 data
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsWriteControlRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 AdsState.of(0xaffe),
                 DeviceState.of(0xaffe),
                 data
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsWriteControlResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
                 IndexOffset.of(0),
                 data
-            ).toAmsSerialFrame((byte) 0),
+            ),
             AdsWriteResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 Result.of(0)
-            ).toAmsSerialFrame((byte) 0)
+            )
             /*,
             UnknownCommand.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId,
                 Unpooled.wrappedBuffer(new byte[]{42})
             )*/
-        ).map(amstcpPacket -> new Object[]{amstcpPacket, amstcpPacket.getClass().getSimpleName()}).collect(Collectors.toList());
+        ).map(amsPacket -> new Object[]{amsPacket.toAmsSerialFrame((byte) 0), amsPacket.getClass().getSimpleName(), amsPacket}).collect(Collectors.toList());
     }
 
     @Before
