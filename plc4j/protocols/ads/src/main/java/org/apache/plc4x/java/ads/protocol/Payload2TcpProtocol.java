@@ -37,6 +37,7 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws Exception {
         out.add(AmsTCPPacket.of(UserData.of(amsPacket)).getByteBuf());
+        amsPacket.release();
     }
 
     @SuppressWarnings("unchecked")
