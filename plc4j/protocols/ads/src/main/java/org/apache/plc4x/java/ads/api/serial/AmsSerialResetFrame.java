@@ -21,10 +21,7 @@ package org.apache.plc4x.java.ads.api.serial;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.apache.plc4x.java.ads.protocol.util.DigestUtil;
 
 /**
  * In case the transmitter does not receive a valid acknowledgement after multiple transmission, then a reset frame is
@@ -81,21 +78,7 @@ public class AmsSerialResetFrame implements ByteReadable {
         this.receiverAddress = receiverAddress;
         this.fragmentNumber = FragmentNumber.of((byte) 0);
         this.userDataLength = UserDataLength.of((byte) 0);
-        MessageDigest messageDigest;
-        try {
-            messageDigest = MessageDigest.getInstance("CRC-16");
-        } catch (NoSuchAlgorithmException e) {
-            throw new PlcRuntimeException(e);
-        }
-        messageDigest.update(magicCookie.getBytes());
-        messageDigest.update(transmitterAddress.getBytes());
-        messageDigest.update(receiverAddress.getBytes());
-        messageDigest.update(fragmentNumber.getBytes());
-        byte[] digest = messageDigest.digest(userDataLength.getBytes());
-        if (digest.length > 2) {
-            throw new PlcRuntimeException("Digest length too great " + digest.length);
-        }
-        this.crc = CRC.of(digest[0], digest[1]);
+        this.crc = CRC.of(DigestUtil.calculateCrc16(() -> buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength)));
     }
 
     public static AmsSerialResetFrame of(MagicCookie magicCookie, TransmitterAddress transmitterAddress, ReceiverAddress receiverAddress, FragmentNumber fragmentNumber, UserDataLength userDataLength, CRC crc) {
