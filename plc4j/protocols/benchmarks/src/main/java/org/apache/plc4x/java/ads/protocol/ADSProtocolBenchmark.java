@@ -38,7 +38,7 @@ public class ADSProtocolBenchmark {
 
     @State(Scope.Benchmark)
     public static class MyState {
-        Ads2TcpProtocol SUT = new Ads2TcpProtocol();
+        Ads2PayloadProtocol SUT = new Ads2PayloadProtocol();
         AdsWriteRequest adsWriteRequest = buildAdsWriteRequest();
         byte[] adsWriteResponse = buildADSWriteResponse();
         AdsReadRequest adsReadRequest = buildAdsReadRequest();
@@ -130,7 +130,7 @@ public class ADSProtocolBenchmark {
         return AdsWriteResponse.of(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
             result
-        ).toAmstcpPacket().getBytes();
+        ).getBytes();
     }
 
     private static AdsReadRequest buildAdsReadRequest() {
@@ -159,6 +159,6 @@ public class ADSProtocolBenchmark {
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
             result,
             data
-        ).toAmstcpPacket().getBytes();
+        ).getBytes();
     }
 }
