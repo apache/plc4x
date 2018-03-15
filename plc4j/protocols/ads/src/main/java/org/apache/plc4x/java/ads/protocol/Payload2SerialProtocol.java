@@ -63,7 +63,6 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
 
         switch (magicCookie.getAsInt()) {
             case AmsSerialFrame.ID:
-                // This is a lazy implementation. we just reuse the tcp implementation
                 AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
                 LOGGER.debug("Ams Serial Frame received {}", amsSerialFrame);
                 out.add(userData.getByteBuf());
