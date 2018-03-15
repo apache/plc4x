@@ -18,12 +18,22 @@
  */
 package org.apache.plc4x.java.ads.protocol.util;
 
+import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.stream.IntStream;
 
+import static org.junit.Assert.assertEquals;
+
 public class DigestUtilTest {
+
+    @Test
+    public void sameCalculation() throws Exception {
+        assertEquals(
+            DigestUtil.calculateCrc16(new byte[]{47, 99}),
+            DigestUtil.calculateCrc16(() -> Unpooled.wrappedBuffer(new byte[]{47}), () -> Unpooled.wrappedBuffer(new byte[]{99})));
+    }
 
     @Test
     public void displayValue() throws Exception {
