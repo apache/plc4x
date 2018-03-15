@@ -54,8 +54,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class Plc4X2Ads2TcpProtocolTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Ads2TcpProtocolTest.class);
+public class Plc4x2AdsProtocolTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4x2AdsProtocolTest.class);
 
     public static final Calendar calenderInstance = Calendar.getInstance();
 

@@ -19,52 +19,45 @@
 package org.apache.plc4x.java.ads.api.tcp;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.generic.AmsHeader;
-import org.apache.plc4x.java.ads.api.generic.AmsPacket;
+import org.apache.plc4x.java.ads.api.serial.types.UserData;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import static java.util.Objects.requireNonNull;
 
 public class AmsTCPPacket implements ByteReadable {
+    /**
+     * The ams - tcp to be sent.
+     */
     private final AmsTcpHeader amsTcpHeader;
 
-    private final AmsPacket amsPacket;
+    /**
+     * The AMS packet to be sent.
+     */
+    private final UserData userData;
 
-    private AmsTCPPacket(AmsTcpHeader amsTcpHeader, AmsPacket amsPacket) {
+    private AmsTCPPacket(AmsTcpHeader amsTcpHeader, UserData userData) {
         this.amsTcpHeader = requireNonNull(amsTcpHeader);
-        this.amsPacket = requireNonNull(amsPacket);
+        this.userData = requireNonNull(userData);
     }
 
-    private AmsTCPPacket(AmsPacket amsPacket) {
-        this.amsPacket = requireNonNull(amsPacket);
+    private AmsTCPPacket(UserData userData) {
+        this.userData = requireNonNull(userData);
         // It is important that we wrap the ads data call as this will initialized in the constructor
         // so this value will be null if we call adsData now.
-        this.amsTcpHeader = AmsTcpHeader.of(requireNonNull(amsPacket.getAmsHeader()), amsPacket);
+        this.amsTcpHeader = AmsTcpHeader.of(requireNonNull(userData));
     }
 
     public AmsTcpHeader getAmsTcpHeader() {
         return amsTcpHeader;
     }
 
-    public AmsPacket getAmsPacket() {
-        return amsPacket;
-    }
-
-    public AmsHeader getAmsHeader() {
-        return amsPacket.getAmsHeader();
-    }
-
     @Override
     public ByteBuf getByteBuf() {
-        return buildByteBuff(amsTcpHeader, amsPacket);
+        return buildByteBuff(amsTcpHeader, userData);
     }
 
-    public static AmsTCPPacket of(AmsTcpHeader amsTcpHeader, AmsPacket amsPacket) {
-        return new AmsTCPPacket(amsTcpHeader, amsPacket);
-    }
-
-    public static AmsTCPPacket of(AmsPacket amsPacket) {
-        return new AmsTCPPacket(amsPacket);
+    public static AmsTCPPacket of(UserData userData) {
+        return new AmsTCPPacket(userData);
     }
 
     @Override
@@ -75,13 +68,13 @@ public class AmsTCPPacket implements ByteReadable {
         AmsTCPPacket that = (AmsTCPPacket) o;
 
         if (!amsTcpHeader.equals(that.amsTcpHeader)) return false;
-        return amsPacket.equals(that.amsPacket);
+        return userData.equals(that.userData);
     }
 
     @Override
     public int hashCode() {
         int result = amsTcpHeader.hashCode();
-        result = 31 * result + amsPacket.hashCode();
+        result = 31 * result + userData.hashCode();
         return result;
     }
 
@@ -89,7 +82,7 @@ public class AmsTCPPacket implements ByteReadable {
     public String toString() {
         return "AmsTCPPacket{" +
             "amsTcpHeader=" + amsTcpHeader +
-            ", amsPacket=" + amsPacket +
+            ", amsPacket=" + userData +
             '}';
     }
 }

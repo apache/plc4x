@@ -24,7 +24,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
-import org.apache.plc4x.java.ads.protocol.Ads2SerialProtocol;
+import org.apache.plc4x.java.ads.protocol.Ads2PayloadProtocol;
+import org.apache.plc4x.java.ads.protocol.Payload2SerialProtocol;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
 
@@ -56,7 +57,8 @@ public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
                 // Build the protocol stack for communicating with the ads protocol.
                 ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
-                pipeline.addLast(new Ads2SerialProtocol());
+                pipeline.addLast(new Ads2PayloadProtocol());
+                pipeline.addLast(new Payload2SerialProtocol());
             }
         };
     }

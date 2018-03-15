@@ -19,54 +19,26 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.plc4x.java.ads.api.generic.AmsPacket;
-import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialResetFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
-import org.apache.plc4x.java.ads.api.tcp.AmsTcpHeader;
 import org.apache.plc4x.java.ads.protocol.util.DigestUtil;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-public class Ads2SerialProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
+public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Ads2TcpProtocol.class);
-
-    private final ConcurrentMap<Invoke, AmsPacket> requests;
-
-    private final Ads2TcpProtocol ads2TcpProtocol;
-
-    public Ads2SerialProtocol() {
-        this.requests = new ConcurrentHashMap<>();
-        this.ads2TcpProtocol = new Ads2TcpProtocol(true);
-    }
-
-    /**
-     * Resets this protocol and discard all send requests.
-     */
-    public void reset() {
-        requests.clear();
-    }
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(Payload2TcpProtocol.class);
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws Exception {
-        Invoke invokeId = amsPacket.getAmsHeader().getInvokeId();
-        if (invokeId != Invoke.NONE) {
-            requests.put(invokeId, amsPacket);
-        }
-        byte asLong = (byte) (invokeId.getAsLong() % 255);
-        out.add(amsPacket.toAmsSerialFrame(asLong).getByteBuf());
+    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws Exception {
+        out.add(AmsSerialFrame.of(FragmentNumber.of((byte) 0), UserData.of(amsPacket)).getByteBuf());
         // TODO: we need to remember the fragment and maybe even need to spilt up the package
         // TODO: if we exceed 255 byte
     }
@@ -92,15 +64,9 @@ public class Ads2SerialProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket
         switch (magicCookie.getAsInt()) {
             case AmsSerialFrame.ID:
                 // This is a lazy implementation. we just reuse the tcp implementation
-                ByteBuf fakeTcpHeader = AmsTcpHeader.of(0).getByteBuf();
-                ads2TcpProtocol.decode(channelHandlerContext, Unpooled.wrappedBuffer(fakeTcpHeader, userData.getByteBuf()), out);
-                AmsPacket amsPacket = (AmsPacket) out.get(0);
-                AmsPacket correlatedAmsPacket = requests.remove(amsPacket.getAmsHeader().getInvokeId());
-                if (correlatedAmsPacket != null) {
-                    LOGGER.debug("Correlated packet received {}", correlatedAmsPacket);
-                }
-                AmsSerialFrame amsSerialFrame = amsPacket.toAmsSerialFrame(fragmentNumber.getBytes()[0]);
+                AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
                 LOGGER.debug("Ams Serial Frame received {}", amsSerialFrame);
+                out.add(userData.getByteBuf());
                 break;
             case AmsSerialAcknowledgeFrame.ID:
                 AmsSerialAcknowledgeFrame amsSerialAcknowledgeFrame = AmsSerialAcknowledgeFrame.of(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, crc);

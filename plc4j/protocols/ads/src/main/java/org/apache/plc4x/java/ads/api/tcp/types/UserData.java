@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.api.serial.types;
+package org.apache.plc4x.java.ads.api.tcp.types;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
@@ -52,7 +52,7 @@ public class UserData extends ByteValue {
     }
 
     public static UserData of(ByteBuf byteBuf) {
-       return new UserData(byteBuf);
+        return new UserData(byteBuf);
     }
 
     @Override

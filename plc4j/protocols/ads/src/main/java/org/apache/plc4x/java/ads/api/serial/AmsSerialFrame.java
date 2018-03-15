@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.api.serial;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.protocol.util.DigestUtil;
@@ -71,7 +70,6 @@ public class AmsSerialFrame implements ByteReadable {
     /**
      * The AMS packet to be sent.
      */
-    private AmsPacket amsPacket;
     private final UserData userData;
 
     private final CRC crc;
@@ -86,18 +84,17 @@ public class AmsSerialFrame implements ByteReadable {
         this.crc = crc;
     }
 
-    private AmsSerialFrame(FragmentNumber fragmentNumber, AmsPacket amsPacket) {
+    private AmsSerialFrame(FragmentNumber fragmentNumber, UserData userData) {
         this.magicCookie = MagicCookie.of(ID);
         this.transmitterAddress = TransmitterAddress.RS232_COMM_ADDRESS;
         this.receiverAddress = ReceiverAddress.RS232_COMM_ADDRESS;
         this.fragmentNumber = fragmentNumber;
-        long calculatedLength = amsPacket.getCalculatedLength();
+        long calculatedLength = userData.getCalculatedLength();
         if (calculatedLength > 255) {
             throw new IllegalArgumentException("Paket length must not exceed 255");
         }
         this.userDataLength = UserDataLength.of((byte) calculatedLength);
-        this.amsPacket = amsPacket;
-        byte[] amsPacketBytes = amsPacket.getBytes();
+        byte[] amsPacketBytes = userData.getBytes();
         this.userData = UserData.of(amsPacketBytes);
         this.crc = CRC.of(DigestUtil.calculateCrc16(() -> buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData)));
     }
@@ -106,12 +103,8 @@ public class AmsSerialFrame implements ByteReadable {
         return new AmsSerialFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
     }
 
-    public static AmsSerialFrame of(FragmentNumber fragmentNumber, AmsPacket amsPacket) {
-        return new AmsSerialFrame(fragmentNumber, amsPacket);
-    }
-
-    public AmsPacket getAmsPacket() {
-        return amsPacket;
+    public static AmsSerialFrame of(FragmentNumber fragmentNumber, UserData userData) {
+        return new AmsSerialFrame(fragmentNumber, userData);
     }
 
     @Override
@@ -131,7 +124,6 @@ public class AmsSerialFrame implements ByteReadable {
         if (!receiverAddress.equals(that.receiverAddress)) return false;
         if (!fragmentNumber.equals(that.fragmentNumber)) return false;
         if (!userDataLength.equals(that.userDataLength)) return false;
-        if (!amsPacket.equals(that.amsPacket)) return false;
         if (!userData.equals(that.userData)) return false;
         return crc.equals(that.crc);
     }
@@ -143,7 +135,6 @@ public class AmsSerialFrame implements ByteReadable {
         result = 31 * result + receiverAddress.hashCode();
         result = 31 * result + fragmentNumber.hashCode();
         result = 31 * result + userDataLength.hashCode();
-        result = 31 * result + amsPacket.hashCode();
         result = 31 * result + userData.hashCode();
         result = 31 * result + crc.hashCode();
         return result;
@@ -157,7 +148,6 @@ public class AmsSerialFrame implements ByteReadable {
             ", receiverAddress=" + receiverAddress +
             ", fragmentNumber=" + fragmentNumber +
             ", userDataLength=" + userDataLength +
-            ", amsPacket=" + amsPacket +
             ", userData=" + userData +
             ", crc=" + crc +
             '}';

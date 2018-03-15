@@ -18,50 +18,20 @@
  */
 package org.apache.plc4x.java.ads.protocol;
 
-import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+public class AbstractProtocolTest {
 
-@RunWith(Parameterized.class)
-public class Ads2SerialProtocolTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Ads2SerialProtocolTest.class);
-
-    private Ads2SerialProtocol SUT;
-
-    @Parameterized.Parameter
-    public AmsSerialFrame amsSerialFrame;
-
-    @Parameterized.Parameter(1)
-    public String clazzName;
-
-    @Parameterized.Parameter(2)
-    public AmsPacket amsPacket;
-
-    @Parameterized.Parameters(name = "{index} {1}")
-    public static Collection<Object[]> data() {
+    public static Stream<AmsPacket> amsPacketStream() {
         AmsNetId targetAmsNetId = AmsNetId.of("1.2.3.4.5.6");
         AmsPort targetAmsPort = AmsPort.of(7);
         AmsNetId sourceAmsNetId = AmsNetId.of("8.9.10.11.12.13");
@@ -162,45 +132,6 @@ public class Ads2SerialProtocolTest {
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, State.DEFAULT, invokeId,
                 Unpooled.wrappedBuffer(new byte[]{42})
             )*/
-        ).map(amsPacket -> new Object[]{amsPacket.toAmsSerialFrame((byte) 0), amsPacket.getClass().getSimpleName(), amsPacket}).collect(Collectors.toList());
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        SUT = new Ads2SerialProtocol();
-        byte[] bytes = amsSerialFrame.getBytes();
-        LOGGER.info("amsPacket:\n{} has \n{}bytes\nHexDump:\n{}", amsSerialFrame, bytes.length, amsSerialFrame.dump());
-    }
-
-    @Test
-    public void encode() throws Exception {
-        ArrayList<Object> out = new ArrayList<>();
-        SUT.encode(null, amsSerialFrame.getAmsPacket(), out);
-        assertEquals(1, out.size());
-        assertThat(out, hasSize(1));
-    }
-
-    @Test
-    public void decode() throws Exception {
-        ArrayList<Object> out = new ArrayList<>();
-        SUT.decode(null, amsSerialFrame.getByteBuf(), out);
-        assertThat(out, hasSize(1));
-    }
-
-    @Test
-    public void roundTrip() throws Exception {
-        ArrayList<Object> outbound = new ArrayList<>();
-        SUT.encode(null, amsSerialFrame.getAmsPacket(), outbound);
-        assertEquals(1, outbound.size());
-        assertThat(outbound, hasSize(1));
-        assertThat(outbound.get(0), instanceOf(ByteBuf.class));
-        ByteBuf byteBuf = (ByteBuf) outbound.get(0);
-        ArrayList<Object> inbound = new ArrayList<>();
-        SUT.decode(null, byteBuf, inbound);
-        assertEquals(1, inbound.size());
-        assertThat(inbound, hasSize(1));
-        assertThat(inbound.get(0), instanceOf(AmsPacket.class));
-        AmsPacket inboundAmsPacket = (AmsPacket) inbound.get(0);
-        assertThat("inbound divers from outbound", this.amsSerialFrame, equalTo(inboundAmsPacket.toAmsSerialFrame((byte) 0)));
+        );
     }
 }

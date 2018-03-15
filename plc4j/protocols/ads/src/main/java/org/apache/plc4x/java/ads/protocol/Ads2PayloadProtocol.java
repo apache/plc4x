@@ -26,8 +26,6 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AmsHeader;
 import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.generic.types.*;
-import org.apache.plc4x.java.ads.api.tcp.AmsTcpHeader;
-import org.apache.plc4x.java.ads.api.tcp.types.TcpLength;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,21 +35,14 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class Ads2TcpProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
+public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Ads2TcpProtocol.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Ads2PayloadProtocol.class);
 
     private final ConcurrentMap<Invoke, AmsPacket> requests;
 
-    private final boolean ignoreBrokenPackages;
-
-    public Ads2TcpProtocol() {
-        this(false);
-    }
-
-    public Ads2TcpProtocol(boolean ignoreBrokenPackages) {
+    public Ads2PayloadProtocol() {
         this.requests = new ConcurrentHashMap<>();
-        this.ignoreBrokenPackages = ignoreBrokenPackages;
     }
 
     /**
@@ -67,20 +58,11 @@ public class Ads2TcpProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
         if (invokeId != Invoke.NONE) {
             requests.put(invokeId, amsPacket);
         }
-        out.add(amsPacket.toAmstcpPacket().getByteBuf());
+        out.add(amsPacket.getByteBuf());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) throws Exception {
-        // Tcp decoding
-        // Reserved
-        byteBuf.skipBytes(AmsTcpHeader.Reserved.NUM_BYTES);
-        TcpLength packetLength = TcpLength.of(byteBuf);
-        AmsTcpHeader amsTcpHeader = AmsTcpHeader.of(packetLength);
-        LOGGER.debug("AMS TCP Header {}", amsTcpHeader);
-
-        // Ams decoding
         AmsNetId targetAmsNetId = AmsNetId.of(byteBuf);
         AmsPort targetAmsPort = AmsPort.of(byteBuf);
         AmsNetId sourceAmsNetId = AmsNetId.of(byteBuf);
@@ -138,7 +120,7 @@ public class Ads2TcpProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
         }
         out.add(amsPacket);
         LOGGER.trace("Set amsPacket {} to out", amsPacket);
-        if (!ignoreBrokenPackages && commandBuffer.readableBytes() > 0) {
+        if (commandBuffer.readableBytes() > 0) {
             commandBuffer.release();
             byteBuf.release();
             throw new IllegalStateException("Unread bytes left: " + commandBuffer.readableBytes());
@@ -146,6 +128,7 @@ public class Ads2TcpProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
         commandBuffer.release();
         byteBuf.release();
     }
+
 
     private AmsPacket handleInvalidCommand(ByteBuf commandBuffer, AmsHeader amsHeader) {
         return UnknownCommand.of(amsHeader, commandBuffer);

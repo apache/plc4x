@@ -21,9 +21,6 @@ package org.apache.plc4x.java.ads.api.generic;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.commands.AdsCommandType;
 import org.apache.plc4x.java.ads.api.generic.types.*;
-import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
-import org.apache.plc4x.java.ads.api.serial.types.FragmentNumber;
-import org.apache.plc4x.java.ads.api.tcp.AmsTCPPacket;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import static java.util.Objects.requireNonNull;
@@ -60,14 +57,6 @@ public abstract class AmsPacket implements ByteReadable {
 
     protected AdsData buildADSData(ByteReadable... byteReadables) {
         return () -> buildByteBuff(byteReadables);
-    }
-
-    public AmsTCPPacket toAmstcpPacket() {
-        return AmsTCPPacket.of(this);
-    }
-
-    public AmsSerialFrame toAmsSerialFrame(byte fragmentNumber) {
-        return AmsSerialFrame.of(FragmentNumber.of(fragmentNumber), this);
     }
 
     @Override

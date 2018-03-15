@@ -23,15 +23,21 @@ import io.netty.buffer.Unpooled;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public class ByteValue implements ByteReadable {
 
     protected final byte[] value;
 
     protected ByteValue(byte... value) {
-        Objects.requireNonNull(value);
-        this.value = value;
+        this.value = requireNonNull(value);
+    }
+
+    protected ByteValue(ByteBuf byteBuf) {
+        requireNonNull(byteBuf);
+        value = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(value);
     }
 
     protected void assertLength(int length) {

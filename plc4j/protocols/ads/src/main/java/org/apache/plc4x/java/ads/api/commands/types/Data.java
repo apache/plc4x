@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.api.commands.types;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.charset.Charset;
@@ -30,8 +31,16 @@ public class Data extends ByteValue {
         super(values);
     }
 
+    public Data(ByteBuf byteBuf) {
+        super(byteBuf);
+    }
+
     public static Data of(byte... values) {
         return new Data(values);
+    }
+
+    public static Data of(ByteBuf byteBuf) {
+        return new Data(byteBuf);
     }
 
     public static Data of(String value) {
