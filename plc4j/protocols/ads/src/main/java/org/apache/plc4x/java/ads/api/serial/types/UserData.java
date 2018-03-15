@@ -27,14 +27,24 @@ import static java.util.Objects.requireNonNull;
 
 public class UserData extends ByteValue {
 
+    public static final int MAX_LENGTH = 255;
+
     public static final UserData EMPTY = UserData.of();
 
     private UserData(byte... values) {
         super(values);
+        assertMaxLength();
     }
 
     public UserData(ByteBuf byteBuf) {
         super(byteBuf);
+        assertMaxLength();
+    }
+
+    protected void assertMaxLength() {
+        if (value.length > MAX_LENGTH) {
+            throw new IllegalArgumentException("Max length " + MAX_LENGTH + " bytes exceeded by " + (value.length - MAX_LENGTH) + " bytes");
+        }
     }
 
     public static UserData of(byte... values) {
@@ -52,7 +62,7 @@ public class UserData extends ByteValue {
     }
 
     public static UserData of(ByteBuf byteBuf) {
-       return new UserData(byteBuf);
+        return new UserData(byteBuf);
     }
 
     @Override
