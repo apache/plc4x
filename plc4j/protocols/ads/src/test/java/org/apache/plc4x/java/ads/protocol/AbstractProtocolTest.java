@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.protocol;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AmsPacket;
@@ -28,6 +29,9 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Stream;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class AbstractProtocolTest {
 
@@ -133,5 +137,13 @@ public class AbstractProtocolTest {
                 Unpooled.wrappedBuffer(new byte[]{42})
             )*/
         );
+    }
+
+    public void assertByteBufferEquals(ByteBuf expected, ByteBuf actual) {
+        byte[] expectedBytes = new byte[expected.readableBytes()];
+        expected.readBytes(expectedBytes);
+        byte[] actualBytes = new byte[actual.readableBytes()];
+        actual.readBytes(actualBytes);
+        assertThat(expectedBytes, equalTo(actualBytes));
     }
 }

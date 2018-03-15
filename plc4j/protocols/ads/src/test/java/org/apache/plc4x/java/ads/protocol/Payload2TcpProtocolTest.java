@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.ads.api.serial.types.UserData;
 import org.apache.plc4x.java.ads.api.tcp.AmsTCPPacket;
 import org.junit.Before;
@@ -32,9 +34,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
 public class Payload2TcpProtocolTest extends AbstractProtocolTest {
@@ -43,6 +48,8 @@ public class Payload2TcpProtocolTest extends AbstractProtocolTest {
 
     private Payload2TcpProtocol SUT;
 
+    private ChannelHandlerContext channelHandlerContextMock;
+
     @Parameterized.Parameter
     public AmsTCPPacket amsTCPPacket;
 
@@ -50,7 +57,7 @@ public class Payload2TcpProtocolTest extends AbstractProtocolTest {
     public String clazzName;
 
     @Parameterized.Parameter(2)
-    public ByteBuf amsPacketByteBuf;
+    public byte[] amsPacketBytes;
 
     @Parameterized.Parameters(name = "{index} {1}")
     public static Collection<Object[]> data() {
@@ -58,7 +65,7 @@ public class Payload2TcpProtocolTest extends AbstractProtocolTest {
             .map(amsPacket -> new Object[]{
                 AmsTCPPacket.of(UserData.of(amsPacket.getByteBuf())),
                 amsPacket.getClass().getSimpleName(),
-                amsPacket.getByteBuf()
+                amsPacket.getBytes()
             })
             .collect(Collectors.toList());
     }
@@ -66,6 +73,7 @@ public class Payload2TcpProtocolTest extends AbstractProtocolTest {
     @Before
     public void setUp() throws Exception {
         SUT = new Payload2TcpProtocol();
+        channelHandlerContextMock = mock(ChannelHandlerContext.class, RETURNS_DEEP_STUBS);
         byte[] bytes = amsTCPPacket.getBytes();
         LOGGER.info("amsPacket:\n{} has \n{}bytes\nHexDump:\n{}", amsTCPPacket, bytes.length, amsTCPPacket.dump());
     }
@@ -73,7 +81,7 @@ public class Payload2TcpProtocolTest extends AbstractProtocolTest {
     @Test
     public void encode() throws Exception {
         ArrayList<Object> out = new ArrayList<>();
-        SUT.encode(null, amsPacketByteBuf, out);
+        SUT.encode(channelHandlerContextMock, Unpooled.wrappedBuffer(amsPacketBytes), out);
         assertEquals(1, out.size());
         assertThat(out, hasSize(1));
     }
@@ -81,24 +89,24 @@ public class Payload2TcpProtocolTest extends AbstractProtocolTest {
     @Test
     public void decode() throws Exception {
         ArrayList<Object> out = new ArrayList<>();
-        SUT.decode(null, amsTCPPacket.getByteBuf(), out);
+        SUT.decode(channelHandlerContextMock, amsTCPPacket.getByteBuf(), out);
         assertThat(out, hasSize(1));
     }
 
     @Test
     public void roundTrip() throws Exception {
         ArrayList<Object> outbound = new ArrayList<>();
-        SUT.encode(null, amsPacketByteBuf, outbound);
+        SUT.encode(channelHandlerContextMock, Unpooled.wrappedBuffer(amsPacketBytes), outbound);
         assertEquals(1, outbound.size());
         assertThat(outbound, hasSize(1));
         assertThat(outbound.get(0), instanceOf(ByteBuf.class));
         ByteBuf byteBuf = (ByteBuf) outbound.get(0);
         ArrayList<Object> inbound = new ArrayList<>();
-        SUT.decode(null, byteBuf, inbound);
+        SUT.decode(channelHandlerContextMock, byteBuf, inbound);
         assertEquals(1, inbound.size());
         assertThat(inbound, hasSize(1));
         assertThat(inbound.get(0), instanceOf(ByteBuf.class));
         ByteBuf inboundAmsPacket = (ByteBuf) inbound.get(0);
-        assertThat("inbound divers from outbound", this.amsPacketByteBuf, equalTo(inboundAmsPacket));
+        assertByteBufferEquals(Unpooled.wrappedBuffer(this.amsPacketBytes), inboundAmsPacket);
     }
 }
