@@ -25,75 +25,11 @@ The End of a packet is indicated by a frame end sequence of 6 bytes: 00 00 72 01
 The general structure of the protocols content however is completely different and far less documented.
 
 The biggest source for getting started in implementing this protocol was the https://os-s.de/thesis/MA_Maik_Brueggemann.pdf[Master Thesis of Maik Brüggemann].
-However this only covered the basic structure of a `S7 Comm Plus` packet.
+However this only covered the basic structure of a `S7 Comm Plus` packet and it seems that this information is not quite correct as many assumptions hav turned out to not be correct.
 
-=== General Structure of a Packet
+Beyond that, it seems that implementing this protocol would require knowledge of some shared keys which are contained in the bytecode of the PLCs as well as the official drivers.
+As we can't reverse-engineer these keys, the only way we could get them, would be by disassembling the existing code, which would not be allowed.
 
-[packetdiag,s7-comm-plus-packet,svg]
-....
-{
-    colwidth = 32
+Therefore we have currently stopped working on this protocol type.
+Eventually things may change in the future, but for now we see no way we could finish this on a legally correct path.
 
-    // ISO on TCP
-    * ISO on TCP Magic Number (0x03) [len = 8, color = "#068D9D"]
-    * Reserved (0x00) [len = 8, color = "#068D9D"]
-    * Packet Length (including ISO on TCP header) [len = 16, color = "#068D9D"]
-
-    // ISO Transport Protocol
-    * ISO TP Header Length\n(excluding length byte) [len = 8, color = "#53599A"]
-    * TPDU-Code\n(Data = 0xF0) [len = 4, color = "#AEECEF"]
-    * Signal CDT\n(0x00) [len = 4, color = "#53599A"]
-    * TPDU-NR/EOT [len = 8, color = "#53599A"]
-
-    // S7 Comm Plus
-    * S7 Comm Plus Protocol Magic Byte\n(0x72) [len = 8, color = "#6D9DC5"]
-    * Version (0x01) [len = 8, color = "#6D9DC5"]
-    * Length\n(including length bytes excluding frame boundary) [len = 16, color = "#6D9DC5"]
-    * Type [len = 8, color = "#6D9DC5"]
-    * Reserved (0x0000) [len = 16, color = "#6D9DC5"]
-    * Sub-Type [len = 16, color = "#6D9DC5"]
-    * Sequence Number [len = 32, color = "#6D9DC5"]
-    // Undocumented constant sequence
-    * 00 00 01 20 [len = 32]
-    * 36 00 00 01 [len = 32]
-    * 1d 00 04 00 [len = 32]
-    * 00 00 00 00 [len = 32]
-    * a1 00 00 00 [len = 32]
-    * d3 82 1f 00 [len = 32]
-    * 00 [len = 8]
-
-    // Parameters
-    * Attribute Block Magic Byte\n(0xA3) [len = 8, color = "#00FF80"]
-    * Attribute Id (Type) [len = 8, color = "#00FF80"]
-    * Format [len = 8, color = "#00FF80"]
-    * Data Type [len = 8, color = "#00FF80"]
-    * Length [len = 8, color = "#00FF80"]
-    * Attribute Value [len = 56, color = "#00FF80"]
-
-    // Parameters
-    * Attribute Block Magic Byte\n(0xA3) [len = 8, color = "#0080FF"]
-    * Attribute Id (Type) [len = 8, color = "#0080FF"]
-    * Format [len = 8, color = "#0080FF"]
-    * Data Type [len = 8, color = "#0080FF"]
-    * Length [len = 8, color = "#0080FF"]
-    * Attribute Value [len = 56, color = "#0080FF"]
-
-    // Parameters
-    * Attribute Block Magic Byte\n(0xA3) [len = 8, color = "#00FF80"]
-    * Attribute Id (Type) [len = 8, color = "#00FF80"]
-    * Format [len = 8, color = "#00FF80"]
-    * Data Type [len = 8, color = "#00FF80"]
-    * Length [len = 8, color = "#00FF80"]
-    * Attribute Value [len = 56, color = "#00FF80"]
-
-    // Frame End
-    * Reserved (0x0000) [len = 16, color = "#FF3399"]
-    * S7 Comm Plus Protocol Magic Byte\n(0x72) [len = 8, color = "#FF3399"]
-    * Version (0x01) [len = 8, color = "#FF3399"]
-    * Reserved (0x0000) [len = 16, color = "#FF3399"]
-
-}
-....
-
-
-...
