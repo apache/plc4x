@@ -18,19 +18,12 @@
  */
 package org.apache.plc4x.java.ads.protocol.util;
 
-import io.netty.buffer.ByteBuf;
+import com.github.snksoft.crc.CRC;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
-/**
- * TODO: temporary due to unclear licence
- * From https://stackoverflow.com/a/18333436/850036
- * // TODO: replace this with a better implementation. Maybe:
- * http://www.source-code.biz/snippets/java/crc16/
- * https://en.wikipedia.org/wiki/Cyclic_redundancy_check#Standards_and_common_use
- * or even better a netty supplied crc-16
- * https://github.com/openhab/jamod/blob/64cdbd16fbb7febd39470f873a00be986b052e39/src/main/java/net/wimpi/modbus/util/ModbusUtil.java
- */
 public class DigestUtil {
+
+    private static CRC crc16 = new CRC(CRC.Parameters.CRC16);
 
     private DigestUtil() {
         // Utility class
@@ -40,16 +33,15 @@ public class DigestUtil {
         if (byteReadables.length == 1) {
             return calculateCrc16(byteReadables[0].getBytes());
         }
-        return calculateCrc16(new ByteReadable() {
-            @Override
-            public ByteBuf getByteBuf() {
-                return buildByteBuff(byteReadables);
-            }
-        }.getBytes());
+        long currentCrcValue = crc16.init();
+        for (ByteReadable byteReadable : byteReadables) {
+            currentCrcValue = crc16.update(currentCrcValue, byteReadable.getBytes());
+        }
+        return crc16.finalCRC16(currentCrcValue);
     }
 
     public static int calculateCrc16(byte[] bytes) {
-        // TODO: implement me
-        return 0;
+        return (int) crc16.calculateCRC(bytes);
     }
+
 }
