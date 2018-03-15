@@ -37,11 +37,11 @@ public class DigestUtil {
         for (ByteReadable byteReadable : byteReadables) {
             currentCrcValue = crc16.update(currentCrcValue, byteReadable.getBytes());
         }
-        return crc16.finalCRC16(currentCrcValue);
+        return crc16.finalCRC16(currentCrcValue) & 0x0000FFFF;
     }
 
     public static int calculateCrc16(byte[] bytes) {
-        return (int) crc16.calculateCRC(bytes);
+        return (int) crc16.calculateCRC(bytes) & 0x0000FFFF;
     }
 
 }

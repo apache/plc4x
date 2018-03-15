@@ -116,6 +116,11 @@ public class Ads2SerialProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket
             throw new PlcProtocolException("CRC checksum wrong");
         }
 
+        if (byteBuf.readableBytes() > 0) {
+            byteBuf.release();
+            throw new IllegalStateException("Unread bytes left: " + byteBuf.readableBytes());
+        }
+
         byteBuf.release();
     }
 }
