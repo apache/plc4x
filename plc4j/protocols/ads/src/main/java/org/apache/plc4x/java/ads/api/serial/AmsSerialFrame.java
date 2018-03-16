@@ -96,7 +96,7 @@ public class AmsSerialFrame implements ByteReadable {
         this.userDataLength = UserDataLength.of((byte) calculatedLength);
         byte[] amsPacketBytes = userData.getBytes();
         this.userData = UserData.of(amsPacketBytes);
-        this.crc = CRC.of(DigestUtil.calculateCrc16(() -> buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData)));
+        this.crc = CRC.of(DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData));
     }
 
     public static AmsSerialFrame of(MagicCookie magicCookie, TransmitterAddress transmitterAddress, ReceiverAddress receiverAddress, FragmentNumber fragmentNumber, UserDataLength userDataLength, UserData userData, CRC crc) {

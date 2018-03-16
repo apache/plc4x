@@ -79,7 +79,7 @@ public class AmsSerialAcknowledgeFrame implements ByteReadable {
         this.receiverAddress = receiverAddress;
         this.fragmentNumber = fragmentNumber;
         this.userDataLength = UserDataLength.of((byte) 0);
-        this.crc = CRC.of(DigestUtil.calculateCrc16(() -> buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength)));
+        this.crc = CRC.of(DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength));
     }
 
     public static AmsSerialAcknowledgeFrame of(MagicCookie magicCookie, TransmitterAddress transmitterAddress, ReceiverAddress receiverAddress, FragmentNumber fragmentNumber, UserDataLength userDataLength, CRC crc) {
