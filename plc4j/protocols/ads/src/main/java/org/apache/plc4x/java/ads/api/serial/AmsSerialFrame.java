@@ -112,6 +112,34 @@ public class AmsSerialFrame implements ByteReadable {
         return buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
     }
 
+    public MagicCookie getMagicCookie() {
+        return magicCookie;
+    }
+
+    public TransmitterAddress getTransmitterAddress() {
+        return transmitterAddress;
+    }
+
+    public ReceiverAddress getReceiverAddress() {
+        return receiverAddress;
+    }
+
+    public FragmentNumber getFragmentNumber() {
+        return fragmentNumber;
+    }
+
+    public UserDataLength getUserDataLength() {
+        return userDataLength;
+    }
+
+    public UserData getUserData() {
+        return userData;
+    }
+
+    public CRC getCrc() {
+        return crc;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -75,6 +75,10 @@ public class ByteValue implements ByteReadable {
         return value.length;
     }
 
+    public static ByteValue of(byte... values) {
+        return new ByteValue(values);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

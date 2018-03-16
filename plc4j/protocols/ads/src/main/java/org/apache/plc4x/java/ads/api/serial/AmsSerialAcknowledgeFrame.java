@@ -95,6 +95,30 @@ public class AmsSerialAcknowledgeFrame implements ByteReadable {
         return buildByteBuff(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, crc);
     }
 
+    public MagicCookie getMagicCookie() {
+        return magicCookie;
+    }
+
+    public TransmitterAddress getTransmitterAddress() {
+        return transmitterAddress;
+    }
+
+    public ReceiverAddress getReceiverAddress() {
+        return receiverAddress;
+    }
+
+    public FragmentNumber getFragmentNumber() {
+        return fragmentNumber;
+    }
+
+    public UserDataLength getUserDataLength() {
+        return userDataLength;
+    }
+
+    public CRC getCrc() {
+        return crc;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
