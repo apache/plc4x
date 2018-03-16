@@ -48,12 +48,12 @@ public class DigestUtil {
             currentCrcValue = crc16.update(currentCrcValue, byteReadable.getBytes());
         }
         short finalCrc = crc16.finalCRC16(currentCrcValue);
-        return Short.toUnsignedInt(finalCrc);
+        return Short.toUnsignedInt(Short.reverseBytes(finalCrc));
     }
 
     public static int calculateCrc16(byte[] bytes) {
-        short crc = (short) crc16.calculateCRC(bytes);
-        return Short.toUnsignedInt(crc);
+        short finalCrc = (short) crc16.calculateCRC(bytes);
+        return Short.toUnsignedInt(Short.reverseBytes(finalCrc));
     }
 
 }
