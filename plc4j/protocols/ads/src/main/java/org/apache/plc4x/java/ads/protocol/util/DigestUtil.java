@@ -23,7 +23,17 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 public class DigestUtil {
 
-    private static CRC crc16 = new CRC(CRC.Parameters.CRC16);
+    public static final CRC.Parameters CRC16 = CRC.Parameters.CRC16;
+
+    public static final CRC.Parameters CRC16_ADS = new CRC.Parameters(
+        CRC16.getWidth(),
+        CRC16.getPolynomial(),
+        0xFFFF,
+        CRC16.isReflectIn(),
+        CRC16.isReflectOut(),
+        CRC16.getFinalXor());
+
+    private static CRC crc16 = new CRC(CRC16_ADS);
 
     private DigestUtil() {
         // Utility class
@@ -37,11 +47,13 @@ public class DigestUtil {
         for (ByteReadable byteReadable : byteReadables) {
             currentCrcValue = crc16.update(currentCrcValue, byteReadable.getBytes());
         }
-        return crc16.finalCRC16(currentCrcValue) & 0x0000FFFF;
+        short finalCrc = crc16.finalCRC16(currentCrcValue);
+        return Short.toUnsignedInt(finalCrc);
     }
 
     public static int calculateCrc16(byte[] bytes) {
-        return (int) crc16.calculateCRC(bytes) & 0x0000FFFF;
+        short crc = (short) crc16.calculateCRC(bytes);
+        return Short.toUnsignedInt(crc);
     }
 
 }
