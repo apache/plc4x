@@ -40,7 +40,7 @@ import org.junit.rules.ErrorCollector;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.apache.plc4x.java.ads.util.Assert.byteArrayEqualsTo;
 
 /**
  * @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec,0xsample.htm?id=60692407917020132">example</a>
@@ -98,7 +98,7 @@ public class Payload2SerialProtocolExampleConversationTest {
         AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) 0x06), UserData.of(amsPacket.getBytes()));
         System.out.println(amsSerialFrame.dump());
         System.err.println(ByteValue.of(exampleRequest).dump());
-        errorCollector.checkThat(exampleRequest, equalTo(amsSerialFrame.getBytes()));
+        errorCollector.checkThat(amsSerialFrame.getBytes(), byteArrayEqualsTo(exampleRequest));
         SUT.encode(null, amsPacket.getByteBuf(), new ArrayList<>());
 
         // PLC --> Terminal : Acknowledge:
@@ -118,7 +118,7 @@ public class Payload2SerialProtocolExampleConversationTest {
         AmsSerialAcknowledgeFrame amsSerialAcknowledgeFrame = AmsSerialAcknowledgeFrame.of(amsSerialFrame.getTransmitterAddress(), amsSerialFrame.getReceiverAddress(), amsSerialFrame.getFragmentNumber());
         System.out.println(amsSerialAcknowledgeFrame.dump());
         System.err.println(ByteValue.of(exampleAckResponse).dump());
-        errorCollector.checkThat(exampleAckResponse, equalTo(amsSerialAcknowledgeFrame.getBytes()));
+        errorCollector.checkThat(amsSerialAcknowledgeFrame.getBytes(), byteArrayEqualsTo(exampleAckResponse));
         SUT.decode(null, amsSerialAcknowledgeFrame.getByteBuf(), new ArrayList<>());
 
         // PLC sends data:
@@ -152,12 +152,12 @@ public class Payload2SerialProtocolExampleConversationTest {
             AmsNetId.of(Arrays.copyOfRange(exampleResponse, 14, 20)),
             AmsPort.of(Arrays.copyOfRange(exampleResponse, 20, 22)),
             Invoke.of(0x07),
-            Result.of(0x02),
+            Result.of(0x00),
             Data.of((byte) 0xAF, (byte) 0x27)
         );
         AmsSerialFrame amsResponseSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) 0xEC), UserData.of(amsResponsePacket.getBytes()));
         System.out.println(amsResponseSerialFrame.dump());
         System.err.println(ByteValue.of(exampleResponse).dump());
-        errorCollector.checkThat(exampleResponse, equalTo(amsResponseSerialFrame.getBytes()));
+        errorCollector.checkThat(amsResponseSerialFrame.getBytes(), byteArrayEqualsTo(exampleResponse));
     }
 }

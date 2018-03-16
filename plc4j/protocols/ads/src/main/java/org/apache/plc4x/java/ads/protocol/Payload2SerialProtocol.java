@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static java.lang.Integer.toHexString;
+import static org.apache.commons.lang3.StringUtils.leftPad;
+
 public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Payload2TcpProtocol.class);
@@ -79,7 +82,11 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
         }
         int calculatedCrc16 = DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData);
         if (!crc.equals(CRC.of(calculatedCrc16))) {
-            throw new PlcProtocolException("CRC checksum wrong");
+            throw new PlcProtocolException("CRC checksum wrong. Got "
+                + "0x" + leftPad(toHexString(crc.getAsInt()), 4, "0")
+                + " expected "
+                + "0x" + leftPad(toHexString(calculatedCrc16), 4, "0")
+            );
         }
 
         if (byteBuf.readableBytes() > 0) {
