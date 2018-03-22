@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
@@ -31,9 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
-import static java.lang.Integer.toHexString;
-import static org.apache.commons.lang3.StringUtils.leftPad;
 
 public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
@@ -69,6 +68,11 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
             case AmsSerialFrame.ID:
                 AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
                 LOGGER.debug("Ams Serial Frame received {}", amsSerialFrame);
+                // TODO: check if this is the right way to ack a package.
+                ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(AmsSerialAcknowledgeFrame.of(transmitterAddress, receiverAddress, fragmentNumber));
+                channelFuture.addListener((ChannelFutureListener) future -> {
+                    // TODO: we might wait for the ack-frame to be transmitted before we forward the package
+                });
                 out.add(userData.getByteBuf());
                 break;
             case AmsSerialAcknowledgeFrame.ID:
@@ -80,13 +84,9 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
                 LOGGER.debug("Ams Serial Reset Frame received {}", amsSerialResetFrame);
                 break;
         }
-        int calculatedCrc16 = DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData);
-        if (!crc.equals(CRC.of(calculatedCrc16))) {
-            throw new PlcProtocolException("CRC checksum wrong. Got "
-                + "0x" + leftPad(toHexString(crc.getAsInt()), 4, "0")
-                + " expected "
-                + "0x" + leftPad(toHexString(calculatedCrc16), 4, "0")
-            );
+        CRC calculatedCrc = CRC.of(DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData));
+        if (!crc.equals(calculatedCrc)) {
+            throw new PlcProtocolException("CRC checksum wrong. Got " + crc + " expected " + calculatedCrc);
         }
 
         if (byteBuf.readableBytes() > 0) {

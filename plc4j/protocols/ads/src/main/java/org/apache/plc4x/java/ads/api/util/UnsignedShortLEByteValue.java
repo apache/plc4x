@@ -22,6 +22,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.ByteBuffer;
 
+import static java.lang.Integer.toHexString;
+import static org.apache.commons.lang3.StringUtils.leftPad;
+
 public abstract class UnsignedShortLEByteValue extends ByteValue {
 
     public static final int UNSIGNED_SHORT_LE_NUM_BYTES = 2;
@@ -88,8 +91,9 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
+        return super.toString() + "{" +
             "intValue=" + getAsInt() +
-            "} " + super.toString();
+            ",hexValue=0x" + leftPad(toHexString(getAsInt()), UNSIGNED_SHORT_LE_NUM_BYTES, "0") +
+            "}";
     }
 }

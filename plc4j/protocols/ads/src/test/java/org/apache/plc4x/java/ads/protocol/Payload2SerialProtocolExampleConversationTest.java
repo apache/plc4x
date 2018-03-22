@@ -32,6 +32,7 @@ import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.types.FragmentNumber;
 import org.apache.plc4x.java.ads.api.serial.types.UserData;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,6 +61,36 @@ public class Payload2SerialProtocolExampleConversationTest {
     public void setUp() throws Exception {
         channelHandlerContextMock = mock(ChannelHandlerContext.class, RETURNS_DEEP_STUBS);
         SUT = new Payload2SerialProtocol();
+    }
+
+    @Test(expected = PlcProtocolException.class)
+    public void testWrongCrc() throws Exception {
+        int[] exampleRequestInt = {
+            /*Magic Cookie    */    0x01, 0xA5,
+            /*Sender          */    0x00,
+            /*Empfaenger      */    0x00,
+            /*Fragmentnummer  */    0x06,
+            /*Datenlaenge     */    0x2C,
+            /*NetID Empfaenger*/    0xC0, 0xA8, 0x64, 0xAE, 0x01, 0x01,
+            /*Port Nummer     */    0x21, 0x03,
+            /*NetID Sender    */    0xC0, 0xA8, 0x64, 0x9C, 0x01, 0x01,
+            /*Portnummer      */    0x01, 0x80,
+            /*Kommando lesen  */    0x02, 0x00,
+            /*Status          */    0x04, 0x00,
+            /*Anzahl Datenbyte*/    0x0C, 0x00, 0x00, 0x00,
+            /*Fehlercode      */    0x00, 0x00, 0x00, 0x00,
+            /*InvokeID        */    0x07, 0x00, 0x00, 0x00,
+            /*Index Gruppe    */    0x05, 0xF0, 0x00, 0x00,
+            /*Index Offset    */    0x04, 0x00, 0x00, 0x9D,
+            /*Anzahl Byte     */    0x02, 0x00, 0x00, 0x00,
+            // This Checksum is flipped to provoke exception
+            /*Checksumme      */    0x28, 0x79,
+        };
+        byte[] exampleRequest = ArrayUtils.toPrimitive(Arrays
+            .stream(exampleRequestInt)
+            .mapToObj(value -> (byte) value)
+            .toArray(Byte[]::new));
+        SUT.decode(channelHandlerContextMock, Unpooled.wrappedBuffer(exampleRequest), new ArrayList<>());
     }
 
     @Test
