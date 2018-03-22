@@ -73,6 +73,8 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
                 channelFuture.addListener((ChannelFutureListener) future -> {
                     // TODO: we might wait for the ack-frame to be transmitted before we forward the package
                 });
+                // TODO: check if this await is right as this might be against the concept of netty
+                channelFuture.await();
                 out.add(userData.getByteBuf());
                 break;
             case AmsSerialAcknowledgeFrame.ID:
