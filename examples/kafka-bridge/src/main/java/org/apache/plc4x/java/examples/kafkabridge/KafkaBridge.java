@@ -71,12 +71,7 @@ public class KafkaBridge {
         DirectProvider dp = new DirectProvider();
         Topology top = dp.newTopology("kafka-bridge");
 
-        // Create the Kafka Producer broker connector
-        Map<String,Object> kafkaConfig = createKafkaConfig();
-        KafkaProducer kafka = new KafkaProducer(top, () -> kafkaConfig);
-
         Map<String, ReadRequestItem> readRequestItems = new HashMap<>();
-
         for(Address address : config.getPlcConfig().getAddresses()) {
             try {
                 org.apache.plc4x.java.api.model.Address plcAddress = plcAdapter.parseAddress(address.getAddress());
@@ -97,6 +92,9 @@ public class KafkaBridge {
         TStream<String> stringSource = source.map(value -> Byte.toString(value));
 
         // Publish the stream to the topic.  The String tuple is the message value.
+        // Create the Kafka Producer broker connector
+        Map<String,Object> kafkaConfig = createKafkaConfig();
+        KafkaProducer kafka = new KafkaProducer(top, () -> kafkaConfig);
         kafka.publish(stringSource, config.getKafkaConfig().getTopicName());
 
         dp.submit(top);
