@@ -88,6 +88,10 @@
     <head>
     </head>
 
+    <menu name="Community">
+      <item name="Getting Involved" href="community/help-wanted.adoc"/>
+      <item name="Conferences" href="community/conferences.adoc"/>
+    </menu>
     <menu name="Users">
       <item name="Getting Started" href="users/gettingstarted.html"/>
       <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
