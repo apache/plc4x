@@ -121,15 +121,20 @@
 
   <dependencyManagement>
     <dependencies>
+      <!--
+        Set to provided to ensure that these jars are never automatically
+        included. If required the used still can override it if it is needed. -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${logback.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${logback.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.google.code.gson</groupId>
