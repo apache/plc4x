@@ -30,7 +30,7 @@ public class LengthTest {
 
     @Test
     public void ofBytes() {
-        assertEquals("0", Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).toString());
+        assertEquals(0l, Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).getAsLong());
         assertThrows(IllegalArgumentException.class, () -> Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE));
     }
 
@@ -49,7 +49,7 @@ public class LengthTest {
 
     @Test
     public void testToString() {
-        assertEquals(Length.of("1").toString(), "1");
+        assertEquals(Length.of("1").getAsLong(), 1l);
     }
 
     private void assertByte(Length actual, String expected) {
