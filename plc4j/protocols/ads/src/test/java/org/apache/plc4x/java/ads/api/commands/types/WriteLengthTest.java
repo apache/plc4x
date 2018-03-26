@@ -19,11 +19,12 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import org.apache.commons.codec.binary.Hex;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 
 public class WriteLengthTest {
@@ -32,7 +33,7 @@ public class WriteLengthTest {
 
     @Test
     public void ofBytes() {
-        assertEquals(0l, WriteLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).getAsLong());
+        assertEquals(0L, WriteLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).getAsLong());
         assertThrows(IllegalArgumentException.class, () -> WriteLength.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE));
     }
 
@@ -50,9 +51,8 @@ public class WriteLengthTest {
     }
 
     @Test
-    @Ignore("Must be fixed after refactoring of 'toString' method.")
     public void testToString() {
-        assertEquals(WriteLength.of("1").getAsLong(), 1l);
+        assertThat(WriteLength.of("1").toString(), containsString("longValue=1,"));
     }
 
     private void assertByte(WriteLength actual, String expected) {

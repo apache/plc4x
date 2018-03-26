@@ -20,12 +20,8 @@ package org.apache.plc4x.java.ads.api.generic.types;
 
 import org.junit.Test;
 
-import java.util.EnumSet;
-
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 public class StateTest {
 

@@ -22,7 +22,9 @@ import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class LengthTest {
 
@@ -30,7 +32,7 @@ public class LengthTest {
 
     @Test
     public void ofBytes() {
-        assertEquals(0l, Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).getAsLong());
+        assertEquals(0L, Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE).getAsLong());
         assertThrows(IllegalArgumentException.class, () -> Length.of(NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE, NULL_BYTE));
     }
 
@@ -49,7 +51,7 @@ public class LengthTest {
 
     @Test
     public void testToString() {
-        assertEquals(Length.of("1").getAsLong(), 1l);
+        assertThat(Length.of("1").toString(), containsString("longValue=1,"));
     }
 
     private void assertByte(Length actual, String expected) {
