@@ -43,6 +43,57 @@ The format of an address greatly depends on the type of connection. Therefore `p
 
 This method returns an object implementing the `Address` interface which then can be used by the same connection to identify remote resources.
 
+[ditaa,plc4x-architecture]
+....
++---------------------------------------------------------------------------+
+|c05A                                                                       |
+|                                                                           |
+|                              User Application                             |
+|                                                                           |
+|                                                                           |
+|                  +-----------+------------------+------------------+------+
+|                  |           |                  |                  |
+|                  |           |                  |                  |
+|                  |           v                  v                  v
+|                  |    +-------------+    +-------------+    +-------------+
+|                  |    |c0BA         |    |c0BA         |    |c0BA         |
+|                  |    |   Apache    |    |   Apache    |    |   Apache    |
+|                  |    |   Kafka     |    |    Camel    |    |   Edgent    |
+|                  |    |   Connect   |    | Integration |    | Integration |
+|                  |    |             |    |             |    |             |
++---------+--------+    +------+------+    +------+------+    +------+------+
+          |                    |                  |                  |
+          |                    |                  |                  |
+          v                    v                  v                  v
++---------------------------------------------------------------------------+
+|cAAA                                                                       |
+|                                                                           |
+|                                 PLC4X API                                 |
+|                                                                           |
+|                                                                           |
++-------------------------------------+-------------------------------------+
+                                      |
+                                      |
+                                      v
++---------------------------------------------------------------------------+
+|cAAA                                                                       |
+|                                                                           |
+|                                PLC4X Core                                 |
+|                                                                           |
+|                                                                           |
++-----+---------------+---------------+---------------+---------------+-----+
+      |               |               |               |               |
+      |               |               |               |               |
+      v               v               v               v               v
++-----------+   +-----------+   +-----------+   +-----------+   +-----------+
+|c0BA       |   |c0BA       |   |c0BA       |   |c0BA       |   |c05A       |
+|  Siemens  |   | Beckhoff  |   |  Modbus   |   |  OPC-UA   |   |   User    |
+|    S7     |   |    ADS    |   |  Driver   |   |  Driver   |   |  Driver   |
+|  Driver   |   |  Driver   |   |           |   |           |   |           |
+|           |   |           |   |           |   |           |   |           |
++-----------+   +-----------+   +-----------+   +-----------+   +-----------+
+....
+
 === Usage
 
 Below code example connects to a remote Siemens S7 PLC using the S7/Step7 protocol and then reads the state of the `inputs` and `outputs` from this.
