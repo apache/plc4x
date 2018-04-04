@@ -32,6 +32,8 @@ pipeline {
         MVN_LOCAL_REPO_OPT = '-Dmaven.repo.local=.repository'
         // Testfails will be handled by the jenkins junit steps and mark the build as unstable.
         MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
+        // Make JQAssistant run with Neo4j 3.1.3 instead of 2.x
+        JQASSISTANT_NEO4J_VERSION = '-Djqassistant.neo4jVersion=3'
     }
 
     tools {
@@ -90,7 +92,7 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh 'mvn -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} clean install'
+                sh 'mvn -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} clean install'
             }
             post {
                 always {
