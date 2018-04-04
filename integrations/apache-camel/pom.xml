@@ -127,7 +127,8 @@
         </executions>
       </plugin>
       <!-- to generate the MANIFEST-FILE of the bundle -->
-      <plugin>
+      <!-- TODO: Seems this plugin is messing up the jqassistant execution. Also it doesn't seem to have any effect on the output as it is not executed at all and there is no MANIFEST.MF in the output -->
+      <!--plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <version>3.5.0</version>
@@ -138,15 +139,7 @@
             <Export-Service>org.apache.camel.spi.ComponentResolver;component=s7</Export-Service>
           </instructions>
         </configuration>
-      </plugin>
-      <!-- FIXME: Something is messing up JQAssistant (I guess Chris should have a look at this) -->
-      <plugin>
-        <groupId>com.buschmais.jqassistant</groupId>
-        <artifactId>jqassistant-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
+      </plugin-->
     </plugins>
   </build>
 
