@@ -103,6 +103,7 @@
       <item name="Code Analysis" href="developers/sonar.html"/>
       <item name="Continuous Integration" href="developers/ci.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
+      <item name="JQassistant" href="developers/jqassistant.html"/>
       <item name="VM Access" href="developers/vm.html"/>
       <item name="Website" href="developers/website.html"/>
       <item name="Wiki" href="developers/wiki.html"/>
