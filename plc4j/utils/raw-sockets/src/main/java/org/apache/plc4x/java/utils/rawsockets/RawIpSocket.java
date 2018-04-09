@@ -97,7 +97,7 @@ public class RawIpSocket {
                         throw new RawSocketException("Unable to connect to " + remoteAddress);
                     }
                 } else {
-                    throw new RawSocketException("Unable to connect to " + remoteAddress);
+                    throw new RawSocketException("Unable to connect to " + remoteAddress + " no default gateway");
                 }
             }
 
@@ -279,7 +279,8 @@ public class RawIpSocket {
                 }
             }
         } catch (PcapNativeException | InterruptedException | ExecutionException | NotOpenException e) {
-            throw new RawSocketException("Error looking up mac address.", e);
+            throw new RawSocketException("Error looking up MAC address for ip address " +
+                remoteIpAddress.getHostAddress() + " on device " + dev.getName(), e);
         }
     }
 
@@ -298,6 +299,11 @@ public class RawIpSocket {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
                 // Iterate over all addresses configured for this interface.
                 for (PcapAddress localAddress : dev.getAddresses()) {
+                    if("255.255.255.255".equals(localAddress.getNetmask().getHostAddress())) {
+                        return new FirstHop(dev, localAddress.getAddress(),
+                            dev.getLinkLayerAddresses().iterator().next(),
+                            getMacAddress(dev, localAddress.getAddress(), remoteAddress));
+                    }
                     // Only check addresses matching the IP-version of the remote address.
                     if (remoteAddress.getClass().equals(localAddress.getAddress().getClass())) {
                         byte[] localIp = localAddress.getAddress().getAddress();
