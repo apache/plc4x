@@ -1,3 +1,4 @@
+package org.apache.plc4x.java.s7.utils;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -16,23 +17,28 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.isotp.netty.model.params;
 
-/**
- * Base class for calling and called TSAPs
- * TODO: I find it strange to have these parameters directly relate to S7 specifics as they should not need to be known in the IsoTP protocol.
- * Optionally it might be a good idea to have some mechanism
- */
-public abstract class TsapParameter implements Parameter {
+import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 
-    private final short tsapId;
+public class S7TsapIdEncoder {
 
-    public TsapParameter(short tsapId) {
-        this.tsapId = tsapId;
+    public static short encodeS7TsapId(DeviceGroup deviceGroup, int rack, int slot) {
+        short firstByte = ((short) (deviceGroup.getCode() << 8));
+        short secondByte = ((short) ((rack << 4) | (slot & 0x0F)));
+        return (short) (firstByte | secondByte);
     }
 
-    public short getTsapId() {
-        return tsapId;
+    public static DeviceGroup decodeDeviceGroup(short tsapId) {
+        byte deviceGroupCode = (byte) ((tsapId >> 8) & (0xFF));
+        return DeviceGroup.valueOf(deviceGroupCode);
+    }
+
+    public static int decodeRack(short tsapId) {
+        return ((tsapId >> 4) & 0xF);
+    }
+
+    public static int decodeSlot(short tsapId) {
+        return (tsapId & 0xF);
     }
 
 }

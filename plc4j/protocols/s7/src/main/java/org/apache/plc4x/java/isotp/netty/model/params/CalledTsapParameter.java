@@ -18,13 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.isotp.netty.model.params;
 
-import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.netty.model.types.ParameterCode;
 
 public class CalledTsapParameter extends TsapParameter {
 
-    public CalledTsapParameter(DeviceGroup deviceGroup, byte rackNumber, byte slotNumber) {
-        super(deviceGroup, rackNumber, slotNumber);
+    public CalledTsapParameter(short tsapId) {
+        super(tsapId);
     }
 
     @Override

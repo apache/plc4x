@@ -19,7 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.isotp.netty.model.params;
 
-import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.netty.model.types.ParameterCode;
 import org.apache.plc4x.test.FastTests;
 import org.junit.After;
@@ -41,24 +40,20 @@ public class TsapParameterTests {
     @Test
     @Category(FastTests.class)
     public void calledPartameter() {
-        DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0);
-        tsapParameter = new CalledTsapParameter(deviceGroup, (byte)1, (byte)4);
+        short calledTsapId = 0x1234;
+        tsapParameter = new CalledTsapParameter(calledTsapId);
 
-        assertThat("Device group incorrect", tsapParameter.getDeviceGroup(), equalTo(DeviceGroup.valueOf((byte)0)));
-        assertThat("Rack number not correct", tsapParameter.getRackNumber(), equalTo((byte)1));
-        assertThat("Slot number not coorect", tsapParameter.getSlotNumber(), equalTo((byte)4));
+        assertThat("TSAP Id incorrect", tsapParameter.getTsapId(), equalTo(calledTsapId));
         assertThat(tsapParameter.getType(), equalTo(ParameterCode.CALLED_TSAP));
     }
 
     @Test
     @Category(FastTests.class)
     public void callingPartameter() {
-        DeviceGroup deviceGroup = DeviceGroup.valueOf((byte)0);
-        tsapParameter = new CallingTsapParameter(deviceGroup, (byte)2, (byte)5);
+        short callingTsapId = 0x4321;
+        tsapParameter = new CallingTsapParameter(callingTsapId);
 
-        assertThat("Device group incorrect", tsapParameter.getDeviceGroup(), equalTo(DeviceGroup.valueOf((byte)0)));
-        assertThat("Rack number not correct", tsapParameter.getRackNumber(), equalTo((byte)2));
-        assertThat("Slot number not coorect", tsapParameter.getSlotNumber(), equalTo((byte)5));
+        assertThat("TSAP Id incorrect", tsapParameter.getTsapId(), equalTo(callingTsapId));
         assertThat(tsapParameter.getType(), equalTo(ParameterCode.CALLING_TSAP));
     }
 

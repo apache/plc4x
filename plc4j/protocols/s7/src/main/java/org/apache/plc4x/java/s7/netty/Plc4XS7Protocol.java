@@ -65,6 +65,14 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         this.requests = new HashMap<>();
     }
 
+    /**
+     * If this protocol layer catches an {@link S7ConnectedEvent} from the protocol layer beneath,
+     * the connection establishment is finished.
+     *
+     * @param ctx the current protocol layers context
+     * @param evt the event
+     * @throws Exception throws an exception if something goes wrong internally
+     */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof S7ConnectedEvent) {
@@ -74,6 +82,40 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         }
     }
 
+    /**
+     * When receiving an error inside the pipeline, we have to find out which {@link PlcRequestContainer}
+     * correlates needs to be notified about the problem. If a container is found, we can relay the
+     * exception to that by calling completeExceptionally and passing in the exception.
+     *
+     * @param ctx the current protocol layers context
+     * @param cause the exception that was caught
+     * @throws Exception throws an exception if something goes wrong internally
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if(cause instanceof PlcProtocolPayloadTooBigException) {
+            PlcProtocolPayloadTooBigException pptbe = (PlcProtocolPayloadTooBigException) cause;
+            if(pptbe.getPayload() instanceof S7RequestMessage) {
+                S7RequestMessage request = (S7RequestMessage) pptbe.getPayload();
+                if(request.getParent() instanceof PlcRequestContainer) {
+                    PlcRequestContainer requestContainer = (PlcRequestContainer) request.getParent();
+
+                    // Remove the current request from the unconfirmed requests list.
+                    if(requests.containsKey(request.getTpduReference())) {
+                        requests.remove(request.getTpduReference());
+                    }
+
+                    requestContainer.getResponseFuture().completeExceptionally(cause);
+                }
+            }
+        }
+        super.exceptionCaught(ctx, cause);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Encoding
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
         PlcRequest request = msg.getRequest();
@@ -82,6 +124,23 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         } else if (request instanceof PlcWriteRequest) {
             encodeWriteRequest(msg, out);
         }
+    }
+
+    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        List<VarParameterItem> parameterItems = new LinkedList<>();
+
+        PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
+        encodeParameterItems(parameterItems, readRequest);
+        VarParameter readVarParameter = new VarParameter(ParameterType.READ_VAR, parameterItems);
+
+        // Assemble the request.
+        S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.JOB,
+            (short) tpduGenerator.getAndIncrement(), Collections.singletonList(readVarParameter),
+            Collections.emptyList(), msg);
+
+        requests.put(s7ReadRequest.getTpduReference(), msg);
+
+        out.add(s7ReadRequest);
     }
 
     private void encodeWriteRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
@@ -125,23 +184,6 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         out.add(s7WriteRequest);
     }
 
-    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
-        List<VarParameterItem> parameterItems = new LinkedList<>();
-
-        PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
-        encodeParameterItems(parameterItems, readRequest);
-        VarParameter readVarParameter = new VarParameter(ParameterType.READ_VAR, parameterItems);
-
-        // Assemble the request.
-        S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.JOB,
-            (short) tpduGenerator.getAndIncrement(), Collections.singletonList(readVarParameter),
-            Collections.emptyList(), msg);
-
-        requests.put(s7ReadRequest.getTpduReference(), msg);
-
-        out.add(s7ReadRequest);
-    }
-
     private void encodeParameterItems(List<VarParameterItem> parameterItems, PlcReadRequest readRequest) throws PlcException {
         for (ReadRequestItem requestItem : readRequest.getRequestItems()) {
             // Try to get the correct S7 transport size for the given data type.
@@ -156,142 +198,6 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             parameterItems.add(varParameterItem);
         }
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws Exception {
-        if (!(msg instanceof S7ResponseMessage)) {
-            return;
-        }
-        S7ResponseMessage responseMessage = (S7ResponseMessage) msg;
-        short tpduReference = responseMessage.getTpduReference();
-        if (requests.containsKey(tpduReference)) {
-            PlcRequestContainer requestContainer = requests.remove(tpduReference);
-            PlcRequest request = requestContainer.getRequest();
-            PlcResponse response = null;
-
-            // Handle the response to a read request.
-            if (request instanceof PlcReadRequest) {
-                response = decodeReadRequest(responseMessage, requestContainer);
-            } else if (request instanceof PlcWriteRequest) {
-                response = decodeWriteRequest(responseMessage, requestContainer);
-            }
-
-            // Confirm the response being handled.
-            if (response != null) {
-                requestContainer.getResponseFuture().complete(response);
-            }
-        }
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if(cause instanceof PlcProtocolPayloadTooBigException) {
-            PlcProtocolPayloadTooBigException pptbe = (PlcProtocolPayloadTooBigException) cause;
-            if(pptbe.getPayload() instanceof S7RequestMessage) {
-                S7RequestMessage request = (S7RequestMessage) pptbe.getPayload();
-                if(request.getParent() instanceof PlcRequestContainer) {
-                    PlcRequestContainer requestContainer = (PlcRequestContainer) request.getParent();
-
-                    // Remove the current request from the unconfirmed requests list.
-                    if(requests.containsKey(request.getTpduReference())) {
-                        requests.remove(request.getTpduReference());
-                    }
-
-                    requestContainer.getResponseFuture().completeExceptionally(cause);
-                }
-            }
-        }
-        super.exceptionCaught(ctx, cause);
-    }
-
-    @SuppressWarnings("unchecked")
-    private PlcResponse decodeWriteRequest(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
-        PlcResponse response;
-        PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
-        List<WriteResponseItem<?>> responseItems = new LinkedList<>();
-        VarPayload payload = responseMessage.getPayload(VarPayload.class)
-            .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
-        // If the numbers of items don't match, we're in big trouble as the only
-        // way to know how to interpret the responses is by aligning them with the
-        // items from the request as this information is not returned by the PLC.
-        if (plcWriteRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
-            throw new PlcProtocolException(
-                "The number of requested items doesn't match the number of returned items");
-        }
-        List<VarPayloadItem> payloadItems = payload.getPayloadItems();
-        final int noPayLoadItems = payloadItems.size();
-        for (int i = 0; i < noPayLoadItems; i++) {
-            VarPayloadItem payloadItem = payloadItems.get(i);
-
-            // Get the request item for this payload item
-            WriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(i);
-
-            // A write response contains only the return code for every item.
-            ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-
-            WriteResponseItem responseItem = new WriteResponseItem(requestItem, responseCode);
-            responseItems.add(responseItem);
-        }
-
-        if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
-            response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, responseItems);
-        } else {
-            response = new PlcWriteResponse(plcWriteRequest, responseItems);
-        }
-        return response;
-    }
-
-    @SuppressWarnings("unchecked")
-    private PlcResponse decodeReadRequest(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
-        PlcResponse response;
-        PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
-
-        List<ReadResponseItem<?>> responseItems = new LinkedList<>();
-        VarPayload payload = responseMessage.getPayload(VarPayload.class)
-            .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
-        // If the numbers of items don't match, we're in big trouble as the only
-        // way to know how to interpret the responses is by aligning them with the
-        // items from the request as this information is not returned by the PLC.
-        if (plcReadRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
-            throw new PlcProtocolException(
-                "The number of requested items doesn't match the number of returned items");
-        }
-        List<VarPayloadItem> payloadItems = payload.getPayloadItems();
-        final int noPayLoadItems = payloadItems.size();
-        for (int i = 0; i < noPayLoadItems; i++) {
-            VarPayloadItem payloadItem = payloadItems.get(i);
-
-            // Get the request item for this payload item
-            ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(i);
-
-            ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-
-            ReadResponseItem responseItem;
-            // Something went wrong.
-            if (responseCode != ResponseCode.OK) {
-                responseItem = new ReadResponseItem<>(requestItem, responseCode);
-            }
-            // All Ok.
-            else {
-                byte[] data = payloadItem.getData();
-                Class<?> datatype = requestItem.getDatatype();
-                List<?> value = decodeData(datatype, data);
-                responseItem = new ReadResponseItem(requestItem, responseCode, value);
-            }
-            responseItems.add(responseItem);
-        }
-        if (plcReadRequest instanceof TypeSafePlcReadRequest) {
-            response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems);
-        } else {
-            response = new PlcReadResponse(plcReadRequest, responseItems);
-        }
-        return response;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // Encoding helpers.
-    ////////////////////////////////////////////////////////////////////////////////
 
     private VarParameterItem encodeVarParameterItem(Address address, TransportSize transportSize, int size) throws PlcProtocolException {
         // Depending on the address type, generate the corresponding type of request item.
@@ -358,9 +264,120 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         return null;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Decoding helpers.
-    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Decoding
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws Exception {
+        if (!(msg instanceof S7ResponseMessage)) {
+            return;
+        }
+        S7ResponseMessage responseMessage = (S7ResponseMessage) msg;
+        short tpduReference = responseMessage.getTpduReference();
+        if (requests.containsKey(tpduReference)) {
+            PlcRequestContainer requestContainer = requests.remove(tpduReference);
+            PlcRequest request = requestContainer.getRequest();
+            PlcResponse response = null;
+
+            // Handle the response to a read request.
+            if (request instanceof PlcReadRequest) {
+                response = decodeReadResponse(responseMessage, requestContainer);
+            } else if (request instanceof PlcWriteRequest) {
+                response = decodeWriteResponse(responseMessage, requestContainer);
+            }
+
+            // Confirm the response being handled.
+            if (response != null) {
+                requestContainer.getResponseFuture().complete(response);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private PlcResponse decodeReadResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
+        PlcResponse response;
+        PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
+
+        List<ReadResponseItem<?>> responseItems = new LinkedList<>();
+        VarPayload payload = responseMessage.getPayload(VarPayload.class)
+            .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
+        // If the numbers of items don't match, we're in big trouble as the only
+        // way to know how to interpret the responses is by aligning them with the
+        // items from the request as this information is not returned by the PLC.
+        if (plcReadRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
+            throw new PlcProtocolException(
+                "The number of requested items doesn't match the number of returned items");
+        }
+        List<VarPayloadItem> payloadItems = payload.getPayloadItems();
+        final int noPayLoadItems = payloadItems.size();
+        for (int i = 0; i < noPayLoadItems; i++) {
+            VarPayloadItem payloadItem = payloadItems.get(i);
+
+            // Get the request item for this payload item
+            ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(i);
+
+            ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
+
+            ReadResponseItem responseItem;
+            // Something went wrong.
+            if (responseCode != ResponseCode.OK) {
+                responseItem = new ReadResponseItem<>(requestItem, responseCode);
+            }
+            // All Ok.
+            else {
+                byte[] data = payloadItem.getData();
+                Class<?> datatype = requestItem.getDatatype();
+                List<?> value = decodeData(datatype, data);
+                responseItem = new ReadResponseItem(requestItem, responseCode, value);
+            }
+            responseItems.add(responseItem);
+        }
+        if (plcReadRequest instanceof TypeSafePlcReadRequest) {
+            response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems);
+        } else {
+            response = new PlcReadResponse(plcReadRequest, responseItems);
+        }
+        return response;
+    }
+
+    @SuppressWarnings("unchecked")
+    private PlcResponse decodeWriteResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
+        PlcResponse response;
+        PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
+        List<WriteResponseItem<?>> responseItems = new LinkedList<>();
+        VarPayload payload = responseMessage.getPayload(VarPayload.class)
+            .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
+        // If the numbers of items don't match, we're in big trouble as the only
+        // way to know how to interpret the responses is by aligning them with the
+        // items from the request as this information is not returned by the PLC.
+        if (plcWriteRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
+            throw new PlcProtocolException(
+                "The number of requested items doesn't match the number of returned items");
+        }
+        List<VarPayloadItem> payloadItems = payload.getPayloadItems();
+        final int noPayLoadItems = payloadItems.size();
+        for (int i = 0; i < noPayLoadItems; i++) {
+            VarPayloadItem payloadItem = payloadItems.get(i);
+
+            // Get the request item for this payload item
+            WriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(i);
+
+            // A write response contains only the return code for every item.
+            ResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
+
+            WriteResponseItem responseItem = new WriteResponseItem(requestItem, responseCode);
+            responseItems.add(responseItem);
+        }
+
+        if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
+            response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, responseItems);
+        } else {
+            response = new PlcWriteResponse(plcWriteRequest, responseItems);
+        }
+        return response;
+    }
 
     private ResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
         if (dataTransportErrorCode == null) {

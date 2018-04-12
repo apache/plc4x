@@ -34,6 +34,7 @@ import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.isoontcp.netty.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DisconnectRequestTpdu;
+import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.netty.model.types.DisconnectReason;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 import org.apache.plc4x.java.s7.model.S7Address;
@@ -42,6 +43,7 @@ import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,6 +123,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OTHERS, rack, slot);
+        short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, 0, 0);
+
         return new ChannelInitializer() {
             @Override
             protected void initChannel(Channel channel) {
@@ -137,7 +142,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                     }
                 });
                 pipeline.addLast(new IsoOnTcpProtocol());
-                pipeline.addLast(new IsoTPProtocol((byte) rack, (byte) slot, paramPduSize));
+                pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, paramPduSize));
                 pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue()));
                 pipeline.addLast(new Plc4XS7Protocol());
             }

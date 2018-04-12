@@ -64,6 +64,14 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         this.pduSize = requestedPduSize;
     }
 
+    /**
+     * If the S7 protocol layer is used over Iso TP, then after receiving a {@link IsoTPConnectedEvent} the
+     * corresponding S7 setup communication message has to be sent in order to negotiate the S7 protocol layer.
+     *
+     * @param ctx the current protocol layers context
+     * @param evt the event
+     * @throws Exception throws an exception if something goes wrong internally
+     */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         ChannelHandler prevHandler = getPrevChannelHandler(ctx);
@@ -81,6 +89,10 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
             super.userEventTriggered(ctx, evt);
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Encoding
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected void encode(ChannelHandlerContext ctx, S7Message in, List<Object> out) {
@@ -102,41 +114,6 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
                 out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf, in));
             }
         }
-    }
-
-    /**
-     * While a SetupCommunication message is no problem, when reading or writing data,
-     * situations could arise that have to be handled. The following situations have to
-     * be handled:
-     * - The number of request items is so big, that the resulting PDU would exceed the
-     *   agreed upon PDU size -> The request has to be split up into multiple requests.
-     * - If large blocks of data are requested by request items the result of a request
-     *   could exceed the PDU size -> The requests has to be split up into multiple requests
-     *   where each requests response doesn't exceed the PDU size.
-     *
-     * The following optimizations should be implemented:
-     * - If blocks are read which are in near proximity to each other it could be better
-     *   to replace multiple requests by one that includes multiple blocks.
-     * - Rearranging the order of request items could reduce the number of needed PDUs.
-     *
-     * @param message incoming message
-     * @return List of outgoing messages
-     */
-    private List<S7Message> optimizeMessage(S7Message message) {
-        // The following considerations have to be taken into account:
-        // - The size of all parameters and payloads of a message cannot exceed the negotiated PDU size
-        // - When reading data, the size of the returned data cannot exceed the negotiated PDU size
-        //
-        // Examples:
-        // - Size of the request exceeds the maximum
-        //  When having a negotiated max PDU size of 256, the maximum size of individual addresses can be at most 18
-        //  If more are sent, the S7 will respond with a frame error.
-        // - Size of the response exceeds the maximum
-        //  When reading two Strings of each 200 bytes length, the size of the request is ok, however the PLC would
-        //  have to send back 400 bytes of String data, which would exceed the PDU size. In this case the first String
-        //  is correctly returned, but for the second item the PLC will return a code of 0x03 = Access Denied
-
-        return Collections.singletonList(message);
     }
 
     private void encodePayloads(S7Message in, ByteBuf buf) {
@@ -231,6 +208,10 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
                 | (s7AnyRequestItem.getBitOffset() & 0x07)));
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Decoding
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) {
         if (logger.isTraceEnabled()) {
@@ -269,7 +250,7 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         int i = 0;
 
         while (i < headerParametersLength) {
-            S7Parameter parameter = parseParameter(userData, isResponse, headerParametersLength - i);
+            S7Parameter parameter = decodeParameter(userData, isResponse, headerParametersLength - i);
             s7Parameters.add(parameter);
             if (parameter instanceof SetupCommunicationParameter) {
                 setupCommunicationParameter = (SetupCommunicationParameter) parameter;
@@ -283,7 +264,7 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         List<S7Payload> s7Payloads = decodePayloads(userData, isResponse, userDataLength, readWriteVarParameter);
 
         if (isResponse) {
-            setupCommunications(ctx, setupCommunicationParameter);
+            decodeSetupCommunications(ctx, setupCommunicationParameter);
             out.add(new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode));
         } else {
             // TODO: Find out if there is any situation in which a request is sent from the PLC
@@ -291,7 +272,7 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         }
     }
 
-    private void setupCommunications(ChannelHandlerContext ctx, SetupCommunicationParameter setupCommunicationParameter) {
+    private void decodeSetupCommunications(ChannelHandlerContext ctx, SetupCommunicationParameter setupCommunicationParameter) {
         // If we got a SetupCommunicationParameter as part of the response
         // we are currently in the process of establishing a connection with
         // the PLC, so save some of the information in the session and tell
@@ -353,7 +334,7 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         return s7Payloads;
     }
 
-    private S7Parameter parseParameter(ByteBuf in, boolean isResponse, int restLength) {
+    private S7Parameter decodeParameter(ByteBuf in, boolean isResponse, int restLength) {
         ParameterType parameterType = ParameterType.valueOf(in.readByte());
         if (parameterType == null) {
             logger.error("Could not find parameter type");
@@ -372,7 +353,7 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
                 List<VarParameterItem> varParamameter;
                 byte numItems = in.readByte();
                 if (!isResponse) {
-                    varParamameter = parseReadWriteVarParameter(in, numItems);
+                    varParamameter = decodeReadWriteVarParameter(in, numItems);
                 } else {
                     varParamameter = Collections.emptyList();
                 }
@@ -392,7 +373,7 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         return null;
     }
 
-    private List<VarParameterItem> parseReadWriteVarParameter(ByteBuf in, byte numItems) {
+    private List<VarParameterItem> decodeReadWriteVarParameter(ByteBuf in, byte numItems) {
         List<VarParameterItem> items = new LinkedList<>();
         for (int i = 0; i < numItems; i++) {
             SpecificationType specificationType = SpecificationType.valueOf(in.readByte());
@@ -425,6 +406,46 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         }
 
         return items;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * While a SetupCommunication message is no problem, when reading or writing data,
+     * situations could arise that have to be handled. The following situations have to
+     * be handled:
+     * - The number of request items is so big, that the resulting PDU would exceed the
+     *   agreed upon PDU size -> The request has to be split up into multiple requests.
+     * - If large blocks of data are requested by request items the result of a request
+     *   could exceed the PDU size -> The requests has to be split up into multiple requests
+     *   where each requests response doesn't exceed the PDU size.
+     *
+     * The following optimizations should be implemented:
+     * - If blocks are read which are in near proximity to each other it could be better
+     *   to replace multiple requests by one that includes multiple blocks.
+     * - Rearranging the order of request items could reduce the number of needed PDUs.
+     *
+     * @param message incoming message
+     * @return List of outgoing messages
+     */
+    private List<S7Message> optimizeMessage(S7Message message) {
+        // The following considerations have to be taken into account:
+        // - The size of all parameters and payloads of a message cannot exceed the negotiated PDU size
+        // - When reading data, the size of the returned data cannot exceed the negotiated PDU size
+        //
+        // Examples:
+        // - Size of the request exceeds the maximum
+        //  When having a negotiated max PDU size of 256, the maximum size of individual addresses can be at most 18
+        //  If more are sent, the S7 will respond with a frame error.
+        // - Size of the response exceeds the maximum
+        //  When reading two Strings of each 200 bytes length, the size of the request is ok, however the PLC would
+        //  have to send back 400 bytes of String data, which would exceed the PDU size. In this case the first String
+        //  is correctly returned, but for the second item the PLC will return a code of 0x03 = Access Denied
+
+        return Collections.singletonList(message);
     }
 
     private short getParametersLength(List<S7Parameter> parameters) {

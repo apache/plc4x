@@ -44,19 +44,24 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
 
     private static final Logger logger = LoggerFactory.getLogger(IsoTPProtocol.class);
 
-    private final byte rackNo;
-    private final byte slotNo;
-    private final TpduSize tpduSize;
+    private short callingTsapId;
+    private short calledTsapId;
+    private TpduSize tpduSize;
 
-    private CalledTsapParameter calledTsapParameter;
-    private TpduSizeParameter tpduSizeParameter;
-
-    public IsoTPProtocol(byte rackNo, byte slotNo, TpduSize tpduSize) {
-        this.rackNo = rackNo;
-        this.slotNo = slotNo;
+    public IsoTPProtocol(short callingTsapId, short calledTsapId, TpduSize tpduSize) {
+        this.callingTsapId = callingTsapId;
+        this.calledTsapId = calledTsapId;
         this.tpduSize = tpduSize;
     }
 
+    /**
+     * If the IsoTP protocol is used on top of the ISO on TCP protocol, then as soon as the pipeline receives the
+     * request to connect, an IsoTP connection request TPDU must be sent in order to initialize the connection.
+     *
+     * @param ctx the current protocol layers context
+     * @param evt the event
+     * @throws Exception throws an exception if something goes wrong internally
+     */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         ChannelHandler prevHandler = getPrevChannelHandler(ctx);
@@ -69,8 +74,8 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
             ConnectionRequestTpdu connectionRequest = new ConnectionRequestTpdu(
                 (short) 0x0000, (short) 0x000F, ProtocolClass.CLASS_0,
                 Arrays.asList(
-                    new CalledTsapParameter(DeviceGroup.PG_OR_PC, (byte) 0, (byte) 0),
-                    new CallingTsapParameter(DeviceGroup.OTHERS, rackNo, slotNo),
+                    new CalledTsapParameter(calledTsapId),
+                    new CallingTsapParameter(callingTsapId),
                     new TpduSizeParameter(tpduSize)),
                 Unpooled.buffer());
             ctx.channel().writeAndFlush(connectionRequest);
@@ -80,6 +85,7 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Encoding
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -100,17 +106,17 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         switch (in.getTpduCode()) {
             case CONNECTION_REQUEST:
             case CONNECTION_CONFIRM:
-                encodeConnecton(in, buf);
+                encodeConnectionTpdu(in, buf);
                 break;
             case DATA:
-                encodeData((DataTpdu) in, buf);
+                encodeDataTpdu((DataTpdu) in, buf);
                 break;
             case DISCONNECT_REQUEST:
             case DISCONNECT_CONFIRM:
-                encodeDisconnect(in, buf);
+                encodeDisconnectTpdu(in, buf);
                 break;
             case TPDU_ERROR:
-                encodeError(in, buf);
+                encodeErrorTpdu(in, buf);
                 break;
             default:
                 if (logger.isErrorEnabled()) {
@@ -130,14 +136,14 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         }
     }
 
-    private void encodeError(Tpdu in, ByteBuf buf) {
+    private void encodeErrorTpdu(Tpdu in, ByteBuf buf) {
         ErrorTpdu errorTpdu = (ErrorTpdu) in;
         buf.writeShort(errorTpdu.getDestinationReference());
         buf.writeByte(errorTpdu.getRejectCause().getCode());
         encodeParameters(buf, in.getParameters());
     }
 
-    private void encodeDisconnect(Tpdu in, ByteBuf buf) {
+    private void encodeDisconnectTpdu(Tpdu in, ByteBuf buf) {
         DisconnectTpdu disconnectTpdu = (DisconnectTpdu) in;
         buf.writeShort(disconnectTpdu.getDestinationReference());
         buf.writeShort(disconnectTpdu.getSourceReference());
@@ -148,13 +154,13 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         encodeParameters(buf, in.getParameters());
     }
 
-    private void encodeData(DataTpdu in, ByteBuf buf) {
+    private void encodeDataTpdu(DataTpdu in, ByteBuf buf) {
         // EOT (Bit 8 = 1) / TPDU (All other bits 0)
         buf.writeByte((byte) (in.getTpduRef() | (in.isEot() ? 0x80 : 0x00)));
         // Note: A Data TPDU in Class 0 doesn't have parameters
     }
 
-    private void encodeConnecton(Tpdu in, ByteBuf buf) {
+    private void encodeConnectionTpdu(Tpdu in, ByteBuf buf) {
         ConnectionTpdu connectionTpdu = (ConnectionTpdu) in;
         buf.writeShort(connectionTpdu.getDestinationReference());
         buf.writeShort(connectionTpdu.getSourceReference());
@@ -174,8 +180,7 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
                 case CALLED_TSAP:
                 case CALLING_TSAP:
                     TsapParameter tsap = (TsapParameter) parameter;
-                    out.writeByte(tsap.getDeviceGroup().getCode());
-                    out.writeByte((byte) ((tsap.getRackNumber() << 4) | (tsap.getSlotNumber() & 0x0F)));
+                    out.writeShort(tsap.getTsapId());
                     break;
                 case CHECKSUM:
                     ChecksumParameter checksum = (ChecksumParameter) parameter;
@@ -197,6 +202,10 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
             }
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Decoding
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected void decode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) {
@@ -224,17 +233,17 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         switch (tpduCode) {
             case CONNECTION_REQUEST:
             case CONNECTION_CONFIRM:
-                tpdu = decodeConnection(ctx, userData, tpduCode, parameters);
+                tpdu = decodeConnectTpdu(ctx, userData, tpduCode, parameters);
                 break;
             case DATA:
-                tpdu = decodeData(userData, parameters);
+                tpdu = decodeDataTpdu(userData, parameters);
                 break;
             case DISCONNECT_REQUEST:
             case DISCONNECT_CONFIRM:
-                tpdu = decodeDisconnect(userData, tpduCode, parameters);
+                tpdu = decodeDisconnectTpdu(userData, tpduCode, parameters);
                 break;
             case TPDU_ERROR:
-                tpdu = decodeError(userData, parameters);
+                tpdu = decodeErrorTpdu(userData, parameters);
                 break;
             default:
                 if (logger.isErrorEnabled()) {
@@ -257,16 +266,16 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
             // Save some of the information in the session and tell the next
             // layer to negotiate the connection parameters.
             if (tpdu instanceof ConnectionConfirmTpdu) {
-                // TODO: check if null is a valid value (fails test: org.apache.plc4x.java.isotp.netty.IsoTPProtocolTest.decodeConnectionConfirm)
-                calledTsapParameter = tpdu.getParameter(CalledTsapParameter.class).orElse(null);
-                // TODO: check if null is a valid value (fails test: org.apache.plc4x.java.isotp.netty.IsoTPProtocolTest.decodeConnectionConfirm)
-                tpduSizeParameter = tpdu.getParameter(TpduSizeParameter.class).orElse(null);
+                tpdu.getParameter(CalledTsapParameter.class).ifPresent(
+                    calledTsapParameter -> calledTsapId = calledTsapParameter.getTsapId());
+                tpdu.getParameter(TpduSizeParameter.class).ifPresent(
+                    tpduSizeParameter -> tpduSize = tpduSizeParameter.getTpduSize());
             }
             out.add(new IsoTPMessage(tpdu, userData));
         }
     }
 
-    private Tpdu decodeError(ByteBuf userData, List<Parameter> parameters) {
+    private Tpdu decodeErrorTpdu(ByteBuf userData, List<Parameter> parameters) {
         Tpdu tpdu;
         short destinationReference = userData.readShort();
         RejectCause rejectCause = RejectCause.valueOf(userData.readByte());
@@ -274,7 +283,7 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         return tpdu;
     }
 
-    private Tpdu decodeDisconnect(ByteBuf userData, TpduCode tpduCode, List<Parameter> parameters) {
+    private Tpdu decodeDisconnectTpdu(ByteBuf userData, TpduCode tpduCode, List<Parameter> parameters) {
         Tpdu tpdu;
         short destinationReference = userData.readShort();
         short sourceReference = userData.readShort();
@@ -289,7 +298,7 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         return tpdu;
     }
 
-    private Tpdu decodeData(ByteBuf userData, List<Parameter> parameters) {
+    private Tpdu decodeDataTpdu(ByteBuf userData, List<Parameter> parameters) {
         Tpdu tpdu;
         byte tmp = userData.readByte();
         boolean eot = (tmp & 0x80) == 0x80;
@@ -298,7 +307,7 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         return tpdu;
     }
 
-    private Tpdu decodeConnection(ChannelHandlerContext ctx, ByteBuf userData, TpduCode tpduCode, List<Parameter> parameters) {
+    private Tpdu decodeConnectTpdu(ChannelHandlerContext ctx, ByteBuf userData, TpduCode tpduCode, List<Parameter> parameters) {
         Tpdu tpdu;
         short destinationReference = userData.readShort();
         short sourceReference = userData.readShort();
@@ -324,7 +333,7 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         switch (parameterCode) {
             case CALLING_TSAP:
             case CALLED_TSAP:
-                return decodeCallParameter(out, parameterCode);
+                return decodeTsapParameter(out, parameterCode);
             case CHECKSUM:
                 byte checksum = out.readByte();
                 return new ChecksumParameter(checksum);
@@ -343,16 +352,13 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
         }
     }
 
-    private Parameter decodeCallParameter(ByteBuf out, ParameterCode parameterCode) {
-        DeviceGroup deviceGroup = DeviceGroup.valueOf(out.readByte());
-        byte rackAndSlot = out.readByte();
-        byte rackId = (byte) ((rackAndSlot & 0xF0) >> 4);
-        byte slotId = (byte) (rackAndSlot & 0x0F);
+    private Parameter decodeTsapParameter(ByteBuf out, ParameterCode parameterCode) {
+        short tsapId = out.readShort();
         switch (parameterCode) {
             case CALLING_TSAP:
-                return new CallingTsapParameter(deviceGroup, rackId, slotId);
+                return new CallingTsapParameter(tsapId);
             case CALLED_TSAP:
-                return new CalledTsapParameter(deviceGroup, rackId, slotId);
+                return new CalledTsapParameter(tsapId);
             default:
                 if (logger.isErrorEnabled()) {
                     logger.error("Parameter not implemented yet {}", parameterCode.name());
@@ -360,6 +366,10 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
                 return null;
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Return the length of the entire header in bytes (including the size field itself)
