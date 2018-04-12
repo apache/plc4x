@@ -20,8 +20,6 @@ package org.apache.plc4x.java.isotp.netty.model.params;
 
 /**
  * Base class for calling and called TSAPs
- * TODO: I find it strange to have these parameters directly relate to S7 specifics as they should not need to be known in the IsoTP protocol.
- * Optionally it might be a good idea to have some mechanism
  */
 public abstract class TsapParameter implements Parameter {
 
