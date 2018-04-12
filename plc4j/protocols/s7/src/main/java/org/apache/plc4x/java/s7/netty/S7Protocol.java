@@ -21,12 +21,15 @@ package org.apache.plc4x.java.s7.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
+import org.apache.plc4x.java.isotp.netty.events.IsoTPConnectedEvent;
 import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DataTpdu;
-import org.apache.plc4x.java.netty.events.S7ConnectionEvent;
-import org.apache.plc4x.java.netty.events.S7ConnectionState;
+import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
@@ -45,13 +48,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
+public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message> {
 
     private static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
 
     private static final Logger logger = LoggerFactory.getLogger(S7Protocol.class);
-
-    private Map<Short, List<S7Message>> messageFragments = new HashMap<>();
 
     private short maxAmqCaller;
     private short maxAmqCallee;
@@ -65,24 +66,27 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof S7ConnectionEvent &&
-            ((S7ConnectionEvent) evt).getState() == S7ConnectionState.ISO_TP_CONNECTION_RESPONSE_RECEIVED) {
+        ChannelHandler prevHandler = getPrevChannelHandler(ctx);
+
+        // If we are using S7 inside of IsoTP, then we need to intercept IsoTPs connected events.
+        if ((prevHandler instanceof IsoTPProtocol) && (evt instanceof IsoTPConnectedEvent)) {
             // Setup Communication
             SetupCommunicationRequestMessage setupCommunicationRequest =
-                new SetupCommunicationRequestMessage((short) 7, maxAmqCaller, maxAmqCallee, pduSize);
+                new SetupCommunicationRequestMessage((short) 7, maxAmqCaller, maxAmqCallee, pduSize, null);
 
             ctx.channel().writeAndFlush(setupCommunicationRequest);
-        } else {
+        }
+
+        else {
             super.userEventTriggered(ctx, evt);
         }
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, S7Message in, List<Object> out) {
-        logger.debug("S7 Message sent");
+        logger.debug("S7 RawMessage sent");
 
-        List<S7Message> messages = splitMessage(in);
-        messageFragments.put(in.getTpduReference(), messages);
+        List<S7Message> messages = optimizeMessage(in);
 
         for (S7Message message : messages) {
             ByteBuf buf = Unpooled.buffer();
@@ -91,21 +95,34 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             encodeParameters(message, buf);
             encodePayloads(message, buf);
 
-            out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf));
+            // Check if the message doesn't exceed the negotiated maximum size.
+            if(buf.writerIndex() > pduSize) {
+                ctx.fireExceptionCaught(new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), in));
+            } else {
+                out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf, in));
+            }
         }
     }
 
     /**
-     * While a SetupCommunication message is no problem, when reading multiple
-     * addresses in one request, the size of the PDU could be exceeded, therefore we need
-     * to split up one incoming message. When writing, the S7 PLCs only seem to accept
-     * writing of single elements, so we have to break up writing of multiple values into
-     * multiple single-value write operations.
+     * While a SetupCommunication message is no problem, when reading or writing data,
+     * situations could arise that have to be handled. The following situations have to
+     * be handled:
+     * - The number of request items is so big, that the resulting PDU would exceed the
+     *   agreed upon PDU size -> The request has to be split up into multiple requests.
+     * - If large blocks of data are requested by request items the result of a request
+     *   could exceed the PDU size -> The requests has to be split up into multiple requests
+     *   where each requests response doesn't exceed the PDU size.
+     *
+     * The following optimizations should be implemented:
+     * - If blocks are read which are in near proximity to each other it could be better
+     *   to replace multiple requests by one that includes multiple blocks.
+     * - Rearranging the order of request items could reduce the number of needed PDUs.
      *
      * @param message incoming message
      * @return List of outgoing messages
      */
-    private List<S7Message> splitMessage(S7Message message) {
+    private List<S7Message> optimizeMessage(S7Message message) {
         // The following considerations have to be taken into account:
         // - The size of all parameters and payloads of a message cannot exceed the negotiated PDU size
         // - When reading data, the size of the returned data cannot exceed the negotiated PDU size
@@ -223,7 +240,7 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
         if (userData.readableBytes() == 0) {
             return;
         }
-        logger.debug("S7 Message received");
+        logger.debug("S7 RawMessage received");
 
         if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
             logger.warn("Expecting S7 protocol magic number.");
@@ -269,7 +286,8 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             setupCommunications(ctx, setupCommunicationParameter);
             out.add(new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode));
         } else {
-            out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads));
+            // TODO: Find out if there is any situation in which a request is sent from the PLC
+            out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads, null));
         }
     }
 
@@ -284,8 +302,7 @@ public class S7Protocol extends MessageToMessageCodec<IsoTPMessage, S7Message> {
             pduSize = setupCommunicationParameter.getPduLength();
 
             // Send an event that setup is complete.
-            ctx.channel().pipeline().fireUserEventTriggered(
-                new S7ConnectionEvent(S7ConnectionState.SETUP_COMPLETE));
+            ctx.channel().pipeline().fireUserEventTriggered(new S7ConnectedEvent());
         }
     }
 

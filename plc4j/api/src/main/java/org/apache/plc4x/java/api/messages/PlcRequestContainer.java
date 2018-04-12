@@ -21,7 +21,7 @@ package org.apache.plc4x.java.api.messages;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
+public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> implements ProtocolMessage {
 
     private final T request;
     private final CompletableFuture<R> responseFuture;
@@ -39,6 +39,16 @@ public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> {
 
     public CompletableFuture<R> getResponseFuture() {
         return responseFuture;
+    }
+
+    /**
+     * {@link PlcRequestContainer} objects don't have parents.
+     *
+     * @return null
+     */
+    @Override
+    public ProtocolMessage getParent() {
+        return null;
     }
 
 }

@@ -1,4 +1,4 @@
-/*
+package org.apache.plc4x.java.isotp.netty.events;/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -16,22 +16,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.netty.events;
 
-public class S7ConnectionEvent {
-
-    private final S7ConnectionState state;
-
-    public S7ConnectionEvent() {
-        this(S7ConnectionState.INITIAL);
-    }
-
-    public S7ConnectionEvent(S7ConnectionState state) {
-        this.state = state;
-    }
-
-    public S7ConnectionState getState() {
-        return state;
-    }
-
+public class IsoTPConnectedEvent {
 }

@@ -1,4 +1,4 @@
-/*
+package org.apache.plc4x.java.s7.netty.events;/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -16,12 +16,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.netty.events;
 
-public enum S7ConnectionState {
-
-    INITIAL,
-    ISO_TP_CONNECTION_RESPONSE_RECEIVED,
-    SETUP_COMPLETE
-
+public class S7ConnectedEvent {
 }

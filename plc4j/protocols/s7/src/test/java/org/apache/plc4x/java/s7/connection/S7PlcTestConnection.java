@@ -24,7 +24,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.java.base.connection.TestChannelFactory;
-import org.apache.plc4x.java.netty.events.S7ConnectionEvent;
+import org.apache.plc4x.java.base.events.ConnectEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class S7PlcTestConnection extends S7PlcConnection {
         EmbeddedChannel channel = (EmbeddedChannel) getChannel();
 
         // Send an event to the pipeline telling the Protocol filters what's going on.
-        channel.pipeline().fireUserEventTriggered(new S7ConnectionEvent());
+        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
 
         ByteBuf writtenData = channel.readOutbound();
         byte[] connectionRequest = new byte[writtenData.readableBytes()];

@@ -16,32 +16,32 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
+package org.apache.plc4x.java.base.messages;
 
-package org.apache.plc4x.java.netty.events;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.messages.ProtocolMessage;
 
-import org.apache.plc4x.test.FastTests;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+public class RawMessage implements ProtocolMessage {
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+    private final ByteBuf userData;
+    private final ProtocolMessage parent;
 
-public class S7StateTests {
-
-    @Test
-    @Category(FastTests.class)
-    public void testInitialS7ConnectionEvent() {
-        S7ConnectionEvent s7event = new S7ConnectionEvent();
-
-        assertThat(s7event.getState(), equalTo(S7ConnectionState.INITIAL));
+    public RawMessage(ByteBuf userData) {
+        this(userData, null);
     }
 
-    @Test
-    @Category(FastTests.class)
-    public void testS7ConnectionEvent() {
-        S7ConnectionEvent s7event = new S7ConnectionEvent(S7ConnectionState.SETUP_COMPLETE);
+    public RawMessage(ByteBuf userData, ProtocolMessage parent) {
+        this.userData = userData;
+        this.parent = parent;
+    }
 
-        assertThat(s7event.getState(), equalTo(S7ConnectionState.SETUP_COMPLETE) );
+    public ByteBuf getUserData() {
+        return userData;
+    }
+
+    @Override
+    public ProtocolMessage getParent() {
+        return null;
     }
 
 }

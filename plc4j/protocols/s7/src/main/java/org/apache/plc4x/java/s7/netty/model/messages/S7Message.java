@@ -18,7 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.messages;
 
-import org.apache.plc4x.java.netty.Message;
+import org.apache.plc4x.java.api.messages.ProtocolMessage;
+import org.apache.plc4x.java.base.messages.RawMessage;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
@@ -26,15 +27,21 @@ import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class S7Message extends Message {
+public abstract class S7Message extends RawMessage {
 
     private final MessageType messageType;
     private final short tpduReference;
     private final List<S7Parameter> parameters;
     private final List<S7Payload> payloads;
 
-    protected S7Message(MessageType messageType, short tpduReference, List<S7Parameter> parameters, List<S7Payload> payloads) {
-        super(null);
+    protected S7Message(MessageType messageType, short tpduReference, List<S7Parameter> parameters,
+                        List<S7Payload> payloads) {
+        this(messageType, tpduReference, parameters, payloads, null);
+    }
+
+    protected S7Message(MessageType messageType, short tpduReference, List<S7Parameter> parameters,
+                        List<S7Payload> payloads, ProtocolMessage parent) {
+        super(null, parent);
         this.messageType = messageType;
         this.tpduReference = tpduReference;
         this.parameters = parameters;

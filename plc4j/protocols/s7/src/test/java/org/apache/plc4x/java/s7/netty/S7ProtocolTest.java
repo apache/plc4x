@@ -47,7 +47,7 @@ public class S7ProtocolTest extends NettyTestBase {
 
     @Before
     public void setUp() {
-        SUT = new S7Protocol((short) 1, (short) 1, (short) 1);
+        SUT = new S7Protocol((short) 1, (short) 1, (short) 256);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class S7ProtocolTest extends NettyTestBase {
                     DataTransportErrorCode.OK,
                     DataTransportSize.BYTE_WORD_DWORD, new byte[]{0})
                 ))
-            )), out);
+            ), null), out);
         assertThat(out, hasSize(1));
     }
 

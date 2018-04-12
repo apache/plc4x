@@ -1,4 +1,4 @@
-/*
+package org.apache.plc4x.java.api.messages;/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -16,20 +16,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.netty;
 
-import io.netty.buffer.ByteBuf;
+public interface ProtocolMessage {
 
-public class Message {
-
-    private final ByteBuf userData;
-
-    public Message(ByteBuf userData) {
-        this.userData = userData;
-    }
-
-    public ByteBuf getUserData() {
-        return userData;
-    }
+    ProtocolMessage getParent();
 
 }

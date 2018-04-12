@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.messages;
 
+import org.apache.plc4x.java.api.messages.ProtocolMessage;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
@@ -26,8 +27,9 @@ import java.util.List;
 
 public class S7RequestMessage extends S7Message {
 
-    public S7RequestMessage(MessageType messageType, short tpduReference, List<S7Parameter> s7Parameters, List<S7Payload> s7Payloads) {
-        super(messageType, tpduReference, s7Parameters, s7Payloads);
+    public S7RequestMessage(MessageType messageType, short tpduReference, List<S7Parameter> s7Parameters,
+                            List<S7Payload> s7Payloads, ProtocolMessage parent) {
+        super(messageType, tpduReference, s7Parameters, s7Payloads, parent);
     }
 
 }

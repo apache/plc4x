@@ -1,4 +1,4 @@
-/*
+package org.apache.plc4x.java.base.events;/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -16,20 +16,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.netty.model.messages;
 
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
-import org.apache.plc4x.java.s7.netty.model.params.SetupCommunicationParameter;
-import org.apache.plc4x.java.s7.netty.model.types.MessageType;
-
-import java.util.Collections;
-
-public class SetupCommunicationRequestMessage extends S7RequestMessage {
-
-    public SetupCommunicationRequestMessage(short tpduReference, short maxAmqCaller, short maxAmqCallee,
-                                            short pduLength, ProtocolMessage parent) {
-        super(MessageType.JOB, tpduReference, Collections.singletonList(
-            new SetupCommunicationParameter(maxAmqCaller, maxAmqCallee, pduLength)), Collections.emptyList(), parent);
-    }
-
+public class ConnectedEvent {
 }

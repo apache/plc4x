@@ -19,9 +19,9 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
@@ -33,9 +33,12 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
 import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
+import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
@@ -52,7 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.apache.plc4x.java.s7.netty.util.S7TypeDecoder.decodeData;
 import static org.apache.plc4x.java.s7.netty.util.S7TypeEncoder.encodeData;
 
-public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequestContainer> {
+public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequestContainer> {
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(1);
 
@@ -60,6 +63,15 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
 
     public Plc4XS7Protocol() {
         this.requests = new HashMap<>();
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof S7ConnectedEvent) {
+            ctx.channel().pipeline().fireUserEventTriggered(new ConnectedEvent());
+        } else {
+            super.userEventTriggered(ctx, evt);
+        }
     }
 
     @Override
@@ -106,7 +118,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         // Assemble the request.
         S7RequestMessage s7WriteRequest = new S7RequestMessage(MessageType.JOB,
             (short) tpduGenerator.getAndIncrement(), Collections.singletonList(writeVarParameter),
-            Collections.singletonList(writeVarPayload));
+            Collections.singletonList(writeVarPayload), msg);
 
         requests.put(s7WriteRequest.getTpduReference(), msg);
 
@@ -123,7 +135,7 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
         // Assemble the request.
         S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.JOB,
             (short) tpduGenerator.getAndIncrement(), Collections.singletonList(readVarParameter),
-            Collections.emptyList());
+            Collections.emptyList(), msg);
 
         requests.put(s7ReadRequest.getTpduReference(), msg);
 
@@ -170,6 +182,27 @@ public class Plc4XS7Protocol extends MessageToMessageCodec<S7Message, PlcRequest
                 requestContainer.getResponseFuture().complete(response);
             }
         }
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if(cause instanceof PlcProtocolPayloadTooBigException) {
+            PlcProtocolPayloadTooBigException pptbe = (PlcProtocolPayloadTooBigException) cause;
+            if(pptbe.getPayload() instanceof S7RequestMessage) {
+                S7RequestMessage request = (S7RequestMessage) pptbe.getPayload();
+                if(request.getParent() instanceof PlcRequestContainer) {
+                    PlcRequestContainer requestContainer = (PlcRequestContainer) request.getParent();
+
+                    // Remove the current request from the unconfirmed requests list.
+                    if(requests.containsKey(request.getTpduReference())) {
+                        requests.remove(request.getTpduReference());
+                    }
+
+                    requestContainer.getResponseFuture().completeExceptionally(cause);
+                }
+            }
+        }
+        super.exceptionCaught(ctx, cause);
     }
 
     @SuppressWarnings("unchecked")

@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -46,13 +47,14 @@ public class S7MessageTests {
 
     @Test
     @Category(FastTests.class)
-    public void setupCommunictionsRequestMessage() {
+    public void setupCommunicationsRequestMessage() {
         short tpduReference = 1;
         short maxAmqCaller = 4;
         short maxAmqCallee = 8;
         short pduLength = 128;
 
-        SetupCommunicationRequestMessage setupMessage = new SetupCommunicationRequestMessage(tpduReference, maxAmqCaller, maxAmqCallee, pduLength);
+        SetupCommunicationRequestMessage setupMessage = new SetupCommunicationRequestMessage(
+            tpduReference, maxAmqCaller, maxAmqCallee, pduLength, null);
 
         assertThat("Unexpected tpdu value", setupMessage.getTpduReference(), equalTo(tpduReference));
         assertThat("Unexpected message type", setupMessage.getMessageType(), equalTo(MessageType.JOB));
@@ -63,10 +65,9 @@ public class S7MessageTests {
     public void s7RequestMessage() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
-        ArrayList<S7Parameter> s7Parameters = null;
-        ArrayList<S7Payload> s7Payloads = null;
 
-        S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads);
+        S7RequestMessage message = new S7RequestMessage(
+            messageType, tpduReference, null, null, null);
 
         assertThat("Unexpected tpdu value", message.getTpduReference(), equalTo(tpduReference));
         assertThat("Unexpected message type", message.getMessageType(), equalTo(MessageType.USER_DATA));
@@ -79,12 +80,11 @@ public class S7MessageTests {
     public void s7ResponseMessage() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
-        ArrayList<S7Parameter> s7Parameters = null;
-        ArrayList<S7Payload> s7Payloads = null;
         byte errorClass = 0x1;
         byte errorCode = 0x23;
 
-        S7ResponseMessage message = new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode);
+        S7ResponseMessage message = new S7ResponseMessage(
+            messageType, tpduReference, null, null, errorClass, errorCode);
 
         assertThat("Unexpected tpdu value", message.getTpduReference(), equalTo(tpduReference));
         assertThat("Unexpected message type", message.getMessageType(), equalTo(MessageType.USER_DATA));
@@ -99,10 +99,10 @@ public class S7MessageTests {
     public void s7MessageParameters() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
-        ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
-        ArrayList<S7Payload> s7Payloads = new ArrayList<>();
+        List<S7Parameter> s7Parameters = new ArrayList<>();
+        List<S7Payload> s7Payloads = new ArrayList<>();
         ParameterType parameterType = ParameterType.READ_VAR;
-        ArrayList<VarParameterItem> parameterItems = new ArrayList<>();
+        List<VarParameterItem> parameterItems = new ArrayList<>();
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
         TransportSize transportSize = TransportSize.INT;
@@ -117,7 +117,7 @@ public class S7MessageTests {
 
         s7Parameters.add(varParameter);
 
-        S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads);
+        S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads, null);
 
         assertThat("Unexpected tpdu value", message.getTpduReference(), equalTo(tpduReference));
         assertThat("Unexpected message type", message.getMessageType(), equalTo(MessageType.USER_DATA));
@@ -134,10 +134,10 @@ public class S7MessageTests {
     public void s7MessagePayload() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
-        ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
-        ArrayList<S7Payload> s7Payloads = new ArrayList<>();
+        List<S7Parameter> s7Parameters = new ArrayList<>();
+        List<S7Payload> s7Payloads = new ArrayList<>();
         ParameterType parameterType = ParameterType.WRITE_VAR;
-        ArrayList<VarPayloadItem> payloadItems = new ArrayList<>();
+        List<VarPayloadItem> payloadItems = new ArrayList<>();
         byte[] data = {(byte) 0x79};
         VarPayload varPayload;
 
@@ -145,13 +145,15 @@ public class S7MessageTests {
         varPayload = new VarPayload(parameterType, payloadItems);
         s7Payloads.add(varPayload);
 
-        S7RequestMessage message = new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads);
+        S7RequestMessage message = new S7RequestMessage(
+            messageType, tpduReference, s7Parameters, s7Payloads, null);
 
         assertThat("Unexpected tpdu value", message.getTpduReference(), equalTo(tpduReference));
         assertThat("Unexpected message type", message.getMessageType(), equalTo(MessageType.USER_DATA));
         assertThat("Unexpected number of payloads", message.getPayloads(), hasSize(1));
         assertThat("Unexpected payloads", message.getPayloads(), contains(varPayload));
-        assertThat("Payload missing", message.getPayload(VarPayload.class).get(), equalTo(varPayload));
+        assertThat("Payload missing", message.getPayload(VarPayload.class).isPresent(), is(true));
+        assertThat("Payload doesn't match", message.getPayload(VarPayload.class).get(), equalTo(varPayload));
         assertThat("Contains unexpected payload", message.getPayload(VarParameter.class).isPresent(), is(false)); // No other parameter classes
         assertThat(message.getParameters(), empty());
     }
@@ -161,10 +163,10 @@ public class S7MessageTests {
     public void s7AnyVarParameterItem() {
         MessageType messageType = MessageType.USER_DATA;
         short tpduReference = 1;
-        ArrayList<S7Parameter> s7Parameters = new ArrayList<>();
-        ArrayList<S7Payload> s7Payloads = new ArrayList<>();
+        List<S7Parameter> s7Parameters = new ArrayList<>();
+        List<S7Payload> s7Payloads = new ArrayList<>();
         ParameterType parameterType = ParameterType.READ_VAR;
-        ArrayList<VarParameterItem> parameterItems = new ArrayList<>();
+        List<VarParameterItem> parameterItems = new ArrayList<>();
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
         TransportSize transportSize = TransportSize.INT;
@@ -173,7 +175,8 @@ public class S7MessageTests {
         byte byteOffset = (byte) 0x10;
         byte bitOffset = (byte) 0x0;
 
-        S7AnyVarParameterItem parameterItem = new S7AnyVarParameterItem(specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset);
+        S7AnyVarParameterItem parameterItem = new S7AnyVarParameterItem(
+            specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset);
 
         assertThat("Unexpected specification type", parameterItem.getSpecificationType(), equalTo(specificationType));
         assertThat("Unexpected memory area", parameterItem.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));

@@ -21,15 +21,18 @@ package org.apache.plc4x.java.isotp.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.base.events.ConnectEvent;
+import org.apache.plc4x.java.isoontcp.netty.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isoontcp.netty.model.IsoOnTcpMessage;
+import org.apache.plc4x.java.isotp.netty.events.IsoTPConnectedEvent;
 import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.netty.model.params.*;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.*;
 import org.apache.plc4x.java.isotp.netty.model.types.*;
-import org.apache.plc4x.java.netty.events.S7ConnectionEvent;
-import org.apache.plc4x.java.netty.events.S7ConnectionState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +40,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> {
+public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpdu> {
 
     private static final Logger logger = LoggerFactory.getLogger(IsoTPProtocol.class);
 
@@ -56,9 +59,11 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        ChannelHandler prevHandler = getPrevChannelHandler(ctx);
+
         // If the connection has just been established, start setting up the connection
         // by sending a connection request to the plc.
-        if (evt instanceof S7ConnectionEvent && ((S7ConnectionEvent) evt).getState() == S7ConnectionState.INITIAL) {
+        if ((prevHandler instanceof IsoOnTcpProtocol) && (evt instanceof ConnectEvent)) {
             logger.debug("ISO Transport Protocol Sending Connection Request");
             // Open the session on ISO Transport Protocol first.
             ConnectionRequestTpdu connectionRequest = new ConnectionRequestTpdu(
@@ -74,9 +79,12 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected void encode(ChannelHandlerContext ctx, Tpdu in, List<Object> out) {
-        logger.debug("ISO Transport Protocol Message sent");
+        logger.debug("ISO Transport Protocol RawMessage sent");
 
         if (in == null) {
             return;
@@ -113,14 +121,20 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         // Add the user-data itself.
         buf.writeBytes(in.getUserData());
 
-        out.add(new IsoOnTcpMessage(buf));
+        // Check if the message doesn't exceed the negotiated maximum size.
+        if(buf.writerIndex() > tpduSize.getValue()) {
+            ctx.fireExceptionCaught(new PlcProtocolPayloadTooBigException(
+                "iso-tp", tpduSize.getValue(), buf.writerIndex(), in));
+        } else {
+            out.add(new IsoOnTcpMessage(buf));
+        }
     }
 
     private void encodeError(Tpdu in, ByteBuf buf) {
         ErrorTpdu errorTpdu = (ErrorTpdu) in;
         buf.writeShort(errorTpdu.getDestinationReference());
         buf.writeByte(errorTpdu.getRejectCause().getCode());
-        outputParameters(buf, in.getParameters());
+        encodeParameters(buf, in.getParameters());
     }
 
     private void encodeDisconnect(Tpdu in, ByteBuf buf) {
@@ -131,7 +145,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
             DisconnectRequestTpdu disconnectRequestTpdu = (DisconnectRequestTpdu) disconnectTpdu;
             buf.writeByte(disconnectRequestTpdu.getDisconnectReason().getCode());
         }
-        outputParameters(buf, in.getParameters());
+        encodeParameters(buf, in.getParameters());
     }
 
     private void encodeData(DataTpdu in, ByteBuf buf) {
@@ -145,7 +159,43 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         buf.writeShort(connectionTpdu.getDestinationReference());
         buf.writeShort(connectionTpdu.getSourceReference());
         buf.writeByte(connectionTpdu.getProtocolClass().getCode());
-        outputParameters(buf, in.getParameters());
+        encodeParameters(buf, in.getParameters());
+    }
+
+    private void encodeParameters(ByteBuf out, List<Parameter> parameters) {
+        if (parameters == null) {
+            return;
+        }
+
+        for (Parameter parameter : parameters) {
+            out.writeByte(parameter.getType().getCode());
+            out.writeByte((byte) (getParameterLength(parameter) - 2));
+            switch (parameter.getType()) {
+                case CALLED_TSAP:
+                case CALLING_TSAP:
+                    TsapParameter tsap = (TsapParameter) parameter;
+                    out.writeByte(tsap.getDeviceGroup().getCode());
+                    out.writeByte((byte) ((tsap.getRackNumber() << 4) | (tsap.getSlotNumber() & 0x0F)));
+                    break;
+                case CHECKSUM:
+                    ChecksumParameter checksum = (ChecksumParameter) parameter;
+                    out.writeByte(checksum.getChecksum());
+                    break;
+                case DISCONNECT_ADDITIONAL_INFORMATION:
+                    DisconnectAdditionalInformationParameter disconnectAdditionalInformation = (DisconnectAdditionalInformationParameter) parameter;
+                    out.writeBytes(disconnectAdditionalInformation.getData());
+                    break;
+                case TPDU_SIZE:
+                    TpduSizeParameter sizeParameter = (TpduSizeParameter) parameter;
+                    out.writeByte(sizeParameter.getTpduSize().getCode());
+                    break;
+                default:
+                    if (logger.isErrorEnabled()) {
+                        logger.error("TDPU tarameter type {} not implemented yet", parameter.getType().name());
+                    }
+                    return;
+            }
+        }
     }
 
     @Override
@@ -153,7 +203,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
         if (logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
         }
-        logger.debug("ISO TP Message received");
+        logger.debug("ISO TP RawMessage received");
 
         if (in == null) {
             return;
@@ -195,7 +245,7 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
 
         // Read variable header parameters
         while (userData.readerIndex() < headerEnd) {
-            Parameter parameter = parseParameter(userData);
+            Parameter parameter = decodeParameter(userData);
             if (parameter != null) {
                 parameters.add(parameter);
             }
@@ -259,46 +309,55 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
 
         } else { // TpduCode.CONNECTION_CONFIRM
             tpdu = new ConnectionConfirmTpdu(destinationReference, sourceReference, protocolClass, parameters, userData);
-            ctx.channel().pipeline().fireUserEventTriggered(
-                new S7ConnectionEvent(S7ConnectionState.ISO_TP_CONNECTION_RESPONSE_RECEIVED));
-
+            ctx.channel().pipeline().fireUserEventTriggered(new IsoTPConnectedEvent());
         }
         return tpdu;
     }
 
-    private void outputParameters(ByteBuf out, List<Parameter> parameters) {
-        if (parameters == null) {
-            return;
+    private Parameter decodeParameter(ByteBuf out) {
+        ParameterCode parameterCode = ParameterCode.valueOf(out.readByte());
+        if (parameterCode == null) {
+            logger.error("Could not find parameter code");
+            return null;
         }
+        byte length = out.readByte();
+        switch (parameterCode) {
+            case CALLING_TSAP:
+            case CALLED_TSAP:
+                return decodeCallParameter(out, parameterCode);
+            case CHECKSUM:
+                byte checksum = out.readByte();
+                return new ChecksumParameter(checksum);
+            case DISCONNECT_ADDITIONAL_INFORMATION:
+                byte[] data = new byte[length];
+                out.readBytes(data);
+                return new DisconnectAdditionalInformationParameter(data);
+            case TPDU_SIZE:
+                TpduSize size = TpduSize.valueOf(out.readByte());
+                return new TpduSizeParameter(size);
+            default:
+                if (logger.isErrorEnabled()) {
+                    logger.error("Parameter not implemented yet {}", parameterCode.name());
+                }
+                return null;
+        }
+    }
 
-        for (Parameter parameter : parameters) {
-            out.writeByte(parameter.getType().getCode());
-            out.writeByte((byte) (getParameterLength(parameter) - 2));
-            switch (parameter.getType()) {
-                case CALLED_TSAP:
-                case CALLING_TSAP:
-                    TsapParameter tsap = (TsapParameter) parameter;
-                    out.writeByte(tsap.getDeviceGroup().getCode());
-                    out.writeByte((byte) ((tsap.getRackNumber() << 4) | (tsap.getSlotNumber() & 0x0F)));
-                    break;
-                case CHECKSUM:
-                    ChecksumParameter checksum = (ChecksumParameter) parameter;
-                    out.writeByte(checksum.getChecksum());
-                    break;
-                case DISCONNECT_ADDITIONAL_INFORMATION:
-                    DisconnectAdditionalInformationParameter disconnectAdditionalInformation = (DisconnectAdditionalInformationParameter) parameter;
-                    out.writeBytes(disconnectAdditionalInformation.getData());
-                    break;
-                case TPDU_SIZE:
-                    TpduSizeParameter sizeParameter = (TpduSizeParameter) parameter;
-                    out.writeByte(sizeParameter.getTpduSize().getCode());
-                    break;
-                default:
-                    if (logger.isErrorEnabled()) {
-                        logger.error("TDPU tarameter type {} not implemented yet", parameter.getType().name());
-                    }
-                    return;
-            }
+    private Parameter decodeCallParameter(ByteBuf out, ParameterCode parameterCode) {
+        DeviceGroup deviceGroup = DeviceGroup.valueOf(out.readByte());
+        byte rackAndSlot = out.readByte();
+        byte rackId = (byte) ((rackAndSlot & 0xF0) >> 4);
+        byte slotId = (byte) (rackAndSlot & 0x0F);
+        switch (parameterCode) {
+            case CALLING_TSAP:
+                return new CallingTsapParameter(deviceGroup, rackId, slotId);
+            case CALLED_TSAP:
+                return new CalledTsapParameter(deviceGroup, rackId, slotId);
+            default:
+                if (logger.isErrorEnabled()) {
+                    logger.error("Parameter not implemented yet {}", parameterCode.name());
+                }
+                return null;
         }
     }
 
@@ -371,53 +430,5 @@ public class IsoTPProtocol extends MessageToMessageCodec<IsoOnTcpMessage, Tpdu> 
                 return 0;
         }
     }
-
-    private Parameter parseParameter(ByteBuf out) {
-        ParameterCode parameterCode = ParameterCode.valueOf(out.readByte());
-        if (parameterCode == null) {
-            logger.error("Could not find parameter code");
-            return null;
-        }
-        byte length = out.readByte();
-        switch (parameterCode) {
-            case CALLING_TSAP:
-            case CALLED_TSAP:
-                return parseCallParameter(out, parameterCode);
-            case CHECKSUM:
-                byte checksum = out.readByte();
-                return new ChecksumParameter(checksum);
-            case DISCONNECT_ADDITIONAL_INFORMATION:
-                byte[] data = new byte[length];
-                out.readBytes(data);
-                return new DisconnectAdditionalInformationParameter(data);
-            case TPDU_SIZE:
-                TpduSize size = TpduSize.valueOf(out.readByte());
-                return new TpduSizeParameter(size);
-            default:
-                if (logger.isErrorEnabled()) {
-                    logger.error("Parameter not implemented yet {}", parameterCode.name());
-                }
-                return null;
-        }
-    }
-
-    private Parameter parseCallParameter(ByteBuf out, ParameterCode parameterCode) {
-        DeviceGroup deviceGroup = DeviceGroup.valueOf(out.readByte());
-        byte rackAndSlot = out.readByte();
-        byte rackId = (byte) ((rackAndSlot & 0xF0) >> 4);
-        byte slotId = (byte) (rackAndSlot & 0x0F);
-        switch (parameterCode) {
-            case CALLING_TSAP:
-                return new CallingTsapParameter(deviceGroup, rackId, slotId);
-            case CALLED_TSAP:
-                return new CalledTsapParameter(deviceGroup, rackId, slotId);
-            default:
-                if (logger.isErrorEnabled()) {
-                    logger.error("Parameter not implemented yet {}", parameterCode.name());
-                }
-                return null;
-        }
-    }
-
 
 }

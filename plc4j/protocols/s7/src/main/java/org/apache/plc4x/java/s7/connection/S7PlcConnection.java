@@ -29,13 +29,13 @@ import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.base.events.ConnectEvent;
+import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.isoontcp.netty.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DisconnectRequestTpdu;
 import org.apache.plc4x.java.isotp.netty.model.types.DisconnectReason;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
-import org.apache.plc4x.java.netty.events.S7ConnectionEvent;
-import org.apache.plc4x.java.netty.events.S7ConnectionState;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
 import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
@@ -129,8 +129,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                 pipeline.addLast(new ChannelInboundHandlerAdapter() {
                     @Override
                     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-                        if (evt instanceof S7ConnectionEvent &&
-                            ((S7ConnectionEvent) evt).getState() == S7ConnectionState.SETUP_COMPLETE) {
+                        if (evt instanceof ConnectedEvent) {
                             sessionSetupCompleteFuture.complete(null);
                         } else {
                             super.userEventTriggered(ctx, evt);
@@ -148,7 +147,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     @Override
     protected void sendChannelCreatedEvent() {
         // Send an event to the pipeline telling the Protocol filters what's going on.
-        channel.pipeline().fireUserEventTriggered(new S7ConnectionEvent());
+        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
     }
 
     public int getRack() {
