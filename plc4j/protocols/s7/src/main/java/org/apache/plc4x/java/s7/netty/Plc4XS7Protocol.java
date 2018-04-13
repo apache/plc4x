@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
 import org.apache.plc4x.java.api.messages.*;
@@ -49,6 +50,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -101,15 +103,24 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     PlcRequestContainer requestContainer = (PlcRequestContainer) request.getParent();
 
                     // Remove the current request from the unconfirmed requests list.
-                    if(requests.containsKey(request.getTpduReference())) {
-                        requests.remove(request.getTpduReference());
-                    }
+                    requests.remove(request.getTpduReference());
 
                     requestContainer.getResponseFuture().completeExceptionally(cause);
                 }
             }
+        } else if((cause instanceof IOException) && cause.getMessage().contains("Connection reset by peer")) {
+            if (!requests.isEmpty()) {
+                // If the connection is hung up, all still pending requests can be closed.
+                for (PlcRequestContainer requestContainer : requests.values()) {
+                    requestContainer.getResponseFuture().completeExceptionally(
+                        new PlcIoException("Connection terminated unexpectedly"));
+                }
+                // Clear the list
+                requests.clear();
+            }
+        } else {
+            super.exceptionCaught(ctx, cause);
         }
-        super.exceptionCaught(ctx, cause);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

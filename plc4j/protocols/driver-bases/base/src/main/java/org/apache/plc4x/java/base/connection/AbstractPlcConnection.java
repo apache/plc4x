@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.connection.PlcLister;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcIoException;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -47,7 +48,6 @@ public abstract class AbstractPlcConnection implements PlcConnection {
         this.connected = false;
     }
 
-
     @Override
     public void connect() throws PlcConnectionException {
         try {
@@ -58,7 +58,12 @@ public abstract class AbstractPlcConnection implements PlcConnection {
 
             // Have the channel factory create a new channel instance.
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture));
-
+            channel.closeFuture().addListener(future -> {
+                if(!sessionSetupCompleteFuture.isDone()) {
+                    sessionSetupCompleteFuture.completeExceptionally(
+                        new PlcIoException("Connection terminated by remote"));
+                }
+            });
             // Send an event to the pipeline telling the Protocol filters what's going on.
             sendChannelCreatedEvent();
 
