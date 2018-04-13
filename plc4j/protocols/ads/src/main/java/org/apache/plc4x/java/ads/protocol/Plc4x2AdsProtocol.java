@@ -85,12 +85,16 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             encodeReadRequest(msg, out);
         } else if (request instanceof PlcWriteRequest) {
             encodeWriteRequest(msg, out);
+        } else if (request instanceof PlcProprietaryRequest) {
+            encodeProprietaryRequest(msg, out);
+        } else {
+            throw new PlcProtocolException("Unknown type " + request.getClass());
         }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if((cause instanceof IOException) && (cause.getMessage().contains("Connection reset by peer") ||
+        if ((cause instanceof IOException) && (cause.getMessage().contains("Connection reset by peer") ||
             cause.getMessage().contains("Operation timed out"))) {
             String reason = cause.getMessage().contains("Connection reset by peer") ?
                 "Connection terminated unexpectedly" : "Remote host not responding";
@@ -149,11 +153,21 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         requests.put(invokeId.getAsLong(), msg);
     }
 
+    private void encodeProprietaryRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcProtocolException {
+        PlcProprietaryRequest plcProprietaryRequest = (PlcProprietaryRequest) msg.getRequest();
+        if (!(plcProprietaryRequest.getRequest() instanceof AmsPacket)) {
+            throw new PlcProtocolException("Unsupported proprietary type for this driver " + plcProprietaryRequest.getRequest().getClass());
+        }
+        AmsPacket amsPacket = (AmsPacket) plcProprietaryRequest.getRequest();
+        requests.put(amsPacket.getAmsHeader().getInvokeId().getAsLong(), msg);
+        out.add(amsPacket);
+    }
+
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, AmsPacket AmsPacket, List<Object> out) throws Exception {
-        PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requests.remove(AmsPacket.getAmsHeader().getInvokeId().getAsLong());
+    protected void decode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws Exception {
+        PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requests.remove(amsPacket.getAmsHeader().getInvokeId().getAsLong());
         if (plcRequestContainer == null) {
-            LOGGER.info("Unmapped packet received {}", AmsPacket);
+            LOGGER.info("Unmapped packet received {}", amsPacket);
             return;
         }
         PlcRequest request = plcRequestContainer.getRequest();
@@ -161,17 +175,19 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
         // Handle the response to a read request.
         if (request instanceof PlcReadRequest) {
-            if (AmsPacket instanceof AdsReadResponse) {
-                response = decodeReadResponse((AdsReadResponse) AmsPacket, plcRequestContainer);
+            if (amsPacket instanceof AdsReadResponse) {
+                response = decodeReadResponse((AdsReadResponse) amsPacket, plcRequestContainer);
             } else {
-                throw new PlcProtocolException("Wrong type correlated " + AmsPacket);
+                throw new PlcProtocolException("Wrong type correlated " + amsPacket);
             }
         } else if (request instanceof PlcWriteRequest) {
-            if (AmsPacket instanceof AdsWriteResponse) {
-                response = decodeWriteResponse((AdsWriteResponse) AmsPacket, plcRequestContainer);
+            if (amsPacket instanceof AdsWriteResponse) {
+                response = decodeWriteResponse((AdsWriteResponse) amsPacket, plcRequestContainer);
             } else {
-                throw new PlcProtocolException("Wrong type correlated " + AmsPacket);
+                throw new PlcProtocolException("Wrong type correlated " + amsPacket);
             }
+        } else if (request instanceof PlcProprietaryRequest) {
+            response = decodeProprietaryResponse(amsPacket, plcRequestContainer);
         }
 
         // Confirm the response being handled.
@@ -208,6 +224,10 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         } else {
             return new PlcReadResponse(plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, decoded)));
         }
+    }
+
+    private PlcResponse decodeProprietaryResponse(AmsPacket amsPacket, PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer) {
+        return new PlcProprietaryResponse<>((PlcProprietaryRequest) plcRequestContainer.getRequest(), amsPacket);
     }
 
     private ResponseCode decodeResponseCode(Result result) {

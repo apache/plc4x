@@ -22,6 +22,7 @@ import io.netty.channel.ChannelFuture;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.model.AdsAddress;
+import org.apache.plc4x.java.api.connection.PlcProprietarySender;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -32,7 +33,7 @@ import org.apache.plc4x.java.base.connection.ChannelFactory;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
+public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
 
     protected final AmsNetId targetAmsNetId;
 
@@ -98,6 +99,18 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             }
         });
         return writeFuture;
+    }
+
+    @Override
+    public <T, R> CompletableFuture<PlcProprietaryResponse<R>> send(PlcProprietaryRequest<T> request) {
+        CompletableFuture<PlcProprietaryResponse<R>> sendFuture = new CompletableFuture<>();
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(request, sendFuture));
+        channelFuture.addListener(future -> {
+            if (!future.isSuccess()) {
+                sendFuture.completeExceptionally(future.cause());
+            }
+        });
+        return sendFuture;
     }
 
     protected static AmsNetId generateAMSNetId() {
