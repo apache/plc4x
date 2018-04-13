@@ -108,12 +108,14 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     requestContainer.getResponseFuture().completeExceptionally(cause);
                 }
             }
-        } else if((cause instanceof IOException) && cause.getMessage().contains("Connection reset by peer")) {
+        } else if((cause instanceof IOException) && (cause.getMessage().contains("Connection reset by peer") ||
+                cause.getMessage().contains("Operation timed out"))) {
+            String reason = cause.getMessage().contains("Connection reset by peer") ?
+                "Connection terminated unexpectedly" : "Remote host not responding";
             if (!requests.isEmpty()) {
                 // If the connection is hung up, all still pending requests can be closed.
                 for (PlcRequestContainer requestContainer : requests.values()) {
-                    requestContainer.getResponseFuture().completeExceptionally(
-                        new PlcIoException("Connection terminated unexpectedly"));
+                    requestContainer.getResponseFuture().completeExceptionally(new PlcIoException(reason));
                 }
                 // Clear the list
                 requests.clear();
