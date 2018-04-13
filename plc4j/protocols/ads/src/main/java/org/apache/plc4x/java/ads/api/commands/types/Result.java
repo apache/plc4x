@@ -21,6 +21,8 @@ package org.apache.plc4x.java.ads.api.commands.types;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
+import static java.util.Objects.requireNonNull;
+
 public class Result extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.UNSIGNED_INT_LE_NUM_BYTES;
@@ -58,7 +60,7 @@ public class Result extends UnsignedIntLEByteValue {
     }
 
     public static Result of(AdsReturnCode adsReturnCode) {
-        return of(adsReturnCode.getHex());
+        return of(requireNonNull(adsReturnCode).getHex());
     }
 
     public AdsReturnCode toAdsReturnCode() {

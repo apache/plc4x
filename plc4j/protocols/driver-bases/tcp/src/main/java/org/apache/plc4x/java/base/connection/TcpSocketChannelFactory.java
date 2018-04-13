@@ -57,4 +57,7 @@ public class TcpSocketChannelFactory implements ChannelFactory {
         }
     }
 
+    public InetAddress getAddress() {
+        return address;
+    }
 }

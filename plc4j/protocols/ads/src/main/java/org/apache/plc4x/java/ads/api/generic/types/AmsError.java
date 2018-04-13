@@ -22,6 +22,8 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.commands.types.AdsReturnCode;
 import org.apache.plc4x.java.ads.api.util.UnsignedIntLEByteValue;
 
+import static java.util.Objects.requireNonNull;
+
 public class AmsError extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.UNSIGNED_INT_LE_NUM_BYTES;
@@ -48,6 +50,10 @@ public class AmsError extends UnsignedIntLEByteValue {
         return new AmsError(errorCode);
     }
 
+    public static AmsError of(AdsReturnCode errorCode) {
+        return new AmsError(requireNonNull(errorCode).getHex());
+    }
+
     public static AmsError of(String errorCode) {
         return of(Long.parseLong(errorCode));
     }
@@ -56,7 +62,7 @@ public class AmsError extends UnsignedIntLEByteValue {
         return new AmsError(byteBuf);
     }
 
-    private AdsReturnCode toAdsReturnCode() {
+    public AdsReturnCode toAdsReturnCode() {
         return AdsReturnCode.of(getAsLong());
     }
 

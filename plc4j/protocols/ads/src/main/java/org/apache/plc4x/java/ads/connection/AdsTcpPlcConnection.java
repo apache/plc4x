@@ -85,6 +85,10 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection {
         };
     }
 
+    public InetAddress getRemoteAddress() {
+        return ((TcpSocketChannelFactory)channelFactory).getAddress();
+    }
+
     protected static AmsNetId generateAMSNetId() {
         try {
             return AmsNetId.of(Inet4Address.getLocalHost().getHostAddress() + ".1.1");
