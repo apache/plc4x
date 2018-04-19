@@ -26,6 +26,8 @@ import org.apache.plc4x.java.ads.api.commands.types.IndexOffset;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.api.tcp.AmsTCPPacket;
+import org.apache.plc4x.java.ads.api.tcp.types.UserData;
 import org.apache.plc4x.java.ads.util.TcpHexDumper;
 import org.pcap4j.core.PcapDumper;
 import org.pcap4j.core.PcapHandle;
@@ -55,22 +57,24 @@ public class AdsDumper {
             String randomString = RandomStringUtils.randomAscii(1024);
 
             AdsWriteRequest adsWriteRequest = AdsWriteRequest.of(
-                AmsNetId.of("192.168.0.70.1.2"),
-                AmsPort.of(12),
-                AmsNetId.of("192.168.0.70.1.1"),
+                AmsNetId.of("192.168.99.101.1.1"),
+                AmsPort.of(851),
+                AmsNetId.of("192.168.99.1.1.1"),
                 AmsPort.of(14),
                 Invoke.of(0),
                 IndexGroup.of(1),
                 IndexOffset.of(3),
                 Data.of(randomString.getBytes())
             );
+            AmsTCPPacket amsTCPPacket = AmsTCPPacket.of(UserData.of(adsWriteRequest.getBytes()));
 
-            try (TcpHexDumper tcpHexDumper = TcpHexDumper.runOn(55862); Socket localhost = new Socket("localhost", tcpHexDumper.getPort())) {
-                localhost.getOutputStream().write(adsWriteRequest.getBytes());
+            //try (TcpHexDumper tcpHexDumper = TcpHexDumper.runOn(55862); Socket localhost = new Socket("localhost", tcpHexDumper.getPort())) {
+            try (TcpHexDumper tcpHexDumper = TcpHexDumper.runOn(55862); Socket localhost = new Socket("192.168.99.100", 48898)) {
+                localhost.getOutputStream().write(amsTCPPacket.getBytes());
             }
 
             UnknownPacket.Builder amsPacket = new UnknownPacket.Builder();
-            amsPacket.rawData(adsWriteRequest.getBytes());
+            amsPacket.rawData(amsTCPPacket.getBytes());
 
             TcpPacket.Builder tcpPacketBuilder = new TcpPacket.Builder();
             tcpPacketBuilder

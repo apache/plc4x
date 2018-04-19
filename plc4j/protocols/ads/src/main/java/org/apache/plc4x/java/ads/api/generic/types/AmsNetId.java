@@ -85,6 +85,6 @@ public class AmsNetId extends ByteValue {
     @Override
     public String toString() {
         byte[] bytes = getBytes();
-        return bytes[0] + "." + bytes[1] + "." + bytes[2] + "." + bytes[3] + "." + bytes[4] + "." + bytes[5];
+        return (bytes[0] & 0xff) + "." + (bytes[1] & 0xff) + "." + (bytes[2] & 0xff) + "." + (bytes[3] & 0xff) + "." + (bytes[4] & 0xff) + "." + (bytes[5] & 0xff);
     }
 }

@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.ads.api.tcp;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.serial.types.UserData;
+import org.apache.plc4x.java.ads.api.tcp.types.UserData;
 import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 import static java.util.Objects.requireNonNull;

@@ -27,9 +27,12 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.protocol.Ads2PayloadProtocol;
 import org.apache.plc4x.java.ads.protocol.Payload2TcpProtocol;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
 
 public class AdsTcpPlcConnection extends AdsAbstractPlcConnection {
@@ -80,6 +83,14 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection {
                 pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
             }
         };
+    }
+
+    protected static AmsNetId generateAMSNetId() {
+        try {
+            return AmsNetId.of(Inet4Address.getLocalHost().getHostAddress() + ".1.1");
+        } catch (UnknownHostException e) {
+            throw new PlcRuntimeException(e);
+        }
     }
 
     protected static AmsPort generateAMSPort() {

@@ -21,10 +21,10 @@ package org.apache.plc4x.java.ads.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.plc4x.java.ads.api.serial.types.UserData;
 import org.apache.plc4x.java.ads.api.tcp.AmsTCPPacket;
 import org.apache.plc4x.java.ads.api.tcp.AmsTcpHeader;
 import org.apache.plc4x.java.ads.api.tcp.types.TcpLength;
+import org.apache.plc4x.java.ads.api.tcp.types.UserData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,6 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws Exception {
         out.add(AmsTCPPacket.of(UserData.of(amsPacket)).getByteBuf());
-        amsPacket.release();
     }
 
     @SuppressWarnings("unchecked")

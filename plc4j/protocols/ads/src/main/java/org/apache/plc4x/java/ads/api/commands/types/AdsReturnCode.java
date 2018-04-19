@@ -119,7 +119,7 @@ public enum AdsReturnCode {
     ADS_CODE_1858(0x742, 1858, "polling list is empty"),
     ADS_CODE_1859(0x743, 1859, "var connection already in use"),
     ADS_CODE_1860(0x744, 1860, "invoke ID in use"),
-    ADS_CODE_1861(0x745, 1861, "timeout elapsedCheck ADS routes of sender and receiver and your  firewall setting"),
+    ADS_CODE_1861(0x745, 1861, "timeout elapsed", "", "Check ADS routes of sender and receiver and your firewall setting"),
     ADS_CODE_1862(0x746, 1862, "error in win32 subsystem"),
     ADS_CODE_1863(0x747, 1863, "Invalid client timeout value"),
     ADS_CODE_1864(0x748, 1864, "ads-port not opened"),
