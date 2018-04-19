@@ -74,9 +74,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     public S7PlcConnection(InetAddress address, int rack, int slot, String params) {
         this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);
 
-        logger.info("Configured S7cConnection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
+        logger.info("Setting up S7cConnection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
                 "max-amq-callee {}", address.getHostAddress(), rack, slot,
-            paramPduSize, paramMaxAmqCaller, paramMaxAmqCallee);
+            paramPduSize.getValue(), paramMaxAmqCaller, paramMaxAmqCallee);
     }
 
     public S7PlcConnection(ChannelFactory channelFactory, int rack, int slot, String params) {

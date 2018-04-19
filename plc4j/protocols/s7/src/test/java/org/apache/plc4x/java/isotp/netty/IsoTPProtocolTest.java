@@ -99,7 +99,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ConnectionRequestTpdu requestTpdu = (ConnectionRequestTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -117,7 +117,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
         assertThat(userData.writerIndex(), equalTo(7));
@@ -140,7 +140,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         DisconnectRequestTpdu requestTpdu = (DisconnectRequestTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -158,7 +158,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
@@ -178,7 +178,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         DataTpdu requestTpdu = (DataTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -198,7 +198,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         DataTpdu requestTpdu = (DataTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -215,7 +215,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
@@ -239,7 +239,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ConnectionConfirmTpdu requestTpdu = (ConnectionConfirmTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -257,7 +257,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
@@ -280,7 +280,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         DisconnectConfirmTpdu requestTpdu = (DisconnectConfirmTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -297,7 +297,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
@@ -320,7 +320,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
@@ -347,7 +347,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
@@ -372,7 +372,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
@@ -399,7 +399,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 
@@ -424,7 +424,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -438,10 +438,10 @@ public class IsoTPProtocolTest {
     @Category(FastTests.class)
     public void encodeNullRequest() {
         isoTPProtocol.encode(ctx, null, out);
-        assertThat("RawMessage not decoded", out, empty());
+        assertThat("Message not decoded", out, empty());
 
         isoTPProtocol.encode(ctx, null, out);
-        assertThat("RawMessage not decoded", out, empty());
+        assertThat("Message not decoded", out, empty());
     }
 
 
@@ -451,10 +451,10 @@ public class IsoTPProtocolTest {
         IsoOnTcpMessage in = new IsoOnTcpMessage(buf);
 
         isoTPProtocol.decode(ctx, in, out);
-        assertThat("RawMessage not decoded", out, empty());
+        assertThat("Message not decoded", out, empty());
 
         isoTPProtocol.decode(ctx, null, out);
-        assertThat("RawMessage not decoded", out, empty());
+        assertThat("Message not decoded", out, empty());
     }
 
     @Test
@@ -464,7 +464,7 @@ public class IsoTPProtocolTest {
         CustomTpdu tpdu = new CustomTpdu((byte) 0x7F, parmameters, buf);
 
         isoTPProtocol.encode(ctx, tpdu, out);
-        assertThat("RawMessage not decoded", out, empty());
+        assertThat("Message not decoded", out, empty());
     }
 
 
@@ -476,7 +476,7 @@ public class IsoTPProtocolTest {
             .writeByte(0x7F)
             .writeShort(0x01); // destination reference
         isoTPProtocol.decode(ctx, in, out);
-        assertThat("RawMessage not decoded", out, empty());
+        assertThat("Message not decoded", out, empty());
     }
 
     @Test
@@ -494,7 +494,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -524,7 +524,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -553,7 +553,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -580,7 +580,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 
@@ -611,7 +611,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.decode(ctx, in, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("Message not decoded", out, hasSize(1));
 
         ErrorTpdu errorTpdu = (ErrorTpdu) ((IsoTPMessage) out.get(0)).getTpdu();
 

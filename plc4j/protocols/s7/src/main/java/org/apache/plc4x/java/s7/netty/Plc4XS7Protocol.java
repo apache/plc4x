@@ -316,6 +316,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         List<ReadResponseItem<?>> responseItems = new LinkedList<>();
         VarPayload payload = responseMessage.getPayload(VarPayload.class)
             .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
+
         // If the numbers of items don't match, we're in big trouble as the only
         // way to know how to interpret the responses is by aligning them with the
         // items from the request as this information is not returned by the PLC.
@@ -323,6 +324,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             throw new PlcProtocolException(
                 "The number of requested items doesn't match the number of returned items");
         }
+
         List<VarPayloadItem> payloadItems = payload.getPayloadItems();
         final int noPayLoadItems = payloadItems.size();
         for (int i = 0; i < noPayLoadItems; i++) {

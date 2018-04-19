@@ -21,19 +21,20 @@ package org.apache.plc4x.java.s7.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.*;
+import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.PromiseCombiner;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.netty.events.IsoTPConnectedEvent;
 import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DataTpdu;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
-import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
-import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
-import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
-import org.apache.plc4x.java.s7.netty.model.messages.SetupCommunicationRequestMessage;
+import org.apache.plc4x.java.s7.netty.model.messages.*;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.SetupCommunicationParameter;
@@ -43,25 +44,81 @@ import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
+import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
+import org.apache.plc4x.java.s7.netty.strategies.S7MessageProcessor;
+import org.apache.plc4x.java.s7.netty.strategies.SingleAddressPerMessageS7MessageProcessor;
+import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
-public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message> {
+public class S7Protocol extends ChannelDuplexHandler {
 
     private static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
 
     private static final Logger logger = LoggerFactory.getLogger(S7Protocol.class);
 
+    private final MessageToMessageDecoder<Object> decoder = new MessageToMessageDecoder<Object>() {
+
+        @Override
+        public boolean acceptInboundMessage(Object msg) {
+            return msg instanceof IsoTPMessage;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void decode(ChannelHandlerContext ctx, Object msg, List<Object> out) {
+            S7Protocol.this.decode(ctx, (IsoTPMessage) msg, out);
+        }
+    };
+
     private short maxAmqCaller;
     private short maxAmqCallee;
     private short pduSize;
+
+    // For detecting the lower layers.
+    private ChannelHandler prevChannelHandler;
+    private S7MessageProcessor messageProcessor;
+
+    // For being able to respect the max AMQ restrictions.
+    private PendingWriteQueue queue;
+    private Map<Short, DataTpdu> sentButUnacknowledgedTpdus;
 
     public S7Protocol(short requestedMaxAmqCaller, short requestedMaxAmqCallee, short requestedPduSize) {
         this.maxAmqCaller = requestedMaxAmqCaller;
         this.maxAmqCallee = requestedMaxAmqCallee;
         this.pduSize = requestedPduSize;
+        sentButUnacknowledgedTpdus = new HashMap<>();
+        messageProcessor = new SingleAddressPerMessageS7MessageProcessor();
+    }
+
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) {
+        this.queue = new PendingWriteQueue(ctx);
+        try {
+            Field prevField = FieldUtils.getField(ctx.getClass(), "prev", true);
+            if(prevField != null) {
+                ChannelHandlerContext prevContext = (ChannelHandlerContext) prevField.get(ctx);
+                prevChannelHandler = prevContext.handler();
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        this.queue.removeAndWriteAll();
+        super.channelUnregistered(ctx);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        // Send everything so we get a proper failure for those pending writes
+        this.queue.removeAndWriteAll();
+        super.channelInactive(ctx);
     }
 
     /**
@@ -74,13 +131,11 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        ChannelHandler prevHandler = getPrevChannelHandler(ctx);
-
         // If we are using S7 inside of IsoTP, then we need to intercept IsoTPs connected events.
-        if ((prevHandler instanceof IsoTPProtocol) && (evt instanceof IsoTPConnectedEvent)) {
+        if ((prevChannelHandler instanceof IsoTPProtocol) && (evt instanceof IsoTPConnectedEvent)) {
             // Setup Communication
             SetupCommunicationRequestMessage setupCommunicationRequest =
-                new SetupCommunicationRequestMessage((short) 7, maxAmqCaller, maxAmqCallee, pduSize, null);
+                new SetupCommunicationRequestMessage((short) 0, maxAmqCaller, maxAmqCallee, pduSize, null);
 
             ctx.channel().writeAndFlush(setupCommunicationRequest);
         }
@@ -95,24 +150,43 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, S7Message in, List<Object> out) {
-        logger.debug("S7 RawMessage sent");
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+        if(msg instanceof S7Message) {
+            S7Message in = (S7Message) msg;
 
-        List<S7Message> messages = optimizeMessage(in);
-
-        for (S7Message message : messages) {
-            ByteBuf buf = Unpooled.buffer();
-
-            encodeHeader(message, buf);
-            encodeParameters(message, buf);
-            encodePayloads(message, buf);
-
-            // Check if the message doesn't exceed the negotiated maximum size.
-            if(buf.writerIndex() > pduSize) {
-                ctx.fireExceptionCaught(new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), in));
+            // Give message processors to process the incoming message.
+            Collection<? extends S7Message> messages;
+            if(messageProcessor != null) {
+                messages = messageProcessor.process(in);
             } else {
-                out.add(new DataTpdu(true, (byte) 1, Collections.emptyList(), buf, in));
+                messages = Collections.singleton(in);
             }
+
+            // Create a promise that has to be called multiple times.
+            PromiseCombiner promiseCombiner = new PromiseCombiner();
+            for (S7Message message : messages) {
+                ByteBuf buf = Unpooled.buffer();
+
+                encodeHeader(message, buf);
+                encodeParameters(message, buf);
+                encodePayloads(message, buf);
+
+                // Check if the message doesn't exceed the negotiated maximum size.
+                if(buf.writerIndex() > pduSize) {
+                    ctx.fireExceptionCaught(new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), message));
+                } else {
+                    ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
+                    queue.add(new DataTpdu(true, (byte) 0x01, Collections.emptyList(), buf, message), subPromise);
+                    promiseCombiner.add((Future) subPromise);
+                    logger.debug("S7 Message with id {} queued", message.getTpduReference());
+                }
+            }
+            promiseCombiner.finish(promise);
+
+            // Start sending the queue content.
+            trySendingMessages(ctx);
+        } else {
+            super.write(ctx, msg, promise);
         }
     }
 
@@ -156,9 +230,9 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         // PDU Reference (Request Id, generated by the initiating node)
         buf.writeShort(in.getTpduReference());
         // S7 message parameters length
-        buf.writeShort(getParametersLength(in.getParameters()));
+        buf.writeShort(S7SizeHelper.getParametersLength(in.getParameters()));
         // Data field length
-        buf.writeShort(getPayloadsLength(in.getPayloads()));
+        buf.writeShort(S7SizeHelper.getPayloadsLength(in.getPayloads()));
         if (in instanceof S7ResponseMessage) {
             S7ResponseMessage s7ResponseMessage = (S7ResponseMessage) in;
             buf.writeByte(s7ResponseMessage.getErrorClass());
@@ -213,6 +287,11 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        decoder.channelRead(ctx, msg);
+        super.channelRead(ctx, msg);
+    }
+
     protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) {
         if (logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
@@ -221,7 +300,6 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
         if (userData.readableBytes() == 0) {
             return;
         }
-        logger.debug("S7 RawMessage received");
 
         if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
             logger.warn("Expecting S7 protocol magic number.");
@@ -255,48 +333,71 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
             if (parameter instanceof SetupCommunicationParameter) {
                 setupCommunicationParameter = (SetupCommunicationParameter) parameter;
             }
-            if (readWriteVarParameter == null)  {
-                readWriteVarParameter = decodeReadWriteParameter(parameter);
+            if (parameter instanceof VarParameter) {
+                readWriteVarParameter = (VarParameter) parameter;
             }
-            i += getParameterLength(parameter);
+            i += S7SizeHelper.getParameterLength(parameter);
         }
 
         List<S7Payload> s7Payloads = decodePayloads(userData, isResponse, userDataLength, readWriteVarParameter);
 
+        logger.debug("S7 Message with id {} received", tpduReference);
+
         if (isResponse) {
-            decodeSetupCommunications(ctx, setupCommunicationParameter);
-            out.add(new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode));
+            // Remove the current response from the list of unconfirmed messages.
+            DataTpdu requestTpdu = sentButUnacknowledgedTpdus.remove(tpduReference);
+            S7RequestMessage requestMessage = (requestTpdu != null) ? (S7RequestMessage) requestTpdu.getParent() : null;
+            // If we got a SetupCommunicationParameter as part of the response
+            // we are currently in the process of establishing a connection with
+            // the PLC, so save some of the information in the session and tell
+            // the next layer to negotiate the connection parameters.
+            if (setupCommunicationParameter != null) {
+                handleSetupCommunications(ctx, setupCommunicationParameter);
+            }
+
+            S7ResponseMessage responseMessage = new S7ResponseMessage(
+                messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode);
+            if(requestMessage != null) {
+                // Set this individual request to "acknowledged".
+                requestMessage.setAcknowledged(true);
+
+                // If it's a split-up message, check if all parts are now acknowledged.
+                if(requestMessage.getParent() instanceof S7CompositeRequestMessage) {
+                    S7CompositeRequestMessage parent = (S7CompositeRequestMessage) requestMessage.getParent();
+
+                    // Add the response to the container so we can add it's information to the composite response.
+                    parent.addResponseMessage(responseMessage);
+
+                    // If all parts of this split-up message are now acknowledged, create a unified
+                    // response object and pass that up to the higher layers.
+                    if(parent.isAcknowledged()) {
+                        out.add(parent.getResponseMessage());
+                    }
+                }
+                // If it's an ordinary request, simply forward it  to the higher layers.
+                else {
+                    out.add(responseMessage);
+                }
+
+                // Eventually send the next message (if there is one).
+                trySendingMessages(ctx);
+            }
         } else {
             // TODO: Find out if there is any situation in which a request is sent from the PLC
             out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads, null));
         }
     }
 
-    private void decodeSetupCommunications(ChannelHandlerContext ctx, SetupCommunicationParameter setupCommunicationParameter) {
-        // If we got a SetupCommunicationParameter as part of the response
-        // we are currently in the process of establishing a connection with
-        // the PLC, so save some of the information in the session and tell
-        // the next layer to negotiate the connection parameters.
-        if (setupCommunicationParameter != null) {
-            maxAmqCaller = setupCommunicationParameter.getMaxAmqCaller();
-            maxAmqCallee = setupCommunicationParameter.getMaxAmqCallee();
-            pduSize = setupCommunicationParameter.getPduLength();
+    private void handleSetupCommunications(ChannelHandlerContext ctx, SetupCommunicationParameter setupCommunicationParameter) {
+        maxAmqCaller = setupCommunicationParameter.getMaxAmqCaller();
+        maxAmqCallee = setupCommunicationParameter.getMaxAmqCallee();
+        pduSize = setupCommunicationParameter.getPduLength();
 
-            // Send an event that setup is complete.
-            ctx.channel().pipeline().fireUserEventTriggered(new S7ConnectedEvent());
-        }
-    }
+        logger.info("S7Connection established pdu-size {}, max-amq-caller {}, " +
+                "max-amq-callee {}", pduSize, maxAmqCaller, maxAmqCallee);
 
-    private VarParameter decodeReadWriteParameter(S7Parameter parameter) {
-        VarParameter readWriteVarParameter = null;
-
-        if (parameter instanceof VarParameter) {
-            ParameterType paramType = parameter.getType();
-            if (paramType == ParameterType.READ_VAR || paramType == ParameterType.WRITE_VAR) {
-                readWriteVarParameter = (VarParameter) parameter;
-            }
-        }
-        return readWriteVarParameter;
+        // Send an event that setup is complete.
+        ctx.channel().pipeline().fireUserEventTriggered(new S7ConnectedEvent());
     }
 
     private List<S7Payload> decodePayloads(ByteBuf userData, boolean isResponse, short userDataLength, VarParameter readWriteVarParameter) {
@@ -324,7 +425,7 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
                     // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
                     VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, dataTransportSize, data);
                     payloadItems.add(payload);
-                    i += getPayloadLength(payload);
+                    i += S7SizeHelper.getPayloadLength(payload);
                 }
             }
 
@@ -413,104 +514,42 @@ public class S7Protocol extends PlcMessageToMessageCodec<IsoTPMessage, S7Message
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    /**
-     * While a SetupCommunication message is no problem, when reading or writing data,
-     * situations could arise that have to be handled. The following situations have to
-     * be handled:
-     * - The number of request items is so big, that the resulting PDU would exceed the
-     *   agreed upon PDU size -> The request has to be split up into multiple requests.
-     * - If large blocks of data are requested by request items the result of a request
-     *   could exceed the PDU size -> The requests has to be split up into multiple requests
-     *   where each requests response doesn't exceed the PDU size.
-     *
-     * The following optimizations should be implemented:
-     * - If blocks are read which are in near proximity to each other it could be better
-     *   to replace multiple requests by one that includes multiple blocks.
-     * - Rearranging the order of request items could reduce the number of needed PDUs.
-     *
-     * @param message incoming message
-     * @return List of outgoing messages
-     */
-    private List<S7Message> optimizeMessage(S7Message message) {
-        // The following considerations have to be taken into account:
-        // - The size of all parameters and payloads of a message cannot exceed the negotiated PDU size
-        // - When reading data, the size of the returned data cannot exceed the negotiated PDU size
-        //
-        // Examples:
-        // - Size of the request exceeds the maximum
-        //  When having a negotiated max PDU size of 256, the maximum size of individual addresses can be at most 18
-        //  If more are sent, the S7 will respond with a frame error.
-        // - Size of the response exceeds the maximum
-        //  When reading two Strings of each 200 bytes length, the size of the request is ok, however the PLC would
-        //  have to send back 400 bytes of String data, which would exceed the PDU size. In this case the first String
-        //  is correctly returned, but for the second item the PLC will return a code of 0x03 = Access Denied
-
-        return Collections.singletonList(message);
+    @Override
+    public void flush(ChannelHandlerContext ctx) throws Exception {
+        super.flush(ctx);
     }
 
-    private short getParametersLength(List<S7Parameter> parameters) {
-        short l = 0;
-        if (parameters != null) {
-            for (S7Parameter parameter : parameters) {
-                l += getParameterLength(parameter);
-            }
-        }
-        return l;
-    }
+    private synchronized void trySendingMessages(ChannelHandlerContext ctx) {
+        while(sentButUnacknowledgedTpdus.size() < maxAmqCaller) {
+            // Get the TPDU that is up next in the queue.
+            DataTpdu curTpdu = (DataTpdu) queue.current();
 
-    private short getPayloadsLength(List<S7Payload> payloads) {
-        short l = 0;
-        if (payloads == null) {
-            return 0;
-        }
-
-        for (S7Payload payload : payloads) {
-            if(payload instanceof VarPayload) {
-                VarPayload varPayload = (VarPayload) payload;
-                for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
-                    l += getPayloadLength(payloadItem);
+            if (curTpdu != null) {
+                // Send the TPDU.
+                try {
+                    ChannelFuture channelFuture = queue.removeAndWrite();
+                    ctx.flush();
+                    if (channelFuture == null) {
+                        break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }
-        }
-        return l;
-    }
 
-    private short getParameterLength(S7Parameter parameter) {
-        if (parameter == null) {
-            return 0;
-        }
+                if(curTpdu.getParent() != null) {
+                    // Add it to the list of sentButUnacknowledgedTpdus.
+                    // (It seems that the S7 drops the value of the COTP reference id, so we have to use the S7 one)
+                    S7RequestMessage s7RequestMessage = (S7RequestMessage) curTpdu.getParent();
+                    sentButUnacknowledgedTpdus.put(s7RequestMessage.getTpduReference(), curTpdu);
 
-        switch (parameter.getType()) {
-            case READ_VAR:
-            case WRITE_VAR:
-                return getReadWriteVarParameterLength((VarParameter) parameter);
-            case SETUP_COMMUNICATION:
-                return 8;
-            default:
-                logger.error("Not implemented");
-                return 0;
-        }
-    }
-
-    private short getReadWriteVarParameterLength(VarParameter parameter) {
-        short length = 2;
-        for (VarParameterItem varParameterItem : parameter.getItems()) {
-            VariableAddressingMode addressMode = varParameterItem.getAddressingMode();
-
-            if (addressMode == VariableAddressingMode.S7ANY) {
-                length += 12;
+                    logger.debug("S7 Message with id {} sent", s7RequestMessage.getTpduReference());
+                }
+                break;
             } else {
-                logger.error("Not implemented");
+                break;
             }
         }
-        return length;
-    }
-
-    private short getPayloadLength(VarPayloadItem payloadItem) {
-        if (payloadItem == null) {
-            return 0;
-        }
-        return (short) (4 + payloadItem.getData().length);
+        ctx.flush();
     }
 
 }

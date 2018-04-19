@@ -27,9 +27,20 @@ import java.util.List;
 
 public class S7RequestMessage extends S7Message {
 
+    private boolean acknowledged;
+
     public S7RequestMessage(MessageType messageType, short tpduReference, List<S7Parameter> s7Parameters,
                             List<S7Payload> s7Payloads, ProtocolMessage parent) {
         super(messageType, tpduReference, s7Parameters, s7Payloads, parent);
+        acknowledged = false;
+    }
+
+    public boolean isAcknowledged() {
+        return acknowledged;
+    }
+
+    public void setAcknowledged(boolean acknowledged) {
+        this.acknowledged = acknowledged;
     }
 
 }

@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.s7.netty.model.params;
 
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
 import java.util.List;
@@ -40,6 +41,10 @@ public class VarParameter implements S7Parameter {
 
     public List<VarParameterItem> getItems() {
         return items;
+    }
+
+    public void mergeParameter(VarParameter otherParameter) {
+        items.addAll(otherParameter.getItems());
     }
 
 }

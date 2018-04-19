@@ -1,4 +1,4 @@
-/*
+package org.apache.plc4x.java.s7.netty.strategies;/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -16,32 +16,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.base.messages;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
+import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
 
-public class RawMessage implements ProtocolMessage {
+import java.util.Collection;
 
-    private final ByteBuf userData;
-    private final ProtocolMessage parent;
+/**
+ * Some times the messages being sent have to be manipulated before
+ * being able to send them. For example eventually a request has to
+ * be split up into multiple ones to respect the maximum PDU size.
+ */
+public interface S7MessageProcessor {
 
-    public RawMessage(ByteBuf userData) {
-        this(userData, null);
-    }
-
-    public RawMessage(ByteBuf userData, ProtocolMessage parent) {
-        this.userData = userData;
-        this.parent = parent;
-    }
-
-    public ByteBuf getUserData() {
-        return userData;
-    }
-
-    @Override
-    public ProtocolMessage getParent() {
-        return parent;
-    }
+    Collection<? extends S7Message> process(S7Message s7Message);
 
 }

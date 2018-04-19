@@ -25,34 +25,40 @@ import java.util.Map;
  * (Values determined by evaluating generated ".pcapng" files)
  */
 public enum TransportSize {
-    BIT((byte) 0x01),
-    BYTE((byte) 0x02),
-    CHAR((byte) 0x03),
-    WORD((byte) 0x04),
-    INT((byte) 0x05),
-    DWORD((byte) 0x06),
-    DINT((byte) 0x07),
-    REAL((byte) 0x08),
-    TOD((byte) 0x0A),
-    TIME((byte) 0x0B),
-    S5TIME((byte) 0x0C),
-    DATE_AND_TIME((byte) 0x0F),
-    COUNTER((byte) 0x1C),
-    TIMER((byte) 0x1D),
-    IEC_TIMER((byte) 0x1E),
-    IEC_COUNTER((byte) 0x1F),
-    HS_COUNTER((byte) 0x20);
+    BIT((byte) 0x01, 1),
+    BYTE((byte) 0x02, 1),
+    CHAR((byte) 0x03, 1),
+    WORD((byte) 0x04, 2),
+    INT((byte) 0x05, 2),
+    DWORD((byte) 0x06, 4),
+    DINT((byte) 0x07, 4),
+    REAL((byte) 0x08, 4),
+    TOD((byte) 0x0A, 4),
+    TIME((byte) 0x0B, 4),
+    S5TIME((byte) 0x0C, 2),
+    DATE_AND_TIME((byte) 0x0F, 4),
+    COUNTER((byte) 0x1C, -1),
+    TIMER((byte) 0x1D, -1),
+    IEC_TIMER((byte) 0x1E, -1),
+    IEC_COUNTER((byte) 0x1F, -1),
+    HS_COUNTER((byte) 0x20, -1);
 
     private static Map<Byte, TransportSize> map = null;
     
     private final byte code;
+    private final int sizeInBytes;
 
-    TransportSize(byte code) {
+    TransportSize(byte code, int sizeInBytes) {
         this.code = code;
+        this.sizeInBytes = sizeInBytes;
     }
 
     public byte getCode() {
         return code;
+    }
+
+    public int getSizeInBytes() {
+        return sizeInBytes;
     }
 
     public static TransportSize valueOf(byte code) {

@@ -37,6 +37,8 @@ public abstract class PlcMessageToMessageCodec<INBOUND_IN, OUTBOUND_IN>
         super(inboundMessageType, outboundMessageType);
     }
 
+
+
     protected ChannelHandler getPrevChannelHandler(ChannelHandlerContext ctx) {
         if(prevChannelHandler == null) {
             try {

@@ -42,7 +42,7 @@ public class IsoOnTcpProtocol extends PlcMessageToMessageCodec<ByteBuf, IsoOnTcp
 
     @Override
     protected void encode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) throws Exception {
-        logger.debug("ISO on TCP RawMessage sent");
+        logger.debug("ISO on TCP Message sent");
         // At this point of processing all higher levels have already serialized their payload.
         // This data is passed to the lower levels in form of an IoBuffer.
         final ByteBuf userData = in.getUserData();
@@ -80,7 +80,7 @@ public class IsoOnTcpProtocol extends PlcMessageToMessageCodec<ByteBuf, IsoOnTcp
         // and get the packet length. Only if the available amount of readable bytes is larger or
         // equal to this, continue processing the rest.
         if(in.readableBytes() >= 4) {
-            logger.debug("ISO on TCP RawMessage received");
+            logger.debug("ISO on TCP Message received");
             // The ISO on TCP protocol is really simple and in this case the buffer length
             // will take care of the higher levels not reading more than is in the packet.
             // So we just gobble up the header and continue reading in higher levels.
