@@ -31,6 +31,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsAddress;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
@@ -46,6 +47,7 @@ import org.apache.plc4x.java.api.types.ResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,6 +88,24 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         }
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if((cause instanceof IOException) && (cause.getMessage().contains("Connection reset by peer") ||
+            cause.getMessage().contains("Operation timed out"))) {
+            String reason = cause.getMessage().contains("Connection reset by peer") ?
+                "Connection terminated unexpectedly" : "Remote host not responding";
+            if (!requests.isEmpty()) {
+                // If the connection is hung up, all still pending requests can be closed.
+                for (PlcRequestContainer requestContainer : requests.values()) {
+                    requestContainer.getResponseFuture().completeExceptionally(new PlcIoException(reason));
+                }
+                // Clear the list
+                requests.clear();
+            }
+        } else {
+            super.exceptionCaught(ctx, cause);
+        }
+    }
 
     private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
