@@ -181,9 +181,7 @@ public class Plc4x2AdsProtocolTest {
         ArrayList<Object> out = new ArrayList<>();
         LOGGER.info("{}\nHexDump:\n{}", amsPacket, amsPacket.dump());
         SUT.decode(null, amsPacket, out);
-        assertThat(out, hasSize(1));
-        assertThat(out.get(0), instanceOf(PlcRequestContainer.class));
-        PlcRequestContainer<?, ?> plcRequestContainer = (PlcRequestContainer) out.get(0);
+        assertThat(out, hasSize(0));
         LOGGER.info("PlcRequestContainer {}", plcRequestContainer);
         PlcResponse plcResponse = plcRequestContainer.getResponseFuture().get();
         ResponseItem responseItem = (ResponseItem) plcResponse.getResponseItem().get();
