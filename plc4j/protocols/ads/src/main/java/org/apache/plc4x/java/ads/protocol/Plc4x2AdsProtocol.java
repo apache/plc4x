@@ -178,7 +178,6 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         if (response != null) {
             plcRequestContainer.getResponseFuture().complete(response);
         }
-        out.add(plcRequestContainer);
     }
 
     @SuppressWarnings("unchecked")
