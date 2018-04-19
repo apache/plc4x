@@ -97,7 +97,9 @@ public class AbstractProtocolTest {
             ),
             AdsReadStateResponse.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
-                Result.of(0)
+                Result.of(0),
+                AdsState.of(0),
+                DeviceState.of(0)
             ),
             AdsReadWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,

@@ -55,6 +55,10 @@ public class MajorVersion extends ByteValue {
         return NUM_BYTES;
     }
 
+    public byte getAsByte() {
+        return getBytes()[0];
+    }
+
     @Override
     public String toString() {
         return "MajorVersion{" +

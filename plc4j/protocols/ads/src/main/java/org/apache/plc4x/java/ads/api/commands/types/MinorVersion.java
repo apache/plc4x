@@ -55,10 +55,15 @@ public class MinorVersion extends ByteValue {
         return NUM_BYTES;
     }
 
+    public byte getAsByte() {
+        return getBytes()[0];
+    }
+
     @Override
     public String toString() {
         return "MinorVersion{" +
             "value=" + Arrays.toString(value) +
             "} " + super.toString();
     }
+
 }

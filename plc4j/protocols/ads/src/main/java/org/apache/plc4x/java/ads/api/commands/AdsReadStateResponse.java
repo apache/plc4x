@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.ads.api.commands;
 
+import org.apache.plc4x.java.ads.api.commands.types.AdsState;
+import org.apache.plc4x.java.ads.api.commands.types.DeviceState;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.AdsData;
 import org.apache.plc4x.java.ads.api.generic.AmsHeader;
@@ -39,51 +41,74 @@ public class AdsReadStateResponse extends AdsAbstractResponse {
      */
     private final Result result;
 
-    private AdsReadStateResponse(AmsHeader amsHeader, Result result) {
+    /**
+     * 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
+     */
+    private final AdsState adsState;
+
+    /**
+     * 2 bytes	New device status.
+     */
+    private final DeviceState deviceState;
+
+    private AdsReadStateResponse(AmsHeader amsHeader, Result result, AdsState adsState, DeviceState deviceState) {
         super(amsHeader);
         this.result = requireNonNull(result);
+        this.adsState = requireNonNull(adsState);
+        this.deviceState = requireNonNull(deviceState);
     }
 
-    private AdsReadStateResponse(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, Invoke invokeId, Result result) {
+    private AdsReadStateResponse(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, Invoke invokeId, Result result, AdsState adsState, DeviceState deviceState) {
         super(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId);
         this.result = requireNonNull(result);
+        this.adsState = requireNonNull(adsState);
+        this.deviceState = requireNonNull(deviceState);
     }
 
-    public static AdsReadStateResponse of(AmsHeader amsHeader, Result result) {
-        return new AdsReadStateResponse(amsHeader, result);
+    public static AdsReadStateResponse of(AmsHeader amsHeader, Result result, AdsState adsState, DeviceState deviceState) {
+        return new AdsReadStateResponse(amsHeader, result, adsState, deviceState);
     }
 
-    public static AdsReadStateResponse of(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, Invoke invokeId, Result result) {
-        return new AdsReadStateResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result);
+    public static AdsReadStateResponse of(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, Invoke invokeId, Result result, AdsState adsState, DeviceState deviceState) {
+        return new AdsReadStateResponse(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, result, adsState, deviceState);
     }
 
     public Result getResult() {
         return result;
     }
 
+    public AdsState getAdsState() {
+        return adsState;
+    }
+
+    public DeviceState getDeviceState() {
+        return deviceState;
+    }
+
     @Override
     public AdsData getAdsData() {
-        return buildADSData(result);
+        return buildADSData(result, adsState, deviceState);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof AdsReadStateResponse))
-            return false;
-        if (!super.equals(o))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof AdsReadStateResponse)) return false;
+        if (!super.equals(o)) return false;
 
         AdsReadStateResponse that = (AdsReadStateResponse) o;
 
-        return result.equals(that.result);
+        if (!result.equals(that.result)) return false;
+        if (!adsState.equals(that.adsState)) return false;
+        return deviceState.equals(that.deviceState);
     }
 
     @Override
     public int hashCode() {
         int result1 = super.hashCode();
         result1 = 31 * result1 + result.hashCode();
+        result1 = 31 * result1 + adsState.hashCode();
+        result1 = 31 * result1 + deviceState.hashCode();
         return result1;
     }
 
@@ -91,6 +116,8 @@ public class AdsReadStateResponse extends AdsAbstractResponse {
     public String toString() {
         return "AdsReadStateResponse{" +
             "result=" + result +
+            ", adsState=" + adsState +
+            ", deviceState=" + deviceState +
             "} " + super.toString();
     }
 }

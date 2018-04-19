@@ -197,7 +197,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             amsPacket = AdsReadStateRequest.of(amsHeader);
         } else {
             Result result = Result.of(commandBuffer);
-            amsPacket = AdsReadStateResponse.of(amsHeader, result);
+            AdsState adsState = AdsState.of(commandBuffer);
+            DeviceState deviceState = DeviceState.of(commandBuffer);
+            amsPacket = AdsReadStateResponse.of(amsHeader, result, adsState, deviceState);
         }
         return amsPacket;
     }
