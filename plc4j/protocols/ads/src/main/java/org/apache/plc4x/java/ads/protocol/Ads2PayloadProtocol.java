@@ -77,7 +77,6 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             LOGGER.debug("Correlated packet received {}", correlatedAmsPacket);
         }
         if (dataLength.getAsLong() > Integer.MAX_VALUE) {
-            byteBuf.release();
             throw new IllegalStateException("Overflow in datalength: " + dataLength.getAsLong());
         }
         ByteBuf commandBuffer = byteBuf.readBytes((int) dataLength.getAsLong());
@@ -121,12 +120,8 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
         out.add(amsPacket);
         LOGGER.trace("Set amsPacket {} to out", amsPacket);
         if (commandBuffer.readableBytes() > 0) {
-            commandBuffer.release();
-            byteBuf.release();
             throw new IllegalStateException("Unread bytes left: " + commandBuffer.readableBytes());
         }
-        commandBuffer.release();
-        byteBuf.release();
     }
 
 
@@ -272,7 +267,6 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
                 AdsStampHeader adsStampHeader = handleStampHeader(adsDeviceNotificationBuffer);
                 adsStampHeaders.add(adsStampHeader);
             }
-            adsDeviceNotificationBuffer.release();
             amsPacket = AdsDeviceNotificationRequest.of(amsHeader, length, stamps, adsStampHeaders);
         } else {
             amsPacket = UnknownCommand.of(amsHeader, commandBuffer);

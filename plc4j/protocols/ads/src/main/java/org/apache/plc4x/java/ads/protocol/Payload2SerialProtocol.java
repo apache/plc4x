@@ -43,7 +43,6 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
         out.add(AmsSerialFrame.of(FragmentNumber.of((byte) 0), UserData.of(amsPacket)).getByteBuf());
         // TODO: we need to remember the fragment and maybe even need to spilt up the package
         // TODO: if we exceed 255 byte
-        amsPacket.release();
     }
 
     @Override
@@ -92,10 +91,8 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
         }
 
         if (byteBuf.readableBytes() > 0) {
-            byteBuf.release();
             throw new IllegalStateException("Unread bytes left: " + byteBuf.readableBytes());
         }
 
-        byteBuf.release();
     }
 }
