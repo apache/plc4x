@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.connection;
 
+import io.netty.channel.ChannelFuture;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.model.AdsAddress;
@@ -78,14 +79,24 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
-        channel.writeAndFlush(new PlcRequestContainer<>(readRequest, readFuture));
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(readRequest, readFuture));
+        channelFuture.addListener(future -> {
+            if (!future.isSuccess()) {
+                readFuture.completeExceptionally(future.cause());
+            }
+        });
         return readFuture;
     }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
-        channel.writeAndFlush(new PlcRequestContainer<>(writeRequest, writeFuture));
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(writeRequest, writeFuture));
+        channelFuture.addListener(future -> {
+            if (!future.isSuccess()) {
+                writeFuture.completeExceptionally(future.cause());
+            }
+        });
         return writeFuture;
     }
 
