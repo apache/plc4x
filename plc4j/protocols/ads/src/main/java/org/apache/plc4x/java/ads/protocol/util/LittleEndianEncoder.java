@@ -32,6 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.stream.Stream;
 
+// TODO: we might user ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).putInt(port).asArray() etc
 public class LittleEndianEncoder {
 
     private LittleEndianEncoder() {

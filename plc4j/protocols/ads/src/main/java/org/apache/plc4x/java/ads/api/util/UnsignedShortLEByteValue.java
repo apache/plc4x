@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.api.util;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import static java.lang.Integer.toHexString;
 import static org.apache.commons.lang3.StringUtils.leftPad;
@@ -34,12 +35,13 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
     protected UnsignedShortLEByteValue(byte... value) {
         super(value);
         assertLength(UNSIGNED_SHORT_LE_NUM_BYTES);
-        intValue = getBytes()[1] << 8 | getBytes()[0] & 0xff;
+        intValue = ByteBuffer.wrap(value)
+            .order(ByteOrder.LITTLE_ENDIAN)
+            .getShort();
     }
 
     protected UnsignedShortLEByteValue(int value) {
         super(ofInt(value));
-        checkUnsignedBounds(value, UNSIGNED_SHORT_LE_NUM_BYTES);
         intValue = value;
     }
 
@@ -51,11 +53,11 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
         this(byteBuf.readUnsignedShortLE());
     }
 
-    private static byte[] ofInt(long value) {
+    private static byte[] ofInt(int value) {
+        checkUnsignedBounds(value, UNSIGNED_SHORT_LE_NUM_BYTES);
         return ByteBuffer.allocate(UNSIGNED_SHORT_LE_NUM_BYTES)
-            // LE
-            .put((byte) (value & 0xff))
-            .put((byte) (value >> 8 & 0xff))
+            .order(ByteOrder.LITTLE_ENDIAN)
+            .putShort((short) (value & 0xffff))
             .array();
     }
 

@@ -121,11 +121,11 @@ public class TimeStamp extends ByteValue {
         return of(values);
     }
 
-    private BigInteger getBigIntegerValue() {
+    public BigInteger getBigIntegerValue() {
         return bigIntegerValue;
     }
 
-    private Date getAsDate() {
+    public Date getAsDate() {
         return new Date(winTimeToJava(bigIntegerValue).longValue());
     }
 

@@ -33,7 +33,7 @@ public enum AdsReturnCode {
     ADS_CODE_3(0x3, 3, "Allocation locked memory error"),
     ADS_CODE_4(0x4, 4, "Insert mailbox error", "No ADS mailbox was available to process this message.", "Reduce the number of ADS calls (e.g ADS-Sum commands or Max Delay Parameter)"),
     ADS_CODE_5(0x5, 5, "Wrong receive HMSG"),
-    ADS_CODE_6(0x6, 6, "target port not foundADS ", "Server not started"),
+    ADS_CODE_6(0x6, 6, "target port not found", "ADS Server not started"),
     ADS_CODE_7(0x7, 7, "target machine not found", "Missing ADS routes"),
     ADS_CODE_8(0x8, 8, "Unknown command ID"),
     ADS_CODE_9(0x9, 9, "Bad task ID"),

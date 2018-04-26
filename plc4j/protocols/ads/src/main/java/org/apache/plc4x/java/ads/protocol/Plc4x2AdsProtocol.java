@@ -20,10 +20,7 @@ package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.plc4x.java.ads.api.commands.AdsReadRequest;
-import org.apache.plc4x.java.ads.api.commands.AdsReadResponse;
-import org.apache.plc4x.java.ads.api.commands.AdsWriteRequest;
-import org.apache.plc4x.java.ads.api.commands.AdsWriteResponse;
+import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
@@ -49,10 +46,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 import static org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder.decodeData;
 import static org.apache.plc4x.java.ads.protocol.util.LittleEndianEncoder.encodeData;
@@ -65,6 +64,8 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     private final ConcurrentMap<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requests;
 
+    private List<Consumer<AdsDeviceNotificationRequest>> deviceNotificationListeners;
+
     private final AmsNetId targetAmsNetId;
     private final AmsPort targetAmsPort;
     private final AmsNetId sourceAmsNetId;
@@ -76,6 +77,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         this.sourceAmsNetId = sourceAmsNetId;
         this.sourceAmsPort = sourceAmsPort;
         this.requests = new ConcurrentHashMap<>();
+        this.deviceNotificationListeners = new LinkedList<>();
     }
 
     @Override
@@ -165,6 +167,11 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws Exception {
+        if (amsPacket instanceof AdsDeviceNotificationRequest) {
+            LOGGER.debug("Received notification {}", amsPacket);
+            handleAdsDeviceNotificationRequest((AdsDeviceNotificationRequest) amsPacket);
+            return;
+        }
         PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requests.remove(amsPacket.getAmsHeader().getInvokeId().getAsLong());
         if (plcRequestContainer == null) {
             LOGGER.info("Unmapped packet received {}", amsPacket);
@@ -195,6 +202,25 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             plcRequestContainer.getResponseFuture().complete(response);
         }
     }
+
+    private void handleAdsDeviceNotificationRequest(AdsDeviceNotificationRequest adsDeviceNotificationRequest) {
+        for (Consumer<AdsDeviceNotificationRequest> deviceNotificationListener : deviceNotificationListeners) {
+            try {
+                deviceNotificationListener.accept(adsDeviceNotificationRequest);
+            } catch (RuntimeException e) {
+                LOGGER.error("Exception received from {} while handling {}", deviceNotificationListener, adsDeviceNotificationRequest, e);
+            }
+        }
+    }
+
+    public boolean addConsumer(Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer) {
+        return deviceNotificationListeners.add(adsDeviceNotificationRequestConsumer);
+    }
+
+    public boolean removeConsumer(Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer) {
+        return deviceNotificationListeners.remove(adsDeviceNotificationRequestConsumer);
+    }
+
 
     @SuppressWarnings("unchecked")
     private PlcResponse decodeWriteResponse(AdsWriteResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) {

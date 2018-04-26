@@ -75,7 +75,7 @@ public class AdsDeviceNotificationRequest extends AdsAbstractRequest {
             for (LengthSupplier supplier : adsStampHeaders) {
                 aggregateLength += supplier.getCalculatedLength();
             }
-            return aggregateLength;
+            return aggregateLength + Stamps.NUM_BYTES;
         };
     }
 

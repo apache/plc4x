@@ -24,6 +24,7 @@ import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import static java.lang.Integer.toHexString;
@@ -60,9 +61,8 @@ public enum Command implements ByteReadable {
         ByteValue.checkUnsignedBounds(value, NUM_BYTES);
         this.intValue = value;
         this.value = ByteBuffer.allocate(NUM_BYTES)
-            // LE
-            .put((byte) (value & 0xff))
-            .put((byte) (value >> 8 & 0xff))
+            .order(ByteOrder.LITTLE_ENDIAN)
+            .putShort((short) (value & 0xffff))
             .array();
     }
 

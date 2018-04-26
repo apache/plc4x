@@ -19,9 +19,8 @@
 package org.apache.plc4x.java.ads.api.generic.types;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.plc4x.java.ads.api.util.UnsignedShortLEByteValue;
 
-import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
 /**
@@ -30,15 +29,18 @@ import java.util.regex.Pattern;
  * @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
  */
 @SuppressWarnings("unused") // Due to predefined ports
-public class AmsPort extends ByteValue {
+public class AmsPort extends UnsignedShortLEByteValue {
 
     public static final Pattern AMS_PORT_PATTERN = Pattern.compile("\\d+");
 
-    public static final int NUM_BYTES = 2;
+    public static final int NUM_BYTES = UnsignedShortLEByteValue.UNSIGNED_SHORT_LE_NUM_BYTES;
 
     private AmsPort(byte... value) {
         super(value);
-        assertLength(NUM_BYTES);
+    }
+
+    private AmsPort(int value) {
+        super(value);
     }
 
     public static AmsPort of(byte... values) {
@@ -46,12 +48,7 @@ public class AmsPort extends ByteValue {
     }
 
     public static AmsPort of(int port) {
-        checkUnsignedBounds(port, NUM_BYTES);
-        return new AmsPort(ByteBuffer.allocate(NUM_BYTES)
-            // LE
-            .put((byte) (port & 0xff))
-            .put((byte) (port >> 8 & 0xff))
-            .array());
+        return new AmsPort(port);
     }
 
     public static AmsPort of(String port) {
@@ -67,7 +64,7 @@ public class AmsPort extends ByteValue {
 
     @Override
     public String toString() {
-        return Integer.toString(getBytes()[1] << 8 | getBytes()[0] & 0xff);
+        return String.valueOf(getAsInt());
     }
 
     public static class ReservedPorts {

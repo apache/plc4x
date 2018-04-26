@@ -261,7 +261,8 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             if (stamps.getAsLong() > Integer.MAX_VALUE) {
                 throw new IllegalStateException("Overflow in datalength: " + stamps.getAsLong());
             }
-            ByteBuf adsDeviceNotificationBuffer = commandBuffer.readBytes((int) length.getAsLong());
+            // Note: the length includes the 4 Bytes of stamps which we read already so we substract.
+            ByteBuf adsDeviceNotificationBuffer = commandBuffer.readBytes((int) length.getAsLong() - Stamps.NUM_BYTES);
             List<AdsStampHeader> adsStampHeaders = new ArrayList<>((int) stamps.getAsLong());
             for (int i = 1; i <= stamps.getAsLong(); i++) {
                 AdsStampHeader adsStampHeader = handleStampHeader(adsDeviceNotificationBuffer);

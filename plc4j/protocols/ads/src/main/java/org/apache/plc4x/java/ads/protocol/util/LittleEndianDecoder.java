@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+// TODO: we might user ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).putInt(port).asArray() etc
 public class LittleEndianDecoder {
 
     private LittleEndianDecoder() {
@@ -49,7 +50,7 @@ public class LittleEndianDecoder {
             } else if (datatype == Byte.class) {
                 result.add(byteOne);
                 i += 1;
-            } else  if (datatype == Short.class) {
+            } else if (datatype == Short.class) {
                 decodeShort(adsData, i, result);
                 i += 2;
             } else if (datatype == Integer.class) {
@@ -82,7 +83,7 @@ public class LittleEndianDecoder {
 
     private static void decodeShort(byte[] adsData, int i, List<Object> result) {
         byte byteOne = adsData[i];
-        byte byteTwo = adsData[i+1];
+        byte byteTwo = adsData[i + 1];
         result.add((short) ((byteOne & 0xff) | ((byteTwo & 0xff) << 8)));
     }
 
