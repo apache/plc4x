@@ -42,7 +42,7 @@ public class SingleAddressPerMessageS7MessageProcessor implements S7MessageProce
     }
 
     @Override
-    public Collection<? extends S7Message> process(S7Message s7Message) {
+    public Collection<? extends S7Message> process(S7Message s7Message, int pduSize) {
         // The following considerations have to be taken into account:
         // - The size of all parameters and payloads of a message cannot exceed the negotiated PDU size
         // - When reading data, the size of the returned data cannot exceed the negotiated PDU size

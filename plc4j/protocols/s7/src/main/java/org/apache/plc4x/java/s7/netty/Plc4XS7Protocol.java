@@ -320,12 +320,12 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         // If the numbers of items don't match, we're in big trouble as the only
         // way to know how to interpret the responses is by aligning them with the
         // items from the request as this information is not returned by the PLC.
-        if (plcReadRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
+        if (plcReadRequest.getRequestItems().size() != payload.getItems().size()) {
             throw new PlcProtocolException(
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        List<VarPayloadItem> payloadItems = payload.getPayloadItems();
+        List<VarPayloadItem> payloadItems = payload.getItems();
         final int noPayLoadItems = payloadItems.size();
         for (int i = 0; i < noPayLoadItems; i++) {
             VarPayloadItem payloadItem = payloadItems.get(i);
@@ -367,11 +367,11 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         // If the numbers of items don't match, we're in big trouble as the only
         // way to know how to interpret the responses is by aligning them with the
         // items from the request as this information is not returned by the PLC.
-        if (plcWriteRequest.getRequestItems().size() != payload.getPayloadItems().size()) {
+        if (plcWriteRequest.getRequestItems().size() != payload.getItems().size()) {
             throw new PlcProtocolException(
                 "The number of requested items doesn't match the number of returned items");
         }
-        List<VarPayloadItem> payloadItems = payload.getPayloadItems();
+        List<VarPayloadItem> payloadItems = payload.getItems();
         final int noPayLoadItems = payloadItems.size();
         for (int i = 0; i < noPayLoadItems; i++) {
             VarPayloadItem payloadItem = payloadItems.get(i);

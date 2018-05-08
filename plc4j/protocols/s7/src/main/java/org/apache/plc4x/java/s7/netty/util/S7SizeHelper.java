@@ -53,7 +53,7 @@ public class S7SizeHelper {
         for (S7Payload payload : payloads) {
             if(payload instanceof VarPayload) {
                 VarPayload varPayload = (VarPayload) payload;
-                for (VarPayloadItem payloadItem : varPayload.getPayloadItems()) {
+                for (VarPayloadItem payloadItem : varPayload.getItems()) {
                     l += getPayloadLength(payloadItem);
                 }
             }

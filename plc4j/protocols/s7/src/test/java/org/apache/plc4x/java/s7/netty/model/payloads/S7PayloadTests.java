@@ -59,7 +59,7 @@ public class S7PayloadTests {
 
         VarPayload  varPayload = new VarPayload(parameterType, payloadItems);
         assertThat("Unexpected parameter type", varPayload.getType(), equalTo(ParameterType.DOWNLOAD_ENDED));
-        assertThat("Unexpected pay load items", varPayload.getPayloadItems(), contains(payloadItems.toArray()));
+        assertThat("Unexpected payload items", varPayload.getItems(), contains(payloadItems.toArray()));
     }
 
 }

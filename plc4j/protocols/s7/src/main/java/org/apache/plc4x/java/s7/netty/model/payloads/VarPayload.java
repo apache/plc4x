@@ -21,7 +21,6 @@ package org.apache.plc4x.java.s7.netty.model.payloads;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class VarPayload implements S7Payload {
@@ -40,12 +39,12 @@ public class VarPayload implements S7Payload {
         return parameterType;
     }
 
-    public List<VarPayloadItem> getPayloadItems() {
+    public List<VarPayloadItem> getItems() {
         return payloadItems;
     }
 
     public void mergePayload(VarPayload otherPayload) {
-        payloadItems.addAll(otherPayload.getPayloadItems());
+        payloadItems.addAll(otherPayload.getItems());
     }
 
 }

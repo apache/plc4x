@@ -28,6 +28,6 @@ import java.util.Collection;
  */
 public interface S7MessageProcessor {
 
-    Collection<? extends S7Message> process(S7Message s7Message);
+    Collection<? extends S7Message> process(S7Message s7Message, int pduSize);
 
 }
