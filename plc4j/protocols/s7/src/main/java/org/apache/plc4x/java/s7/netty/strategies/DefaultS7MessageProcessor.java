@@ -71,7 +71,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         //  When reading two Strings of each 200 bytes length, the size of the request is ok, however the PLC would
         //  have to send back 400 bytes of String data, which would exceed the PDU size. In this case the first String
         //  is correctly returned, but for the second item the PLC will return a code of 0x03 = Access Denied
-        // - TODO: A S7 device doesn't seem to accept more than one write item. So if we are doing write operations, we
+        // - A S7 device doesn't seem to accept more than one write item. So if we are doing write operations, we
         //  have to split that up into one message per written item. This also seems to affect arrays. So if
         //  an array of values is written, we have to also split up that array into single writes.
 
