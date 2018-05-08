@@ -27,6 +27,9 @@ pipeline {
     }
 
     environment {
+        MAVEN_HOME=/opt/maven
+        PATH="${MAVEN_HOME}/bin:${PATH}"
+
         PLC4X_BUILD_ON_JENKINS = true
         JENKINS_PROFILE = 'jenkins-build'
         // On non master build we don't want to pollute the global m2 repo
