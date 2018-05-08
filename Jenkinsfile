@@ -21,7 +21,8 @@
 pipeline {
     agent {
         node {
-            label 'ubuntu && !H33'
+            //label 'ubuntu && !H33'
+            label 'plc4x1'
         }
     }
 
