@@ -87,4 +87,9 @@ When hitting enter or clicking on `Calc & Copy` the tool should automatically co
 
 Now all you need to do is paste that as password into your SSH client session.
 
+=== Required software
 
+For being able to build the charts and graphics as part of the site generation, we need to add some additional packages:
+
+   sudo apt-get install python-seqdiag
+   sudo apt-get install python-nwdiag
