@@ -57,7 +57,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 echo 'Building Branch: ' + env.BRANCH_NAME
-                echo 'Using PATH = ' + env.PATH + ' (' + PATH + ')'
+                echo 'Using PATH = ' + env.PATH
             }
         }
 
@@ -100,6 +100,8 @@ pipeline {
             steps {
                 echo 'Building'
                 sh 'mvn -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} clean install'
+                // Stash the build results so we can deploy them on another node
+                stash name: 'plc4x-build'
             }
             post {
                 always {
@@ -123,8 +125,16 @@ pipeline {
             when {
                 branch 'master'
             }
+            // Only the official build nodes have the credentials to deploy setup.
+            agent {
+                node {
+                    label 'ubuntu'
+                }
+            }
             steps {
                 echo 'Deploying'
+                // Unstash the previously stashed build results.
+                unstash name: 'plc4x-build'
                 sh 'mvn -P${JENKINS_PROFILE} -Drat.skip=true -Djqassistant.skip=true -Dmaven.resources.skip=true -Dmaven.test.skip=true -Dmaven.install.skip=true deploy'
             }
         }
@@ -154,6 +164,7 @@ pipeline {
             when {
                 branch 'master'
             }
+            // Only the nodes labeled 'git-websites' have the credentials to commit to the .
             agent {
                 node {
                     label 'git-websites'
