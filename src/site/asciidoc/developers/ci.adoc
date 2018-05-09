@@ -50,7 +50,9 @@ The general structure of the build is as follows:
   Finish [shape = endpoint];
 
   Start -> Initialization -> Cleanup -> Checkout;
-  Checkout -> Build [label = "any other branch"] -> Finish;
-  Checkout -> BuildMaster [label = "master branch"] -> CodeQuality -> Deploy -> BuildSite -> StageSite -> DeploySite -> Finish;
+  Checkout -> Build [label = "any other branch"];
+  Build -> Finish;
+  Checkout -> BuildMaster [label = "master branch"];
+  BuildMaster -> CodeQuality -> Deploy -> BuildSite -> StageSite -> DeploySite -> Finish;
 }
 ....
