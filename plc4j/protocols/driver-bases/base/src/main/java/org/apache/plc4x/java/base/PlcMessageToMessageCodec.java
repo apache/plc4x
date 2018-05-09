@@ -21,11 +21,15 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
 public abstract class PlcMessageToMessageCodec<INBOUND_IN, OUTBOUND_IN>
     extends MessageToMessageCodec<INBOUND_IN, OUTBOUND_IN> {
+
+    private static final Logger logger = LoggerFactory.getLogger(PlcMessageToMessageCodec.class);
 
     private volatile ChannelHandler prevChannelHandler = null;
 
@@ -37,8 +41,6 @@ public abstract class PlcMessageToMessageCodec<INBOUND_IN, OUTBOUND_IN>
         super(inboundMessageType, outboundMessageType);
     }
 
-
-
     protected ChannelHandler getPrevChannelHandler(ChannelHandlerContext ctx) {
         if(prevChannelHandler == null) {
             try {
@@ -48,7 +50,7 @@ public abstract class PlcMessageToMessageCodec<INBOUND_IN, OUTBOUND_IN>
                     prevChannelHandler = prevContext.handler();
                 }
             } catch(Exception e) {
-                e.printStackTrace();
+                logger.error("Error accessing field 'prev'", e);
             }
         }
         return prevChannelHandler;

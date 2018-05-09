@@ -23,7 +23,7 @@ public class PlcProtocolPayloadTooBigException extends PlcProtocolException {
     private String protocolName;
     private int maxSize;
     private int actualSize;
-    private Object payload;
+    private transient Object payload;
 
     public PlcProtocolPayloadTooBigException(String protocolName, int maxSize, int actualSize, Object payload) {
         super("Payload for protocol '" + protocolName + "' with size " + actualSize +

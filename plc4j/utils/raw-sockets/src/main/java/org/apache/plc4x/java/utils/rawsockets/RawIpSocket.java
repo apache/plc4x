@@ -44,6 +44,8 @@ public class RawIpSocket {
     private static final int SNAPLEN = 65536;
     private static final int READ_TIMEOUT = 10;
 
+    private static final String GATEWAY_ONLY_NETMASK = "255.255.255.255";
+
     private static final Map<InetAddress, MacAddress> arpCache = new HashMap<>();
 
     // The id of the protocol we will be communicating in.
@@ -299,7 +301,7 @@ public class RawIpSocket {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
                 // Iterate over all addresses configured for this interface.
                 for (PcapAddress localAddress : dev.getAddresses()) {
-                    if("255.255.255.255".equals(localAddress.getNetmask().getHostAddress())) {
+                    if(GATEWAY_ONLY_NETMASK.equals(localAddress.getNetmask().getHostAddress())) {
                         return new FirstHop(dev, localAddress.getAddress(),
                             dev.getLinkLayerAddresses().iterator().next(),
                             getMacAddress(dev, localAddress.getAddress(), remoteAddress));

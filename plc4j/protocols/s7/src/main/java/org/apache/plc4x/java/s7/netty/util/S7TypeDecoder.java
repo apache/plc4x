@@ -71,7 +71,7 @@ public class S7TypeDecoder {
                     }
                     result.add(new String(s7Data, 2, j - 2, "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
-                    throw new PlcProtocolException("Error decoding String value");
+                    throw new PlcProtocolException("Error decoding String value", e);
                 }
                 i += s7Data.length;
             } else {

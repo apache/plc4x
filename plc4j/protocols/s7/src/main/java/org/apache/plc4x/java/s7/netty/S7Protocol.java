@@ -102,7 +102,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 prevChannelHandler = prevContext.handler();
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            logger.error("Error accessing field 'prev'", e);
         }
     }
 
@@ -158,7 +158,9 @@ public class S7Protocol extends ChannelDuplexHandler {
                 try {
                     messages = messageProcessor.process(in, pduSize);
                 } catch(Exception e) {
-                    e.printStackTrace();
+                    logger.error("Error processing message", e);
+                    ctx.fireExceptionCaught(e);
+                    return;
                 }
             } else {
                 messages = Collections.singleton(in);
@@ -542,7 +544,8 @@ public class S7Protocol extends ChannelDuplexHandler {
                         break;
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Error sending more queues messages", e);
+                    ctx.fireExceptionCaught(e);
                 }
 
                 if(curTpdu.getParent() != null) {
