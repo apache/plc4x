@@ -156,7 +156,8 @@ pipeline {
             steps {
                 echo 'Staging Site'
                 sh 'mvn -P${JENKINS_PROFILE} site:stage'
-                stash includes: 'target/staging/**/*', name: 'siteStageDir'
+                // Stash the generated site so we can publish it on the 'git-website' node.
+                stash includes: 'target/staging/**/*', name: 'plc4x-site'
             }
         }
 
@@ -164,7 +165,7 @@ pipeline {
             when {
                 branch 'master'
             }
-            // Only the nodes labeled 'git-websites' have the credentials to commit to the .
+            // Only the nodes labeled 'git-websites' have the credentials to commit to the.
             agent {
                 node {
                     label 'git-websites'
@@ -172,9 +173,10 @@ pipeline {
             }
             steps {
                 echo 'Deploying Site'
-                unstash 'siteStageDir'
-                // We need to regenerate the site for deploy as we switch the node. We could save time by stash/unstash.
-                //sh 'mvn -P${JENKINS_PROFILE} scm-publish:publish-scm'
+                // Unstash the previously stashed site.
+                unstash 'plc4x-site'
+                // Publish the site with the scm-publish plugin.
+                sh 'mvn -P${JENKINS_PROFILE} scm-publish:publish-scm'
             }
         }
 
