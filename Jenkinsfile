@@ -22,13 +22,13 @@ pipeline {
     agent {
         node {
             //label 'ubuntu && !H33'
-            label 'plc4x1'
+            label 'plc4x'
         }
     }
 
     environment {
-        MAVEN_HOME=/opt/maven
-        PATH="${MAVEN_HOME}/bin:${PATH}"
+        //MAVEN_HOME=/opt/maven
+        //PATH="${MAVEN_HOME}/bin:${PATH}"
 
         PLC4X_BUILD_ON_JENKINS = true
         JENKINS_PROFILE = 'jenkins-build'
