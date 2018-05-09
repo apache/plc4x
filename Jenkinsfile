@@ -30,7 +30,7 @@ pipeline {
         // It seems the login the jenkins slave uses, doesn't pick up the environment changes,
         // so we have to try to manually add theme here.
         MAVEN_HOME = '/opt/maven'
-        PATH = '${MAVEN_HOME}/bin:${PATH}'
+        PATH = '${MAVEN_HOME}/bin:${env.PATH}'
 
         PLC4X_BUILD_ON_JENKINS = true
         JENKINS_PROFILE = 'jenkins-build'
