@@ -40,17 +40,17 @@ The general structure of the build is as follows:
 [blockdiag,developers-ci-pipeline,svg]
 ....
 {
-  Start [shape = beginpoint]
-  BuildMaster [label = "Build Master"]
-  CodeQuality [label = ""]
-  Deploy [color = "#068D9D", textcolor="#FFFFFF"]
-  BuildSite [label = "Build Site"]
-  StageSite [label = "Stage Site"]
-  DeploySite [label = "Deploy Site", color = "#80DED9", textcolor="#FFFFFF"]
-  Finish [shape = endpoint]
+  Start [shape = beginpoint];
+  BuildMaster [label = "Build Master"];
+  CodeQuality [label = "Code Quality"];
+  Deploy [color = "#068D9D", textcolor="#FFFFFF"];
+  BuildSite [label = "Build Site"];
+  StageSite [label = "Stage Site"];
+  DeploySite [label = "Deploy Site", color = "#80DED9", textcolor="#FFFFFF"];
+  Finish [shape = endpoint];
 
-  Start -> Initialization -> Cleanup -> Checkout
-  Checkout -> Build [label = "any other branch"] -> Finish
-  Checkout -> BuildMaster [label = "master branch"] -> CodeQuality -> Deploy -> BuildSite -> StageSite -> DeploySite -> Finish
+  Start -> Initialization -> Cleanup -> Checkout;
+  Checkout -> Build [label = "any other branch"] -> Finish;
+  Checkout -> BuildMaster [label = "master branch"] -> CodeQuality -> Deploy -> BuildSite -> StageSite -> DeploySite -> Finish;
 }
 ....
