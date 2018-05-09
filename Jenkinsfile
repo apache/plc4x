@@ -57,6 +57,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 echo 'Building Branch: ' + env.BRANCH_NAME
+                echo 'Using PATH = ' + env.PATH + ' / ${PATH}'
             }
         }
 
