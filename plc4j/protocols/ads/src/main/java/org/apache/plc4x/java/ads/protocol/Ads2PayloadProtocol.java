@@ -21,6 +21,8 @@ package org.apache.plc4x.java.ads.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AmsHeader;
@@ -39,6 +41,16 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Ads2PayloadProtocol.class);
 
+    private static final Configuration CONF = new SystemConfiguration();
+    private static final long MAX_NUM_STAMPS = CONF.getLong("plc4x.ads2payloadprotocol.max_num_stamps", 512L);
+    private static final long MAX_NUM_SAMPLES = CONF.getLong("plc4x.ads2payloadprotocol.max_num_samples", 1024L);
+    private static final long ADS_READ_COMMAND_MAX_BYTES = CONF.getLong("plc4x.ads2payloadprotocol.ads_read_command_max_bytes", 134217728L);
+    private static final long ADS_WRITE_COMMAND_MAX_BYTES = CONF.getLong("plc4x.ads2payloadprotocol.ads_write_command_max_bytes", 134217728L);
+    private static final long ADS_WRITE_CONTROL_COMMAND_MAX_BYTES = CONF.getLong("plc4x.ads2payloadprotocol.ads_write_control_command_max_bytes", 134217728L);
+    private static final long ADS_NOTIFICATION_SAMPLE_MAX_BYTES = CONF.getLong("plc4x.ads2payloadprotocol.ads_notification_sample_max_bytes", 134217728L);
+    private static final long ADS_READ_WRITE_COMMAND_REQUEST_MAX_BYTES = CONF.getLong("plc4x.ads2payloadprotocol.ads_read_write_command_request_max_bytes", 134217728L);
+    private static final long ADS_READ_WRITE_COMMAND_RESPONSE_MAX_BYTES = CONF.getLong("plc4x.ads2payloadprotocol.ads_read_write_command_response_max_bytes", 134217728L);
+
     private final ConcurrentMap<Invoke, AmsPacket> requests;
 
     public Ads2PayloadProtocol() {
@@ -53,7 +65,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
     }
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) {
         Invoke invokeId = amsPacket.getAmsHeader().getInvokeId();
         if (invokeId != Invoke.NONE) {
             requests.put(invokeId, amsPacket);
@@ -62,7 +74,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
     }
 
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) {
         AmsNetId targetAmsNetId = AmsNetId.of(byteBuf);
         AmsPort targetAmsPort = AmsPort.of(byteBuf);
         AmsNetId sourceAmsNetId = AmsNetId.of(byteBuf);
@@ -157,6 +169,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             if (length.getAsLong() > Integer.MAX_VALUE) {
                 throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
             }
+            if (length.getAsLong() > ADS_READ_COMMAND_MAX_BYTES) {
+                throw new IllegalStateException("Overflow of ADS_READ_COMMAND_MAX_BYTES: " + ADS_READ_COMMAND_MAX_BYTES + ". Actual " + length.getAsLong() + "bytes.");
+            }
             byte[] dataToRead = new byte[(int) length.getAsLong()];
             commandBuffer.readBytes(dataToRead);
             Data data = Data.of(dataToRead);
@@ -173,6 +188,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             Length length = Length.of(commandBuffer);
             if (length.getAsLong() > Integer.MAX_VALUE) {
                 throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
+            }
+            if (length.getAsLong() > ADS_WRITE_COMMAND_MAX_BYTES) {
+                throw new IllegalStateException("Overflow of ADS_WRITE_COMMAND_MAX_BYTES: " + ADS_WRITE_COMMAND_MAX_BYTES + ". Actual " + length.getAsLong() + "bytes.");
             }
             byte[] dataToRead = new byte[(int) length.getAsLong()];
             commandBuffer.readBytes(dataToRead);
@@ -207,6 +225,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             Length length = Length.of(commandBuffer);
             if (length.getAsLong() > Integer.MAX_VALUE) {
                 throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
+            }
+            if (length.getAsLong() > ADS_WRITE_CONTROL_COMMAND_MAX_BYTES) {
+                throw new IllegalStateException("Overflow of ADS_WRITE_CONTROL_COMMAND_MAX_BYTES: " + ADS_WRITE_CONTROL_COMMAND_MAX_BYTES + ". Actual " + length.getAsLong() + "bytes.");
             }
             byte[] dataToRead = new byte[(int) length.getAsLong()];
             commandBuffer.readBytes(dataToRead);
@@ -264,6 +285,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             // Note: the length includes the 4 Bytes of stamps which we read already so we substract.
             ByteBuf adsDeviceNotificationBuffer = commandBuffer.readBytes((int) length.getAsLong() - Stamps.NUM_BYTES);
             List<AdsStampHeader> adsStampHeaders = new ArrayList<>((int) stamps.getAsLong());
+            if (stamps.getAsLong() > MAX_NUM_STAMPS) {
+                throw new IllegalStateException("Overflow of MAX_NUM_STAMPS: " + MAX_NUM_STAMPS + ". Actual " + stamps.getAsLong());
+            }
             for (int i = 1; i <= stamps.getAsLong(); i++) {
                 AdsStampHeader adsStampHeader = handleStampHeader(adsDeviceNotificationBuffer);
                 adsStampHeaders.add(adsStampHeader);
@@ -280,6 +304,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
         Samples samples = Samples.of(adsDeviceNotificationBuffer);
 
         List<AdsNotificationSample> adsNotificationSamples = new LinkedList<>();
+        if (samples.getAsLong() > MAX_NUM_SAMPLES) {
+            throw new IllegalStateException("Overflow of MAX_NUM_SAMPLES: " + MAX_NUM_SAMPLES + ". Actual " + samples.getAsLong());
+        }
         for (int i = 1; i <= samples.getAsLong(); i++) {
             AdsNotificationSample adsNotificationSample = handleAdsNotificartionSample(adsDeviceNotificationBuffer);
             adsNotificationSamples.add(adsNotificationSample);
@@ -293,6 +320,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
         SampleSize sampleSize = SampleSize.of(adsDeviceNotificationBuffer);
         if (sampleSize.getAsLong() > Integer.MAX_VALUE) {
             throw new IllegalStateException("Overflow in datalength: " + sampleSize.getAsLong());
+        }
+        if (sampleSize.getAsLong() > ADS_NOTIFICATION_SAMPLE_MAX_BYTES) {
+            throw new IllegalStateException("Overflow of ADS_NOTIFICATION_SAMPLE_MAX_BYTES: " + ADS_NOTIFICATION_SAMPLE_MAX_BYTES + ". Actual " + sampleSize.getAsLong() + "bytes.");
         }
         // TODO: do we need a special marker class for: Notice: If your handle becomes invalid, one notification without data will be send once as advice.
         byte[] dataToRead = new byte[(int) sampleSize.getAsLong()];
@@ -317,6 +347,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             if (readLength.getAsLong() + writeLength.getAsLong() > Integer.MAX_VALUE) {
                 throw new IllegalStateException("Overflow in datalength: " + readLength.getAsLong() + writeLength.getAsLong());
             }
+            if (readLength.getAsLong() > ADS_READ_WRITE_COMMAND_REQUEST_MAX_BYTES) {
+                throw new IllegalStateException("Overflow of ADS_READ_WRITE_COMMAND_REQUEST_MAX_BYTES: " + ADS_READ_WRITE_COMMAND_REQUEST_MAX_BYTES + ". Actual " + readLength.getAsLong() + "bytes.");
+            }
             byte[] dataToRead = new byte[(int) readLength.getAsLong()];
             commandBuffer.readBytes(dataToRead);
             Data data = Data.of(dataToRead);
@@ -326,6 +359,9 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             Length length = Length.of(commandBuffer);
             if (length.getAsLong() > Integer.MAX_VALUE) {
                 throw new IllegalStateException("Overflow in datalength: " + length.getAsLong());
+            }
+            if (length.getAsLong() > ADS_READ_WRITE_COMMAND_RESPONSE_MAX_BYTES) {
+                throw new IllegalStateException("Overflow of ADS_READ_WRITE_COMMAND_RESPONSE_MAX_BYTES: " + ADS_READ_WRITE_COMMAND_RESPONSE_MAX_BYTES + ". Actual " + length.getAsLong() + "bytes.");
             }
             byte[] dataToRead = new byte[(int) length.getAsLong()];
             commandBuffer.readBytes(dataToRead);
