@@ -1,4 +1,5 @@
-package org.apache.plc4x.java.s7.netty.strategies;/*
+package org.apache.plc4x.java.s7.netty.strategies;
+/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -17,7 +18,8 @@ specific language governing permissions and limitations
 under the License.
 */
 
-import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
+import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
+import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
 
 import java.util.Collection;
 
@@ -28,6 +30,8 @@ import java.util.Collection;
  */
 public interface S7MessageProcessor {
 
-    Collection<? extends S7Message> process(S7Message s7Message, int pduSize);
+    Collection<? extends S7RequestMessage> processRequest(S7RequestMessage request, int pduSize);
+
+    S7ResponseMessage processResponse(S7RequestMessage request, S7ResponseMessage response);
 
 }

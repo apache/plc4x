@@ -88,7 +88,6 @@ public class S7Protocol extends ChannelDuplexHandler {
         this.maxAmqCallee = requestedMaxAmqCallee;
         this.pduSize = requestedPduSize;
         sentButUnacknowledgedTpdus = new HashMap<>();
-        //messageProcessor = new SingleAddressPerMessageS7MessageProcessor();
         messageProcessor = new DefaultS7MessageProcessor();
     }
 
@@ -153,10 +152,10 @@ public class S7Protocol extends ChannelDuplexHandler {
             S7Message in = (S7Message) msg;
 
             // Give message processors to process the incoming message.
-            Collection<? extends S7Message> messages = null;
-            if(messageProcessor != null) {
+            Collection<? extends S7Message> messages;
+            if((messageProcessor != null) && (in instanceof S7RequestMessage)) {
                 try {
-                    messages = messageProcessor.process(in, pduSize);
+                    messages = messageProcessor.processRequest((S7RequestMessage) in, pduSize);
                 } catch(Exception e) {
                     logger.error("Error processing message", e);
                     ctx.fireExceptionCaught(e);
@@ -333,7 +332,6 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
 
         List<S7Parameter> s7Parameters = new LinkedList<>();
-        SetupCommunicationParameter setupCommunicationParameter = null;
         VarParameter readWriteVarParameter = null;
         int i = 0;
 
@@ -341,7 +339,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             S7Parameter parameter = decodeParameter(userData, isResponse, headerParametersLength - i);
             s7Parameters.add(parameter);
             if (parameter instanceof SetupCommunicationParameter) {
-                setupCommunicationParameter = (SetupCommunicationParameter) parameter;
+                handleSetupCommunications(ctx, (SetupCommunicationParameter) parameter);
             }
             if (parameter instanceof VarParameter) {
                 readWriteVarParameter = (VarParameter) parameter;
@@ -354,38 +352,31 @@ public class S7Protocol extends ChannelDuplexHandler {
         logger.debug("S7 Message with id {} received", tpduReference);
 
         if (isResponse) {
-            // Remove the current response from the list of unconfirmed messages.
-            DataTpdu requestTpdu = sentButUnacknowledgedTpdus.remove(tpduReference);
-            S7RequestMessage requestMessage = (requestTpdu != null) ? (S7RequestMessage) requestTpdu.getParent() : null;
-            // If we got a SetupCommunicationParameter as part of the response
-            // we are currently in the process of establishing a connection with
-            // the PLC, so save some of the information in the session and tell
-            // the next layer to negotiate the connection parameters.
-            if (setupCommunicationParameter != null) {
-                handleSetupCommunications(ctx, setupCommunicationParameter);
-            }
-
             S7ResponseMessage responseMessage = new S7ResponseMessage(
                 messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode);
+
+            // Remove the current response from the list of unconfirmed messages.
+            DataTpdu requestTpdu = sentButUnacknowledgedTpdus.remove(tpduReference);
+
+            // Get the corresponding request message.
+            S7RequestMessage requestMessage = (requestTpdu != null) ? (S7RequestMessage) requestTpdu.getParent() : null;
+
             if(requestMessage != null) {
                 // Set this individual request to "acknowledged".
                 requestMessage.setAcknowledged(true);
 
-                // If it's a split-up message, check if all parts are now acknowledged.
-                if(requestMessage.getParent() instanceof S7CompositeRequestMessage) {
-                    S7CompositeRequestMessage parent = (S7CompositeRequestMessage) requestMessage.getParent();
-
-                    // Add the response to the container so we can add it's information to the composite response.
-                    parent.addResponseMessage(responseMessage);
-
-                    // If all parts of this split-up message are now acknowledged, create a unified
-                    // response object and pass that up to the higher layers.
-                    if(parent.isAcknowledged()) {
-                        out.add(parent.getResponseMessage());
+                // Give the request and response to a message processor to process the incoming message.
+                if(messageProcessor != null) {
+                    try {
+                        responseMessage = messageProcessor.processResponse(requestMessage, responseMessage);
+                    } catch(Exception e) {
+                        logger.error("Error processing message", e);
+                        ctx.fireExceptionCaught(e);
+                        return;
                     }
                 }
-                // If it's an ordinary request, simply forward it  to the higher layers.
-                else {
+
+                if(responseMessage != null) {
                     out.add(responseMessage);
                 }
 
@@ -556,6 +547,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
                     logger.debug("S7 Message with id {} sent", s7RequestMessage.getTpduReference());
                 }
+                // TODO: Eventually remove this.
                 break;
             } else {
                 break;
