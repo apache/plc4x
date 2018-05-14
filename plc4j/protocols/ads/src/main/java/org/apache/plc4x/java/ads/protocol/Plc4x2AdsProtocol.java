@@ -214,6 +214,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     }
 
     public boolean addConsumer(Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer) {
+        // TODO: we might need to add an AdsAddDeviceNotification
         return deviceNotificationListeners.add(adsDeviceNotificationRequestConsumer);
     }
 

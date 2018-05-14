@@ -22,22 +22,37 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import org.apache.plc4x.java.ads.api.commands.AdsDeviceNotificationRequest;
+import org.apache.plc4x.java.ads.api.commands.types.AdsNotificationSample;
+import org.apache.plc4x.java.ads.api.commands.types.AdsStampHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
+import org.apache.plc4x.java.ads.api.util.ByteValue;
 import org.apache.plc4x.java.ads.protocol.Ads2PayloadProtocol;
 import org.apache.plc4x.java.ads.protocol.Payload2TcpProtocol;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
+import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcNotification;
+import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-public class AdsTcpPlcConnection extends AdsAbstractPlcConnection {
+public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements PlcSubscriber {
 
     private static final int TCP_PORT = 48898;
+
+    private final Map<Consumer<PlcNotification>, Consumer<AdsDeviceNotificationRequest>> subscriberMap = new HashMap<>();
 
     private AdsTcpPlcConnection(InetAddress address, AmsNetId targetAmsNetId, AmsPort targetAmsPort) {
         this(address, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
@@ -101,4 +116,30 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection {
         return AmsPort.of(TCP_PORT);
     }
 
+    @Override
+    public void subscribe(Consumer<PlcNotification> consumer, Address address) {
+        Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer = adsDeviceNotificationRequest -> {
+            for (AdsStampHeader adsStampHeader : adsDeviceNotificationRequest.getAdsStampHeaders()) {
+                Date timeStamp = adsStampHeader.getTimeStamp().getAsDate();
+                // TODO: where do we implement the mapping. Better move it into the ...
+                List<Object> values = adsStampHeader.getAdsNotificationSamples()
+                    .stream()
+                    .map(AdsNotificationSample::getData)
+                    .map(ByteValue::getBytes)
+                    .map(data -> (Object) data)
+                    .collect(Collectors.toList());
+                consumer.accept(new PlcNotification(timeStamp, values));
+            }
+        };
+        subscriberMap.put(consumer, adsDeviceNotificationRequestConsumer);
+        getChannel().pipeline().get(Plc4x2AdsProtocol.class).addConsumer(adsDeviceNotificationRequestConsumer);
+    }
+
+    @Override
+    public void unsubscribe(Consumer<PlcNotification> consumer) {
+        Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer = subscriberMap.remove(consumer);
+        if (adsDeviceNotificationRequestConsumer != null) {
+            getChannel().pipeline().get(Plc4x2AdsProtocol.class).removeConsumer(adsDeviceNotificationRequestConsumer);
+        }
+    }
 }

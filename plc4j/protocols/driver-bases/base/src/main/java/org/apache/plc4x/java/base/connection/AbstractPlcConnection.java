@@ -20,10 +20,7 @@ package org.apache.plc4x.java.base.connection;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcLister;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.connection.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 
@@ -59,7 +56,7 @@ public abstract class AbstractPlcConnection implements PlcConnection {
             // Have the channel factory create a new channel instance.
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture));
             channel.closeFuture().addListener(future -> {
-                if(!sessionSetupCompleteFuture.isDone()) {
+                if (!sessionSetupCompleteFuture.isDone()) {
                     sessionSetupCompleteFuture.completeExceptionally(
                         new PlcIoException("Connection terminated by remote"));
                 }
@@ -127,4 +124,11 @@ public abstract class AbstractPlcConnection implements PlcConnection {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<PlcSubscriber> getSubscriber() {
+        if (this instanceof PlcSubscriber) {
+            return Optional.of((PlcSubscriber) this);
+        }
+        return Optional.empty();
+    }
 }
