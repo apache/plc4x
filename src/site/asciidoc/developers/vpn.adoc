@@ -138,7 +138,7 @@ By accessing the following URL with the `username` and `password`, provided by `
 
    https://vpn.plc4x.apache.org:444
 
-image::plc4x-vpn-client-download.png[]
+image::plc4x-vpn-client-download.png[float=right]
 
 However it is also possible to use other VPN clients based on `OpenVPN`.
 
