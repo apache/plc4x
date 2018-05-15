@@ -30,11 +30,41 @@ In order to access the VPN from outside, a VPN gateway is configured to accept i
 
 This VPN gateway is listening on port `vpn.plc4x.apache.org` on port `444` and should it should be possible to connect to it via OpenVPN.
 
+[nwdiag,plc4x-vpn-network,svg]
+....
+{
+      network internet {
+        address = "X.X.X.0/28"
+
+        vpn.plc4x.a.o [address = "217.110.130.19"];
+        plc4x-vm.a.o [address = "62.210.60.247"];
+        committer-a;
+        committer-b;
+      }
+
+      network plc4x-iot-lab {
+        address = "10.10.64.x/24"
+
+        vpn.plc4x.a.o [address = "10.10.64.1"];
+        F-FBs-40MC [address = "10.10.64.10"];
+        S-S7-1212 [address = "10.10.64.20"];
+        S-KTP-400 [address = "10.10.64.25"];
+        WG-750-352 [address = "10.10.64.30"];
+        BH-C6920-0030 [address = "10.10.64.40"];
+        committer-int [address = "10.10.64.200"];
+    }
+}
+....
+
+Note the PLC4X Project VM and Jenkins build node `plc4x-vm.apache.org` also dials in to the `plc4x-iot-lab` network.
+
 === PLCs
 
 The following PLCs have been configured and should be available in the VPN.
 
 ==== Fatek: FBs-40MC
+
+image::plc4x-vpn-fatek.jpg[float=right, width=200]
 
 This device is able to use the following protocols:
 
@@ -45,6 +75,8 @@ It is configured to use the IP: `10.10.64.10`
 
 ==== Siemens: S7-1212AC/DC
 
+image::plc4x-vpn-siemens-s7.jpg[float=right, width=200]
+
 This device is able to use the following protocols:
 
 - S7 (32 flavour) (Port `102`)
@@ -53,7 +85,21 @@ This device is able to use the following protocols:
 
 It is configured to use the IP: `10.10.64.20`
 
+==== Siemens: KTP 400 Basic Mono
+
+image::plc4x-vpn-siemens-hmi.jpg[float=right, width=200]
+
+This device is able to use the following protocols:
+
+- S7 (32 flavour) (Port `102`)
+- S7 (72 flavour) (Port `102`)
+- ProfiNet
+
+It is configured to use the IP: `10.10.64.25`
+
 ==== WaGo: 750-352 Feldbuskoppler ETHERNET
+
+image::plc4x-vpn-wago.jpg[float=right, width=200]
 
 This device is not a typical PLC, but more a device making I/O values available via Ethernet protocols.
 
@@ -67,6 +113,8 @@ This device is able to use the following protocols:
 It is configured to use the IP: `10.10.64.30`
 
 ==== Beckhoff: C6920-0030
+
+image::plc4x-vpn-beckhoff.jpg[float=right, width=200]
 
 This device is able to use the following protocols:
 
