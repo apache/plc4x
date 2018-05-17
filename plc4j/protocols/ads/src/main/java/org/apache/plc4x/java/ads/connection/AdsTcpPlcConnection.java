@@ -34,10 +34,13 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AdsTcpPlcConnection extends AdsAbstractPlcConnection {
 
     private static final int TCP_PORT = 48898;
+
+    private static AtomicInteger localPorts = new AtomicInteger(30000);
 
     private AdsTcpPlcConnection(InetAddress address, AmsNetId targetAmsNetId, AmsPort targetAmsPort) {
         this(address, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
@@ -98,7 +101,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection {
     }
 
     protected static AmsPort generateAMSPort() {
-        return AmsPort.of(TCP_PORT);
+        return AmsPort.of(localPorts.getAndIncrement());
     }
 
 }
