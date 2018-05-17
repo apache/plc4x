@@ -80,13 +80,13 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection {
                 ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast(new Payload2TcpProtocol());
                 pipeline.addLast(new Ads2PayloadProtocol());
-                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
+                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, addressMapping));
             }
         };
     }
 
     public InetAddress getRemoteAddress() {
-        return ((TcpSocketChannelFactory)channelFactory).getAddress();
+        return ((TcpSocketChannelFactory) channelFactory).getAddress();
     }
 
     protected static AmsNetId generateAMSNetId() {

@@ -129,8 +129,8 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             default:
                 amsPacket = handleUnknownCommand(commandBuffer, amsHeader);
         }
+        LOGGER.debug("Received amsPacket {}", amsPacket);
         out.add(amsPacket);
-        LOGGER.trace("Set amsPacket {} to out", amsPacket);
         if (commandBuffer.readableBytes() > 0) {
             throw new IllegalStateException("Unread bytes left: " + commandBuffer.readableBytes());
         }

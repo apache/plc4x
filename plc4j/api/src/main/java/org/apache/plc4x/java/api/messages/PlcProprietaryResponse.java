@@ -45,4 +45,11 @@ public class PlcProprietaryResponse<CUSTOM_RESPONSE> extends PlcResponse<PlcProp
             super(new PlcProprietaryRequest.DummyRequestItem(), ResponseCode.OK);
         }
     }
+
+    @Override
+    public String toString() {
+        return "PlcProprietaryResponse{" +
+            "response=" + response +
+            "} " + super.toString();
+    }
 }

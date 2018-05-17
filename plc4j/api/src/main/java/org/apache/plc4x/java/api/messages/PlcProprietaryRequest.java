@@ -45,4 +45,11 @@ public class PlcProprietaryRequest<CUSTOM_REQUEST> extends PlcRequest<PlcProprie
             });
         }
     }
+
+    @Override
+    public String toString() {
+        return "PlcProprietaryRequest{" +
+            "request=" + request +
+            "} " + super.toString();
+    }
 }

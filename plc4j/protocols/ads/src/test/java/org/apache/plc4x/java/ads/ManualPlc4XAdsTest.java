@@ -1,0 +1,49 @@
+/*
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
+package org.apache.plc4x.java.ads;
+
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+
+import java.util.concurrent.CompletableFuture;
+
+public class ManualPlc4XAdsTest {
+
+    public static void main(String... args) throws Exception {
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("ads:tcp://10.10.64.40/10.10.64.40.1.1:851/10.10.56.23.1.1:30000")) {
+            System.out.println("PlcConnection " + plcConnection);
+
+            PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
+
+            CompletableFuture<? extends PlcReadResponse> response = reader
+                .read(new PlcReadRequest(Integer.class, plcConnection.parseAddress("Allgemein_S2.Station")));
+
+            PlcReadResponse plcReadResponse = response.get();
+            System.out.println("Response " + plcReadResponse);
+            ReadResponseItem<?> responseItem = plcReadResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
+            System.out.println("ResponseItem " + responseItem);
+            responseItem.getValues().stream().map(o -> "Value: " + o).forEach(System.out::println);
+        }
+        System.exit(0);
+    }
+}
