@@ -24,6 +24,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * ADS address witch is defined by symbolic name (e.g. {@code Main.items[0]}).
+ */
 public class SymbolicAdsAddress implements Address {
     private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)");
 
@@ -54,8 +57,12 @@ public class SymbolicAdsAddress implements Address {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SymbolicAdsAddress)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SymbolicAdsAddress)) {
+            return false;
+        }
         SymbolicAdsAddress that = (SymbolicAdsAddress) o;
         return Objects.equals(symbolicAddress, that.symbolicAddress);
     }

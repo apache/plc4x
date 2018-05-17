@@ -25,8 +25,12 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * ADS address witch is defined by {@code indexGroup/indexOffset}. These values can be either supplied as int or hex
+ * representation.
+ */
 public class AdsAddress implements Address {
-    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^(?<indexGroup>\\d+)/(?<indexOffset>\\d+)");
+    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+))");
 
     private final long indexGroup;
 
@@ -49,10 +53,28 @@ public class AdsAddress implements Address {
             throw new IllegalArgumentException(
                 "address " + address + " doesn't match '{indexGroup}/{indexOffset}' RAW:" + RESOURCE_ADDRESS_PATTERN);
         }
-        String indexGroup = matcher.group("indexGroup");
-        String indexOffset = matcher.group("indexOffset");
 
-        return new AdsAddress(Long.parseLong(indexGroup), Long.parseLong(indexOffset));
+        String indexGroupStringHex = matcher.group("indexGroupHex");
+        String indexGroupString = matcher.group("indexGroup");
+
+        String indexOffsetStringHex = matcher.group("indexOffsetHex");
+        String indexOffsetString = matcher.group("indexOffset");
+
+        Long indexGroup;
+        if (indexGroupStringHex != null) {
+            indexGroup = Long.parseLong(indexGroupStringHex, 16);
+        } else {
+            indexGroup = Long.parseLong(indexGroupString);
+        }
+
+        Long indexOffset;
+        if (indexOffsetStringHex != null) {
+            indexOffset = Long.parseLong(indexOffsetStringHex, 16);
+        } else {
+            indexOffset = Long.parseLong(indexOffsetString);
+        }
+
+        return new AdsAddress(indexGroup, indexOffset);
     }
 
     public static boolean matches(String address) {
@@ -69,8 +91,12 @@ public class AdsAddress implements Address {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AdsAddress)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AdsAddress)) {
+            return false;
+        }
         AdsAddress that = (AdsAddress) o;
         return indexGroup == that.indexGroup &&
             indexOffset == that.indexOffset;
