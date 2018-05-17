@@ -21,9 +21,9 @@ package org.apache.plc4x.java.ads;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -35,14 +35,13 @@ public class ManualPlc4XAdsTest {
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            CompletableFuture<? extends PlcReadResponse> response = reader
-                .read(new PlcReadRequest(Integer.class, plcConnection.parseAddress("Allgemein_S2.Station")));
-
-            PlcReadResponse plcReadResponse = response.get();
-            System.out.println("Response " + plcReadResponse);
-            ReadResponseItem<?> responseItem = plcReadResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
+            CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
+                .read(new TypeSafePlcReadRequest<>(Integer.class, plcConnection.parseAddress("Allgemein_S2.Station")));
+            TypeSafePlcReadResponse<Integer> readResponse = response.get();
+            System.out.println("Response " + readResponse);
+            ReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
             System.out.println("ResponseItem " + responseItem);
-            responseItem.getValues().stream().map(o -> "Value: " + o).forEach(System.out::println);
+            responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
         }
         System.exit(0);
     }
