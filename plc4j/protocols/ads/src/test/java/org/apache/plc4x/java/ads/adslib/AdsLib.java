@@ -101,7 +101,7 @@ public class AdsLib {
      * Returns the local NetId and port number.
      *
      * @param port  port number of an Ads port that had previously been opened with AdsPortOpenEx().
-     * @param pAddr Pointer to the structure of type ImmutablePair<AmsNetId, AmsPort>.
+     * @param pAddr Pointer to the structure of type {@code ImmutablePair<AmsNetId, AmsPort>}.
      * @return [ADS Return Code](http://infosys.beckhoff.de/content/1033/tc3_adsdll2/html/ads_returncodes.htm?id=17663)
      */
     public static Result AdsGetLocalAddressEx(long port, Output<ImmutablePair<AmsNetId, AmsPort>> pAddr) {

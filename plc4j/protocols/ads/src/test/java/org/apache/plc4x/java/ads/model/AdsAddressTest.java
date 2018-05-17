@@ -32,6 +32,13 @@ public class AdsAddressTest {
         assertThat(address.getIndexOffset(), is(10L));
     }
 
+    @Test
+    public void ofHex() {
+        AdsAddress address = AdsAddress.of("0x1/0xff");
+        assertThat(address.getIndexGroup(), is(1L));
+        assertThat(address.getIndexOffset(), is(255L));
+    }
+
     @Test(expected  = IllegalArgumentException.class)
     public void stringInAddress() {
         AdsAddress address = AdsAddress.of("group/offset");

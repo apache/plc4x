@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -135,12 +136,12 @@ public class Plc4x2AdsProtocolTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         AmsNetId targetAmsNetId = AmsNetId.of("1.2.3.4.5.6");
         AmsPort targetAmsPort = AmsPort.of(7);
         AmsNetId sourceAmsNetId = AmsNetId.of("8.9.10.11.12.13");
         AmsPort sourceAmsPort = AmsPort.of(14);
-        SUT = new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+        SUT = new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, new ConcurrentHashMap<>());
     }
 
     @Test

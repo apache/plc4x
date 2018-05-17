@@ -58,7 +58,7 @@ public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
                 ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast(new Payload2SerialProtocol());
                 pipeline.addLast(new Ads2PayloadProtocol());
-                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort));
+                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, addressMapping));
             }
         };
     }

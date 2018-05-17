@@ -22,6 +22,7 @@ package org.apache.plc4x.java.ads.connection;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.model.AdsAddress;
+import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class AdsTcpPlcConnectionTests {
     }
 
     @Test
-    public void emptyParseAddress() throws Exception {
+    public void emptyParseAddress() {
         try {
             adsTcpPlcConnection.parseAddress("");
         } catch (IllegalArgumentException exception) {
@@ -60,11 +61,21 @@ public class AdsTcpPlcConnectionTests {
     }
 
     @Test
-    public void parseAddress() throws Exception {
+    public void parseAddress() {
         try {
             AdsAddress address = (AdsAddress) adsTcpPlcConnection.parseAddress("1/1");
             assertEquals(address.getIndexGroup(), 1);
             assertEquals(address.getIndexOffset(), 1);
+        } catch (IllegalArgumentException exception) {
+            fail("valid data block address");
+        }
+    }
+
+    @Test
+    public void parseSymbolicAddress() {
+        try {
+            SymbolicAdsAddress address = (SymbolicAdsAddress) adsTcpPlcConnection.parseAddress("Main.variable");
+            assertEquals(address.getSymbolicAddress(), "Main.variable");
         } catch (IllegalArgumentException exception) {
             fail("valid data block address");
         }

@@ -27,6 +27,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsAddress;
+import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -64,6 +65,8 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     private final ConcurrentMap<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requests;
 
+    private final ConcurrentMap<SymbolicAdsAddress, AdsAddress> addressMapping;
+
     private List<Consumer<AdsDeviceNotificationRequest>> deviceNotificationListeners;
 
     private final AmsNetId targetAmsNetId;
@@ -71,12 +74,13 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     private final AmsNetId sourceAmsNetId;
     private final AmsPort sourceAmsPort;
 
-    public Plc4x2AdsProtocol(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort) {
+    public Plc4x2AdsProtocol(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, ConcurrentMap<SymbolicAdsAddress, AdsAddress> addressMapping) {
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
         this.sourceAmsPort = sourceAmsPort;
         this.requests = new ConcurrentHashMap<>();
+        this.addressMapping = addressMapping;
         this.deviceNotificationListeners = new LinkedList<>();
     }
 
@@ -120,6 +124,11 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         }
         WriteRequestItem<?> writeRequestItem = writeRequest.getRequestItems().get(0);
         Address address = writeRequestItem.getAddress();
+        if (address instanceof SymbolicAdsAddress) {
+            AdsAddress mappedAddress = addressMapping.get(address);
+            LOGGER.debug("Replacing {} with {}", address, mappedAddress);
+            address = mappedAddress;
+        }
         if (!(address instanceof AdsAddress)) {
             throw new PlcProtocolException("Address not of type AdsAddress: " + address.getClass());
         }
@@ -129,8 +138,9 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
         byte[] bytes = encodeData(writeRequestItem.getDatatype(), writeRequestItem.getValues().toArray());
         Data data = Data.of(bytes);
-        AmsPacket AmsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
-        out.add(AmsPacket);
+        AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
+        LOGGER.debug("encoded write request {}", amsPacket);
+        out.add(amsPacket);
         requests.put(invokeId.getAsLong(), msg);
     }
 
@@ -142,6 +152,14 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         }
         ReadRequestItem<?> readRequestItem = readRequest.getRequestItems().get(0);
         Address address = readRequestItem.getAddress();
+        if (address instanceof SymbolicAdsAddress) {
+            AdsAddress mappedAddress = addressMapping.get(address);
+            if (mappedAddress == null) {
+                throw new PlcProtocolException("No address mapping for " + address);
+            }
+            LOGGER.debug("Replacing {} with {}", address, mappedAddress);
+            address = mappedAddress;
+        }
         if (!(address instanceof AdsAddress)) {
             throw new PlcProtocolException("Address not of type AdsAddress: " + address.getClass());
         }
@@ -150,8 +168,9 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
         Length length = Length.of(readRequestItem.getSize());
-        AmsPacket AmsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
-        out.add(AmsPacket);
+        AmsPacket amsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
+        LOGGER.debug("encoded read request {}", amsPacket);
+        out.add(amsPacket);
         requests.put(invokeId.getAsLong(), msg);
     }
 
@@ -161,8 +180,9 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             throw new PlcProtocolException("Unsupported proprietary type for this driver " + plcProprietaryRequest.getRequest().getClass());
         }
         AmsPacket amsPacket = (AmsPacket) plcProprietaryRequest.getRequest();
-        requests.put(amsPacket.getAmsHeader().getInvokeId().getAsLong(), msg);
+        LOGGER.debug("encoded proprietary request {}", amsPacket);
         out.add(amsPacket);
+        requests.put(amsPacket.getAmsHeader().getInvokeId().getAsLong(), msg);
     }
 
     @Override
@@ -196,6 +216,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         } else if (request instanceof PlcProprietaryRequest) {
             response = decodeProprietaryResponse(amsPacket, plcRequestContainer);
         }
+        LOGGER.debug("Plc4x response {}", response);
 
         // Confirm the response being handled.
         if (response != null) {
