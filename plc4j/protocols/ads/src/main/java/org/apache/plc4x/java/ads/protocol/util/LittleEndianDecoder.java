@@ -51,15 +51,35 @@ public class LittleEndianDecoder {
                 result.add(byteOne);
                 i += 1;
             } else if (datatype == Short.class) {
+                if (length < 2) {
+                    byte[] copy = new byte[2];
+                    System.arraycopy(adsData, 0, copy, 0, length);
+                    adsData = copy;
+                }
                 decodeShort(adsData, i, result);
                 i += 2;
             } else if (datatype == Integer.class) {
+                if (length < 4) {
+                    byte[] copy = new byte[4];
+                    System.arraycopy(adsData, 0, copy, 0, length);
+                    adsData = copy;
+                }
                 decodeInteger(adsData, i, result);
                 i += 4;
             } else if (datatype == Float.class) {
+                if (length < 4) {
+                    byte[] copy = new byte[4];
+                    System.arraycopy(adsData, 0, copy, 0, length);
+                    adsData = copy;
+                }
                 decodeFloat(adsData, i, result);
                 i += 4;
             } else if (datatype == Calendar.class || Calendar.class.isAssignableFrom(datatype)) {
+                if (length < 8) {
+                    byte[] copy = new byte[8];
+                    System.arraycopy(adsData, 0, copy, 0, length);
+                    adsData = copy;
+                }
                 extractCalendar(adsData, i, result);
                 i += 8;
             } else {
