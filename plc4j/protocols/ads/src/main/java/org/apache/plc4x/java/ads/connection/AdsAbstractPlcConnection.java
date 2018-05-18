@@ -140,9 +140,11 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     private void mapAddresses(PlcRequest<?> request) {
-        for (RequestItem requestItem : request.getRequestItems()) {
-            if (requestItem.getAddress() instanceof SymbolicAdsAddress) {
-                SymbolicAdsAddress symbolicAdsAddress = (SymbolicAdsAddress) requestItem.getAddress();
+        request.getRequestItems().stream()
+            .map(RequestItem::getAddress)
+            .filter(SymbolicAdsAddress.class::isInstance)
+            .map(SymbolicAdsAddress.class::cast)
+            .forEach(symbolicAdsAddress -> {
                 addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
                     LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
                     AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
@@ -176,8 +178,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                     IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
                     return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
                 });
-            }
-        }
+            });
     }
 
     protected static AmsNetId generateAMSNetId() {
