@@ -18,12 +18,17 @@ under the License.
 */
 package org.apache.plc4x.java.examples.kafkabridge.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class PlcConfig {
 
     private String connection;
-    private List<Address> addresses;
+    @JsonProperty("memory-blocks")
+    private List<PlcMemoryBlock> plcMemoryBlocks;
+    @JsonProperty("addresses")
+    private List<PlcAddress> plcAddresses;
 
     public String getConnection() {
         return connection;
@@ -33,12 +38,20 @@ public class PlcConfig {
         this.connection = connection;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
+    public List<PlcMemoryBlock> getPlcMemoryBlocks() {
+        return plcMemoryBlocks;
     }
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public void setPlcMemoryBlocks(List<PlcMemoryBlock> plcMemoryBlocks) {
+        this.plcMemoryBlocks = plcMemoryBlocks;
+    }
+
+    public List<PlcAddress> getPlcAddresses() {
+        return plcAddresses;
+    }
+
+    public void setPlcAddresses(List<PlcAddress> plcAddresses) {
+        this.plcAddresses = plcAddresses;
     }
 
 }

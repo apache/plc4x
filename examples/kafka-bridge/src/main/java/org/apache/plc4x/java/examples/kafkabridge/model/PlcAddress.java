@@ -18,9 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.examples.kafkabridge.model;
 
-public class Address {
+public class PlcAddress {
 
     private String name;
+    private String description;
     private String address;
     private int size;
     private Class<?> type;
@@ -31,6 +32,14 @@ public class Address {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getAddress() {

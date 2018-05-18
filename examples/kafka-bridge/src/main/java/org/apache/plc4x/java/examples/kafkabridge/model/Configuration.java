@@ -28,6 +28,8 @@ public class Configuration {
     private PlcConfig plcConfig;
     @JsonProperty("polling-interval")
     private int pollingInterval;
+    @JsonProperty("commission-id")
+    private String commissionId;
 
     public KafkaConfig getKafkaConfig() {
         return kafkaConfig;
@@ -53,4 +55,11 @@ public class Configuration {
         this.pollingInterval = pollingInterval;
     }
 
+    public String getCommissionId() {
+        return commissionId;
+    }
+
+    public void setCommissionId(String commissionId) {
+        this.commissionId = commissionId;
+    }
 }
