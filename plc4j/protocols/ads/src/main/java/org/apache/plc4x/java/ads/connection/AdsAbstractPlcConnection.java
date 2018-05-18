@@ -191,8 +191,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     @Override
     public void close() {
-        for (AdsAddress adsAddress : addressMapping.values()) {
-            AdsWriteRequest adsWriteRequest = AdsWriteRequest.of(
+        addressMapping.values().stream()
+            .map(adsAddress -> AdsWriteRequest.of(
                 targetAmsNetId,
                 targetAmsPort,
                 sourceAmsNetId,
@@ -201,10 +201,10 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 IndexGroup.ReservedGroups.ADSIGRP_SYM_RELEASEHND,
                 IndexOffset.of(0),
                 Data.of(IndexGroup.of(adsAddress.getIndexGroup()).getBytes())
-            );
+            ))
+            .map(adsWriteRequest -> new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))
             // We don't need a response so we just supply a throw away future.
-            channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()));
-        }
+            .forEach(channel::writeAndFlush);
         super.close();
     }
 
