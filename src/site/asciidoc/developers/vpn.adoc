@@ -122,6 +122,39 @@ This device is able to use the following protocols:
 
 It is configured to use the IP: `10.10.64.40`
 
+Beckhoff PLCs are processes running on a host operating system.
+
+In this case, this host OS is `Windows 7 Professional`.
+
+These processes seem to communicate with an internal network, which isn't connected to the physical network of the host.
+
+In order to be able to communicate with the PLC from the outside world, a so-called `AMS Route` needs to be added.
+Unfortunately it seems that this route needs to be added individually for every clients ip.
+As the VPN gateway is automatically assigning IPs to the clients, this step eventually has to be done every time you log in.
+Right now we hope that as soon as routes have been added for quite some ips, eventually we won't have to do this anymore, but right now it looks as if we do.
+
+Adding a route is done by opening the ADS Route Editor on the Beckhoff machine:
+
+image::plc4x-vpn-beckhoff-route-1.png[]
+
+Here you click on add:
+
+image::plc4x-vpn-beckhoff-route-2.png[]
+
+And enter the details of the new route:
+
+image::plc4x-vpn-beckhoff-route-3.png[]
+
+Here it is important to give the route a name.
+The `AmsNetId` is sort of like a 6-segment ipv4-address. It could be chosen independently from the real ip address, however the default is to use the ip address for the first 4 segments and to append `.1.1` after this.
+So from an ip address: `10.10.57.104` the corresponding `AmsNetId` would be: `10.10.57.104.1.1`.
+`Transport Type` should be set to: `TCP_IP`.
+`Address Info` is where the clients ip address is added.
+Be sure to select the `IP Address` radio button below.
+Next thing, you should ensure, is that the type of `Remote Route` is set to `None`.
+
+When clicking on `Add Route`, don't be surprised that the window doesn't close, you have to click on `Close` after that and then you should see your new route in the route list screen.
+
 === Requesting an account
 
 The PLC hardware in the `PLC4X IoT Lab` is hosted in the codecentric Frankfurt office.
