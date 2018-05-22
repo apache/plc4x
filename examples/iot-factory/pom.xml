@@ -33,7 +33,7 @@
   <description>Client application demonstrating PLC4X in our virtual IoT Factory.</description>
 
   <properties>
-    <app.main.class>org.apache.plc4x.java.examples.iotfactory.IotFactory</app.main.class>
+    <app.main.class>org.apache.plc4x.java.examples.iotfactory.IotElasticsearchFactory</app.main.class>
   </properties>
 
   <dependencies>
@@ -57,6 +57,18 @@
       <groupId>org.apache.edgent</groupId>
       <artifactId>edgent-providers-direct</artifactId>
       <version>1.2.0</version>
+    </dependency>
+
+    <!-- Elasticsearch dependencies -->
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>6.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.elasticsearch.plugin</groupId>
+      <artifactId>transport-netty4-client</artifactId>
+      <version>6.2.4</version>
     </dependency>
 
     <!-- Required driver implementation -->
