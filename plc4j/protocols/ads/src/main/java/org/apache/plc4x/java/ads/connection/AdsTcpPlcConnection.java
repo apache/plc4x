@@ -47,10 +47,7 @@ import org.slf4j.LoggerFactory;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -208,7 +205,9 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         }
                         Data data = adsNotificationSample.getData();
                         try {
-                            consumer.accept(new PlcNotification(timeStamp, address, LittleEndianDecoder.decodeData(dataType, data.getBytes())));
+                            @SuppressWarnings("unchecked")
+                            List<R> decodeData = (List<R>) LittleEndianDecoder.decodeData(dataType, data.getBytes());
+                            consumer.accept(new PlcNotification<>(timeStamp, address, decodeData));
                         } catch (PlcProtocolException | RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }
