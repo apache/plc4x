@@ -44,7 +44,7 @@ public class AdsPlcDriverTest {
     public TcpHexDumper tcpHexDumper = new TcpHexDumper(0, 2);
 
     @Test
-    public void testAdsAddressPattern() throws Exception {
+    public void testAdsAddressPattern() {
         assertMatching(ADS_ADDRESS_PATTERN, "0.0.0.0.0.0:13");
         assertMatching(ADS_ADDRESS_PATTERN, "0.0.0.0.0.0:13/0.0.0.0.0.0:13");
 
@@ -62,10 +62,12 @@ public class AdsPlcDriverTest {
         assertMatching(ADS_URI_PATTERN, "ads:serial:///dev/com1/0.0.0.0.0.0:13");
         assertMatching(ADS_URI_PATTERN, "ads:serial://COM1/0.0.0.0.0.0:13");
         assertMatching(ADS_URI_PATTERN, "ads:serial:///dev/ttyUSB0/0.0.0.0.0.0:13");
+
+        assertMatching(ADS_URI_PATTERN, "ads:serial:///dev/ttyUSB0/0.0.0.0.0.0:13?some=random&parameters=true");
     }
 
     @Test
-    public void testDriverWithCompleteUrls() throws Exception {
+    public void testDriverWithCompleteUrls() {
         AdsPlcDriver SUT = new AdsPlcDriver(mock(AdsConnectionFactory.class));
         Stream.of(
             "ads:tcp://www.google.de/0.0.0.0.0.0:13",
