@@ -145,41 +145,39 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             .map(RequestItem::getAddress)
             .filter(SymbolicAdsAddress.class::isInstance)
             .map(SymbolicAdsAddress.class::cast)
-            .forEach(symbolicAdsAddress -> {
-                addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
-                    LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
-                    AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
-                        targetAmsNetId,
-                        targetAmsPort,
-                        sourceAmsNetId,
-                        sourceAmsPort,
-                        Invoke.NONE,
-                        IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
-                        IndexOffset.NONE,
-                        ReadLength.of(IndexOffset.NUM_BYTES),
-                        Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
-                    );
+            .forEach(symbolicAdsAddress -> addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
+                LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
+                AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
+                    targetAmsNetId,
+                    targetAmsPort,
+                    sourceAmsNetId,
+                    sourceAmsPort,
+                    Invoke.NONE,
+                    IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
+                    IndexOffset.NONE,
+                    ReadLength.of(IndexOffset.NUM_BYTES),
+                    Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
+                );
 
-                    CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
-                    channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
-                    PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse;
-                    try {
-                        getHandleResponse = getHandelFuture.get(SYMBOL_RESOLVE_TIMEOUT, TimeUnit.MILLISECONDS);
-                    } catch (InterruptedException e) {
-                        LOGGER.warn("Interrupted!", e);
-                        Thread.currentThread().interrupt();
-                        throw new PlcRuntimeException(e);
-                    } catch (ExecutionException | TimeoutException e) {
-                        throw new PlcRuntimeException(e);
-                    }
-                    AdsReadWriteResponse response = getHandleResponse.getResponse();
-                    if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
-                        throw new PlcRuntimeException("Non error code received " + response.getResult());
-                    }
-                    IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
-                    return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
-                });
-            });
+                CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
+                channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
+                PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse;
+                try {
+                    getHandleResponse = getHandelFuture.get(SYMBOL_RESOLVE_TIMEOUT, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    LOGGER.warn("Interrupted!", e);
+                    Thread.currentThread().interrupt();
+                    throw new PlcRuntimeException(e);
+                } catch (ExecutionException | TimeoutException e) {
+                    throw new PlcRuntimeException(e);
+                }
+                AdsReadWriteResponse response = getHandleResponse.getResponse();
+                if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
+                    throw new PlcRuntimeException("Non error code received " + response.getResult());
+                }
+                IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
+                return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
+            }));
     }
 
     protected static AmsNetId generateAMSNetId() {
@@ -206,7 +204,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             ))
             .map(adsWriteRequest -> new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))
             // We don't need a response so we just supply a throw away future.
-            .forEach(channel::writeAndFlush);
+            .forEach(channel::write);
+        channel.flush();
         super.close();
     }
 
