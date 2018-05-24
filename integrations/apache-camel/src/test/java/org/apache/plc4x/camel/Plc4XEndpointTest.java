@@ -27,13 +27,13 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class PLC4XEndpointTest {
+public class Plc4XEndpointTest {
 
-    PLC4XEndpoint SUT;
+    Plc4XEndpoint SUT;
 
     @Before
-    public void setUp() throws Exception {
-        SUT = new PLC4XEndpoint("plc4x:mock:10.10.10.1/1/1", mock(Component.class));
+    public void setUp() {
+        SUT = new Plc4XEndpoint("plc4x:mock:10.10.10.1/1/1", mock(Component.class));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class PLC4XEndpointTest {
     }
 
     @Test
-    public void isSingleton() throws Exception {
+    public void isSingleton() {
         assertThat(SUT.isSingleton(), is(true));
     }
 

@@ -23,11 +23,11 @@ import org.apache.camel.impl.DefaultComponent;
 
 import java.util.Map;
 
-public class PLC4XComponent extends DefaultComponent {
+public class Plc4XComponent extends DefaultComponent {
 
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        Endpoint endpoint = new PLC4XEndpoint(uri, this);
+        Endpoint endpoint = new Plc4XEndpoint(uri, this);
         setProperties(endpoint, parameters);
         return endpoint;
     }

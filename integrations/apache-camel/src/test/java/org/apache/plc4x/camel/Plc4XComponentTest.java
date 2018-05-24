@@ -27,7 +27,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class PLC4XComponentTest extends CamelTestSupport {
+public class Plc4XComponentTest extends CamelTestSupport {
 
     @Test
     public void testSimpleRouting() throws Exception {
@@ -42,19 +42,23 @@ public class PLC4XComponentTest extends CamelTestSupport {
     }
 
     @Override
-    protected RouteBuilder createRouteBuilder() throws Exception {
+    protected RouteBuilder createRouteBuilder() {
         return new RouteBuilder() {
             public void configure() {
                 from("direct:plc4x")
-                    .setHeader(Constants.ADDRESS_HEADER, constant(new Address() {}))
+                    .setHeader(Constants.ADDRESS_HEADER, constant(new Address() {
+                    }))
                     .setBody(constant((byte) 0x0))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
                 from("direct:plc4x2")
-                    .setHeader(Constants.ADDRESS_HEADER, constant(new Address() {}))
+                    .setHeader(Constants.ADDRESS_HEADER, constant(new Address() {
+                    }))
                     .setBody(constant(Arrays.asList((byte) 0x0, (byte) 0x1, (byte) 0x2, (byte) 0x3)))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
+                from("plc4x:mock:10.10.10.1/1/1?address=Main.by0&dataType=java.lang.String")
+                    .log("Got ${body}");
             }
         };
     }

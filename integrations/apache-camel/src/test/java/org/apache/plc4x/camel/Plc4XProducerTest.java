@@ -35,21 +35,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mockito.Mockito.*;
 
-public class PLC4XProducerTest {
+public class Plc4XProducerTest {
 
-    private PLC4XProducer SUT;
+    private Plc4XProducer SUT;
 
     private Exchange testExchange;
 
     @Before
     public void setUp() throws Exception {
-        PLC4XEndpoint endpointMock = mock(PLC4XEndpoint.class, RETURNS_DEEP_STUBS);
+        Plc4XEndpoint endpointMock = mock(Plc4XEndpoint.class, RETURNS_DEEP_STUBS);
         when(endpointMock.getEndpointUri()).thenReturn("plc4x:mock:10.10.10.1/1/1");
         PlcDriverManager plcDriverManagerMock = mock(PlcDriverManager.class, RETURNS_DEEP_STUBS);
         when(plcDriverManagerMock.getConnection(anyString()).getWriter())
             .thenReturn(Optional.of(mock(PlcWriter.class, RETURNS_DEEP_STUBS)));
         when(endpointMock.getPlcDriverManager()).thenReturn(plcDriverManagerMock);
-        SUT = new PLC4XProducer(endpointMock);
+        SUT = new Plc4XProducer(endpointMock);
         testExchange = mock(Exchange.class, RETURNS_DEEP_STUBS);
         when(testExchange.getIn().getHeader(eq(Constants.ADDRESS_HEADER), eq(Address.class)))
             .thenReturn(mock(Address.class));
@@ -70,7 +70,7 @@ public class PLC4XProducerTest {
     }
 
     @Test
-    public void process_Async() throws Exception {
+    public void process_Async() {
         SUT.process(testExchange, doneSync -> {
         });
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOnly);

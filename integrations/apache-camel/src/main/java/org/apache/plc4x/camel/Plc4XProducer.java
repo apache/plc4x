@@ -34,13 +34,13 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PLC4XProducer extends DefaultAsyncProducer {
+public class Plc4XProducer extends DefaultAsyncProducer {
     @SuppressWarnings("unused")
-    private PLC4XEndpoint endpoint;
+    private Plc4XEndpoint endpoint;
     private PlcConnection plcConnection;
     private AtomicInteger openRequests;
 
-    public PLC4XProducer(PLC4XEndpoint endpoint) throws PlcException {
+    public Plc4XProducer(Plc4XEndpoint endpoint) throws PlcException {
         super(endpoint);
         this.endpoint = endpoint;
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");

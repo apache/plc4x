@@ -25,11 +25,12 @@ import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriEndpoint;
+import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.plc4x.java.PlcDriverManager;
 
 @UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver:address", label = "plc4x")
-public class PLC4XEndpoint extends DefaultEndpoint {
+public class Plc4XEndpoint extends DefaultEndpoint {
 
     /**
      * The name 0f the PLC4X driver
@@ -42,26 +43,35 @@ public class PLC4XEndpoint extends DefaultEndpoint {
     /**
      * The address for the PLC4X driver
      */
-    @UriPath
-    @Metadata(required = "true")
+    @UriParam
+    @Metadata(required = "false")
     @SuppressWarnings("unused")
     private String address;
 
+    /**
+     * TODO: document me
+     */
+    @UriParam
+    @Metadata(required = "false")
+    @SuppressWarnings("unused")
+    private Class dataType;
+
     private final PlcDriverManager plcDriverManager;
 
-    public PLC4XEndpoint(String endpointUri, Component component) {
+    public Plc4XEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
+        // TODO: why doesnt the annotation work
         plcDriverManager = new PlcDriverManager();
     }
 
     @Override
     public Producer createProducer() throws Exception {
-        return new PLC4XProducer(this);
+        return new Plc4XProducer(this);
     }
 
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
-        throw new UnsupportedOperationException("The PLC4X endpoint doesn't support consumers.");
+        return new Plc4XConsumer(this, processor);
     }
 
     @Override
@@ -71,5 +81,29 @@ public class PLC4XEndpoint extends DefaultEndpoint {
 
     public PlcDriverManager getPlcDriverManager() {
         return plcDriverManager;
+    }
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Class getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(Class dataType) {
+        this.dataType = dataType;
     }
 }
