@@ -18,20 +18,39 @@
  */
 package org.apache.plc4x.java.ads.protocol.util;
 
+import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 
 import java.math.BigInteger;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 // TODO: we might user ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).putInt(port).asArray() etc
 public class LittleEndianDecoder {
 
+    private static final Map<Class<?>, Long> LENGTH_MAP;
+
+    static {
+        Map<Class<?>, Long> lengthMap = new ConcurrentHashMap<>();
+        lengthMap.put(Boolean.class, 1L);
+        lengthMap.put(Byte.class, 1L);
+        lengthMap.put(Short.class, 2L);
+        lengthMap.put(Integer.class, 4L);
+        lengthMap.put(Float.class, 4L);
+        lengthMap.put(Calendar.class, 8L);
+        LENGTH_MAP = Collections.unmodifiableMap(lengthMap);
+    }
+
     private LittleEndianDecoder() {
         // Utility class
+    }
+
+    public static Length getLengthFor(Class<?> clazz, long defaultValue) {
+        if (Calendar.class.isAssignableFrom(clazz)) {
+            return Length.of(4);
+        }
+        return Length.of(LENGTH_MAP.getOrDefault(clazz, defaultValue));
     }
 
     @SuppressWarnings("unchecked")
@@ -51,7 +70,7 @@ public class LittleEndianDecoder {
         } else if (datatype == Float.class && length < 4) {
             safeLengthAdsData = new byte[4];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if (datatype == Calendar.class && length < 8) {
+        } else if (datatype == Calendar.class || Calendar.class.isAssignableFrom(datatype) && length < 8) {
             safeLengthAdsData = new byte[8];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
         } else {

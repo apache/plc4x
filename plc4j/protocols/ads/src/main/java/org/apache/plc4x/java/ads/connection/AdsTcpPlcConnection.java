@@ -164,8 +164,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             Invoke.NONE,
             indexGroup,
             indexOffset,
-            Length.of(1),
-            TransmissionMode.of(3),
+            LittleEndianDecoder.getLengthFor(dataType, 1),
+            TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE,
             MaxDelay.of(0),
             CycleTime.of(4000000)
         );
