@@ -18,27 +18,32 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.Address;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class PlcNotification<T> {
 
     protected final Date timeStamp;
 
+    protected final Address address;
+
     protected final List<T> values;
 
-    protected final UUID uuid;
-
-    public PlcNotification(Date timeStamp, List<T> values, UUID uuid) {
+    public PlcNotification(Date timeStamp, Address address, List<T> values) {
         this.timeStamp = timeStamp;
+        this.address = address;
         this.values = values;
-        this.uuid = uuid;
     }
 
     public Date getTimeStamp() {
         return timeStamp;
+    }
+
+    public Address getAddress() {
+        return address;
     }
 
     public List<T> getValues() {
@@ -55,21 +60,21 @@ public class PlcNotification<T> {
         }
         PlcNotification<?> that = (PlcNotification<?>) o;
         return Objects.equals(timeStamp, that.timeStamp) &&
-            Objects.equals(values, that.values) &&
-            Objects.equals(uuid, that.uuid);
+            Objects.equals(address, that.address) &&
+            Objects.equals(values, that.values);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(timeStamp, values, uuid);
+        return Objects.hash(timeStamp, address, values);
     }
 
     @Override
     public String toString() {
         return "PlcNotification{" +
             "timeStamp=" + timeStamp +
+            ", address=" + address +
             ", values=" + values +
-            ", uuid=" + uuid +
             '}';
     }
 }

@@ -47,7 +47,10 @@ import org.slf4j.LoggerFactory;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +69,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
     private static AtomicInteger localPorts = new AtomicInteger(30000);
 
-    private final Map<Consumer<? extends PlcNotification>, Pair<Consumer<AdsDeviceNotificationRequest>, NotificationHandle>> subscriberMap = new HashMap<>();
+    private final Map<Pair<Consumer<? extends PlcNotification>, Address>, Pair<Consumer<AdsDeviceNotificationRequest>, NotificationHandle>> subscriberMap = new HashMap<>();
 
     private final Map<NotificationHandle, Consumer<? extends PlcNotification>> handleConsumerMap = new HashMap<>();
 
@@ -133,7 +136,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     @Override
-    public void subscribe(Consumer<PlcNotification<?>> consumer, Address address, Class<?> dataType, UUID uuid) {
+    public void subscribe(Consumer<PlcNotification<?>> consumer, Address address, Class<?> dataType) {
         Objects.requireNonNull(consumer);
         Objects.requireNonNull(address);
         IndexGroup indexGroup;
@@ -205,21 +208,22 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         }
                         Data data = adsNotificationSample.getData();
                         try {
-                            consumer.accept(new PlcNotification<>(timeStamp, LittleEndianDecoder.decodeData(dataType, data.getBytes()), uuid));
+                            consumer.accept(new PlcNotification<>(timeStamp, address, LittleEndianDecoder.decodeData(dataType, data.getBytes())));
                         } catch (PlcProtocolException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }
                     });
             });
-        subscriberMap.put(consumer, Pair.of(adsDeviceNotificationRequestConsumer, notificationHandle));
+        subscriberMap.put(Pair.of(consumer, address), Pair.of(adsDeviceNotificationRequestConsumer, notificationHandle));
         getChannel().pipeline().get(Plc4x2AdsProtocol.class).addConsumer(adsDeviceNotificationRequestConsumer);
     }
 
     @Override
-    public void unsubscribe(Consumer<PlcNotification<?>> consumer) {
-        Pair<Consumer<AdsDeviceNotificationRequest>, NotificationHandle> handlePair = subscriberMap.remove(consumer);
+    public void unsubscribe(Consumer<PlcNotification<?>> consumer, Address address) {
+        Pair<Consumer<AdsDeviceNotificationRequest>, NotificationHandle> handlePair = subscriberMap.remove(Pair.of(consumer, address));
         if (handlePair != null) {
             NotificationHandle notificationHandle = handlePair.getRight();
+            handleConsumerMap.remove(notificationHandle);
             AdsDeleteDeviceNotificationRequest adsDeleteDeviceNotificationRequest = AdsDeleteDeviceNotificationRequest.of(
                 targetAmsNetId,
                 targetAmsPort,

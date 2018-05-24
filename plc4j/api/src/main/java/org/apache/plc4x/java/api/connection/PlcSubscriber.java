@@ -21,7 +21,6 @@ package org.apache.plc4x.java.api.connection;
 import org.apache.plc4x.java.api.messages.PlcNotification;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -31,19 +30,20 @@ public interface PlcSubscriber {
 
     /**
      * Subscribes a {@code consumer} to a {@code address} parsing values as {@code dataType}.
+     * {@code consumer} and {@code address} are used as unique identification.
      *
      * @param consumer to be subscribed.
      * @param address  to be read.
      * @param dataType to be decoded.
-     * @param uuid     end to end reference
      */
-    void subscribe(Consumer<PlcNotification<?>> consumer, Address address, Class<?> dataType, UUID uuid);
+    void subscribe(Consumer<PlcNotification<?>> consumer, Address address, Class<?> dataType);
 
 
     /**
      * Unsubscribes a {@code consumer}.
+     * {@code consumer} and {@code address} are used as unique identification.
      *
      * @param consumer to be unsubscribed.
      */
-    void unsubscribe(Consumer<PlcNotification<?>> consumer);
+    void unsubscribe(Consumer<PlcNotification<?>> consumer, Address address);
 }
