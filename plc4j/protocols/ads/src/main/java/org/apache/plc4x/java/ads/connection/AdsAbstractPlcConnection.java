@@ -48,8 +48,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsAbstractPlcConnection.class);
 
-    private static final Configuration CONF = new SystemConfiguration();
-    private static final long SYMBOL_RESOLVE_TIMEOUT = CONF.getLong("plc4x.adsconnection.symbol.resolve,timeout", 3000);
+    protected static final Configuration CONF = new SystemConfiguration();
+    protected static final long SYMBOL_RESOLVE_TIMEOUT = CONF.getLong("plc4x.adsconnection.symbol.resolve,timeout", 3000);
 
     protected final AmsNetId targetAmsNetId;
 
@@ -139,7 +139,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
         return sendFuture;
     }
 
-    private void mapAddresses(PlcRequest<?> request) {
+    protected void mapAddresses(PlcRequest<?> request) {
         request.getRequestItems().stream()
             .parallel()
             .map(RequestItem::getAddress)

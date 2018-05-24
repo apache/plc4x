@@ -28,7 +28,7 @@ import java.util.Optional;
 
 public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
 
-    private Class<T> dataType;
+    private final Class<T> dataType;
 
     public TypeSafePlcReadRequest(Class<T> dataType) {
         Objects.requireNonNull(dataType, "data type must not be null");

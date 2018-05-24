@@ -20,15 +20,56 @@ package org.apache.plc4x.java.api.messages;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
-public class PlcNotification {
+public class PlcNotification<T> {
 
-    private final Date timeStamp;
+    protected final Date timeStamp;
 
-    private final List<Object> values;
+    protected final List<T> values;
 
-    public PlcNotification(Date timeStamp, List<Object> values) {
+    protected final UUID uuid;
+
+    public PlcNotification(Date timeStamp, List<T> values, UUID uuid) {
         this.timeStamp = timeStamp;
         this.values = values;
+        this.uuid = uuid;
+    }
+
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
+
+    public List<T> getValues() {
+        return values;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcNotification)) {
+            return false;
+        }
+        PlcNotification<?> that = (PlcNotification<?>) o;
+        return Objects.equals(timeStamp, that.timeStamp) &&
+            Objects.equals(values, that.values) &&
+            Objects.equals(uuid, that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(timeStamp, values, uuid);
+    }
+
+    @Override
+    public String toString() {
+        return "PlcNotification{" +
+            "timeStamp=" + timeStamp +
+            ", values=" + values +
+            ", uuid=" + uuid +
+            '}';
     }
 }
