@@ -36,7 +36,7 @@ public interface PlcSubscriber {
      * @param address  to be read.
      * @param dataType to be decoded.
      */
-    void subscribe(Consumer<PlcNotification<?>> consumer, Address address, Class<?> dataType);
+    <T extends R, R> void subscribe(Consumer<PlcNotification<R>> consumer, Address address, Class<T> dataType);
 
 
     /**
@@ -45,5 +45,5 @@ public interface PlcSubscriber {
      *
      * @param consumer to be unsubscribed.
      */
-    void unsubscribe(Consumer<PlcNotification<?>> consumer, Address address);
+    <R> void unsubscribe(Consumer<PlcNotification<R>> consumer, Address address);
 }

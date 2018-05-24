@@ -136,7 +136,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     @Override
-    public void subscribe(Consumer<PlcNotification<?>> consumer, Address address, Class<?> dataType) {
+    public <T extends R, R> void subscribe(Consumer<PlcNotification<R>> consumer, Address address, Class<T> dataType) {
         Objects.requireNonNull(consumer);
         Objects.requireNonNull(address);
         IndexGroup indexGroup;
@@ -208,8 +208,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         }
                         Data data = adsNotificationSample.getData();
                         try {
-                            consumer.accept(new PlcNotification<>(timeStamp, address, LittleEndianDecoder.decodeData(dataType, data.getBytes())));
-                        } catch (PlcProtocolException e) {
+                            consumer.accept(new PlcNotification(timeStamp, address, LittleEndianDecoder.decodeData(dataType, data.getBytes())));
+                        } catch (PlcProtocolException | RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }
                     });
@@ -219,7 +219,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     @Override
-    public void unsubscribe(Consumer<PlcNotification<?>> consumer, Address address) {
+    public <R> void unsubscribe(Consumer<PlcNotification<R>> consumer, Address address) {
         Pair<Consumer<AdsDeviceNotificationRequest>, NotificationHandle> handlePair = subscriberMap.remove(Pair.of(consumer, address));
         if (handlePair != null) {
             NotificationHandle notificationHandle = handlePair.getRight();
