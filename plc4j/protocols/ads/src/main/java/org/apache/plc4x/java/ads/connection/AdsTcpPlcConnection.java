@@ -188,7 +188,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                     .forEach(adsNotificationSample -> {
                         Consumer<? extends PlcNotification> plcNotificationConsumer = handleConsumerMap.get(adsNotificationSample.getNotificationHandle());
                         if (plcNotificationConsumer == null) {
-                            LOGGER.warn("Unmapped notification received ", adsNotificationSample.getNotificationHandle());
+                            LOGGER.warn("Unmapped notification received {}", adsNotificationSample);
                             return;
                         }
                         Data data = adsNotificationSample.getData();
@@ -210,7 +210,6 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         Pair<Consumer<AdsDeviceNotificationRequest>, NotificationHandle> handlePair = subscriberMap.remove(Pair.of(consumer, address));
         if (handlePair != null) {
             NotificationHandle notificationHandle = handlePair.getRight();
-            handleConsumerMap.remove(notificationHandle);
             AdsDeleteDeviceNotificationRequest adsDeleteDeviceNotificationRequest = AdsDeleteDeviceNotificationRequest.of(
                 targetAmsNetId,
                 targetAmsPort,
@@ -229,6 +228,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             }
 
             getChannel().pipeline().get(Plc4x2AdsProtocol.class).removeConsumer(handlePair.getLeft());
+            handleConsumerMap.remove(notificationHandle);
         }
     }
 }
