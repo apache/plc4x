@@ -26,6 +26,8 @@ public class IndexOffset extends UnsignedIntLEByteValue {
 
     public static final int NUM_BYTES = UnsignedIntLEByteValue.UNSIGNED_INT_LE_NUM_BYTES;
 
+    public static final IndexOffset NONE = IndexOffset.of(0);
+
     private IndexOffset(byte... values) {
         super(values);
     }

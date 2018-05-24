@@ -141,6 +141,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     private void mapAddresses(PlcRequest<?> request) {
         request.getRequestItems().stream()
+            .parallel()
             .map(RequestItem::getAddress)
             .filter(SymbolicAdsAddress.class::isInstance)
             .map(SymbolicAdsAddress.class::cast)
@@ -154,8 +155,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                         sourceAmsPort,
                         Invoke.NONE,
                         IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
-                        IndexOffset.of(0),
-                        ReadLength.of(4),
+                        IndexOffset.NONE,
+                        ReadLength.of(IndexOffset.NUM_BYTES),
                         Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
                     );
 
@@ -192,6 +193,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     @Override
     public void close() {
         addressMapping.values().stream()
+            .parallel()
             .map(adsAddress -> AdsWriteRequest.of(
                 targetAmsNetId,
                 targetAmsPort,
@@ -199,7 +201,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 sourceAmsPort,
                 Invoke.NONE,
                 IndexGroup.ReservedGroups.ADSIGRP_SYM_RELEASEHND,
-                IndexOffset.of(0),
+                IndexOffset.NONE,
                 Data.of(IndexGroup.of(adsAddress.getIndexGroup()).getBytes())
             ))
             .map(adsWriteRequest -> new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))

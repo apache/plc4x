@@ -84,7 +84,7 @@ public class AbstractProtocolTest {
             AdsReadRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
-                IndexOffset.of(0),
+                IndexOffset.NONE,
                 Length.of(1)
             ),
             AdsReadResponse.of(
@@ -104,7 +104,7 @@ public class AbstractProtocolTest {
             AdsReadWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
-                IndexOffset.of(0),
+                IndexOffset.NONE,
                 ReadLength.of(data.getCalculatedLength()),
                 data
             ),
@@ -126,7 +126,7 @@ public class AbstractProtocolTest {
             AdsWriteRequest.of(
                 targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId,
                 IndexGroup.of(0),
-                IndexOffset.of(0),
+                IndexOffset.NONE,
                 data
             ),
             AdsWriteResponse.of(
