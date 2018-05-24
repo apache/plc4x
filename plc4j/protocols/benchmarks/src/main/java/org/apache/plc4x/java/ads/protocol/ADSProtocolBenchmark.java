@@ -63,7 +63,7 @@ public class ADSProtocolBenchmark {
     @Fork(3)
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void measureEncodingAdsWriteRequest(Blackhole blackhole, MyState myState) throws Exception {
+    public void measureEncodingAdsWriteRequest(Blackhole blackhole, MyState myState) {
         LinkedList<Object> out = new LinkedList<>();
         myState.SUT.encode(null, myState.adsWriteRequest, out);
         blackhole.consume(out.remove());
@@ -75,7 +75,7 @@ public class ADSProtocolBenchmark {
     @Fork(3)
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void measureDecodingAdsWriteResponse(Blackhole blackhole, MyState myState) throws Exception {
+    public void measureDecodingAdsWriteResponse(Blackhole blackhole, MyState myState) {
         LinkedList<Object> out = new LinkedList<>();
         myState.SUT.decode(null, Unpooled.wrappedBuffer(myState.adsWriteResponse), out);
         blackhole.consume(out.remove());
@@ -87,7 +87,7 @@ public class ADSProtocolBenchmark {
     @Fork(3)
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void measureEncodingAdsReadRequest(Blackhole blackhole, MyState myState) throws Exception {
+    public void measureEncodingAdsReadRequest(Blackhole blackhole, MyState myState) {
         LinkedList<Object> out = new LinkedList<>();
         myState.SUT.encode(null, myState.adsReadRequest, out);
         blackhole.consume(out.remove());
@@ -99,7 +99,7 @@ public class ADSProtocolBenchmark {
     @Fork(3)
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void measureDecodingAdsReadResponse(Blackhole blackhole, MyState myState) throws Exception {
+    public void measureDecodingAdsReadResponse(Blackhole blackhole, MyState myState) {
         LinkedList<Object> out = new LinkedList<>();
         myState.SUT.decode(null, Unpooled.wrappedBuffer(myState.adsReadResponse), out);
         blackhole.consume(out.remove());

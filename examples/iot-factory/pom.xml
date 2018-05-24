@@ -28,20 +28,15 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kafka-bridge</artifactId>
-  <name>Examples: Kafka Bridge</name>
-  <description>Sample application that reads data from a connected PLC and publishes this information to a Kafka topic.</description>
+  <artifactId>iot-factory</artifactId>
+  <name>Examples: IoT Factory</name>
+  <description>Client application demonstrating PLC4X in our virtual IoT Factory.</description>
 
   <properties>
-    <app.main.class>org.apache.plc4x.java.examples.kafkabridge.KafkaBridge</app.main.class>
+    <app.main.class>org.apache.plc4x.java.examples.iotfactory.IotElasticsearchFactory</app.main.class>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>apache-edgent</artifactId>
@@ -63,40 +58,17 @@
       <artifactId>edgent-providers-direct</artifactId>
       <version>1.2.0</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.edgent</groupId>
-      <artifactId>edgent-connectors-kafka</artifactId>
-      <version>1.2.0</version>
-    </dependency>
 
+    <!-- Elasticsearch dependencies -->
     <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-yaml</artifactId>
-      <version>2.9.4</version>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>6.2.4</version>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.9.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>2.9.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
+      <groupId>org.elasticsearch.plugin</groupId>
+      <artifactId>transport-netty4-client</artifactId>
+      <version>6.2.4</version>
     </dependency>
 
     <!-- Required driver implementation -->
@@ -105,6 +77,20 @@
       <artifactId>plc4j-protocol-s7</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>1.7.25</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
   </dependencies>
 
@@ -116,6 +102,7 @@
         <configuration>
           <usedDependencies>
             <usedDependency>org.apache.plc4x:plc4j-protocol-s7</usedDependency>
+            <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

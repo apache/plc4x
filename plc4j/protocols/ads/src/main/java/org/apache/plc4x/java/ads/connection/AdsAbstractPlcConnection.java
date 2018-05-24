@@ -140,44 +140,44 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     private void mapAddresses(PlcRequest<?> request) {
-        for (RequestItem requestItem : request.getRequestItems()) {
-            if (requestItem.getAddress() instanceof SymbolicAdsAddress) {
-                SymbolicAdsAddress symbolicAdsAddress = (SymbolicAdsAddress) requestItem.getAddress();
-                addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
-                    LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
-                    AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
-                        targetAmsNetId,
-                        targetAmsPort,
-                        sourceAmsNetId,
-                        sourceAmsPort,
-                        Invoke.NONE,
-                        IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
-                        IndexOffset.of(0),
-                        ReadLength.of(4),
-                        Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
-                    );
+        request.getRequestItems().stream()
+            .parallel()
+            .map(RequestItem::getAddress)
+            .filter(SymbolicAdsAddress.class::isInstance)
+            .map(SymbolicAdsAddress.class::cast)
+            .forEach(symbolicAdsAddress -> addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
+                LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
+                AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
+                    targetAmsNetId,
+                    targetAmsPort,
+                    sourceAmsNetId,
+                    sourceAmsPort,
+                    Invoke.NONE,
+                    IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
+                    IndexOffset.NONE,
+                    ReadLength.of(IndexOffset.NUM_BYTES),
+                    Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
+                );
 
-                    CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
-                    channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
-                    PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse;
-                    try {
-                        getHandleResponse = getHandelFuture.get(SYMBOL_RESOLVE_TIMEOUT, TimeUnit.MILLISECONDS);
-                    } catch (InterruptedException e) {
-                        LOGGER.warn("Interrupted!", e);
-                        Thread.currentThread().interrupt();
-                        throw new PlcRuntimeException(e);
-                    } catch (ExecutionException | TimeoutException e) {
-                        throw new PlcRuntimeException(e);
-                    }
-                    AdsReadWriteResponse response = getHandleResponse.getResponse();
-                    if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
-                        throw new PlcRuntimeException("Non error code received " + response.getResult());
-                    }
-                    IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
-                    return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
-                });
-            }
-        }
+                CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
+                channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
+                PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse;
+                try {
+                    getHandleResponse = getHandelFuture.get(SYMBOL_RESOLVE_TIMEOUT, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    LOGGER.warn("Interrupted!", e);
+                    Thread.currentThread().interrupt();
+                    throw new PlcRuntimeException(e);
+                } catch (ExecutionException | TimeoutException e) {
+                    throw new PlcRuntimeException(e);
+                }
+                AdsReadWriteResponse response = getHandleResponse.getResponse();
+                if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
+                    throw new PlcRuntimeException("Non error code received " + response.getResult());
+                }
+                IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
+                return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
+            }));
     }
 
     protected static AmsNetId generateAMSNetId() {
@@ -190,20 +190,22 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     @Override
     public void close() {
-        for (AdsAddress adsAddress : addressMapping.values()) {
-            AdsWriteRequest adsWriteRequest = AdsWriteRequest.of(
+        addressMapping.values().stream()
+            .parallel()
+            .map(adsAddress -> AdsWriteRequest.of(
                 targetAmsNetId,
                 targetAmsPort,
                 sourceAmsNetId,
                 sourceAmsPort,
                 Invoke.NONE,
                 IndexGroup.ReservedGroups.ADSIGRP_SYM_RELEASEHND,
-                IndexOffset.of(0),
+                IndexOffset.NONE,
                 Data.of(IndexGroup.of(adsAddress.getIndexGroup()).getBytes())
-            );
+            ))
+            .map(adsWriteRequest -> new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))
             // We don't need a response so we just supply a throw away future.
-            channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()));
-        }
+            .forEach(channel::write);
+        channel.flush();
         super.close();
     }
 

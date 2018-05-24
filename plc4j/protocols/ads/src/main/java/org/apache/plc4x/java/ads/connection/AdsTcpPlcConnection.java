@@ -47,10 +47,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements PlcSubscriber {
 
     private static final int TCP_PORT = 48898;
+
+    private static AtomicInteger localPorts = new AtomicInteger(30000);
 
     private final Map<Consumer<PlcNotification>, Consumer<AdsDeviceNotificationRequest>> subscriberMap = new HashMap<>();
 
@@ -113,7 +116,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     protected static AmsPort generateAMSPort() {
-        return AmsPort.of(TCP_PORT);
+        return AmsPort.of(localPorts.getAndIncrement());
     }
 
     @Override

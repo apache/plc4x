@@ -73,7 +73,9 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
                 try {
                     TimeUnit.SECONDS.sleep(2);
                     channelHandlerContext.channel().writeAndFlush(amsSerialFrame.getByteBuf());
-                } catch (InterruptedException ignore) {
+                } catch (InterruptedException e) {
+                    LOGGER.debug("Interrupted", e);
+                    Thread.currentThread().interrupt();
                 }
                 return channelHandlerContext.voidPromise();
             }, 0, TimeUnit.MILLISECONDS);

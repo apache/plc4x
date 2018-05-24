@@ -43,7 +43,7 @@ public class S7PlcScanner {
     public static void main(String[] args) throws Exception {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://10.10.64.20/1/1")) {
             logger.info("Connected");
 
             Optional<PlcReader> reader = plcConnection.getReader();

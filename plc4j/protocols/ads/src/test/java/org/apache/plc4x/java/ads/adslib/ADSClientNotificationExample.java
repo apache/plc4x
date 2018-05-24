@@ -56,7 +56,7 @@ public class ADSClientNotificationExample {
         Result handleStatus = AdsSyncReadWriteReqEx2(port,
             server,
             IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
-            IndexOffset.of(0),
+            IndexOffset.NONE,
             ReadLength.of(4),
             handle,
             WriteLength.of(handleName.length()),
@@ -70,7 +70,7 @@ public class ADSClientNotificationExample {
     }
 
     private static void releaseHandleExample(PrintStream out, long port, ImmutablePair<AmsNetId, AmsPort> server, SymbolHandle handle) {
-        Result releaseHandle = AdsSyncWriteReqEx(port, server, IndexGroup.ReservedGroups.ADSIGRP_SYM_RELEASEHND, IndexOffset.of(0), WriteLength.of(4), Data.of(handle.getBytes()));
+        Result releaseHandle = AdsSyncWriteReqEx(port, server, IndexGroup.ReservedGroups.ADSIGRP_SYM_RELEASEHND, IndexOffset.NONE, WriteLength.of(4), Data.of(handle.getBytes()));
         if (releaseHandle.toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
             out.println("Release handle " + handle + "' failed with: " + releaseHandle);
         }
@@ -160,7 +160,7 @@ public class ADSClientNotificationExample {
 
         out.println("readExample():");
         for (int i = 0; i < 8; ++i) {
-            Result status = AdsSyncReadReqEx2(port, server, IndexGroup.of(0x4020), IndexOffset.of(0), Length.of(4), buffer, bytesRead);
+            Result status = AdsSyncReadReqEx2(port, server, IndexGroup.of(0x4020), IndexOffset.NONE, Length.of(4), buffer, bytesRead);
             if (status.toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
                 out.println("ADS read failed with: " + status);
                 return;

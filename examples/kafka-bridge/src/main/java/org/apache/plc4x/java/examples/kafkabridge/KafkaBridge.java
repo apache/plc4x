@@ -20,12 +20,12 @@ package org.apache.plc4x.java.examples.kafkabridge;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.edgent.connectors.kafka.KafkaProducer;
 import org.apache.edgent.function.Supplier;
@@ -34,10 +34,16 @@ import org.apache.edgent.topology.TStream;
 import org.apache.edgent.topology.Topology;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.examples.kafkabridge.model.Address;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.examples.kafkabridge.model.PlcAddress;
 import org.apache.plc4x.java.examples.kafkabridge.model.Configuration;
+import org.apache.plc4x.java.examples.kafkabridge.model.PlcMemoryBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,31 +77,54 @@ public class KafkaBridge {
         DirectProvider dp = new DirectProvider();
         Topology top = dp.newTopology("kafka-bridge");
 
-        Map<String, ReadRequestItem> readRequestItems = new HashMap<>();
-        for(Address address : config.getPlcConfig().getAddresses()) {
-            try {
-                org.apache.plc4x.java.api.model.Address plcAddress = plcAdapter.parseAddress(address.getAddress());
-                ReadRequestItem readItem = new ReadRequestItem<>(address.getType(), plcAddress, address.getSize());
-                readRequestItems.put(address.getName(), readItem);
-            } catch (PlcException e) {
-                logger.error("Error parsing address {}", address.getAddress(), e);
+        // Build the entire request.
+        Map<ReadRequestItem, String> names = new HashMap<>();
+        PlcReadRequest readRequest = new PlcReadRequest();
+        for(PlcMemoryBlock plcMemoryBlock : config.getPlcConfig().getPlcMemoryBlocks()) {
+            for (PlcAddress address : config.getPlcConfig().getPlcAddresses()) {
+                try {
+                    Address plcAddress = plcAdapter.parseAddress(
+                            "DATA_BLOCKS/" + plcMemoryBlock.getAddress() + "/" + address.getAddress());
+                    ReadRequestItem readItem = new ReadRequestItem<>(address.getType(), plcAddress,
+                            +address.getSize());
+                    readRequest.addItem(readItem);
+                    names.put(readItem, plcMemoryBlock.getName() + "/" + address.getName());
+                } catch (PlcConnectionException e) {
+                    logger.error("Error connecting to remote", e);
+                    System.exit(1);
+                } catch (PlcException e) {
+                    logger.error("Error parsing address {}", address.getAddress(), e);
+                    System.exit(1);
+                }
             }
         }
-        // TODO: Here we somehow have to create an Edgent supplier, that can cope with batch reads ...
-        // WARN: This example doesn't work at the moment ...
-        Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, "INPUTS/0");
+
+        // Create a supplier that is able to read the batch we just created.
+        Supplier<PlcReadResponse> plcSupplier = PlcFunctions.batchSupplier(plcAdapter, readRequest);
 
         // Start polling our plc source in the given interval.
-        TStream<Byte> source = top.poll(plcSupplier, config.getPollingInterval(), TimeUnit.MILLISECONDS);
+        TStream<PlcReadResponse> source = top.poll(plcSupplier, config.getPollingInterval(), TimeUnit.MILLISECONDS);
 
         // Convert the byte into a string.
-        TStream<String> stringSource = source.map(value -> Byte.toString(value));
+        TStream<String> jsonSource = source.map(value -> {
+            JsonObject jsonObject = new JsonObject();
+            for (ReadResponseItem<?> readResponseItem : value.getResponseItems()) {
+                String name = names.get(readResponseItem.getRequestItem());
+                if(readResponseItem.getValues().size() == 1) {
+                    jsonObject.addProperty(name, Byte.toString((Byte) readResponseItem.getValues().get(0)));
+                } else if (readResponseItem.getValues().size() > 1) {
+                    // TODO: Implement this ...
+                    //jsonObject.addProperty(name, readResponseItem.getValues());
+                }
+            }
+            return jsonObject.toString();
+        });
 
-        // Publish the stream to the topic.  The String tuple is the message value.
+        // Publish the stream to the topic. The String tuple is the message value.
         // Create the Kafka Producer broker connector
         Map<String,Object> kafkaConfig = createKafkaConfig();
         KafkaProducer kafka = new KafkaProducer(top, () -> kafkaConfig);
-        kafka.publish(stringSource, config.getKafkaConfig().getTopicName());
+        kafka.publish(jsonSource, config.getKafkaConfig().getTopicName());
 
         dp.submit(top);
     }
@@ -111,7 +140,7 @@ public class KafkaBridge {
 
     public static void main(String[] args) {
         if(args.length != 1) {
-            System.out.println("Usage: KafkaBridge {path-to-kafkabridge-yml}");
+            System.out.println("Usage: KafkaBridge {path-to-kafka-bridge.yml}");
         }
         KafkaBridge kafkaBridge = new KafkaBridge(args[0]);
         kafkaBridge.run();

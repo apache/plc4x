@@ -40,10 +40,28 @@ public class LittleEndianDecoder {
         int i = 0;
         final int length = adsData.length;
 
+        // Expand arrays to avoid IndexOutOfBoundsException
+        final byte[] safeLengthAdsData;
+        if (datatype == Short.class && length < 2) {
+            safeLengthAdsData = new byte[2];
+            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
+        } else if (datatype == Integer.class && length < 4) {
+            safeLengthAdsData = new byte[4];
+            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
+        } else if (datatype == Float.class && length < 4) {
+            safeLengthAdsData = new byte[4];
+            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
+        } else if (datatype == Calendar.class && length < 8) {
+            safeLengthAdsData = new byte[8];
+            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
+        } else {
+            safeLengthAdsData = adsData;
+        }
+
         while (i < length) {
-            byte byteOne = adsData[i];
+            byte byteOne = safeLengthAdsData[i];
             if (datatype == String.class) {
-                i = decodeString(adsData, i, length, result);
+                i = decodeString(safeLengthAdsData, i, length, result);
             } else if (datatype == Boolean.class) {
                 result.add((byteOne & 0x01) == 0x01);
                 i += 1;
@@ -51,36 +69,16 @@ public class LittleEndianDecoder {
                 result.add(byteOne);
                 i += 1;
             } else if (datatype == Short.class) {
-                if (length < 2) {
-                    byte[] copy = new byte[2];
-                    System.arraycopy(adsData, 0, copy, 0, length);
-                    adsData = copy;
-                }
-                decodeShort(adsData, i, result);
+                decodeShort(safeLengthAdsData, i, result);
                 i += 2;
             } else if (datatype == Integer.class) {
-                if (length < 4) {
-                    byte[] copy = new byte[4];
-                    System.arraycopy(adsData, 0, copy, 0, length);
-                    adsData = copy;
-                }
-                decodeInteger(adsData, i, result);
+                decodeInteger(safeLengthAdsData, i, result);
                 i += 4;
             } else if (datatype == Float.class) {
-                if (length < 4) {
-                    byte[] copy = new byte[4];
-                    System.arraycopy(adsData, 0, copy, 0, length);
-                    adsData = copy;
-                }
-                decodeFloat(adsData, i, result);
+                decodeFloat(safeLengthAdsData, i, result);
                 i += 4;
             } else if (datatype == Calendar.class || Calendar.class.isAssignableFrom(datatype)) {
-                if (length < 8) {
-                    byte[] copy = new byte[8];
-                    System.arraycopy(adsData, 0, copy, 0, length);
-                    adsData = copy;
-                }
-                extractCalendar(adsData, i, result);
+                extractCalendar(safeLengthAdsData, i, result);
                 i += 8;
             } else {
                 throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
