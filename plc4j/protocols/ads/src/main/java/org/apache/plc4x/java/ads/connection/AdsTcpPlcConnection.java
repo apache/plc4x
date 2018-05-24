@@ -49,9 +49,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -175,16 +172,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
         CompletableFuture<PlcProprietaryResponse<AdsAddDeviceNotificationResponse>> addDeviceFuture = new CompletableFuture<>();
         channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsAddDeviceNotificationRequest), addDeviceFuture));
-        PlcProprietaryResponse<AdsAddDeviceNotificationResponse> addDeviceResponse;
-        try {
-            addDeviceResponse = addDeviceFuture.get(ADD_DEVICE_TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            LOGGER.warn("Interrupted!", e);
-            Thread.currentThread().interrupt();
-            throw new PlcRuntimeException(e);
-        } catch (ExecutionException | TimeoutException e) {
-            throw new PlcRuntimeException(e);
-        }
+        PlcProprietaryResponse<AdsAddDeviceNotificationResponse> addDeviceResponse = getFromFuture(addDeviceFuture, ADD_DEVICE_TIMEOUT);
         AdsAddDeviceNotificationResponse response = addDeviceResponse.getResponse();
         if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
             throw new PlcRuntimeException("Non error code received " + response.getResult());
@@ -234,16 +222,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             CompletableFuture<PlcProprietaryResponse<AdsDeleteDeviceNotificationResponse>> deleteDeviceFuture = new CompletableFuture<>();
             channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsDeleteDeviceNotificationRequest), deleteDeviceFuture));
 
-            PlcProprietaryResponse<AdsDeleteDeviceNotificationResponse> deleteDeviceResponse;
-            try {
-                deleteDeviceResponse = deleteDeviceFuture.get(DEL_DEVICE_TIMEOUT, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                LOGGER.warn("Interrupted!", e);
-                Thread.currentThread().interrupt();
-                throw new PlcRuntimeException(e);
-            } catch (ExecutionException | TimeoutException e) {
-                throw new PlcRuntimeException(e);
-            }
+            PlcProprietaryResponse<AdsDeleteDeviceNotificationResponse> deleteDeviceResponse = getFromFuture(deleteDeviceFuture, DEL_DEVICE_TIMEOUT);
             AdsDeleteDeviceNotificationResponse response = deleteDeviceResponse.getResponse();
             if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
                 throw new PlcRuntimeException("Non error code received " + response.getResult());

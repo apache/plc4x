@@ -161,16 +161,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
                 CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
                 channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
-                PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse;
-                try {
-                    getHandleResponse = getHandelFuture.get(SYMBOL_RESOLVE_TIMEOUT, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException e) {
-                    LOGGER.warn("Interrupted!", e);
-                    Thread.currentThread().interrupt();
-                    throw new PlcRuntimeException(e);
-                } catch (ExecutionException | TimeoutException e) {
-                    throw new PlcRuntimeException(e);
-                }
+                PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
                 AdsReadWriteResponse response = getHandleResponse.getResponse();
                 if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
                     throw new PlcRuntimeException("Non error code received " + response.getResult());
@@ -207,6 +198,18 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             .forEach(channel::write);
         channel.flush();
         super.close();
+    }
+
+    protected <T> T getFromFuture(CompletableFuture<T> future, long timeout) {
+        try {
+            return future.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            LOGGER.warn("Interrupted!", e);
+            Thread.currentThread().interrupt();
+            throw new PlcRuntimeException(e);
+        } catch (ExecutionException | TimeoutException e) {
+            throw new PlcRuntimeException(e);
+        }
     }
 
     @Override
