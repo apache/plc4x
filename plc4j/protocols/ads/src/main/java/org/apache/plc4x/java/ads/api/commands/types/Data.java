@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
@@ -45,12 +46,18 @@ public class Data extends ByteValue {
 
     public static Data of(String value) {
         requireNonNull(value);
-        return new Data(value.getBytes());
+        byte[] origData = value.getBytes();
+        byte[] newData = Arrays.copyOf(origData, origData.length + 1);
+        newData[newData.length - 1] = 0x0;
+        return new Data(newData);
     }
 
     public static Data of(String value, Charset charset) {
         requireNonNull(value);
-        return new Data(value.getBytes(charset));
+        byte[] origData = value.getBytes(charset);
+        byte[] newData = Arrays.copyOf(origData, origData.length + 1);
+        newData[newData.length - 1] = 0x0;
+        return new Data(newData);
     }
 
     @Override
