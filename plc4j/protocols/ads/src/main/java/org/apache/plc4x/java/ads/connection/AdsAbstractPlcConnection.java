@@ -145,30 +145,34 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             .map(RequestItem::getAddress)
             .filter(SymbolicAdsAddress.class::isInstance)
             .map(SymbolicAdsAddress.class::cast)
-            .forEach(symbolicAdsAddress -> addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
-                LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
-                AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
-                    targetAmsNetId,
-                    targetAmsPort,
-                    sourceAmsNetId,
-                    sourceAmsPort,
-                    Invoke.NONE,
-                    IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
-                    IndexOffset.NONE,
-                    ReadLength.of(IndexOffset.NUM_BYTES),
-                    Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
-                );
+            .forEach(this::mapAddress);
+    }
 
-                CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
-                channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
-                PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
-                AdsReadWriteResponse response = getHandleResponse.getResponse();
-                if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
-                    throw new PlcRuntimeException("Non error code received " + response.getResult());
-                }
-                IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
-                return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
-            }));
+    protected void mapAddress(SymbolicAdsAddress symbolicAdsAddress) {
+        addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
+            LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
+            AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
+                targetAmsNetId,
+                targetAmsPort,
+                sourceAmsNetId,
+                sourceAmsPort,
+                Invoke.NONE,
+                IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
+                IndexOffset.NONE,
+                ReadLength.of(IndexOffset.NUM_BYTES),
+                Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
+            );
+
+            CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
+            channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
+            PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
+            AdsReadWriteResponse response = getHandleResponse.getResponse();
+            if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
+                throw new PlcRuntimeException("Non error code received " + response.getResult());
+            }
+            IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
+            return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
+        });
     }
 
     protected static AmsNetId generateAMSNetId() {

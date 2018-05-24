@@ -37,8 +37,10 @@ import org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.RequestItem;
+import org.apache.plc4x.java.api.messages.PlcNotification;
+import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
+import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
+import org.apache.plc4x.java.api.messages.PlcRequestContainer;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.slf4j.Logger;
@@ -136,13 +138,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         IndexGroup indexGroup;
         IndexOffset indexOffset;
         if (address instanceof SymbolicAdsAddress) {
-            mapAddresses(new PlcRequest() {
-                {
-                    requestItems.add(new RequestItem(Void.class, address) {
-                        // Not relevant
-                    });
-                }
-            });
+            mapAddress((SymbolicAdsAddress) address);
             AdsAddress adsAddress = addressMapping.get(address);
             if (adsAddress == null) {
                 throw new PlcRuntimeException("Unresolvable address" + address);
