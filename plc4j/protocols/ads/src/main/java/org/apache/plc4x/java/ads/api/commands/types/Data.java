@@ -19,10 +19,10 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
@@ -46,18 +46,12 @@ public class Data extends ByteValue {
 
     public static Data of(String value) {
         requireNonNull(value);
-        byte[] origData = value.getBytes();
-        byte[] newData = Arrays.copyOf(origData, origData.length + 1);
-        newData[newData.length - 1] = 0x0;
-        return new Data(newData);
+        return new Data(ArrayUtils.add(value.getBytes(), (byte) 0x0));
     }
 
     public static Data of(String value, Charset charset) {
         requireNonNull(value);
-        byte[] origData = value.getBytes(charset);
-        byte[] newData = Arrays.copyOf(origData, origData.length + 1);
-        newData[newData.length - 1] = 0x0;
-        return new Data(newData);
+        return new Data(ArrayUtils.add(value.getBytes(charset), (byte) 0x0));
     }
 
     @Override
