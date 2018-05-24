@@ -146,6 +146,33 @@
           </instructions>
         </configuration>
       </plugin-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>check-dependencies</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <ignoredDependencies>
+                <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
+                <ignoredDependency>junit:junit</ignoredDependency>
+                <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
+                <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
+                <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
+                <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
+                <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
+                <ignoredDependency>org.apache.plc4x:plc4j-protocol-ads</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
