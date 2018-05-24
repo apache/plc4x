@@ -18,10 +18,7 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
-import org.apache.camel.Component;
-import org.apache.camel.Consumer;
-import org.apache.camel.Processor;
-import org.apache.camel.Producer;
+import org.apache.camel.*;
 import org.apache.camel.impl.DefaultEndpoint;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriEndpoint;
@@ -72,6 +69,11 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
         return new Plc4XConsumer(this, processor);
+    }
+
+    @Override
+    public PollingConsumer createPollingConsumer() throws Exception {
+        return new Plc4XPollingConsumer(this);
     }
 
     @Override

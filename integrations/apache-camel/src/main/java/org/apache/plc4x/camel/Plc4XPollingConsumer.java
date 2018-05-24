@@ -18,34 +18,39 @@
  */
 package org.apache.plc4x.camel;
 
-import org.apache.camel.*;
+import org.apache.camel.Endpoint;
+import org.apache.camel.Exchange;
+import org.apache.camel.PollingConsumer;
 import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
 import org.apache.camel.support.ServiceSupport;
-import org.apache.camel.util.AsyncProcessorConverterHelper;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcSubscriber;
+import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcNotification;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util.function.Consumer<PlcNotification<Object>> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsumer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XPollingConsumer.class);
 
     private Plc4XEndpoint endpoint;
-    private AsyncProcessor processor;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private Address address;
     private Class dataType;
 
 
-    public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
+    public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
         this.endpoint = endpoint;
         this.dataType = endpoint.getDataType();
-        this.processor = AsyncProcessorConverterHelper.convert(processor);
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
@@ -71,33 +76,51 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     }
 
     @Override
+    public Exchange receive() {
+        Exchange exchange = endpoint.createExchange();
+        CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, address));
+        try {
+            PlcReadResponse plcReadResponse = read.get();
+            exchange.getIn().setBody(plcReadResponse.getResponseItems());
+        } catch (InterruptedException | ExecutionException e) {
+            exchange.setException(e);
+        }
+        return exchange;
+    }
+
+    @Override
+    public Exchange receiveNoWait() {
+        return null;
+    }
+
+    @Override
+    public Exchange receive(long timeout) {
+        Exchange exchange = endpoint.createExchange();
+        CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, address));
+        try {
+            PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
+            exchange.getIn().setBody(plcReadResponse.getResponseItems());
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            exchange.setException(e);
+        }
+        return exchange;
+    }
+
+    public PlcReader getReader() {
+        return plcConnection.getReader().orElseThrow(() -> new RuntimeException("No reader avaiable"));
+    }
+
+    @Override
     protected void doStart() {
-        getSubscriber().subscribe(this, address, dataType);
+
     }
 
     @Override
     protected void doStop() {
-        getSubscriber().unsubscribe(this, address);
         try {
             plcConnection.close();
         } catch (Exception e) {
             LOGGER.error("Error closing connection", e);
-        }
-    }
-
-    private PlcSubscriber getSubscriber() {
-        return plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("No subscriber available"));
-    }
-
-    @Override
-    public void accept(PlcNotification<Object> plcNotification) {
-        LOGGER.debug("Received {}", plcNotification);
-        try {
-            Exchange exchange = endpoint.createExchange();
-            exchange.getIn().setBody(plcNotification.getValues());
-            processor.process(exchange);
-        } catch (Exception e) {
-            exceptionHandler.handleException(e);
         }
     }
 }

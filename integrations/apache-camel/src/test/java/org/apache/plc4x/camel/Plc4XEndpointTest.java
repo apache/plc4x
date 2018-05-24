@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.Component;
+import org.apache.camel.Processor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,9 +42,9 @@ public class Plc4XEndpointTest {
         assertThat(SUT.createProducer(), notNullValue());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void createConsumer() throws Exception {
-        SUT.createConsumer(null);
+        assertThat(SUT.createConsumer(mock(Processor.class)), notNullValue());
     }
 
     @Test
