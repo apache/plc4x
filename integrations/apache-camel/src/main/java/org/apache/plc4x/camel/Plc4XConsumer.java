@@ -31,6 +31,8 @@ import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util.function.Consumer<PlcNotification<Object>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
 
@@ -94,10 +96,20 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
         LOGGER.debug("Received {}", plcNotification);
         try {
             Exchange exchange = endpoint.createExchange();
-            exchange.getIn().setBody(plcNotification.getValues());
+            exchange.getIn().setBody(unwrapIfSingle(plcNotification.getValues()));
             processor.process(exchange);
         } catch (Exception e) {
             exceptionHandler.handleException(e);
         }
+    }
+
+    public Object unwrapIfSingle(List list) {
+        if (list.size() < 1) {
+            return null;
+        }
+        if (list.size() < 2) {
+            return list.get(0);
+        }
+        return list;
     }
 }

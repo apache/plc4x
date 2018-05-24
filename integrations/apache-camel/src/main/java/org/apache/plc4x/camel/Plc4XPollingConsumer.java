@@ -33,6 +33,7 @@ import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -99,7 +100,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, address));
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
-            exchange.getIn().setBody(plcReadResponse.getResponseItems());
+            exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getResponseItems()));
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             exchange.setException(e);
         }
@@ -122,5 +123,15 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         } catch (Exception e) {
             LOGGER.error("Error closing connection", e);
         }
+    }
+
+    public Object unwrapIfSingle(List list) {
+        if (list.size() < 1) {
+            return null;
+        }
+        if (list.size() < 2) {
+            return list.get(0);
+        }
+        return list;
     }
 }

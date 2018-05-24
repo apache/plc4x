@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.camel;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.main.Main;
 import org.apache.camel.main.MainListenerSupport;
@@ -56,11 +54,7 @@ public class ManualTest {
         @Override
         public void configure() {
             from("plc4x:ads:tcp://10.10.64.40/10.10.64.40.1.1:851/10.10.56.23.1.1:30000?dataType=java.lang.Integer&address=Allgemein_S2.Station")
-                .process(new Processor() {
-                    public void process(Exchange exchange) {
-                        System.out.println("Invoked timer at " + new Date());
-                    }
-                })
+                .process(exchange -> System.out.println("Invoked timer at " + new Date()))
                 .bean("foo")
                 .log("Received ${body}");
         }

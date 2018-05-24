@@ -26,13 +26,13 @@ import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.plc4x.java.PlcDriverManager;
 
-@UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver:address", label = "plc4x")
+@UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver", label = "plc4x")
 public class Plc4XEndpoint extends DefaultEndpoint {
 
     /**
-     * The name 0f the PLC4X driver
+     * The name of the PLC4X driver
      */
-    @UriPath
+    @UriPath(label = "common")
     @Metadata(required = "true")
     @SuppressWarnings("unused")
     private String driver;
@@ -57,7 +57,6 @@ public class Plc4XEndpoint extends DefaultEndpoint {
 
     public Plc4XEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
-        // TODO: why doesnt the annotation work
         plcDriverManager = new PlcDriverManager();
     }
 

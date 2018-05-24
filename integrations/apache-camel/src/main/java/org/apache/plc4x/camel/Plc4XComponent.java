@@ -31,4 +31,10 @@ public class Plc4XComponent extends DefaultComponent {
         setProperties(endpoint, parameters);
         return endpoint;
     }
+
+    @Override
+    protected void afterConfiguration(String uri, String remaining, Endpoint endpoint, Map<String, Object> parameters) {
+        Plc4XEndpoint plc4XEndpoint = (Plc4XEndpoint) endpoint;
+        plc4XEndpoint.setDriver(remaining.split(":")[0]);
+    }
 }
