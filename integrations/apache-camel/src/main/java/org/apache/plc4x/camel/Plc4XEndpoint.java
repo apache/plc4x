@@ -26,6 +26,8 @@ import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.plc4x.java.PlcDriverManager;
 
+import java.util.Objects;
+
 @UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver", label = "plc4x")
 public class Plc4XEndpoint extends DefaultEndpoint {
 
@@ -107,4 +109,22 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     public void setDataType(Class dataType) {
         this.dataType = dataType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Plc4XEndpoint)) return false;
+        if (!super.equals(o)) return false;
+        Plc4XEndpoint that = (Plc4XEndpoint) o;
+        return Objects.equals(getDriver(), that.getDriver()) &&
+            Objects.equals(getAddress(), that.getAddress()) &&
+            Objects.equals(getDataType(), that.getDataType()) &&
+            Objects.equals(getPlcDriverManager(), that.getPlcDriverManager());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getDriver(), getAddress(), getDataType(), getPlcDriverManager());
+    }
+
 }
