@@ -71,15 +71,19 @@ public class IotElasticsearchFactory {
 
     private ConveyorState conveyorState = ConveyorState.STOPPED;
 
-    private Node startElasticsearchNode() throws NodeValidationException {
-        Node node = new MyNode(Settings.builder()
-            .put("transport.type", "netty4")
-            .put("http.type", "netty4")
-            .put("http.enabled", "true")
-            .put("path.home", "elasticsearch-data")
-            .build(), Collections.singletonList(Netty4Plugin.class));
-        node.start();
-        return node;
+    private Node startElasticsearchNode() {
+        try {
+            Node node = new MyNode(Settings.builder()
+                .put("transport.type", "netty4")
+                .put("http.type", "netty4")
+                .put("http.enabled", "true")
+                .put("path.home", "elasticsearch-data")
+                .build(), Collections.singletonList(Netty4Plugin.class));
+            node.start();
+            return node;
+        } catch (NodeValidationException e) {
+            throw new IotElasticsearchFactoryException("Could not start Elasticsearch node.", e);
+        }
     }
 
     private void prepareIndexes(Client esClient) {
@@ -127,7 +131,7 @@ public class IotElasticsearchFactory {
         }
     }
 
-    private void runFactory() throws Exception {
+    private void runFactory() {
         // Start an Elasticsearch node.
         Node esNode = startElasticsearchNode();
         Client esClient = esNode.client();
@@ -175,19 +179,17 @@ public class IotElasticsearchFactory {
         boolean conveyorLeft = (input & 32) != 0;
         boolean conveyorRight = (input & 64) != 0;
 
-        try {
-            XContentBuilder builder = XContentFactory.jsonBuilder()
-                .startObject()
-                .field("time", Calendar.getInstance().getTimeInMillis())
-                .field("conveyorEntry", conveyorEntry)
-                .field("load", load)
-                .field( "unload", unload)
-                .field( "transferLeft", transferLeft)
-                .field( "transferRight", transferRight)
-                .field( "conveyorLeft", conveyorLeft)
-                .field( "conveyorRight", conveyorRight)
-                .endObject();
-            builder.close();
+        try(XContentBuilder builder = XContentFactory.jsonBuilder()
+            .startObject()
+            .field("time", Calendar.getInstance().getTimeInMillis())
+            .field("conveyorEntry", conveyorEntry)
+            .field("load", load)
+            .field( "unload", unload)
+            .field( "transferLeft", transferLeft)
+            .field( "transferRight", transferRight)
+            .field( "conveyorLeft", conveyorLeft)
+            .field( "conveyorRight", conveyorRight)
+            .endObject()) {
             return builder;
         } catch (IOException e) {
             throw new IotElasticsearchFactoryException("Error building JSON message.", e);
@@ -201,26 +203,22 @@ public class IotElasticsearchFactory {
         if (conveyorState == ConveyorState.STOPPED) {
             if (transferLeft) {
                 conveyorState = ConveyorState.RUNNING_LEFT;
-                try {
-                    XContentBuilder builder = XContentFactory.jsonBuilder()
-                        .startObject()
-                        .field("time", Calendar.getInstance().getTimeInMillis())
-                        .field("type", "small")
-                        .endObject();
-                    builder.close();
+                try (XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("time", Calendar.getInstance().getTimeInMillis())
+                    .field("type", "small")
+                    .endObject()) {
                     return builder;
                 } catch (IOException e) {
                     throw new IotElasticsearchFactoryException("Error building JSON message.", e);
                 }
             } else if (transferRight){
                 conveyorState = ConveyorState.RUNNING_RIGHT;
-                try {
-                    XContentBuilder builder = XContentFactory.jsonBuilder()
-                        .startObject()
-                        .field("time", Calendar.getInstance().getTimeInMillis())
-                        .field("type", "large")
-                        .endObject();
-                    builder.close();
+                try (XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("time", Calendar.getInstance().getTimeInMillis())
+                    .field("type", "large")
+                    .endObject()) {
                     return builder;
                 } catch (IOException e) {
                     throw new IotElasticsearchFactoryException("Error building JSON message.", e);
@@ -232,7 +230,7 @@ public class IotElasticsearchFactory {
         return null;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         IotElasticsearchFactory factory = new IotElasticsearchFactory();
         factory.runFactory();
     }
