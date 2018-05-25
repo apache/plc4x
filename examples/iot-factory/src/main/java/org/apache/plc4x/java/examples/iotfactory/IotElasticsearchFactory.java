@@ -167,6 +167,8 @@ public class IotElasticsearchFactory {
 
             // Submit the topology and hereby start the event streams.
             dp.submit(top);
+        } catch (Exception e) {
+            throw new IotElasticsearchFactoryException("Error while connecting or disconnecting from the PLC.", e);
         }
     }
 
