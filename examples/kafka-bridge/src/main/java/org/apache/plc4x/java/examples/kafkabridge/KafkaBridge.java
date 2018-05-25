@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.edgent.connectors.kafka.KafkaProducer;
@@ -73,7 +74,7 @@ public class KafkaBridge {
         }
     }
 
-    private void run() {
+    private void run() throws PlcException {
         DirectProvider dp = new DirectProvider();
         Topology top = dp.newTopology("kafka-bridge");
 
@@ -91,10 +92,10 @@ public class KafkaBridge {
                     names.put(readItem, plcMemoryBlock.getName() + "/" + address.getName());
                 } catch (PlcConnectionException e) {
                     logger.error("Error connecting to remote", e);
-                    System.exit(1);
+                    throw e;
                 } catch (PlcException e) {
                     logger.error("Error parsing address {}", address.getAddress(), e);
-                    System.exit(1);
+                    throw e;
                 }
             }
         }
@@ -113,8 +114,11 @@ public class KafkaBridge {
                 if(readResponseItem.getValues().size() == 1) {
                     jsonObject.addProperty(name, Byte.toString((Byte) readResponseItem.getValues().get(0)));
                 } else if (readResponseItem.getValues().size() > 1) {
-                    // TODO: Implement this ...
-                    //jsonObject.addProperty(name, readResponseItem.getValues());
+                    JsonArray values = new JsonArray();
+                    for (Object valueElement : readResponseItem.getValues()) {
+                        values.add((Byte) valueElement);
+                    }
+                    jsonObject.add(name, values);
                 }
             }
             return jsonObject.toString();
@@ -138,7 +142,7 @@ public class KafkaBridge {
         return kafkaConfig;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if(args.length != 1) {
             System.out.println("Usage: KafkaBridge {path-to-kafka-bridge.yml}");
         }
