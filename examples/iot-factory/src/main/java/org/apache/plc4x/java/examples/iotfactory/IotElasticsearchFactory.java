@@ -54,6 +54,15 @@ public class IotElasticsearchFactory {
         RUNNING_RIGHT
     }
 
+    private static class IotElasticsearchFactoryException extends RuntimeException {
+        private IotElasticsearchFactoryException(String message) {
+            super(message);
+        }
+        private IotElasticsearchFactoryException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
     private static class MyNode extends Node {
         private MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
             super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
@@ -91,7 +100,7 @@ public class IotElasticsearchFactory {
                     "        }", XContentType.JSON);
             CreateIndexResponse createIndexResponse = indicesAdminClient.create(createIndexRequest).actionGet();
             if(!createIndexResponse.isAcknowledged()) {
-                throw new RuntimeException("Could not create index 'iot-factory-data'");
+                throw new IotElasticsearchFactoryException("Could not create index 'iot-factory-data'");
             }
         }
 
@@ -113,7 +122,7 @@ public class IotElasticsearchFactory {
                     "        }", XContentType.JSON);
             CreateIndexResponse createIndexResponse = indicesAdminClient.create(createIndexRequest).actionGet();
             if(!createIndexResponse.isAcknowledged()) {
-                throw new RuntimeException("Could not create index 'iot-product-data'");
+                throw new IotElasticsearchFactoryException("Could not create index 'iot-product-data'");
             }
         }
     }
@@ -167,7 +176,7 @@ public class IotElasticsearchFactory {
         boolean conveyorRight = (input & 64) != 0;
 
         try {
-            return XContentFactory.jsonBuilder()
+            XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                 .field("time", Calendar.getInstance().getTimeInMillis())
                 .field("conveyorEntry", conveyorEntry)
@@ -178,8 +187,10 @@ public class IotElasticsearchFactory {
                 .field( "conveyorLeft", conveyorLeft)
                 .field( "conveyorRight", conveyorRight)
                 .endObject();
+            builder.close();
+            return builder;
         } catch (IOException e) {
-            throw new RuntimeException("Error building JSON message.", e);
+            throw new IotElasticsearchFactoryException("Error building JSON message.", e);
         }
     }
 
@@ -191,24 +202,28 @@ public class IotElasticsearchFactory {
             if (transferLeft) {
                 conveyorState = ConveyorState.RUNNING_LEFT;
                 try {
-                    return XContentFactory.jsonBuilder()
+                    XContentBuilder builder = XContentFactory.jsonBuilder()
                         .startObject()
                         .field("time", Calendar.getInstance().getTimeInMillis())
                         .field("type", "small")
                         .endObject();
+                    builder.close();
+                    return builder;
                 } catch (IOException e) {
-                    throw new RuntimeException("Error building JSON message.", e);
+                    throw new IotElasticsearchFactoryException("Error building JSON message.", e);
                 }
             } else if (transferRight){
                 conveyorState = ConveyorState.RUNNING_RIGHT;
                 try {
-                    return XContentFactory.jsonBuilder()
+                    XContentBuilder builder = XContentFactory.jsonBuilder()
                         .startObject()
                         .field("time", Calendar.getInstance().getTimeInMillis())
                         .field("type", "large")
                         .endObject();
+                    builder.close();
+                    return builder;
                 } catch (IOException e) {
-                    throw new RuntimeException("Error building JSON message.", e);
+                    throw new IotElasticsearchFactoryException("Error building JSON message.", e);
                 }
             }
         } else if (!(transferLeft || transferRight)) {
