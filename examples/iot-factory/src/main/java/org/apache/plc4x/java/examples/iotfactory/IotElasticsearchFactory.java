@@ -54,6 +54,12 @@ public class IotElasticsearchFactory {
         RUNNING_RIGHT
     }
 
+    private static class MyNode extends Node {
+        private MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
+            super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+        }
+    }
+
     private ConveyorState conveyorState = ConveyorState.STOPPED;
 
     private Node startElasticsearchNode() throws NodeValidationException {
@@ -67,14 +73,14 @@ public class IotElasticsearchFactory {
         return node;
     }
 
-    private void prepareIndexes(Client esClient) throws Exception {
+    private void prepareIndexes(Client esClient) {
         IndicesAdminClient indicesAdminClient = esClient.admin().indices();
 
         // Check if the factory-data index exists and create it, if it doesn't.
         IndicesExistsRequest factoryDataIndexExistsRequest =
-            indicesAdminClient.prepareExists("product-data").request();
+            indicesAdminClient.prepareExists("iot-factory-data").request();
         if(!indicesAdminClient.exists(factoryDataIndexExistsRequest).actionGet().isExists()) {
-            CreateIndexRequest createIndexRequest = new CreateIndexRequest("factory-data");
+            CreateIndexRequest createIndexRequest = new CreateIndexRequest("iot-factory-data");
             createIndexRequest.mapping("FactoryData",
                 "{\n" +
                     "            \"properties\": {\n" +
@@ -85,15 +91,15 @@ public class IotElasticsearchFactory {
                     "        }", XContentType.JSON);
             CreateIndexResponse createIndexResponse = indicesAdminClient.create(createIndexRequest).actionGet();
             if(!createIndexResponse.isAcknowledged()) {
-                throw new Exception("Could not create index 'product-data'");
+                throw new RuntimeException("Could not create index 'iot-factory-data'");
             }
         }
 
         // Check if the product-data index exists and create it, if it doesn't.
         IndicesExistsRequest productDataIndexExistsRequest =
-            indicesAdminClient.prepareExists("product-data").request();
+            indicesAdminClient.prepareExists("iot-product-data").request();
         if(!indicesAdminClient.exists(productDataIndexExistsRequest).actionGet().isExists()) {
-            CreateIndexRequest createIndexRequest = new CreateIndexRequest("product-data");
+            CreateIndexRequest createIndexRequest = new CreateIndexRequest("iot-product-data");
             createIndexRequest.mapping("ProductData",
                 "{\n" +
                     "            \"properties\": {\n" +
@@ -107,7 +113,7 @@ public class IotElasticsearchFactory {
                     "        }", XContentType.JSON);
             CreateIndexResponse createIndexResponse = indicesAdminClient.create(createIndexRequest).actionGet();
             if(!createIndexResponse.isAcknowledged()) {
-                throw new Exception("Could not create index 'product-data'");
+                throw new RuntimeException("Could not create index 'iot-product-data'");
             }
         }
     }
@@ -134,75 +140,16 @@ public class IotElasticsearchFactory {
             TStream<Byte> plcOutputStates = top.poll(plcSupplier, 100, TimeUnit.MILLISECONDS);
 
             // 3a) Create a stream that pumps all data into a 'factory-data' index.
-            TStream<XContentBuilder> factoryData = plcOutputStates.map(value -> {
-                boolean conveyorEntry = (value & 1) != 0;
-                boolean load = (value & 2) != 0;
-                boolean unload = (value & 4) != 0;
-                boolean transferLeft = (value & 8) != 0;
-                boolean transferRight = (value & 16) != 0;
-                boolean conveyorLeft = (value & 32) != 0;
-                boolean conveyorRight = (value & 64) != 0;
-
-                try {
-                    return XContentFactory.jsonBuilder()
-                        .startObject()
-                        .field("time", Calendar.getInstance().getTimeInMillis())
-                        .field("conveyorEntry", conveyorEntry)
-                        .field("load", load)
-                        .field( "unload", unload)
-                        .field( "transferLeft", transferLeft)
-                        .field( "transferRight", transferRight)
-                        .field( "conveyorLeft", conveyorLeft)
-                        .field( "conveyorRight", conveyorRight)
-                        .endObject();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            });
+            TStream<XContentBuilder> factoryData = plcOutputStates.map(this::translatePlcInput);
             TStream<IndexResponse> factoryDataResponses = factoryData.map(
-                value -> esClient.prepareIndex("factory-data", "FactoryData").setSource(value).get());
+                value -> esClient.prepareIndex("iot-factory-data", "FactoryData").setSource(value).get());
             factoryDataResponses.print();
 
             // 3b) Create a stream that does some local analysis to detect big and small boxes and to only output
             //     something to the 'product-data' index, if a new item is detected.
-            TStream<XContentBuilder> productData = plcOutputStates.map(value -> {
-                    boolean transferLeft = (value & 8) != 0;
-                    boolean transferRight = (value & 16) != 0;
-
-                    if (conveyorState == ConveyorState.STOPPED) {
-                        if (transferLeft | transferRight) {
-                            if (transferLeft) {
-                                conveyorState = ConveyorState.RUNNING_LEFT;
-                                try {
-                                    return XContentFactory.jsonBuilder()
-                                        .startObject()
-                                        .field("time", Calendar.getInstance().getTimeInMillis())
-                                        .field("type", "small")
-                                        .endObject();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                conveyorState = ConveyorState.RUNNING_RIGHT;
-                                try {
-                                    return XContentFactory.jsonBuilder()
-                                        .startObject()
-                                        .field("time", Calendar.getInstance().getTimeInMillis())
-                                        .field("type", "large")
-                                        .endObject();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    } else if (!(transferLeft | transferRight)) {
-                        conveyorState = ConveyorState.STOPPED;
-                    }
-                    return null;
-                });
+            TStream<XContentBuilder> productData = plcOutputStates.map(this::handlePlcInput);
             TStream<IndexResponse> productDataResponses = productData.map(
-                value -> esClient.prepareIndex("product-data", "ProductData").setSource(value).get());
+                value -> esClient.prepareIndex("iot-product-data", "ProductData").setSource(value).get());
             productDataResponses.print();
 
             // Submit the topology and hereby start the event streams.
@@ -210,15 +157,69 @@ public class IotElasticsearchFactory {
         }
     }
 
+    private XContentBuilder translatePlcInput(Byte input) {
+        boolean conveyorEntry = (input & 1) != 0;
+        boolean load = (input & 2) != 0;
+        boolean unload = (input & 4) != 0;
+        boolean transferLeft = (input & 8) != 0;
+        boolean transferRight = (input & 16) != 0;
+        boolean conveyorLeft = (input & 32) != 0;
+        boolean conveyorRight = (input & 64) != 0;
+
+        try {
+            return XContentFactory.jsonBuilder()
+                .startObject()
+                .field("time", Calendar.getInstance().getTimeInMillis())
+                .field("conveyorEntry", conveyorEntry)
+                .field("load", load)
+                .field( "unload", unload)
+                .field( "transferLeft", transferLeft)
+                .field( "transferRight", transferRight)
+                .field( "conveyorLeft", conveyorLeft)
+                .field( "conveyorRight", conveyorRight)
+                .endObject();
+        } catch (IOException e) {
+            throw new RuntimeException("Error building JSON message.", e);
+        }
+    }
+
+    private XContentBuilder handlePlcInput(Byte input) {
+        boolean transferLeft = (input & 8) != 0;
+        boolean transferRight = (input & 16) != 0;
+
+        if (conveyorState == ConveyorState.STOPPED) {
+            if (transferLeft) {
+                conveyorState = ConveyorState.RUNNING_LEFT;
+                try {
+                    return XContentFactory.jsonBuilder()
+                        .startObject()
+                        .field("time", Calendar.getInstance().getTimeInMillis())
+                        .field("type", "small")
+                        .endObject();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error building JSON message.", e);
+                }
+            } else if (transferRight){
+                conveyorState = ConveyorState.RUNNING_RIGHT;
+                try {
+                    return XContentFactory.jsonBuilder()
+                        .startObject()
+                        .field("time", Calendar.getInstance().getTimeInMillis())
+                        .field("type", "large")
+                        .endObject();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error building JSON message.", e);
+                }
+            }
+        } else if (!(transferLeft || transferRight)) {
+            conveyorState = ConveyorState.STOPPED;
+        }
+        return null;
+    }
+
     public static void main(String[] args) throws Exception {
         IotElasticsearchFactory factory = new IotElasticsearchFactory();
         factory.runFactory();
-    }
-
-    private static class MyNode extends Node {
-        private MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
-            super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
-        }
     }
 
 }
