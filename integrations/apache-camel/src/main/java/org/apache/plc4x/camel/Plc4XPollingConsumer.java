@@ -113,7 +113,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
 
     @Override
     protected void doStart() {
-
+        // We don't seem to need to do anything special here.
     }
 
     @Override
@@ -125,13 +125,14 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         }
     }
 
-    public Object unwrapIfSingle(List list) {
-        if (list.size() < 1) {
+    private Object unwrapIfSingle(List list) {
+        if (list.isEmpty()) {
             return null;
         }
-        if (list.size() < 2) {
+        if (list.size() == 1) {
             return list.get(0);
         }
         return list;
     }
+
 }
