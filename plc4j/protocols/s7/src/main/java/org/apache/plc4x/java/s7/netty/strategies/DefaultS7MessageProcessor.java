@@ -1,4 +1,5 @@
-package org.apache.plc4x.java.s7.netty.strategies;/*
+package org.apache.plc4x.java.s7.netty.strategies;
+/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -18,6 +19,8 @@ under the License.
 */
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.ProtocolMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
@@ -61,7 +64,8 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     }
 
     @Override
-    public Collection<? extends S7RequestMessage> processRequest(S7RequestMessage request, int pduSize) {
+    public Collection<? extends S7RequestMessage> processRequest(S7RequestMessage request, int pduSize)
+        throws PlcException {
         // The following considerations have to be taken into account:
         // - The size of all parameters and payloads of a message cannot exceed the negotiated PDU size
         // - When reading data, the size of the returned data cannot exceed the negotiated PDU size
@@ -150,21 +154,23 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             // If this is a write operation, split up every array item into single value items
             // and every item into a separate message.
             else if(varParameter.getType() == ParameterType.WRITE_VAR) {
-                for (VarParameterItem varParameterItem : varParameter.getItems()) {
-                    if(varParameterItem instanceof S7AnyVarParameterItem) {
+                VarPayload varPayload = request.getPayload(VarPayload.class)
+                    .orElseThrow(() -> new PlcProtocolException("Expecting payloads for a write request"));
+                if(varParameter.getItems().size() != varPayload.getItems().size()) {
+                    throw new PlcProtocolException("Number of items in parameter and payload don't match");
+                }
+                List<VarParameterItem> parameterItems = varParameter.getItems();
+                List<VarPayloadItem> payloadItems = varPayload.getItems();
+
+                for (int i1 = 0; i1 < parameterItems.size(); i1++) {
+                    VarParameterItem varParameterItem = parameterItems.get(i1);
+                    VarPayloadItem varPayloadItem = payloadItems.get(i1);
+                    if (varParameterItem instanceof S7AnyVarParameterItem) {
                         S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameterItem;
                         short byteOffset = s7AnyVarParameterItem.getByteOffset();
-                        if(s7AnyVarParameterItem.getTransportSize() == TransportSize.BIT) {
+                        if (s7AnyVarParameterItem.getTransportSize() == TransportSize.BIT) {
                             byte bitOffset = 0;
                             for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
-                                // Calculate the new memory and bit offset.
-                                if((i > 0) && (i % 8) == 0) {
-                                    byteOffset++;
-                                    bitOffset = 0;
-                                } else {
-                                    bitOffset++;
-                                }
-
                                 // Create a new message with only one single value item in the var parameter.
                                 VarParameterItem item = new S7AnyVarParameterItem(
                                     s7AnyVarParameterItem.getSpecificationType(),
@@ -174,34 +180,75 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                                     byteOffset, bitOffset);
                                 S7Parameter subVarParameter = new VarParameter(varParameter.getType(),
                                     Collections.singletonList(item));
+
+                                // Create a one-byte byte array and set it to 0x01, if the corresponding bit
+                                // was 1 else set it to 0x00.
+                                byte[] elementData = new byte[1];
+                                elementData[0] = (byte) ((varPayloadItem.getData()[byteOffset] >> bitOffset) & 0x01);
+
+                                // Create the new payload item.
+                                VarPayloadItem itemPayload = new VarPayloadItem(
+                                    varPayloadItem.getReturnCode(),
+                                    varPayloadItem.getDataTransportSize(), elementData);
+                                S7Payload subVarPayload = new VarPayload(varPayload.getType(),
+                                    Collections.singletonList(itemPayload));
+
+                                // Create a new sub message.
                                 S7RequestMessage subMessage = new S7RequestMessage(
                                     request.getMessageType(), (short) tpduRefGen.getAndIncrement(),
-                                    Collections.singletonList(subVarParameter), Collections.emptyList(),
+                                    Collections.singletonList(subVarParameter),
+                                    Collections.singletonList(subVarPayload),
                                     compositeRequestMessage);
 
                                 // Add the new message to the composite.
                                 compositeRequestMessage.addRequestMessage(subMessage);
+
+                                // Calculate the new memory and bit offset.
+                                bitOffset++;
+                                if ((i > 0) && ((bitOffset % 8) == 0)) {
+                                    byteOffset++;
+                                    bitOffset = 0;
+                                }
                             }
                         } else {
+                            int payloadPosition = 0;
                             for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
-                                byteOffset += s7AnyVarParameterItem.getTransportSize().getSizeInBytes();
+                                int elementSize = s7AnyVarParameterItem.getTransportSize().getSizeInBytes();
 
                                 // Create a new message with only one single value item in the var parameter.
-                                VarParameterItem item = new S7AnyVarParameterItem(
+                                VarParameterItem itemParameter = new S7AnyVarParameterItem(
                                     s7AnyVarParameterItem.getSpecificationType(),
                                     s7AnyVarParameterItem.getMemoryArea(),
                                     s7AnyVarParameterItem.getTransportSize(), (short) 1,
                                     s7AnyVarParameterItem.getDataBlockNumber(),
                                     byteOffset, (byte) 0);
                                 S7Parameter subVarParameter = new VarParameter(varParameter.getType(),
-                                    Collections.singletonList(item));
+                                    Collections.singletonList(itemParameter));
+
+                                // Split up the big array into a separate byte-array that contains a single element.
+                                byte[] elementData = new byte[elementSize];
+                                System.arraycopy(varPayloadItem.getData(), payloadPosition, elementData, 0, elementSize);
+                                payloadPosition += elementSize;
+
+                                // Create the new payload item.
+                                VarPayloadItem itemPayload = new VarPayloadItem(
+                                    varPayloadItem.getReturnCode(),
+                                    varPayloadItem.getDataTransportSize(), elementData);
+                                S7Payload subVarPayload = new VarPayload(varPayload.getType(),
+                                    Collections.singletonList(itemPayload));
+
+                                // Create a new sub message.
                                 S7RequestMessage subMessage = new S7RequestMessage(
                                     request.getMessageType(), (short) tpduRefGen.getAndIncrement(),
-                                    Collections.singletonList(subVarParameter), Collections.emptyList(),
+                                    Collections.singletonList(subVarParameter),
+                                    Collections.singletonList(subVarPayload),
                                     compositeRequestMessage);
 
                                 // Add the new message to the composite.
                                 compositeRequestMessage.addRequestMessage(subMessage);
+
+                                // Calculate the new memory offset.
+                                byteOffset += elementSize;
                             }
                         }
                     } else {
@@ -242,7 +289,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                                                        Collection<? extends S7ResponseMessage> responses) {
 
         S7ResponseMessage firstResponse = null;
-        short tpduRerefence = requestMessage.getTpduReference();
+        short tpduReference = requestMessage.getTpduReference();
         List<S7Parameter> s7Parameters = new LinkedList<>();
         List<S7Payload> s7Payloads = new LinkedList<>();
         byte errorClass = 0;
@@ -301,7 +348,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         }
         if(firstResponse != null) {
             MessageType messageType = firstResponse.getMessageType();
-            return new S7ResponseMessage(messageType, tpduRerefence, s7Parameters, s7Payloads, errorClass, errorCode);
+            return new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode);
         }
         return null;
     }

@@ -18,6 +18,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
 
@@ -30,8 +31,8 @@ import java.util.Collection;
  */
 public interface S7MessageProcessor {
 
-    Collection<? extends S7RequestMessage> processRequest(S7RequestMessage request, int pduSize);
+    Collection<? extends S7RequestMessage> processRequest(S7RequestMessage request, int pduSize) throws PlcException;
 
-    S7ResponseMessage processResponse(S7RequestMessage request, S7ResponseMessage response);
+    S7ResponseMessage processResponse(S7RequestMessage request, S7ResponseMessage response) throws PlcException;
 
 }
