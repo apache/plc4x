@@ -20,6 +20,7 @@ under the License.
 
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
+import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
@@ -32,11 +33,11 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class DefaultS7MessageProcessorTest {
@@ -487,6 +488,11 @@ public class DefaultS7MessageProcessorTest {
         assertThat(expectedAddresses, hasSize(0));
     }
 
+    /**
+     * In this test, we are writing multiple independent items in one message. This has to be split up.
+     *
+     * @throws PlcException something went wrong.
+     */
     @Test
     public void writeMessageMultipleItems() throws PlcException {
         S7RequestMessage request = createWriteMessage(
@@ -529,6 +535,12 @@ public class DefaultS7MessageProcessorTest {
         }
     }
 
+    /**
+     * In this test, we are writing multiple independent array items in one message. This has to be split up both.
+     * regarding the independent items, but also regarding the array items.
+     *
+     * @throws PlcException something went wrong.
+     */
     @Test
     public void writeMessageMultipleArrayItems() throws PlcException {
         S7RequestMessage request = createWriteMessage(
@@ -562,6 +574,149 @@ public class DefaultS7MessageProcessorTest {
             VarPayload varPayload = payload.get();
             assertThat(varPayload.getItems(), hasSize(1));
         }
+    }
+
+    /**
+     * This test handles the special case in which a response is part of a single request message.
+     * This means that it is immediatly finished and is hereby immediatly processed.
+     *
+     * @throws PlcException
+     */
+    @Test
+    public void processSimpleMessageResponse() throws PlcException {
+        S7RequestMessage requestMessage = new S7RequestMessage(MessageType.JOB, (short) 1, Collections.emptyList(), Collections.emptyList(), null);
+        S7ResponseMessage responseMessage = new S7ResponseMessage(MessageType.JOB, (short) 1, Collections.emptyList(), Collections.emptyList(), (byte) 0x00, (byte) 0x00);
+        S7ResponseMessage processedResponse = SUT.processResponse(requestMessage, responseMessage);
+        // In this case the response should be returned unchanged.
+        assertThat(processedResponse, is(responseMessage));
+    }
+
+    /**
+     * This test handles the special case in which a response is part of a single request message.
+     * This means that it is immediatly finished and is hereby immediatly processed.
+     *
+     * @throws PlcException
+     */
+    @Test
+    public void processCompositeMessageReadResponse() throws PlcException {
+        S7RequestMessage originalRequestMessage = new S7RequestMessage(MessageType.JOB, (short) 1,
+            Collections.emptyList(), Collections.emptyList(), null);
+        DefaultS7MessageProcessor.S7CompositeRequestMessage compositeRequestMessage =
+            new DefaultS7MessageProcessor.S7CompositeRequestMessage(originalRequestMessage);
+
+        S7RequestMessage fragment1RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 2,
+            Collections.emptyList(), Collections.emptyList(), compositeRequestMessage);
+        compositeRequestMessage.addRequestMessage(fragment1RequestMessage);
+        S7RequestMessage fragment2RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 3,
+            Collections.emptyList(), Collections.emptyList(), compositeRequestMessage);
+        compositeRequestMessage.addRequestMessage(fragment2RequestMessage);
+
+        // Virtually add a response for the first response.
+        fragment1RequestMessage.setAcknowledged(true);
+        S7ResponseMessage fragment1ResponseMessage = new S7ResponseMessage(MessageType.JOB, (short) 2,
+            Collections.singletonList(
+                new VarParameter(ParameterType.READ_VAR, new LinkedList<>(Collections.singletonList(
+                    new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0))))),
+            Collections.singletonList(
+                new VarPayload(ParameterType.READ_VAR, new LinkedList<>(Collections.singletonList(
+                    new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x42}))))),
+            (byte) 0x00, (byte) 0x00);
+        S7ResponseMessage processedResponse = SUT.processResponse(fragment1RequestMessage, fragment1ResponseMessage);
+        // As only one of the two requests is responded, the result should be null.
+        assertThat(processedResponse, nullValue());
+
+        // Virtually add a response for the second response.
+        fragment2RequestMessage.setAcknowledged(true);
+        S7ResponseMessage fragment2ResponseMessage = new S7ResponseMessage(MessageType.JOB, (short) 3,
+            Collections.singletonList(
+                new VarParameter(ParameterType.READ_VAR, new LinkedList<>(Collections.singletonList(
+                    new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                        TransportSize.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))))),
+            Collections.singletonList(
+                new VarPayload(ParameterType.READ_VAR, new LinkedList<>(Collections.singletonList(
+                    new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x23}))))),
+            (byte) 0x00, (byte) 0x00);
+        // This time we expect all messages of the composite to be acknowledged and the processResponse should
+        // return a merged version of the individual responses content.
+        processedResponse = SUT.processResponse(fragment2RequestMessage, fragment2ResponseMessage);
+        // As this is the last request being responded, the result should be not null this time.
+        assertThat(processedResponse, notNullValue());
+
+        // Check the content.
+        assertThat(processedResponse.getParameters(), hasSize(1));
+        assertThat(processedResponse.getParameter(VarParameter.class).isPresent(), is(true));
+        VarParameter varParameter = processedResponse.getParameter(VarParameter.class).get();
+        assertThat(varParameter.getItems(), hasSize(2));
+
+        assertThat(processedResponse.getPayloads(), hasSize(1));
+        assertThat(processedResponse.getPayload(VarPayload.class).isPresent(), is(true));
+        VarPayload varPayload = processedResponse.getPayload(VarPayload.class).get();
+        assertThat(varPayload.getItems(), hasSize(2));
+    }
+
+    /**
+     * This test handles the special case in which a response is part of a single request message.
+     * This means that it is immediatly finished and is hereby immediatly processed.
+     *
+     * @throws PlcException
+     */
+    @Test
+    public void processCompositeMessageWriteResponse() throws PlcException {
+        S7RequestMessage originalRequestMessage = new S7RequestMessage(MessageType.JOB, (short) 1,
+            Collections.emptyList(), Collections.emptyList(), null);
+        DefaultS7MessageProcessor.S7CompositeRequestMessage compositeRequestMessage =
+            new DefaultS7MessageProcessor.S7CompositeRequestMessage(originalRequestMessage);
+
+        S7RequestMessage fragment1RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 2,
+            Collections.emptyList(), Collections.emptyList(), compositeRequestMessage);
+        compositeRequestMessage.addRequestMessage(fragment1RequestMessage);
+        S7RequestMessage fragment2RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 3,
+            Collections.emptyList(), Collections.emptyList(), compositeRequestMessage);
+        compositeRequestMessage.addRequestMessage(fragment2RequestMessage);
+
+        // Virtually add a response for the first response.
+        fragment1RequestMessage.setAcknowledged(true);
+        S7ResponseMessage fragment1ResponseMessage = new S7ResponseMessage(MessageType.JOB, (short) 2,
+            Collections.singletonList(
+                new VarParameter(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
+                    new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0))))),
+            Collections.singletonList(
+                new VarPayload(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
+                    new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x42}))))),
+            (byte) 0x00, (byte) 0x00);
+        S7ResponseMessage processedResponse = SUT.processResponse(fragment1RequestMessage, fragment1ResponseMessage);
+        // As only one of the two requests is responded, the result should be null.
+        assertThat(processedResponse, nullValue());
+
+        // Virtually add a response for the second response.
+        fragment2RequestMessage.setAcknowledged(true);
+        S7ResponseMessage fragment2ResponseMessage = new S7ResponseMessage(MessageType.JOB, (short) 3,
+            Collections.singletonList(
+                new VarParameter(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
+                    new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                        TransportSize.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))))),
+            Collections.singletonList(
+                new VarPayload(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
+                    new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x23}))))),
+            (byte) 0x00, (byte) 0x00);
+        // This time we expect all messages of the composite to be acknowledged and the processResponse should
+        // return a merged version of the individual responses content.
+        processedResponse = SUT.processResponse(fragment2RequestMessage, fragment2ResponseMessage);
+        // As this is the last request being responded, the result should be not null this time.
+        assertThat(processedResponse, notNullValue());
+
+        // Check the content.
+        assertThat(processedResponse.getParameters(), hasSize(1));
+        assertThat(processedResponse.getParameter(VarParameter.class).isPresent(), is(true));
+        VarParameter varParameter = processedResponse.getParameter(VarParameter.class).get();
+        assertThat(varParameter.getItems(), hasSize(2));
+
+        assertThat(processedResponse.getPayloads(), hasSize(1));
+        assertThat(processedResponse.getPayload(VarPayload.class).isPresent(), is(true));
+        VarPayload varPayload = processedResponse.getPayload(VarPayload.class).get();
+        assertThat(varPayload.getItems(), hasSize(2));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

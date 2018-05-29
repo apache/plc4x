@@ -32,7 +32,7 @@ import java.util.List;
 
 public class IsoOnTcpProtocol extends PlcMessageToMessageCodec<ByteBuf, IsoOnTcpMessage> {
 
-    public static final byte ISO_ON_TCP_MAGIC_NUMBER = 0x03;
+    static final byte ISO_ON_TCP_MAGIC_NUMBER = 0x03;
 
     private static final Logger logger = LoggerFactory.getLogger(IsoOnTcpProtocol.class);
 
@@ -41,7 +41,7 @@ public class IsoOnTcpProtocol extends PlcMessageToMessageCodec<ByteBuf, IsoOnTcp
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) {
         logger.debug("ISO on TCP Message sent");
         // At this point of processing all higher levels have already serialized their payload.
         // This data is passed to the lower levels in form of an IoBuffer.

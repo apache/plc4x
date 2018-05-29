@@ -298,6 +298,8 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         VarParameter writeVarParameter = null;
         VarPayload readVarPayload = null;
         VarPayload writeVarPayload = null;
+
+        // TODO: We should change this code to not use the lists of the first parameter or payload as this can cause problems when using mutable lists.
         for (S7ResponseMessage response : responses) {
             if(firstResponse == null) {
                 firstResponse = response;
@@ -353,13 +355,13 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         return null;
     }
 
-    private static class S7CompositeRequestMessage implements ProtocolMessage {
+    static class S7CompositeRequestMessage implements ProtocolMessage {
 
         private S7RequestMessage originalRequest;
         private Collection<S7RequestMessage> requestMessages;
         private Collection<S7ResponseMessage> responseMessages;
 
-        private S7CompositeRequestMessage(S7RequestMessage originalRequest) {
+        S7CompositeRequestMessage(S7RequestMessage originalRequest) {
             this.originalRequest = originalRequest;
             this.requestMessages = new LinkedList<>();
             this.responseMessages = new LinkedList<>();
@@ -384,7 +386,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             return true;
         }
 
-        private void addRequestMessage(S7RequestMessage requestMessage) {
+        void addRequestMessage(S7RequestMessage requestMessage) {
             requestMessages.add(requestMessage);
         }
 
