@@ -20,7 +20,6 @@ package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.util.ReferenceCountUtil;
@@ -109,11 +108,9 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
                 LOGGER.debug("Ams Serial Frame received {}", amsSerialFrame);
                 // TODO: check if this is the right way to ack a package.
                 ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(AmsSerialAcknowledgeFrame.of(transmitterAddress, receiverAddress, fragmentNumber));
-                channelFuture.addListener((ChannelFutureListener) future -> {
-                    frameOnTheWay.set(false);
-                });
                 // waiting for the ack-frame to be transmitted before we forward the package
                 channelFuture.await();
+                frameOnTheWay.set(false);
                 out.add(userData.getByteBuf());
                 break;
             case AmsSerialAcknowledgeFrame.ID:
