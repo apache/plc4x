@@ -1,4 +1,5 @@
-package org.apache.plc4x.java.s7.netty.util;/*
+package org.apache.plc4x.java.s7.netty.util;
+/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information

@@ -1,4 +1,5 @@
-package org.apache.plc4x.java.s7.netty.events;/*
+package org.apache.plc4x.java.s7.netty.events;
+/*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
