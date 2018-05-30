@@ -36,6 +36,10 @@ import java.util.List;
  */
 public class S7ResponseSizeEstimator {
 
+    private S7ResponseSizeEstimator() {
+        // We don't want this to be instantiated.
+    }
+
     /**
      * Estimate the size of the response for a given request object.
      * This is needed in order to decide if a request will be able to be processed

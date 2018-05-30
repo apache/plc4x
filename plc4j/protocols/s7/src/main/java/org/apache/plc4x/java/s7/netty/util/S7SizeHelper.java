@@ -35,6 +35,10 @@ public class S7SizeHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(S7SizeHelper.class);
 
+    private S7SizeHelper() {
+        // We don't want this to be instantiated.
+    }
+
     public static short getParametersLength(List<S7Parameter> parameters) {
         short l = 0;
         if (parameters != null) {

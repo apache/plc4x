@@ -38,6 +38,10 @@ import java.util.List;
  */
 public class S7RequestSizeCalculator {
 
+    private S7RequestSizeCalculator() {
+        // We don't want this to be instantiated.
+    }
+
     /**
      * Calculate the size of a request message.
      *
