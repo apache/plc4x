@@ -59,4 +59,7 @@ public class SerialChannelFactory implements ChannelFactory {
         }
     }
 
+    public String getSerialPort() {
+        return serialPort;
+    }
 }

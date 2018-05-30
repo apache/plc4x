@@ -19,7 +19,10 @@ under the License.
 package org.apache.plc4x.java.base.connection;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -59,5 +62,9 @@ public class TcpSocketChannelFactory implements ChannelFactory {
 
     public InetAddress getAddress() {
         return address;
+    }
+
+    public int getPort() {
+        return port;
     }
 }

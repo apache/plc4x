@@ -18,11 +18,14 @@
  */
 package org.apache.plc4x.java.ads.util;
 
+import static org.junit.Assert.fail;
+
 public class Junit5Backport {
 
     public static void assertThrows(Class<? extends Exception> exception, Acceptor acceptor) {
         try {
             acceptor.accept();
+            fail("Expected exception " + exception + " not thrown.");
         } catch (Exception e) {
             if (!exception.isAssignableFrom(e.getClass())) {
                 throw new AssertionError("Unexpected exception type " + e.getClass() + ". Expected " + exception, e);

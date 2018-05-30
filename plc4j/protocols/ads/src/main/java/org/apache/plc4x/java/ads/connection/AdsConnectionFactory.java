@@ -22,10 +22,14 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 
 import java.net.InetAddress;
+import java.util.Objects;
 
 public class AdsConnectionFactory {
 
     public AdsTcpPlcConnection adsTcpPlcConnectionOf(InetAddress address, Integer port, AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort) {
+        Objects.requireNonNull(address);
+        Objects.requireNonNull(targetAmsNetId);
+        Objects.requireNonNull(targetAmsPort);
         if (sourceAmsNetId == null || sourceAmsPort == null) {
             if (port == null) {
                 return AdsTcpPlcConnection.of(address, targetAmsNetId, targetAmsPort);
@@ -42,6 +46,9 @@ public class AdsConnectionFactory {
     }
 
     public AdsSerialPlcConnection adsSerialPlcConnectionOf(String serialPort, AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort) {
+        Objects.requireNonNull(serialPort);
+        Objects.requireNonNull(targetAmsNetId);
+        Objects.requireNonNull(targetAmsPort);
         if (sourceAmsNetId == null || sourceAmsPort == null) {
             return AdsSerialPlcConnection.of(serialPort, targetAmsNetId, targetAmsPort);
         } else {
