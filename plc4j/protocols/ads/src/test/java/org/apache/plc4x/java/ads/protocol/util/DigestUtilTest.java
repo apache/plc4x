@@ -36,14 +36,21 @@ import static org.junit.Assert.assertEquals;
 public class DigestUtilTest {
 
     @Test
-    public void sameCalculation() throws Exception {
+    public void sameCalculation() {
         assertEquals(
             DigestUtil.calculateCrc16(new byte[]{47, 99}),
             DigestUtil.calculateCrc16(() -> Unpooled.wrappedBuffer(new byte[]{47}), () -> Unpooled.wrappedBuffer(new byte[]{99})));
     }
 
     @Test
-    public void displayValue() throws Exception {
+    public void simpleUnwrap() {
+        assertEquals(
+            DigestUtil.calculateCrc16(new byte[]{47}),
+            DigestUtil.calculateCrc16(() -> Unpooled.wrappedBuffer(new byte[]{47})));
+    }
+
+    @Test
+    public void displayValue() {
         Object[] crcs = IntStream.range(0, 256)
             .map(value -> DigestUtil.calculateCrc16(new byte[]{(byte) value}))
             .mapToObj(Integer::toHexString)
