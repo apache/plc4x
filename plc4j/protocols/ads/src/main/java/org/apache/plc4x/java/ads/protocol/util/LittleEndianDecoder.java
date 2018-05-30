@@ -48,7 +48,7 @@ public class LittleEndianDecoder {
 
     public static Length getLengthFor(Class<?> clazz, long defaultValue) {
         if (Calendar.class.isAssignableFrom(clazz)) {
-            return Length.of(4);
+            return Length.of(8);
         }
         return Length.of(LENGTH_MAP.getOrDefault(clazz, defaultValue));
     }
