@@ -276,7 +276,7 @@ public class AdsAbstractPlcConnectionTest {
 
     /**
      * Runs tests steps in a dedicated {@link Thread} so a possible {@link InterruptedException} doesn't lead to a
-     * interrupt flag being set on the main Thread ({@see Thread.currentThread().isInterrupted()}).
+     * interrupt flag being set on the main Thread ({@link Thread#isInterrupted}).
      *
      * @param testRunnable a special {@link Runnable} which adds a {@code throws Exception} to the {@code run} signature.
      * @throws InterruptedException when this {@link Thread} gets interrupted.
