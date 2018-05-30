@@ -204,6 +204,13 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
         super.close();
     }
 
+    /**
+     * Clears the addressMapping.
+     */
+    public void clearMapping() {
+        addressMapping.clear();
+    }
+
     protected <T> T getFromFuture(CompletableFuture<T> future, long timeout) {
         try {
             return future.get(timeout, TimeUnit.MILLISECONDS);

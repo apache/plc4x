@@ -25,7 +25,7 @@ public class Junit5Backport {
             acceptor.accept();
         } catch (Exception e) {
             if (!exception.isAssignableFrom(e.getClass())) {
-                throw new RuntimeException(e);
+                throw new AssertionError("Unexpected exception type " + e.getClass() + ". Expected " + exception, e);
             }
         }
     }
