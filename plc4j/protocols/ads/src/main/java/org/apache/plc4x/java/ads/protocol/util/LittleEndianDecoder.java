@@ -38,6 +38,7 @@ public class LittleEndianDecoder {
         lengthMap.put(Short.class, 2L);
         lengthMap.put(Integer.class, 4L);
         lengthMap.put(Float.class, 4L);
+        lengthMap.put(Double.class, 8L);
         lengthMap.put(Calendar.class, 8L);
         LENGTH_MAP = Collections.unmodifiableMap(lengthMap);
     }
@@ -70,7 +71,10 @@ public class LittleEndianDecoder {
         } else if (datatype == Float.class && length < 4) {
             safeLengthAdsData = new byte[4];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if (datatype == Calendar.class || Calendar.class.isAssignableFrom(datatype) && length < 8) {
+        } else if (datatype == Double.class && length < 8) {
+            safeLengthAdsData = new byte[8];
+            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
+        } else if ((datatype == Calendar.class || Calendar.class.isAssignableFrom(datatype)) && length < 8) {
             safeLengthAdsData = new byte[8];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
         } else {
@@ -96,6 +100,9 @@ public class LittleEndianDecoder {
             } else if (datatype == Float.class) {
                 decodeFloat(safeLengthAdsData, i, result);
                 i += 4;
+            } else if (datatype == Double.class) {
+                decodeDouble(safeLengthAdsData, i, result);
+                i += 8;
             } else if (datatype == Calendar.class || Calendar.class.isAssignableFrom(datatype)) {
                 extractCalendar(safeLengthAdsData, i, result);
                 i += 8;
@@ -106,10 +113,14 @@ public class LittleEndianDecoder {
         return (List<T>) result;
     }
 
-    private static int decodeString(byte[] adsData, int i, int length, List<Object> result) {
+    private static int decodeString(byte[] adsData, int i, int length, List<Object> result) throws PlcProtocolException {
+        if (length < 2) {
+            throw new PlcProtocolException("String must be a null terminated byte array");
+        }
         int pos = i;
         StringBuilder builder = new StringBuilder();
-        while (adsData[pos] != (byte) 0x0 && pos < length) {
+        // TODO: check if we have at least a 0x0 space
+        while (pos < length && adsData[pos] != (byte) 0x0) {
             builder.append((char) adsData[pos]);
             pos++;
         }
@@ -143,6 +154,24 @@ public class LittleEndianDecoder {
         // https://de.wikipedia.org/wiki/IEEE_754
         int intValue = (byteOne & 0xff) | ((byteTwo & 0xff) << 8) | ((byteThree & 0xff) << 16) | ((byteFour & 0xff) << 24);
         result.add(Float.intBitsToFloat(intValue));
+    }
+
+    private static void decodeDouble(byte[] adsData, int i, List<Object> result) {
+        byte byteOne = adsData[i];
+        byte byteTwo = adsData[i + 1];
+        byte byteThree = adsData[i + 2];
+        byte byteFour = adsData[i + 3];
+        byte byteFive = adsData[i + 4];
+        byte byteSix = adsData[i + 5];
+        byte byteSeven = adsData[i + 6];
+        byte byteEigth = adsData[i + 7];
+        // TODO: check how ads expects this data
+        // Description of the Real number format:
+        // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
+        // https://de.wikipedia.org/wiki/IEEE_754
+        long longValue = (long) (byteOne & 0xff) | ((long) (byteTwo & 0xff) << 8) | ((long) (byteThree & 0xff) << 16) | ((long) (byteFour & 0xff) << 24)
+            | (long) (byteFive & 0xff) << 32 | ((long) (byteSix & 0xff) << 40) | ((long) (byteSeven & 0xff) << 48) | ((long) (byteEigth & 0xff) << 56);
+        result.add(Double.longBitsToDouble(longValue));
     }
 
     private static void extractCalendar(byte[] adsData, int i, List<Object> result) {

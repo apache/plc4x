@@ -39,7 +39,7 @@ public class LittleEndianEncoder {
         // Utility class
     }
 
-    public static byte[] encodeData(Class<?> valueType, Object[] values) throws PlcProtocolException {
+    public static byte[] encodeData(Class<?> valueType, Object... values) throws PlcProtocolException {
         if (values.length == 0) {
             return new byte[]{};
         }
@@ -56,6 +56,8 @@ public class LittleEndianEncoder {
             result = encodeCalendar(Arrays.stream(values).map(Calendar.class::cast));
         } else if (valueType == Float.class) {
             result = encodeFloat(Arrays.stream(values).map(Float.class::cast));
+        } else if (valueType == Double.class) {
+            result = encodeDouble(Arrays.stream(values).map(Double.class::cast));
         } else if (valueType == String.class) {
             result = encodeString(Arrays.stream(values).map(String.class::cast));
         } else {
@@ -80,7 +82,7 @@ public class LittleEndianEncoder {
         }
     }
 
-    public static Stream<byte[]> encodeString(Stream<String> stringStream) {
+    private static Stream<byte[]> encodeString(Stream<String> stringStream) {
         // TODO: what do we do with utf-8 values with 2 bytes? what is the charset here?
         return stringStream
             .map(s -> s.getBytes(Charset.defaultCharset()))
@@ -88,7 +90,7 @@ public class LittleEndianEncoder {
             .map(bytes -> ArrayUtils.add(bytes, (byte) 0x0));
     }
 
-    public static Stream<byte[]> encodeFloat(Stream<Float> floatStream) {
+    private static Stream<byte[]> encodeFloat(Stream<Float> floatStream) {
         return floatStream
             // TODO: check how ads expects this data
             .map(Float::floatToIntBits)
@@ -100,7 +102,23 @@ public class LittleEndianEncoder {
             });
     }
 
-    public static Stream<byte[]> encodeInteger(Stream<Integer> integerStream) {
+    private static Stream<byte[]> encodeDouble(Stream<Double> doubleStream) {
+        return doubleStream
+            // TODO: check how ads expects this data
+            .map(Double::doubleToLongBits)
+            .map(longValue -> new byte[]{
+                (byte) (longValue & 0x00000000_000000ffL),
+                (byte) ((longValue & 0x00000000_0000ff00L) >> 8),
+                (byte) ((longValue & 0x00000000_00ff0000L) >> 16),
+                (byte) ((longValue & 0x00000000_ff000000L) >> 24),
+                (byte) ((longValue & 0x000000ff_00000000L) >> 32),
+                (byte) ((longValue & 0x0000ff00_00000000L) >> 40),
+                (byte) ((longValue & 0x00ff0000_00000000L) >> 48),
+                (byte) ((longValue & 0xff000000_00000000L) >> 56),
+            });
+    }
+
+    private static Stream<byte[]> encodeInteger(Stream<Integer> integerStream) {
         return integerStream
             .map(intValue -> new byte[]{
                 (byte) (intValue & 0x000000ff),
@@ -110,7 +128,7 @@ public class LittleEndianEncoder {
             });
     }
 
-    public static Stream<byte[]> encodeCalendar(Stream<Calendar> calendarStream) {
+    private static Stream<byte[]> encodeCalendar(Stream<Calendar> calendarStream) {
         return calendarStream
             .map(Calendar.class::cast)
             .map(Calendar::getTime)
@@ -132,7 +150,7 @@ public class LittleEndianEncoder {
     }
 
 
-    public static Stream<byte[]> encodeShort(Stream<Short> shortStream) {
+    private static Stream<byte[]> encodeShort(Stream<Short> shortStream) {
         return shortStream
             .map(shortValue -> new byte[]{
                 (byte) (shortValue & 0x00ff),
@@ -140,12 +158,12 @@ public class LittleEndianEncoder {
             });
     }
 
-    public static Stream<byte[]> encodeByte(Stream<Byte> byteStream) {
+    private static Stream<byte[]> encodeByte(Stream<Byte> byteStream) {
         return byteStream
             .map(aByte -> new byte[]{aByte});
     }
 
-    public static Stream<byte[]> encodeBoolean(Stream<Boolean> booleanStream) {
+    private static Stream<byte[]> encodeBoolean(Stream<Boolean> booleanStream) {
         return booleanStream
             .map(booleanValue -> new byte[]{booleanValue ? (byte) 0x01 : (byte) 0x00});
     }
