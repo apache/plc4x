@@ -112,9 +112,15 @@ public class Plc4XEndpoint extends DefaultEndpoint {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Plc4XEndpoint)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Plc4XEndpoint)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Plc4XEndpoint that = (Plc4XEndpoint) o;
         return Objects.equals(getDriver(), that.getDriver()) &&
             Objects.equals(getAddress(), that.getAddress()) &&
