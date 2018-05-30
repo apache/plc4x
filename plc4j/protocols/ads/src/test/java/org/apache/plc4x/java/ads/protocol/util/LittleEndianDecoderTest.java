@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.protocol.util;
 
 import org.apache.plc4x.java.ads.api.commands.types.Length;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -26,6 +27,7 @@ import java.util.Date;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.assertEquals;
 
 public class LittleEndianDecoderTest {
@@ -75,6 +77,9 @@ public class LittleEndianDecoderTest {
         assertEquals(singletonList("plc4x"), LittleEndianDecoder.decodeData(String.class, new byte[]{0x70, 0x6c, 0x63, 0x34, 0x78, 0x0}));
         assertEquals(singletonList("plc4xplc4x"), LittleEndianDecoder.decodeData(String.class, new byte[]{0x70, 0x6c, 0x63, 0x34, 0x78, 0x70, 0x6c, 0x63, 0x34, 0x78, 0x0}));
         assertEquals(asList("plc4x", "plc4x"), LittleEndianDecoder.decodeData(String.class, new byte[]{0x70, 0x6c, 0x63, 0x34, 0x78, 0x0, 0x70, 0x6c, 0x63, 0x34, 0x78, 0x0}));
+
+        assertThrows(PlcProtocolException.class, () -> LittleEndianDecoder.decodeData(String.class, new byte[]{0x01}));
+        assertThrows(PlcProtocolException.class, () -> LittleEndianDecoder.decodeData(this.getClass(), new byte[10]));
     }
 
 }
