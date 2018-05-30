@@ -19,7 +19,11 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.ScheduledFuture;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.commands.AdsReadRequest;
 import org.apache.plc4x.java.ads.api.commands.AdsReadResponse;
@@ -40,10 +44,13 @@ import org.junit.rules.ErrorCollector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.apache.plc4x.java.ads.util.Assert.byteArrayEqualsTo;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec,0xsample.htm?id=60692407917020132">example</a>
@@ -58,8 +65,30 @@ public class Payload2SerialProtocolExampleConversationTest {
     private ChannelHandlerContext channelHandlerContextMock;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         channelHandlerContextMock = mock(ChannelHandlerContext.class, RETURNS_DEEP_STUBS);
+        when(channelHandlerContextMock.executor()).then(_ign -> {
+            EventExecutor eventExecutor = mock(EventExecutor.class);
+            when(eventExecutor.schedule(any(Callable.class), anyLong(), any()))
+                .then(invocation -> {
+                    Future<Object> submit = executorService.submit((Callable<Object>) invocation.getArgument(0));
+                    ScheduledFuture scheduledFuture = mock(ScheduledFuture.class);
+                    when(scheduledFuture.cancel(anyBoolean()))
+                        .then(invocation1 -> submit.cancel(invocation1.getArgument(0)));
+                    return scheduledFuture;
+                });
+            return eventExecutor;
+        });
+        ChannelFuture channelFuture = mock(ChannelFuture.class);
+        when(channelFuture.addListener(any())).then(invocation -> {
+            ChannelFutureListener channelFutureListener = invocation.getArgument(0);
+            ChannelFuture mock = mock(ChannelFuture.class);
+            when(mock.isSuccess()).thenReturn(true);
+            channelFutureListener.operationComplete(mock);
+            return mock(ChannelFuture.class);
+        });
+        when(channelHandlerContextMock.writeAndFlush(any())).thenReturn(channelFuture);
         SUT = new Payload2SerialProtocol();
     }
 
