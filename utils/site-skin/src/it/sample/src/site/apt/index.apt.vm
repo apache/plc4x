@@ -1,0 +1,154 @@
+ ------
+ ${skinName} test
+ ------
+ Hervé Boutemy
+ ------
+ 2011-10-15
+ ------
+
+~~ Licensed to the Apache Software Foundation (ASF) under one
+~~ or more contributor license agreements.  See the NOTICE file
+~~ distributed with this work for additional information
+~~ regarding copyright ownership.  The ASF licenses this file
+~~ to you under the Apache License, Version 2.0 (the
+~~ "License"); you may not use this file except in compliance
+~~ with the License.  You may obtain a copy of the License at
+~~
+~~   http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing,
+~~ software distributed under the License is distributed on an
+~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~~ KIND, either express or implied.  See the License for the
+~~ specific language governing permissions and limitations
+~~ under the License.
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+${skinName} test
+
+ This is a test for ${skinName}.
+
+* Usage
+
+ To use this skin in your project, use the skin element of
+ {{{/doxia/doxia-sitetools/doxia-decoration-model/decoration.html}the <<<site.xml>>> site descriptor}}:
+
++-----+
+<project name="xxx">
+  ...
+  <skin>
+    <groupId>${skinGroupId}</groupId>
+    <artifactId>${skinArtifactId}</artifactId>
+    <version>${skinVersion}</version>
+  </skin>
+  ...
+</project>
++-----+
+
+Sample content
+
+  Paragraph 1, line 1.
+  Paragraph 1, line 2.
+
+  Paragraph 2, line 1.
+  Paragraph 2, line 2.
+
+Section title
+
+* Sub-section title
+
+** Sub-sub-section title
+
+*** Sub-sub-sub-section title
+
+**** Sub-sub-sub-sub-section title
+
+      * List item 1.
+
+      * List item 2.
+
+        Paragraph contained in list item 2.
+
+            * Sub-list item 1.
+
+            * Sub-list item 2.
+
+      * List item 3.
+        Force end of list:
+
+      []
+
++------------------------------------------+
+Verbatim text not contained in list item 3
++------------------------------------------+
+
+      [[1]] Numbered item 1.
+
+                [[A]] Numbered item A.
+
+                [[B]] Numbered item B.
+
+      [[2]] Numbered item 2.
+
+  List numbering schemes: [[1]], [[a]], [[A]], [[i]], [[I]].
+
+      [Defined term 1] of definition list.
+
+      [Defined term 2] of definition list.
+
++-------------------------------+
+Verbatim text
+                        in a box        
++-------------------------------+
+
+---------------------------------
+Verbatim text
+                     without box        
+---------------------------------
+
+[figure] Figure caption
+
+*----------*--------------+----------------:
+| Centered | Left-aligned | Right-aligned  |
+| cell 1,1 | cell 1,2     | cell 1,3       |
+*----------*--------------+----------------:
+| cell 2,1 | cell 2,2     | cell 2,3       |
+*----------*--------------+----------------:
+Table caption
+
+  No grid, no caption:
+
+*-----*------*
+ cell | cell
+*-----*------*
+ cell | cell
+*-----*------*
+
+*---------*---------*
+|| header || header |
+*---------*---------*
+|  cell   |  cell   |
+*---------*---------*
+
+  Horizontal line:
+
+=======================================================================
+
+  <Italic> font. <<Bold>> font. <<<Monospaced>>> font.
+
+  {Anchor}. Link to {{Anchor}}. Link to {{http://www.pixware.fr}}. 
+  Link to {{{Anchor}showing alternate text}}.
+  Link to {{{http://www.pixware.fr}Pixware home page}}.
+
+  Force line\
+  break.
+
+  Non\ breaking\ space.
+
+  Escaped special characters: \~, \=, \-, \+, \*, \[, \], \<, \>, \{, \}, \\.
+
+  Copyright symbol: \251, \xA9, \u00a9.
+
+~~Commented out.

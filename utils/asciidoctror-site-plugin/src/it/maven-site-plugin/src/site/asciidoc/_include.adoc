@@ -1,0 +1,1 @@
+Content included from the file `_include.adoc`.

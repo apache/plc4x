@@ -1,0 +1,3 @@
+Here's an image:
+
+image::halliburton_lab.jpg[]

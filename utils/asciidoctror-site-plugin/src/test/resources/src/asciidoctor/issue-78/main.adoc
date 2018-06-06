@@ -1,0 +1,5 @@
+= Testing image include
+
+This should test https://github.com/asciidoctor/asciidoctor-maven-plugin/issues/78[Issue-78]
+
+include::image-test.adoc[]

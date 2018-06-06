@@ -1,0 +1,31 @@
+= File with TOC
+:toc:
+
+[.lead]
+This is an example `.adoc` file that was processed by the Doxia Parser module in the Asciidoctor Maven Plugin.
+Version {docs-version}.
+
+== First section
+
+This is the first section of the page.
+
+include::_include.adoc[]
+
+=== Sub section
+
+This is a subsection of the first section
+
+TIP: You can control the number of section levels displayed in the TOC using the `toclevels` attribute.
+
+== Second section
+
+This is the first section of the page.
+
+=== Sub section
+
+This is a subsection of the second section.
+
+[source,xml,indent=0]
+----
+include::../../../pom.xml[tag=plugin-decl]
+----

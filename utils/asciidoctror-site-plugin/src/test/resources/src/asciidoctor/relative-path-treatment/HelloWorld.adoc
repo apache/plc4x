@@ -1,0 +1,18 @@
+:toc: left
+:icons:
+
+== Summary
+TIP: Documentation for script in root folder
+
+image::level-1-1/asciidoctor-icon.jpg[Asciidoctor cool icon]
+
+== Code
+[source,groovy]
+.HelloWorld.groovy
+----
+include::HelloWorld.groovy[]
+----
+
+== Some link
+
+link:level-1-1/HelloWorld2.html[Docs]

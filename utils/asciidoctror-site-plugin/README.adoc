@@ -1,0 +1,606 @@
+= Asciidoctor Maven Plugin
+// Metadata
+:release-version: 1.5.6
+// Settings
+:idprefix:
+:idseparator: -
+ifdef::env-github,env-browser[]
+:toc: preamble
+endif::[]
+ifndef::env-github[:icons: font]
+// URIs
+:project-repo: asciidoctor/asciidoctor-maven-plugin
+:uri-repo: https://github.com/{project-repo}
+:uri-asciidoc: http://asciidoc.org
+:uri-asciidoctor: http://asciidoctor.org
+:uri-examples: https://github.com/asciidoctor/asciidoctor-maven-examples
+:uri-maven: http://maven.apache.org
+// GitHub customization
+ifdef::env-github[]
+:badges:
+:tag: master
+:!toc-title:
+:tip-caption: :bulb:
+:note-caption: :paperclip:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+// Badges
+ifdef::badges[]
+image:https://ci.appveyor.com/api/projects/status/chebmu91f08dlmsc/branch/master?svg=true["Build Status (AppVeyor)", link="https://ci.appveyor.com/project/asciidoctor/asciidoctor-maven-plugin"]
+image:http://img.shields.io/travis/asciidoctor/asciidoctor-maven-plugin/master.svg["Build Status (Travis CI)", link="https://travis-ci.org/asciidoctor/asciidoctor-maven-plugin"]
+image:http://img.shields.io/coveralls/{project-repo}/master.svg["Coverage Status", link="https://coveralls.io/r/{project-repo}?branch=master"]
+image:https://maven-badges.herokuapp.com/maven-central/org.asciidoctor/asciidoctor-maven-plugin/badge.svg["Maven Central",link="https://maven-badges.herokuapp.com/maven-central/org.asciidoctor/asciidoctor-maven-plugin"]
+endif::[]
+
+The Asciidoctor Maven Plugin is the official way to convert your {uri-asciidoc}[AsciiDoc] documentation using {uri-asciidoctor}[Asciidoctor] from an {uri-maven}[Apache Maven] build.
+
+The conversion can happen in 2 flavors:
+
+. as a Maven plugin: AsciiDoc files are converted at full Asciidoctor power independently from Maven site,
+
+. as a Maven site integration: AsciiDoc files are integrated with Maven reports, which comes with
+a few limitations (see below for details).
+
+ifndef::env-site[]
+.Translations of the document are available in the following languages:
+* link:README_zh-CN.adoc[汉语]
+endif::[]
+
+ifeval::['{tag}' == 'master']
+[NOTE]
+====
+You're viewing the documentation for the upcoming release.
+If you're looking for the documentation for an older release, please refer to one of the following tags: +
+{uri-repo}/tree/asciidoctor-maven-plugin-1.5.5#readme[1.5.5]
+&hybull;
+{uri-repo}/tree/asciidoctor-maven-plugin-1.5.3#readme[1.5.3]
+&hybull;
+{uri-repo}/tree/asciidoctor-maven-plugin-1.5.2.1#readme[1.5.2.1]
+====
+endif::[]
+
+== Maven Plugin
+
+=== Setup
+
+As this is a typical Maven plugin, simply declare the plugin in the `<plugins>` section of your POM file:
+
+[source,xml,subs=attributes+]
+.Plugin declaration in pom.xml
+----
+<plugins>
+    <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>{release-version}</version> <!--1-->
+        ...
+    </plugin>
+</plugins>
+----
+<1> As this plugin tracks the version of Asciidoctor, you can use whichever version of Asciidoctor you prefer.
+
+[source,xml]
+.Execution setup
+----
+<plugin>
+    ...
+    <executions>
+        <execution>
+            <id>output-html</id>              <!--1-->
+            <phase>generate-resources</phase> <!--2-->
+            <goals>
+                <goal>process-asciidoc</goal> <!--3-->
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+----
+<1> This is simply an unique id for the execution
+<2> The asciidoctor-maven-plugin does not run in any phase by default, so one must be specified
+<3> The (only for the moment) Asciidoctor Maven plugin goal
+
+=== Configuration
+
+There are several configuration options that the Asciidoctor Maven plugin accepts, which parallel the options in Asciidoctor:
+
+sourceDirectory:: defaults to [.path]_$\{basedir}/src/main/asciidoc_
+sourceDocumentName:: an override to process a single source file; defaults to all files in `$\{sourceDirectory}`
+sourceDocumentExtensions:: (named `extensions` in v1.5.3 and below) a `List<String>` of non-standard file extensions to render.
+Currently ad, adoc, and asciidoc will be rendered by default
+resources:: list of resource files to copy to the output directory (e.g., images, css).
+The configuration follows the same patterns as the `maven-resources-plugin`.
+If not set, all resources inside `$\{sourceDirectory}` are copied.
++
+[NOTE]
+====
+Converters that embed resources such as images into the output document need to be able to locate those resources at conversion time.
+For example, when generating a PDF (or HTML with the `data-uri` attribute set), all images need to be aggregated under a common root (i.e., image catalog).
+The `imagesdir` attribute should be overridden to point to that folder.
+When converting to HTML, images must be copied to the output location so that the browser can resolve those images when the user views the page.
+====
++
+[source, xml]
+----
+<resources>
+    <resource>
+        <!-- (Mandatory) Directory to copy from. Paths are relative to maven's ${baseDir} -->
+        <directory>DIRECTORY</directory>
+        <!-- (Optional) Directory to copy to. By default uses the option `outputDirectory` -->
+        <targetPath>OUTPUT_DIR</targetPath>
+        <!-- (Optional) NOTE: SVN, GIT and other version control files are excluded by default, there's no need to add them -->
+        <excludes>
+            <exclude>**/.txt</exclude>
+        </excludes>
+        <!-- (Optional) If not set, includes all files but default exceptions mentioned -->
+        <includes>
+            <include>**/*.jpg</include>
+            <include>**/*.gif</include>
+        </includes>
+    </resource>
+    ...
+<resources>
+----
+outputDirectory:: defaults to [.path]_${project.build.directory}/generated-docs_
+outputFile:: defaults to `null`, used to override the name of the generated output file, can be a relative or absolute path.
+Useful for backends that create a single file, e.g. the pdf backend.
+All output will be redirected to the same file, the same way as the `-o, --out-file=OUT_FILE` option from the `asciidoctor` CLI command.
+baseDir:: (not Maven's basedir) enables to set the root path for resources (e.g. included files), defaults to `$\{sourceDirectory}`
+skip:: set this to `true` to bypass generation, defaults to `false`
+preserveDirectories:: enables to specify whether the documents should be rendered in the same folder structure as in the source directory or not, defaults to `false`.
+When `true`, instead of generating all output in a single folder, output files are generated in the same structure.
+See the following example
++
+[source]
+----
+    ├── docs                          ├── docs
+    │   ├── examples.adoc             │   ├── examples.html
+    │   └── examples            =>    │   └── examples
+    │       ├── html.adoc             │       ├── html.html
+    │       └── docbook.adoc          │       └── docbook.html
+    └── index.adoc                    └── index.html
+----
+relativeBaseDir:: only used when baseDir is not set, enables to specify that each AsciiDoc file must search for its resources in the same folder (for example, included files).
+Internally, for each AsciiDoc source, sets `baseDir` to the same path as the source file.
+Defaults to `false`
+imagesDir:: defaults to `images`, which will be relative to the directory containing the source files
+backend:: defaults to `docbook`
+doctype:: defaults to `null` (which trigger's Asciidoctor's default of `article`)
+eruby:: defaults to erb, the version used in JRuby
+headerFooter:: defaults to `true`
+templateDir:: directory of Tilt-compatible templates to be used instead of the default built-in templates, disabled by default (`null`)
+templateEngine:: template engine to use for the custom converter templates, disabled by default (`null`)
+templateCache:: enables the built-in cache used by the template converter when reading the source of template files.
+Only relevant if the `:template_dir` option is specified, defaults to `true`
+sourceHighlighter:: enables and sets the source highlighter (currently `coderay` or `highlight.js` are supported)
+sourcemap:: adds file and line number information to each parsed block (`lineno` and `source_location` attributes), defaults to `false`
+catalogAssets:: tells the parser to capture images and links in the reference table available via the `references` property on the document AST object (experimental), defaults to `false`
+attributes:: a `Map<String,Object>` of attributes to pass to Asciidoctor, defaults to `null`
+embedAssets:: Embedd the CSS file, etc into the output, defaults to `false`
+gemPaths:: enables to specify the location to one or more gem installation directories (same as GEM_PATH environment var), `empty` by default
+requires:: a `List<String>` to specify additional Ruby libraries not packaged in AsciidoctorJ, `empty` by default
+extensions:: `List` of extensions to include during the conversion process (see link:https://github.com/asciidoctor/asciidoctorj/blob/master/README.adoc#extension-api[AsciidoctorJ's Extension API] for information about the available options).
+For each extension, the implementation class must be specified in the `className` parameter, the `blockName` is only required when configuring a _BlockProcessor_, _BlockMacroProcessor_ or _InlineMacroProcessor_.
+Here follows a configuration example:
++
+[source,xml]
+----
+<plugin>
+    ...
+    <executions>
+        <execution>
+            <configuration>
+                ...
+                <extensions>
+                    <extension>
+                        <className>org.asciidoctor.maven.SomePreprocessor</className>
+                    </extension>
+                    <extension>
+                        <className>org.asciidoctor.maven.SomeBlockProcessor</className>
+                        <blockName>yell</blockName>
+                    </extension>
+                </extensions>
+            </configuration>
+        </execution>
+    </executions>
+    <dependencies>
+        <dependency> <!--1-->
+            <groupId>org.asciidoctor.maven</groupId>
+            <artifactId>my-asciidoctor-extensions</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+</plugin>
+----
+<1> Note that processors must be included in the plugin's execution classpath, not in the project's.
+
+NOTE: Extensions can also be integrated through the SPI interface implementation.
+This method does not require any configuration in the [.path]_pom.xml_, see link:https://github.com/asciidoctor/asciidoctorj#extension-spi[Extension SPI] for details.
+
+==== Built-in attributes
+
+There are various attributes Asciidoctor recognizes.
+Below is a list of them and what they do.
+
+title:: An override for the title of the document.
+
+NOTE: This attribute, for backwards compatibility, can still be used in the top level configuration options.
+
+Many other attributes are possible.
+Refer to the http://asciidoctor.org/docs/user-manual/#attribute-catalog[catalog of document attributes] in the Asciidoctor user manual for a complete list.
+
+More will be added in the future to take advantage of other options and attributes of Asciidoctor.
+Any setting in the attributes section that conflicts with an explicitly named attribute configuration will be overidden by the explicitly named attribute configuration.
+These settings can all be changed in the `<configuration>` section of the plugin section:
+
+[source,xml]
+.Plugin configuration options
+----
+<plugin>
+    <configuration>
+        <sourceDirectory>src/docs/asciidoc</sourceDirectory>
+        <outputDirectory>target/docs/asciidoc</outputDirectory>
+        <backend>html</backend>
+        <doctype>book</doctype>
+        <attributes>
+            <stylesheet>my-theme.css</stylesheet>
+        </attributes>
+    </configuration>
+</plugin>
+----
+
+==== Passing POM properties
+
+It is possible to pass properties defined in the POM to the Asciidoctor processor.
+This is handy for example to include in the generated document the POM artifact version number.
+
+This is done by creating a custom AsciiDoc property in the `attributes` section of the `configuration`.
+The AsciiDoc property value is defined in the usual Maven way: `${property.name}`.
+
+[source,xml]
+----
+<attributes>
+    <project-version>${project.version}</project-version>
+</attributes>
+----
+
+The custom AsciiDoc property can then be used in the document like this:
+
+ The latest version of the project is {project-version}.
+
+==== Setting boolean values
+
+Boolean attributes in asciidoctor, such as `sectnums`, `linkcss` or `copycss` can be set with a value of `true` and unset with a value of `false`.
+
+==== Examples
+
+In the `<attributes>` part of the Asciidoctor Maven Plugin configuration:
+
+[source,xml]
+----
+<sectnums>true</sectnums>
+<linkcss>false</linkcss>
+----
+
+You can find more information and many examples ready to copy-paste in the {uri-examples}[Asciidoctor Maven examples] project.
+
+==== Command line configuration
+
+Configuration options can be set (but not replaced) using system properties directly in the command line as follows:
+
+ mvn generate-resources -Dasciidoctor.sourceDirectory=src/docs -Dasciidoctor.outputDirectory=target/docs
+
+All options follow the naming convention _`asciidoctor.` + option_name_.
+
+In order to provide a higher degree of flexibility `attributes` configuration follows a different behavior.
+Attributes defined through the command line are added to the ones already found in the XML configuration.
+The result of it is that attributes and other configuration options can be updated if they are added to the command line as attributes.
+For example, the following configuration could be modified with the command options as seen below.
+
+[source,xml]
+----
+<configuration>
+    <backend>html5</backend>
+    <sourceHighlighter>coderay</sourceHighlighter>
+    <attributes>
+        <toc>left</toc>
+    </attributes>
+</configuration>
+----
+
+ mvn generate-resources -Dasciidoctor.attributes=toc=right
+
+ mvn generate-resources -Dasciidoctor.attributes="toc=right source-highlighter=highlight.js imagesdir=my_images"
+
+Note that in the second case we need to use quotes due to the spaces, and that `source-highlighter` is the asciidoctor attribute name used to update the configuration.
+
+=== Multiple outputs for the same file
+
+Maven has the ability to execute a Mojo multiple times.
+Instead of reinventing the wheel inside the Mojo, we'll push this off to Maven to handle the multiple executions.
+An example of this setup is below:
+
+[source,xml,subs=attributes+]
+.Multiple configuration extract
+----
+<plugin>
+    <groupId>org.asciidoctor</groupId>
+    <artifactId>asciidoctor-maven-plugin</artifactId>
+    <version>{release-version}</version>
+    <executions>
+        <execution>
+            <id>output-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+                <sourceHighlighter>coderay</sourceHighlighter>
+                <backend>html</backend>
+                <attributes>
+                    <toc/>
+                    <linkcss>false</linkcss>
+                </attributes>
+            </configuration>
+        </execution>
+        <execution>
+            <id>output-docbook</id>
+            <phase>generate-resources</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+                <backend>docbook</backend>
+                <doctype>book</doctype>
+            </configuration>
+        </execution>
+    </executions>
+    <configuration>
+        <sourceDirectory>src/main/asciidoc</sourceDirectory>
+        <headerFooter>true</headerFooter>
+        <imagesDir>../resources/images</imagesDir> <!--1-->
+    </configuration>
+</plugin>
+----
+<1> `imagesDir` should be relative to the source directory.
+It defaults to `images` but in this example the images used in the docs are also used elsewhere in the project.
+
+Any configuration specified outside the executions section is inherited by each execution.
+This allows an easier way of defining common configuration options.
+
+== Maven Site Integration
+
+=== Setup
+
+To author your Maven-generated site in AsciiDoc, you must first add a dependency on the Asciidoctor plugin to your maven-site-plugin declaration (which more precisely adds a Doxia Parser Module).
+
+IMPORTANT: Maven v3.2.1 or above required, and since asciidoctor-maven-plugin v1.5.6 only maven-site-plugin v3.4 or above is supported.
+
+[source,xml,subs=attributes+]
+.Maven site integration
+-----
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.4</version>
+            <dependencies>
+                <dependency><!-- add Asciidoctor Doxia Parser Module -->
+                    <groupId>org.asciidoctor</groupId>
+                    <artifactId>asciidoctor-maven-plugin</artifactId>
+                    <version>{release-version}</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+-----
+
+The Asciidoctor Doxia module follows the maven-site-plugin conventions for file location, and delegates all resource management to it.
+
+First, all of your AsciiDoc-based files should be placed in [.path]_src/site/asciidoc_ with an extension of `.adoc`.
+These files will be rendered into the [.path]_target/site_ directory.
+For example, the file [.path]_src/site/asciidoc/usage.adoc_ will be rendered into [.path]_target/site/usage.html_.
+
+Then, all resources (images, css, etc.) should be placed in [.path]_src/site/resources_.
+These will be automatically copied into [.path]_target/site_.
+
+Also note that AsciiDoc files are converted to embeddable HTML and inserted into the site's page layout.
+This disables certain features such as a the sidebar toc.
+
+Make sure you add a `menu` item for each page so you can access it from the site navigation:
+
+[source,xml]
+-----
+<body>
+    ...
+    <menu name="User guide">
+        <item href="usage.html" name="Usage" />
+    </menu>
+    ...
+</body>
+-----
+
+=== Configuration
+
+As of version 1.5.3 of the plugin, you can configure Asciidoctor by specifying configuration properties in the plugin declaration, just like with the main plugin goal.
+There are two important differences, however.
+
+. All the configuration for Asciidoctor in the site integration must be nested inside an `<asciidoc>` element.
+This is necessary since the `<configuration>` element is used to configure more than just the Asciidoctor integration.
++
+Here's an example that shows how to set options, attributes and ignore partial AsciiDoc files (i.e., files that begin with an underscore).
++
+[source,xml]
+.Maven site integration with Asciidoctor configuration
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-site-plugin</artifactId>
+    <version>3.4</version>
+    <configuration>
+        <asciidoc>
+            <templateDirs>
+                <dir>src/site/asciidoc/templates</dir>
+            </templateDirs>
+            <requires>
+                <require>asciidoctor-diagram</require>
+            </requires>
+            <attributes>
+                <source-highlighter>coderay</source-highlighter>
+                <coderay-css>style</coderay-css>
+            </attributes>
+        </asciidoc>
+        <moduleExcludes>
+            <asciidoc>**/_*.adoc</asciidoc>
+        </moduleExcludes>
+    </configuration>
+    <dependencies>
+        <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctor-maven-plugin</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+    </dependencies>
+</plugin>
+----
++
+[IMPORTANT]
+====
+The Asciidoctor base directory (i.e., document root) is configured as [.path]_src/site/asciidoc_ by default, though this can be overridden.
+To do so, you can use either maven-site-plugin `siteDirectory` or Asciidoctor `baseDir` configuration options.
+Note that the first will affect the default resources directory also.
+====
++
+You'll notice in the example that excludes have been added for certain AsciiDoc files.
+This prevents the site integration from processing partial files (i.e., includes) as individual pages.
+You can tune this pattern to your liking.
+There's currently no way (that we can tell) to configure this automatically.
+
+. For simplicity and the fact that resources are managed by maven-site-plugin, not all options found in the asciidoctor-maven-plugin are available in the `<asciidoc>` element.
++
+The supported ones are:
+
+baseDir::
+Sames as the plugin's `baseDir`.
+Sets the root path for resources.
+Not set by default, AsciiDoc documents will be searched in [.path]_src/site/asciidoc_.
+External resources should be located in [.path]_src/site/resources_.
++
+NOTE: Consider using maven-site-plugin's `siteDirectory` instead for better integration with the site functions (ie. resource copying).
+
+templatesDir (also template_dir)::
+Built-in template are supported by specifying a templates directory (i.e., `templatesDir`).
+This feature enables you to provide a custom template for converting any node in the tree (e.g., document, section, listing, etc).
+Custom templates can be extremely helpful when trying to customize the appearance of your site.
+
+templatesDirs (also template_dirs)::
+Allows to set multiple templates.
+Note that each one should be enclosed in a `<dir>` element.
+
+requires::
+Sames as the plugin's `requires`.
+Specifies additional Ruby libraries not packaged in AsciidoctorJ, `empty` by default.
+
+
+// == Watching for changes
+
+// TODO
+
+// == Zipping output into a bundle
+
+// TODO
+
+// == Previewing generated content in the browser
+
+// TODO
+
+== Hacking
+
+Developer setup for hacking on this project isn't very difficult.
+The requirements are very small:
+
+* Java
+* Maven 3
+
+Everything else will be brought in by Maven.
+This is a typical Maven Java project, nothing special.
+You should be able to use IntelliJ, Eclipse, or Netbeans
+without any issue for hacking on the project.
+
+== Building
+
+Standard Maven build:
+
+ mvn clean install
+
+== Testing
+
+http://spockframework.org/[Spock] is used for testing the calling of the Mojo.
+This will be downloaded by Maven.
+Tests are run simply by:
+
+ mvn clean test
+
+Or any of the other goals which run tests.
+
+NOTE: If I can figure out a good way to setup a Ruby testing environment I'll do that as well, but none exists at this time.
+
+== Tips & Tricks
+
+=== Generate your documentation in separate folders per version
+
+Use Maven `project.version` property to create dedicated custom output directories.
+
+[source, xml]
+-----
+<configuration>
+    ...
+    <outputDirectory>target/generated-docs/${project.version}</outputDirectory>
+    ...
+</configuration>
+-----
+
+=== Enable section numbering
+
+Enable section numbering in the build using the `attributes` section.
+
+[source, xml]
+-----
+<configuration>
+    ...
+    <attributes>
+        ...
+        <sectnums>true</sectnums>
+        ...
+    </attributes>
+    ...
+</configuration>
+-----
+
+=== Add version and build date to the header
+
+Automatically add version details to header and footer to all documents.
+
+[source, xml]
+-----
+
+<properties>
+   <maven.build.timestamp.format>yyyy-MM-dd HH</maven.build.timestamp.format>  <1>
+</properties>
+
+<configuration>
+    ...
+    <attributes>
+        ...
+        <revnumber>${project.version}</revnumber>
+        <revdate>${maven.build.timestamp}</revdate>
+        <organization>${project.organization.name}</organization>
+    </attributes>
+    ...
+</configuration>
+-----
+<1> Add `maven.build.timestamp.format` to the pom's properties section to set a custom date format.

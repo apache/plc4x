@@ -316,6 +316,9 @@
 
             <!-- Jenkins build related files -->
             <exclude>.repository/**</exclude>
+
+            <!-- Exclude this for now -->
+            <exclude>utils/**</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -358,7 +361,7 @@
           The reflow maven skin used for the site-generation requires some static resources.
           The following plugins configure the acquisition and location of these resources.
       -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -369,7 +372,7 @@
               <goal>unpack</goal>
             </goals>
             <configuration>
-              <!--
+              <!-
                   Bundle these dependencies in the war.
 
                   You must maintain the corresponding info if you
@@ -382,7 +385,7 @@
 
                   You must maintain the info in this project's
                   corresponding platforms/java7 files.
-               -->
+               ->
               <artifactItems>
                 <artifactItem>
                   <groupId>lt.velykis.maven.skins</groupId>
@@ -408,12 +411,12 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
 
       <!--
         Replace the bootstrap css with the version of the theme
       -->
-      <plugin>
+      <!--lugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
         <version>1.4.0</version>
@@ -432,9 +435,9 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
 
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
@@ -448,8 +451,7 @@
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2
-                  </directory>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2</directory>
                 </resource>
                 <resource>
                   <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/1.9.1</directory>
@@ -459,15 +461,15 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
 
       <!--
         When running asciidoctor as part of the site-generation there were great problems with
-        the configuration of the diagram generation. Unfortunatel when generating all content here,
+        the configuration of the diagram generation. Unfortunately when generating all content here,
         the output will not have the site style. That's why here we generate the images to the
         site directory and have the output written to an outside directory, so it will not interfere.
       -->
-      <plugin>
+      <!--plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <version>1.5.6</version>
@@ -483,7 +485,7 @@
               <outputDirectory>${project.build.directory}/dump</outputDirectory>
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
-                <!-- Tells asciidoctor where to put the generated files -->
+                <!- Tells asciidoctor where to put the generated files ->
                 <imagesoutdir>${project.build.directory}/site/img</imagesoutdir>
               </attributes>
               <requires>
@@ -509,7 +511,7 @@
             <version>1.5.4.1</version>
           </dependency>
         </dependencies>
-      </plugin>
+      </plugin-->
 
       <!--
         Make the maven-site-plugin stage the output in the "asf-site" branch
@@ -651,9 +653,9 @@
             Getting errors with site:site task when using any version above 3.4
             (Hopefully 1.6.0 of the asciidoctor-maven-plugin will fix this)
           -->
-          <version>3.4</version><!--$NO-MVN-MAN-VER$-->
+          <version>3.7.1</version><!--$NO-MVN-MAN-VER$-->
           <configuration>
-            <templateFile>${session.executionRootDirectory}/src/site/template/maven-site.vm</templateFile>
+            <!--templateFile>${session.executionRootDirectory}/src/site/template/maven-site.vm</templateFile-->
             <generateReports>true</generateReports>
             <generateSitemap>true</generateSitemap>
             <relativizeDecorationLinks>false</relativizeDecorationLinks>
@@ -662,20 +664,13 @@
             <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
             <!--
               IntelliJ can't find the asciidoc config option in the site plugin, which is correct.
-              However this config section is used by the asciidoctor site plugin extension. So plead
+              However this config section is used by the asciidoctor site plugin extension. So please
               ignore this error, it's actually ok.
             -->
             <asciidoc>
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
-                <!--
-                  When running asciidoctor as part of the site-generation, it will generate the diagrams of
-                  sub-modules into the root modules img directory, which will break everything. Therefore we
-                  tell it to generate to some outside directory and have a second execution of asciidoctor
-                  generate the images to the correct location. This is a hack that should be removed as soon
-                  as possible.
-                -->
-                <imagesoutdir>${project.build.directory}/dump</imagesoutdir>
+                <imagesoutdir>@{project.basedir}/target/site/img</imagesoutdir>
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
@@ -684,7 +679,7 @@
           </configuration>
           <dependencies>
             <!-- All dependencies needed by the reflow skin -->
-            <dependency>
+            <!--dependency>
               <groupId>lt.velykis.maven.skins</groupId>
               <artifactId>reflow-velocity-tools</artifactId>
               <version>1.1.1</version>
@@ -698,7 +693,7 @@
               <groupId>org.apache.maven.doxia</groupId>
               <artifactId>doxia-core</artifactId>
               <version>1.6</version>
-            </dependency>
+            </dependency-->
             <!-- add support for scm/git site deployment -->
             <dependency>
               <groupId>org.apache.maven.wagon</groupId>
@@ -721,10 +716,16 @@
               <version>1.9.5</version>
             </dependency>
             <!-- Add support for asciidoctor -->
-            <dependency>
+            <!--dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctor-maven-plugin</artifactId>
-              <version>1.5.6</version>
+              <version>1.5.7-SNAPSHOT</version>
+            </dependency-->
+            <!-- Patched version that is able to generate diagram output into the right directory -->
+            <dependency>
+              <groupId>org.apache.plc4x.utils</groupId>
+              <artifactId>plc4x-asciidoctor-site-plugin</artifactId>
+              <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
               <groupId>org.jruby</groupId>

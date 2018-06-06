@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/DECORATION/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
+  name="${skinName}">
+
+  <skin>
+    <groupId>${skinGroupId}</groupId>
+    <artifactId>${skinArtifactId}</artifactId>
+    <version>${skinVersion}</version>
+  </skin>
+
+  <publishDate format="yyyy-MM-dd" position="right" />
+  <version position="right" />
+
+  <body>
+    <breadcrumbs>
+      <item name="skins" href="/skins/"/>
+      <item name="${skinArtifactId}" href="/skins/${skinArtifactId}/"/>
+    </breadcrumbs>
+
+    <menu name="Overview">
+      <item name="Introduction" href="index.html"/>
+    </menu>
+
+    <menu ref="reports"/>
+
+  </body>
+
+</project>

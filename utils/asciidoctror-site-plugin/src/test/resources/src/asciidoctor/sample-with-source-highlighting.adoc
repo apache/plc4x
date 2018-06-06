@@ -1,0 +1,41 @@
+Document Title
+==============
+Doc Writer <thedoc@asciidoctor.org>
+:idprefix: id_
+:source-highlighter: coderay
+
+Preamble paragraph.
+
+NOTE: This is test, only a test.
+
+== Section A
+
+*Section A* paragraph.
+
+=== Section A Subsection
+
+*Section A* 'subsection' paragraph.
+
+== Section B
+
+*Section B* paragraph.
+
+.Section B list
+* Item 1
+* Item 2
+* Item 3
+
+[source,ruby]
+require 'asciidoctor'
+
+[source,java]
+----
+public class HelloWorld {
+
+    public static void main(String[] args) {
+        // Prints "Hello, World" to the terminal window.
+        System.out.println("Hello, World");
+    }
+
+}
+----

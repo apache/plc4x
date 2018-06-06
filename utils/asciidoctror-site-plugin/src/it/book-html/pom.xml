@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.asciidoctor</groupId>
+	<artifactId>test</artifactId>
+	<version>1.0-SNAPSHOT</version>
+
+	<name>Converts Asciidoctor Article to Html</name>
+	<description>Runs asciidoctor-maven-plugin:process-asciidoc</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>@project.version@</version>
+				<configuration>
+					<sourceDirectory>src/main/doc</sourceDirectory>
+					<outputDirectory>target/docs</outputDirectory>
+					<backend>html</backend>
+					<doctype>book</doctype>
+					<attributes>
+						<stylesheet>my-theme.css</stylesheet>
+					</attributes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

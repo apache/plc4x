@@ -1,0 +1,12 @@
+:toc: left
+:icons:
+
+== Summary
+TIP: Documentation for script 1 in depth 2
+
+== Code
+[source,groovy]
+.HelloWorld3.groovy
+----
+include::HelloWorld3.groovy[]
+----

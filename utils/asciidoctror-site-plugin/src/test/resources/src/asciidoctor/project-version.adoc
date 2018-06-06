@@ -1,0 +1,12 @@
+Document Title
+==============
+Doc Writer <thedoc@asciidoctor.org>
+:idprefix: id_
+:revnumber: {project-version}
+
+Preamble paragraph.
+
+NOTE: This is test, only a test.
+
+This is the project version: {project-version}
+

@@ -1,0 +1,11 @@
+= Book
+Author Name
+:doctype: book
+
+== Chapter 1
+
+content
+
+== Chapter 2
+
+content

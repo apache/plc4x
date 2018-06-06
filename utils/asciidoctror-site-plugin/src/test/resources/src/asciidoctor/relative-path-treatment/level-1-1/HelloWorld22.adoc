@@ -1,0 +1,14 @@
+:toc: left
+:icons:
+
+== Summary
+TIP: Documentation for script 2 in depth 1
+
+image::asciidoctor-icon.jpg[Asciidoctor cool icon]
+
+== Code
+[source,groovy]
+.HelloWorld2.groovy
+----
+include::HelloWorld2.groovy[]
+----

@@ -1,0 +1,13 @@
+= Document Title
+Doc Writer <thedoc@asciidoctor.org>
+:docinfo:
+
+This is the sample-with-doc-info file.
+
+== Section A
+
+*Section A* paragraph.
+
+== Section B
+
+*Section B* paragraph.
