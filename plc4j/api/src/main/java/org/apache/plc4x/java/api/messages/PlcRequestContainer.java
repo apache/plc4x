@@ -51,4 +51,28 @@ public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> im
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "PlcRequestContainer{" +
+            "request=" + request +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcRequestContainer)) {
+            return false;
+        }
+        PlcRequestContainer<?, ?> that = (PlcRequestContainer<?, ?>) o;
+        return Objects.equals(request, that.request) &&
+            Objects.equals(responseFuture, that.responseFuture);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(request, responseFuture);
+    }
 }
