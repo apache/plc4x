@@ -35,13 +35,15 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
     private static final Logger LOGGER = LoggerFactory.getLogger(Payload2TcpProtocol.class);
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) {
+        LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
         out.add(AmsTCPPacket.of(UserData.of(amsPacket)).getByteBuf());
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) {
+        LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, byteBuf, out);
         // Reserved
         byteBuf.skipBytes(AmsTcpHeader.Reserved.NUM_BYTES);
         TcpLength packetLength = TcpLength.of(byteBuf);

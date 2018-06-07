@@ -86,6 +86,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws Exception {
+        LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
         PlcRequest request = msg.getRequest();
         if (request instanceof PlcReadRequest) {
             encodeReadRequest(msg, out);
@@ -187,6 +188,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws Exception {
+        LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, amsPacket, out);
         if (amsPacket instanceof AdsDeviceNotificationRequest) {
             LOGGER.debug("Received notification {}", amsPacket);
             handleAdsDeviceNotificationRequest((AdsDeviceNotificationRequest) amsPacket);

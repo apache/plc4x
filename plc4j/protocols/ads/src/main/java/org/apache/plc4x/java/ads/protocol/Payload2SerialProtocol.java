@@ -54,6 +54,7 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws Exception {
+        LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
         while (frameOnTheWay.get() || !lock.tryLock()) {
             // In this case we might not send it yet.
             TimeUnit.MILLISECONDS.sleep(10);
@@ -86,6 +87,7 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) throws Exception {
+        LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, byteBuf, out);
         MagicCookie magicCookie = MagicCookie.of(byteBuf);
         TransmitterAddress transmitterAddress = TransmitterAddress.of(byteBuf);
         ReceiverAddress receiverAddress = ReceiverAddress.of(byteBuf);
