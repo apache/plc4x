@@ -72,6 +72,7 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
             retryHandler = channelHandlerContext.executor().schedule(() -> {
                 try {
                     TimeUnit.SECONDS.sleep(2);
+                    LOGGER.info("Retransmitting {}", amsSerialFrame);
                     channelHandlerContext.channel().writeAndFlush(amsSerialFrame.getByteBuf());
                 } catch (InterruptedException e) {
                     LOGGER.debug("Interrupted", e);
