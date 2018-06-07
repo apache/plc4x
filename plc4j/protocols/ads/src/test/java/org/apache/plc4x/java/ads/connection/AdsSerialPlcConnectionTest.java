@@ -19,12 +19,12 @@
 package org.apache.plc4x.java.ads.connection;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
+import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.model.AdsAddress;
 import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -124,6 +125,8 @@ public class AdsSerialPlcConnectionTest {
 
         private SimulatorState state = SimulatorState.RECEIVE_REQUEST;
 
+        private byte[] currentInvokeId = new byte[0];
+
         public SerialSimulator(EmbeddedChannel embeddedChannel) {
             super("Serial Simulator");
             this.embeddedChannel = embeddedChannel;
@@ -155,6 +158,7 @@ public class AdsSerialPlcConnectionTest {
                         byte[] bytes = new byte[dataLength];
                         LOGGER.info("Read " + dataLength + "bytes. Having " + outputBuffer.readableBytes() + "bytes");
                         outputBuffer.readBytes(bytes);
+                        currentInvokeId = Arrays.copyOfRange(bytes, 28, 32);
                         outputBuffer.skipBytes(CRC.NUM_BYTES);
                         LOGGER.info("Wrote Inbound");
                         state = SimulatorState.ACK_MESSAGE;
@@ -175,26 +179,26 @@ public class AdsSerialPlcConnectionTest {
                     }
                     case SEND_RESPONSE: {
                         LOGGER.info("Sending data message");
-                        embeddedChannel.writeOneInbound(Unpooled.wrappedBuffer(new byte[]{
-                            /*Magic Cookie     */    0x01, (byte) 0xA5,
-                            /*Sender           */    0x00,
-                            /*Empfaenger       */    0x00,
-                            /*Fragmentnummer   */    (byte) 0x00,
-                            /*Anzahl Daten     */    0x2A,
-                            /*NetID Empfaenger */    (byte) 0xC0, (byte) 0xA8, 0x64, (byte) 0x9C, 0x01, 0x01,
-                            /*Portnummer       */    0x01, (byte) 0x80,
-                            /*NetID Sender     */    (byte) 0xC0, (byte) 0xA8, 0x64, (byte) 0xAE, 0x01, 0x01,
-                            /*Portnummer       */    0x21, 0x03,
-                            /*Response Lesen   */    0x02, 0x00,
-                            /*Status           */    0x05, 0x00,
-                            /*Anzahl Daten     */    0x0A, 0x00, 0x00, 0x00,
-                            /*Fehlercode       */    0x00, 0x00, 0x00, 0x00,
-                            /*InvokeID         */    0x02, 0x00, 0x00, 0x00,
-                            /*Ergebnis         */    0x00, 0x00, 0x00, 0x00,
-                            /*Anzahl Daten     */    0x02, 0x00, 0x00, 0x00,
-                            /*Daten            */    (byte) 0xAF, 0x27,
-                            /*Checksumme       */    0x60, (byte) 0x0c,
-                        }));
+                        ByteBuf byteBuf = AmsSerialFrame.of(
+                            FragmentNumber.of((byte) 0),
+                            UserData.of(
+                                new byte[]{
+                                    /*NetID Empfaenger */    (byte) 0xC0, (byte) 0xA8, 0x64, (byte) 0x9C, 0x01, 0x01,
+                                    /*Portnummer       */    0x01, (byte) 0x80,
+                                    /*NetID Sender     */    (byte) 0xC0, (byte) 0xA8, 0x64, (byte) 0xAE, 0x01, 0x01,
+                                    /*Portnummer       */    0x21, 0x03,
+                                    /*Response Lesen   */    0x02, 0x00,
+                                    /*Status           */    0x05, 0x00,
+                                    /*Anzahl Daten     */    0x0A, 0x00, 0x00, 0x00,
+                                    /*Fehlercode       */    0x00, 0x00, 0x00, 0x00,
+                                    /*InvokeID         */    currentInvokeId[0], currentInvokeId[1], currentInvokeId[2], currentInvokeId[3],
+                                    /*Ergebnis         */    0x00, 0x00, 0x00, 0x00,
+                                    /*Anzahl Daten     */    0x02, 0x00, 0x00, 0x00,
+                                    /*Daten            */    (byte) 0xAF, 0x27
+                                }
+                            )
+                        ).getByteBuf();
+                        embeddedChannel.writeOneInbound(byteBuf);
                         LOGGER.info("Wrote Inbound");
                         state = SimulatorState.WAIT_FOR_ACK;
                         if (!trySleep()) {
