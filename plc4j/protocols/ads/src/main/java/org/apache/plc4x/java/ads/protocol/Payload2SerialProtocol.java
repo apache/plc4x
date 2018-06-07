@@ -42,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Payload2TcpProtocol.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Payload2SerialProtocol.class);
 
     private final AtomicInteger fragmentCounter = new AtomicInteger(0);
 
