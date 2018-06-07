@@ -43,4 +43,30 @@ public abstract class RequestItem<DATA_TYPE> {
         return address;
     }
 
+    @Override
+    public String toString() {
+        return "RequestItem{" +
+            "datatype=" + datatype +
+            ", address=" + address +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof RequestItem)) {
+            return false;
+        }
+        RequestItem<?> that = (RequestItem<?>) o;
+        return Objects.equals(datatype, that.datatype) &&
+            Objects.equals(address, that.address);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(datatype, address);
+    }
 }

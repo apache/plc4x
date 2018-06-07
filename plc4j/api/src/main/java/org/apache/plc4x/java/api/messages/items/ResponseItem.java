@@ -42,4 +42,31 @@ public abstract class ResponseItem<REQUEST_ITEM extends RequestItem> {
     public ResponseCode getResponseCode() {
         return responseCode;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseItem{" +
+            "requestItem=" + requestItem +
+            ", responseCode=" + responseCode +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ResponseItem)) {
+            return false;
+        }
+        ResponseItem<?> that = (ResponseItem<?>) o;
+        return Objects.equals(requestItem, that.requestItem) &&
+            responseCode == that.responseCode;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(requestItem, responseCode);
+    }
 }

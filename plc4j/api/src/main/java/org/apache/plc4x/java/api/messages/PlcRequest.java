@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.RequestItem;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import org.apache.plc4x.java.api.messages.items.RequestItem;
 
 /**
  * Base type for all messages sent from the plc4x system to a connected plc.
@@ -96,5 +96,30 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
                 mixed = true;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "PlcRequest{" +
+            "requestItems=" + requestItems +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcRequest)) {
+            return false;
+        }
+        PlcRequest<?> that = (PlcRequest<?>) o;
+        return Objects.equals(requestItems, that.requestItems);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(requestItems);
     }
 }
