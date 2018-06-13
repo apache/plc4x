@@ -264,6 +264,7 @@ public class ADSClientNotificationExample {
                 TimeUnit.SECONDS.sleep(timeout);
                 System.out.println("Timeout reached enter pressed");
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
         }
