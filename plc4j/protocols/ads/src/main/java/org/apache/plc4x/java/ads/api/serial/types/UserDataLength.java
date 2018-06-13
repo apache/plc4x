@@ -32,12 +32,24 @@ public class UserDataLength extends ByteValue {
         super(value);
     }
 
+    private UserDataLength(byte[] value) {
+        super(value);
+    }
+
     private UserDataLength(ByteBuf byteBuf) {
         this(byteBuf.readByte());
     }
 
     public static UserDataLength of(byte value) {
         return new UserDataLength(value);
+    }
+
+    public static UserDataLength of(byte... value) {
+        return new UserDataLength(value);
+    }
+
+    public static UserDataLength of(String value) {
+        return new UserDataLength(Byte.valueOf(value));
     }
 
     public static UserDataLength of(ByteBuf byteBuf) {

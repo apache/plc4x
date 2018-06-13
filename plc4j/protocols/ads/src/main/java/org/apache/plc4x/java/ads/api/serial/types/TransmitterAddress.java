@@ -34,12 +34,24 @@ public class TransmitterAddress extends ByteValue {
         super(value);
     }
 
+    private TransmitterAddress(byte[] value) {
+        super(value);
+    }
+
     private TransmitterAddress(ByteBuf byteBuf) {
         this(byteBuf.readByte());
     }
 
     public static TransmitterAddress of(byte value) {
         return new TransmitterAddress(value);
+    }
+
+    public static TransmitterAddress of(byte... value) {
+        return new TransmitterAddress(value);
+    }
+
+    public static TransmitterAddress of(String value) {
+        return new TransmitterAddress(Byte.valueOf(value));
     }
 
     public static TransmitterAddress of(ByteBuf byteBuf) {

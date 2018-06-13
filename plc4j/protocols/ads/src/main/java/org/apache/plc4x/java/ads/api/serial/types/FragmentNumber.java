@@ -32,12 +32,24 @@ public class FragmentNumber extends ByteValue {
         super(value);
     }
 
+    private FragmentNumber(byte[] value) {
+        super(value);
+    }
+
     private FragmentNumber(ByteBuf byteBuf) {
         this(byteBuf.readByte());
     }
 
     public static FragmentNumber of(byte value) {
         return new FragmentNumber(value);
+    }
+
+    public static FragmentNumber of(byte... value) {
+        return new FragmentNumber(value);
+    }
+
+    public static FragmentNumber of(String value) {
+        return new FragmentNumber(Byte.valueOf(value));
     }
 
     public static FragmentNumber of(ByteBuf byteBuf) {

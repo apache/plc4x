@@ -34,12 +34,24 @@ public class ReceiverAddress extends ByteValue {
         super(value);
     }
 
+    private ReceiverAddress(byte[] value) {
+        super(value);
+    }
+
     private ReceiverAddress(ByteBuf byteBuf) {
         this(byteBuf.readByte());
     }
 
     public static ReceiverAddress of(byte value) {
         return new ReceiverAddress(value);
+    }
+
+    public static ReceiverAddress of(byte... value) {
+        return new ReceiverAddress(value);
+    }
+
+    public static ReceiverAddress of(String value) {
+        return new ReceiverAddress(Byte.valueOf(value));
     }
 
     public static ReceiverAddress of(ByteBuf byteBuf) {

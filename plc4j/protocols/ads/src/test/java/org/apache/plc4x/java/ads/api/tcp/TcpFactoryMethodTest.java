@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.api.generic;
+package org.apache.plc4x.java.ads.api.tcp;
 
 import org.apache.plc4x.java.ads.api.generic.types.Command;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
-public class GenericFactoryMethodTest {
+public class TcpFactoryMethodTest {
 
     @Parameterized.Parameter
     public Class<?> clazz;
@@ -46,8 +46,8 @@ public class GenericFactoryMethodTest {
     @Parameterized.Parameters(name = "{index} {0}")
     public static Collection<Object[]> data() {
         return Stream.of(
-            AdsData.class,
-            AmsHeader.class
+            AmsTcpHeader.class,
+            AmsTCPPacket.class
         ).map(clazz -> new Object[]{clazz}).collect(Collectors.toList());
     }
 

@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeThat;
 
 @RunWith(Parameterized.class)
@@ -48,6 +49,7 @@ public class CommandTypesFactoryMethodTest {
     public static Collection<Object[]> data() {
         return Stream.of(
             AdsReturnCode.class,
+            AdsStampHeader.class,
             AdsState.class,
             CycleTime.class,
             Data.class,
@@ -73,6 +75,12 @@ public class CommandTypesFactoryMethodTest {
     }
 
     @Test
+    public void innerReservedClasses() {
+        assertNotNull(IndexGroup.SystemServiceGroups.SYSTEMSERVICE_CHANGENETID);
+        assertNotNull(AdsState.DefinedValues.ADSSTATE_CONFIG);
+    }
+
+    @Test
     public void testOfInt() throws Exception {
         assumeThat(clazz, instanceOf(UnsignedShortLEByteValue.class));
         Method ofMethod = clazz.getDeclaredMethod("of", int.class);
@@ -88,12 +96,14 @@ public class CommandTypesFactoryMethodTest {
 
     @Test
     public void testOfString() throws Exception {
+        assumeThat(clazz, not(AdsStampHeader.class));
         Method ofMethod = clazz.getDeclaredMethod("of", String.class);
         ofMethod.invoke(null, clazz != AdsReturnCode.class ? "1" : "ADS_CODE_0");
     }
 
     @Test
     public void testGetter() throws Exception {
+        assumeThat(clazz, not(AdsStampHeader.class));
         List<Method> getters = Arrays
             .stream(clazz.getDeclaredMethods())
             .filter(method -> (
@@ -135,6 +145,7 @@ public class CommandTypesFactoryMethodTest {
 
     @Test
     public void testOfBytes() throws Exception {
+        assumeThat(clazz, not(AdsStampHeader.class));
         assumeThat(clazz, not(Data.class));
         assumeThat(clazz, not(AdsReturnCode.class));
         Field num_bytes_field = clazz.getDeclaredField("NUM_BYTES");

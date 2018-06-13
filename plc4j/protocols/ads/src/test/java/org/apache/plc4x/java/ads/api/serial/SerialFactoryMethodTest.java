@@ -16,10 +16,9 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.api.generic;
+package org.apache.plc4x.java.ads.api.serial;
 
-import org.apache.plc4x.java.ads.api.generic.types.Command;
-import org.apache.plc4x.java.ads.api.util.LengthSupplier;
+import org.apache.plc4x.java.ads.api.util.ByteReadable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,11 +33,10 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
-public class GenericFactoryMethodTest {
+public class SerialFactoryMethodTest {
 
     @Parameterized.Parameter
     public Class<?> clazz;
@@ -46,8 +44,9 @@ public class GenericFactoryMethodTest {
     @Parameterized.Parameters(name = "{index} {0}")
     public static Collection<Object[]> data() {
         return Stream.of(
-            AdsData.class,
-            AmsHeader.class
+            AmsSerialAcknowledgeFrame.class,
+            AmsSerialFrame.class,
+            AmsSerialResetFrame.class
         ).map(clazz -> new Object[]{clazz}).collect(Collectors.toList());
     }
 
@@ -65,12 +64,10 @@ public class GenericFactoryMethodTest {
                 continue;
             }
             Object invoke = method.invoke(null, Arrays.stream(method.getParameterTypes()).map(aClass -> {
-                if (aClass == Command.class) {
-                    return Command.INVALID;
-                } else if (aClass == LengthSupplier[].class) {
-                    return new LengthSupplier[]{() -> 0};
-                } else if (aClass == long.class) {
-                    return 1L;
+                if (ByteReadable.class.isAssignableFrom(aClass)) {
+                    ByteReadable mock = (ByteReadable) mock(aClass, RETURNS_DEEP_STUBS);
+                    when(mock.getBytes()).thenReturn(new byte[0]);
+                    return mock;
                 } else {
                     return mock(aClass, RETURNS_DEEP_STUBS);
                 }
