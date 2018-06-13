@@ -45,7 +45,7 @@ public class FragmentNumber extends ByteValue {
     }
 
     public byte getAsByte() {
-        return getBytes()[0];
+        return value[0];
     }
 
     @Override
