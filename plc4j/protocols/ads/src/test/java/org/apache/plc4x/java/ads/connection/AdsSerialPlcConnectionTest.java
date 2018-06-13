@@ -20,7 +20,9 @@ package org.apache.plc4x.java.ads.connection;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
@@ -39,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -113,6 +116,7 @@ public class AdsSerialPlcConnectionTest {
         SerialChannelFactory serialChannelFactory = (SerialChannelFactory) channelFactoryField.get(SUT);
         SerialChannelFactory serialChannelFactorySpied = spy(serialChannelFactory);
         EmbeddedChannel embeddedChannel = new EmbeddedChannel(SUT.getChannelHandler(null));
+        embeddedChannel.connect(new JSerialCommDeviceAddress("/dev/tty0"));
         doReturn(embeddedChannel).when(serialChannelFactorySpied).createChannel(any());
         channelFactoryField.set(SUT, serialChannelFactorySpied);
         SUT.connect();
@@ -135,12 +139,14 @@ public class AdsSerialPlcConnectionTest {
         @Override
         public void run() {
             while (true) {
+                LOGGER.trace("in state {}. CurrentInvokeId: {}", state, currentInvokeId);
                 switch (state) {
                     // Receiving state
                     case RECEIVE_REQUEST: {
                         LOGGER.info("Waiting for normal message");
                         ByteBuf outputBuffer;
                         while ((outputBuffer = embeddedChannel.readOutbound()) == null) {
+                            LOGGER.trace("No buffer available yet");
                             if (!trySleep()) {
                                 return;
                             }
@@ -173,6 +179,11 @@ public class AdsSerialPlcConnectionTest {
                             ReceiverAddress.of((byte) 0x0),
                             FragmentNumber.of((byte) 0)
                         ).getByteBuf();
+                        try {
+                            MethodUtils.invokeMethod(byteBuf, true,"setRefCnt", 2);
+                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
                         embeddedChannel.writeOneInbound(byteBuf);
                         LOGGER.info("Acked Message");
                         state = SimulatorState.SEND_RESPONSE;
@@ -198,6 +209,11 @@ public class AdsSerialPlcConnectionTest {
                                 }
                             )
                         ).getByteBuf();
+                        try {
+                            MethodUtils.invokeMethod(byteBuf, true,"setRefCnt", 2);
+                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
                         embeddedChannel.writeOneInbound(byteBuf);
                         LOGGER.info("Wrote Inbound");
                         state = SimulatorState.WAIT_FOR_ACK;
