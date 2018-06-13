@@ -58,7 +58,7 @@ public class AdsReadWriteRequest extends AdsAbstractRequest {
      */
     private final Data data;
 
-    private final LengthSupplier writeLengthSupplier;
+    private final transient LengthSupplier writeLengthSupplier;
 
     private AdsReadWriteRequest(AmsHeader amsHeader, IndexGroup indexGroup, IndexOffset indexOffset, ReadLength readLength, WriteLength writeLength, Data data) {
         super(amsHeader);

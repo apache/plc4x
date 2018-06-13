@@ -50,7 +50,7 @@ public class AdsReadResponse extends AdsAbstractResponse {
      */
     private final Data data;
 
-    private final LengthSupplier lengthSupplier;
+    private final transient LengthSupplier lengthSupplier;
 
     private AdsReadResponse(AmsHeader amsHeader, Result result, Length length, Data data) {
         super(amsHeader);
@@ -95,19 +95,24 @@ public class AdsReadResponse extends AdsAbstractResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof AdsReadResponse))
+        }
+        if (!(o instanceof AdsReadResponse)) {
             return false;
-        if (!super.equals(o))
+        }
+        if (!super.equals(o)) {
             return false;
+        }
 
         AdsReadResponse that = (AdsReadResponse) o;
 
-        if (!result.equals(that.result))
+        if (!result.equals(that.result)) {
             return false;
-        if (!getLength().equals(that.getLength()))
+        }
+        if (!getLength().equals(that.getLength())) {
             return false;
+        }
 
         return data.equals(that.data);
     }

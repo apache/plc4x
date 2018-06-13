@@ -39,7 +39,7 @@ public class AdsNotificationSample implements ByteReadable {
      */
     private final Data data;
 
-    private final LengthSupplier lengthSupplier;
+    private final transient LengthSupplier lengthSupplier;
 
     private AdsNotificationSample(NotificationHandle notificationHandle, Data data) {
         this.notificationHandle = requireNonNull(notificationHandle);
