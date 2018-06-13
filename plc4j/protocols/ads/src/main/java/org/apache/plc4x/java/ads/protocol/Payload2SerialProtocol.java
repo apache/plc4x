@@ -29,6 +29,7 @@ import org.apache.plc4x.java.ads.api.serial.AmsSerialResetFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.protocol.util.DigestUtil;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
     private final AtomicInteger fragmentCounter = new AtomicInteger(0);
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) {
+    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws PlcProtocolPayloadTooBigException {
         LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
         int fragmentNumber = fragmentCounter.getAndIncrement();
         if (fragmentNumber > 255) {
@@ -51,9 +52,11 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
             fragmentCounter.set(fragmentNumber);
         }
         LOGGER.debug("Using fragmentNumber {} for {}", fragmentNumber, amsPacket);
-        // TODO: we need to remember the fragment and maybe even need to spilt up the package
-        // TODO: if we exceed 255 byte
-        AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) fragmentNumber), UserData.of(amsPacket));
+        UserData userData = UserData.of(amsPacket);
+        if (userData.getCalculatedLength() > 255) {
+            throw new PlcProtocolPayloadTooBigException("ADS/AMS", 255, (int) userData.getCalculatedLength(), amsPacket);
+        }
+        AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) fragmentNumber), userData);
         out.add(amsSerialFrame.getByteBuf());
     }
 
