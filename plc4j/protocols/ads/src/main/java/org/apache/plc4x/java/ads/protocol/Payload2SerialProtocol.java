@@ -114,7 +114,10 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
         CRC crc = CRC.of(byteBuf);
 
         // we don't need to retransmit
-        currentRetryer.get().cancel(false);
+        ScheduledFuture<?> scheduledFuture = currentRetryer.get();
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+        }
 
         Runnable postAction = null;
         switch (magicCookie.getAsInt()) {
