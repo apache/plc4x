@@ -23,6 +23,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.util.ReferenceCountUtil;
+import io.netty.util.concurrent.ScheduledFuture;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialResetFrame;
@@ -35,7 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
@@ -43,20 +47,37 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
 
     private final AtomicInteger fragmentCounter = new AtomicInteger(0);
 
+    private AtomicReference<ScheduledFuture<?>> currentRetryer = new AtomicReference<>();
+
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws PlcProtocolPayloadTooBigException {
         LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
-        int fragmentNumber = fragmentCounter.getAndIncrement();
-        if (fragmentNumber > 255) {
-            fragmentNumber = 0;
-            fragmentCounter.set(fragmentNumber);
-        }
+        int fragmentNumber = fragmentCounter.getAndUpdate(value -> value > 255 ? 0 : ++value);
         LOGGER.debug("Using fragmentNumber {} for {}", fragmentNumber, amsPacket);
         UserData userData = UserData.of(amsPacket);
         if (userData.getCalculatedLength() > 255) {
             throw new PlcProtocolPayloadTooBigException("ADS/AMS", 255, (int) userData.getCalculatedLength(), amsPacket);
         }
         AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) fragmentNumber), userData);
+
+        MutableInt retryCount = new MutableInt(0);
+        ScheduledFuture<?> oldRetryer = currentRetryer.get();
+        if (oldRetryer != null) {
+            oldRetryer.cancel(false);
+        }
+        currentRetryer.set(channelHandlerContext.executor().scheduleAtFixedRate(() -> {
+            LOGGER.trace("Retrying {} the {} time", amsSerialFrame, retryCount);
+            int currentTry = retryCount.incrementAndGet();
+            if (currentTry > 10) {
+                // TODO: we might need to throw an exception to potentially cancel upstream waiting
+                channelHandlerContext.writeAndFlush(AmsSerialResetFrame.of(FragmentNumber.of((byte) fragmentNumber)));
+                PlcRuntimeException plcRuntimeException = new PlcRuntimeException("Retry exhausted after " + retryCount + " times");
+                channelHandlerContext.fireExceptionCaught(plcRuntimeException);
+                throw plcRuntimeException;
+            } else {
+                channelHandlerContext.writeAndFlush(amsSerialFrame);
+            }
+        }, 100, 100, TimeUnit.MILLISECONDS));
         out.add(amsSerialFrame.getByteBuf());
     }
 
@@ -91,6 +112,9 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
             userData = UserData.EMPTY;
         }
         CRC crc = CRC.of(byteBuf);
+
+        // we don't need to retransmit
+        currentRetryer.get().cancel(false);
 
         Runnable postAction = null;
         switch (magicCookie.getAsInt()) {
