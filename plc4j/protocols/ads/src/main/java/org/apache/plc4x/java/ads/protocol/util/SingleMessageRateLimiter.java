@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Inspired by {@link ChannelTrafficShapingHandler} this limiter ensures only one message is sent at a time.
+ * Inspired by {@code ChannelTrafficShapingHandler} this limiter ensures only one message is sent at a time.
  */
 public class SingleMessageRateLimiter extends ChannelDuplexHandler {
 
