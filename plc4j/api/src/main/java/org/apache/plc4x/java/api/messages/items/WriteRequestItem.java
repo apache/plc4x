@@ -39,4 +39,24 @@ public class WriteRequestItem<T> extends RequestItem<T> {
         return values;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof WriteRequestItem)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        WriteRequestItem<?> that = (WriteRequestItem<?>) o;
+        return Objects.equals(values, that.values);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), values);
+    }
 }

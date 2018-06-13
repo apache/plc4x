@@ -48,4 +48,24 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
         return values;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ReadResponseItem)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ReadResponseItem<?> that = (ReadResponseItem<?>) o;
+        return Objects.equals(values, that.values);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), values);
+    }
 }

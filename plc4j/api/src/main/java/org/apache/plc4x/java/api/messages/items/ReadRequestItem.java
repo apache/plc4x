@@ -20,6 +20,8 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.model.Address;
 
+import java.util.Objects;
+
 public class ReadRequestItem<T> extends RequestItem<T> {
 
     private final int size;
@@ -38,4 +40,24 @@ public class ReadRequestItem<T> extends RequestItem<T> {
         return size;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ReadRequestItem)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ReadRequestItem<?> that = (ReadRequestItem<?>) o;
+        return size == that.size;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), size);
+    }
 }
