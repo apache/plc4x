@@ -19,10 +19,13 @@
 package org.apache.plc4x.java.ads.api.commands.types;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
@@ -46,13 +49,17 @@ public class Device extends ByteValue {
     }
 
     public static Device of(String value) {
-        requireNonNull(value);
-        return new Device(StringUtils.leftPad(value, NUM_BYTES).getBytes());
+        return of(value, Charset.defaultCharset());
     }
 
     public static Device of(String value, Charset charset) {
         requireNonNull(value);
-        return new Device(StringUtils.leftPad(value, NUM_BYTES).getBytes(charset));
+        requireNonNull(charset);
+        byte[] bytes = value.getBytes(charset);
+        if (bytes.length > NUM_BYTES) {
+            throw new PlcRuntimeException(new PlcProtocolPayloadTooBigException("ADS/AMS", NUM_BYTES, bytes.length, value));
+        }
+        return new Device(Arrays.copyOf(bytes, NUM_BYTES));
     }
 
     @Override
@@ -60,9 +67,19 @@ public class Device extends ByteValue {
         return NUM_BYTES;
     }
 
+    public String getAsString() {
+        return getAsString(Charset.defaultCharset());
+    }
+
+    public String getAsString(Charset charset) {
+        int nullTermination = ArrayUtils.indexOf(value, (byte) 0);
+        byte[] reducedValue = Arrays.copyOfRange(value, 0, nullTermination);
+        return new String(reducedValue, charset);
+    }
+
     @Override
     public String toString() {
         // TODO: this might break some outputs like surefire if this id can contain non printable characters
-        return "Device{" + new String(value) + "} " + super.toString();
+        return "Device{" + getAsString() + "} " + super.toString();
     }
 }
