@@ -29,6 +29,7 @@ import org.apache.plc4x.java.ads.api.serial.AmsSerialResetFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.protocol.util.DigestUtil;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,11 +87,18 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
             case AmsSerialFrame.ID:
                 AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
                 LOGGER.debug("Ams Serial Frame received {}", amsSerialFrame);
-                // TODO: check if this is the right way to ack a package.
-                ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(AmsSerialAcknowledgeFrame.of(transmitterAddress, receiverAddress, fragmentNumber).getByteBuf());
-                // waiting for the ack-frame to be transmitted before we forward the package
-                channelFuture.await();
-                postAction = () -> out.add(userData.getByteBuf());
+                postAction = () -> {
+                    // TODO: check if this is the right way to ack a package.
+                    ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(AmsSerialAcknowledgeFrame.of(transmitterAddress, receiverAddress, fragmentNumber).getByteBuf());
+                    // waiting for the ack-frame to be transmitted before we forward the package
+                    try {
+                        channelFuture.await();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new PlcRuntimeException(e);
+                    }
+                    out.add(userData.getByteBuf());
+                };
                 break;
             case AmsSerialAcknowledgeFrame.ID:
                 AmsSerialAcknowledgeFrame amsSerialAcknowledgeFrame = AmsSerialAcknowledgeFrame.of(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, crc);
