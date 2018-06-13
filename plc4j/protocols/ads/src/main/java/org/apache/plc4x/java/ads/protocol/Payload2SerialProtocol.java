@@ -70,6 +70,13 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
         TransmitterAddress transmitterAddress = TransmitterAddress.of(byteBuf);
         ReceiverAddress receiverAddress = ReceiverAddress.of(byteBuf);
         FragmentNumber fragmentNumber = FragmentNumber.of(byteBuf);
+        int expectedFrameNumber = fragmentCounter.get() - 1;
+        if (expectedFrameNumber < 0) {
+            expectedFrameNumber = 255;
+        }
+        if (fragmentNumber.getAsByte() != expectedFrameNumber) {
+            LOGGER.warn("Unexpected fragment {} received. Expected {}", fragmentNumber, expectedFrameNumber);
+        }
         UserDataLength userDataLength = UserDataLength.of(byteBuf);
         UserData userData;
         byte userDataLengthAsByte = userDataLength.getAsByte();

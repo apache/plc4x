@@ -21,6 +21,9 @@ package org.apache.plc4x.java.ads.api.serial.types;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
+import static java.lang.Integer.toHexString;
+import static org.apache.commons.lang3.StringUtils.leftPad;
+
 public class FragmentNumber extends ByteValue {
 
     public static final int NUM_BYTES = 1;
@@ -41,4 +44,15 @@ public class FragmentNumber extends ByteValue {
         return new FragmentNumber(byteBuf);
     }
 
+    public byte getAsByte() {
+        return getBytes()[0];
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "{" +
+            "byteValue=" + (getAsByte() & 0xFF) +
+            ",hexValue=0x" + leftPad(toHexString(getAsByte() & 0xFF), NUM_BYTES * 2, "0") +
+            "}";
+    }
 }

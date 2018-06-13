@@ -25,6 +25,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.ads.api.commands.AdsReadRequest;
 import org.apache.plc4x.java.ads.api.commands.AdsReadResponse;
 import org.apache.plc4x.java.ads.api.commands.types.*;
@@ -48,6 +49,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.plc4x.java.ads.util.Assert.byteArrayEqualsTo;
 import static org.mockito.Mockito.*;
@@ -68,6 +70,7 @@ public class Payload2SerialProtocolExampleConversationTest {
     public void setUp() {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         channelHandlerContextMock = mock(ChannelHandlerContext.class, RETURNS_DEEP_STUBS);
+        when(channelHandlerContextMock.toString()).thenReturn("ChannelHandlerContextMock");
         when(channelHandlerContextMock.executor()).then(_ign -> {
             EventExecutor eventExecutor = mock(EventExecutor.class);
             when(eventExecutor.schedule(any(Callable.class), anyLong(), any()))
@@ -124,6 +127,7 @@ public class Payload2SerialProtocolExampleConversationTest {
 
     @Test
     public void exampleConversation() throws Exception {
+        FieldUtils.writeDeclaredField(SUT, "fragmentCounter", new AtomicInteger(6), true);
         // 1. Terminal --> PLC : Request of 2 bytre data
         int[] exampleRequestInt = {
             /*Magic Cookie    */    0x01, 0xA5,
