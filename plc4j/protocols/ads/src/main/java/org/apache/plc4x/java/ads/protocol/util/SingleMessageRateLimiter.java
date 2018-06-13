@@ -66,21 +66,25 @@ public class SingleMessageRateLimiter extends ChannelDuplexHandler {
                 pop.channelHandlerContext.writeAndFlush(pop.toSend, pop.promise);
                 LOGGER.debug("Send {}", pop);
             }
-        }, 0, 10, TimeUnit.MILLISECONDS);
+        }, 100, 10, TimeUnit.MILLISECONDS);
         super.connect(ctx, remoteAddress, localAddress, promise);
     }
 
     @Override
     public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         LOGGER.debug("disconnect({}, {}, {}, {})", ctx, promise);
-        sender.cancel(true);
+        sender.cancel(false);
         super.disconnect(ctx, promise);
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, promise);
-        messagesQueue.add(new ToSend(ctx, msg, promise));
+        if (messageOnTheWay.compareAndSet(false, true)) {
+            ctx.write(msg, promise);
+        } else {
+            messagesQueue.add(new ToSend(ctx, msg, promise));
+        }
     }
 
     @Override
