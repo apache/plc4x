@@ -41,7 +41,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private Address address;
-    private Class dataType;
+    private Class<?> dataType;
 
 
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
