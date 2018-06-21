@@ -46,7 +46,7 @@ public class AdsPlcDriver implements PlcDriver {
             + "(?<sourceAmsNetId>" + AmsNetId.AMS_NET_ID_PATTERN + "):(?<sourceAmsPort>" + AmsPort.AMS_PORT_PATTERN + ")"
             + ")?");
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");
-    public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>.*)");
+    public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>((?!/\\d).)*)");
     public static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads:(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/" + ADS_ADDRESS_PATTERN + "(\\?.*)?");
 
     private AdsConnectionFactory adsConnectionFactory;
