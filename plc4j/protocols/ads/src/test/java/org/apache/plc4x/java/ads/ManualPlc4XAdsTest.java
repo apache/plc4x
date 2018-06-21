@@ -35,7 +35,15 @@ import java.util.function.Consumer;
 public class ManualPlc4XAdsTest {
 
     public static void main(String... args) throws Exception {
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("ads:tcp://10.10.64.40/10.10.64.40.1.1:851/10.10.56.23.1.1:30000")) {
+        String connectionUrl;
+        if (args.length > 0 && "serial".equalsIgnoreCase(args[0])) {
+            System.out.println("Using serial");
+            connectionUrl = "ads:serial:///dev/ttys003/10.10.64.40.1.1:851/10.10.56.23.1.1:30000";
+        } else {
+            System.out.println("Using tcp");
+            connectionUrl = "ads:tcp://10.10.64.40/10.10.64.40.1.1:851/10.10.56.23.1.1:30000";
+        }
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
