@@ -82,7 +82,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, address));
         try {
             PlcReadResponse plcReadResponse = read.get();
-            exchange.getIn().setBody(plcReadResponse.getResponseItems());
+            exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getResponseItems()));
         } catch (InterruptedException | ExecutionException e) {
             exchange.setException(e);
         }
