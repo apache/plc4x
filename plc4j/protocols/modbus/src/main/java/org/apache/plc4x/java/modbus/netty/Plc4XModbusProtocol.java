@@ -105,6 +105,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         // TODO: support multiple requests
         ReadRequestItem<?> readRequestItem = request.getRequestItem().get();
         int quantity = readRequestItem.getSize();
+        // TODO: the unit the should be used for multiple Requests
         short unitId = 0;
 
         ModbusAddress address = (ModbusAddress) readRequestItem.getAddress();
@@ -153,22 +154,27 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         if (modbusPdu instanceof WriteMultipleCoilsResponse) {
             // TODO: finish implementation
             WriteMultipleCoilsResponse writeMultipleCoilsResponse = (WriteMultipleCoilsResponse) modbusPdu;
+            LOGGER.debug("{}: address:{}, quantity:{}", writeMultipleCoilsResponse, writeMultipleCoilsResponse.getAddress(), writeMultipleCoilsResponse.getQuantity());
             plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem<? extends Object>) requestItem, ResponseCode.OK)));
         } else if (modbusPdu instanceof WriteMultipleRegistersResponse) {
             // TODO: finish implementation
             WriteMultipleRegistersResponse writeMultipleRegistersResponse = (WriteMultipleRegistersResponse) modbusPdu;
+            LOGGER.debug("{}: address:{}, quantity:{}", writeMultipleRegistersResponse, writeMultipleRegistersResponse.getAddress(), writeMultipleRegistersResponse.getQuantity());
             plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem<? extends Object>) requestItem, ResponseCode.OK)));
         } else if (modbusPdu instanceof WriteSingleCoilResponse) {
             // TODO: finish implementation
             WriteSingleCoilResponse writeSingleCoilResponse = (WriteSingleCoilResponse) modbusPdu;
+            LOGGER.debug("{}: address:{}, value:{}", writeSingleCoilResponse, writeSingleCoilResponse.getAddress(), writeSingleCoilResponse.getValue());
             plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem<? extends Object>) requestItem, ResponseCode.OK)));
         } else if (modbusPdu instanceof WriteSingleRegisterResponse) {
             // TODO: finish implementation
             WriteSingleRegisterResponse writeSingleRegisterResponse = (WriteSingleRegisterResponse) modbusPdu;
+            LOGGER.debug("{}: address:{}, value:{}", writeSingleRegisterResponse, writeSingleRegisterResponse.getAddress(), writeSingleRegisterResponse.getValue());
             plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem<? extends Object>) requestItem, ResponseCode.OK)));
         } else if (modbusPdu instanceof ReadCoilsResponse) {
             // TODO: finish implementation
             ReadCoilsResponse readCoilsResponse = (ReadCoilsResponse) modbusPdu;
+            LOGGER.debug("{}: Nothing", readCoilsResponse);
             ByteBuf byteBuf = readCoilsResponse.getCoilStatus();
             byte[] bytes = new byte[byteBuf.readableBytes()];
             byteBuf.readBytes(bytes);
@@ -176,6 +182,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         } else if (modbusPdu instanceof ReadDiscreteInputsResponse) {
             // TODO: finish implementation
             ReadDiscreteInputsResponse readDiscreteInputsResponse = (ReadDiscreteInputsResponse) modbusPdu;
+            LOGGER.debug("{}: Nothing", readDiscreteInputsResponse);
             ByteBuf byteBuf = readDiscreteInputsResponse.getInputStatus();
             byte[] bytes = new byte[byteBuf.readableBytes()];
             byteBuf.readBytes(bytes);
@@ -183,6 +190,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         } else if (modbusPdu instanceof ReadHoldingRegistersResponse) {
             // TODO: finish implementation
             ReadHoldingRegistersResponse readHoldingRegistersResponse = (ReadHoldingRegistersResponse) modbusPdu;
+            LOGGER.debug("{}: Nothing", readHoldingRegistersResponse);
             ByteBuf byteBuf = readHoldingRegistersResponse.getRegisters();
             byte[] bytes = new byte[byteBuf.readableBytes()];
             byteBuf.readBytes(bytes);
@@ -190,6 +198,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         } else if (modbusPdu instanceof ReadInputRegistersResponse) {
             // TODO: finish implementation
             ReadInputRegistersResponse readInputRegistersResponse = (ReadInputRegistersResponse) modbusPdu;
+            LOGGER.debug("{}: Nothing", readInputRegistersResponse);
             ByteBuf byteBuf = readInputRegistersResponse.getRegisters();
             byte[] bytes = new byte[byteBuf.readableBytes()];
             byteBuf.readBytes(bytes);
