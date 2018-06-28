@@ -53,7 +53,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws Exception {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
-        // Reset tranactionId on overflow
+        // Reset transactionId on overflow
         transactionId.compareAndSet(Short.MAX_VALUE + 1, 0);
         PlcRequest request = msg.getRequest();
         if (request instanceof PlcReadRequest) {
