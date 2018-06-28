@@ -66,12 +66,16 @@ public class ModbusPlcDriver implements PlcDriver {
             String hostName = matcher.group("host");
             try {
                 InetAddress inetAddress = InetAddress.getByName(host);
-                return new ModbusTcpPlcConnection(inetAddress, params);
+                if (port == null) {
+                    return new ModbusTcpPlcConnection(inetAddress, params);
+                } else {
+                    return new ModbusTcpPlcConnection(inetAddress, Integer.valueOf(port), params);
+                }
             } catch (UnknownHostException e) {
                 throw new PlcConnectionException("Unknown host" + hostName, e);
             }
         } else {
-            return new ModbusSerialPlcConnection(port, params);
+            return new ModbusSerialPlcConnection(serialDefinition, params);
         }
     }
 

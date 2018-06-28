@@ -37,14 +37,14 @@ public class ManualPlc4XModbusTest {
             connectionUrl = "modbus:serial:///dev/ttys003";
         } else {
             System.out.println("Using tcp");
-            connectionUrl = "modbus:tcp://10.10.64.40";
+            connectionUrl = "modbus:tcp://10.10.64.10";
         }
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            Address address = plcConnection.parseAddress("0/0");
+            Address address = plcConnection.parseAddress("readcoils:1/0");
             CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
                 .read(new TypeSafePlcReadRequest<>(Integer.class, address));
             TypeSafePlcReadResponse<Integer> readResponse = response.get();
