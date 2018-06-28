@@ -36,7 +36,7 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     private static final Logger logger = LoggerFactory.getLogger(BaseModbusPlcConnection.class);
 
     protected BaseModbusPlcConnection(ChannelFactory channelFactory, String params) {
-        super(channelFactory, true);
+        super(channelFactory );
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
