@@ -61,8 +61,20 @@
     </dependency>
 
     <dependency>
+      <!-- Just for reference can be removed later-->
       <groupId>com.digitalpetri.modbus</groupId>
       <artifactId>modbus-master-tcp</artifactId>
+      <version>1.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.digitalpetri.modbus</groupId>
+      <artifactId>modbus-core</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.digitalpetri.modbus</groupId>
+      <artifactId>modbus-codec</artifactId>
       <version>1.1.0</version>
     </dependency>
 
