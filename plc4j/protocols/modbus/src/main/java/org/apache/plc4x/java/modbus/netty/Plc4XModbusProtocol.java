@@ -22,6 +22,7 @@ import com.digitalpetri.modbus.ModbusPdu;
 import com.digitalpetri.modbus.codec.ModbusTcpPayload;
 import com.digitalpetri.modbus.requests.*;
 import com.digitalpetri.modbus.responses.*;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -163,22 +164,30 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         } else if (modbusPdu instanceof ReadCoilsResponse) {
             // TODO: finish implementation
             ReadCoilsResponse readCoilsResponse = (ReadCoilsResponse) modbusPdu;
-            byte[] bytes = readCoilsResponse.getCoilStatus().array();
+            ByteBuf byteBuf = readCoilsResponse.getCoilStatus();
+            byte[] bytes = new byte[byteBuf.readableBytes()];
+            byteBuf.readBytes(bytes);
             plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem<? extends Object>) requestItem, ResponseCode.OK, (Object) bytes)));
         } else if (modbusPdu instanceof ReadDiscreteInputsResponse) {
             // TODO: finish implementation
             ReadDiscreteInputsResponse readDiscreteInputsResponse = (ReadDiscreteInputsResponse) modbusPdu;
-            byte[] bytes = readDiscreteInputsResponse.getInputStatus().array();
+            ByteBuf byteBuf = readDiscreteInputsResponse.getInputStatus();
+            byte[] bytes = new byte[byteBuf.readableBytes()];
+            byteBuf.readBytes(bytes);
             plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem<? extends Object>) requestItem, ResponseCode.OK, (Object) bytes)));
         } else if (modbusPdu instanceof ReadHoldingRegistersResponse) {
             // TODO: finish implementation
             ReadHoldingRegistersResponse readHoldingRegistersResponse = (ReadHoldingRegistersResponse) modbusPdu;
-            byte[] bytes = readHoldingRegistersResponse.getRegisters().array();
+            ByteBuf byteBuf = readHoldingRegistersResponse.getRegisters();
+            byte[] bytes = new byte[byteBuf.readableBytes()];
+            byteBuf.readBytes(bytes);
             plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem<? extends Object>) requestItem, ResponseCode.OK, (Object) bytes)));
         } else if (modbusPdu instanceof ReadInputRegistersResponse) {
             // TODO: finish implementation
             ReadInputRegistersResponse readInputRegistersResponse = (ReadInputRegistersResponse) modbusPdu;
-            byte[] bytes = readInputRegistersResponse.getRegisters().array();
+            ByteBuf byteBuf = readInputRegistersResponse.getRegisters();
+            byte[] bytes = new byte[byteBuf.readableBytes()];
+            byteBuf.readBytes(bytes);
             plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem<? extends Object>) requestItem, ResponseCode.OK, (Object) bytes)));
         } else {
             throw new PlcProtocolException("Unsupported messageTyp type" + modbusPdu.getClass());
