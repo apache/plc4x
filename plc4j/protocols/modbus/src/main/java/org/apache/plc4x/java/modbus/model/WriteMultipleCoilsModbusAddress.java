@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.modbus.model;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.regex.Matcher;
@@ -33,6 +34,9 @@ public class WriteMultipleCoilsModbusAddress extends MultiModbusAddress {
 
     public static Address of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
+        if (!matcher.matches()) {
+            throw new PlcRuntimeException(addressString + " doesn't match" + ADDRESS_PATTERN);
+        }
         int address = Integer.valueOf(matcher.group("address"));
         int quantity = Integer.valueOf(matcher.group("quantity"));
         return new WriteMultipleCoilsModbusAddress(address, quantity);
