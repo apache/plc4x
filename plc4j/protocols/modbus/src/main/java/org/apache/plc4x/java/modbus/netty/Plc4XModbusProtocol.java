@@ -67,6 +67,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         PlcWriteRequest request = (PlcWriteRequest) msg.getRequest();
         // TODO: support multiple requests
         WriteRequestItem<?> writeRequestItem = request.getRequestItem().get();
+        // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
+        // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
         int quantity = writeRequestItem.getSize();
         short unitId = 0;
 
@@ -104,6 +106,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
         // TODO: support multiple requests
         ReadRequestItem<?> readRequestItem = request.getRequestItem().get();
+        // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
+        // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
         int quantity = readRequestItem.getSize();
         // TODO: the unit the should be used for multiple Requests
         short unitId = 0;
