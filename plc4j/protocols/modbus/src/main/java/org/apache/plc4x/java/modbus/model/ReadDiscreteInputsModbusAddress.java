@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class ReadDiscreteInputsModbusAddress extends MultiModbusAddress {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("readdiscreateinputs:" + MultiModbusAddress.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("readdiscreteinputs:" + MultiModbusAddress.ADDRESS_PATTERN);
 
     protected ReadDiscreteInputsModbusAddress(int address, int quantity) {
         super(address, quantity);
