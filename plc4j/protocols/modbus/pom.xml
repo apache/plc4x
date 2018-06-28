@@ -30,7 +30,8 @@
 
   <artifactId>plc4j-protocol-modbus</artifactId>
   <name>PLC4J: Protocol: Modbus</name>
-  <description>Implementation of a PLC4X driver able to speak with Modbus devices using the Modbus protocol.</description>
+  <description>Implementation of a PLC4X driver able to speak with Modbus devices using the Modbus protocol.
+  </description>
 
   <dependencies>
     <dependency>
@@ -117,14 +118,7 @@
             </goals>
             <configuration>
               <failOnWarning>true</failOnWarning>
-              <ignoredDependencies>
-                <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
-                <ignoredDependency>junit:junit</ignoredDependency>
-                <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
-                <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
-                <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
-                <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
-                <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
+              <ignoredDependencies combine.children="append">
                 <ignoredDependency>com.digitalpetri.modbus:modbus-master-tcp</ignoredDependency>
               </ignoredDependencies>
             </configuration>
