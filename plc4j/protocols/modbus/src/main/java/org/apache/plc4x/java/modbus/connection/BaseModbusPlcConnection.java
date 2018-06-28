@@ -21,23 +21,17 @@ package org.apache.plc4x.java.modbus.connection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.modbus.model.ModbusAddress;
+import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public abstract class BaseModbusPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
-
-    private static final Pattern MODBUS_ADDRESS_PATTERN =
-        Pattern.compile("^(?<memoryArea>.*?)/(?<byteOffset>\\d{1,4})(?:/(?<bitOffset>\\d))?");
 
     private static final Logger logger = LoggerFactory.getLogger(BaseModbusPlcConnection.class);
 
@@ -62,12 +56,25 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     }
 
     @Override
-    public Address parseAddress(String addressString) throws PlcException {
-        Matcher addressMatcher = MODBUS_ADDRESS_PATTERN.matcher(addressString);
-        if (addressMatcher.matches()) {
-            /*int datablockNumber = Integer.parseInt(datablockAddressMatcher.group("blockNumber"));
-            int datablockByteOffset = Integer.parseInt(datablockAddressMatcher.group("byteOffset"));*/
-            return new ModbusAddress();
+    public Address parseAddress(String addressString) {
+        if (MaskWriteRegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return MaskWriteRegisterModbusAddress.of(addressString);
+        } else if (ReadCoilsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return ReadCoilsModbusAddress.of(addressString);
+        } else if (ReadDiscreteInputsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return ReadDiscreteInputsModbusAddress.of(addressString);
+        } else if (ReadHoldingRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return ReadHoldingRegistersModbusAddress.of(addressString);
+        } else if (ReadInputRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return ReadInputRegistersModbusAddress.of(addressString);
+        } else if (WriteMultipleCoilsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return WriteMultipleCoilsModbusAddress.of(addressString);
+        } else if (WriteMultipleRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return WriteMultipleRegistersModbusAddress.of(addressString);
+        } else if (WriteSingleCoilModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return WriteSingleCoilModbusAddress.of(addressString);
+        } else if (WriteSingleRegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return WriteSingleRegisterModbusAddress.of(addressString);
         }
         return null;
     }

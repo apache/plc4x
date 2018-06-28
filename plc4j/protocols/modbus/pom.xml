@@ -55,6 +55,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.digitalpetri.modbus</groupId>
+      <artifactId>modbus-master-tcp</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
     </dependency>

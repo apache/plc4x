@@ -18,15 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.connection;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
-import org.apache.plc4x.java.modbus.netty.ModbusProtocol;
-import org.apache.plc4x.java.modbus.netty.ModbusSerialProtocol;
-import org.apache.plc4x.java.modbus.netty.Plc4XModbusProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,16 +42,7 @@ public class ModbusSerialPlcConnection extends BaseModbusPlcConnection {
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
-            @Override
-            protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the Modbus protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new ModbusSerialProtocol());
-                pipeline.addLast(new ModbusProtocol());
-                pipeline.addLast(new Plc4XModbusProtocol());
-            }
-        };
+        throw new NotImplementedException("Not implemented yet");
     }
 
 }
