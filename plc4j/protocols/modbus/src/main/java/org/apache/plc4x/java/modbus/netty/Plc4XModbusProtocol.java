@@ -189,6 +189,9 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             byte[] bytes = new byte[byteBuf.readableBytes()];
             byteBuf.readBytes(bytes);
             plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem<? extends Object>) requestItem, ResponseCode.OK, (Object) bytes)));
+        } else if (modbusPdu instanceof ExceptionResponse) {
+            ExceptionResponse exceptionResponse = (ExceptionResponse) modbusPdu;
+            throw new PlcProtocolException("Error received " + exceptionResponse.getExceptionCode());
         } else {
             throw new PlcProtocolException("Unsupported messageTyp type" + modbusPdu.getClass());
         }
