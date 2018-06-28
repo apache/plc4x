@@ -39,6 +39,10 @@ public class WriteRequestItem<T> extends RequestItem<T> {
         return values;
     }
 
+    public int getSize() {
+        return values.size();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
