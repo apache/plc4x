@@ -32,21 +32,21 @@ import java.util.concurrent.CompletableFuture;
 
 public class ManualPlc4XModbusTest {
 
-    public static void main(String... args) throws Exception {
+    public static void main(String... args) {
         String connectionUrl;
         if (args.length > 0 && "serial".equalsIgnoreCase(args[0])) {
             System.out.println("Using serial");
             connectionUrl = "modbus:serial:///dev/ttys003";
         } else {
             System.out.println("Using tcp");
-            connectionUrl = "modbus:tcp://10.10.64.10";
+            connectionUrl = "modbus:tcp://localhost:5440";
         }
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            Address address = plcConnection.parseAddress("readcoils:1/0");
+            Address address = plcConnection.parseAddress("register:2");
             CompletableFuture<TypeSafePlcReadResponse<byte[]>> response = reader
                 .read(new TypeSafePlcReadRequest<>(byte[].class, address));
             TypeSafePlcReadResponse<byte[]> readResponse = response.get();
@@ -56,6 +56,9 @@ public class ManualPlc4XModbusTest {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             HexDump.dump(responseItem.getValues().get(0), 0, byteArrayOutputStream, 0);
             responseItem.getValues().stream().map(integer -> "Value: " + byteArrayOutputStream).forEach(System.out::println);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
         System.exit(0);
     }

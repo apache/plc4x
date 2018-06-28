@@ -19,26 +19,25 @@
 package org.apache.plc4x.java.modbus.model;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.model.Address;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WriteMultipleCoilsModbusAddress extends MultiModbusAddress {
+// TODO: Default to {@link ReadHoldingRegistersModbusAddress}
+public class RegisterAddress extends ModbusAddress {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("writemultiplecoils:" + MultiModbusAddress.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("register:" + ModbusAddress.ADDRESS_PATTERN);
 
-    protected WriteMultipleCoilsModbusAddress(int address, int quantity) {
-        super(address, quantity);
+    protected RegisterAddress(int address) {
+        super(address);
     }
 
-    public static Address of(String addressString) {
+    public static RegisterAddress of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
             throw new PlcRuntimeException(addressString + " doesn't match" + ADDRESS_PATTERN);
         }
         int address = Integer.valueOf(matcher.group("address"));
-        int quantity = Integer.valueOf(matcher.group("quantity"));
-        return new WriteMultipleCoilsModbusAddress(address, quantity);
+        return new RegisterAddress(address);
     }
 }

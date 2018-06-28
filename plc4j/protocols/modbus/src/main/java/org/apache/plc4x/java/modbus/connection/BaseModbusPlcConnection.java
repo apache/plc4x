@@ -36,7 +36,7 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     private static final Logger logger = LoggerFactory.getLogger(BaseModbusPlcConnection.class);
 
     protected BaseModbusPlcConnection(ChannelFactory channelFactory, String params) {
-        super(channelFactory );
+        super(channelFactory);
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
@@ -59,22 +59,16 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     public Address parseAddress(String addressString) {
         if (MaskWriteRegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return MaskWriteRegisterModbusAddress.of(addressString);
-        } else if (ReadCoilsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return ReadCoilsModbusAddress.of(addressString);
         } else if (ReadDiscreteInputsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return ReadDiscreteInputsModbusAddress.of(addressString);
         } else if (ReadHoldingRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return ReadHoldingRegistersModbusAddress.of(addressString);
         } else if (ReadInputRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return ReadInputRegistersModbusAddress.of(addressString);
-        } else if (WriteMultipleCoilsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return WriteMultipleCoilsModbusAddress.of(addressString);
-        } else if (WriteMultipleRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return WriteMultipleRegistersModbusAddress.of(addressString);
-        } else if (WriteSingleCoilModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return WriteSingleCoilModbusAddress.of(addressString);
-        } else if (WriteSingleRegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return WriteSingleRegisterModbusAddress.of(addressString);
+        } else if (CoilAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return CoilAddress.of(addressString);
+        } else if (RegisterAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return RegisterAddress.of(addressString);
         }
         return null;
     }

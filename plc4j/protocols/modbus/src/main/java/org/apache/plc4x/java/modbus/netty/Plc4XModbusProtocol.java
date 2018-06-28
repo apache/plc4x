@@ -67,30 +67,31 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         PlcWriteRequest request = (PlcWriteRequest) msg.getRequest();
         // TODO: support multiple requests
         WriteRequestItem<?> writeRequestItem = request.getRequestItem().get();
+        int quantity = writeRequestItem.getSize();
         short unitId = 0;
 
         ModbusAddress address = (ModbusAddress) writeRequestItem.getAddress();
         ModbusPdu modbusRequest;
-        if (address instanceof WriteMultipleCoilsModbusAddress) {
-            WriteMultipleCoilsModbusAddress writeMultipleCoilsModbusAddress = (WriteMultipleCoilsModbusAddress) address;
-            // TODO: support multivalue
-            byte[] bytesToWrite = (byte[]) writeRequestItem.getValues().get(0);
-            modbusRequest = new WriteMultipleCoilsRequest(writeMultipleCoilsModbusAddress.getAddress(), writeMultipleCoilsModbusAddress.getQuantity(), bytesToWrite);
-        } else if (address instanceof WriteMultipleRegistersModbusAddress) {
-            WriteMultipleRegistersModbusAddress writeMultipleRegistersModbusAddress = (WriteMultipleRegistersModbusAddress) address;
-            // TODO: support multivalue
-            byte[] bytesToWrite = (byte[]) writeRequestItem.getValues().get(0);
-            modbusRequest = new WriteMultipleRegistersRequest(writeMultipleRegistersModbusAddress.getAddress(), writeMultipleRegistersModbusAddress.getQuantity(), bytesToWrite);
-        } else if (address instanceof WriteSingleCoilModbusAddress) {
-            WriteSingleCoilModbusAddress writeSingleCoilModbusAddress = (WriteSingleCoilModbusAddress) address;
-            // TODO: support multivalue
-            boolean booleanToWrite = (Boolean) writeRequestItem.getValues().get(0);
-            modbusRequest = new WriteSingleCoilRequest(writeSingleCoilModbusAddress.getAddress(), booleanToWrite);
-        } else if (address instanceof WriteSingleRegisterModbusAddress) {
-            WriteSingleRegisterModbusAddress writeSingleRegisterModbusAddress = (WriteSingleRegisterModbusAddress) address;
-            // TODO: support multivalue
-            int intToWrite = (Integer) writeRequestItem.getValues().get(0);
-            modbusRequest = new WriteSingleRegisterRequest(writeSingleRegisterModbusAddress.getAddress(), intToWrite);
+        if (address instanceof RegisterAddress) {
+            RegisterAddress registerAddress = (RegisterAddress) address;
+            if (quantity > 1) {
+                // TODO: ensure we have a least quantity * 2 = N bytes
+                byte[] bytesToWrite = (byte[]) writeRequestItem.getValues().get(0);
+                modbusRequest = new WriteMultipleRegistersRequest(registerAddress.getAddress(), quantity, bytesToWrite);
+            } else {
+                int intToWrite = (Integer) writeRequestItem.getValues().get(0);
+                modbusRequest = new WriteSingleRegisterRequest(registerAddress.getAddress(), intToWrite);
+            }
+        } else if (address instanceof CoilAddress) {
+            CoilAddress coilAddress = (CoilAddress) address;
+            if (quantity > 1) {
+                // TODO: ensure we have a least (quantity + 7) / 8 = N bytes
+                byte[] bytesToWrite = (byte[]) writeRequestItem.getValues().get(0);
+                modbusRequest = new WriteMultipleCoilsRequest(coilAddress.getAddress(), quantity, bytesToWrite);
+            } else {
+                boolean booleanToWrite = (Boolean) writeRequestItem.getValues().get(0);
+                modbusRequest = new WriteSingleCoilRequest(coilAddress.getAddress(), booleanToWrite);
+            }
         } else {
             throw new PlcProtocolException("Unsupported address type" + address.getClass());
         }
@@ -103,22 +104,26 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
         // TODO: support multiple requests
         ReadRequestItem<?> readRequestItem = request.getRequestItem().get();
+        int quantity = readRequestItem.getSize();
         short unitId = 0;
 
         ModbusAddress address = (ModbusAddress) readRequestItem.getAddress();
         ModbusPdu modbusRequest;
-        if (address instanceof ReadCoilsModbusAddress) {
-            ReadCoilsModbusAddress readCoilsModbusAddress = (ReadCoilsModbusAddress) address;
-            modbusRequest = new ReadCoilsRequest(readCoilsModbusAddress.getAddress(), readCoilsModbusAddress.getQuantity());
+        if (address instanceof CoilAddress) {
+            CoilAddress coilAddress = (CoilAddress) address;
+            modbusRequest = new ReadCoilsRequest(coilAddress.getAddress(), quantity);
+        } else if (address instanceof RegisterAddress) {
+            RegisterAddress registerAddress = (RegisterAddress) address;
+            modbusRequest = new ReadHoldingRegistersRequest(registerAddress.getAddress(), quantity);
         } else if (address instanceof ReadDiscreteInputsModbusAddress) {
             ReadDiscreteInputsModbusAddress readDiscreteInputsModbusAddress = (ReadDiscreteInputsModbusAddress) address;
-            modbusRequest = new ReadDiscreteInputsRequest(readDiscreteInputsModbusAddress.getAddress(), readDiscreteInputsModbusAddress.getQuantity());
+            modbusRequest = new ReadDiscreteInputsRequest(readDiscreteInputsModbusAddress.getAddress(), quantity);
         } else if (address instanceof ReadHoldingRegistersModbusAddress) {
             ReadHoldingRegistersModbusAddress readHoldingRegistersModbusAddress = (ReadHoldingRegistersModbusAddress) address;
-            modbusRequest = new ReadHoldingRegistersRequest(readHoldingRegistersModbusAddress.getAddress(), readHoldingRegistersModbusAddress.getQuantity());
+            modbusRequest = new ReadHoldingRegistersRequest(readHoldingRegistersModbusAddress.getAddress(), quantity);
         } else if (address instanceof ReadInputRegistersModbusAddress) {
             ReadInputRegistersModbusAddress readInputRegistersModbusAddress = (ReadInputRegistersModbusAddress) address;
-            modbusRequest = new ReadInputRegistersRequest(readInputRegistersModbusAddress.getAddress(), readInputRegistersModbusAddress.getQuantity());
+            modbusRequest = new ReadInputRegistersRequest(readInputRegistersModbusAddress.getAddress(), quantity);
         } else {
             throw new PlcProtocolException("Unsupported address type" + address.getClass());
         }

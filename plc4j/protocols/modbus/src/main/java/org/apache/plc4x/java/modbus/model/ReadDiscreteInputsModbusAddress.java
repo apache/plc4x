@@ -23,12 +23,12 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReadDiscreteInputsModbusAddress extends MultiModbusAddress {
+public class ReadDiscreteInputsModbusAddress extends ModbusAddress {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("readdiscreteinputs:" + MultiModbusAddress.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("readdiscreteinputs:" + ModbusAddress.ADDRESS_PATTERN);
 
-    protected ReadDiscreteInputsModbusAddress(int address, int quantity) {
-        super(address, quantity);
+    protected ReadDiscreteInputsModbusAddress(int address) {
+        super(address);
     }
 
     public static ReadDiscreteInputsModbusAddress of(String addressString) {
@@ -37,7 +37,6 @@ public class ReadDiscreteInputsModbusAddress extends MultiModbusAddress {
             throw new PlcRuntimeException(addressString + " doesn't match" + ADDRESS_PATTERN);
         }
         int address = Integer.valueOf(matcher.group("address"));
-        int quantity = Integer.valueOf(matcher.group("quantity"));
-        return new ReadDiscreteInputsModbusAddress(address, quantity);
+        return new ReadDiscreteInputsModbusAddress(address);
     }
 }
