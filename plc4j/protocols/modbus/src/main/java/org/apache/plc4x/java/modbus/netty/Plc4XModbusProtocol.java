@@ -30,6 +30,8 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.*;
 import org.apache.plc4x.java.api.types.ResponseCode;
 import org.apache.plc4x.java.modbus.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +39,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload, PlcRequestContainer<PlcRequest, PlcResponse>> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XModbusProtocol.class);
 
     public final AtomicInteger transactionId = new AtomicInteger();
 
@@ -47,6 +51,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws Exception {
+        LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
         // Reset tranactionId on overflow
         transactionId.compareAndSet(Short.MAX_VALUE + 1, 0);
         PlcRequest request = msg.getRequest();
@@ -124,6 +129,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     @SuppressWarnings("unchecked")
     @Override
     protected void decode(ChannelHandlerContext ctx, ModbusTcpPayload msg, List<Object> out) throws Exception {
+        LOGGER.trace("(-->IN): {}, {}, {}", ctx, msg, out);
         // TODO: implement me
         short transactionId = msg.getTransactionId();
         PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requestsMap.get(transactionId);
@@ -177,6 +183,12 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         } else {
             throw new PlcProtocolException("Unsupported messageTyp type" + modbusPdu.getClass());
         }
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        LOGGER.trace("(-->ERR): {}", ctx, cause);
+        super.exceptionCaught(ctx, cause);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
