@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.modbus;
 
-import org.apache.commons.io.HexDump;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -27,7 +26,6 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 
-import java.io.ByteArrayOutputStream;
 import java.util.concurrent.CompletableFuture;
 
 public class ManualPlc4XModbusTest {
@@ -46,16 +44,14 @@ public class ManualPlc4XModbusTest {
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            Address address = plcConnection.parseAddress("register:2");
-            CompletableFuture<TypeSafePlcReadResponse<byte[]>> response = reader
-                .read(new TypeSafePlcReadRequest<>(byte[].class, address));
-            TypeSafePlcReadResponse<byte[]> readResponse = response.get();
+            Address address = plcConnection.parseAddress("register:7");
+            CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
+                .read(new TypeSafePlcReadRequest<>(Integer.class, address));
+            TypeSafePlcReadResponse<Integer> readResponse = response.get();
             System.out.println("Response " + readResponse);
-            ReadResponseItem<byte[]> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
+            ReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
             System.out.println("ResponseItem " + responseItem);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            HexDump.dump(responseItem.getValues().get(0), 0, byteArrayOutputStream, 0);
-            responseItem.getValues().stream().map(integer -> "Value: " + byteArrayOutputStream).forEach(System.out::println);
+            responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
