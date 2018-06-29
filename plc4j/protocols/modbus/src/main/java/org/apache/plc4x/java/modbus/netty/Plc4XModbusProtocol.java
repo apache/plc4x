@@ -249,7 +249,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     private byte[] produceCoilValue(List<?> values) throws PlcProtocolException {
         List<Byte> coils = new LinkedList<>();
         Byte actualCoil = 0;
-        int i = 8;
+        int i = 7;
         for (Object value : values) {
             boolean coilSet = false;
             if (value.getClass() == Boolean.class) {
@@ -282,7 +282,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             }
             byte coilToSet = (coilSet ? (byte) 1 : (byte) 0);
             actualCoil = (byte) (actualCoil | coilToSet << i);
-            i++;
+            i--;
             if (i < 0) {
                 coils.add(actualCoil);
                 actualCoil = 0;
