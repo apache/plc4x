@@ -111,6 +111,8 @@ This device is able to use the following protocols:
 - EtherNet/IP (TCP port `44818`, UDP port `2222`)
 
 It is configured to use the IP: `10.10.64.30`
+The web-interface is available at http://10.10.64.30/webserv/index.ssi
+The login for this is user: 'admin' pass: 'wago'.
 
 ==== Beckhoff: C6920-0030
 
