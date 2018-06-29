@@ -123,6 +123,7 @@
             <configuration>
               <failOnWarning>true</failOnWarning>
               <ignoredDependencies combine.children="append">
+                <ignoredDependency>commons-io:commons-io</ignoredDependency>
                 <ignoredDependency>com.digitalpetri.modbus:modbus-master-tcp</ignoredDependency>
               </ignoredDependencies>
             </configuration>
