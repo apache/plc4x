@@ -43,8 +43,6 @@ public enum ParameterType {
 
     private static final Logger logger = LoggerFactory.getLogger(ParameterType.class);
 
-    private static Map<Byte, ParameterType> map = null;
-    
     private final byte code;
 
     ParameterType(byte code) {
@@ -55,13 +53,16 @@ public enum ParameterType {
         return code;
     }
 
-    public static ParameterType valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (ParameterType parameterType : ParameterType.values()) {
-                map.put(parameterType.code, parameterType);
-            }
+    private final static Map<Byte, ParameterType> map;
+
+    static {
+        map = new HashMap<>();
+        for (ParameterType parameterType : ParameterType.values()) {
+            map.put(parameterType.code, parameterType);
         }
+    }
+
+    public static ParameterType valueOf(byte code) {
         if(!map.containsKey(code)) {
             logger.error("ParameterType for code {} not found", code);
         }

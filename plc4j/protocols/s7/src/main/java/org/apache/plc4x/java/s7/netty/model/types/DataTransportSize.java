@@ -35,8 +35,6 @@ public enum DataTransportSize {
     REAL((byte) 0x07, false),
     OCTET_STRING((byte) 0x09, false);
 
-    private static Map<Byte, DataTransportSize> map = null;
-    
     private final byte code;
     private final boolean sizeInBits;
 
@@ -53,13 +51,16 @@ public enum DataTransportSize {
         return sizeInBits;
     }
 
-    public static DataTransportSize valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (DataTransportSize dataTransportSize : DataTransportSize.values()) {
-                map.put(dataTransportSize.code, dataTransportSize);
-            }
+    private final static Map<Byte, DataTransportSize> map;
+
+    static {
+        map = new HashMap<>();
+        for (DataTransportSize dataTransportSize : DataTransportSize.values()) {
+            map.put(dataTransportSize.code, dataTransportSize);
         }
+    }
+
+    public static DataTransportSize valueOf(byte code) {
         return map.get(code);
     }
 

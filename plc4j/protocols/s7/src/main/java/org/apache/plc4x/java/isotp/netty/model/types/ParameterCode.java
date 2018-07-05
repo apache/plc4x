@@ -50,8 +50,6 @@ public enum ParameterCode {
     PREFERRED_MAX_PDU_SIZE((byte) 0xF0),
     INACTIVITY_TIMER((byte) 0xF2);
 
-    private static Map<Byte, ParameterCode> map = null;
-    
     private final byte code;
 
     ParameterCode(byte code) {
@@ -62,13 +60,16 @@ public enum ParameterCode {
         return code;
     }
 
-    public static ParameterCode valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (ParameterCode parameterCode : ParameterCode.values()) {
-                map.put(parameterCode.code, parameterCode);
-            }
+    private final static Map<Byte, ParameterCode> map;
+
+    static {
+        map = new HashMap<>();
+        for (ParameterCode parameterCode : ParameterCode.values()) {
+            map.put(parameterCode.code, parameterCode);
         }
+    }
+
+    public static ParameterCode valueOf(byte code) {
         return map.get(code);
     }
 

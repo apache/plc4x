@@ -30,8 +30,6 @@ public enum TpduSize {
     SIZE_4096((byte) 0x0c, 4096),
     SIZE_8192((byte) 0x0d, 8192);
 
-    private static Map<Byte, TpduSize> map = null;
-    
     private final byte code;
     private final int value;
 
@@ -46,6 +44,15 @@ public enum TpduSize {
 
     public int getValue() {
         return value;
+    }
+
+    private final static Map<Byte, TpduSize> map;
+
+    static {
+        map = new HashMap<>();
+        for (TpduSize tpduSize : TpduSize.values()) {
+            map.put(tpduSize.code, tpduSize);
+        }
     }
 
     public static TpduSize valueForGivenSize(int pduSize) {
@@ -66,12 +73,6 @@ public enum TpduSize {
     }
 
     public static TpduSize valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (TpduSize tpduSize : TpduSize.values()) {
-                map.put(tpduSize.code, tpduSize);
-            }
-        }
         return map.get(code);
     }
 

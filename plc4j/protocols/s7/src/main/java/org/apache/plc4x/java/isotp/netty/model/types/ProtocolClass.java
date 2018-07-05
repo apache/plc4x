@@ -28,8 +28,6 @@ public enum ProtocolClass {
     CLASS_3((byte) 0x30),
     CLASS_4((byte) 0x40);
 
-    private static Map<Byte, ProtocolClass> map = null;
-    
     private final byte code;
 
     ProtocolClass(byte code) {
@@ -40,13 +38,16 @@ public enum ProtocolClass {
         return code;
     }
 
-    public static ProtocolClass valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (ProtocolClass protocolClass : ProtocolClass.values()) {
-                map.put(protocolClass.code, protocolClass);
-            }
+    private final static Map<Byte, ProtocolClass> map;
+
+    static {
+        map = new HashMap<>();
+        for (ProtocolClass protocolClass : ProtocolClass.values()) {
+            map.put(protocolClass.code, protocolClass);
         }
+    }
+
+    public static ProtocolClass valueOf(byte code) {
         return map.get(code);
     }
 
