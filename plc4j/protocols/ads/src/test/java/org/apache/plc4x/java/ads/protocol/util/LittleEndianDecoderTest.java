@@ -27,7 +27,7 @@ import java.util.Date;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.assertEquals;
 
 public class LittleEndianDecoderTest {

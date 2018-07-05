@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.*;
 
-import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

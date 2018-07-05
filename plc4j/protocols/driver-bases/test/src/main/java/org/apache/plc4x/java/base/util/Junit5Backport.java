@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.util;
+package org.apache.plc4x.java.base.util;
 
 import static org.junit.Assert.fail;
 

@@ -32,7 +32,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.net.InetAddress;
 
-import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
