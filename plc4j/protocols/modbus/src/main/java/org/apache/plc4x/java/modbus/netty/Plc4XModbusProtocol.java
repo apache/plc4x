@@ -70,7 +70,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcWriteRequest request = (PlcWriteRequest) msg.getRequest();
         // TODO: support multiple requests
-        WriteRequestItem<?> writeRequestItem = request.getRequestItem().get();
+        WriteRequestItem<?> writeRequestItem = request.getRequestItem().orElseThrow(() -> new PlcProtocolException("Only single message supported for now"));
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
         // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
         int quantity = writeRequestItem.getSize();
@@ -110,7 +110,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     private void encodeReadRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
         // TODO: support multiple requests
-        ReadRequestItem<?> readRequestItem = request.getRequestItem().get();
+        ReadRequestItem<?> readRequestItem = request.getRequestItem().orElseThrow(() -> new PlcProtocolException("Only single message supported for now"));
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
         // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
         int quantity = readRequestItem.getSize();
@@ -155,8 +155,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
 
         // TODO: only single Item supported for now
-        PlcRequest request = plcRequestContainer.getRequest();
-        RequestItem requestItem = (RequestItem) request.getRequestItem().get();
+        PlcRequest<?> request = plcRequestContainer.getRequest();
+        RequestItem requestItem = request.getRequestItem().orElseThrow(() -> new PlcProtocolException("Only single message supported for now"));
         Class datatype = requestItem.getDatatype();
 
         ModbusPdu modbusPdu = msg.getModbusPdu();
