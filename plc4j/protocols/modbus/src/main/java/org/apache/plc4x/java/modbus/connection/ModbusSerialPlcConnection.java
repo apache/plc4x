@@ -20,7 +20,6 @@ package org.apache.plc4x.java.modbus.connection;
 
 import io.netty.channel.ChannelHandler;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +30,13 @@ public class ModbusSerialPlcConnection extends BaseModbusPlcConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusSerialPlcConnection.class);
 
-    public ModbusSerialPlcConnection(String port, String params) {
+    private ModbusSerialPlcConnection(String port, String params) {
         super(new SerialChannelFactory(port), params);
         logger.info("Configured ModbusSerialPlcConnection with: serial-port {}", port);
     }
 
-    ModbusSerialPlcConnection(ChannelFactory channelFactory, String params) {
-        super(channelFactory, params);
+    public static ModbusSerialPlcConnection of(String serialPort, String params) {
+        return new ModbusSerialPlcConnection(serialPort, params);
     }
 
     @Override

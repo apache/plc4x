@@ -39,7 +39,7 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusTcpPlcConnection.class);
 
-    public ModbusTcpPlcConnection(InetAddress address, String params) {
+    private ModbusTcpPlcConnection(InetAddress address, String params) {
         this(new TcpSocketChannelFactory(address, MODBUS_TCP_PORT), params);
         logger.info("Configured ModbusTcpPlcConnection with: host-name {}", address.getHostAddress());
     }
@@ -51,6 +51,14 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
 
     public ModbusTcpPlcConnection(ChannelFactory channelFactory, String params) {
         super(channelFactory, params);
+    }
+
+    public static ModbusTcpPlcConnection of(InetAddress address, String params) {
+        return new ModbusTcpPlcConnection(address, params);
+    }
+
+    public static ModbusTcpPlcConnection of(InetAddress address, int port, String params) {
+        return new ModbusTcpPlcConnection(address, port, params);
     }
 
     @Override

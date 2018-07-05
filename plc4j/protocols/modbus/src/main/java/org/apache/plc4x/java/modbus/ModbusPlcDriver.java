@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.modbus;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.modbus.connection.ModbusSerialPlcConnection;
-import org.apache.plc4x.java.modbus.connection.ModbusTcpPlcConnection;
+import org.apache.plc4x.java.modbus.connection.ModbusConnectionFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -39,6 +39,16 @@ public class ModbusPlcDriver implements PlcDriver {
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");
     public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>((?!/\\d).)*)");
     public static final Pattern MODBUS_URI_PATTERN = Pattern.compile("^modbus:(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/?" + "(?<params>\\?.*)?");
+
+    private ModbusConnectionFactory modbusConnectionFactory;
+
+    public ModbusPlcDriver() {
+        this.modbusConnectionFactory = new ModbusConnectionFactory();
+    }
+
+    public ModbusPlcDriver(ModbusConnectionFactory modbusConnectionFactory) {
+        this.modbusConnectionFactory = modbusConnectionFactory;
+    }
 
     @Override
     public String getProtocolCode() {
@@ -60,22 +70,18 @@ public class ModbusPlcDriver implements PlcDriver {
 
         String host = matcher.group("host");
         String serialDefinition = matcher.group("serialDefinition");
-        String port = matcher.group("port");
+        String portString = matcher.group("port");
+        Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
         String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
-        if (serialDefinition == null) {
-            String hostName = matcher.group("host");
-            try {
-                InetAddress inetAddress = InetAddress.getByName(host);
-                if (port == null) {
-                    return new ModbusTcpPlcConnection(inetAddress, params);
-                } else {
-                    return new ModbusTcpPlcConnection(inetAddress, Integer.valueOf(port), params);
-                }
-            } catch (UnknownHostException e) {
-                throw new PlcConnectionException("Unknown host" + hostName, e);
-            }
+
+        if (serialDefinition != null) {
+            return modbusConnectionFactory.modbusSerialPlcConnectionOf(serialDefinition, params);
         } else {
-            return new ModbusSerialPlcConnection(serialDefinition, params);
+            try {
+                return modbusConnectionFactory.modbusTcpPlcConnectionOf(InetAddress.getByName(host), port, params);
+            } catch (UnknownHostException e) {
+                throw new PlcConnectionException(e);
+            }
         }
     }
 
