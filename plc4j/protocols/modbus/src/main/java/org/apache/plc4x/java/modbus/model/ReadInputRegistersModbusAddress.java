@@ -34,7 +34,7 @@ public class ReadInputRegistersModbusAddress extends ModbusAddress {
     public static ReadInputRegistersModbusAddress of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcRuntimeException(addressString + " doesn't match" + ADDRESS_PATTERN);
+            throw new PlcRuntimeException(addressString + " doesn't match " + ADDRESS_PATTERN);
         }
         int address = Integer.valueOf(matcher.group("address"));
         return new ReadInputRegistersModbusAddress(address);

@@ -24,20 +24,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // TODO: Default to {@link ReadHoldingRegistersModbusAddress}
-public class RegisterAddress extends ModbusAddress {
+public class RegisterModbusAddress extends ModbusAddress {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("register:" + ModbusAddress.ADDRESS_PATTERN);
 
-    protected RegisterAddress(int address) {
+    protected RegisterModbusAddress(int address) {
         super(address);
     }
 
-    public static RegisterAddress of(String addressString) {
+    public static RegisterModbusAddress of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcRuntimeException(addressString + " doesn't match" + ADDRESS_PATTERN);
+            throw new PlcRuntimeException(addressString + " doesn't match " + ADDRESS_PATTERN);
         }
         int address = Integer.valueOf(matcher.group("address"));
-        return new RegisterAddress(address);
+        return new RegisterModbusAddress(address);
     }
 }

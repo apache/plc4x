@@ -68,8 +68,8 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
             return ReadInputRegistersModbusAddress.of(addressString);
         } else if (CoilModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return CoilModbusAddress.of(addressString);
-        } else if (RegisterAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return RegisterAddress.of(addressString);
+        } else if (RegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return RegisterModbusAddress.of(addressString);
         }
         return null;
     }

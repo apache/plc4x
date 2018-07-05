@@ -124,7 +124,7 @@ public class ModbusTcpPlcConnectionTests {
     @Test
     public void parseRegisterAddress() {
         try {
-            RegisterAddress address = (RegisterAddress) SUT.parseAddress("register:0");
+            RegisterModbusAddress address = (RegisterModbusAddress) SUT.parseAddress("register:0");
             assertEquals(address.getAddress(), 0);
         } catch (IllegalArgumentException exception) {
             fail("valid data block address");

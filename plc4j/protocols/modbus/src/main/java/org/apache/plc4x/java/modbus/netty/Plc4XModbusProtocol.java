@@ -37,6 +37,7 @@ import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -79,24 +80,23 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
         ModbusAddress address = (ModbusAddress) writeRequestItem.getAddress();
         ModbusPdu modbusRequest;
-        if (address instanceof RegisterAddress) {
-            RegisterAddress registerAddress = (RegisterAddress) address;
+        if (address instanceof RegisterModbusAddress) {
+            RegisterModbusAddress registerModbusAddress = (RegisterModbusAddress) address;
             if (quantity > 1) {
                 byte[] bytesToWrite = produceRegisterValue(writeRequestItem.getValues());
-                modbusRequest = new WriteMultipleRegistersRequest(registerAddress.getAddress(), quantity, bytesToWrite);
+                modbusRequest = new WriteMultipleRegistersRequest(registerModbusAddress.getAddress(), quantity, bytesToWrite);
             } else {
                 byte[] register = produceRegisterValue(writeRequestItem.getValues());
                 int intToWrite = register[0] << 8 | register[1];
-                modbusRequest = new WriteSingleRegisterRequest(registerAddress.getAddress(), intToWrite);
+                modbusRequest = new WriteSingleRegisterRequest(registerModbusAddress.getAddress(), intToWrite);
             }
         } else if (address instanceof CoilModbusAddress) {
             CoilModbusAddress coilModbusAddress = (CoilModbusAddress) address;
             if (quantity > 1) {
-                byte[] bytesToWrite = produceCoilValue(writeRequestItem.getValues());
+                byte[] bytesToWrite = produceCoilValues(writeRequestItem.getValues());
                 modbusRequest = new WriteMultipleCoilsRequest(coilModbusAddress.getAddress(), quantity, bytesToWrite);
             } else {
-                byte[] coil = produceCoilValue(writeRequestItem.getValues());
-                boolean booleanToWrite = (coil[0] >> 8) == 1;
+                boolean booleanToWrite = produceCoilValue(writeRequestItem.getValues());
                 modbusRequest = new WriteSingleCoilRequest(coilModbusAddress.getAddress(), booleanToWrite);
             }
         } else {
@@ -122,9 +122,9 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         if (address instanceof CoilModbusAddress) {
             CoilModbusAddress coilModbusAddress = (CoilModbusAddress) address;
             modbusRequest = new ReadCoilsRequest(coilModbusAddress.getAddress(), quantity);
-        } else if (address instanceof RegisterAddress) {
-            RegisterAddress registerAddress = (RegisterAddress) address;
-            modbusRequest = new ReadHoldingRegistersRequest(registerAddress.getAddress(), quantity);
+        } else if (address instanceof RegisterModbusAddress) {
+            RegisterModbusAddress registerModbusAddress = (RegisterModbusAddress) address;
+            modbusRequest = new ReadHoldingRegistersRequest(registerModbusAddress.getAddress(), quantity);
         } else if (address instanceof ReadDiscreteInputsModbusAddress) {
             ReadDiscreteInputsModbusAddress readDiscreteInputsModbusAddress = (ReadDiscreteInputsModbusAddress) address;
             modbusRequest = new ReadDiscreteInputsRequest(readDiscreteInputsModbusAddress.getAddress(), quantity);
@@ -151,7 +151,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         short transactionId = msg.getTransactionId();
         PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requestsMap.get(transactionId);
         if (plcRequestContainer == null) {
-            throw new PlcProtocolException("Unrelated payload received" + msg);
+            throw new PlcProtocolException("Unrelated payload received. [transactionId: " + msg.getTransactionId() + ", unitId: " + msg.getUnitId() + ", modbusPdu: " + msg.getModbusPdu() + "]");
         }
 
         // TODO: only single Item supported for now
@@ -246,7 +246,16 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     ////////////////////////////////////////////////////////////////////////////////
     // Encoding helpers.
     ////////////////////////////////////////////////////////////////////////////////
-    private byte[] produceCoilValue(List<?> values) throws PlcProtocolException {
+
+    private boolean produceCoilValue(List<?> values) throws PlcProtocolException {
+        if (values.size() != 1) {
+            throw new PlcProtocolException("Only one value allowed");
+        }
+        Byte multiCoil = produceCoilValues(values)[0];
+        return multiCoil != 0;
+    }
+
+    private byte[] produceCoilValues(List<?> values) throws PlcProtocolException {
         List<Byte> coils = new LinkedList<>();
         Byte actualCoil = 0;
         int i = 7;
@@ -289,6 +298,10 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 i = 8;
             }
         }
+        if (coils.isEmpty()) {
+            // We only have one coil
+            return new byte[]{actualCoil};
+        }
         // TODO: ensure we have a least (quantity + 7) / 8 = N bytes
         return ArrayUtils.toPrimitive(coils.toArray(new Byte[0]));
     }
@@ -309,7 +322,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 }
                 buffer.writeBytes(bytes);
             } else if (value.getClass() == Short.class) {
-                buffer.writeShort((int) value);
+                buffer.writeShort((short) value);
             } else if (value.getClass() == Integer.class) {
                 if ((int) value > Integer.MAX_VALUE) {
                     throw new PlcProtocolException("Value to high to fit into register: " + value);
@@ -331,6 +344,9 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     private List produceCoilValueList(RequestItem requestItem, Class datatype, ByteBuf byteBuf) {
         ReadRequestItem readRequestItem = (ReadRequestItem) requestItem;
         byte[] bytes = new byte[byteBuf.readableBytes()];
+        if (bytes.length < 1) {
+            return Collections.emptyList();
+        }
         byteBuf.readBytes(bytes);
         List data = new LinkedList();
         for (int i = 0, j = 0; i < readRequestItem.getSize(); i++) {
