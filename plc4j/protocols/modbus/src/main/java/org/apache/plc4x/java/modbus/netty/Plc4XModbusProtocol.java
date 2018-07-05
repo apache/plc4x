@@ -89,15 +89,15 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 int intToWrite = register[0] << 8 | register[1];
                 modbusRequest = new WriteSingleRegisterRequest(registerAddress.getAddress(), intToWrite);
             }
-        } else if (address instanceof CoilAddress) {
-            CoilAddress coilAddress = (CoilAddress) address;
+        } else if (address instanceof CoilModbusAddress) {
+            CoilModbusAddress coilModbusAddress = (CoilModbusAddress) address;
             if (quantity > 1) {
                 byte[] bytesToWrite = produceCoilValue(writeRequestItem.getValues());
-                modbusRequest = new WriteMultipleCoilsRequest(coilAddress.getAddress(), quantity, bytesToWrite);
+                modbusRequest = new WriteMultipleCoilsRequest(coilModbusAddress.getAddress(), quantity, bytesToWrite);
             } else {
                 byte[] coil = produceCoilValue(writeRequestItem.getValues());
                 boolean booleanToWrite = (coil[0] >> 8) == 1;
-                modbusRequest = new WriteSingleCoilRequest(coilAddress.getAddress(), booleanToWrite);
+                modbusRequest = new WriteSingleCoilRequest(coilModbusAddress.getAddress(), booleanToWrite);
             }
         } else {
             throw new PlcProtocolException("Unsupported address type" + address.getClass());
@@ -119,9 +119,9 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
         ModbusAddress address = (ModbusAddress) readRequestItem.getAddress();
         ModbusPdu modbusRequest;
-        if (address instanceof CoilAddress) {
-            CoilAddress coilAddress = (CoilAddress) address;
-            modbusRequest = new ReadCoilsRequest(coilAddress.getAddress(), quantity);
+        if (address instanceof CoilModbusAddress) {
+            CoilModbusAddress coilModbusAddress = (CoilModbusAddress) address;
+            modbusRequest = new ReadCoilsRequest(coilModbusAddress.getAddress(), quantity);
         } else if (address instanceof RegisterAddress) {
             RegisterAddress registerAddress = (RegisterAddress) address;
             modbusRequest = new ReadHoldingRegistersRequest(registerAddress.getAddress(), quantity);

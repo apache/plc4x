@@ -71,4 +71,8 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
             }
         };
     }
+
+    public InetAddress getRemoteAddress() {
+        return ((TcpSocketChannelFactory) channelFactory).getAddress();
+    }
 }

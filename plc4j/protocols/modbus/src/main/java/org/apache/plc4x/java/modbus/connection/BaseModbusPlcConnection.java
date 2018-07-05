@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.connection;
 
+import io.netty.channel.ChannelFuture;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
@@ -65,8 +66,8 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
             return ReadHoldingRegistersModbusAddress.of(addressString);
         } else if (ReadInputRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return ReadInputRegistersModbusAddress.of(addressString);
-        } else if (CoilAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return CoilAddress.of(addressString);
+        } else if (CoilModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return CoilModbusAddress.of(addressString);
         } else if (RegisterAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return RegisterAddress.of(addressString);
         }
@@ -76,19 +77,24 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
-            new PlcRequestContainer<>(readRequest, readFuture);
-        channel.writeAndFlush(container);
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(readRequest, readFuture));
+        channelFuture.addListener(future -> {
+            if (!future.isSuccess()) {
+                readFuture.completeExceptionally(future.cause());
+            }
+        });
         return readFuture;
     }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcWriteRequest, PlcWriteResponse> container =
-            new PlcRequestContainer<>(writeRequest, writeFuture);
-        channel.writeAndFlush(container);
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(writeRequest, writeFuture));
+        channelFuture.addListener(future -> {
+            if (!future.isSuccess()) {
+                writeFuture.completeExceptionally(future.cause());
+            }
+        });
         return writeFuture;
     }
-
 }

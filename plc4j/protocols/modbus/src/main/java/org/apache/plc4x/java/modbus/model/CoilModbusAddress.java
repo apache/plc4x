@@ -23,20 +23,20 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CoilAddress extends ModbusAddress {
+public class CoilModbusAddress extends ModbusAddress {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("coil:" + ModbusAddress.ADDRESS_PATTERN);
 
-    protected CoilAddress(int address) {
+    protected CoilModbusAddress(int address) {
         super(address);
     }
 
-    public static CoilAddress of(String addressString) {
+    public static CoilModbusAddress of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
             throw new PlcRuntimeException(addressString + " doesn't match" + ADDRESS_PATTERN);
         }
         int address = Integer.valueOf(matcher.group("address"));
-        return new CoilAddress(address);
+        return new CoilModbusAddress(address);
     }
 }
