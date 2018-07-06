@@ -121,6 +121,7 @@ image::plc4x-vpn-beckhoff.jpg[float=right, width=200]
 This device is able to use the following protocols:
 
 - ADS (Port `48898`)
+- EtherNet/IP (Port `48181`)
 
 It is configured to use the IP: `10.10.64.40`
 
@@ -156,6 +157,10 @@ Be sure to select the `IP Address` radio button below.
 Next thing, you should ensure, is that the type of `Remote Route` is set to `None`.
 
 When clicking on `Add Route`, don't be surprised that the window doesn't close, you have to click on `Close` after that and then you should see your new route in the route list screen.
+
+When planning on using the `EtherNet/IP` communication, the configuration of the TwinCAT device is described here:
+
+https://download.beckhoff.com/download/document/automation/twincat3/TF6280_EtherNet_IP_Slave_EN.pdf
 
 === Requesting an account
 
