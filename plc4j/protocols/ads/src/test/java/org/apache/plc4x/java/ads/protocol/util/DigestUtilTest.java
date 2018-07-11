@@ -71,7 +71,7 @@ public class DigestUtilTest {
 
     @Ignore("This test is used to find proper crc parameters and can be run manually")
     @Test
-    public void findRightAdsCrc() throws Exception {
+    public void findRightAdsCrc() {
         int[] exampleResponseInt = {
             /*Magic Cookie     */    0x01, 0xA5,
             /*Sender           */    0x00,
