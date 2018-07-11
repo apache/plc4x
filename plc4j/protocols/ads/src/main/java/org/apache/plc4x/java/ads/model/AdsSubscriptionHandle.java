@@ -16,24 +16,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.modbus.netty;
+package org.apache.plc4x.java.ads.model;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.plc4x.java.ads.api.commands.types.NotificationHandle;
+import org.apache.plc4x.java.api.model.SubscriptionHandle;
 
-import java.util.List;
+public class AdsSubscriptionHandle implements SubscriptionHandle {
 
-public class ModbusSerialProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
+    private NotificationHandle notificationHandle;
 
-    @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-
+    public AdsSubscriptionHandle(NotificationHandle notificationHandle) {
+        this.notificationHandle = notificationHandle;
     }
 
-    @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-
+    public NotificationHandle getNotificationHandle() {
+        return notificationHandle;
     }
 
 }

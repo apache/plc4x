@@ -163,8 +163,12 @@ public class AdsLib {
             buffer.value = bytes;
             bytesRead.value = bytes.length;
             return response.getResult();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return Result.of(AdsReturnCode.ADS_CODE_1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
             return Result.of(AdsReturnCode.ADS_CODE_1);
         }
     }
@@ -239,8 +243,12 @@ public class AdsLib {
             adsState.value = response.getAdsState().getAsInt();
             devState.value = response.getDeviceState().getAsInt();
             return response.getResult();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return Result.of(AdsReturnCode.ADS_CODE_1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
             return Result.of(AdsReturnCode.ADS_CODE_1);
         }
     }
@@ -341,8 +349,12 @@ public class AdsLib {
         try {
             AdsWriteResponse response = request.getResponseFuture().get(3, TimeUnit.SECONDS);
             return response.getResult();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return Result.of(AdsReturnCode.ADS_CODE_1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
             return Result.of(AdsReturnCode.ADS_CODE_1);
         }
     }
@@ -443,8 +455,12 @@ public class AdsLib {
         try {
             AdsAddDeviceNotificationResponse response = request.getResponseFuture().get(3, TimeUnit.SECONDS);
             return response.getResult();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return Result.of(AdsReturnCode.ADS_CODE_1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
             return Result.of(AdsReturnCode.ADS_CODE_1);
         }
     }
@@ -479,8 +495,12 @@ public class AdsLib {
         try {
             AdsDeleteDeviceNotificationResponse response = request.getResponseFuture().get(3, TimeUnit.SECONDS);
             return response.getResult();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return Result.of(AdsReturnCode.ADS_CODE_1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
             return Result.of(AdsReturnCode.ADS_CODE_1);
         }
     }

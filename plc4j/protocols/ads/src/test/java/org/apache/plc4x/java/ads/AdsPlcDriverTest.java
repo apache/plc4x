@@ -22,11 +22,11 @@ package org.apache.plc4x.java.ads;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.ads.connection.AdsConnectionFactory;
 import org.apache.plc4x.java.ads.connection.AdsTcpPlcConnection;
-import org.apache.plc4x.java.ads.util.TcpHexDumper;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.base.connection.tcp.TcpHexDumper;
 import org.junit.Rule;
 import org.junit.Test;
 

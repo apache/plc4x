@@ -80,6 +80,6 @@ public class AdsState extends UnsignedShortLEByteValue {
         public static final AdsState ADSSTATE_STOPPING = AdsState.of(17);
         public static final AdsState ADSSTATE_INCOMPATIBLE = AdsState.of(18);
         public static final AdsState ADSSTATE_EXCEPTION = AdsState.of(19);
-        public static final AdsState ADSSTATE_MAXSTATES = AdsState.of(Integer.MAX_VALUE);
+        public static final AdsState ADSSTATE_MAXSTATES = AdsState.of(65535);
     }
 }

@@ -74,13 +74,13 @@
 
   <bannerLeft>
       <name>Apache PLC4X (incubating)</name>
-      <src>https://plc4x.apache.org/img/apache_plc4x_logo.png</src>
+      <src>/img/apache_plc4x_logo_small.png</src>
       <href>https://plc4x.apache.org/</href>
   </bannerLeft>
 
   <bannerRight>
     <name>Apache Incubator</name>
-    <src>https://incubator.apache.org/images/incubator_feather_egg_logo_sm.png</src>
+    <src>/img/apache_incubator_logo.png</src>
     <href>http://incubator.apache.org/</href>
   </bannerRight>
 

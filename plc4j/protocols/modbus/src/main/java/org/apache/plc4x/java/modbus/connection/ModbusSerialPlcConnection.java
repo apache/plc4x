@@ -18,15 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.connection;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
-import org.apache.plc4x.java.modbus.netty.ModbusProtocol;
-import org.apache.plc4x.java.modbus.netty.ModbusSerialProtocol;
-import org.apache.plc4x.java.modbus.netty.Plc4XModbusProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,27 +30,18 @@ public class ModbusSerialPlcConnection extends BaseModbusPlcConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusSerialPlcConnection.class);
 
-    public ModbusSerialPlcConnection(String port, String params) {
+    private ModbusSerialPlcConnection(String port, String params) {
         super(new SerialChannelFactory(port), params);
         logger.info("Configured ModbusSerialPlcConnection with: serial-port {}", port);
     }
 
-    ModbusSerialPlcConnection(ChannelFactory channelFactory, String params) {
-        super(channelFactory, params);
+    public static ModbusSerialPlcConnection of(String serialPort, String params) {
+        return new ModbusSerialPlcConnection(serialPort, params);
     }
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
-            @Override
-            protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the Modbus protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new ModbusSerialProtocol());
-                pipeline.addLast(new ModbusProtocol());
-                pipeline.addLast(new Plc4XModbusProtocol());
-            }
-        };
+        throw new NotImplementedException("Not implemented yet");
     }
 
 }

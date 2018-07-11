@@ -21,6 +21,9 @@ package org.apache.plc4x.java.ads.api.serial.types;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.api.util.ByteValue;
 
+import static java.lang.Integer.toHexString;
+import static org.apache.commons.lang3.StringUtils.leftPad;
+
 public class TransmitterAddress extends ByteValue {
 
     public static final int NUM_BYTES = 1;
@@ -28,6 +31,10 @@ public class TransmitterAddress extends ByteValue {
     public static final TransmitterAddress RS232_COMM_ADDRESS = TransmitterAddress.of((byte) 0);
 
     private TransmitterAddress(byte value) {
+        super(value);
+    }
+
+    private TransmitterAddress(byte[] value) {
         super(value);
     }
 
@@ -39,8 +46,27 @@ public class TransmitterAddress extends ByteValue {
         return new TransmitterAddress(value);
     }
 
+    public static TransmitterAddress of(byte... value) {
+        return new TransmitterAddress(value);
+    }
+
+    public static TransmitterAddress of(String value) {
+        return new TransmitterAddress(Byte.valueOf(value));
+    }
+
     public static TransmitterAddress of(ByteBuf byteBuf) {
         return new TransmitterAddress(byteBuf);
     }
 
+    public byte getAsByte() {
+        return value[0];
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "{" +
+            "byteValue=" + (getAsByte() & 0xFF) +
+            ",hexValue=0x" + leftPad(toHexString(getAsByte() & 0xFF), NUM_BYTES * 2, "0") +
+            "}";
+    }
 }

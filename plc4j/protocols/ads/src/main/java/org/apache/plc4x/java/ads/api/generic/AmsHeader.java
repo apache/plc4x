@@ -68,7 +68,7 @@ public class AmsHeader implements ByteReadable {
      */
     private final Invoke invokeId;
 
-    private final LengthSupplier dataLengthSupplier;
+    private final transient LengthSupplier dataLengthSupplier;
 
     private AmsHeader(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, Command commandId, State stateFlags, DataLength dataLength, AmsError code, Invoke invokeId) {
         this.targetAmsNetId = requireNonNull(targetAmsNetId);
@@ -157,30 +157,40 @@ public class AmsHeader implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof AmsHeader))
+        }
+        if (!(o instanceof AmsHeader)) {
             return false;
+        }
 
         AmsHeader amsHeader = (AmsHeader) o;
 
-        if (!targetAmsNetId.equals(amsHeader.targetAmsNetId))
+        if (!targetAmsNetId.equals(amsHeader.targetAmsNetId)) {
             return false;
-        if (!targetAmsPort.equals(amsHeader.targetAmsPort))
+        }
+        if (!targetAmsPort.equals(amsHeader.targetAmsPort)) {
             return false;
-        if (!sourceAmsNetId.equals(amsHeader.sourceAmsNetId))
+        }
+        if (!sourceAmsNetId.equals(amsHeader.sourceAmsNetId)) {
             return false;
-        if (!sourceAmsPort.equals(amsHeader.sourceAmsPort))
+        }
+        if (!sourceAmsPort.equals(amsHeader.sourceAmsPort)) {
             return false;
-        if (commandId != amsHeader.commandId)
+        }
+        if (commandId != amsHeader.commandId) {
             return false;
-        if (!stateFlags.equals(amsHeader.stateFlags))
+        }
+        if (!stateFlags.equals(amsHeader.stateFlags)) {
             return false;
-        if (!code.equals(amsHeader.code))
+        }
+        if (!code.equals(amsHeader.code)) {
             return false;
-        if (!invokeId.equals(amsHeader.invokeId))
+        }
+        if (!invokeId.equals(amsHeader.invokeId)) {
             return false;
-        
+        }
+
         return getDataLength().equals(((AmsHeader) o).getDataLength());
     }
 

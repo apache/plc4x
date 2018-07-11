@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.RequestItem;
+import org.apache.plc4x.java.api.messages.items.ResponseItem;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import org.apache.plc4x.java.api.messages.items.RequestItem;
-import org.apache.plc4x.java.api.messages.items.ResponseItem;
 
 /**
  * Base type for all response messages sent as response for a prior request
@@ -82,4 +82,30 @@ public abstract class PlcResponse<REQUEST extends PlcRequest, RESPONSE_ITEM exte
             .findAny();
     }
 
+    @Override
+    public String toString() {
+        return "PlcResponse{" +
+            "request=" + request +
+            ", responseItems=" + responseItems +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcResponse)) {
+            return false;
+        }
+        PlcResponse<?, ?, ?> that = (PlcResponse<?, ?, ?>) o;
+        return Objects.equals(request, that.request) &&
+            Objects.equals(responseItems, that.responseItems);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(request, responseItems);
+    }
 }

@@ -72,12 +72,15 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof UnsignedShortLEByteValue))
+        }
+        if (!(o instanceof UnsignedShortLEByteValue)) {
             return false;
-        if (!super.equals(o))
+        }
+        if (!super.equals(o)) {
             return false;
+        }
 
         UnsignedShortLEByteValue that = (UnsignedShortLEByteValue) o;
 
@@ -95,7 +98,7 @@ public abstract class UnsignedShortLEByteValue extends ByteValue {
     public String toString() {
         return super.toString() + "{" +
             "intValue=" + getAsInt() +
-            ",hexValue=0x" + leftPad(toHexString(getAsInt()), UNSIGNED_SHORT_LE_NUM_BYTES, "0") +
+            ",hexValue=0x" + leftPad(toHexString(getAsInt()), UNSIGNED_SHORT_LE_NUM_BYTES * 2, "0") +
             "}";
     }
 }

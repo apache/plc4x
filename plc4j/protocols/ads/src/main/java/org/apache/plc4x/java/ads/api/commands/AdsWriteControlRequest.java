@@ -57,7 +57,7 @@ public class AdsWriteControlRequest extends AdsAbstractRequest {
      */
     private final Data data;
 
-    private final LengthSupplier lengthSupplier;
+    private final transient LengthSupplier lengthSupplier;
 
     private AdsWriteControlRequest(AmsHeader amsHeader, AdsState adsState, DeviceState deviceState, Length length, Data data) {
         super(amsHeader);

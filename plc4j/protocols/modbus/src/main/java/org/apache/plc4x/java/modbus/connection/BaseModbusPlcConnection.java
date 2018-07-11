@@ -18,31 +18,26 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.connection;
 
+import io.netty.channel.ChannelFuture;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.modbus.model.ModbusAddress;
+import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public abstract class BaseModbusPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
-
-    private static final Pattern MODBUS_ADDRESS_PATTERN =
-        Pattern.compile("^(?<memoryArea>.*?)/(?<byteOffset>\\d{1,4})(?:/(?<bitOffset>\\d))?");
 
     private static final Logger logger = LoggerFactory.getLogger(BaseModbusPlcConnection.class);
 
     protected BaseModbusPlcConnection(ChannelFactory channelFactory, String params) {
-        super(channelFactory, true);
+        super(channelFactory);
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
@@ -62,12 +57,19 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     }
 
     @Override
-    public Address parseAddress(String addressString) throws PlcException {
-        Matcher addressMatcher = MODBUS_ADDRESS_PATTERN.matcher(addressString);
-        if (addressMatcher.matches()) {
-            /*int datablockNumber = Integer.parseInt(datablockAddressMatcher.group("blockNumber"));
-            int datablockByteOffset = Integer.parseInt(datablockAddressMatcher.group("byteOffset"));*/
-            return new ModbusAddress();
+    public Address parseAddress(String addressString) {
+        if (MaskWriteRegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return MaskWriteRegisterModbusAddress.of(addressString);
+        } else if (ReadDiscreteInputsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return ReadDiscreteInputsModbusAddress.of(addressString);
+        } else if (ReadHoldingRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return ReadHoldingRegistersModbusAddress.of(addressString);
+        } else if (ReadInputRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return ReadInputRegistersModbusAddress.of(addressString);
+        } else if (CoilModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return CoilModbusAddress.of(addressString);
+        } else if (RegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return RegisterModbusAddress.of(addressString);
         }
         return null;
     }
@@ -75,19 +77,24 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
-            new PlcRequestContainer<>(readRequest, readFuture);
-        channel.writeAndFlush(container);
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(readRequest, readFuture));
+        channelFuture.addListener(future -> {
+            if (!future.isSuccess()) {
+                readFuture.completeExceptionally(future.cause());
+            }
+        });
         return readFuture;
     }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcWriteRequest, PlcWriteResponse> container =
-            new PlcRequestContainer<>(writeRequest, writeFuture);
-        channel.writeAndFlush(container);
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(writeRequest, writeFuture));
+        channelFuture.addListener(future -> {
+            if (!future.isSuccess()) {
+                writeFuture.completeExceptionally(future.cause());
+            }
+        });
         return writeFuture;
     }
-
 }

@@ -83,4 +83,25 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
     public Class<T> getDataType() {
         return dataType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TypeSafePlcWriteRequest)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        TypeSafePlcWriteRequest<?> that = (TypeSafePlcWriteRequest<?>) o;
+        return Objects.equals(dataType, that.dataType);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), dataType);
+    }
 }

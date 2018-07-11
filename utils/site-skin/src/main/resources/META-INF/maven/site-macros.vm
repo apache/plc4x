@@ -269,20 +269,21 @@
 #*      *##set ( $img = '<img class="imageLink"' + $src + $alt + $border + $width + $height + $title + "/>" )
 ##
 #*      *##if ( $position == "left" )
-        <h5>$img $menu.name</h5>
+            <a id="$menu.name.toLowerCase().replaceAll('[^a-z0-9]', '_')" class="plc4x-navigation__link plc4-navigation__link_$menu.name.toLowerCase().replaceAll('[^a-z0-9]', '_') mdl-navigation__link mdl-typography--text-uppercase" href="#">$img $menu.name</a>
 #*      *##else
-        <h5>$menu.name $img</h5>
+            <a id="$menu.name.toLowerCase().replaceAll('[^a-z0-9]', '_')" class="plc4x-navigation__link plc4-navigation__link_$menu.name.toLowerCase().replaceAll('[^a-z0-9]', '_') mdl-navigation__link mdl-typography--text-uppercase" href="#">$menu.name $img</a>
 #*      *##end
 #*    *##else
-       <h5>$menu.name</h5>
+        <a id="$menu.name.toLowerCase().replaceAll('[^a-z0-9]', '_')" class="plc4x-navigation__link plc4-navigation__link_$menu.name.toLowerCase().replaceAll('[^a-z0-9]', '_') mdl-navigation__link mdl-typography--text-uppercase" href="#">$menu.name</a>
 #*    *##end
 #*  *##end
 #*  *##if ( $menu.items && $menu.items.size() > 0 )
-    <ul>
-#*    *##foreach( $item in $menu.items )
-#*      *##menuItem( $item )
-#*    *##end
-    </ul>
+      <ul class="plc4x-menu mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+          for="$menu.name.toLowerCase().replaceAll('[^a-z0-9]', '_')">
+        #*    *##foreach( $item in $menu.items )
+        #*      *##menuItem( $item )
+        #*    *##end
+      </ul>
 #*  *##end
 #**##end
 #end

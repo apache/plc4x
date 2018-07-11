@@ -20,80 +20,90 @@ package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.ScheduledFuture;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialResetFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.protocol.util.DigestUtil;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Payload2TcpProtocol.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Payload2SerialProtocol.class);
 
     private final AtomicInteger fragmentCounter = new AtomicInteger(0);
 
-    private final AtomicBoolean frameOnTheWay = new AtomicBoolean(false);
-
-    private volatile ScheduledFuture<ChannelFuture> retryHandler;
-
-    private final Lock lock = new ReentrantLock(true);
+    private AtomicReference<ScheduledFuture<?>> currentRetryer = new AtomicReference<>();
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws Exception {
-        while (frameOnTheWay.get() || !lock.tryLock()) {
-            // In this case we might not send it yet.
-            TimeUnit.MILLISECONDS.sleep(10);
+    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws PlcProtocolPayloadTooBigException {
+        LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
+        int fragmentNumber = fragmentCounter.getAndUpdate(value -> value > 255 ? 0 : ++value);
+        LOGGER.debug("Using fragmentNumber {} for {}", fragmentNumber, amsPacket);
+        UserData userData = UserData.of(amsPacket);
+        if (userData.getCalculatedLength() > 255) {
+            throw new PlcProtocolPayloadTooBigException("ADS/AMS", 255, (int) userData.getCalculatedLength(), amsPacket);
         }
-        int fragmentNumber = fragmentCounter.getAndIncrement();
-        if (fragmentNumber > 255) {
-            fragmentNumber = 0;
-            fragmentCounter.set(fragmentNumber);
+        AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) fragmentNumber), userData);
+
+        MutableInt retryCount = new MutableInt(0);
+        ScheduledFuture<?> oldRetryer = currentRetryer.get();
+        if (oldRetryer != null) {
+            oldRetryer.cancel(false);
         }
-        try {
-            // TODO: we need to remember the fragment and maybe even need to spilt up the package
-            // TODO: if we exceed 255 byte
-            AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) fragmentNumber), UserData.of(amsPacket));
-            out.add(amsSerialFrame.getByteBuf());
-            retryHandler = channelHandlerContext.executor().schedule(() -> {
-                try {
-                    TimeUnit.SECONDS.sleep(2);
-                    channelHandlerContext.channel().writeAndFlush(amsSerialFrame.getByteBuf());
-                } catch (InterruptedException e) {
-                    LOGGER.debug("Interrupted", e);
-                    Thread.currentThread().interrupt();
-                }
-                return channelHandlerContext.voidPromise();
-            }, 0, TimeUnit.MILLISECONDS);
-            frameOnTheWay.set(true);
-        } finally {
-            lock.unlock();
-        }
+        currentRetryer.set(channelHandlerContext.executor().scheduleAtFixedRate(() -> {
+            LOGGER.trace("Retrying {} the {} time", amsSerialFrame, retryCount);
+            int currentTry = retryCount.incrementAndGet();
+            if (currentTry > 10) {
+                // TODO: we might need to throw an exception to potentially cancel upstream waiting
+                channelHandlerContext.writeAndFlush(AmsSerialResetFrame.of(FragmentNumber.of((byte) fragmentNumber)));
+                PlcRuntimeException plcRuntimeException = new PlcRuntimeException("Retry exhausted after " + retryCount + " times");
+                channelHandlerContext.fireExceptionCaught(plcRuntimeException);
+                throw plcRuntimeException;
+            } else {
+                channelHandlerContext.writeAndFlush(amsSerialFrame);
+            }
+        }, 100, 100, TimeUnit.MILLISECONDS));
+        out.add(amsSerialFrame.getByteBuf());
     }
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) throws Exception {
+        LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, byteBuf, out);
+        if (byteBuf.readableBytes() < MagicCookie.NUM_BYTES + TransmitterAddress.NUM_BYTES + ReceiverAddress.NUM_BYTES + FragmentNumber.NUM_BYTES) {
+            return;
+        }
         MagicCookie magicCookie = MagicCookie.of(byteBuf);
         TransmitterAddress transmitterAddress = TransmitterAddress.of(byteBuf);
         ReceiverAddress receiverAddress = ReceiverAddress.of(byteBuf);
         FragmentNumber fragmentNumber = FragmentNumber.of(byteBuf);
+        int expectedFrameNumber = fragmentCounter.get() - 1;
+        if (expectedFrameNumber < 0) {
+            expectedFrameNumber = 255;
+        }
+        if (fragmentNumber.getAsByte() != expectedFrameNumber) {
+            LOGGER.warn("Unexpected fragment {} received. Expected {}", fragmentNumber, expectedFrameNumber);
+        }
         UserDataLength userDataLength = UserDataLength.of(byteBuf);
         UserData userData;
         byte userDataLengthAsByte = userDataLength.getAsByte();
+        if (byteBuf.readableBytes() < userDataLengthAsByte) {
+            return;
+        }
         if (userDataLengthAsByte > 0) {
             byte[] userDataByteArray = new byte[userDataLengthAsByte];
             byteBuf.readBytes(userDataByteArray);
@@ -103,23 +113,33 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
         }
         CRC crc = CRC.of(byteBuf);
 
+        // we don't need to retransmit
+        ScheduledFuture<?> scheduledFuture = currentRetryer.get();
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+        }
+
+        Runnable postAction = null;
         switch (magicCookie.getAsInt()) {
             case AmsSerialFrame.ID:
                 AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData, crc);
                 LOGGER.debug("Ams Serial Frame received {}", amsSerialFrame);
-                // TODO: check if this is the right way to ack a package.
-                ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(AmsSerialAcknowledgeFrame.of(transmitterAddress, receiverAddress, fragmentNumber));
-                channelFuture.addListener((ChannelFutureListener) future -> {
-                    frameOnTheWay.set(false);
-                });
-                // waiting for the ack-frame to be transmitted before we forward the package
-                channelFuture.await();
-                out.add(userData.getByteBuf());
+                postAction = () -> {
+                    // TODO: check if this is the right way to ack a package.
+                    ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(AmsSerialAcknowledgeFrame.of(transmitterAddress, receiverAddress, fragmentNumber).getByteBuf());
+                    // waiting for the ack-frame to be transmitted before we forward the package
+                    try {
+                        channelFuture.await();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new PlcRuntimeException(e);
+                    }
+                    out.add(userData.getByteBuf());
+                };
                 break;
             case AmsSerialAcknowledgeFrame.ID:
                 AmsSerialAcknowledgeFrame amsSerialAcknowledgeFrame = AmsSerialAcknowledgeFrame.of(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, crc);
                 LOGGER.debug("Ams Serial ACK Frame received {}", amsSerialAcknowledgeFrame);
-                retryHandler.cancel(true);
                 ReferenceCountUtil.release(byteBuf);
                 break;
             case AmsSerialResetFrame.ID:
@@ -134,9 +154,12 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
             throw new PlcProtocolException("CRC checksum wrong. Got " + crc + " expected " + calculatedCrc);
         }
 
+        if (postAction != null) {
+            postAction.run();
+        }
+
         if (byteBuf.readableBytes() > 0) {
             throw new IllegalStateException("Unread bytes left: " + byteBuf.readableBytes());
         }
-
     }
 }

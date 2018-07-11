@@ -18,12 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.modbus;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.modbus.connection.ModbusSerialPlcConnection;
-import org.apache.plc4x.java.modbus.connection.ModbusTcpPlcConnection;
+import org.apache.plc4x.java.modbus.connection.ModbusConnectionFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -36,7 +36,19 @@ import java.util.regex.Pattern;
  */
 public class ModbusPlcDriver implements PlcDriver {
 
-    private static final Pattern MODBUS_SERIAL_URI_PATTERN = Pattern.compile("^modbus:(?<subType>.*)://(?<port>.*)|(?<host>.*)(?<params>\\?.*)?");
+    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");
+    public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>((?!/\\d).)*)");
+    public static final Pattern MODBUS_URI_PATTERN = Pattern.compile("^modbus:(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/?" + "(?<params>\\?.*)?");
+
+    private ModbusConnectionFactory modbusConnectionFactory;
+
+    public ModbusPlcDriver() {
+        this.modbusConnectionFactory = new ModbusConnectionFactory();
+    }
+
+    public ModbusPlcDriver(ModbusConnectionFactory modbusConnectionFactory) {
+        this.modbusConnectionFactory = modbusConnectionFactory;
+    }
 
     @Override
     public String getProtocolCode() {
@@ -50,27 +62,26 @@ public class ModbusPlcDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = MODBUS_SERIAL_URI_PATTERN.matcher(url);
+        Matcher matcher = MODBUS_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
                 "Connection url doesn't match the format 'modbus:{type}//{port|host}'");
         }
 
-        String subType = matcher.group("subType");
+        String host = matcher.group("host");
+        String serialDefinition = matcher.group("serialDefinition");
+        String portString = matcher.group("port");
+        Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
         String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
-        if("tcp".equalsIgnoreCase(subType)) {
-            String hostName = matcher.group("host");
-            try {
-                InetAddress host = InetAddress.getByName(hostName);
-                return new ModbusTcpPlcConnection(host, params);
-            } catch (UnknownHostException e) {
-                throw new PlcConnectionException("Unknown host" + hostName, e);
-            }
-        } else if("serial".equalsIgnoreCase(subType)) {
-            String port = matcher.group("port");
-            return new ModbusSerialPlcConnection(port, params);
+
+        if (serialDefinition != null) {
+            return modbusConnectionFactory.modbusSerialPlcConnectionOf(serialDefinition, params);
         } else {
-            throw new PlcConnectionException("Unknown sub-type " + subType);
+            try {
+                return modbusConnectionFactory.modbusTcpPlcConnectionOf(InetAddress.getByName(host), port, params);
+            } catch (UnknownHostException e) {
+                throw new PlcConnectionException(e);
+            }
         }
     }
 

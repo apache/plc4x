@@ -245,6 +245,7 @@ public class ADSClientNotificationExample {
         if (args.length == 2) {
             remoteIpV4 = args[0];
             remoteNetIdString = args[1];
+            System.out.println("Using supplied arguments " + remoteIpV4 + "/" + remoteNetIdString);
         }
         runExample(remoteNetIdString, remoteIpV4, System.out);
         System.exit(0);
@@ -263,6 +264,7 @@ public class ADSClientNotificationExample {
                 TimeUnit.SECONDS.sleep(timeout);
                 System.out.println("Timeout reached enter pressed");
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
         }

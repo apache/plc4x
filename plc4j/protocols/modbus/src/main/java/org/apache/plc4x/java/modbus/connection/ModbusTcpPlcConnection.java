@@ -18,11 +18,14 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.connection;
 
-import io.netty.channel.*;
+import com.digitalpetri.modbus.codec.ModbusRequestEncoder;
+import com.digitalpetri.modbus.codec.ModbusResponseDecoder;
+import com.digitalpetri.modbus.codec.ModbusTcpCodec;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelInitializer;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
-import org.apache.plc4x.java.modbus.netty.ModbusProtocol;
-import org.apache.plc4x.java.modbus.netty.ModbusTcpProtocol;
 import org.apache.plc4x.java.modbus.netty.Plc4XModbusProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +39,26 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusTcpPlcConnection.class);
 
-    public ModbusTcpPlcConnection(InetAddress address, String params) {
+    private ModbusTcpPlcConnection(InetAddress address, String params) {
         this(new TcpSocketChannelFactory(address, MODBUS_TCP_PORT), params);
         logger.info("Configured ModbusTcpPlcConnection with: host-name {}", address.getHostAddress());
     }
 
-    ModbusTcpPlcConnection(ChannelFactory channelFactory, String params) {
+    public ModbusTcpPlcConnection(InetAddress address, int port, String params) {
+        this(new TcpSocketChannelFactory(address, port), params);
+        logger.info("Configured ModbusTcpPlcConnection with: host-name {}", address.getHostAddress());
+    }
+
+    public ModbusTcpPlcConnection(ChannelFactory channelFactory, String params) {
         super(channelFactory, params);
+    }
+
+    public static ModbusTcpPlcConnection of(InetAddress address, String params) {
+        return new ModbusTcpPlcConnection(address, params);
+    }
+
+    public static ModbusTcpPlcConnection of(InetAddress address, int port, String params) {
+        return new ModbusTcpPlcConnection(address, port, params);
     }
 
     @Override
@@ -50,13 +66,13 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
         return new ChannelInitializer() {
             @Override
             protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the Modbus protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new ModbusTcpProtocol());
-                pipeline.addLast(new ModbusProtocol());
-                pipeline.addLast(new Plc4XModbusProtocol());
+                channel.pipeline().addLast(new ModbusTcpCodec(new ModbusRequestEncoder(), new ModbusResponseDecoder()));
+                channel.pipeline().addLast(new Plc4XModbusProtocol());
             }
         };
     }
 
+    public InetAddress getRemoteAddress() {
+        return ((TcpSocketChannelFactory) channelFactory).getAddress();
+    }
 }

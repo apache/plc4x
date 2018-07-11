@@ -27,8 +27,6 @@ public enum RejectCause {
     INVALID_TPDU_TYPE((byte) 0x02),
     INVALID_PARAMETER_TYPE((byte) 0x03);
 
-    private static Map<Byte, RejectCause> map = null;
-
     private final byte code;
 
     RejectCause(byte code) {
@@ -39,13 +37,16 @@ public enum RejectCause {
         return code;
     }
 
-    public static RejectCause valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (RejectCause rejectCause : RejectCause.values()) {
-                map.put(rejectCause.code, rejectCause);
-            }
+    private final static Map<Byte, RejectCause> map;
+
+    static {
+        map = new HashMap<>();
+        for (RejectCause rejectCause : RejectCause.values()) {
+            map.put(rejectCause.code, rejectCause);
         }
+    }
+
+    public static RejectCause valueOf(byte code) {
         return map.get(code);
     }
 

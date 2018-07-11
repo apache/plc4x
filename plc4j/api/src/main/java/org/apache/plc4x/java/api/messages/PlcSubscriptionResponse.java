@@ -1,3 +1,4 @@
+package org.apache.plc4x.java.api.messages;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -16,7 +17,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.modbus.netty.model;
 
-public class ModbusMessage {
+import org.apache.plc4x.java.api.messages.items.SubscriptionRequestItem;
+import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
+
+import java.util.List;
+
+public class PlcSubscriptionResponse extends PlcResponse<PlcSubscriptionRequest, SubscriptionResponseItem<?>, SubscriptionRequestItem<?>> {
+
+    public PlcSubscriptionResponse(PlcSubscriptionRequest request, List<SubscriptionResponseItem<?>> subscriptionResponseItems) {
+        super(request, subscriptionResponseItems);
+    }
+
 }

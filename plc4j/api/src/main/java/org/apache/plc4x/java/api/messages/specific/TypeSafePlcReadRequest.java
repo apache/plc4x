@@ -88,4 +88,25 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
     public Class<T> getDataType() {
         return dataType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TypeSafePlcReadRequest)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        TypeSafePlcReadRequest<?> that = (TypeSafePlcReadRequest<?>) o;
+        return Objects.equals(dataType, that.dataType);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), dataType);
+    }
 }

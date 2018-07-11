@@ -30,8 +30,6 @@ public enum HeaderErrorClass {
     ERROR_ON_SUPPLIES((byte) 0x85),
     ACCESS_ERROR((byte) 0x87);
 
-    private static Map<Byte, HeaderErrorClass> map = null;
-
     private final byte code;
 
     HeaderErrorClass(byte code) {
@@ -42,13 +40,16 @@ public enum HeaderErrorClass {
         return code;
     }
 
-    public static HeaderErrorClass valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (HeaderErrorClass headerErrorClass : HeaderErrorClass.values()) {
-                map.put(headerErrorClass.code, headerErrorClass);
-            }
+    private final static Map<Byte, HeaderErrorClass> map;
+
+    static {
+        map = new HashMap<>();
+        for (HeaderErrorClass headerErrorClass : HeaderErrorClass.values()) {
+            map.put(headerErrorClass.code, headerErrorClass);
         }
+    }
+
+    public static HeaderErrorClass valueOf(byte code) {
         return map.get(code);
     }
 

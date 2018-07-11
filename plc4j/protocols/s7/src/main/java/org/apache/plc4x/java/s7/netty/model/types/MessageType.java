@@ -30,8 +30,6 @@ public enum MessageType {
     ACK_DATA((byte) 0x03),
     USER_DATA((byte) 0x07); /* Renamed from "Userdata" */
 
-    private static Map<Byte, MessageType> map = null;
-    
     private final byte code;
 
     MessageType(byte code) {
@@ -42,13 +40,16 @@ public enum MessageType {
         return code;
     }
 
-    public static MessageType valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (MessageType messageType : MessageType.values()) {
-                map.put(messageType.code, messageType);
-            }
+    private final static Map<Byte, MessageType> map;
+
+    static {
+        map = new HashMap<>();
+        for (MessageType messageType : MessageType.values()) {
+            map.put(messageType.code, messageType);
         }
+    }
+
+    public static MessageType valueOf(byte code) {
         return map.get(code);
     }
 

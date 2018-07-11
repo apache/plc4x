@@ -26,14 +26,21 @@ import org.apache.camel.util.AsyncProcessorConverterHelper;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcNotification;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.items.*;
 import org.apache.plc4x.java.api.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util.function.Consumer<PlcNotification<Object>> {
+public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util.function.Consumer<SubscriptionEventItem> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
 
     private Plc4XEndpoint endpoint;
@@ -41,7 +48,8 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private Address address;
-    private Class dataType;
+    private Class<?> dataType;
+    private PlcSubscriptionResponse subscriptionResponse;
 
 
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
@@ -73,13 +81,20 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     }
 
     @Override
-    protected void doStart() {
-        getSubscriber().subscribe(this, address, dataType);
+    protected void doStart() throws InterruptedException, ExecutionException, TimeoutException {
+        PlcSubscriptionRequest request = new PlcSubscriptionRequest();
+        request.addItem(new SubscriptionRequestCyclicItem(dataType, address, this, TimeUnit.SECONDS, 3));
+        CompletableFuture<PlcSubscriptionResponse> subscriptionFuture = getSubscriber().subscribe(request);
+        subscriptionResponse = subscriptionFuture.get(5, TimeUnit.SECONDS);
     }
 
     @Override
     protected void doStop() {
-        getSubscriber().unsubscribe(this, address);
+        PlcUnsubscriptionRequest request = new PlcUnsubscriptionRequest();
+        subscriptionResponse.getResponseItems().stream()
+            .map(SubscriptionResponseItem::getSubscriptionHandle)
+            .map(UnsubscriptionRequestItem::new)
+            .forEach(request::addItem);
         try {
             plcConnection.close();
         } catch (Exception e) {
@@ -92,11 +107,11 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     }
 
     @Override
-    public void accept(PlcNotification<Object> plcNotification) {
-        LOGGER.debug("Received {}", plcNotification);
+    public void accept(SubscriptionEventItem subscriptionEventItem) {
+        LOGGER.debug("Received {}", subscriptionEventItem);
         try {
             Exchange exchange = endpoint.createExchange();
-            exchange.getIn().setBody(unwrapIfSingle(plcNotification.getValues()));
+            exchange.getIn().setBody(unwrapIfSingle(subscriptionEventItem.getValues()));
             processor.process(exchange);
         } catch (Exception e) {
             exceptionHandler.handleException(e);

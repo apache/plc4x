@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.items.ResponseItem;
 import org.apache.plc4x.java.api.types.ResponseCode;
 
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * This response can be used to pass proprietary protocol specific messages from the underlying layers.
@@ -51,5 +52,26 @@ public class PlcProprietaryResponse<CUSTOM_RESPONSE> extends PlcResponse<PlcProp
         return "PlcProprietaryResponse{" +
             "response=" + response +
             "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcProprietaryResponse)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        PlcProprietaryResponse<?> that = (PlcProprietaryResponse<?>) o;
+        return Objects.equals(response, that.response);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), response);
     }
 }

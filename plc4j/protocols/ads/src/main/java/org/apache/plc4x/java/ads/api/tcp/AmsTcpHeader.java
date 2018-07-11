@@ -46,7 +46,7 @@ public class AmsTcpHeader implements ByteReadable {
      * This array contains the length of the data packet. It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
      * is null if length is supplied by {@link #tcpLength}.
      */
-    private final LengthSupplier[] lengthSuppliers;
+    private final transient LengthSupplier[] lengthSuppliers;
 
     private AmsTcpHeader(TcpLength tcpLength) {
         this.reserved = Reserved.CONSTANT;

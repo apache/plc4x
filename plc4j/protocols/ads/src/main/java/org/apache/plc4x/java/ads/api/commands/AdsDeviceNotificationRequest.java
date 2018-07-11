@@ -55,7 +55,7 @@ public class AdsDeviceNotificationRequest extends AdsAbstractRequest {
      */
     private final List<AdsStampHeader> adsStampHeaders;
 
-    private final LengthSupplier lengthSupplier;
+    private final transient LengthSupplier lengthSupplier;
 
     private AdsDeviceNotificationRequest(AmsHeader amsHeader, Length length, Stamps stamps, List<AdsStampHeader> adsStampHeaders) {
         super(amsHeader);

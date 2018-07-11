@@ -41,8 +41,6 @@ public enum MemoryArea {
     S7_200_OUTPUTS((byte) 0x07), /* Renamed from "System outputs of 200 family" */
     S7_200_IEC_COUNTERS((byte) 0x1E), /* Renamed from "IEC counters (200 family)" */
     S7_200_IEC_TIMERS((byte) 0x1F); /* Renamed from "IEC timers (200 family)" */
-    
-    private static Map<Byte, MemoryArea> map = null;
 
     private final byte code;
 
@@ -54,13 +52,16 @@ public enum MemoryArea {
         return code;
     }
 
-    public static MemoryArea valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (MemoryArea memoryArea : MemoryArea.values()) {
-                map.put(memoryArea.code, memoryArea);
-            }
+    private final static Map<Byte, MemoryArea> map;
+
+    static {
+        map = new HashMap<>();
+        for (MemoryArea memoryArea : MemoryArea.values()) {
+            map.put(memoryArea.code, memoryArea);
         }
+    }
+
+    public static MemoryArea valueOf(byte code) {
         return map.get(code);
     }
 

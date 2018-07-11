@@ -45,8 +45,6 @@ public enum ParameterError {
     L7_UNKNOWN_REQUEST((short) 0xD802),
     L7_INVALID_REQUEST_STATUS((short) 0xD803);
 
-    private static Map<Short, ParameterError> map = null;
-
     private final short code;
 
     ParameterError(short code) {
@@ -57,13 +55,16 @@ public enum ParameterError {
         return code;
     }
 
-    public static ParameterError valueOf(short code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (ParameterError parameterError : ParameterError.values()) {
-                map.put(parameterError.code, parameterError);
-            }
+    private final static Map<Short, ParameterError> map;
+
+    static {
+        map = new HashMap<>();
+        for (ParameterError parameterError : ParameterError.values()) {
+            map.put(parameterError.code, parameterError);
         }
+    }
+
+    public static ParameterError valueOf(short code) {
         return map.get(code);
     }
 

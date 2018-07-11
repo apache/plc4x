@@ -33,3 +33,6 @@ As we can't reverse-engineer these keys, the only way we could get them, would b
 Therefore we have currently stopped working on this protocol type.
 Eventually things may change in the future, but for now we see no way we could finish this on a legally correct path.
 
+== Links
+
+https://www.blackhat.com/docs/eu-17/materials/eu-17-Lei-The-Spear-To-Break%20-The-Security-Wall-Of-S7CommPlus-wp.pdf

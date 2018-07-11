@@ -16,13 +16,14 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.util;
+package org.apache.plc4x.java.base.util;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.commons.io.HexDump;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsEqual;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import static java.lang.Integer.toHexString;
@@ -31,15 +32,15 @@ import static org.junit.Assert.assertEquals;
 
 public class Assert {
 
-    public static void assertByteEquals(byte expected, byte actual) throws Exception {
+    public static void assertByteEquals(byte expected, byte actual) {
         String expectedHex = "0x" + leftPad(toHexString(expected), 2, '0');
         String actualHex = "0x" + leftPad(toHexString(actual), 2, '0');
         assertEquals(expectedHex, actualHex);
     }
 
     public static void assertByteEquals(byte[] expected, byte[] actual) throws Exception {
-        String expectedHex = cleanHexDump(ByteValue.of(expected).dump());
-        String actualHex = cleanHexDump(ByteValue.of(actual).dump());
+        String expectedHex = cleanHexDump(dump(expected));
+        String actualHex = cleanHexDump(dump(actual));
         assertEquals(expectedHex, actualHex);
     }
 
@@ -48,7 +49,7 @@ public class Assert {
             @Override
             public void describeTo(Description description) {
                 try {
-                    String dump = ByteValue.of(expected).dump();
+                    String dump = dump(expected);
                     description.appendText("\n").appendText(cleanHexDump(dump));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -62,7 +63,7 @@ public class Assert {
                     return;
                 }
                 try {
-                    String dump = ByteValue.of((byte[]) item).dump();
+                    String dump = dump((byte[]) item);
                     description.appendText("was ").appendText("\n").appendText(cleanHexDump(dump));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -73,5 +74,12 @@ public class Assert {
 
     private static String cleanHexDump(String in) {
         return in.replaceAll("@.*\\{", "@XXXXXXXX{");
+    }
+
+    private static String dump(byte[] bytes) throws IOException {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            HexDump.dump(bytes, 0, byteArrayOutputStream, 0);
+            return HexDump.EOL + byteArrayOutputStream.toString();
+        }
     }
 }

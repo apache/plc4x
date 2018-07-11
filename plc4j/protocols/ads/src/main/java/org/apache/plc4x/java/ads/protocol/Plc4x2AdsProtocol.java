@@ -28,6 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsAddress;
 import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
+import org.apache.plc4x.java.ads.protocol.exception.AdsException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -86,6 +87,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws Exception {
+        LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
         PlcRequest request = msg.getRequest();
         if (request instanceof PlcReadRequest) {
             encodeReadRequest(msg, out);
@@ -100,7 +102,20 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if ((cause instanceof IOException) && (cause.getMessage().contains("Connection reset by peer") ||
+        LOGGER.trace("(-->ERR): {}", ctx, cause);
+        if (cause instanceof AdsException) {
+            Invoke invokeId = ((AdsException) cause).getInvokeId();
+            if (invokeId != null) {
+                PlcRequestContainer<PlcRequest, PlcResponse> remove = requests.remove(invokeId.getAsLong());
+                if (remove != null) {
+                    remove.getResponseFuture().completeExceptionally(new PlcIoException(cause));
+                } else {
+                    LOGGER.warn("Unrelated exception received {}", invokeId, cause);
+                }
+            } else {
+                super.exceptionCaught(ctx, cause);
+            }
+        } else if ((cause instanceof IOException) && (cause.getMessage().contains("Connection reset by peer") ||
             cause.getMessage().contains("Operation timed out"))) {
             String reason = cause.getMessage().contains("Connection reset by peer") ?
                 "Connection terminated unexpectedly" : "Remote host not responding";
@@ -187,6 +202,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws Exception {
+        LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, amsPacket, out);
         if (amsPacket instanceof AdsDeviceNotificationRequest) {
             LOGGER.debug("Received notification {}", amsPacket);
             handleAdsDeviceNotificationRequest((AdsDeviceNotificationRequest) amsPacket);
@@ -235,7 +251,6 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     }
 
     public boolean addConsumer(Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer) {
-        // TODO: we might need to add an AdsAddDeviceNotification
         return deviceNotificationListeners.add(adsDeviceNotificationRequestConsumer);
     }
 

@@ -29,10 +29,11 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.model.AdsAddress;
 import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
-import org.apache.plc4x.java.api.messages.PlcNotification;
-import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
-import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
-import org.apache.plc4x.java.api.messages.PlcRequestContainer;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
+import org.apache.plc4x.java.api.messages.items.SubscriptionRequestChangeOfStateItem;
+import org.apache.plc4x.java.api.messages.items.SubscriptionRequestItem;
+import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,9 +50,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class AdsTcpPlcConnectionTests {
 
@@ -66,6 +69,7 @@ public class AdsTcpPlcConnectionTests {
     @Before
     public void setUp() throws Exception {
         SUT = AdsTcpPlcConnection.of(InetAddress.getByName("localhost"), AmsNetId.of("0.0.0.0.0.0"), AmsPort.of(13));
+        // TODO: Refactor this to use the TestChannelFactory instead.
         channelMock = mock(Channel.class, RETURNS_DEEP_STUBS);
         FieldUtils.writeField(SUT, "channel", channelMock, true);
         executorService = Executors.newFixedThreadPool(10);
@@ -115,6 +119,7 @@ public class AdsTcpPlcConnectionTests {
 
     @Test
     public void subscribe() throws Exception {
+        // TODO: Does this really test the driver implementation?
         when(channelMock.writeAndFlush(any(PlcRequestContainer.class)))
             .then(invocationOnMock -> {
                 PlcRequestContainer plcRequestContainer = invocationOnMock.getArgument(0);
@@ -158,19 +163,30 @@ public class AdsTcpPlcConnectionTests {
         when(channelMock.pipeline().get(Plc4x2AdsProtocol.class)).thenReturn(plc4x2AdsProtocol);
 
         CompletableFuture<?> notificationReceived = new CompletableFuture<>();
-        Consumer<PlcNotification<String>> plcNotificationConsumer = plcNotification -> {
+        Consumer<SubscriptionEventItem<String>> plcNotificationConsumer = plcNotification -> {
             LOGGER.info("Received {}", plcNotification);
             notificationReceived.complete(null);
         };
-        SUT.subscribe(plcNotificationConsumer, SUT.parseAddress("0/0"), String.class);
-        SUT.subscribe(plcNotificationConsumer, SUT.parseAddress("Main.by[0]"), String.class);
-        notificationReceived.get(3, TimeUnit.SECONDS);
-    }
+        PlcSubscriptionRequest subscriptionRequest = new PlcSubscriptionRequest();
+        subscriptionRequest.addItem(new SubscriptionRequestChangeOfStateItem(
+            String.class, SUT.parseAddress("0/0"), plcNotificationConsumer));
+        /*subscriptionRequest.addItem(new SubscriptionRequestItem<>(
+            String.class, SUT.parseAddress("Main.by[0]"), plcNotificationConsumer));*/
+        CompletableFuture<? extends PlcSubscriptionResponse> subscriptionFuture = SUT.subscribe(subscriptionRequest);
+        PlcSubscriptionResponse subscriptionResponse = subscriptionFuture.get(5, TimeUnit.SECONDS);
+        //notificationReceived.get(3, TimeUnit.SECONDS);
+        assertThat(subscriptionResponse, notNullValue());
+        assertThat(subscriptionResponse.getNumberOfItems(), equalTo(1));
 
-    @Test
-    public void unsubscribe() {
-        Consumer<PlcNotification<String>> plcNotificationConsumer = plcNotification -> {
-        };
-        SUT.unsubscribe(plcNotificationConsumer, SUT.parseAddress("0/0"));
+        // Now unsubscribe again ...
+
+        // TODO: Setup the mock to actually perform the unsubscription.
+        /*PlcUnsubscriptionRequest unsubscriptionRequest = new PlcUnsubscriptionRequest();
+        for (SubscriptionResponseItem<?> subscriptionResponseItem : subscriptionResponse.getResponseItems()) {
+            unsubscriptionRequest.addItem(subscriptionResponseItem.getSubscriptionHandle());
+        }
+        CompletableFuture<? extends PlcUnsubscriptionResponse> unsubscriptionFuture = SUT.unsubscribe(unsubscriptionRequest);
+        PlcUnsubscriptionResponse plcUnsubscriptionResponse = unsubscriptionFuture.get(5, TimeUnit.SECONDS);
+        assertThat(plcUnsubscriptionResponse, notNullValue());*/
     }
 }

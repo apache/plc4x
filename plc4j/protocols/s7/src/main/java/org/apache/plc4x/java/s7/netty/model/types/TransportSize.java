@@ -43,8 +43,6 @@ public enum TransportSize {
     IEC_COUNTER((byte) 0x1F, -1),
     HS_COUNTER((byte) 0x20, -1);
 
-    private static Map<Byte, TransportSize> map = null;
-    
     private final byte code;
     private final int sizeInBytes;
 
@@ -61,13 +59,16 @@ public enum TransportSize {
         return sizeInBytes;
     }
 
-    public static TransportSize valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (TransportSize transportSize : TransportSize.values()) {
-                map.put(transportSize.code, transportSize);
-            }
+    private final static Map<Byte, TransportSize> map;
+
+    static {
+        map = new HashMap<>();
+        for (TransportSize transportSize : TransportSize.values()) {
+            map.put(transportSize.code, transportSize);
         }
+    }
+
+    public static TransportSize valueOf(byte code) {
         return map.get(code);
     }
 

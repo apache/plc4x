@@ -24,8 +24,8 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.apache.plc4x.java.ads.util.Assert.assertByteEquals;
-import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
+import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 
 public class LittleEndianEncoderTest {
 

@@ -53,7 +53,7 @@ public class ManualTest {
     private static class MyRouteBuilder extends RouteBuilder {
         @Override
         public void configure() {
-            from("plc4x:ads:tcp://10.10.64.40/10.10.64.40.1.1:851/10.10.56.23.1.1:30000?dataType=java.lang.Integer&address=Allgemein_S2.Station")
+            from("plc4x:ads:tcp://10.10.64.40/10.10.64.40.1.1:851/192.168.113.3.1.1:30000?dataType=java.lang.Integer&address=Allgemein_S2.Station")
                 .process(exchange -> System.out.println("Invoked timer at " + new Date()))
                 .bean("foo")
                 .log("Received ${body}");

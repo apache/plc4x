@@ -203,8 +203,12 @@ public class AmsRouter {
             PlcProprietaryResponse<R> response = completableFuture.get(3, TimeUnit.SECONDS);
             request.getResponseFuture().complete(response.getResponse());
             return response.getResponse().getAmsHeader().getCode();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return AmsError.of(AdsReturnCode.ADS_CODE_1864);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
             return AmsError.of(AdsReturnCode.ADS_CODE_1864);
         }
     }
@@ -231,8 +235,12 @@ public class AmsRouter {
             port.AddNotification(pNotification.value, notify);
             request.getResponseFuture().complete(response.getResponse());
             return response.getResponse().getAmsHeader().getCode();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return AmsError.of(AdsReturnCode.ADS_CODE_1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
             return AmsError.of(AdsReturnCode.ADS_CODE_1);
         }
     }
@@ -253,8 +261,12 @@ public class AmsRouter {
             adsLibPort.DelNotification(pAddr, plcProprietaryRequest.getRequest().getNotificationHandle());
             request.getResponseFuture().complete(response.getResponse());
             return response.getResponse().getAmsHeader().getCode();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            return AmsError.of(AdsReturnCode.ADS_CODE_1);
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
             return AmsError.of(AdsReturnCode.ADS_CODE_1);
         }
     }

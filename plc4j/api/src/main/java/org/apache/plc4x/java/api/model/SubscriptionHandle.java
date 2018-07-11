@@ -1,3 +1,4 @@
+package org.apache.plc4x.java.api.model;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -16,25 +17,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.modbus.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.plc4x.java.modbus.netty.model.ModbusMessage;
-
-import java.util.List;
-
-public class ModbusProtocol extends MessageToMessageCodec<ByteBuf, ModbusMessage> {
-
-    @Override
-    protected void encode(ChannelHandlerContext ctx, ModbusMessage msg, List<Object> out) throws Exception {
-
-    }
-
-    @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-
-    }
+/**
+ * When subscribing to remote resources, depending on the used protocol
+ * different data is used to identify a subscription. This interface is
+ * to be implemented in the individual Driver implementations to contain
+ * all information needed to pull or unsubscribe any form of subscription.
+ *
+ * For every subscribed item, a separate {@link SubscriptionHandle} object is
+ * returned in order to allow fine granular unsubscriptions.
+ */
+public interface SubscriptionHandle {
 
 }

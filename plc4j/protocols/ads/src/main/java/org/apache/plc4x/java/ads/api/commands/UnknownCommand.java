@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 @AdsCommandType(Command.UNKNOWN)
 public class UnknownCommand extends AmsPacket {
 
-    private final ByteBuf remainingBytes;
+    private transient final ByteBuf remainingBytes;
 
     private UnknownCommand(AmsHeader amsHeader, ByteBuf remainingBytes) {
         super(amsHeader);
@@ -59,12 +59,15 @@ public class UnknownCommand extends AmsPacket {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof UnknownCommand))
+        }
+        if (!(o instanceof UnknownCommand)) {
             return false;
-        if (!super.equals(o))
+        }
+        if (!super.equals(o)) {
             return false;
+        }
 
         UnknownCommand that = (UnknownCommand) o;
 

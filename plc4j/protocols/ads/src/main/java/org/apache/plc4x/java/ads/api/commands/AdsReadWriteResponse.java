@@ -52,7 +52,7 @@ public class AdsReadWriteResponse extends AdsAbstractResponse {
      */
     private final Data data;
 
-    private final LengthSupplier lengthSupplier;
+    private final transient LengthSupplier lengthSupplier;
 
     private AdsReadWriteResponse(AmsHeader amsHeader, Result result, Length length, Data data) {
         super(amsHeader);

@@ -20,5 +20,45 @@ package org.apache.plc4x.java.modbus.model;
 
 import org.apache.plc4x.java.api.model.Address;
 
-public class ModbusAddress implements Address {
+import java.util.Objects;
+import java.util.regex.Pattern;
+
+public abstract class ModbusAddress implements Address {
+
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)");
+
+    private final int address;
+
+    protected ModbusAddress(int address) {
+        this.address = address;
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ModbusAddress)) {
+            return false;
+        }
+        ModbusAddress that = (ModbusAddress) o;
+        return address == that.address;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(address);
+    }
+
+    @Override
+    public String toString() {
+        return "ModbusAddress{" +
+            "address=" + address +
+            '}';
+    }
 }

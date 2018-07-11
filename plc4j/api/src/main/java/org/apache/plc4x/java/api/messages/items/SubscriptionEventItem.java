@@ -15,26 +15,34 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- */
-package org.apache.plc4x.java.ads.util;
+*/
+package org.apache.plc4x.java.api.messages.items;
 
-import static org.junit.Assert.fail;
+import java.util.Calendar;
+import java.util.List;
 
-public class Junit5Backport {
+public class SubscriptionEventItem<T> {
 
-    public static void assertThrows(Class<? extends Exception> exception, Acceptor acceptor) {
-        try {
-            acceptor.accept();
-            fail("Expected exception " + exception + " not thrown.");
-        } catch (Exception e) {
-            if (!exception.isAssignableFrom(e.getClass())) {
-                throw new AssertionError("Unexpected exception type " + e.getClass() + ". Expected " + exception, e);
-            }
-        }
+    private SubscriptionRequestItem<T> subscriptionRequestItem;
+    private Calendar timestamp;
+    private List<T> values;
+
+    public SubscriptionEventItem(SubscriptionRequestItem<T> subscriptionRequestItem, Calendar timestamp, List<T> values) {
+        this.subscriptionRequestItem = subscriptionRequestItem;
+        this.timestamp = timestamp;
+        this.values = values;
     }
 
-    @FunctionalInterface
-    public interface Acceptor {
-        void accept() throws Exception;
+    public SubscriptionRequestItem<T> getSubscriptionRequestItem() {
+        return subscriptionRequestItem;
     }
+
+    public Calendar getTimestamp() {
+        return timestamp;
+    }
+
+    public List<T> getValues() {
+        return values;
+    }
+
 }

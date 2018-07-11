@@ -24,9 +24,10 @@ import org.apache.commons.io.HexDump;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 
-public interface ByteReadable extends ByteBufSupplier, LengthSupplier {
+public interface ByteReadable extends ByteBufSupplier, LengthSupplier, Serializable {
 
     default byte[] getBytes() {
         ByteBuf byteBuf = getByteBuf();

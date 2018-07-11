@@ -38,8 +38,6 @@ public enum VariableAddressingMode {
     DBREAD((byte) 0xb0),
     SYM1200((byte) 0xb2); /* Renamed from "1200SYM" */
 
-    private static Map<Byte, VariableAddressingMode> map = null;
-    
     private final byte code;
 
     VariableAddressingMode(byte code) {
@@ -50,13 +48,16 @@ public enum VariableAddressingMode {
         return code;
     }
 
-    public static VariableAddressingMode valueOf(byte code) {
-        if (map == null) {
-            map = new HashMap<>();
-            for (VariableAddressingMode variableAddressingMode : VariableAddressingMode.values()) {
-                map.put(variableAddressingMode.code, variableAddressingMode);
-            }
+    private final static Map<Byte, VariableAddressingMode> map;
+
+    static {
+        map = new HashMap<>();
+        for (VariableAddressingMode variableAddressingMode : VariableAddressingMode.values()) {
+            map.put(variableAddressingMode.code, variableAddressingMode);
         }
+    }
+
+    public static VariableAddressingMode valueOf(byte code) {
         return map.get(code);
     }
 

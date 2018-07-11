@@ -21,13 +21,20 @@ package org.apache.plc4x.java.ads.api.generic.types;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
-import static org.apache.plc4x.java.ads.util.Junit5Backport.assertThrows;
+import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 public class AmsPortTest {
 
     private final byte NULL_BYTE = 0x0;
+
+    @Test
+    public void reservedPorts() {
+        // Initialize subclass
+        assertNotNull(AmsPort.ReservedPorts.logger);
+    }
 
     @Test
     public void ofBytes() {
@@ -52,7 +59,7 @@ public class AmsPortTest {
     public void noHex() {
         AmsPort.of("0x0100");
     }
-    
+
     @Test
     public void ofString() {
         assertByte(AmsPort.of("1"), "0x0100");

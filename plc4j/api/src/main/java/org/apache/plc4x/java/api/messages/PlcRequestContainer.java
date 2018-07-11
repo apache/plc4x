@@ -21,6 +21,14 @@ package org.apache.plc4x.java.api.messages;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Helper mostly used internally to split up big requests into multiple sub-requests.
+ *
+ * TODO: Think about moving this into one of the driver-base modules.
+ *
+ * @param <T>
+ * @param <R>
+ */
 public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> implements ProtocolMessage {
 
     private final T request;
@@ -51,4 +59,28 @@ public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> im
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "PlcRequestContainer{" +
+            "request=" + request +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcRequestContainer)) {
+            return false;
+        }
+        PlcRequestContainer<?, ?> that = (PlcRequestContainer<?, ?>) o;
+        return Objects.equals(request, that.request) &&
+            Objects.equals(responseFuture, that.responseFuture);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(request, responseFuture);
+    }
 }

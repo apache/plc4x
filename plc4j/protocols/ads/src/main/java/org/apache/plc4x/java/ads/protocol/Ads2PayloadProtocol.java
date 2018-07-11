@@ -66,6 +66,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) {
+        LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
         Invoke invokeId = amsPacket.getAmsHeader().getInvokeId();
         if (invokeId != Invoke.NONE) {
             requests.put(invokeId, amsPacket);
@@ -75,6 +76,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) {
+        LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, byteBuf, out);
         AmsNetId targetAmsNetId = AmsNetId.of(byteBuf);
         AmsPort targetAmsPort = AmsPort.of(byteBuf);
         AmsNetId sourceAmsNetId = AmsNetId.of(byteBuf);

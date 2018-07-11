@@ -149,6 +149,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     protected void mapAddress(SymbolicAdsAddress symbolicAdsAddress) {
+        // If the map doesn't contain an entry for the given symbolicAdsAddress,
+        // resolve it and add it to the map.
         addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
             LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
             AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
@@ -163,13 +165,16 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
             );
 
+            // TODO: This is blocking, should be changed to be async.
             CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
             channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
             PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
             AdsReadWriteResponse response = getHandleResponse.getResponse();
+
             if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
                 throw new PlcRuntimeException("Non error code received " + response.getResult());
             }
+
             IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
             return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
         });

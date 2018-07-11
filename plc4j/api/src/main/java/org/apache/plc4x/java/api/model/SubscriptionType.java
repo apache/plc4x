@@ -1,3 +1,4 @@
+package org.apache.plc4x.java.api.model;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -16,24 +17,26 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.modbus.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
+/**
+ * {@link SubscriptionType} specifies the nature of the subscription.
+ * In general PLC4X supports exactly 3 types of subscriptions.
+ */
+public enum SubscriptionType {
 
-import java.util.List;
+    /**
+     * A cyclic subscription where a value is sent no matter if it's value changed in a given interval.
+     */
+    CYCLIC,
 
-public class ModbusTcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
+    /**
+     * Only send data, if a value in the PLC changed.
+     */
+    CHANGE_OF_STATE,
 
-    @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-
-    }
-
-    @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-
-    }
+    /**
+     * Subscribe to events created by the PLC which usually are defined in the PLCs application (Alarms).
+     */
+    EVENT
 
 }

@@ -30,7 +30,12 @@
 
   <artifactId>plc4j-protocol-modbus</artifactId>
   <name>PLC4J: Protocol: Modbus</name>
-  <description>Implementation of a PLC4X driver able to speak with Modbus devices using the Modbus protocol.</description>
+  <description>Implementation of a PLC4X driver able to speak with Modbus devices using the Modbus protocol.
+  </description>
+
+  <properties>
+    <modbus-driver.version>1.1.0</modbus-driver.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -53,6 +58,30 @@
       <artifactId>plc4j-protocol-driver-base-serial</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <!-- Just for reference can be removed later-->
+      <groupId>com.digitalpetri.modbus</groupId>
+      <artifactId>modbus-master-tcp</artifactId>
+      <version>${modbus-driver.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.digitalpetri.modbus</groupId>
+      <artifactId>modbus-core</artifactId>
+      <version>${modbus-driver.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.digitalpetri.modbus</groupId>
+      <artifactId>modbus-codec</artifactId>
+      <version>${modbus-driver.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>io.netty</groupId>
@@ -66,7 +95,15 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+    </dependency>
 
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -77,6 +114,43 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>se.koc</groupId>
+      <artifactId>netty-transport-jserialcomm</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-protocol-driver-base-test</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>check-dependencies</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <ignoredDependencies combine.children="append">
+                <ignoredDependency>commons-io:commons-io</ignoredDependency>
+                <ignoredDependency>com.digitalpetri.modbus:modbus-master-tcp</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

@@ -21,6 +21,8 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.messages.items.RequestItem;
 import org.apache.plc4x.java.api.model.Address;
 
+import java.util.Objects;
+
 /**
  * This request can be used to pass proprietary protocol specific messages to the underlying layers.
  *
@@ -51,5 +53,26 @@ public class PlcProprietaryRequest<CUSTOM_REQUEST> extends PlcRequest<PlcProprie
         return "PlcProprietaryRequest{" +
             "request=" + request +
             "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcProprietaryRequest)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        PlcProprietaryRequest<?> that = (PlcProprietaryRequest<?>) o;
+        return Objects.equals(request, that.request);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), request);
     }
 }

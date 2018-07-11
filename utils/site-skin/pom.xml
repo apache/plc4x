@@ -36,6 +36,68 @@
           <useDefaultDelimiters>false</useDefaultDelimiters>
         </configuration>
       </plugin>
+
+      <!--
+        Download the Material Design Light package and unpack it.
+      -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <id>get-mdl-zip</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://code.getmdl.io/1.3.0/mdl.zip</url>
+              <outputDirectory>
+                ${project.build.directory}/dependency/mdl
+              </outputDirectory>
+              <unpack>true</unpack>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+        Copy the MDL files to the site directory.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-mdl-site-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/dependency/mdl</directory>
+                  <includes>
+                    <include>**.css</include>
+                  </includes>
+                  <targetPath>${project.build.outputDirectory}/css</targetPath>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/mdl</directory>
+                  <includes>
+                    <include>**.js</include>
+                  </includes>
+                  <targetPath>${project.build.outputDirectory}/js</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>

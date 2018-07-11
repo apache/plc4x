@@ -81,12 +81,25 @@ public class AmsSerialResetFrame implements ByteReadable {
         this.crc = CRC.of(DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength));
     }
 
+    private AmsSerialResetFrame(FragmentNumber fragmentNumber) {
+        this.magicCookie = MagicCookie.of(ID);
+        this.transmitterAddress = TransmitterAddress.RS232_COMM_ADDRESS;
+        this.receiverAddress = ReceiverAddress.RS232_COMM_ADDRESS;
+        this.fragmentNumber = FragmentNumber.of((byte) 0);
+        this.userDataLength = UserDataLength.of((byte) 0);
+        this.crc = CRC.of(DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength));
+    }
+
     public static AmsSerialResetFrame of(MagicCookie magicCookie, TransmitterAddress transmitterAddress, ReceiverAddress receiverAddress, FragmentNumber fragmentNumber, UserDataLength userDataLength, CRC crc) {
         return new AmsSerialResetFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, crc);
     }
 
     public static AmsSerialResetFrame of(TransmitterAddress transmitterAddress, ReceiverAddress receiverAddress, FragmentNumber fragmentNumber) {
         return new AmsSerialResetFrame(transmitterAddress, receiverAddress, fragmentNumber);
+    }
+
+    public static AmsSerialResetFrame of(FragmentNumber fragmentNumber) {
+        return new AmsSerialResetFrame(fragmentNumber);
     }
 
     @Override

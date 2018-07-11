@@ -19,8 +19,6 @@
 package org.apache.plc4x.java.ads.api.generic;
 
 import org.apache.plc4x.java.ads.api.generic.types.Command;
-import org.apache.plc4x.java.ads.api.tcp.AmsTCPPacket;
-import org.apache.plc4x.java.ads.api.tcp.AmsTcpHeader;
 import org.apache.plc4x.java.ads.api.util.LengthSupplier;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,9 +47,7 @@ public class GenericFactoryMethodTest {
     public static Collection<Object[]> data() {
         return Stream.of(
             AdsData.class,
-            AmsHeader.class,
-            AmsTcpHeader.class,
-            AmsTCPPacket.class
+            AmsHeader.class
         ).map(clazz -> new Object[]{clazz}).collect(Collectors.toList());
     }
 
