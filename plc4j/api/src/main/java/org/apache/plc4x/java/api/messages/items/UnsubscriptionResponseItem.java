@@ -20,10 +20,10 @@ package org.apache.plc4x.java.api.messages.items;
 
 import org.apache.plc4x.java.api.types.ResponseCode;
 
-public class WriteResponseItem<T> extends ResponseItem<WriteRequestItem<T>> {
+public class UnsubscriptionResponseItem {
 
-    public WriteResponseItem(WriteRequestItem<T> requestItem, ResponseCode responseCode) {
-        super(requestItem, responseCode);
+    public UnsubscriptionResponseItem(UnsubscriptionRequestItem requestItem, ResponseCode responseCode) {
+
     }
 
 }

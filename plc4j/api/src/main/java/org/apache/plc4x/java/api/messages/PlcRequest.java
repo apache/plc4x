@@ -101,7 +101,7 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
     @Override
     public String toString() {
         return "PlcRequest{" +
-            "requestItems=" + requestItems +
+            "eventItems=" + requestItems +
             '}';
     }
 

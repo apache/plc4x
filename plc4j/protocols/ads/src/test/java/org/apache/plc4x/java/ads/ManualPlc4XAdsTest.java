@@ -22,8 +22,8 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
-import org.apache.plc4x.java.api.messages.PlcNotification;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.items.*;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
@@ -41,7 +41,7 @@ public class ManualPlc4XAdsTest {
             connectionUrl = "ads:serial:///dev/ttys003/10.10.64.40.1.1:851/10.10.56.23.1.1:30000";
         } else {
             System.out.println("Using tcp");
-            connectionUrl = "ads:tcp://10.10.64.40/10.10.64.40.1.1:851/10.10.56.23.1.1:30000";
+            connectionUrl = "ads:tcp://10.10.64.40/10.10.64.40.1.1:851/192.168.113.1.1.1:30000";
         }
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
@@ -57,11 +57,21 @@ public class ManualPlc4XAdsTest {
             System.out.println("ResponseItem " + responseItem);
             responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
 
-            Consumer<PlcNotification<Integer>> notificationConsumer = plcNotification -> System.out.println("Received notification " + plcNotification);
+            Consumer<SubscriptionEventItem<Integer>> notificationConsumer = plcNotification -> System.out.println("Received notification " + plcNotification);
             PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("Subscribe not available"));
-            plcSubscriber.subscribe(notificationConsumer, address, Integer.class);
-            TimeUnit.SECONDS.sleep(5);
-            plcSubscriber.unsubscribe(notificationConsumer, address);
+            PlcSubscriptionRequest subscriptionRequest = new PlcSubscriptionRequest();
+            subscriptionRequest.addItem(new SubscriptionRequestChangeOfStateItem(Integer.class, address, notificationConsumer));
+            CompletableFuture<PlcSubscriptionResponse> subscriptionFuture = plcSubscriber.subscribe(subscriptionRequest);
+            PlcSubscriptionResponse subscriptionResponse = subscriptionFuture.get(5, TimeUnit.SECONDS);
+            SubscriptionResponseItem subscriptionResponseItem = subscriptionResponse.getResponseItem().get();
+
+            PlcUnsubscriptionRequest unsubscriptionRequest = new PlcUnsubscriptionRequest();
+            unsubscriptionRequest.addItem(
+                new UnsubscriptionRequestItem(subscriptionResponseItem.getSubscriptionHandle()));
+            CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionFuture =
+                plcSubscriber.unsubscribe(unsubscriptionRequest);
+            PlcUnsubscriptionResponse unsubscriptionResponse = unsubscriptionFuture.get(5, TimeUnit.SECONDS);
+            System.out.println(unsubscriptionResponse);
         }
         System.exit(0);
     }
