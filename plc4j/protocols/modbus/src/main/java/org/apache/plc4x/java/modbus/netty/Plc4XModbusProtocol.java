@@ -99,8 +99,18 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 boolean booleanToWrite = produceCoilValue(writeRequestItem.getValues());
                 modbusRequest = new WriteSingleCoilRequest(coilModbusAddress.getAddress(), booleanToWrite);
             }
+        } else if (address instanceof MaskWriteRegisterModbusAddress) {
+            MaskWriteRegisterModbusAddress maskWriteRegisterModbusAddress = (MaskWriteRegisterModbusAddress) address;
+            if (quantity > 1) {
+                throw new PlcProtocolException("Mask write request can only write one value");
+            } else {
+                // TODO: this should be better part of the payload not the addressing.
+                int andMask = maskWriteRegisterModbusAddress.getAndMask();
+                int orMask = maskWriteRegisterModbusAddress.getOrMask();
+                modbusRequest = new MaskWriteRegisterRequest(maskWriteRegisterModbusAddress.getAddress(), andMask, orMask);
+            }
         } else {
-            throw new PlcProtocolException("Unsupported address type" + address.getClass());
+            throw new PlcProtocolException("Unsupported address type " + address.getClass() + " for a write request.");
         }
         short transactionId = (short) this.transactionId.getAndIncrement();
         requestsMap.put(transactionId, msg);
@@ -135,7 +145,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             ReadInputRegistersModbusAddress readInputRegistersModbusAddress = (ReadInputRegistersModbusAddress) address;
             modbusRequest = new ReadInputRegistersRequest(readInputRegistersModbusAddress.getAddress(), quantity);
         } else {
-            throw new PlcProtocolException("Unsupported address type" + address.getClass());
+            throw new PlcProtocolException("Unsupported address type " + address.getClass() + " for a read request.");
         }
         short transactionId = (short) this.transactionId.getAndIncrement();
         requestsMap.put(transactionId, msg);
@@ -212,6 +222,11 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             // TODO: use register method
             List data = produceRegisterValueList(requestItem, datatype, byteBuf);
             plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem) requestItem, ResponseCode.OK, data)));
+        } else if (modbusPdu instanceof MaskWriteRegisterResponse) {
+            // TODO: finish implementation
+            MaskWriteRegisterResponse maskWriteRegisterResponse = (MaskWriteRegisterResponse) modbusPdu;
+            LOGGER.debug("{}: Nothing", maskWriteRegisterResponse);
+            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem) requestItem, ResponseCode.OK)));
         } else if (modbusPdu instanceof ExceptionResponse) {
             ExceptionResponse exceptionResponse = (ExceptionResponse) modbusPdu;
             throw new PlcProtocolException("Error received " + exceptionResponse.getExceptionCode());

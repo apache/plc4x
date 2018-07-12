@@ -22,12 +22,15 @@ import com.digitalpetri.modbus.ModbusPdu;
 import com.digitalpetri.modbus.codec.ModbusTcpPayload;
 import com.digitalpetri.modbus.requests.*;
 import com.digitalpetri.modbus.responses.*;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.ResponseItem;
+import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.types.ResponseCode;
 import org.apache.plc4x.java.modbus.model.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +49,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
@@ -117,6 +122,31 @@ public class Plc4XModbusProtocolTest {
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
+                        PlcWriteRequest
+                            .builder()
+                            .addItem(CoilModbusAddress.of("coil:1"), pair.left)
+                            .build(), new CompletableFuture<>()),
+                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.right[0]))
+                ),
+                /* Read request no supported on maskwrite so how to handle?
+                ImmutablePair.of(
+                    new PlcRequestContainer<>(
+                        PlcReadRequest
+                            .builder()
+                            .addItem(pair.left.getClass(), MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"))
+                            .build(), new CompletableFuture<>()),
+                    new ModbusTcpPayload((short) 0, (short) 0, new MaskWriteRegisterResponse(1, 1, 2))
+                ), */
+                ImmutablePair.of(
+                    new PlcRequestContainer<>(
+                        PlcWriteRequest
+                            .builder()
+                            .addItem(MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), pair.left)
+                            .build(), new CompletableFuture<>()),
+                    new ModbusTcpPayload((short) 0, (short) 0, new MaskWriteRegisterResponse(1, 1, 2))
+                ),
+                ImmutablePair.of(
+                    new PlcRequestContainer<>(
                         PlcReadRequest
                             .builder()
                             .addItem(pair.left.getClass(), ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1"))
@@ -159,14 +189,6 @@ public class Plc4XModbusProtocolTest {
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem(CoilModbusAddress.of("coil:1"), pair.left)
-                            .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.right[0]))
-                ),
-                ImmutablePair.of(
-                    new PlcRequestContainer<>(
-                        PlcWriteRequest
-                            .builder()
                             .addItem(RegisterModbusAddress.of("register:1"), pair.left)
                             .build(), new CompletableFuture<>()),
                     new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.right[0]))
@@ -198,19 +220,101 @@ public class Plc4XModbusProtocolTest {
         ModbusTcpPayload modbusTcpPayload = (ModbusTcpPayload) out.get(0);
         ModbusPdu modbusPdu = modbusTcpPayload.getModbusPdu();
         if (modbusPdu instanceof MaskWriteRegisterRequest) {
-            // TODO: implement me
+            MaskWriteRegisterRequest maskWriteRegisterRequest = (MaskWriteRegisterRequest) modbusPdu;
+            int address = maskWriteRegisterRequest.getAddress();
+            assertThat(address, equalTo(1));
+            int andMask = maskWriteRegisterRequest.getAndMask();
+            int orMask = maskWriteRegisterRequest.getOrMask();
+            if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
+                assertThat(andMask, equalTo(1));
+                assertThat(orMask, equalTo(2));
+            } else if (payloadClazzName.equals(Byte.class.getSimpleName())) {
+                assertThat(andMask, equalTo(1));
+                assertThat(orMask, equalTo(2));
+            } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
+                assertThat(andMask, equalTo(1));
+                assertThat(orMask, equalTo(2));
+            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
+                assertThat(andMask, equalTo(1));
+                assertThat(orMask, equalTo(2));
+            } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
+                assertThat(andMask, equalTo(1));
+                assertThat(orMask, equalTo(2));
+            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
+                assertThat(andMask, equalTo(1));
+                assertThat(orMask, equalTo(2));
+            } else if (payloadClazzName.equals(String.class.getSimpleName())) {
+                assertThat(andMask, equalTo(1));
+                assertThat(orMask, equalTo(2));
+            }
         } else if (modbusPdu instanceof ReadCoilsRequest) {
-            // TODO: implement me
+            ReadCoilsRequest readCoilsRequest = (ReadCoilsRequest) modbusPdu;
+            int address = readCoilsRequest.getAddress();
+            int quantity = readCoilsRequest.getQuantity();
+            assertThat(address, equalTo(1));
+            assertThat(quantity, equalTo(1));
         } else if (modbusPdu instanceof ReadDiscreteInputsRequest) {
-            // TODO: implement me
+            ReadDiscreteInputsRequest readCoilsRequest = (ReadDiscreteInputsRequest) modbusPdu;
+            int address = readCoilsRequest.getAddress();
+            int quantity = readCoilsRequest.getQuantity();
+            assertThat(address, equalTo(1));
+            assertThat(quantity, equalTo(1));
         } else if (modbusPdu instanceof ReadHoldingRegistersRequest) {
-            // TODO: implement me
+            ReadHoldingRegistersRequest readCoilsRequest = (ReadHoldingRegistersRequest) modbusPdu;
+            int address = readCoilsRequest.getAddress();
+            int quantity = readCoilsRequest.getQuantity();
+            assertThat(address, equalTo(1));
+            assertThat(quantity, equalTo(1));
         } else if (modbusPdu instanceof ReadInputRegistersRequest) {
-            // TODO: implement me
+            ReadInputRegistersRequest readCoilsRequest = (ReadInputRegistersRequest) modbusPdu;
+            int address = readCoilsRequest.getAddress();
+            int quantity = readCoilsRequest.getQuantity();
+            assertThat(address, equalTo(1));
+            assertThat(quantity, equalTo(1));
         } else if (modbusPdu instanceof WriteMultipleCoilsRequest) {
-            // TODO: implement me
+            WriteMultipleCoilsRequest writeMultipleCoilsRequest = (WriteMultipleCoilsRequest) modbusPdu;
+            int address = writeMultipleCoilsRequest.getAddress();
+            assertThat(address, equalTo(1));
+            ByteBuf value = writeMultipleCoilsRequest.getValues();
+            byte[] bytes = new byte[value.readableBytes()];
+            value.readBytes(value);
+            if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0}, bytes);
+            } else if (payloadClazzName.equals(Byte.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0}, bytes);
+            } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0}, bytes);
+            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0}, bytes);
+            } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0}, bytes);
+            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0}, bytes);
+            } else if (payloadClazzName.equals(String.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0}, bytes);
+            }
         } else if (modbusPdu instanceof WriteMultipleRegistersRequest) {
-            // TODO: implement me
+            WriteMultipleRegistersRequest writeMultipleRegistersRequest = (WriteMultipleRegistersRequest) modbusPdu;
+            int address = writeMultipleRegistersRequest.getAddress();
+            assertThat(address, equalTo(1));
+            ByteBuf value = writeMultipleRegistersRequest.getValues();
+            byte[] bytes = new byte[value.readableBytes()];
+            value.readBytes(value);
+            if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
+            } else if (payloadClazzName.equals(Byte.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
+            } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
+            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
+            } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
+            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
+            } else if (payloadClazzName.equals(String.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
+            }
         } else if (modbusPdu instanceof WriteSingleCoilRequest) {
             WriteSingleCoilRequest writeSingleCoilRequest = (WriteSingleCoilRequest) modbusPdu;
             int address = writeSingleCoilRequest.getAddress();
@@ -233,7 +337,25 @@ public class Plc4XModbusProtocolTest {
                 assertThat(coilValue, equalTo(true));
             }
         } else if (modbusPdu instanceof WriteSingleRegisterRequest) {
-            // TODO: implement me
+            WriteSingleRegisterRequest writeSingleRegisterRequest = (WriteSingleRegisterRequest) modbusPdu;
+            int address = writeSingleRegisterRequest.getAddress();
+            assertThat(address, equalTo(1));
+            int value = writeSingleRegisterRequest.getValue();
+            if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            } else if (payloadClazzName.equals(Byte.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            } else if (payloadClazzName.equals(String.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            }
         }
     }
 
@@ -252,40 +374,54 @@ public class Plc4XModbusProtocolTest {
         LOGGER.info("ResponseItem {}", responseItem);
         ModbusPdu modbusPdu = modbusTcpPayload.getModbusPdu();
         if (modbusPdu instanceof MaskWriteRegisterRequest) {
-            // TODO: implement me
+            WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
+            assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
         } else if (modbusPdu instanceof ReadCoilsRequest) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
-            if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
-                assertThat(value, equalTo(Boolean.TRUE));
-            } else if (payloadClazzName.equals(Byte.class.getSimpleName())) {
-                assertThat(value, equalTo(Byte.valueOf("1")));
-            } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
-                assertThat(value, equalTo(Short.valueOf("1")));
-            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
-                assertThat(value, equalTo(calenderInstance));
-            } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
-                assertThat(value, equalTo(Float.valueOf("1")));
-            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
-                assertThat(value, equalTo(Integer.valueOf("1")));
-            } else if (payloadClazzName.equals(String.class.getSimpleName())) {
-                assertThat(value, equalTo(String.valueOf("Hello World!")));
-            }
+            defaultAssert(value);
         } else if (modbusPdu instanceof ReadDiscreteInputsRequest) {
-            // TODO: implement me
+            ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
+            Object value = readResponseItem.getValues().get(0);
+            defaultAssert(value);
         } else if (modbusPdu instanceof ReadHoldingRegistersRequest) {
-            // TODO: implement me
+            ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
+            Object value = readResponseItem.getValues().get(0);
+            defaultAssert(value);
         } else if (modbusPdu instanceof ReadInputRegistersRequest) {
-            // TODO: implement me
+            ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
+            Object value = readResponseItem.getValues().get(0);
+            defaultAssert(value);
         } else if (modbusPdu instanceof WriteMultipleCoilsRequest) {
-            // TODO: implement me
+            WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
+            assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
         } else if (modbusPdu instanceof WriteMultipleRegistersRequest) {
-            // TODO: implement me
+            WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
+            assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
         } else if (modbusPdu instanceof WriteSingleCoilResponse) {
-            // TODO: implement me
+            WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
+            assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
         } else if (modbusPdu instanceof WriteSingleRegisterRequest) {
-            // TODO: implement me
+            WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
+            assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
         }
+    }
+
+    private void defaultAssert(Object value) {
+        assertPayloadDependentEquals(Boolean.class, value, true);
+        assertPayloadDependentEquals(Byte.class, value, Byte.valueOf("1"));
+        assertPayloadDependentEquals(Short.class, value, Short.valueOf("1"));
+        assertPayloadDependentEquals(Calendar.class, value, calenderInstance);
+        assertPayloadDependentEquals(Float.class, value, Float.valueOf("1"));
+        assertPayloadDependentEquals(Integer.class, value, Integer.valueOf("1"));
+        assertPayloadDependentEquals(String.class, value, String.valueOf("Hello World!"));
+    }
+
+    private <T> void assertPayloadDependentEquals(Class<T> expectedType, Object actual, T expected) {
+        if (!payloadClazzName.equalsIgnoreCase(expectedType.getSimpleName())) {
+            return;
+        }
+        assertThat(actual, equalTo(expected));
     }
 
     private void syncInvoiceId() throws Exception {
