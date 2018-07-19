@@ -393,13 +393,6 @@ public class Plc4XModbusProtocolTest {
         }
     }
 
-    private <T> void assertPayloadDependentEquals(Class<T> expectedType, Object actual, T expected) {
-        if (!payloadClazzName.equalsIgnoreCase(expectedType.getSimpleName())) {
-            return;
-        }
-        assertThat(actual, equalTo(expected));
-    }
-
     private void syncInvoiceId() throws Exception {
         Field transactionId = SUT.getClass().getDeclaredField("transactionId");
         transactionId.setAccessible(true);
