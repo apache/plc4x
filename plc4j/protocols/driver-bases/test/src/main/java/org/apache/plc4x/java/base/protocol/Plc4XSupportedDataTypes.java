@@ -26,7 +26,9 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 
-@SuppressWarnings("unused")
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 public class Plc4XSupportedDataTypes {
 
     private final static Map<Class, Pair<? extends Serializable, byte[]>> littleEndianMap;
@@ -39,7 +41,8 @@ public class Plc4XSupportedDataTypes {
         littleEndianMap.put(Boolean.class, ImmutablePair.of(Boolean.TRUE, new byte[]{0x01}));
         littleEndianMap.put(Byte.class, ImmutablePair.of(Byte.valueOf("1"), new byte[]{0x1}));
         littleEndianMap.put(Short.class, ImmutablePair.of(Short.valueOf("1"), new byte[]{0x1, 0x0}));
-        littleEndianMap.put(Calendar.class, ImmutablePair.of(calenderInstance, new byte[]{0x0, 0x0, 0x0, 0x0, 0x4, 0x3, 0x2, 0x1}));
+        littleEndianMap.put(Calendar.class, ImmutablePair.of(calenderInstance, new byte[]{0x0, (byte) 0x80, 0x3E, 0x15, (byte) 0xAB, 0x47, (byte) 0xFC, 0x28}));
+        littleEndianMap.put(GregorianCalendar.class, littleEndianMap.get(Calendar.class));
         littleEndianMap.put(Float.class, ImmutablePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
         littleEndianMap.put(Double.class, ImmutablePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
         littleEndianMap.put(Integer.class, ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0}));
@@ -114,5 +117,37 @@ public class Plc4XSupportedDataTypes {
         return inputStream
             .map(bigEndianMap::get)
             .peek(Objects::requireNonNull);
+    }
+
+    /**
+     * Returns default value for supplied {@code clazz}.
+     *
+     * @param clazz the default value to get.
+     * @param <T>   the type of {@link Class}
+     * @return the found default.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> getDefaultForClass(Class<T> clazz) {
+        Pair<? extends Serializable, byte[]> pair = littleEndianMap.get(clazz);
+        if (pair == null) {
+            return Optional.empty();
+        }
+        return Optional.of((T) pair.getLeft());
+    }
+
+    /**
+     * A method which compares a value against a well known default.
+     *
+     * @param actualValue the value to check.
+     */
+    public static void defaultAssert(Object actualValue) {
+        littleEndianMap.values().forEach(pair -> assertPayloadDependentEquals(actualValue, pair.getLeft()));
+    }
+
+    private static void assertPayloadDependentEquals(Object actual, Object expected) {
+        if (actual.getClass() != expected.getClass()) {
+            return;
+        }
+        assertThat(actual, equalTo(expected));
     }
 }

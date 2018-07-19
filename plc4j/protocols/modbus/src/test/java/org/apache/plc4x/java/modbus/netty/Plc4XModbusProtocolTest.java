@@ -49,6 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.defaultAssert;
 import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfLittleEndianDataTypePairs;
 import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
 import static org.hamcrest.Matchers.*;
@@ -60,8 +61,6 @@ import static org.junit.Assume.assumeThat;
 public class Plc4XModbusProtocolTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XModbusProtocolTest.class);
-
-    public static final Calendar calenderInstance = Calendar.getInstance();
 
     private Plc4XModbusProtocol SUT;
 
@@ -220,7 +219,7 @@ public class Plc4XModbusProtocolTest {
             } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
                 assertThat(andMask, equalTo(1));
                 assertThat(orMask, equalTo(2));
-            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
+            } else if (payloadClazzName.equals(GregorianCalendar.class.getSimpleName())) {
                 assertThat(andMask, equalTo(1));
                 assertThat(orMask, equalTo(2));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
@@ -392,16 +391,6 @@ public class Plc4XModbusProtocolTest {
             WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
             assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
         }
-    }
-
-    private void defaultAssert(Object value) {
-        assertPayloadDependentEquals(Boolean.class, value, true);
-        assertPayloadDependentEquals(Byte.class, value, Byte.valueOf("1"));
-        assertPayloadDependentEquals(Short.class, value, Short.valueOf("1"));
-        assertPayloadDependentEquals(Calendar.class, value, calenderInstance);
-        assertPayloadDependentEquals(Float.class, value, Float.valueOf("1"));
-        assertPayloadDependentEquals(Integer.class, value, Integer.valueOf("1"));
-        assertPayloadDependentEquals(String.class, value, String.valueOf("Hello World!"));
     }
 
     private <T> void assertPayloadDependentEquals(Class<T> expectedType, Object actual, T expected) {

@@ -43,14 +43,15 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.defaultAssert;
 import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfLittleEndianDataTypePairs;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -58,8 +59,6 @@ import static org.junit.Assert.assertThat;
 @RunWith(Parameterized.class)
 public class Plc4x2AdsProtocolTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4x2AdsProtocolTest.class);
-
-    public static final Calendar calenderInstance = Calendar.getInstance();
 
     private Plc4x2AdsProtocol SUT;
 
@@ -137,8 +136,8 @@ public class Plc4x2AdsProtocolTest {
                 assertThat(value, equalTo(new byte[]{0x1}));
             } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x1, 0x0}));
-            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
-                assertThat(value, equalTo(new byte[]{0x0}));
+            } else if (payloadClazzName.equals(GregorianCalendar.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x0, (byte) 0x80, 0x3E, 0x15, (byte) 0xAB, 0X47, (byte) 0xFC, 0x28}));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
             } else if (payloadClazzName.equals(Double.class.getSimpleName())) {
@@ -168,23 +167,7 @@ public class Plc4x2AdsProtocolTest {
         if (amsPacket instanceof AdsReadResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
-            if (payloadClazzName.equals(Boolean.class.getSimpleName())) {
-                assertThat(value, equalTo(Boolean.TRUE));
-            } else if (payloadClazzName.equals(Byte.class.getSimpleName())) {
-                assertThat(value, equalTo(Byte.valueOf("1")));
-            } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
-                assertThat(value, equalTo(Short.valueOf("1")));
-            } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
-                assertThat(value, equalTo(calenderInstance));
-            } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
-                assertThat(value, equalTo(Float.valueOf("1")));
-            } else if (payloadClazzName.equals(Double.class.getSimpleName())) {
-                assertThat(value, equalTo(Double.valueOf("1")));
-            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
-                assertThat(value, equalTo(Integer.valueOf("1")));
-            } else if (payloadClazzName.equals(String.class.getSimpleName())) {
-                assertThat(value, equalTo(String.valueOf("Hello World!")));
-            }
+            defaultAssert(value);
         }
     }
 
