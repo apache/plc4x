@@ -92,6 +92,7 @@ public class Plc4x2AdsProtocolTest {
             Short.class,
             Calendar.class,
             Float.class,
+            Double.class,
             Integer.class,
             String.class)
             .map(clazz -> {
@@ -105,6 +106,8 @@ public class Plc4x2AdsProtocolTest {
                     return ImmutablePair.of(calenderInstance, new byte[]{0x0, 0x0, 0x0, 0x0, 0x4, 0x3, 0x2, 0x1});
                 } else if (clazz == Float.class) {
                     return ImmutablePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F});
+                } else if (clazz == Double.class) {
+                    return ImmutablePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0,0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F});
                 } else if (clazz == Integer.class) {
                     return ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0});
                 } else if (clazz == String.class) {
@@ -165,6 +168,8 @@ public class Plc4x2AdsProtocolTest {
                 assertThat(value, equalTo(new byte[]{0x0}));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
+            } else if (payloadClazzName.equals(Double.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x1, 0x0, 0x0, 0x0}));
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
@@ -200,6 +205,8 @@ public class Plc4x2AdsProtocolTest {
                 assertThat(value, equalTo(calenderInstance));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
                 assertThat(value, equalTo(Float.valueOf("1")));
+            } else if (payloadClazzName.equals(Double.class.getSimpleName())) {
+                assertThat(value, equalTo(Double.valueOf("1")));
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertThat(value, equalTo(Integer.valueOf("1")));
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
