@@ -49,6 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfLittleEndianDataTypePairs;
 import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -94,53 +95,23 @@ public class Plc4XModbusProtocolTest {
 
     @Parameterized.Parameters(name = "{index} Type:{0} {3} {5}")
     public static Collection<Object[]> data() {
-        return Stream.of(
-            Boolean.class,
-            Byte.class,
-            Short.class,
-            Calendar.class,
-            Float.class,
-            Double.class,
-            Integer.class,
-            String.class
-        )
-            .map(clazz -> {
-                if (clazz == Boolean.class) {
-                    return ImmutablePair.of(Boolean.TRUE, new byte[]{0x01});
-                } else if (clazz == Byte.class) {
-                    return ImmutablePair.of(Byte.valueOf("1"), new byte[]{0x1});
-                } else if (clazz == Short.class) {
-                    return ImmutablePair.of(Short.valueOf("1"), new byte[]{0x1, 0x0});
-                } else if (clazz == Calendar.class) {
-                    return ImmutablePair.of(calenderInstance, new byte[]{0x0, 0x0, 0x0, 0x0, 0x4, 0x3, 0x2, 0x1});
-                } else if (clazz == Float.class) {
-                    return ImmutablePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F});
-                } else if (clazz == Double.class) {
-                    return ImmutablePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F});
-                } else if (clazz == Integer.class) {
-                    return ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0});
-                } else if (clazz == String.class) {
-                    return ImmutablePair.of(String.valueOf("Hello World!"), new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00});
-                } else {
-                    throw new IllegalArgumentException("Unmapped type " + clazz);
-                }
-            })
+        return streamOfLittleEndianDataTypePairs()
             .map(pair -> Stream.of(
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
                         PlcReadRequest
                             .builder()
-                            .addItem(pair.left.getClass(), CoilModbusAddress.of("coil:1"))
+                            .addItem(pair.getLeft().getClass(), CoilModbusAddress.of("coil:1"))
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new ReadCoilsResponse(Unpooled.wrappedBuffer(pair.right)))
+                    new ModbusTcpPayload((short) 0, (short) 0, new ReadCoilsResponse(Unpooled.wrappedBuffer(pair.getRight())))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem(CoilModbusAddress.of("coil:1"), pair.left)
+                            .addItem(CoilModbusAddress.of("coil:1"), pair.getLeft())
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.right[0]))
+                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.getRight()[0]))
                 ),
                 /* Read request no supported on maskwrite so how to handle?
                 ImmutablePair.of(
@@ -155,7 +126,7 @@ public class Plc4XModbusProtocolTest {
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem(MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), pair.left)
+                            .addItem(MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), pair.getLeft())
                             .build(), new CompletableFuture<>()),
                     new ModbusTcpPayload((short) 0, (short) 0, new MaskWriteRegisterResponse(1, 1, 2))
                 ),
@@ -163,31 +134,31 @@ public class Plc4XModbusProtocolTest {
                     new PlcRequestContainer<>(
                         PlcReadRequest
                             .builder()
-                            .addItem(pair.left.getClass(), ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1"))
+                            .addItem(pair.getLeft().getClass(), ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1"))
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(pair.right)))
+                    new ModbusTcpPayload((short) 0, (short) 0, new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(pair.getRight())))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
                         PlcReadRequest
                             .builder()
-                            .addItem(pair.left.getClass(), ReadHoldingRegistersModbusAddress.of("readholdingregisters:1"))
+                            .addItem(pair.getLeft().getClass(), ReadHoldingRegistersModbusAddress.of("readholdingregisters:1"))
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(evenUp(pair.right))))
+                    new ModbusTcpPayload((short) 0, (short) 0, new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(evenUp(pair.getRight()))))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
                         PlcReadRequest
                             .builder()
-                            .addItem(pair.left.getClass(), ReadInputRegistersModbusAddress.of("readinputregisters:1"))
+                            .addItem(pair.getLeft().getClass(), ReadInputRegistersModbusAddress.of("readinputregisters:1"))
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new ReadInputRegistersResponse(Unpooled.wrappedBuffer(evenUp(pair.right))))
+                    new ModbusTcpPayload((short) 0, (short) 0, new ReadInputRegistersResponse(Unpooled.wrappedBuffer(evenUp(pair.getRight()))))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem((Class) pair.left.getClass(), CoilModbusAddress.of("coil:1"), pair.left, pair.left, pair.left)
+                            .addItem((Class) pair.getLeft().getClass(), CoilModbusAddress.of("coil:1"), pair.getLeft(), pair.getLeft(), pair.getLeft())
                             .build(), new CompletableFuture<>()),
                     new ModbusTcpPayload((short) 0, (short) 0, new WriteMultipleCoilsResponse(1, 3))
                 ),
@@ -195,7 +166,7 @@ public class Plc4XModbusProtocolTest {
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem((Class) pair.left.getClass(), RegisterModbusAddress.of("register:1"), pair.left, pair.left, pair.left)
+                            .addItem((Class) pair.getLeft().getClass(), RegisterModbusAddress.of("register:1"), pair.getLeft(), pair.getLeft(), pair.getLeft())
                             .build(), new CompletableFuture<>()),
                     new ModbusTcpPayload((short) 0, (short) 0, new WriteMultipleCoilsResponse(1, 3))
                 ),
@@ -203,9 +174,9 @@ public class Plc4XModbusProtocolTest {
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem(RegisterModbusAddress.of("register:1"), pair.left)
+                            .addItem(RegisterModbusAddress.of("register:1"), pair.getLeft())
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.right[0]))
+                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.getRight()[0]))
                 )
             ))
             .flatMap(stream -> stream)

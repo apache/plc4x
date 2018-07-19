@@ -51,6 +51,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfLittleEndianDataTypePairs;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -87,41 +88,13 @@ public class Plc4x2AdsProtocolTest {
         AmsNetId sourceAmsNetId = AmsNetId.of("8.9.10.11.12.13");
         AmsPort sourceAmsPort = AmsPort.of(14);
         Invoke invokeId = Invoke.of(2);
-        return Stream.of(Boolean.class,
-            Byte.class,
-            Short.class,
-            Calendar.class,
-            Float.class,
-            Double.class,
-            Integer.class,
-            String.class)
-            .map(clazz -> {
-                if (clazz == Boolean.class) {
-                    return ImmutablePair.of(Boolean.TRUE, new byte[]{0x01});
-                } else if (clazz == Byte.class) {
-                    return ImmutablePair.of(Byte.valueOf("1"), new byte[]{0x1});
-                } else if (clazz == Short.class) {
-                    return ImmutablePair.of(Short.valueOf("1"), new byte[]{0x1, 0x0});
-                } else if (clazz == Calendar.class) {
-                    return ImmutablePair.of(calenderInstance, new byte[]{0x0, 0x0, 0x0, 0x0, 0x4, 0x3, 0x2, 0x1});
-                } else if (clazz == Float.class) {
-                    return ImmutablePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F});
-                } else if (clazz == Double.class) {
-                    return ImmutablePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0,0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F});
-                } else if (clazz == Integer.class) {
-                    return ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0});
-                } else if (clazz == String.class) {
-                    return ImmutablePair.of(String.valueOf("Hello World!"), new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00});
-                } else {
-                    throw new IllegalArgumentException("Unmapped type " + clazz);
-                }
-            })
+        return streamOfLittleEndianDataTypePairs()
             .map(pair -> Stream.of(
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem(AdsAddress.of(1, 2), pair.left)
+                            .addItem(AdsAddress.of(1, 2), pair.getLeft())
                             .build(), new CompletableFuture<>()),
                     AdsWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
                 ),
@@ -129,9 +102,9 @@ public class Plc4x2AdsProtocolTest {
                     new PlcRequestContainer<>(
                         PlcReadRequest
                             .builder()
-                            .addItem(pair.left.getClass(), AdsAddress.of(1, 2))
+                            .addItem(pair.getLeft().getClass(), AdsAddress.of(1, 2))
                             .build(), new CompletableFuture<>()),
-                    AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.right))
+                    AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.getRight()))
                 )
             ))
             .flatMap(stream -> stream)
