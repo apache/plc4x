@@ -33,7 +33,9 @@ import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 import org.apache.plc4x.java.api.types.ResponseCode;
 import org.apache.plc4x.java.modbus.model.*;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
@@ -41,9 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -53,6 +53,7 @@ import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 
 @RunWith(Parameterized.class)
 public class Plc4XModbusProtocolTest {
@@ -62,6 +63,16 @@ public class Plc4XModbusProtocolTest {
     public static final Calendar calenderInstance = Calendar.getInstance();
 
     private Plc4XModbusProtocol SUT;
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+    // TODO: implement these types
+    private List<String> notYetSupportedDataType = Stream.of(
+        GregorianCalendar.class,
+        Float.class,
+        Double.class,
+        String.class
+    ).map(Class::getSimpleName).collect(Collectors.toList());
 
     @Parameterized.Parameter
     public String payloadClazzName;
@@ -87,10 +98,11 @@ public class Plc4XModbusProtocolTest {
             Boolean.class,
             Byte.class,
             Short.class,
-            //Calendar.class,
-            //Float.class,
-            Integer.class //,
-            //String.class
+            Calendar.class,
+            Float.class,
+            Double.class,
+            Integer.class,
+            String.class
         )
             .map(clazz -> {
                 if (clazz == Boolean.class) {
@@ -103,6 +115,8 @@ public class Plc4XModbusProtocolTest {
                     return ImmutablePair.of(calenderInstance, new byte[]{0x0, 0x0, 0x0, 0x0, 0x4, 0x3, 0x2, 0x1});
                 } else if (clazz == Float.class) {
                     return ImmutablePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F});
+                } else if (clazz == Double.class) {
+                    return ImmutablePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F});
                 } else if (clazz == Integer.class) {
                     return ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0});
                 } else if (clazz == String.class) {
@@ -213,6 +227,7 @@ public class Plc4XModbusProtocolTest {
 
     @Test
     public void encode() throws Exception {
+        assumeThat(payloadClazzName + " not yet implemented", notYetSupportedDataType, not(hasItem(payloadClazzName)));
         ArrayList<Object> out = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, out);
         assertThat(out, hasSize(1));
@@ -361,6 +376,7 @@ public class Plc4XModbusProtocolTest {
 
     @Test
     public void decode() throws Exception {
+        assumeThat(payloadClazzName + " not yet implemented", notYetSupportedDataType, not(hasItem(payloadClazzName)));
         ArrayList<Object> in = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, in);
         assertThat(in, hasSize(1));
