@@ -24,7 +24,6 @@ import com.digitalpetri.modbus.requests.*;
 import com.digitalpetri.modbus.responses.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
@@ -51,7 +50,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.defaultAssert;
-import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfLittleEndianDataTypePairs;
+import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfBigEndianDataTypePairs;
 import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -95,7 +94,7 @@ public class Plc4XModbusProtocolTest {
 
     @Parameterized.Parameters(name = "{index} Type:{0} {3} {5}")
     public static Collection<Object[]> data() {
-        return streamOfLittleEndianDataTypePairs()
+        return streamOfBigEndianDataTypePairs()
             .map(pair -> Stream.of(
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
@@ -103,7 +102,9 @@ public class Plc4XModbusProtocolTest {
                             .builder()
                             .addItem(pair.getLeft().getClass(), CoilModbusAddress.of("coil:1"))
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new ReadCoilsResponse(Unpooled.wrappedBuffer(pair.getRight())))
+                    // Coils are a bit different so the only know 1 or 0. So we know streamOfBigEndianDataTypePairs are
+                    // all positive so we return one byte with the first bit set
+                    new ModbusTcpPayload((short) 0, (short) 0, new ReadCoilsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x1})))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
@@ -111,7 +112,9 @@ public class Plc4XModbusProtocolTest {
                             .builder()
                             .addItem(CoilModbusAddress.of("coil:1"), pair.getLeft())
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.getRight()[0]))
+                    // Coils are a bit different so the only know 1 or 0. So we know streamOfBigEndianDataTypePairs are
+                    // all positive so we return one byte with the first bit set
+                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, 1))
                 ),
                 /* Read request no supported on maskwrite so how to handle?
                 ImmutablePair.of(
@@ -136,7 +139,9 @@ public class Plc4XModbusProtocolTest {
                             .builder()
                             .addItem(pair.getLeft().getClass(), ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1"))
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(pair.getRight())))
+                    // Coils are a bit different so the only know 1 or 0. So we know streamOfBigEndianDataTypePairs are
+                    // all positive so we return one byte with the first bit set
+                    new ModbusTcpPayload((short) 0, (short) 0, new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x01})))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
@@ -144,7 +149,7 @@ public class Plc4XModbusProtocolTest {
                             .builder()
                             .addItem(pair.getLeft().getClass(), ReadHoldingRegistersModbusAddress.of("readholdingregisters:1"))
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(evenUp(pair.getRight()))))
+                    new ModbusTcpPayload((short) 0, (short) 0, new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(cutRegister(pair.getRight()))))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
@@ -152,7 +157,7 @@ public class Plc4XModbusProtocolTest {
                             .builder()
                             .addItem(pair.getLeft().getClass(), ReadInputRegistersModbusAddress.of("readinputregisters:1"))
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new ReadInputRegistersResponse(Unpooled.wrappedBuffer(evenUp(pair.getRight()))))
+                    new ModbusTcpPayload((short) 0, (short) 0, new ReadInputRegistersResponse(Unpooled.wrappedBuffer(cutRegister(pair.getRight()))))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
@@ -176,19 +181,15 @@ public class Plc4XModbusProtocolTest {
                             .builder()
                             .addItem(RegisterModbusAddress.of("register:1"), pair.getLeft())
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleRegisterResponse(1, pair.getRight()[0]))
+                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleRegisterResponse(1, cutRegister(pair.getRight())[0]))
                 )
             ))
             .flatMap(stream -> stream)
             .map(pair -> new Object[]{pair.left.getRequest().getRequestItem().orElseThrow(IllegalStateException::new).getDatatype().getSimpleName(), pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getModbusPdu().getClass().getSimpleName()}).collect(Collectors.toList());
     }
 
-    private static byte[] evenUp(byte[] bytes) {
-        if (bytes.length % 2 == 0) {
-            return bytes;
-        } else {
-            return ArrayUtils.insert(0, bytes, (byte) 0x0);
-        }
+    private static byte[] cutRegister(byte[] right) {
+        return new byte[]{right.length > 1 ? right[right.length - 2] : 0x0, right[right.length - 1]};
     }
 
     @Before
@@ -371,35 +372,35 @@ public class Plc4XModbusProtocolTest {
         ResponseItem responseItem = (ResponseItem) plcResponse.getResponseItem().get();
         LOGGER.info("ResponseItem {}", responseItem);
         ModbusPdu modbusPdu = modbusTcpPayload.getModbusPdu();
-        if (modbusPdu instanceof MaskWriteRegisterRequest) {
+        if (modbusPdu instanceof MaskWriteRegisterResponse) {
             WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
             assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
-        } else if (modbusPdu instanceof ReadCoilsRequest) {
+        } else if (modbusPdu instanceof ReadCoilsResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
             defaultAssert(value);
-        } else if (modbusPdu instanceof ReadDiscreteInputsRequest) {
+        } else if (modbusPdu instanceof ReadDiscreteInputsResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
             defaultAssert(value);
-        } else if (modbusPdu instanceof ReadHoldingRegistersRequest) {
+        } else if (modbusPdu instanceof ReadHoldingRegistersResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
             defaultAssert(value);
-        } else if (modbusPdu instanceof ReadInputRegistersRequest) {
+        } else if (modbusPdu instanceof ReadInputRegistersResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
             defaultAssert(value);
-        } else if (modbusPdu instanceof WriteMultipleCoilsRequest) {
+        } else if (modbusPdu instanceof WriteMultipleCoilsResponse) {
             WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
             assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
-        } else if (modbusPdu instanceof WriteMultipleRegistersRequest) {
+        } else if (modbusPdu instanceof WriteMultipleRegistersResponse) {
             WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
             assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
         } else if (modbusPdu instanceof WriteSingleCoilResponse) {
             WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
             assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
-        } else if (modbusPdu instanceof WriteSingleRegisterRequest) {
+        } else if (modbusPdu instanceof WriteSingleRegisterResponse) {
             WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
             assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
         }

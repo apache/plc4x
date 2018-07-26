@@ -401,12 +401,13 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
         byteBuf.readBytes(bytes);
         List<T> data = new LinkedList<>();
-        for (int i = 0, j = 0; i < readRequestItem.getSize(); i++) {
-            if (i != 0 && i % 8 == 0) {
+        for (int i = 0, j = 0; data.size() < readRequestItem.getSize(); i++) {
+            if (i > 7) {
                 // Every 8 Coils we need to increase the access
                 j++;
+                i = 0;
             }
-            boolean coilSet = (1 << i & bytes[j]) == 1;
+            boolean coilSet = (bytes[j] & (1L << i)) != 0;
             byte coilFlag = coilSet ? (byte) 1 : (byte) 0;
             if (dataType == Boolean.class) {
                 @SuppressWarnings("unchecked")
