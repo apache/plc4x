@@ -34,7 +34,9 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.ResponseItem;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
@@ -45,6 +47,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -55,12 +58,21 @@ import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.defaul
 import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfLittleEndianDataTypePairs;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 
 @RunWith(Parameterized.class)
 public class Plc4x2AdsProtocolTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4x2AdsProtocolTest.class);
 
     private Plc4x2AdsProtocol SUT;
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+    // TODO: implement these types
+    private List<String> notYetSupportedDataType = Stream.of(
+        byte[].class,
+        Byte[].class
+    ).map(Class::getSimpleName).collect(Collectors.toList());
 
     @Parameterized.Parameter
     public String payloadClazzName;
@@ -121,6 +133,7 @@ public class Plc4x2AdsProtocolTest {
 
     @Test
     public void encode() throws Exception {
+        assumeThat(payloadClazzName + " not yet implemented", notYetSupportedDataType, not(hasItem(payloadClazzName)));
         ArrayList<Object> out = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, out);
         assertThat(out, hasSize(1));
@@ -152,6 +165,7 @@ public class Plc4x2AdsProtocolTest {
 
     @Test
     public void decode() throws Exception {
+        assumeThat(payloadClazzName + " not yet implemented", notYetSupportedDataType, not(hasItem(payloadClazzName)));
         ArrayList<Object> in = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, in);
         assertThat(in, hasSize(1));

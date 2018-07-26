@@ -72,7 +72,9 @@ public class Plc4XModbusProtocolTest {
         GregorianCalendar.class,
         Float.class,
         Double.class,
-        String.class
+        String.class,
+        byte[].class,
+        Byte[].class
     ).map(Class::getSimpleName).collect(Collectors.toList());
 
     @Parameterized.Parameter
