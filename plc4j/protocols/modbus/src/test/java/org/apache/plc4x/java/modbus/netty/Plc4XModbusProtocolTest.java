@@ -98,19 +98,19 @@ public class Plc4XModbusProtocolTest {
     @Parameterized.Parameters(name = "{index} Type:{0} {3} {5}")
     public static Collection<Object[]> data() {
         return streamOfBigEndianDataTypePairs()
-            .map(pair -> Stream.of(
-                producePair(pair.getLeft().getClass(), CoilModbusAddress.of("coil:1"), new ReadCoilsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x1}))),
-                producePair(CoilModbusAddress.of("coil:1"), new WriteSingleCoilResponse(1, 1), pair.getLeft()),
+            .map(dataTypePair -> Stream.of(
+                producePair(dataTypePair.getDataTypeClass(), CoilModbusAddress.of("coil:1"), new ReadCoilsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x1}))),
+                producePair(CoilModbusAddress.of("coil:1"), new WriteSingleCoilResponse(1, 1), dataTypePair.getValue()),
                 /* Read request no supported on maskwrite so how to handle?
-                producePair(pair.getLeft().getClass(), MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2)),
+                producePair(pair.getDataTypeClass(), MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2)),
                 */
-                producePair(MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2), pair.getLeft()),
-                producePair(pair.getLeft().getClass(), ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1"), new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x01}))),
-                producePair(pair.getLeft().getClass(), ReadHoldingRegistersModbusAddress.of("readholdingregisters:1"), new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(cutRegister(pair.getRight())))),
-                producePair(pair.getLeft().getClass(), ReadInputRegistersModbusAddress.of("readinputregisters:1"), new ReadInputRegistersResponse(Unpooled.wrappedBuffer(cutRegister(pair.getRight())))),
-                producePair(CoilModbusAddress.of("coil:1"), new WriteMultipleCoilsResponse(1, 3), pair.getLeft(), pair.getLeft(), pair.getLeft()),
-                producePair(RegisterModbusAddress.of("register:1"), new WriteMultipleRegistersResponse(1, 3), pair.getLeft(), pair.getLeft(), pair.getLeft()),
-                producePair(RegisterModbusAddress.of("register:1"), new WriteSingleRegisterResponse(1, cutRegister(pair.getRight())[0]), pair.getLeft())
+                producePair(MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2), dataTypePair.getValue()),
+                producePair(dataTypePair.getDataTypeClass(), ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1"), new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x01}))),
+                producePair(dataTypePair.getDataTypeClass(), ReadHoldingRegistersModbusAddress.of("readholdingregisters:1"), new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(cutRegister(dataTypePair.getByteRepresentation())))),
+                producePair(dataTypePair.getDataTypeClass(), ReadInputRegistersModbusAddress.of("readinputregisters:1"), new ReadInputRegistersResponse(Unpooled.wrappedBuffer(cutRegister(dataTypePair.getByteRepresentation())))),
+                producePair(CoilModbusAddress.of("coil:1"), new WriteMultipleCoilsResponse(1, 3), dataTypePair.getValue(), dataTypePair.getValue(), dataTypePair.getValue()),
+                producePair(RegisterModbusAddress.of("register:1"), new WriteMultipleRegistersResponse(1, 3), dataTypePair.getValue(), dataTypePair.getValue(), dataTypePair.getValue()),
+                producePair(RegisterModbusAddress.of("register:1"), new WriteSingleRegisterResponse(1, cutRegister(dataTypePair.getByteRepresentation())[0]), dataTypePair.getValue())
             ))
             .flatMap(stream -> stream)
             .map(pair -> new Object[]{pair.left.getRequest().getRequestItem().orElseThrow(IllegalStateException::new).getDatatype().getSimpleName(), pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getModbusPdu().getClass().getSimpleName()}).collect(Collectors.toList());

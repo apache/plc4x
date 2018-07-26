@@ -105,7 +105,7 @@ public class Plc4x2AdsProtocolTest {
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem(AdsAddress.of(1, 2), pair.getLeft())
+                            .addItem(AdsAddress.of(1, 2), pair.getValue())
                             .build(), new CompletableFuture<>()),
                     AdsWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
                 ),
@@ -113,9 +113,9 @@ public class Plc4x2AdsProtocolTest {
                     new PlcRequestContainer<>(
                         PlcReadRequest
                             .builder()
-                            .addItem(pair.getLeft().getClass(), AdsAddress.of(1, 2))
+                            .addItem(pair.getDataTypeClass(), AdsAddress.of(1, 2))
                             .build(), new CompletableFuture<>()),
-                    AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.getRight()))
+                    AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.getByteRepresentation()))
                 )
             ))
             .flatMap(stream -> stream)
