@@ -50,7 +50,7 @@ public class Plc4XSupportedDataTypes {
         littleEndianMap.put(GregorianCalendar.class, littleEndianMap.get(Calendar.class));
         littleEndianMap.put(String.class, ImmutablePair.of(String.valueOf("Hello World!"), new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
         littleEndianMap.put(byte[].class, ImmutablePair.of(new byte[]{0x1, 0x2, 0x3, 0x4}, new byte[]{0x1, 0x2, 0x3, 0x4}));
-        littleEndianMap.put(Byte[].class, ImmutablePair.of(new byte[]{0x1, 0x2, 0x3, 0x4}, new byte[]{0x1, 0x2, 0x3, 0x4}));
+        littleEndianMap.put(Byte[].class, ImmutablePair.of(new Byte[]{0x1, 0x2, 0x3, 0x4}, new byte[]{0x1, 0x2, 0x3, 0x4}));
         bigEndianMap = new HashMap<>();
         littleEndianMap.forEach((clazz, pair) -> {
             Serializable serializable = pair.getLeft();
