@@ -342,6 +342,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
     private byte[] produceRegisterValue(List<?> values) throws PlcProtocolException {
         ByteBuf buffer = Unpooled.buffer();
+        long upperRegisterValue = 0xFFFFL;
         for (Object value : values) {
             if (value.getClass() == Boolean.class) {
                 buffer.writeByte(0);
@@ -361,7 +362,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 }
                 buffer.writeShort((short) value);
             } else if (value.getClass() == Integer.class) {
-                if ((int) value > Integer.MAX_VALUE) {
+                if ((int) value > upperRegisterValue) {
                     throw new PlcProtocolException("Value to high to fit into register for Integer: " + value);
                 }
                 if ((int) value < 0) {
@@ -376,7 +377,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                     throw new PlcProtocolException("Value to high to fit into register for BigInteger: " + value);
                 }
                 // TODO: for now we can't support big values as we only write one register at once
-                if (((BigInteger) value).compareTo(BigInteger.valueOf(0XFFFFL)) > 0) {
+                if (((BigInteger) value).compareTo(BigInteger.valueOf(upperRegisterValue)) > 0) {
                     throw new PlcProtocolException("Value to high to fit into register for BigInteger: " + value);
                 }
                 // TODO: Register has 2 bytes so we trim to 2 instead of 4 like the second if above
@@ -395,7 +396,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 if (((float) value) < 0) {
                     throw new PlcProtocolException("Only positive values are supported for Float: " + value);
                 }
-                if (((float) value) > Integer.MAX_VALUE) {
+                if (((float) value) > upperRegisterValue) {
                     throw new PlcProtocolException("Value to high to fit into register for Float: " + value);
                 }
                 buffer.writeShort(Math.round((float) value));
@@ -403,7 +404,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 if (((double) value) < 0) {
                     throw new PlcProtocolException("Only positive values are supported for Double: " + value);
                 }
-                if (((double) value) > Integer.MAX_VALUE) {
+                if (((double) value) > upperRegisterValue) {
                     throw new PlcProtocolException("Value to high to fit into register for Double: " + value);
                 }
                 buffer.writeShort((int) Math.round((double) value));
