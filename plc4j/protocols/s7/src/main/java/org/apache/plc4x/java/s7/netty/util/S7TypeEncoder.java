@@ -18,6 +18,9 @@
  */
 package org.apache.plc4x.java.s7.netty.util;
 
+import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+
 import java.util.Calendar;
 
 public class S7TypeEncoder {
@@ -26,7 +29,7 @@ public class S7TypeEncoder {
         // Utility class
     }
 
-    public static byte[] encodeData(Object[] values) {
+    public static byte[] encodeData(Object[] values) throws PlcProtocolException {
         final int length = values.length;
         if (length == 0) {
             return new byte[]{};
@@ -43,11 +46,13 @@ public class S7TypeEncoder {
             result = encodeInteger(values, length);
         } else if (valueType == Calendar.class) {
             // TODO: Decide what to do here ...
-            result = null;
+            throw new PlcNotImplementedException("calender not yet implemented in s7");
         } else if (valueType == Float.class) {
             result = encodeFloat(values, length);
         } else if (valueType == String.class) {
             result = encodeString(values, length);
+        } else {
+            throw new PlcProtocolException("Unsupported data type " + valueType);
         }
         return result;
     }

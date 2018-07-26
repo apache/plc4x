@@ -19,10 +19,7 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.exceptions.PlcIoException;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
@@ -268,7 +265,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             return DataTransportSize.BYTE_WORD_DWORD;
         } else if (datatype == Calendar.class) {
             // TODO: Decide what to do here ...
-            return null;
+            throw new PlcNotImplementedException("Calender support in S7 not yet implemented");
         } else if (datatype == Float.class) {
             return DataTransportSize.REAL;
         } else if (datatype == Double.class) {

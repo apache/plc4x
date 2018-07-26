@@ -92,7 +92,7 @@ public class S7TypeDecoder {
                 }
                 i += s7Data.length;
             } else {
-                throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
+                throw new PlcProtocolException("Unsupported data type " + datatype.getSimpleName());
             }
         }
         return (List<T>) result;
