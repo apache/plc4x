@@ -80,7 +80,7 @@ public class Plc4XSupportedDataTypes {
     }
 
     /**
-     * A {@link Stream} of instances of {@link Class}es plc4x can currently support with their according byte representation.
+     * A {@link Stream} of instances of {@link Class}es plc4x can currently support with their according little endian byte representation.
      *
      * @return a stream of {@link org.apache.commons.lang3.tuple.Pair}s of instances and their byte values.
      * @see #streamOfPlc4XSupportedDataTypes
@@ -90,7 +90,7 @@ public class Plc4XSupportedDataTypes {
     }
 
     /**
-     * A {@link Stream} of instances of {@link Class}es which are defined by {@code inputStream} can currently support with their according byte representation.
+     * A {@link Stream} of instances of {@link Class}es which are defined by {@code inputStream} can currently support with their according little endian byte representation.
      *
      * @param inputStream a stream of {@link org.apache.commons.lang3.tuple.Pair}s of instances and their byte values.
      * @see #streamOfPlc4XSupportedDataTypes
@@ -102,7 +102,7 @@ public class Plc4XSupportedDataTypes {
     }
 
     /**
-     * A {@link Stream} of instances of {@link Class}es plc4x can currently support with their according little endian byte representation.
+     * A {@link Stream} of instances of {@link Class}es plc4x can currently support with their according big endian byte representation.
      *
      * @return a stream of {@link org.apache.commons.lang3.tuple.Pair}s of instances and their byte values.
      * @see #streamOfPlc4XSupportedDataTypes
