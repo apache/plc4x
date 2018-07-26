@@ -73,7 +73,6 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
     private List<String> notYetSupportedDataType = Stream.of(
         Calendar.class,
         GregorianCalendar.class,
-        Double.class,
         BigInteger.class,
         byte[].class,
         Byte[].class
@@ -187,6 +186,8 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             return (T) Calendar.getInstance();
         } else if (type == Float.class) {
             return (T) Float.valueOf(123f);
+        } else if (type == Double.class) {
+            return (T) Double.valueOf(123f);
         } else if (type == Integer.class) {
             return (T) Integer.valueOf(123);
         } else if (type == String.class) {
@@ -214,8 +215,11 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             // TODO: what size is calender?
             data = new byte[]{(byte) 0b0000_0000};
         } else if (type == Float.class) {
-            size = DataTransportSize.BYTE_WORD_DWORD;
+            size = DataTransportSize.REAL;
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
+        } else if (type == Double.class) {
+            size = DataTransportSize.REAL;
+            data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
         } else if (type == Integer.class) {
             size = DataTransportSize.INTEGER;
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};

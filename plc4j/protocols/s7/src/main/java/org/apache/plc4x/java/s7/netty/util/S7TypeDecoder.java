@@ -54,18 +54,35 @@ public class S7TypeDecoder {
                 // Description of the Real number format:
                 // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
                 // https://de.wikipedia.org/wiki/IEEE_754
-                int intValue = ((s7Data[i] & 0xff) << 24) | ((s7Data[i + 1] & 0xff) << 16) |
-                    ((s7Data[i + 2] & 0xff) << 8) | (s7Data[i + 3] & 0xff);
+                int intValue = ((s7Data[i] & 0xff) << 24)
+                    | ((s7Data[i + 1] & 0xff) << 16)
+                    | ((s7Data[i + 2] & 0xff) << 8)
+                    | (s7Data[i + 3] & 0xff);
                 result.add(Float.intBitsToFloat(intValue));
                 i += 4;
+            } else if (datatype == Double.class) {
+                // Description of the Real number format:
+                // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
+                // https://de.wikipedia.org/wiki/IEEE_754
+                long longValue = (((long) (s7Data[i] & 0xff)) << 56)
+                    | (((long) (s7Data[i] & 0xff)) << 48)
+                    | (((long) (s7Data[i + 1] & 0xff)) << 40)
+                    | (((long) (s7Data[i + 2] & 0xff)) << 32)
+
+                    | (((long) (s7Data[i + 3] & 0xff)) << 24)
+                    | (((long) (s7Data[i + 4] & 0xff)) << 16)
+                    | (((long) (s7Data[i + 5] & 0xff)) << 8)
+                    | (((long) s7Data[i + 6] & 0xff));
+                result.add(Double.longBitsToDouble(longValue));
+                i += 8;
             } else if (datatype == String.class) {
                 // Every string value had a prefix of two bytes for which I have no idea, what the meaning is.
                 // This code assumes the string values doesn't contain UTF-8 values with a code of 0x00 as it
                 // uses this as termination char.
                 try {
                     int j = 0;
-                    for(; j < s7Data.length; j++) {
-                        if(s7Data[j] == 0) {
+                    for (; j < s7Data.length; j++) {
+                        if (s7Data[j] == 0) {
                             break;
                         }
                     }
