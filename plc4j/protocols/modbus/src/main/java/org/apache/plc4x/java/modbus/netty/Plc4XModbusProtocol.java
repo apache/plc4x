@@ -262,6 +262,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                     && !(value instanceof Short)
                     && !(value instanceof Integer)
                     && !(value instanceof BigInteger)
+                    && !(value instanceof Float)
+                    && !(value instanceof Double)
                 ) {
                 throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
             }
@@ -315,6 +317,12 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 coilSet = (int) value == 1;
             } else if (value.getClass() == BigInteger.class) {
                 coilSet = value.equals(BigInteger.ONE);
+            } else if (value.getClass() == Float.class) {
+                coilSet = value.equals(1.0f);
+            } else if (value.getClass() == Double.class) {
+                coilSet = value.equals(1.0d);
+            } else {
+                throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
             }
             byte coilToSet = (coilSet ? (byte) 1 : (byte) 0);
             actualCoil = (byte) (actualCoil | coilToSet << i);
@@ -354,7 +362,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 buffer.writeShort((short) value);
             } else if (value.getClass() == Integer.class) {
                 if ((int) value > Integer.MAX_VALUE) {
-                    throw new PlcProtocolException("Value to high to fit into register: " + value);
+                    throw new PlcProtocolException("Value to high to fit into register for Integer: " + value);
                 }
                 if ((int) value < 0) {
                     throw new PlcProtocolException("Only positive values are supported for Integer: " + value);
@@ -365,11 +373,11 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                     throw new PlcProtocolException("Only positive values are supported for BigInteger: " + value);
                 }
                 if (((BigInteger) value).compareTo(BigInteger.valueOf(0XFFFF_FFFFL)) > 0) {
-                    throw new PlcProtocolException("Value to high to fit into register: " + value);
+                    throw new PlcProtocolException("Value to high to fit into register for BigInteger: " + value);
                 }
                 // TODO: for now we can't support big values as we only write one register at once
                 if (((BigInteger) value).compareTo(BigInteger.valueOf(0XFFFFL)) > 0) {
-                    throw new PlcProtocolException("Value to high to fit into register: " + value);
+                    throw new PlcProtocolException("Value to high to fit into register for BigInteger: " + value);
                 }
                 // TODO: Register has 2 bytes so we trim to 2 instead of 4 like the second if above
                 int maxBytes = 2;
@@ -383,6 +391,24 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 // TODO: check if this is a good representation.
                 // TODO: can a big integer span multiple registers?
                 buffer.writeBytes(bytes);
+            } else if (value.getClass() == Float.class) {
+                if (((float) value) < 0) {
+                    throw new PlcProtocolException("Only positive values are supported for Float: " + value);
+                }
+                if (((float) value) > Integer.MAX_VALUE) {
+                    throw new PlcProtocolException("Value to high to fit into register for Float: " + value);
+                }
+                buffer.writeShort(Math.round((float) value));
+            } else if (value.getClass() == Double.class) {
+                if (((double) value) < 0) {
+                    throw new PlcProtocolException("Only positive values are supported for Double: " + value);
+                }
+                if (((double) value) > Integer.MAX_VALUE) {
+                    throw new PlcProtocolException("Value to high to fit into register for Double: " + value);
+                }
+                buffer.writeShort((int) Math.round((double) value));
+            } else {
+                throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
             }
         }
         byte[] result = new byte[buffer.writerIndex()];
@@ -431,6 +457,16 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 @SuppressWarnings("unchecked")
                 T itemToBeAdded = (T) BigInteger.valueOf(coilFlag);
                 data.add(itemToBeAdded);
+            } else if (dataType == Float.class) {
+                @SuppressWarnings("unchecked")
+                T itemToBeAdded = (T) Float.valueOf(coilFlag);
+                data.add(itemToBeAdded);
+            } else if (dataType == Double.class) {
+                @SuppressWarnings("unchecked")
+                T itemToBeAdded = (T) Double.valueOf(coilFlag);
+                data.add(itemToBeAdded);
+            } else {
+                throw new PlcRuntimeException("Unsupported datatype detected " + dataType);
             }
         }
         return data;
@@ -483,6 +519,22 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 @SuppressWarnings("unchecked")
                 T itemToBeAdded = (T) new BigInteger(register);
                 data.add(itemToBeAdded);
+            } else if (dataType == Float.class) {
+                if (intValue < 0) {
+                    throw new PlcProtocolException("BigInteger underflow: " + intValue);
+                }
+                @SuppressWarnings("unchecked")
+                T itemToBeAdded = (T) new Float(intValue);
+                data.add(itemToBeAdded);
+            } else if (dataType == Double.class) {
+                if (intValue < 0) {
+                    throw new PlcProtocolException("BigInteger underflow: " + intValue);
+                }
+                @SuppressWarnings("unchecked")
+                T itemToBeAdded = (T) new Double(intValue);
+                data.add(itemToBeAdded);
+            } else {
+                throw new PlcRuntimeException("Unsupported datatype detected " + dataType);
             }
         }
         return data;

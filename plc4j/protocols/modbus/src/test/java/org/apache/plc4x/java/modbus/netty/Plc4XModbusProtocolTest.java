@@ -31,6 +31,7 @@ import org.apache.plc4x.java.api.messages.items.ResponseItem;
 import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes;
 import org.apache.plc4x.java.modbus.model.*;
 import org.junit.Before;
 import org.junit.Rule;
@@ -70,8 +71,6 @@ public class Plc4XModbusProtocolTest {
     // TODO: implement these types
     private List<String> notYetSupportedDataType = Stream.of(
         GregorianCalendar.class,
-        Float.class,
-        Double.class,
         String.class,
         byte[].class,
         Byte[].class
@@ -98,6 +97,16 @@ public class Plc4XModbusProtocolTest {
     @Parameterized.Parameters(name = "{index} Type:{0} {3} {5}")
     public static Collection<Object[]> data() {
         return streamOfBigEndianDataTypePairs()
+            // Float and Double getting truncated in modbus.
+            .map(dataTypePair -> {
+                if (dataTypePair.getDataTypeClass() == Float.class) {
+                    return Plc4XSupportedDataTypes.DataTypePair.of(1f, new byte[]{0x0, 0x1});
+                } else if (dataTypePair.getDataTypeClass() == Double.class) {
+                    return Plc4XSupportedDataTypes.DataTypePair.of(1d, new byte[]{0x0, 0x1});
+                } else {
+                    return dataTypePair;
+                }
+            })
             .map(dataTypePair -> Stream.of(
                 producePair(dataTypePair.getDataTypeClass(), CoilModbusAddress.of("coil:1"), new ReadCoilsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x1}))),
                 producePair(CoilModbusAddress.of("coil:1"), new WriteSingleCoilResponse(1, 1), dataTypePair.getValue()),
@@ -290,6 +299,8 @@ public class Plc4XModbusProtocolTest {
                 assertThat(coilValue, equalTo(true));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
                 assertThat(coilValue, equalTo(true));
+            } else if (payloadClazzName.equals(Double.class.getSimpleName())) {
+                assertThat(coilValue, equalTo(true));
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertThat(coilValue, equalTo(true));
             } else if (payloadClazzName.equals(BigInteger.class.getSimpleName())) {
@@ -311,6 +322,8 @@ public class Plc4XModbusProtocolTest {
             } else if (payloadClazzName.equals(Calendar.class.getSimpleName())) {
                 assertThat(value, equalTo(1));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            } else if (payloadClazzName.equals(Double.class.getSimpleName())) {
                 assertThat(value, equalTo(1));
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertThat(value, equalTo(1));

@@ -171,7 +171,7 @@ public class Plc4XSupportedDataTypes {
             this.dataTypePair = dataTypePair;
         }
 
-        private static <T extends Serializable> DataTypePair<T> of(T value, byte[] bytes) {
+        public static <T extends Serializable> DataTypePair<T> of(T value, byte[] bytes) {
             return new DataTypePair<>(ImmutablePair.of(value, bytes));
         }
 
