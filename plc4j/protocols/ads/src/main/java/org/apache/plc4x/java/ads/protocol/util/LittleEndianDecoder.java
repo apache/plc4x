@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.protocol.util;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -97,6 +98,10 @@ public class LittleEndianDecoder {
             } else if (datatype == Integer.class) {
                 decodeInteger(safeLengthAdsData, i, result);
                 i += 4;
+            } else if (datatype == BigInteger.class) {
+                decodeBigInteger(safeLengthAdsData, result);
+                // A big integer can consume the whole stream
+                i = length;
             } else if (datatype == Float.class) {
                 decodeFloat(safeLengthAdsData, i, result);
                 i += 4;
@@ -141,6 +146,13 @@ public class LittleEndianDecoder {
         byte byteThree = adsData[i + 2];
         byte byteFour = adsData[i + 3];
         result.add((byteOne & 0xff) | ((byteTwo & 0xff) << 8) | ((byteThree & 0xff) << 16) | (byteFour & 0xff) << 24);
+    }
+
+    private static void decodeBigInteger(byte[] adsData, List<Object> result) {
+        byte[] clone = ArrayUtils.clone(adsData);
+        ArrayUtils.reverse(clone);
+        byte[] bigIntegerByteArray = ArrayUtils.insert(0, clone, (byte) 0x0);
+        result.add(new BigInteger(bigIntegerByteArray));
     }
 
     private static void decodeFloat(byte[] adsData, int i, List<Object> result) {

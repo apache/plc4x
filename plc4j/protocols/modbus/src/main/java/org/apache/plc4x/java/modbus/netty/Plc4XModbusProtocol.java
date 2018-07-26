@@ -37,6 +37,7 @@ import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -260,6 +261,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                     && !(value instanceof byte[])
                     && !(value instanceof Short)
                     && !(value instanceof Integer)
+                    && !(value instanceof BigInteger)
                 ) {
                 throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
             }
@@ -311,6 +313,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                     throw new PlcProtocolException("Value to high to fit into Byte: " + value);
                 }
                 coilSet = (int) value == 1;
+            } else if (value.getClass() == BigInteger.class) {
+                coilSet = value.equals(BigInteger.ONE);
             }
             byte coilToSet = (coilSet ? (byte) 1 : (byte) 0);
             actualCoil = (byte) (actualCoil | coilToSet << i);
@@ -344,12 +348,41 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 }
                 buffer.writeBytes(bytes);
             } else if (value.getClass() == Short.class) {
+                if ((short) value < 0) {
+                    throw new PlcProtocolException("Only positive values are supported for Short: " + value);
+                }
                 buffer.writeShort((short) value);
             } else if (value.getClass() == Integer.class) {
                 if ((int) value > Integer.MAX_VALUE) {
                     throw new PlcProtocolException("Value to high to fit into register: " + value);
                 }
+                if ((int) value < 0) {
+                    throw new PlcProtocolException("Only positive values are supported for Integer: " + value);
+                }
                 buffer.writeShort((int) value);
+            } else if (value.getClass() == BigInteger.class) {
+                if (((BigInteger) value).compareTo(BigInteger.ZERO) < 0) {
+                    throw new PlcProtocolException("Only positive values are supported for BigInteger: " + value);
+                }
+                if (((BigInteger) value).compareTo(BigInteger.valueOf(0XFFFF_FFFFL)) > 0) {
+                    throw new PlcProtocolException("Value to high to fit into register: " + value);
+                }
+                // TODO: for now we can't support big values as we only write one register at once
+                if (((BigInteger) value).compareTo(BigInteger.valueOf(0XFFFFL)) > 0) {
+                    throw new PlcProtocolException("Value to high to fit into register: " + value);
+                }
+                // TODO: Register has 2 bytes so we trim to 2 instead of 4 like the second if above
+                int maxBytes = 2;
+                byte[] bigIntegerBytes = ((BigInteger) value).toByteArray();
+                byte[] bytes = new byte[maxBytes];
+                int lengthToCopy = Math.min(bigIntegerBytes.length, maxBytes);
+                int srcPosition = Math.max(bigIntegerBytes.length - maxBytes, 0);
+                int destPosition = maxBytes - lengthToCopy;
+                System.arraycopy(bigIntegerBytes, srcPosition, bytes, destPosition, lengthToCopy);
+
+                // TODO: check if this is a good representation.
+                // TODO: can a big integer span multiple registers?
+                buffer.writeBytes(bytes);
             }
         }
         byte[] result = new byte[buffer.writerIndex()];
@@ -393,6 +426,10 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 @SuppressWarnings("unchecked")
                 T itemToBeAdded = (T) Integer.valueOf(coilFlag);
                 data.add(itemToBeAdded);
+            } else if (dataType == BigInteger.class) {
+                @SuppressWarnings("unchecked")
+                T itemToBeAdded = (T) BigInteger.valueOf(coilFlag);
+                data.add(itemToBeAdded);
             }
         }
         return data;
@@ -431,8 +468,19 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 T itemToBeAdded = (T) Short.valueOf((short) intValue);
                 data.add(itemToBeAdded);
             } else if (dataType == Integer.class) {
+                if (intValue < 0) {
+                    throw new PlcProtocolException("Integer underflow: " + intValue);
+                }
                 @SuppressWarnings("unchecked")
                 T itemToBeAdded = (T) Integer.valueOf(intValue);
+                data.add(itemToBeAdded);
+            } else if (dataType == BigInteger.class) {
+                if (intValue < 0) {
+                    throw new PlcProtocolException("BigInteger underflow: " + intValue);
+                }
+                // TODO: can a big integer span multiple registers?
+                @SuppressWarnings("unchecked")
+                T itemToBeAdded = (T) new BigInteger(register);
                 data.add(itemToBeAdded);
             }
         }

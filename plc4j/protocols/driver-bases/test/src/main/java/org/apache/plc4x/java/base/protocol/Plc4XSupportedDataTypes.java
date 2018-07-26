@@ -23,6 +23,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -41,11 +42,12 @@ public class Plc4XSupportedDataTypes {
         littleEndianMap.put(Boolean.class, ImmutablePair.of(Boolean.TRUE, new byte[]{0x01}));
         littleEndianMap.put(Byte.class, ImmutablePair.of(Byte.valueOf("1"), new byte[]{0x1}));
         littleEndianMap.put(Short.class, ImmutablePair.of(Short.valueOf("1"), new byte[]{0x1, 0x0}));
+        littleEndianMap.put(Float.class, ImmutablePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
+        littleEndianMap.put(Integer.class, ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0}));
+        littleEndianMap.put(Double.class, ImmutablePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
+        littleEndianMap.put(BigInteger.class, ImmutablePair.of(BigInteger.valueOf(1), new byte[]{0x1, 0x0, 0x0, 0x0}));
         littleEndianMap.put(Calendar.class, ImmutablePair.of(calenderInstance, new byte[]{0x0, (byte) 0x80, 0x3E, 0x15, (byte) 0xAB, 0x47, (byte) 0xFC, 0x28}));
         littleEndianMap.put(GregorianCalendar.class, littleEndianMap.get(Calendar.class));
-        littleEndianMap.put(Float.class, ImmutablePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
-        littleEndianMap.put(Double.class, ImmutablePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
-        littleEndianMap.put(Integer.class, ImmutablePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0}));
         littleEndianMap.put(String.class, ImmutablePair.of(String.valueOf("Hello World!"), new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
         bigEndianMap = new HashMap<>();
         littleEndianMap.forEach((clazz, pair) -> {
@@ -66,11 +68,13 @@ public class Plc4XSupportedDataTypes {
         return Stream.of(
             Boolean.class,
             Byte.class,
+            // TODO: add byte[]
             Short.class,
-            Calendar.class,
             Float.class,
-            Double.class,
             Integer.class,
+            Double.class,
+            BigInteger.class,
+            Calendar.class,
             String.class
         );
     }

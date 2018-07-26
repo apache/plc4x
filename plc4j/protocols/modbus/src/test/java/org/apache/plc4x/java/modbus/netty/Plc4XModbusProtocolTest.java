@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -167,7 +168,7 @@ public class Plc4XModbusProtocolTest {
                             .builder()
                             .addItem((Class) pair.getLeft().getClass(), RegisterModbusAddress.of("register:1"), pair.getLeft(), pair.getLeft(), pair.getLeft())
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new WriteMultipleCoilsResponse(1, 3))
+                    new ModbusTcpPayload((short) 0, (short) 0, new WriteMultipleRegistersResponse(1, 3))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
@@ -175,7 +176,7 @@ public class Plc4XModbusProtocolTest {
                             .builder()
                             .addItem(RegisterModbusAddress.of("register:1"), pair.getLeft())
                             .build(), new CompletableFuture<>()),
-                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleCoilResponse(1, pair.getRight()[0]))
+                    new ModbusTcpPayload((short) 0, (short) 0, new WriteSingleRegisterResponse(1, pair.getRight()[0]))
                 )
             ))
             .flatMap(stream -> stream)
@@ -228,6 +229,9 @@ public class Plc4XModbusProtocolTest {
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertThat(andMask, equalTo(1));
                 assertThat(orMask, equalTo(2));
+            } else if (payloadClazzName.equals(BigInteger.class.getSimpleName())) {
+                assertThat(andMask, equalTo(1));
+                assertThat(orMask, equalTo(2));
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
                 assertThat(andMask, equalTo(1));
                 assertThat(orMask, equalTo(2));
@@ -275,6 +279,8 @@ public class Plc4XModbusProtocolTest {
                 assertByteEquals(new byte[]{0x0}, bytes);
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertByteEquals(new byte[]{0x0}, bytes);
+            } else if (payloadClazzName.equals(BigInteger.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0}, bytes);
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
                 assertByteEquals(new byte[]{0x0}, bytes);
             }
@@ -297,6 +303,8 @@ public class Plc4XModbusProtocolTest {
                 assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
+            } else if (payloadClazzName.equals(BigInteger.class.getSimpleName())) {
+                assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
                 assertByteEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, bytes);
             }
@@ -318,6 +326,8 @@ public class Plc4XModbusProtocolTest {
                 assertThat(coilValue, equalTo(true));
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
                 assertThat(coilValue, equalTo(true));
+            } else if (payloadClazzName.equals(BigInteger.class.getSimpleName())) {
+                assertThat(coilValue, equalTo(true));
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
                 assertThat(coilValue, equalTo(true));
             }
@@ -337,6 +347,8 @@ public class Plc4XModbusProtocolTest {
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
                 assertThat(value, equalTo(1));
             } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
+                assertThat(value, equalTo(1));
+            } else if (payloadClazzName.equals(BigInteger.class.getSimpleName())) {
                 assertThat(value, equalTo(1));
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
                 assertThat(value, equalTo(1));
