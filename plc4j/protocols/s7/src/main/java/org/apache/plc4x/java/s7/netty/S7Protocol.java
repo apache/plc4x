@@ -51,6 +51,15 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.util.*;
 
+/**
+ * Communication Layer between the Application level ({@link Plc4XS7Protocol}) and the lower level (tcp) that sends and receives {@link S7Message}s.
+ * This layer also handles the control over the "wire", i.e., the queues of incoming and outgoing messages.
+ * Furthermore, here {@link S7Message}s are marshalled and unmarshalled to {@link ByteBuf}s to be send over wire.
+ *
+ * Before messages are send to the wire an optional {@link S7MessageProcessor} can be applied.
+ *
+ * @see S7MessageProcessor
+ */
 public class S7Protocol extends ChannelDuplexHandler {
 
     private static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;

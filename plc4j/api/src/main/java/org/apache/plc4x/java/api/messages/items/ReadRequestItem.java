@@ -22,6 +22,18 @@ import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Objects;
 
+/**
+ * Encapsulats one {@link RequestItem} that could be read multiple times, i.e., from the given Address on
+ * {@link ReadRequestItem#size} number of Items with equal datatype are read.
+ *
+ * Thus,
+ * <pre>
+ *     new ReadRequestItem(Int.class, adress, 5)
+ * </pre>
+ * basically reads 5 consecutive integers starting at the given {@link Address}.
+ *
+ * @param <T> Generic Type of expected Datatype.
+ */
 public class ReadRequestItem<T> extends RequestItem<T> {
 
     private final int size;
@@ -52,6 +64,8 @@ public class ReadRequestItem<T> extends RequestItem<T> {
             return false;
         }
         ReadRequestItem<?> that = (ReadRequestItem<?>) o;
+        // TODO 01.18.18 jf: we should also call the comparison of super at least otherwise this can lead to unwanted behavior.
+        // Perhaps we should generate a UUID or something for each ReadRequest to have a good equality comparison
         return size == that.size;
     }
 
