@@ -21,7 +21,7 @@
 pipeline {
     agent {
         node {
-            //label 'ubuntu && !H33'
+            //label 'ubuntu && !H32'
             label 'plc4x'
         }
     }
@@ -128,7 +128,7 @@ pipeline {
             // Only the official build nodes have the credentials to deploy setup.
             agent {
                 node {
-                    label 'ubuntu'
+                    label 'ubuntu && !H32'
                 }
             }
             steps {
