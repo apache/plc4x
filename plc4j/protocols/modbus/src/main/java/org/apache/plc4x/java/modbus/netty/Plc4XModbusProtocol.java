@@ -260,12 +260,13 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 !(value instanceof Boolean)
                     && !(value instanceof Byte)
                     && !(value instanceof byte[])
+                    && !(value instanceof Byte[])
                     && !(value instanceof Short)
                     && !(value instanceof Integer)
                     && !(value instanceof BigInteger)
                     && !(value instanceof Float)
                     && !(value instanceof Double)
-                ) {
+            ) {
                 throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
             }
         }
@@ -279,16 +280,16 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         if (values.size() != 1) {
             throw new PlcProtocolException("Only one value allowed");
         }
-        Byte multiCoil = produceCoilValues(values)[0];
+        byte multiCoil = produceCoilValues(values)[0];
         return multiCoil != 0;
     }
 
     private byte[] produceCoilValues(List<?> values) throws PlcProtocolException {
         List<Byte> coils = new LinkedList<>();
-        Byte actualCoil = 0;
+        byte actualCoil = 0;
         int i = 7;
         for (Object value : values) {
-            boolean coilSet = false;
+            final boolean coilSet;
             if (value.getClass() == Boolean.class) {
                 coilSet = (Boolean) value;
             } else if (value.getClass() == Byte.class) {
@@ -299,9 +300,19 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             } else if (value.getClass() == byte[].class) {
                 byte[] bytes = (byte[]) value;
                 if (bytes.length != 1) {
-                    throw new PlcProtocolException("Only exactly one byte is allowed: " + bytes.length);
+                    throw new PlcProtocolException("Exactly one byte is allowed: " + bytes.length);
                 }
-                byte byteValue = bytes[1];
+                byte byteValue = bytes[0];
+                if (byteValue > 1) {
+                    throw new PlcProtocolException("Value to high to fit into Byte: " + value);
+                }
+                coilSet = byteValue == 1;
+            } else if (value.getClass() == Byte[].class) {
+                Byte[] bytes = (Byte[]) value;
+                if (bytes.length != 1) {
+                    throw new PlcProtocolException("Exactly one byte is allowed: " + bytes.length);
+                }
+                byte byteValue = bytes[0];
                 if (byteValue > 1) {
                     throw new PlcProtocolException("Value to high to fit into Byte: " + value);
                 }
@@ -354,9 +365,15 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             } else if (value.getClass() == byte[].class) {
                 byte[] bytes = (byte[]) value;
                 if (bytes.length != 2) {
-                    throw new PlcProtocolException("Only exactly two bytes are allowed: " + bytes.length);
+                    throw new PlcProtocolException("Exactly two bytes are allowed: " + bytes.length);
                 }
                 buffer.writeBytes(bytes);
+            } else if (value.getClass() == Byte[].class) {
+                Byte[] bytes = (Byte[]) value;
+                if (bytes.length != 2) {
+                    throw new PlcProtocolException("Exactly two bytes are allowed: " + bytes.length);
+                }
+                buffer.writeBytes(ArrayUtils.toPrimitive(bytes));
             } else if (value.getClass() == Short.class) {
                 if ((short) value < 0) {
                     throw new PlcProtocolException("Only positive values are supported for Short: " + value);
@@ -447,6 +464,10 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 data.add(itemToBeAdded);
             } else if (dataType == byte[].class) {
                 data.add((T) new byte[]{coilFlag});
+            } else if (dataType == Byte[].class) {
+                @SuppressWarnings("unchecked")
+                T itemToBeAdded = (T) new Byte[]{coilFlag};
+                data.add(itemToBeAdded);
             } else if (dataType == Short.class) {
                 @SuppressWarnings("unchecked")
                 T itemToBeAdded = (T) Short.valueOf(coilFlag);
@@ -498,6 +519,10 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 data.add(itemToBeADded);
             } else if (dataType == byte[].class) {
                 T itemToBeAdded = (T) register;
+                data.add(itemToBeAdded);
+            } else if (dataType == Byte[].class) {
+                @SuppressWarnings("unchecked")
+                T itemToBeAdded = (T) ArrayUtils.toObject(register);
                 data.add(itemToBeAdded);
             } else if (dataType == Short.class) {
                 if (intValue > Short.MAX_VALUE) {

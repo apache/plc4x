@@ -25,6 +25,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Response to a {@link PlcReadRequest}.
+ * Contains the values read from the PLC but untyped.
+ *
+ * Values are extracted using the {@link ReadRequestItem}s that were send in the read request.
+ *
+ * If only a variables of one type are requested it is better to use
+ * {@link org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest} which leads to a
+ * {@link org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse}.
+ */
 public class PlcReadResponse extends PlcResponse<PlcReadRequest, ReadResponseItem<?>, ReadRequestItem<?>> {
 
     public PlcReadResponse(PlcReadRequest request, ReadResponseItem<?> responseItems) {
