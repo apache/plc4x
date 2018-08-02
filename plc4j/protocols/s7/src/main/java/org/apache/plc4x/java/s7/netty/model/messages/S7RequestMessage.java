@@ -27,6 +27,7 @@ import java.util.List;
 
 /**
  * Container Object for Requests to S7 which additionally stores information if the request was acknowledged (by the PLC?).
+ *
  * @see S7Message for the other attributes.
  */
 public class S7RequestMessage extends S7Message {

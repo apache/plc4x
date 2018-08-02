@@ -24,6 +24,7 @@ import java.util.Objects;
 
 /**
  * Wrapper Object to encapsulate an {@link Address} and the expected datatype as {@link Class}.
+ *
  * @param <DATA_TYPE> Generic Type of data at address
  */
 public abstract class RequestItem<DATA_TYPE> {

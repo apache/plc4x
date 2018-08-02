@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.s7.netty.model.params;
 
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
-import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
 import java.util.List;
@@ -28,8 +27,6 @@ import java.util.List;
  * "Command" Message to inform PLC of wanted operation.
  * Also contains {@link VarParameter#items} that hold detailed information on the "Command", e.g.,
  * addresses to read or to write to.
- *
- * TODO 01.08.18 jf: Could this be renamed to Something like Command as this seems to be the command message pattern?
  */
 public class VarParameter implements S7Parameter {
 

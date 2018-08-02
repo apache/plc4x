@@ -64,8 +64,6 @@ public class ReadRequestItem<T> extends RequestItem<T> {
             return false;
         }
         ReadRequestItem<?> that = (ReadRequestItem<?>) o;
-        // TODO 01.18.18 jf: we should also call the comparison of super at least otherwise this can lead to unwanted behavior.
-        // Perhaps we should generate a UUID or something for each ReadRequest to have a good equality comparison
         return size == that.size;
     }
 

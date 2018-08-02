@@ -35,8 +35,6 @@ import java.util.Objects;
  *
  * Provides a builder for object construction through {@link PlcReadRequest#builder()}.
  *
- * TODO 01.08.2018 jf: Can we make constructors private and force users to use the Builder to enforce immutability?
- *
  * @see TypeSafePlcReadRequest
  */
 public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {

@@ -66,7 +66,6 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
             return false;
         }
         ReadResponseItem<?> that = (ReadResponseItem<?>) o;
-        // TODO 01.08.18 jf: should we also use a UUID here or at least a check for equal request as this could lead to effects due to unwanted equality (same for hashCode).
         return Objects.equals(values, that.values);
     }
 

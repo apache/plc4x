@@ -32,8 +32,6 @@ import java.util.Optional;
  *
  * Can be constructed using the {@link PlcReadRequest#builder()} method.
  *
- * TODO 01.08.18 jf: Could we hide constructors from users and enforce usage of the PlcReadRequest.builder?
- *
  * @param <T> Type of the {@link Class} of requested values
  */
 public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
