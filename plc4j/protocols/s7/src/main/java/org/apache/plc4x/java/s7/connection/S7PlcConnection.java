@@ -50,8 +50,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -226,11 +229,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
      * First, a disconnect request is send to the PLC and after that, the Session and the channel are closed and
      * invalidated.
      *
-     * Then {@link ChannelFuture#await()} is used to see if the PLC closes the connection as expected.
-     * We have to use {@link ChannelFuture#await()} here for two reasons.
-     * First, netty does not allow blocking calls inside {@link io.netty.util.concurrent.GenericFutureListener}.
-     * Second, a timeout ensures that the close operation will abort in case of, e.g., transportation problems and the
-     * jvm can shut down gracefully.
+     * Waits if the PLC disconnects for CLOSE_DEVICE_TIMEOUT_MS and closes the connection itself, otherwise.
      */
     @Override
     public void close() {
@@ -240,18 +239,30 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                 (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
                 null);
             channel.writeAndFlush(disconnectRequest);
-            // Wait if the PLC closes the connection
+
+            // In case of an ISO TP Class 0 connection, the remote is usually expected to actively
+            // CountDownLatch has to be used instead closeFuture().await() due to netty permitting calling await()
+            // on Executors that server as event loop
+            CountDownLatch closeLatch = new CountDownLatch(1);
+            channel.closeFuture().addListener(listener -> closeLatch.countDown());
             try {
-                channel.closeFuture().await(CLOSE_DEVICE_TIMEOUT_MS);
+                closeLatch.await(CLOSE_DEVICE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 logger.warn("Connection was not closed by PLC, has to be closed from driver side now.", e);
                 Thread.currentThread().interrupt();
             }
-            // close the session itself.
-            channel.eventLoop().parent().shutdownGracefully();
-            super.close();
-        }
+            // If the remote did not close the connection above, then we do it ourselves.
+            if (channel.isOpen()) {
+                channel.close();
+            }
 
+            // In normal operation, the channels event loop has a parent, however when running with
+            // the embedded channel for unit tests, parent is null.
+            if(channel.eventLoop().parent() != null) {
+                channel.eventLoop().parent().shutdownGracefully();
+            }
+        }
+        super.close();
     }
 
 }
