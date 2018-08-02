@@ -23,6 +23,11 @@ import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
 import java.util.List;
 
+/**
+ * Used for writes to S7 as part of a Valid {@link org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage} together
+ * with a suitable {@link org.apache.plc4x.java.s7.netty.model.params.VarParameter} Object.
+ * Contains the values to write as {@link VarPayloadItem}s.
+ */
 public class VarPayload implements S7Payload {
 
     private final ParameterType parameterType;

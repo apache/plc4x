@@ -26,6 +26,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Type safe wrapper for {@link PlcReadRequest}.
+ * Can be used if requesting only values from the same type.
+ *
+ * Can be constructed using the {@link PlcReadRequest#builder()} method.
+ *
+ * @param <T> Type of the {@link Class} of requested values
+ */
 public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
 
     private final Class<T> dataType;
