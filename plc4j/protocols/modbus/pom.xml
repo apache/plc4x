@@ -33,6 +33,10 @@
   <description>Implementation of a PLC4X driver able to speak with Modbus devices using the Modbus protocol.
   </description>
 
+  <properties>
+    <modbus-driver.version>1.1.0</modbus-driver.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -65,18 +69,18 @@
       <!-- Just for reference can be removed later-->
       <groupId>com.digitalpetri.modbus</groupId>
       <artifactId>modbus-master-tcp</artifactId>
-      <version>1.1.0</version>
+      <version>${modbus-driver.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.digitalpetri.modbus</groupId>
       <artifactId>modbus-core</artifactId>
-      <version>1.1.0</version>
+      <version>${modbus-driver.version}</version>
     </dependency>
     <dependency>
       <groupId>com.digitalpetri.modbus</groupId>
       <artifactId>modbus-codec</artifactId>
-      <version>1.1.0</version>
+      <version>${modbus-driver.version}</version>
     </dependency>
 
     <dependency>

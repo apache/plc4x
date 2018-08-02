@@ -18,9 +18,10 @@
  */
 package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.messages.PlcNotification;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 /**
@@ -29,21 +30,20 @@ import java.util.function.Consumer;
 public interface PlcSubscriber {
 
     /**
-     * Subscribes a {@code consumer} to a {@code address} parsing values as {@code dataType}.
-     * {@code consumer} and {@code address} are used as unique identification.
+     * Subscribes to addresses on the PLC.
      *
-     * @param consumer to be subscribed.
-     * @param address  to be read.
-     * @param dataType to be decoded.
+     * @param subscriptionRequest subscription request containing at least one subscription request item.
+     * @return subscription response containing a subscription response item for each subscription request item.
      */
-    <T extends R, R> void subscribe(Consumer<PlcNotification<R>> consumer, Address address, Class<T> dataType);
-
+    CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest);
 
     /**
-     * Unsubscribes a {@code consumer}.
-     * {@code consumer} and {@code address} are used as unique identification.
+     * Unsubscribes from addresses on the PLC. For unsubscribing the unsubscription request uses the subscription
+     * handle returned as part of the subscription response item.
      *
-     * @param consumer to be unsubscribed.
+     * @param unsubscriptionRequest unsubscription request containing at least one unsubscription request item.
+     * @return unsubscription response containing a unsubscription response item for each unsubscription request item.
      */
-    <R> void unsubscribe(Consumer<PlcNotification<R>> consumer, Address address);
+    CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest);
+
 }

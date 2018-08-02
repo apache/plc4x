@@ -236,7 +236,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <version>3.0.0-M1</version> <!--$NO-MVN-MAN-VER$-->
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -252,7 +251,27 @@
               </rules>
             </configuration>
           </execution>
+          <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
+          <execution>
+            <id>vulnerability-checks</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies"/>
+              </rules>
+            </configuration>
+          </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.sonatype.ossindex.maven</groupId>
+            <artifactId>ossindex-maven-enforcer-rules</artifactId>
+            <version>1.0.0</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <!-- Plugin for analysing the project based on neo4j queries -->
@@ -316,6 +335,9 @@
 
             <!-- Jenkins build related files -->
             <exclude>.repository/**</exclude>
+
+            <!-- Data files created by examples running an embedded elasticsearch -->
+            <exclude>elasticsearch-data/**</exclude>
           </excludes>
         </configuration>
       </plugin>

@@ -18,12 +18,31 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.types.ResponseCode;
+import java.util.Calendar;
+import java.util.List;
 
-public class WriteResponseItem<T> extends ResponseItem<WriteRequestItem<T>> {
+public class SubscriptionEventItem<T> {
 
-    public WriteResponseItem(WriteRequestItem<T> requestItem, ResponseCode responseCode) {
-        super(requestItem, responseCode);
+    private SubscriptionRequestItem<T> subscriptionRequestItem;
+    private Calendar timestamp;
+    private List<T> values;
+
+    public SubscriptionEventItem(SubscriptionRequestItem<T> subscriptionRequestItem, Calendar timestamp, List<T> values) {
+        this.subscriptionRequestItem = subscriptionRequestItem;
+        this.timestamp = timestamp;
+        this.values = values;
+    }
+
+    public SubscriptionRequestItem<T> getSubscriptionRequestItem() {
+        return subscriptionRequestItem;
+    }
+
+    public Calendar getTimestamp() {
+        return timestamp;
+    }
+
+    public List<T> getValues() {
+        return values;
     }
 
 }

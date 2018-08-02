@@ -18,36 +18,27 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.SubscriptionHandle;
 
 import java.util.Objects;
 
-public abstract class RequestItem<DATA_TYPE> {
+public class UnsubscriptionRequestItem {
 
-    private final Class<DATA_TYPE> datatype;
+    private SubscriptionHandle subscriptionHandle;
 
-    private final Address address;
-
-    public RequestItem(Class<DATA_TYPE> datatype, Address address) {
-        Objects.requireNonNull(datatype, "Data type must not be null");
-        Objects.requireNonNull(address, "Address type must not be null");
-        this.datatype = datatype;
-        this.address = address;
+    public UnsubscriptionRequestItem(SubscriptionHandle subscriptionHandle) {
+        Objects.requireNonNull(subscriptionHandle, "SubscriptionHandle must not be null");
+        this.subscriptionHandle = subscriptionHandle;
     }
 
-    public Class<DATA_TYPE> getDatatype() {
-        return datatype;
-    }
-
-    public Address getAddress() {
-        return address;
+    public SubscriptionHandle getSubscriptionHandle() {
+        return subscriptionHandle;
     }
 
     @Override
     public String toString() {
-        return "RequestItem{" +
-            "datatype=" + datatype +
-            ", address=" + address +
+        return "UnsubscriptionRequestItem{" +
+            "subscriptionHandle=" + subscriptionHandle +
             '}';
     }
 
@@ -56,17 +47,16 @@ public abstract class RequestItem<DATA_TYPE> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RequestItem)) {
+        if (!(o instanceof UnsubscriptionRequestItem)) {
             return false;
         }
-        RequestItem<?> that = (RequestItem<?>) o;
-        return Objects.equals(datatype, that.datatype) &&
-            Objects.equals(address, that.address);
+        UnsubscriptionRequestItem that = (UnsubscriptionRequestItem) o;
+        return Objects.equals(subscriptionHandle, that.subscriptionHandle);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(datatype, address);
+        return Objects.hash(subscriptionHandle);
     }
+
 }

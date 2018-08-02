@@ -15,15 +15,14 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
-*/
-package org.apache.plc4x.java.api.messages.items;
+ */
+package org.apache.plc4x.java.api.exceptions;
 
-import org.apache.plc4x.java.api.types.ResponseCode;
-
-public class WriteResponseItem<T> extends ResponseItem<WriteRequestItem<T>> {
-
-    public WriteResponseItem(WriteRequestItem<T> requestItem, ResponseCode responseCode) {
-        super(requestItem, responseCode);
+/**
+ * indicates that a functionality is not implemented yet.
+ */
+public class PlcNotImplementedException extends PlcRuntimeException {
+    public PlcNotImplementedException(String message) {
+        super(message);
     }
-
 }

@@ -21,9 +21,12 @@ package org.apache.plc4x.java.modbus;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
+import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.concurrent.CompletableFuture;
@@ -42,16 +45,39 @@ public class ManualPlc4XModbusTest {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
-            PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
+            {
+                PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            Address address = plcConnection.parseAddress("register:7");
-            CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
-                .read(new TypeSafePlcReadRequest<>(Integer.class, address));
-            TypeSafePlcReadResponse<Integer> readResponse = response.get();
-            System.out.println("Response " + readResponse);
-            ReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
-            System.out.println("ResponseItem " + responseItem);
-            responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
+                Address address = plcConnection.parseAddress("register:7");
+                CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
+                    .read(new TypeSafePlcReadRequest<>(Integer.class, address));
+                TypeSafePlcReadResponse<Integer> readResponse = response.get();
+                System.out.println("Response " + readResponse);
+                ReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
+                System.out.println("ResponseItem " + responseItem);
+                responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
+            }
+
+            {
+                PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
+
+                Address address = plcConnection.parseAddress("coil:1");
+                CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
+                    .read(new TypeSafePlcReadRequest<>(Integer.class, address));
+                TypeSafePlcReadResponse<Integer> readResponse = response.get();
+                System.out.println("Response " + readResponse);
+                ReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
+                System.out.println("ResponseItem " + responseItem);
+                responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
+            }
+
+            {
+                PlcWriter writer = plcConnection.getWriter().orElseThrow(() -> new RuntimeException("No Writer found"));
+                Address address = plcConnection.parseAddress("coil:1");
+                CompletableFuture<TypeSafePlcWriteResponse<Integer>> write = writer.write(new TypeSafePlcWriteRequest<>(Integer.class, address, 1));
+                TypeSafePlcWriteResponse<Integer> writeResponse = write.get();
+                System.out.println("Response " + writeResponse);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

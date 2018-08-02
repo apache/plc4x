@@ -18,6 +18,9 @@
  */
 package org.apache.plc4x.java.s7.netty.util;
 
+import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+
 import java.util.Calendar;
 
 public class S7TypeEncoder {
@@ -26,7 +29,7 @@ public class S7TypeEncoder {
         // Utility class
     }
 
-    public static byte[] encodeData(Object[] values) {
+    public static byte[] encodeData(Object[] values) throws PlcProtocolException {
         final int length = values.length;
         if (length == 0) {
             return new byte[]{};
@@ -43,11 +46,15 @@ public class S7TypeEncoder {
             result = encodeInteger(values, length);
         } else if (valueType == Calendar.class) {
             // TODO: Decide what to do here ...
-            result = null;
+            throw new PlcNotImplementedException("calender not yet implemented in s7");
         } else if (valueType == Float.class) {
             result = encodeFloat(values, length);
+        } else if (valueType == Double.class) {
+            result = encodeDouble(values, length);
         } else if (valueType == String.class) {
             result = encodeString(values, length);
+        } else {
+            throw new PlcProtocolException("Unsupported data type " + valueType);
         }
         return result;
     }
@@ -80,6 +87,24 @@ public class S7TypeEncoder {
             result[(i * 4) + 1] = (byte) ((intValue & 0x00ff0000) >> 16);
             result[(i * 4) + 2] = (byte) ((intValue & 0x0000ff00) >> 8);
             result[(i * 4) + 3] = (byte) (intValue & 0xff);
+        }
+        return result;
+    }
+
+    public static byte[] encodeDouble(Object[] values, int length) {
+        byte[] result;
+        result = new byte[length * 8];
+        for (int i = 0; i < length; i++) {
+            double doubleValue = (double) values[i];
+            long longValue = Double.doubleToLongBits(doubleValue);
+            result[(i * 8)] =     (byte) ((longValue & 0xFF000000_00000000L) >> 56);
+            result[(i * 8) + 1] = (byte) ((longValue & 0x00FF0000_00000000L) >> 48);
+            result[(i * 8) + 2] = (byte) ((longValue & 0x0000FF00_00000000L) >> 40);
+            result[(i * 8) + 3] = (byte) ((longValue & 0x000000FF_00000000L) >> 32);
+            result[(i * 8) + 4] = (byte) ((longValue & 0x00000000_FF000000L) >> 24);
+            result[(i * 8) + 5] = (byte) ((longValue & 0x00000000_00FF0000L) >> 16);
+            result[(i * 8) + 6] = (byte) ((longValue & 0x00000000_0000FF00L) >> 8);
+            result[(i * 8) + 7] = (byte) (longValue & 0x00000000_000000FFL);
         }
         return result;
     }

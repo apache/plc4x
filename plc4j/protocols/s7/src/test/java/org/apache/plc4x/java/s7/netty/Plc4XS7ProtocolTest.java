@@ -38,42 +38,57 @@ import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
+import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfPlc4XSupportedDataTypes;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
 @RunWith(Parameterized.class)
 public class Plc4XS7ProtocolTest extends NettyTestBase {
 
-    private Class<?> type;
-    private S7Address address;
-
     private Plc4XS7Protocol SUT;
 
-    @Parameterized.Parameters
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+    // TODO: implement these types
+    private List<String> notYetSupportedDataType = Stream.of(
+        Calendar.class,
+        GregorianCalendar.class,
+        BigInteger.class,
+        byte[].class,
+        Byte[].class
+    ).map(Class::getSimpleName).collect(Collectors.toList());
+
+    @Parameterized.Parameter
+    public Class<?> type;
+
+    @Parameterized.Parameter(1)
+    public S7Address address;
+
+    @Parameterized.Parameters(name = "{index} Type:{0} {1}")
     public static Collection<Object[]> data() {
         List<Object[]> arguments = new LinkedList<>();
         // Build the cross product of all variables and address types.
-        Arrays.asList(
-            /*Boolean.class,
-            Byte.class,
-            Short.class,
-            // TODO: enable once Calender in implemented
-            //Calendar.class,
-            Float.class,
-            Integer.class,*/
-            String.class)
+        streamOfPlc4XSupportedDataTypes()
             .forEach(
                 aClass -> Arrays.asList(
                     mock(S7Address.class),
@@ -84,11 +99,6 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
         return arguments;
     }
 
-    public Plc4XS7ProtocolTest(Class<?> type, S7Address address) {
-        this.type = type;
-        this.address = address;
-    }
-
     @Before
     public void setUp() {
         SUT = new Plc4XS7Protocol();
@@ -97,6 +107,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
     @Test
     @Category(FastTests.class)
     public void encode() throws Exception {
+        assumeThat(type + " not yet implemented", notYetSupportedDataType, not(hasItem(type.getSimpleName())));
         // TODO: finish me
         // Read Request Tests
         {
@@ -117,6 +128,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
     @Test
     @Category(FastTests.class)
     public void decode() throws Exception {
+        assumeThat(type + " not yet implemented", notYetSupportedDataType, not(hasItem(type.getSimpleName())));
         // Read Test
         {
             short fakeTpduReference = (short) 1;
@@ -174,6 +186,8 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             return (T) Calendar.getInstance();
         } else if (type == Float.class) {
             return (T) Float.valueOf(123f);
+        } else if (type == Double.class) {
+            return (T) Double.valueOf(123f);
         } else if (type == Integer.class) {
             return (T) Integer.valueOf(123);
         } else if (type == String.class) {
@@ -201,8 +215,11 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
             // TODO: what size is calender?
             data = new byte[]{(byte) 0b0000_0000};
         } else if (type == Float.class) {
-            size = DataTransportSize.BYTE_WORD_DWORD;
+            size = DataTransportSize.REAL;
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
+        } else if (type == Double.class) {
+            size = DataTransportSize.REAL;
+            data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
         } else if (type == Integer.class) {
             size = DataTransportSize.INTEGER;
             data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};

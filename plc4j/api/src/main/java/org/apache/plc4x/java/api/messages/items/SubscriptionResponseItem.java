@@ -18,12 +18,20 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
+import org.apache.plc4x.java.api.model.SubscriptionHandle;
 import org.apache.plc4x.java.api.types.ResponseCode;
 
-public class WriteResponseItem<T> extends ResponseItem<WriteRequestItem<T>> {
+public class SubscriptionResponseItem<T> extends ResponseItem<SubscriptionRequestItem<T>>  {
 
-    public WriteResponseItem(WriteRequestItem<T> requestItem, ResponseCode responseCode) {
+    private SubscriptionHandle subscriptionHandle;
+
+    public SubscriptionResponseItem(SubscriptionRequestItem<T> requestItem, SubscriptionHandle subscriptionHandle, ResponseCode responseCode) {
         super(requestItem, responseCode);
+        this.subscriptionHandle = subscriptionHandle;
+    }
+
+    public SubscriptionHandle getSubscriptionHandle() {
+        return subscriptionHandle;
     }
 
 }

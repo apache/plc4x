@@ -21,6 +21,14 @@ package org.apache.plc4x.java.api.messages;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Helper mostly used internally to split up big requests into multiple sub-requests.
+ *
+ * TODO: Think about moving this into one of the driver-base modules.
+ *
+ * @param <T>
+ * @param <R>
+ */
 public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> implements ProtocolMessage {
 
     private final T request;

@@ -25,18 +25,27 @@ import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcNotification;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
+import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.SubscriptionHandle;
+import org.apache.plc4x.java.api.types.ResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 
@@ -58,6 +67,7 @@ public class MockDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url) {
+        // Mock a connection.
         PlcConnection plcConnectionMock = mock(PlcConnection.class, RETURNS_DEEP_STUBS);
         try {
             when(plcConnectionMock.parseAddress(anyString())).thenReturn(mock(Address.class));
@@ -65,29 +75,40 @@ public class MockDriver implements PlcDriver {
             throw new RuntimeException(e);
         }
         when(plcConnectionMock.getWriter()).thenReturn(Optional.of(mock(PlcWriter.class, RETURNS_DEEP_STUBS)));
+
+        // Mock a typical subscriber.
         PlcSubscriber plcSubscriber = mock(PlcSubscriber.class, RETURNS_DEEP_STUBS);
-        doAnswer(invocation -> {
+        when(plcSubscriber.subscribe(any())).thenAnswer(invocation -> {
             LOGGER.info("Received {}", invocation);
-            Consumer consumer = invocation.getArgument(0);
-            executorService.submit(() -> {
-                while (!Thread.currentThread().isInterrupted()) {
-                    consumer.accept(new PlcNotification(new Date(), mock(Address.class), Collections.singletonList("HelloWorld")));
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(100);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-            return null;
-        }).when(plcSubscriber).subscribe(any(), any(), any());
+            PlcSubscriptionRequest subscriptionRequest = invocation.getArgument(0);
+            List<SubscriptionResponseItem<?>> responseItems =
+                subscriptionRequest.getRequestItems().stream().map(subscriptionRequestItem -> {
+                    Consumer consumer = subscriptionRequestItem.getConsumer();
+                    executorService.submit(() -> {
+                        while (!Thread.currentThread().isInterrupted()) {
+                            consumer.accept(new SubscriptionEventItem<>(null, Calendar.getInstance(), Collections.singletonList("HelloWorld")));
+                            try {
+                                TimeUnit.MILLISECONDS.sleep(100);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+                    return new SubscriptionResponseItem<>(subscriptionRequestItem,
+                        mock(SubscriptionHandle.class, RETURNS_DEEP_STUBS), ResponseCode.OK);
+                }).collect(Collectors.toList());
+            PlcSubscriptionResponse response = new PlcSubscriptionResponse(subscriptionRequest, responseItems);
+            CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
+            responseFuture.complete(response);
+            return responseFuture;
+        });
         when(plcConnectionMock.getSubscriber()).thenReturn(Optional.of(plcSubscriber));
         return plcConnectionMock;
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
+    public PlcConnection connect(String url, PlcAuthentication authentication) {
         return connect(null);
     }
 
