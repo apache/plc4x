@@ -71,9 +71,7 @@ public class Plc4XModbusProtocolTest {
     // TODO: implement these types
     private List<String> notYetSupportedDataType = Stream.of(
         GregorianCalendar.class,
-        String.class,
-        byte[].class,
-        Byte[].class
+        String.class
     ).map(Class::getSimpleName).collect(Collectors.toList());
 
     @Parameterized.Parameter
@@ -109,17 +107,17 @@ public class Plc4XModbusProtocolTest {
             })
             .map(dataTypePair -> Stream.of(
                 producePair(dataTypePair.getDataTypeClass(), CoilModbusAddress.of("coil:1"), new ReadCoilsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x1}))),
-                producePair(CoilModbusAddress.of("coil:1"), new WriteSingleCoilResponse(1, 1), dataTypePair.getValue()),
+                producePair(CoilModbusAddress.of("coil:1"), new WriteSingleCoilResponse(1, 1), mapDataTypePairForCoil(dataTypePair).getValue()),
                 /* Read request no supported on maskwrite so how to handle?
                 producePair(pair.getDataTypeClass(), MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2)),
                 */
-                producePair(MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2), dataTypePair.getValue()),
+                producePair(MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2), mapDataTypePairForRegister(dataTypePair).getValue()),
                 producePair(dataTypePair.getDataTypeClass(), ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1"), new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x01}))),
-                producePair(dataTypePair.getDataTypeClass(), ReadHoldingRegistersModbusAddress.of("readholdingregisters:1"), new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(cutRegister(dataTypePair.getByteRepresentation())))),
-                producePair(dataTypePair.getDataTypeClass(), ReadInputRegistersModbusAddress.of("readinputregisters:1"), new ReadInputRegistersResponse(Unpooled.wrappedBuffer(cutRegister(dataTypePair.getByteRepresentation())))),
-                producePair(CoilModbusAddress.of("coil:1"), new WriteMultipleCoilsResponse(1, 3), dataTypePair.getValue(), dataTypePair.getValue(), dataTypePair.getValue()),
-                producePair(RegisterModbusAddress.of("register:1"), new WriteMultipleRegistersResponse(1, 3), dataTypePair.getValue(), dataTypePair.getValue(), dataTypePair.getValue()),
-                producePair(RegisterModbusAddress.of("register:1"), new WriteSingleRegisterResponse(1, cutRegister(dataTypePair.getByteRepresentation())[0]), dataTypePair.getValue())
+                producePair(dataTypePair.getDataTypeClass(), ReadHoldingRegistersModbusAddress.of("readholdingregisters:1"), new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())))),
+                producePair(dataTypePair.getDataTypeClass(), ReadInputRegistersModbusAddress.of("readinputregisters:1"), new ReadInputRegistersResponse(Unpooled.wrappedBuffer(cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())))),
+                producePair(CoilModbusAddress.of("coil:1"), new WriteMultipleCoilsResponse(1, 3), mapDataTypePairForCoil(dataTypePair).getValue(), mapDataTypePairForCoil(dataTypePair).getValue(), mapDataTypePairForCoil(dataTypePair).getValue()),
+                producePair(RegisterModbusAddress.of("register:1"), new WriteMultipleRegistersResponse(1, 3), mapDataTypePairForRegister(dataTypePair).getValue(), mapDataTypePairForRegister(dataTypePair).getValue(), mapDataTypePairForRegister(dataTypePair).getValue()),
+                producePair(RegisterModbusAddress.of("register:1"), new WriteSingleRegisterResponse(1, cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())[0]), mapDataTypePairForRegister(dataTypePair).getValue())
             ))
             .flatMap(stream -> stream)
             .map(pair -> new Object[]{pair.left.getRequest().getRequestItem().orElseThrow(IllegalStateException::new).getDatatype().getSimpleName(), pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getModbusPdu().getClass().getSimpleName()}).collect(Collectors.toList());
@@ -165,7 +163,6 @@ public class Plc4XModbusProtocolTest {
     private static byte[] cutRegister(byte[] right) {
         return new byte[]{right.length > 1 ? right[right.length - 2] : 0x0, right[right.length - 1]};
     }
-
     @Before
     public void setUp() {
         SUT = new Plc4XModbusProtocol();
@@ -356,19 +353,19 @@ public class Plc4XModbusProtocolTest {
         } else if (modbusPdu instanceof ReadCoilsResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
-            defaultAssert(value);
+            defaultAssert(value, Plc4XModbusProtocolTest::mapDataTypePairForCoil);
         } else if (modbusPdu instanceof ReadDiscreteInputsResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
-            defaultAssert(value);
+            defaultAssert(value, Plc4XModbusProtocolTest::mapDataTypePairForCoil);
         } else if (modbusPdu instanceof ReadHoldingRegistersResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
-            defaultAssert(value);
+            defaultAssert(value, Plc4XModbusProtocolTest::mapDataTypePairForRegister);
         } else if (modbusPdu instanceof ReadInputRegistersResponse) {
             ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
-            defaultAssert(value);
+            defaultAssert(value, Plc4XModbusProtocolTest::mapDataTypePairForRegister);
         } else if (modbusPdu instanceof WriteMultipleCoilsResponse) {
             WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
             assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
@@ -381,6 +378,31 @@ public class Plc4XModbusProtocolTest {
         } else if (modbusPdu instanceof WriteSingleRegisterResponse) {
             WriteResponseItem writeResponseItem = (WriteResponseItem) responseItem;
             assertEquals(ResponseCode.OK, writeResponseItem.getResponseCode());
+        }
+    }
+
+    private static Plc4XSupportedDataTypes.DataTypePair mapDataTypePairForCoil(Plc4XSupportedDataTypes.DataTypePair dataTypePair) {
+        return mapDataTypePairForRegisterOrCoil(dataTypePair, 1);
+    }
+
+    private static Plc4XSupportedDataTypes.DataTypePair mapDataTypePairForRegister(Plc4XSupportedDataTypes.DataTypePair dataTypePair) {
+        return mapDataTypePairForRegisterOrCoil(dataTypePair, 2);
+    }
+
+    private static Plc4XSupportedDataTypes.DataTypePair mapDataTypePairForRegisterOrCoil(Plc4XSupportedDataTypes.DataTypePair dataTypePair, int size) {
+        byte[] byteRepresentation = dataTypePair.getByteRepresentation();
+        if (dataTypePair.getDataTypeClass() == byte[].class) {
+            byte[] value = (byte[]) dataTypePair.getValue();
+            byte[] mappedValue = Arrays.copyOfRange(value, 0, size);
+            byte[] mappedByteRepresentation = Arrays.copyOfRange(byteRepresentation, 0, size);
+            return Plc4XSupportedDataTypes.DataTypePair.of(mappedValue, mappedByteRepresentation);
+        } else if (dataTypePair.getDataTypeClass() == Byte[].class) {
+            Byte[] value = (Byte[]) dataTypePair.getValue();
+            Byte[] mappedValue = Arrays.copyOfRange(value, 0, size);
+            byte[] mappedByteRepresentation = Arrays.copyOfRange(byteRepresentation, 0, size);
+            return Plc4XSupportedDataTypes.DataTypePair.of(mappedValue, mappedByteRepresentation);
+        } else {
+            return dataTypePair;
         }
     }
 
