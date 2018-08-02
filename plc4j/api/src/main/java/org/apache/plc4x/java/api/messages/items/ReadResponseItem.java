@@ -24,6 +24,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Response to a {@link ReadRequestItem}.
+ * Can contain a list of values if the size in {@link ReadRequestItem} is larger zero.
+ *
+ * @param <T>
+ */
 public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
 
     private final List<T> values;
@@ -60,6 +66,7 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
             return false;
         }
         ReadResponseItem<?> that = (ReadResponseItem<?>) o;
+        // TODO 01.08.18 jf: should we also use a UUID here or at least a check for equal request as this could lead to effects due to unwanted equality (same for hashCode).
         return Objects.equals(values, that.values);
     }
 

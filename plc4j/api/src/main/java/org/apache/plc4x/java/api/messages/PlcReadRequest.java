@@ -25,9 +25,24 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Request to read one or more values from a plc.
+ * The {@link PlcReadRequest} is a container for one or more {@link ReadRequestItem}s that are contained.
+ *
+ * By default this is NOT typesafe as it can contain {@link ReadRequestItem}s for different types.
+ * If there are only {@link ReadRequestItem}s of the same type one can use the {@link TypeSafePlcReadRequest} to enforce
+ * type safety.
+ *
+ * Provides a builder for object construction through {@link PlcReadRequest#builder()}.
+ *
+ * TODO 01.08.2018 jf: Can we make constructors private and force users to use the Builder to enforce immutability?
+ *
+ * @see TypeSafePlcReadRequest
+ */
 public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
     public PlcReadRequest() {
+        // Exists for construction of inherited classes
     }
 
     public PlcReadRequest(ReadRequestItem<?> requestItem) {

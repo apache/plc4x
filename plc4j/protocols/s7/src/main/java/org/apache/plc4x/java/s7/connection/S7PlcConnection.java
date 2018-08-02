@@ -53,6 +53,24 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class implementing the Connection handling for Siemens S7.
+ * The adressing of Values in S7 works as follows:
+ *
+ * For adressing values from Datablocks the following syntax is used:
+ * <pre>
+ *     DATA_BLOCKS/{blockNumer}/{byteOffset}
+ * </pre>
+ *
+ * For adressing data from other memory segments like I/O, Markers, ...
+ * <pre>
+ *     {memory area}/{byte offset}
+ *     or
+ *     {memory area}/{byte offset}/{bit offset}
+ * </pre>
+ * where the {bit-offset} is optional.
+ * All Available Memory Areas for this mode are defined in the {@link MemoryArea} enum.
+ */
 public class S7PlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
     private static final int ISO_ON_TCP_PORT = 102;
