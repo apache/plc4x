@@ -19,6 +19,8 @@ under the License.
 package org.apache.plc4x.java.s7.connection;
 
 import io.netty.channel.*;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
@@ -56,6 +58,10 @@ import java.util.regex.Pattern;
 public class S7PlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
     private static final int ISO_ON_TCP_PORT = 102;
+
+    // Fetch values from configuration
+    private static final Configuration CONF = new SystemConfiguration();
+    private static final long CLOSE_DEVICE_TIMEOUT_MS = CONF.getLong("plc4x.s7connection.close.device,timeout", 1_000);
 
     private static final Pattern S7_DATABLOCK_ADDRESS_PATTERN =
         Pattern.compile("^DATA_BLOCKS/(?<blockNumber>\\d{1,4})/(?<byteOffset>\\d{1,4})");
@@ -175,41 +181,6 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         return paramMaxAmqCallee;
     }
 
-    /**
-     * Closes the S7 connection.
-     * First, a disconnect request is send to the PLC and after that, the Session and the channel are closed and
-     * invalidated.
-     *
-     * Then {@link ChannelFuture#await()} is used to see if the PLC closes the connection as expected.
-     * We have to use {@link ChannelFuture#await()} here for two reasons.
-     * First, netty does not allow blocking calls inside {@link io.netty.util.concurrent.GenericFutureListener}.
-     * Second, a timeout ensures that the close operation will abort in case of, e.g., transportation problems and the
-     * jvm can shut down gracefully.
-     */
-    @Override
-    public void close() {
-        if ((channel != null) && channel.isOpen()) {
-            // Send the PLC a message that the connection is being closed.
-            DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
-                (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
-                null);
-            ChannelFuture sendDisconnectRequestFuture = channel.writeAndFlush(disconnectRequest);
-            // Wait if the PLC closes the connection
-            try {
-                // TODO 02.08.18 jf: Do we have global constants for things like timeouts?
-                channel.closeFuture().await(1_000);
-            } catch (InterruptedException e) {
-                logger.warn("Connection was not closed by PLC, has to be closed from driver side now.", e);
-            } finally {
-                // close the session itself.
-                channel.eventLoop().parent().shutdownGracefully();
-                super.close();
-            }
-        }
-
-    }
-
-
     @Override
     public Address parseAddress(String addressString) throws PlcException {
         Matcher datablockAddressMatcher = S7_DATABLOCK_ADDRESS_PATTERN.matcher(addressString);
@@ -248,6 +219,39 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             new PlcRequestContainer<>(writeRequest, writeFuture);
         channel.writeAndFlush(container);
         return writeFuture;
+    }
+
+    /**
+     * Closes the S7 connection.
+     * First, a disconnect request is send to the PLC and after that, the Session and the channel are closed and
+     * invalidated.
+     *
+     * Then {@link ChannelFuture#await()} is used to see if the PLC closes the connection as expected.
+     * We have to use {@link ChannelFuture#await()} here for two reasons.
+     * First, netty does not allow blocking calls inside {@link io.netty.util.concurrent.GenericFutureListener}.
+     * Second, a timeout ensures that the close operation will abort in case of, e.g., transportation problems and the
+     * jvm can shut down gracefully.
+     */
+    @Override
+    public void close() {
+        if ((channel != null) && channel.isOpen()) {
+            // Send the PLC a message that the connection is being closed.
+            DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
+                (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
+                null);
+            channel.writeAndFlush(disconnectRequest);
+            // Wait if the PLC closes the connection
+            try {
+                channel.closeFuture().await(CLOSE_DEVICE_TIMEOUT_MS);
+            } catch (InterruptedException e) {
+                logger.warn("Connection was not closed by PLC, has to be closed from driver side now.", e);
+                Thread.currentThread().interrupt();
+            }
+            // close the session itself.
+            channel.eventLoop().parent().shutdownGracefully();
+            super.close();
+        }
+
     }
 
 }

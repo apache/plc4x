@@ -58,7 +58,12 @@ public class S7PlcConnectionIT {
     @After
     public void tearDown() {
         if(s7PlcConnection.isConnected()) {
-            s7PlcConnection.close();
+            try {
+                s7PlcConnection.close();
+            } catch (NullPointerException e) {
+                // NPE is possibly thrown due to setup in S7PlcTestConnection (Embedded Channel)
+                logger.warn("Received NPE on close, e");
+            }
         }
         s7PlcConnection = null;
         channel = null;
