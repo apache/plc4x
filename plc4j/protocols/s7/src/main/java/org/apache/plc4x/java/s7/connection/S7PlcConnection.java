@@ -200,13 +200,18 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
                 (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
                 null);
-            ChannelFuture sendDisconnectRequestFuture = channel.writeAndFlush(disconnectRequest);
-            sendDisconnectRequestFuture.addListener((ChannelFutureListener) future -> {
-                // Close the session itself.
-                channel.closeFuture().await();
+            channel.writeAndFlush(disconnectRequest).awaitUninterruptibly();
+
+            // In case of an ISO TP Class 0 connection, the remote is usually expected to actively
+            // close the connection. We are simplifying things by doing it ourselves immediately.
+            // TODO: It would probably be more spec-conform to wait for the remote to disconnect and to only do it actively if it doesn't happen within a certain time. But this solution is good enough for now.
+            channel.close();
+
+            // In normal operation, the channels event loop has a parent, however when running with
+            // the embedded channel for unit tests, parent is null.
+            if(channel.eventLoop().parent() != null) {
                 channel.eventLoop().parent().shutdownGracefully();
-            });
-            sendDisconnectRequestFuture.awaitUninterruptibly();
+            }
         }
         super.close();
     }
