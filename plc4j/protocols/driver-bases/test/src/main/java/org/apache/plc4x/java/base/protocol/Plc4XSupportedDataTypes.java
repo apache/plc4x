@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -58,6 +59,10 @@ public class Plc4XSupportedDataTypes {
             byte[] littleEndianBytes = pair.getByteRepresentation();
             byte[] bigEndianBytes = ArrayUtils.clone(littleEndianBytes);
             ArrayUtils.reverse(bigEndianBytes);
+            if (clazz == byte[].class || clazz == Byte[].class) {
+                // For Byte[] or byte[] values put in should be exactly how supplied.
+                ArrayUtils.reverse(bigEndianBytes);
+            }
             bigEndianMap.put(clazz, DataTypePair.of(serializable, bigEndianBytes));
         });
     }
@@ -149,7 +154,17 @@ public class Plc4XSupportedDataTypes {
      * @param actualValue the value to check.
      */
     public static void defaultAssert(Object actualValue) {
-        littleEndianMap.values().forEach(pair -> assertPayloadDependentEquals(actualValue, pair.getValue()));
+        defaultAssert(actualValue, dataTypePair -> dataTypePair);
+    }
+
+    /**
+     * A method which compares a value against a well known default.
+     *
+     * @param actualValue  the value to check.
+     * @param customMapper a mapper which manipulates values before they get checked.
+     */
+    public static void defaultAssert(Object actualValue, Function<? super DataTypePair<?>, ? extends DataTypePair<?>> customMapper) {
+        littleEndianMap.values().stream().map(customMapper).forEach(pair -> assertPayloadDependentEquals(actualValue, pair.getValue()));
     }
 
     private static void assertPayloadDependentEquals(Object actual, Object expected) {
@@ -196,5 +211,28 @@ public class Plc4XSupportedDataTypes {
             return ArrayUtils.clone(dataTypePair.getRight());
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof DataTypePair)) {
+                return false;
+            }
+            DataTypePair<?> that = (DataTypePair<?>) o;
+            return Objects.equals(dataTypePair, that.dataTypePair);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(dataTypePair);
+        }
+
+        @Override
+        public String toString() {
+            return "DataTypePair{" +
+                "dataTypePair=" + dataTypePair +
+                '}';
+        }
     }
 }

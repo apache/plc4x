@@ -23,6 +23,21 @@ import org.apache.plc4x.java.s7.netty.model.types.SpecificationType;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 
+/**
+ * "Low-level" description of S7 Address range and the necessary size for transportation of values.
+ * Is used as Arguments of {@link org.apache.plc4x.java.s7.netty.model.params.VarParameter} object.
+ *
+ * Contains the information to read one or more sequential values of the same datatype starting from given offset in a memory region
+ * and also contains the transportation size of the datatype read.
+ *
+ * In detail:
+ * <ul>
+ *     <li>transportSize - {@link TransportSize} of the datatype</li>
+ *     <li>numElements - number of consecutive elements to be read</li>
+ *     <li>dataBlockNumber - number of the datablock</li>
+ *     <li>bit / byteOffset where the adress starts</li>
+ * </ul>
+ */
 public class S7AnyVarParameterItem implements VarParameterItem {
 
     private final SpecificationType specificationType;

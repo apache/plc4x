@@ -27,6 +27,16 @@ import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Container for Request and Responses to and from S7.
+ * Contains the following information
+ * <ul>
+ *     <li>messageType - type of the message as {@link MessageType}</li>
+ *     <li>tpudReference - internal counter from {@link org.apache.plc4x.java.s7.netty.Plc4XS7Protocol} for tracking and correlation</li>
+ *     <li>parameters - description of command(s) to perform (read or write) and the exact address range</li>
+ *     <li>payloads - possible payload (for writes)</li>
+ * </ul>
+ */
 public abstract class S7Message extends RawMessage {
 
     private final MessageType messageType;

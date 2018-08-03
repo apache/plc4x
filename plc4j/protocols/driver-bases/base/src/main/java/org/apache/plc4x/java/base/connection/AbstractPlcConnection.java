@@ -80,7 +80,7 @@ public abstract class AbstractPlcConnection implements PlcConnection {
     }
 
     @Override
-    public void close() {
+    public void close() throws PlcConnectionException {
         channel = null;
         connected = false;
     }

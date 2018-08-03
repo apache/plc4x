@@ -19,6 +19,8 @@ under the License.
 package org.apache.plc4x.java.s7.connection;
 
 import io.netty.channel.*;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
@@ -50,12 +52,37 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class implementing the Connection handling for Siemens S7.
+ * The adressing of Values in S7 works as follows:
+ *
+ * For adressing values from Datablocks the following syntax is used:
+ * <pre>
+ *     DATA_BLOCKS/{blockNumer}/{byteOffset}
+ * </pre>
+ *
+ * For adressing data from other memory segments like I/O, Markers, ...
+ * <pre>
+ *     {memory area}/{byte offset}
+ *     or
+ *     {memory area}/{byte offset}/{bit offset}
+ * </pre>
+ * where the {bit-offset} is optional.
+ * All Available Memory Areas for this mode are defined in the {@link MemoryArea} enum.
+ */
 public class S7PlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
     private static final int ISO_ON_TCP_PORT = 102;
+
+    // Fetch values from configuration
+    private static final Configuration CONF = new SystemConfiguration();
+    private static final long CLOSE_DEVICE_TIMEOUT_MS = CONF.getLong("plc4x.s7connection.close.device,timeout", 1_000);
 
     private static final Pattern S7_DATABLOCK_ADDRESS_PATTERN =
         Pattern.compile("^DATA_BLOCKS/(?<blockNumber>\\d{1,4})/(?<byteOffset>\\d{1,4})");
@@ -176,19 +203,43 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public void close() {
+    public void close() throws PlcConnectionException {
         if ((channel != null) && channel.isOpen()) {
             // Send the PLC a message that the connection is being closed.
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
                 (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
                 null);
-            ChannelFuture sendDisconnectRequestFuture = channel.writeAndFlush(disconnectRequest);
-            sendDisconnectRequestFuture.addListener((ChannelFutureListener) future -> {
-                // Close the session itself.
-                channel.closeFuture().await();
+
+            // In case of an ISO TP Class 0 connection, the remote is usually expected to actively
+            // close the connection. So we add a listener waiting for this to happen.
+            CompletableFuture<Void> disconnectFuture = new CompletableFuture<>();
+            channel.closeFuture().addListener(
+                (ChannelFutureListener) future -> disconnectFuture.complete(null));
+
+            // Send the disconnect request.
+            channel.writeAndFlush(disconnectRequest);
+            // Wait for the configured time for the remote to close the session.
+            try {
+                disconnectFuture.get(CLOSE_DEVICE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            }
+            // If the remote didn't close the connection within the given time-frame, we have to take
+            // care of closing the connection.
+            catch (TimeoutException e) {
+                logger.info("Remote didn't close connection within the configured timeout of " +
+                    CLOSE_DEVICE_TIMEOUT_MS + "ms, shutting down actively.");
+                channel.close();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException e) {
+                throw new PlcConnectionException(e);
+            }
+
+            // Do some additional cleanup operations ...
+            // In normal operation, the channels event loop has a parent, however when running with
+            // the embedded channel for unit tests, parent is null.
+            if(channel.eventLoop().parent() != null) {
                 channel.eventLoop().parent().shutdownGracefully();
-            });
-            sendDisconnectRequestFuture.awaitUninterruptibly();
+            }
         }
         super.close();
     }

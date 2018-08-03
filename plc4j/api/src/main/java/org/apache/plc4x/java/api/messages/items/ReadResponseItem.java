@@ -24,6 +24,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Response to a {@link ReadRequestItem}.
+ * Can contain a list of values if the size in {@link ReadRequestItem} is larger zero.
+ *
+ * @param <T>
+ */
 public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
 
     private final List<T> values;

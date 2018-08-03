@@ -54,6 +54,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.apache.plc4x.java.s7.netty.util.S7TypeDecoder.decodeData;
 import static org.apache.plc4x.java.s7.netty.util.S7TypeEncoder.encodeData;
 
+/**
+ * This layer transforms between {@link PlcRequestContainer}s {@link S7Message}s.
+ * And stores all "in-flight" requests in an internal structure ({@link Plc4XS7Protocol#requests}).
+ *
+ * While sending a request, a {@link S7RequestMessage} is generated and send downstream (to the {@link S7Protocol}.
+ *
+ * When a {@link S7ResponseMessage} is received it takes the existing request container from its Map and finishes
+ * the {@link PlcRequestContainer}s future with the {@link PlcResponse}.
+ */
 public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequestContainer> {
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(1);
