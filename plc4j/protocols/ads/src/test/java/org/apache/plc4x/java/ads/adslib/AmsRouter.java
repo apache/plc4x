@@ -107,7 +107,11 @@ public class AmsRouter {
         AdsTcpPlcConnection route = mapping.get(ams);
         if (route != null) {
             AdsTcpPlcConnection conn = route;
-            conn.close();
+            try {
+                conn.close();
+            } catch (PlcConnectionException e) {
+                throw new RuntimeException(e);
+            }
             MutableInt refCounter = refCounts.getOrDefault(conn, new MutableInt());
             if (0 == refCounter.decrementAndGet()) {
                 mapping.remove(ams);

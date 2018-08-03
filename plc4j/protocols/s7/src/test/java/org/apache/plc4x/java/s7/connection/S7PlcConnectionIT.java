@@ -56,7 +56,7 @@ public class S7PlcConnectionIT {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws PlcConnectionException{
         if(s7PlcConnection.isConnected()) {
             s7PlcConnection.close();
         }
@@ -71,7 +71,7 @@ public class S7PlcConnectionIT {
     }
 
     @Test
-    public void testDisconnect() {
+    public void testDisconnect() throws PlcConnectionException {
         assertThat(s7PlcConnection, notNullValue());
         assertThat("The connection should be 'connected'", s7PlcConnection.isConnected(), is( true) );
         s7PlcConnection.close();
