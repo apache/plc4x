@@ -21,7 +21,9 @@ package org.apache.plc4x.java.api.messages.items;
 import org.apache.plc4x.java.api.model.SubscriptionHandle;
 import org.apache.plc4x.java.api.types.ResponseCode;
 
-public class SubscriptionResponseItem<T> extends ResponseItem<SubscriptionRequestItem<T>>  {
+import java.util.Objects;
+
+public class SubscriptionResponseItem<T> extends ResponseItem<SubscriptionRequestItem<T>> {
 
     private SubscriptionHandle subscriptionHandle;
 
@@ -34,4 +36,30 @@ public class SubscriptionResponseItem<T> extends ResponseItem<SubscriptionReques
         return subscriptionHandle;
     }
 
+    @Override
+    public String toString() {
+        return "SubscriptionResponseItem{" +
+            "subscriptionHandle=" + subscriptionHandle +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SubscriptionResponseItem)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        SubscriptionResponseItem<?> that = (SubscriptionResponseItem<?>) o;
+        return Objects.equals(subscriptionHandle, that.subscriptionHandle);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subscriptionHandle);
+    }
 }

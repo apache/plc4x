@@ -54,9 +54,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
     private final ConcurrentMap<Short, PlcRequestContainer<PlcRequest, PlcResponse>> requestsMap = new ConcurrentHashMap<>();
 
-    public Plc4XModbusProtocol() {
-    }
-
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws Exception {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);

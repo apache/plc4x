@@ -21,6 +21,7 @@ package org.apache.plc4x.java.api.messages.items;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.model.SubscriptionType;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -43,4 +44,32 @@ public class SubscriptionRequestCyclicItem extends SubscriptionRequestItem {
         return period;
     }
 
+    @Override
+    public String toString() {
+        return "SubscriptionRequestCyclicItem{" +
+            "timeUnit=" + timeUnit +
+            ", period=" + period +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SubscriptionRequestCyclicItem)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        SubscriptionRequestCyclicItem that = (SubscriptionRequestCyclicItem) o;
+        return period == that.period &&
+            timeUnit == that.timeUnit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), timeUnit, period);
+    }
 }
