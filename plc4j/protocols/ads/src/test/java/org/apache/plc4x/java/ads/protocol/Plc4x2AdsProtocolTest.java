@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.protocol;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.plc4x.java.ads.api.commands.AdsReadResponse;
 import org.apache.plc4x.java.ads.api.commands.AdsWriteRequest;
@@ -68,10 +69,9 @@ public class Plc4x2AdsProtocolTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-    // TODO: implement these types
     private List<String> notYetSupportedDataType = Stream.of(
-        byte[].class,
-        Byte[].class
+        // We can add types which are not implemented in this protocol. The exception is currently a placeholder (empty list).
+        NotImplementedException.class
     ).map(Class::getSimpleName).collect(Collectors.toList());
 
     @Parameterized.Parameter

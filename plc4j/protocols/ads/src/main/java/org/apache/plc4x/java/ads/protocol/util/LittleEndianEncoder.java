@@ -63,6 +63,10 @@ public class LittleEndianEncoder {
             result = encodeDouble(Arrays.stream(values).map(Double.class::cast));
         } else if (valueType == String.class) {
             result = encodeString(Arrays.stream(values).map(String.class::cast));
+        } else if (valueType == byte[].class) {
+            result = encodeByteArray(Arrays.stream(values).map(byte[].class::cast));
+        } else if (valueType == Byte[].class) {
+            result = encodeBigByteArray(Arrays.stream(values).map(Byte[].class::cast));
         } else {
             throw new PlcProtocolException("Unsupported datatype " + valueType);
         }
@@ -91,6 +95,14 @@ public class LittleEndianEncoder {
             .map(s -> s.getBytes(Charset.defaultCharset()))
             // TODO: this 0 termination is from s7 but might be completly wrong in ads. Guess its a terminator
             .map(bytes -> ArrayUtils.add(bytes, (byte) 0x0));
+    }
+
+    private static Stream<byte[]> encodeByteArray(Stream<byte[]> byteArrayStream) {
+        return byteArrayStream;
+    }
+
+    private static Stream<byte[]> encodeBigByteArray(Stream<Byte[]> byteArrayStream) {
+        return byteArrayStream.map(ArrayUtils::toPrimitive);
     }
 
     private static Stream<byte[]> encodeFloat(Stream<Float> floatStream) {
