@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+
 public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload, PlcRequestContainer<PlcRequest, PlcResponse>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XModbusProtocol.class);
@@ -75,7 +76,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
         int quantity = writeRequestItem.getSize();
         short unitId = 0;
-        checkSupportedDataType(writeRequestItem.getValues());
 
         ModbusAddress address = (ModbusAddress) writeRequestItem.getAddress();
         ModbusPdu modbusRequest;
@@ -246,27 +246,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         LOGGER.trace("(-->ERR): {}", ctx, cause);
         super.exceptionCaught(ctx, cause);
-    }
-
-    private void checkSupportedDataType(List<?> values) {
-        if (values == null || values.size() == 0) {
-            return;
-        }
-        for (Object value : values) {
-            if (
-                !(value instanceof Boolean)
-                    && !(value instanceof Byte)
-                    && !(value instanceof byte[])
-                    && !(value instanceof Byte[])
-                    && !(value instanceof Short)
-                    && !(value instanceof Integer)
-                    && !(value instanceof BigInteger)
-                    && !(value instanceof Float)
-                    && !(value instanceof Double)
-            ) {
-                throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
-            }
-        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////
