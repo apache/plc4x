@@ -61,12 +61,12 @@ import java.util.regex.Pattern;
 /**
  * Class implementing the Connection handling for Siemens S7.
  * The adressing of Values in S7 works as follows:
- *
+ * <p>
  * For adressing values from Datablocks the following syntax is used:
  * <pre>
  *     DATA_BLOCKS/{blockNumer}/{byteOffset}
  * </pre>
- *
+ * <p>
  * For adressing data from other memory segments like I/O, Markers, ...
  * <pre>
  *     {memory area}/{byte offset}
@@ -225,8 +225,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             // If the remote didn't close the connection within the given time-frame, we have to take
             // care of closing the connection.
             catch (TimeoutException e) {
-                logger.info("Remote didn't close connection within the configured timeout of " +
-                    CLOSE_DEVICE_TIMEOUT_MS + "ms, shutting down actively.");
+                logger.info("Remote didn't close connection within the configured timeout of {}ms, shutting down actively.", CLOSE_DEVICE_TIMEOUT_MS, e);
                 channel.close();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -237,7 +236,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             // Do some additional cleanup operations ...
             // In normal operation, the channels event loop has a parent, however when running with
             // the embedded channel for unit tests, parent is null.
-            if(channel.eventLoop().parent() != null) {
+            if (channel.eventLoop().parent() != null) {
                 channel.eventLoop().parent().shutdownGracefully();
             }
         }

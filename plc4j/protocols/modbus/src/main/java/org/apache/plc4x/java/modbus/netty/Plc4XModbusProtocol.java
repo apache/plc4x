@@ -90,7 +90,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 modbusRequest = new WriteMultipleRegistersRequest(registerModbusAddress.getAddress(), quantity, bytesToWrite);
             } else {
                 byte[] register = produceRegisterValue(writeRequestItem.getValues());
-                int intToWrite = register[0] << 8 | register[1];
+                int intToWrite = register[0] << 8 | register[1] & 0xff;
                 modbusRequest = new WriteSingleRegisterRequest(registerModbusAddress.getAddress(), intToWrite);
             }
         } else if (address instanceof CoilModbusAddress) {
@@ -333,8 +333,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             } else {
                 throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
             }
-            byte coilToSet = (coilSet ? (byte) 1 : (byte) 0);
-            actualCoil = (byte) (actualCoil | coilToSet << i);
+            byte coilToSet = coilSet ? (byte) 1 : (byte) 0;
+            actualCoil = (byte) (actualCoil & 0xff | coilToSet << i);
             i--;
             if (i < 0) {
                 coils.add(actualCoil);
@@ -443,13 +443,15 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
         byteBuf.readBytes(bytes);
         List<T> data = new LinkedList<>();
-        for (int i = 0, j = 0; data.size() < readRequestItem.getSize(); i++) {
-            if (i > 7) {
+        int bitIndex = 0;
+        int coilIndex = 0;
+        while (data.size() < readRequestItem.getSize()) {
+            if (bitIndex > 7) {
                 // Every 8 Coils we need to increase the access
-                j++;
-                i = 0;
+                coilIndex++;
+                bitIndex = 0;
             }
-            boolean coilSet = (bytes[j] & (1L << i)) != 0;
+            boolean coilSet = (bytes[coilIndex] & 0xff & (1L << bitIndex)) != 0;
             byte coilFlag = coilSet ? (byte) 1 : (byte) 0;
             if (dataType == Boolean.class) {
                 @SuppressWarnings("unchecked")
@@ -488,6 +490,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             } else {
                 throw new PlcRuntimeException("Unsupported datatype detected " + dataType);
             }
+            bitIndex++;
         }
         return data;
     }
@@ -502,7 +505,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         for (int i = 0; i < readRequestItem.getSize(); i++) {
             byte[] register = new byte[2];
             byteBuf.readBytes(register);
-            int intValue = register[0] << 8 | register[1];
+            int intValue = register[0] << 8 | register[1] & 0xff;
             if (dataType == Boolean.class) {
                 @SuppressWarnings("unchecked")
                 T itemToBeAdded = (T) Boolean.valueOf(intValue == 1);

@@ -39,7 +39,7 @@ public class Assert {
         assertEquals(expectedHex, actualHex);
     }
 
-    public static void assertByteEquals(byte[] expected, byte[] actual) throws Exception {
+    public static void assertByteEquals(byte[] expected, byte[] actual) throws IOException {
         String expectedHex = cleanHexDump(dump(expected));
         String actualHex = cleanHexDump(dump(actual));
         assertEquals(expectedHex, actualHex);
