@@ -106,4 +106,8 @@ public class PlcWriteRequestTest {
         }
     }
 
+    @Test
+    public void testToString() {
+        new PlcWriteRequest().toString();
+    }
 }

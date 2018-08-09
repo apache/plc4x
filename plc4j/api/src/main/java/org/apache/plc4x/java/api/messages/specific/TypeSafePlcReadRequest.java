@@ -98,6 +98,13 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
     }
 
     @Override
+    public String toString() {
+        return "TypeSafePlcReadRequest{" +
+            "dataType=" + dataType +
+            "} " + super.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

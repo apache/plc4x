@@ -29,6 +29,7 @@ import java.util.Optional;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -96,4 +97,13 @@ public class PlcRequestTest {
         assertThat(SUT.isEmpty(), is(true));
     }
 
+    @Test
+    public void equalsAndHashCode() {
+        PlcRequest other = new PlcRequest<RequestItem>(requestItems) {
+        };
+        assertThat(SUT.hashCode(), equalTo(other.hashCode()));
+        assertThat(SUT.equals(other), equalTo(true));
+        assertThat(SUT.equals(new Object()), equalTo(false));
+        assertEquals(SUT, SUT);
+    }
 }

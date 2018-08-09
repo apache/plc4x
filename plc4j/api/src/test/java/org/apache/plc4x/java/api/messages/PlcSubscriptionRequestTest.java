@@ -18,28 +18,12 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-
-public class PlcReadResponseTest {
+public class PlcSubscriptionRequestTest {
 
     @Test
-    public void constructor() {
-        new PlcReadResponse(mock(PlcReadRequest.class), mock(ReadResponseItem.class));
-        new PlcReadResponse(mock(PlcReadRequest.class), (List) Collections.singletonList(mock(ReadResponseItem.class)));
+    public void testToString() {
+        new PlcSubscriptionRequest().toString();
     }
-
-    @Test
-    public void getValue() {
-        new PlcReadResponse(mock(PlcReadRequest.class), (List) Collections.singletonList(mock(ReadResponseItem.class, RETURNS_DEEP_STUBS)))
-            .getValue(mock(ReadRequestItem.class));
-    }
-
 }

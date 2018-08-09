@@ -6,9 +6,9 @@
  to you under the Apache License, Version 2.0 (the
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,32 +18,42 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
-public class PlcWriteResponseTest {
+public class PlcSubscriptionEventTest {
 
     @Test
     public void constructor() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(WriteResponseItem.class));
-        new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(WriteResponseItem.class)));
+        new PlcSubscriptionEvent(mock(List.class));
     }
 
     @Test
-    public void getValue() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(WriteResponseItem.class, RETURNS_DEEP_STUBS)))
-            .getValue(mock(WriteRequestItem.class));
+    public void getEvents() {
+        List mock = mock(List.class);
+        List<SubscriptionEventItem<?>> eventItems = new PlcSubscriptionEvent(mock).getEventItems();
+        assertSame(eventItems, mock);
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        List eventItems = mock(List.class);
+        PlcSubscriptionEvent thiis = new PlcSubscriptionEvent(eventItems);
+        PlcSubscriptionEvent other = new PlcSubscriptionEvent(eventItems);
+        assertThat(thiis.hashCode(), equalTo(other.hashCode()));
+        assertThat(thiis.equals(other), equalTo(true));
+        assertThat(thiis.equals(new Object()), equalTo(false));
+        assertEquals(thiis, thiis);
     }
 
     @Test
     public void testToString() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(WriteResponseItem.class)).toString();
+        new PlcSubscriptionEvent(mock(List.class)).toString();
     }
 }

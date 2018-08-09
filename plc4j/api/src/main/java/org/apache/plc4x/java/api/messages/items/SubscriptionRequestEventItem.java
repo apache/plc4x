@@ -29,4 +29,8 @@ public class SubscriptionRequestEventItem extends SubscriptionRequestItem {
         super(datatype, address, SubscriptionType.EVENT, consumer);
     }
 
+    @Override
+    public String toString() {
+        return "SubscriptionRequestEventItem{} " + super.toString();
+    }
 }

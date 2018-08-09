@@ -18,32 +18,21 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
-public class PlcWriteResponseTest {
+public class PlcSubscriptionResponseTest {
 
     @Test
     public void constructor() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(WriteResponseItem.class));
-        new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(WriteResponseItem.class)));
-    }
-
-    @Test
-    public void getValue() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(WriteResponseItem.class, RETURNS_DEEP_STUBS)))
-            .getValue(mock(WriteRequestItem.class));
+        new PlcSubscriptionResponse(mock(PlcSubscriptionRequest.class), mock(List.class));
     }
 
     @Test
     public void testToString() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(WriteResponseItem.class)).toString();
+        new PlcSubscriptionResponse(mock(PlcSubscriptionRequest.class), mock(List.class)).toString();
     }
 }

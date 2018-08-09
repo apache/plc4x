@@ -15,15 +15,14 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
-*/
-package org.apache.plc4x.java.api.messages.items;
+ */
+package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.junit.Test;
 
-public class UnsubscriptionResponseItem {
-
-    public UnsubscriptionResponseItem(UnsubscriptionRequestItem requestItem, ResponseCode responseCode) {
-
+public class PlcUnsubscriptionResponseTest {
+    @Test
+    public void testToString() {
+        new PlcUnsubscriptionResponse().toString();
     }
-
 }

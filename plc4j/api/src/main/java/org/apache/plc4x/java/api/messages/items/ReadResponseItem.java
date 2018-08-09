@@ -55,6 +55,13 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
     }
 
     @Override
+    public String toString() {
+        return "ReadResponseItem{" +
+            "values=" + values +
+            "} " + super.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

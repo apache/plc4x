@@ -20,6 +20,7 @@ package org.apache.plc4x.java.api.messages.items;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class SubscriptionEventItem<T> {
 
@@ -45,4 +46,31 @@ public class SubscriptionEventItem<T> {
         return values;
     }
 
+    @Override
+    public String toString() {
+        return "SubscriptionEventItem{" +
+            "subscriptionRequestItem=" + subscriptionRequestItem +
+            ", timestamp=" + timestamp +
+            ", values=" + values +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SubscriptionEventItem)) {
+            return false;
+        }
+        SubscriptionEventItem<?> that = (SubscriptionEventItem<?>) o;
+        return Objects.equals(subscriptionRequestItem, that.subscriptionRequestItem) &&
+            Objects.equals(timestamp, that.timestamp) &&
+            Objects.equals(values, that.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subscriptionRequestItem, timestamp, values);
+    }
 }

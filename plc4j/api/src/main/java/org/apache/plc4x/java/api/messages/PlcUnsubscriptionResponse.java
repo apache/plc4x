@@ -19,4 +19,8 @@ under the License.
 */
 public class PlcUnsubscriptionResponse implements PlcMessage {
 
+    @Override
+    public String toString() {
+        return "PlcUnsubscriptionResponse{}";
+    }
 }

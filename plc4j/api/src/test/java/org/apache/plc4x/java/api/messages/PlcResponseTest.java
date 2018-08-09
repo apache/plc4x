@@ -31,20 +31,22 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 public class PlcResponseTest {
 
+    private PlcResponse<PlcRequest, ResponseItem, RequestItem> SUT;
+
     private List<ResponseItem> responseItems;
 
-    private PlcResponse<PlcRequest, ResponseItem, RequestItem> SUT;
+    private PlcRequest plcRequest;
 
     @Before
     public void setUp() {
         responseItems = new ArrayList<>();
-        SUT = new PlcResponse<PlcRequest, ResponseItem, RequestItem>(mock(PlcRequest.class), responseItems) {
+        plcRequest = mock(PlcRequest.class);
+        SUT = new PlcResponse<PlcRequest, ResponseItem, RequestItem>(plcRequest, responseItems) {
         };
     }
 
@@ -90,5 +92,15 @@ public class PlcResponseTest {
     @Test
     public void getValue() {
         assertThat(SUT.getValue(null), equalTo(Optional.empty()));
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        PlcResponse other = new PlcResponse<PlcRequest, ResponseItem, RequestItem>(plcRequest, responseItems) {
+        };
+        assertThat(SUT.hashCode(), equalTo(other.hashCode()));
+        assertThat(SUT.equals(other), equalTo(true));
+        assertThat(SUT.equals(new Object()), equalTo(false));
+        assertEquals(SUT, SUT);
     }
 }

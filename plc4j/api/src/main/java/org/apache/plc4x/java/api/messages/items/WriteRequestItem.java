@@ -44,6 +44,13 @@ public class WriteRequestItem<T> extends RequestItem<T> {
     }
 
     @Override
+    public String toString() {
+        return "WriteRequestItem{" +
+            "values=" + values +
+            "} " + super.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
