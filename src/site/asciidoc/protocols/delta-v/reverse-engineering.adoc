@@ -28,7 +28,7 @@ We kindly were provided with access to a DeltaV system used for training.
 
 Therefore we were able to change a few things without fearing to break anything important.
 
-This system consisted of tree DeltaV controllers, two Operator-System instances
+This system consisted of three DeltaV controllers, two Operator-System instances
 So in general there were three types of systems involved:
 
 1. DeltaV Controller
@@ -156,6 +156,7 @@ During this we managed to reverse engineer the connection on the wrapper-protoco
 ==== Connecting
 
 When an OS is booted, the following communication could be observed:
+
 1. The OS sends a wrapper-protocol type `0x0003` to the controller.
 2. The controller responds with a `0x0004` message back to the controller.
 3. After receiving the `0x0004` message, the OS sends a type `0x0002` message with a wrapped type `0x0501`
@@ -163,7 +164,7 @@ When an OS is booted, the following communication could be observed:
 5. The controller sends a very similar packet as the `0x0501` packet back to the OS
 6. The OS acknowledges this packet back to the controller
 
-From looking at the packet in WireSharks byte and ASCII view, we could see ASCII characters that seem to relate to test strings.
+From looking at the packet in WireShark's byte and ASCII view, we could see ASCII characters that seem to relate to test strings.
 A quick consultation of the guy in charge of these systems made us realize that these strings refer to parts of the controllers software.
 Digging even deeper made us realize that the 4 byte values relate to unix timestamps - at least we could decode the byte values to absolutely sensible dates.
 So it seems that In these packets each participant compares it's software state in order to know all are using compatible versions.
@@ -198,9 +199,9 @@ So we started with the value 0 and incremented that in steps of 1 till 20 and th
 
 And we could see that there were certain parts of the packet that seem to change when changing values, most of the packet remaining constant.
 When changing a value back to the original value, the packets payload was identical in this part.
-As the packets didn't all have the same content and some times blocksp were added and left away in regular intervals, lead us to the impression, that these packets too consist of a fixed packet header followed by blocks.
+As the packets didn't all have the same content and some times blocks were added and left away in regular intervals, lead us to the impression, that these packets too consist of a fixed packet header followed by blocks.
 In our case the changing blocks all had two indicator bytes `0x0b08` with the 4 bytes after that changing according to the input.
-Some times a block of bytes was added before this block, then the entire content was just pushed back.
+Sometimes a block of bytes was added before this block, then the entire content was just pushed back.
 
 The last of such blocks would always be a sequence of 9 bytes: `0x01000000000000000000`, so we assume this is sort of the `terminating block` of such a packet.
 
@@ -228,7 +229,7 @@ However when using what we learnt on the old captures we did, it turned out that
 So it seems that `0x08` indicates the type of an `signed 32 bit IEE 754 floating point value`.
 Eventually the `0x0b` part referred to some sort subscription-id.
 
-As we seem to be doing a subscription based communication, the OS has to tell the controller what information he is interested in.
+As we seem to be doing a subscription based communication, the OS has to tell the controller what information it is interested in.
 
 Right now we are assuming that in one of the other `0x04` packets a subscription is initiated and assigned with some sort of id and this id is used to identify which value is actually changed.
 

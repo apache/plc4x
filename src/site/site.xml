@@ -112,7 +112,7 @@
     <menu name="Protocols">
       <item name="Features" href="protocols/features.html"/>
       <item name="ADS" href="protocols/ads/index.html"/>
-      <item name="DelataV" href="protocols/delta-v/index.html"/>
+      <item name="DeltaV" href="protocols/delta-v/index.html"/>
       <item name="EtherNet/IP" href="protocols/ethernet-ip/index.html"/>
       <item name="Modbus" href="protocols/modbus/index.html"/>
       <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
