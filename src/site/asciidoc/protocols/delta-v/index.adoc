@@ -35,6 +35,8 @@ Definitely we will not have interpreted everything correct and we'll probably do
 
 Due to this uncertainty we are only implementing a `promiscuous mode` driver, which will be able to read ongoing traffic without the ability to actively interact with the system.
 
+Read link:reverse-engineering.html[here] for a document on how we proceeded with reverse engineering this protocol.
+
 === The Wrapper Protocol
 
 All communication seems to be done using the `UDP` protocol on port `18507`.
@@ -79,7 +81,7 @@ But we could be wrong with this assumption and this just being a result of conve
 The 3 bytes after the id seem to relate to a timestamp.
 Inspecting the packets and correlating this to the timestamps in our packet captures, lead us to the assumption that this timestamp uses the first 14 bits for encoding seconds and the last 10 bits for encoding the sub-second fraction.
 While a 3 byte timestamp is only able to measure a 10 minute time-slot and is probably not usable for absolute time measuring, it might be useful to measure transfer times.
-For this a 4 byte value would have been a waste of network capacity and a 2 byte value wouldn't be able to measure more than 16 seconds, which might be too short when taking into account packet resending and network timeouts.
+For this a 4 byte value would have been a waste of network capacity and a 2 byte value wouldn't be able to measure more than 60 seconds, which might be too short when taking into account packet resending and network timeouts.
 So for now we are assuming this format is used.
 
 The following 3 bytes seem to have a constant value of `0x800400` for most packets, except the ones with a type of `0x03` and `0x04`.
