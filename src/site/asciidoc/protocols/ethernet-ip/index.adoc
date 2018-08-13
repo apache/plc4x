@@ -15,18 +15,16 @@
 //  limitations under the License.
 //
 
-== Protocols
+== EtherNet/IP
 
-- link:ads/index.html[DeltaV]
-- link:delta-v/index.html[DeltaV]
-- link:ethernet-ip/index.html[EtherNet/IP]
-- link:modbus/index.html[Modbus]
-- link:opc-ua/index.html[OPC-UA]
-- link:s7/index.html[S7]
+Introduction
 
 === Links
 
-Apache 2.0 licensed JNI library for accessing raw IPv4 and IPv6 sockets. Might be the ideal starting point for implementing protocols below TCP & UDP.
-https://www.savarese.org/software/rocksaw/
+As of November 2008, The EtherNet/IP Specification consists of three parts: The Common Industrial
+Protocol (Volume 1 of the CIP Networks Library), the EtherNet/IP Adaptation of CIP (Volume 2), and the
+Integration of Modbus® Devices into a CIP Architecture (Volume 7).
 
-Links to different Wireshark captures: https://github.com/automayt/ICS-pcap
+Order Form for the SPEC ($1000) https://secure.odva.org/forms/spec-vendor-id-order-form.htm
+
+

@@ -15,18 +15,11 @@
 //  limitations under the License.
 //
 
-== Protocols
+== Beckhoff ADS
 
-- link:ads/index.html[DeltaV]
-- link:delta-v/index.html[DeltaV]
-- link:ethernet-ip/index.html[EtherNet/IP]
-- link:modbus/index.html[Modbus]
-- link:opc-ua/index.html[OPC-UA]
-- link:s7/index.html[S7]
+Introduction
 
 === Links
 
-Apache 2.0 licensed JNI library for accessing raw IPv4 and IPv6 sockets. Might be the ideal starting point for implementing protocols below TCP & UDP.
-https://www.savarese.org/software/rocksaw/
 
-Links to different Wireshark captures: https://github.com/automayt/ICS-pcap
+
