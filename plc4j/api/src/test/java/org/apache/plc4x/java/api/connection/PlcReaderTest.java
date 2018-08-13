@@ -51,7 +51,7 @@ public class PlcReaderTest {
                 .read(new TypeSafePlcReadRequest<>(String.class, mock(Address.class))).get();
             fail("Should throw an exception");
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), equalTo("Datatype of 1 doesn't macht required datatype of class java.lang.String"));
+            assertThat(e.getMessage(), equalTo("Datatype of 1 doesn't match required datatype of class java.lang.String"));
         } catch (ExecutionException e) {
             assertThat(e.getCause(), instanceOf(IllegalArgumentException.class));
             assertThat(e.getCause().getMessage(), equalTo("Unexpected data type class java.lang.Integer on readRequestItem. Expected class java.lang.String"));
