@@ -14,6 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
+:imagesdir: ../../img/
 
 == DeltaV Industrial Ethernet Communication
 
@@ -58,7 +59,7 @@ The general structure of such a wrapper packet seems to look like this:
     * 0x80/0x00 [len = 8]
     * 0x04 [len = 8]
     * 0x00 [len = 8]
-    * Payload [len = ?]
+    * Payload [len = 64]
     * Checksum [len = 16]
 }
 ....
@@ -104,6 +105,8 @@ In this section we'll describe the general structure of how the communication lo
 [seqdiag,deltav-connect]
 ....
 {
+    Controller; OS;
+
     edge_length = 400;
     span_height = 18;
     default_fontsize = 12;
@@ -136,13 +139,15 @@ But that is just an assumption.
 [seqdiag,deltav-sync]
 ....
 {
+    Controller; OS;
+
     edge_length = 400;
     span_height = 18;
     default_fontsize = 12;
     activation = none;
 
-    OS <- Controller [label = "Type 0x0006 (Sync)"];
-    OS --> Controller [label = "Type 0x0006 (Sync)"];
+    OS -> Controller [label = "Type 0x0006 (Sync)"];
+    OS <-- Controller [label = "Type 0x0006 (Sync)"];
 }
 ....
 
@@ -155,6 +160,8 @@ If the value of a subscribed value changes in the controller, a message type `0x
 [seqdiag,deltav-data]
 ....
 {
+    Controller; OS;
+
     edge_length = 400;
     span_height = 18;
     default_fontsize = 12;
@@ -172,6 +179,8 @@ In general it seems as if all sub-types regarding events and alarms start with `
 [seqdiag,deltav-alarm]
 ....
 {
+    Controller; OS;
+
     edge_length = 400;
     span_height = 18;
     default_fontsize = 12;
