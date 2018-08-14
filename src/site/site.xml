@@ -89,8 +89,8 @@
     </head>
 
     <menu name="Community">
-      <item name="Getting Involved" href="community/help-wanted.adoc"/>
-      <item name="Conferences" href="community/conferences.adoc"/>
+      <item name="Getting Involved" href="community/getting-involved.html"/>
+      <item name="Conferences &amp; Meetups" href="community/conferences.html"/>
     </menu>
     <menu name="Users">
       <item name="Getting Started" href="users/gettingstarted.html"/>
