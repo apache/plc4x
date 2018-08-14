@@ -3,6 +3,7 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
 
 import java.util.List;
+import java.util.Objects;
 
 /*
 Licensed to the Apache Software Foundation (ASF) under one
@@ -34,4 +35,27 @@ public class PlcSubscriptionEvent {
         return eventItems;
     }
 
+    @Override
+    public String toString() {
+        return "PlcSubscriptionEvent{" +
+            "eventItems=" + eventItems +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcSubscriptionEvent)) {
+            return false;
+        }
+        PlcSubscriptionEvent that = (PlcSubscriptionEvent) o;
+        return Objects.equals(eventItems, that.eventItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventItems);
+    }
 }

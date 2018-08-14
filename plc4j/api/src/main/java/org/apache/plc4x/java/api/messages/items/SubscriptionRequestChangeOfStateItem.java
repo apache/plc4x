@@ -29,4 +29,8 @@ public class SubscriptionRequestChangeOfStateItem extends SubscriptionRequestIte
         super(datatype, address, SubscriptionType.CHANGE_OF_STATE, consumer);
     }
 
+    @Override
+    public String toString() {
+        return "SubscriptionRequestChangeOfStateItem{} " + super.toString();
+    }
 }

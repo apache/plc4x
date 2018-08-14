@@ -22,4 +22,8 @@ import org.apache.plc4x.java.api.messages.items.SubscriptionRequestItem;
 
 public class PlcSubscriptionRequest extends PlcRequest<SubscriptionRequestItem<?>> {
 
+    @Override
+    public String toString() {
+        return "PlcSubscriptionRequest{} " + super.toString();
+    }
 }

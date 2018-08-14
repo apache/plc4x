@@ -51,4 +51,27 @@ public class PlcUnsubscriptionRequest implements PlcMessage {
         return getRequestItems().size();
     }
 
+    @Override
+    public String toString() {
+        return "PlcUnsubscriptionRequest{" +
+            "requestItems=" + requestItems +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlcUnsubscriptionRequest)) {
+            return false;
+        }
+        PlcUnsubscriptionRequest that = (PlcUnsubscriptionRequest) o;
+        return Objects.equals(requestItems, that.requestItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(requestItems);
+    }
 }

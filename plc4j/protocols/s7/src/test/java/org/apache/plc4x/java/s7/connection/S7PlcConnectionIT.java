@@ -38,7 +38,7 @@ public class S7PlcConnectionIT {
     private static final Logger logger = LoggerFactory.getLogger(S7PlcConnectionIT.class);
 
     @Rule
-    public Timeout globalTimeout = Timeout.seconds(2); // 2 seconds max per method tested
+    public Timeout globalTimeout = Timeout.seconds(4); // 4 seconds max per method tested
 
     private S7PlcTestConnection  s7PlcConnection;
     private Channel channel;

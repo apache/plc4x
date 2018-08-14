@@ -39,7 +39,7 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
         Objects.requireNonNull(values, "Values must not be null");
         for (T value : values) {
             if (!requestItem.getDatatype().isAssignableFrom(value.getClass())) {
-                throw new IllegalArgumentException("Datatype of " + value + " doesn't macht required datatype of " + requestItem.getDatatype());
+                throw new IllegalArgumentException("Datatype of " + value + " doesn't match required datatype of " + requestItem.getDatatype());
             }
         }
         this.values = values;
@@ -52,6 +52,13 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
 
     public List<T> getValues() {
         return values;
+    }
+
+    @Override
+    public String toString() {
+        return "ReadResponseItem{" +
+            "values=" + values +
+            "} " + super.toString();
     }
 
     @Override

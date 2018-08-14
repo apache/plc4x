@@ -38,7 +38,7 @@ public class PlcReadRequestTest {
     }
 
     @Test
-    public void constuctor() {
+    public void constructor() {
         new PlcReadRequest();
         new PlcReadRequest(new ReadRequestItem<>(String.class, dummyAddress));
         new PlcReadRequest(String.class, dummyAddress);

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.base.util;
 
 import org.apache.commons.io.HexDump;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsEqual;
@@ -38,7 +39,7 @@ public class Assert {
         assertEquals(expectedHex, actualHex);
     }
 
-    public static void assertByteEquals(byte[] expected, byte[] actual) throws Exception {
+    public static void assertByteEquals(byte[] expected, byte[] actual) throws IOException {
         String expectedHex = cleanHexDump(dump(expected));
         String actualHex = cleanHexDump(dump(actual));
         assertEquals(expectedHex, actualHex);
@@ -52,7 +53,7 @@ public class Assert {
                     String dump = dump(expected);
                     description.appendText("\n").appendText(cleanHexDump(dump));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new PlcRuntimeException(e);
                 }
             }
 
@@ -66,7 +67,7 @@ public class Assert {
                     String dump = dump((byte[]) item);
                     description.appendText("was ").appendText("\n").appendText(cleanHexDump(dump));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new PlcRuntimeException(e);
                 }
             }
         };

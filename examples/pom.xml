@@ -41,6 +41,7 @@
     <module>iotree</module>
     <module>kafka-bridge</module>
     <module>plclogger</module>
+    <module>azure</module>
   </modules>
 
   <dependencyManagement>

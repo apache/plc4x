@@ -100,4 +100,9 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
         }
 
     }
+
+    @Override
+    public String toString() {
+        return "PlcWriteRequest{} " + super.toString();
+    }
 }

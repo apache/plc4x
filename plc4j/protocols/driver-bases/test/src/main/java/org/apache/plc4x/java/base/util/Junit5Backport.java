@@ -22,7 +22,7 @@ import static org.junit.Assert.fail;
 
 public class Junit5Backport {
 
-    public static void assertThrows(Class<? extends Exception> exception, Acceptor acceptor) {
+    public static void assertThrows(Class<? extends Exception> exception, Acceptor<? extends Exception> acceptor) {
         try {
             acceptor.accept();
             fail("Expected exception " + exception + " not thrown.");
@@ -34,7 +34,7 @@ public class Junit5Backport {
     }
 
     @FunctionalInterface
-    public interface Acceptor {
-        void accept() throws Exception;
+    public interface Acceptor<T extends Exception> {
+        void accept() throws T;
     }
 }

@@ -57,6 +57,12 @@ public class LittleEndianDecoder {
 
     @SuppressWarnings("unchecked")
     public static <T> List<T> decodeData(Class<T> datatype, byte[] adsData) throws PlcProtocolException {
+        if (datatype == byte[].class) {
+            return (List<T>) Collections.singletonList(adsData);
+        }
+        if (datatype == Byte[].class) {
+            return (List<T>) Collections.singletonList(ArrayUtils.toObject(adsData));
+        }
         List<Object> result = new LinkedList<>();
         int i = 0;
         final int length = adsData.length;
