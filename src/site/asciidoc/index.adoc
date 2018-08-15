@@ -31,8 +31,8 @@ Unfortunately the industries Programmable Logic Controllers (PLCs) communicate i
 This has made it difficult to create applications that integrate these systems with the new world.
 
 This is where PLC4X comes in:
-[TIP]
-It is our goal to create a set of libraries, that allow unified access to any type of PLC
+
+*It is our goal to create a set of libraries, that allow unified access to any type of PLC*
 
 In general we are trying to achieve the same goal OPC-UA is trying to address, but we try to do this by going a completely different path.
 
