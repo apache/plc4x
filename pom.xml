@@ -454,9 +454,20 @@
             </goals>
             <configuration>
               <url>http://netdna.bootstrapcdn.com/bootswatch/2.3.2/flatly/bootstrap.min.css</url>
-              <outputDirectory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2/css/
-              </outputDirectory>
+              <outputDirectory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2/css/</outputDirectory>
               <outputFileName>bootstrap.min.css</outputFileName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-fontawesome</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://use.fontawesome.com/releases/v5.2.0/fontawesome-free-5.2.0-web.zip</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
             </configuration>
           </execution>
         </executions>
@@ -476,8 +487,14 @@
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2
-                  </directory>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2</directory>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/fontawesome/fontawesome-free-5.2.0-web</directory>
+                  <includes>
+                    <include>css/all.min.css</include>
+                    <include>webfonts/**</include>
+                  </includes>
                 </resource>
                 <resource>
                   <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/1.9.1</directory>

@@ -1426,6 +1426,8 @@
     <link href="$resourcePath/css/docs.css" rel="stylesheet" />
 #*		*##end##
     <link href="$resourcePath/css/reflow-skin.css" rel="stylesheet" />
+    <!-- Fontawesome -->
+    <link href="$resourcePath/css/all.min.css" rel="stylesheet" />
 
 #*
 	// disable CDN-loaded highlightJs altogether if `localResources` is selected.
