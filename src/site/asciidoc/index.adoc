@@ -37,11 +37,11 @@ This is where PLC4X comes in:
 In general we are trying to achieve the same goal OPC-UA is trying to address, but we try to do this by going a completely different path.
 
 While with OPC-UA every device has to be retrofitted with the ability to speak a new protocol and use a common client to speak with these devices,
-PLC4X tries to provide a unified API by also implementing drivers for communicating in the protocols native of most industrial controllers.
+PLC4X tries to provide a unified API by implementing drivers for communicating with most industrial controllers in the protocols they natively understand.
 
 Each of these drivers is being implemented from the specs or by reverse engineering protocols in order to be fully Apache 2.0 licensed.
 
-The major benefits of PLC4X over OPC-UA, from our point of view is:
+The major benefits of PLC4X over OPC-UA, from our point of view are:
 
 - No need to modify existing hardware
 - Activating OPC-UA support on existing PLCs greatly increases the load on the PLCs
@@ -53,8 +53,8 @@ At first we will be concentrating on providing adapters for the most widely used
 - icon:wrench[role=yellow] link:protocpls/delta-v/index.html[Emerson DeltaV (UDP)]
 - icon:wrench[role=yellow] link:protocols/ethernet-ip/index.html[EtherNet/IP (TCP)]
 - icon:check[role=green] link:protocols/modbus/index.html[Modbus (TCP)]
-- icon:times[role=red] link:protocols/opc-ua/index.html[OPC-UA]
-- icon:check[role=green] link:protocols/s7/index.html[S7 (TCP)]
+- icon:times[role=red] link:protocols/opc-ua/index.html[OPC-UA (TCP)]
+- icon:check[role=green] link:protocols/s7/index.html[Siemens S7 (TCP)]
 
 We are planning on providing support for the following programming languages:
 
