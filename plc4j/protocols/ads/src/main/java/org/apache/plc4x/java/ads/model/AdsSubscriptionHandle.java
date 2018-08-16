@@ -21,6 +21,8 @@ package org.apache.plc4x.java.ads.model;
 import org.apache.plc4x.java.ads.api.commands.types.NotificationHandle;
 import org.apache.plc4x.java.api.model.SubscriptionHandle;
 
+import java.util.Objects;
+
 public class AdsSubscriptionHandle implements SubscriptionHandle {
 
     private NotificationHandle notificationHandle;
@@ -33,4 +35,27 @@ public class AdsSubscriptionHandle implements SubscriptionHandle {
         return notificationHandle;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AdsSubscriptionHandle)) {
+            return false;
+        }
+        AdsSubscriptionHandle that = (AdsSubscriptionHandle) o;
+        return Objects.equals(notificationHandle, that.notificationHandle);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(notificationHandle);
+    }
+
+    @Override
+    public String toString() {
+        return "AdsSubscriptionHandle{" +
+            "notificationHandle=" + notificationHandle +
+            '}';
+    }
 }
