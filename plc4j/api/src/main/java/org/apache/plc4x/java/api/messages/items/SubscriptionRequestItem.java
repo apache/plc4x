@@ -26,8 +26,8 @@ import java.util.function.Consumer;
 
 public abstract class SubscriptionRequestItem<T> extends RequestItem<T> {
 
-    private SubscriptionType subscriptionType;
-    private Consumer<SubscriptionEventItem<T>> consumer;
+    private final SubscriptionType subscriptionType;
+    private final Consumer<SubscriptionEventItem<T>> consumer;
 
     public SubscriptionRequestItem(Class<T> datatype, Address address, SubscriptionType subscriptionType, Consumer<SubscriptionEventItem<T>> consumer) {
         super(datatype, address);

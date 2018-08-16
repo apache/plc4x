@@ -24,9 +24,9 @@ import java.util.Objects;
 
 public class SubscriptionEventItem<T> {
 
-    private SubscriptionRequestItem<T> subscriptionRequestItem;
-    private Calendar timestamp;
-    private List<T> values;
+    private final SubscriptionRequestItem<T> subscriptionRequestItem;
+    private final Calendar timestamp;
+    private final List<T> values;
 
     public SubscriptionEventItem(SubscriptionRequestItem<T> subscriptionRequestItem, Calendar timestamp, List<T> values) {
         this.subscriptionRequestItem = subscriptionRequestItem;

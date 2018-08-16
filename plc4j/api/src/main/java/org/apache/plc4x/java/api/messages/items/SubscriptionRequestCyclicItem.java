@@ -27,8 +27,8 @@ import java.util.function.Consumer;
 
 public class SubscriptionRequestCyclicItem<T> extends SubscriptionRequestItem<T> {
 
-    private TimeUnit timeUnit;
-    private int period;
+    private final TimeUnit timeUnit;
+    private final int period;
 
     public SubscriptionRequestCyclicItem(Class<T> dataType, Address address, TimeUnit timeUnit, int period, Consumer<SubscriptionEventItem<T>> consumer) {
         super(dataType, address, SubscriptionType.CYCLIC, consumer);
