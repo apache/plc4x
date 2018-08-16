@@ -53,11 +53,12 @@
       <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
-      <scope>runtime</scope>
+      <scope>test</scope>
     </dependency>
 
     <!--dependency>
