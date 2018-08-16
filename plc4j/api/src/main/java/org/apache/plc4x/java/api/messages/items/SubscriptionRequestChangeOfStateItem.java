@@ -23,9 +23,9 @@ import org.apache.plc4x.java.api.model.SubscriptionType;
 
 import java.util.function.Consumer;
 
-public class SubscriptionRequestChangeOfStateItem extends SubscriptionRequestItem {
+public class SubscriptionRequestChangeOfStateItem<T> extends SubscriptionRequestItem<T> {
 
-    public SubscriptionRequestChangeOfStateItem(Class datatype, Address address, Consumer consumer) {
+    public SubscriptionRequestChangeOfStateItem(Class<T> datatype, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
         super(datatype, address, SubscriptionType.CHANGE_OF_STATE, consumer);
     }
 
