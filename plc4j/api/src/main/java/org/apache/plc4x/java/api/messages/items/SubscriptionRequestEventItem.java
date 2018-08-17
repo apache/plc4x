@@ -23,10 +23,14 @@ import org.apache.plc4x.java.api.model.SubscriptionType;
 
 import java.util.function.Consumer;
 
-public class SubscriptionRequestEventItem extends SubscriptionRequestItem {
+public class SubscriptionRequestEventItem<T> extends SubscriptionRequestItem<T> {
 
-    public SubscriptionRequestEventItem(Class datatype, Address address, Consumer consumer) {
-        super(datatype, address, SubscriptionType.EVENT, consumer);
+    public SubscriptionRequestEventItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
+        super(dataType, address, SubscriptionType.EVENT, consumer);
     }
 
+    @Override
+    public String toString() {
+        return "SubscriptionRequestEventItem{} " + super.toString();
+    }
 }

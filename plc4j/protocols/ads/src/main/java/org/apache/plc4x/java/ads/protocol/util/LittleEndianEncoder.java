@@ -39,6 +39,7 @@ public class LittleEndianEncoder {
         // Utility class
     }
 
+    // TODO: add bound checking
     public static byte[] encodeData(Class<?> valueType, Object... values) throws PlcProtocolException {
         if (values.length == 0) {
             return new byte[]{};
@@ -52,6 +53,8 @@ public class LittleEndianEncoder {
             result = encodeShort(Arrays.stream(values).map(Short.class::cast));
         } else if (valueType == Integer.class) {
             result = encodeInteger(Arrays.stream(values).map(Integer.class::cast));
+        } else if (valueType == BigInteger.class) {
+            result = encodeBigInteger(Arrays.stream(values).map(BigInteger.class::cast));
         } else if (valueType == Calendar.class || Calendar.class.isAssignableFrom(valueType)) {
             result = encodeCalendar(Arrays.stream(values).map(Calendar.class::cast));
         } else if (valueType == Float.class) {
@@ -60,6 +63,10 @@ public class LittleEndianEncoder {
             result = encodeDouble(Arrays.stream(values).map(Double.class::cast));
         } else if (valueType == String.class) {
             result = encodeString(Arrays.stream(values).map(String.class::cast));
+        } else if (valueType == byte[].class) {
+            result = encodeByteArray(Arrays.stream(values).map(byte[].class::cast));
+        } else if (valueType == Byte[].class) {
+            result = encodeBigByteArray(Arrays.stream(values).map(Byte[].class::cast));
         } else {
             throw new PlcProtocolException("Unsupported datatype " + valueType);
         }
@@ -88,6 +95,14 @@ public class LittleEndianEncoder {
             .map(s -> s.getBytes(Charset.defaultCharset()))
             // TODO: this 0 termination is from s7 but might be completly wrong in ads. Guess its a terminator
             .map(bytes -> ArrayUtils.add(bytes, (byte) 0x0));
+    }
+
+    private static Stream<byte[]> encodeByteArray(Stream<byte[]> byteArrayStream) {
+        return byteArrayStream;
+    }
+
+    private static Stream<byte[]> encodeBigByteArray(Stream<Byte[]> byteArrayStream) {
+        return byteArrayStream.map(ArrayUtils::toPrimitive);
     }
 
     private static Stream<byte[]> encodeFloat(Stream<Float> floatStream) {
@@ -125,6 +140,21 @@ public class LittleEndianEncoder {
                 (byte) ((intValue & 0x0000ff00) >> 8),
                 (byte) ((intValue & 0x00ff0000) >> 16),
                 (byte) ((intValue & 0xff000000) >> 24),
+            });
+    }
+
+    private static Stream<byte[]> encodeBigInteger(Stream<BigInteger> bigIntegerStream) {
+        return bigIntegerStream
+            .map(bigIntValue -> {
+                byte[] bytes = bigIntValue.toByteArray();
+                if (bytes[0] == 0x0) {
+                    byte[] subArray = ArrayUtils.subarray(bytes, 1, bytes.length);
+                    ArrayUtils.reverse(subArray);
+                    return subArray;
+                } else {
+                    ArrayUtils.reverse(bytes);
+                    return bytes;
+                }
             });
     }
 

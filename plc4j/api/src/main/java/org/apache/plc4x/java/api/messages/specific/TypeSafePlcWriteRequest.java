@@ -85,6 +85,13 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
     }
 
     @Override
+    public String toString() {
+        return "TypeSafePlcWriteRequest{" +
+            "dataType=" + dataType +
+            "} " + super.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

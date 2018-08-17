@@ -19,10 +19,7 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.exceptions.PlcIoException;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
@@ -36,6 +33,7 @@ import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.types.ResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
+import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
 import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
@@ -57,9 +55,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.apache.plc4x.java.s7.netty.util.S7TypeDecoder.decodeData;
 import static org.apache.plc4x.java.s7.netty.util.S7TypeEncoder.encodeData;
 
+/**
+ * This layer transforms between {@link PlcRequestContainer}s {@link S7Message}s.
+ * And stores all "in-flight" requests in an internal structure ({@link Plc4XS7Protocol#requests}).
+ *
+ * While sending a request, a {@link S7RequestMessage} is generated and send downstream (to the {@link S7Protocol}.
+ *
+ * When a {@link S7ResponseMessage} is received it takes the existing request container from its Map and finishes
+ * the {@link PlcRequestContainer}s future with the {@link PlcResponse}.
+ */
 public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequestContainer> {
 
-    private static final AtomicInteger tpduGenerator = new AtomicInteger(1);
+    private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
     private Map<Short, PlcRequestContainer> requests;
 
@@ -89,17 +96,17 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
      * correlates needs to be notified about the problem. If a container is found, we can relay the
      * exception to that by calling completeExceptionally and passing in the exception.
      *
-     * @param ctx the current protocol layers context
+     * @param ctx   the current protocol layers context
      * @param cause the exception that was caught
      * @throws Exception throws an exception if something goes wrong internally
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if(cause instanceof PlcProtocolPayloadTooBigException) {
+        if (cause instanceof PlcProtocolPayloadTooBigException) {
             PlcProtocolPayloadTooBigException pptbe = (PlcProtocolPayloadTooBigException) cause;
-            if(pptbe.getPayload() instanceof S7RequestMessage) {
+            if (pptbe.getPayload() instanceof S7RequestMessage) {
                 S7RequestMessage request = (S7RequestMessage) pptbe.getPayload();
-                if(request.getParent() instanceof PlcRequestContainer) {
+                if (request.getParent() instanceof PlcRequestContainer) {
                     PlcRequestContainer requestContainer = (PlcRequestContainer) request.getParent();
 
                     // Remove the current request from the unconfirmed requests list.
@@ -108,8 +115,8 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     requestContainer.getResponseFuture().completeExceptionally(cause);
                 }
             }
-        } else if((cause instanceof IOException) && (cause.getMessage().contains("Connection reset by peer") ||
-                cause.getMessage().contains("Operation timed out"))) {
+        } else if ((cause instanceof IOException) && (cause.getMessage().contains("Connection reset by peer") ||
+            cause.getMessage().contains("Operation timed out"))) {
             String reason = cause.getMessage().contains("Connection reset by peer") ?
                 "Connection terminated unexpectedly" : "Remote host not responding";
             if (!requests.isEmpty()) {
@@ -249,6 +256,8 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             return TransportSize.DATE_AND_TIME;
         } else if (datatype == Float.class) {
             return TransportSize.REAL;
+        } else if (datatype == Double.class) {
+            return TransportSize.REAL;
         } else if (datatype == Integer.class) {
             return TransportSize.DWORD;
         } else if (datatype == String.class) {
@@ -266,8 +275,10 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             return DataTransportSize.BYTE_WORD_DWORD;
         } else if (datatype == Calendar.class) {
             // TODO: Decide what to do here ...
-            return null;
+            throw new PlcNotImplementedException("Calender support in S7 not yet implemented");
         } else if (datatype == Float.class) {
+            return DataTransportSize.REAL;
+        } else if (datatype == Double.class) {
             return DataTransportSize.REAL;
         } else if (datatype == Integer.class) {
             return DataTransportSize.BYTE_WORD_DWORD;

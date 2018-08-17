@@ -21,12 +21,13 @@ package org.apache.plc4x.java.api.messages.items;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.model.SubscriptionType;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class SubscriptionRequestItem<T> extends RequestItem<T> {
 
-    private SubscriptionType subscriptionType;
-    private Consumer<SubscriptionEventItem<T>> consumer;
+    private final SubscriptionType subscriptionType;
+    private final Consumer<SubscriptionEventItem<T>> consumer;
 
     public SubscriptionRequestItem(Class<T> datatype, Address address, SubscriptionType subscriptionType, Consumer<SubscriptionEventItem<T>> consumer) {
         super(datatype, address);
@@ -42,4 +43,32 @@ public abstract class SubscriptionRequestItem<T> extends RequestItem<T> {
         return consumer;
     }
 
+    @Override
+    public String toString() {
+        return "SubscriptionRequestItem{" +
+            "subscriptionType=" + subscriptionType +
+            ", consumer=" + consumer +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SubscriptionRequestItem)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        SubscriptionRequestItem<?> that = (SubscriptionRequestItem<?>) o;
+        return subscriptionType == that.subscriptionType &&
+            Objects.equals(consumer, that.consumer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subscriptionType, consumer);
+    }
 }

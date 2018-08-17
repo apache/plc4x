@@ -36,7 +36,7 @@ public class ReadDiscreteInputsModbusAddress extends ModbusAddress {
         if (!matcher.matches()) {
             throw new PlcRuntimeException(addressString + " doesn't match " + ADDRESS_PATTERN);
         }
-        int address = Integer.valueOf(matcher.group("address"));
+        int address = Integer.parseInt(matcher.group("address"));
         return new ReadDiscreteInputsModbusAddress(address);
     }
 }

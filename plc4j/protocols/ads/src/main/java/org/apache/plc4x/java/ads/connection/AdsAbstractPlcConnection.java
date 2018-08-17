@@ -33,12 +33,14 @@ import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
 import org.apache.plc4x.java.api.connection.PlcProprietarySender;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.RequestItem;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,7 +191,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public void close() {
+    public void close() throws PlcConnectionException {
         addressMapping.values().stream()
             .parallel()
             .map(adsAddress -> AdsWriteRequest.of(

@@ -25,9 +25,22 @@ import org.apache.plc4x.java.api.model.Address;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Request to read one or more values from a plc.
+ * The {@link PlcReadRequest} is a container for one or more {@link ReadRequestItem}s that are contained.
+ * <p>
+ * By default this is NOT typesafe as it can contain {@link ReadRequestItem}s for different types.
+ * If there are only {@link ReadRequestItem}s of the same type one can use the {@link TypeSafePlcReadRequest} to enforce
+ * type safety.
+ * <p>
+ * Provides a builder for object construction through {@link PlcReadRequest#builder()}.
+ *
+ * @see TypeSafePlcReadRequest
+ */
 public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
     public PlcReadRequest() {
+        // Exists for construction of inherited classes
     }
 
     public PlcReadRequest(ReadRequestItem<?> requestItem) {
@@ -101,5 +114,9 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
 
     }
 
+    @Override
+    public String toString() {
+        return "PlcReadRequest{} " + super.toString();
+    }
 }
 

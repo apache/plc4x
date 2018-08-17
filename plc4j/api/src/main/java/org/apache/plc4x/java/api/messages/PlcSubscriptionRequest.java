@@ -18,8 +18,61 @@ specific language governing permissions and limitations
 under the License.
 */
 
-import org.apache.plc4x.java.api.messages.items.SubscriptionRequestItem;
+import org.apache.plc4x.java.api.messages.items.*;
+import org.apache.plc4x.java.api.model.Address;
+
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class PlcSubscriptionRequest extends PlcRequest<SubscriptionRequestItem<?>> {
 
+    public static PlcSubscriptionRequest.Builder builder() {
+        return new PlcSubscriptionRequest.Builder();
+    }
+
+    public static class Builder extends PlcRequest.Builder<SubscriptionRequestItem> {
+
+        public final <T> Builder addChangeOfStateItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
+            // As we don't get a list as response rather we have individual consumers we don't need type checking here.
+            //checkType(dataType);
+            requests.add(new SubscriptionRequestChangeOfStateItem<>(dataType, address, consumer));
+            return this;
+        }
+
+        public final <T> Builder addCyclicItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer, TimeUnit timeUnit, int period) {
+            // As we don't get a list as response rather we have individual consumers we don't need type checking here.
+            //checkType(dataType);
+            requests.add(new SubscriptionRequestCyclicItem<>(dataType, address, timeUnit, period, consumer));
+            return this;
+        }
+
+        public final <T> Builder addEventItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
+            // As we don't get a list as response rather we have individual consumers we don't need type checking here.
+            //checkType(dataType);
+            requests.add(new SubscriptionRequestEventItem<>(dataType, address, consumer));
+            return this;
+        }
+
+        public final Builder addItem(SubscriptionRequestItem subscriptionRequestItem) {
+            requests.add(subscriptionRequestItem);
+            return this;
+        }
+
+        public final PlcSubscriptionRequest build() {
+            if (requests.isEmpty()) {
+                throw new IllegalStateException("No requests added");
+            }
+            PlcSubscriptionRequest plcSubscriptionRequest = new PlcSubscriptionRequest();
+            for (SubscriptionRequestItem request : requests) {
+                plcSubscriptionRequest.addItem(request);
+            }
+            return plcSubscriptionRequest;
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        return "PlcSubscriptionRequest{} " + super.toString();
+    }
 }

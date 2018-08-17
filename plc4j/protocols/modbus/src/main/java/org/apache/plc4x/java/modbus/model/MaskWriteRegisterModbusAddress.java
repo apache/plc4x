@@ -42,9 +42,9 @@ public class MaskWriteRegisterModbusAddress extends ModbusAddress {
         if (!matcher.matches()) {
             throw new PlcRuntimeException(addressString + " doesn't match " + ADDRESS_PATTERN);
         }
-        int address = Integer.valueOf(matcher.group("address"));
-        int andMask = Integer.valueOf(matcher.group("andMask"));
-        int orMask = Integer.valueOf(matcher.group("orMask"));
+        int address = Integer.parseInt(matcher.group("address"));
+        int andMask = Integer.parseInt(matcher.group("andMask"));
+        int orMask = Integer.parseInt(matcher.group("orMask"));
         return new MaskWriteRegisterModbusAddress(address, andMask, orMask);
     }
 

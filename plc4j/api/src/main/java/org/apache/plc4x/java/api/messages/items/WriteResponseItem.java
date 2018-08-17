@@ -26,4 +26,8 @@ public class WriteResponseItem<T> extends ResponseItem<WriteRequestItem<T>> {
         super(requestItem, responseCode);
     }
 
+    @Override
+    public String toString() {
+        return "WriteResponseItem{} " + super.toString();
+    }
 }

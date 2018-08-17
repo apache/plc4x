@@ -21,21 +21,35 @@
 The following table contains a list of operations and the protocols that support them:
 
 |===
-|Protocol |Read Single Address Value |Read Multiple Address Values |Write Single Address Value |Write Multiple Address Value
+|Protocol |Read Single Address Value |Read Multiple Address Values |Write Single Address Value |Write Multiple Address Value|Subscribe to Value changes |Subscribe to PLC Events/Alarms
 
-|S7
+|ADS
 |icon:check[role="green"]
 |icon:check[role="green"]
 |icon:check[role="green"]
-|icon:exclamation[role="yellow"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:question[role="red"]
 
-|Beckhoff ADS
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
+|DeltaV
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+
+|EtherNet/IP
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
 
 |Modbus
+|icon:question[role="red"]
+|icon:question[role="red"]
 |icon:question[role="red"]
 |icon:question[role="red"]
 |icon:question[role="red"]
@@ -46,10 +60,14 @@ The following table contains a list of operations and the protocols that support
 |icon:question[role="red"]
 |icon:question[role="red"]
 |icon:question[role="red"]
+|icon:question[role="red"]
+|icon:question[role="red"]
 
-|IEC 60870-5-104
-|icon:question[role="red"]
-|icon:question[role="red"]
+|S7
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:check[role="green"]
+|icon:exclamation[role="yellow"]
 |icon:question[role="red"]
 |icon:question[role="red"]
 |===

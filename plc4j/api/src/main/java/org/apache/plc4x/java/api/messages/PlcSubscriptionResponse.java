@@ -29,4 +29,8 @@ public class PlcSubscriptionResponse extends PlcResponse<PlcSubscriptionRequest,
         super(request, subscriptionResponseItems);
     }
 
+    @Override
+    public String toString() {
+        return "PlcSubscriptionResponse{} " + super.toString();
+    }
 }

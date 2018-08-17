@@ -24,6 +24,9 @@ import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 
 import java.util.List;
 
+/**
+ * Response from S7 PLC that additionally contains error information.
+ */
 public class S7ResponseMessage extends S7Message {
 
     private final byte errorClass;

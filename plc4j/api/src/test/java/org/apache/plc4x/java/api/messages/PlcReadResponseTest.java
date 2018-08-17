@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mock;
 public class PlcReadResponseTest {
 
     @Test
-    public void constuctor() {
+    public void constructor() {
         new PlcReadResponse(mock(PlcReadRequest.class), mock(ReadResponseItem.class));
         new PlcReadResponse(mock(PlcReadRequest.class), (List) Collections.singletonList(mock(ReadResponseItem.class)));
     }

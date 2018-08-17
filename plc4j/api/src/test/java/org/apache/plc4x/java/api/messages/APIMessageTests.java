@@ -109,6 +109,21 @@ public class APIMessageTests {
     }
 
     @Test
+    public void plcProprietaryRequest() {
+        Object customMessage = new Object();
+        PlcProprietaryRequest<Object> plcProprietaryRequest = new PlcProprietaryRequest<>(customMessage);
+        assertThat("Unexpected request type", plcProprietaryRequest.getRequest(), equalTo(customMessage));
+    }
+
+    @Test
+    public void plcProprietaryResponse() {
+        Object customMessage = new Object();
+        Object customMessageResponse = new Object();
+        PlcProprietaryResponse<Object> plcProprietaryResponse = new PlcProprietaryResponse<>(new PlcProprietaryRequest<>(customMessage), customMessageResponse);
+        assertThat("Unexpected response type", plcProprietaryResponse.getResponse(), equalTo(customMessageResponse));
+    }
+
+    @Test
     @Category(FastTests.class)
     public void plcReadRequestEmpty() {
         PlcReadRequest plcReadRequest = new PlcReadRequest();

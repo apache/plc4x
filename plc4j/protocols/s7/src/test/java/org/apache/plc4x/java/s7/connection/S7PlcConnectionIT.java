@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.connection;
 
 import io.netty.channel.Channel;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,7 +39,7 @@ public class S7PlcConnectionIT {
     private static final Logger logger = LoggerFactory.getLogger(S7PlcConnectionIT.class);
 
     @Rule
-    public Timeout globalTimeout = Timeout.seconds(2); // 2 seconds max per method tested
+    public Timeout globalTimeout = Timeout.seconds(4); // 4 seconds max per method tested
 
     private S7PlcTestConnection  s7PlcConnection;
     private Channel channel;
@@ -46,7 +47,7 @@ public class S7PlcConnectionIT {
     @Before
     public void setUp() {
         try {
-            s7PlcConnection = new S7PlcTestConnection(1, 2, "");
+            s7PlcConnection = new S7PlcTestConnection(1, 2, "", S7ControllerType.S7_1500);
             s7PlcConnection.connect();
             channel = s7PlcConnection.getChannel();
         } catch (PlcConnectionException e) {
@@ -56,7 +57,7 @@ public class S7PlcConnectionIT {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws PlcConnectionException{
         if(s7PlcConnection.isConnected()) {
             s7PlcConnection.close();
         }
@@ -65,9 +66,17 @@ public class S7PlcConnectionIT {
     }
 
     @Test
-    public void connect() {
+    public void testConnect() {
         assertThat(s7PlcConnection, notNullValue());
         assertThat("The connection should be 'connected'", s7PlcConnection.isConnected(), is( true) );
+    }
+
+    @Test
+    public void testDisconnect() throws PlcConnectionException {
+        assertThat(s7PlcConnection, notNullValue());
+        assertThat("The connection should be 'connected'", s7PlcConnection.isConnected(), is( true) );
+        s7PlcConnection.close();
+        assertThat("The connection should be 'connected'", s7PlcConnection.isConnected(), is( false) );
     }
 
     // TODO more tests for connect, close, read and write

@@ -99,4 +99,9 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "TypeSafePlcReadResponse{} " + super.toString();
+    }
 }

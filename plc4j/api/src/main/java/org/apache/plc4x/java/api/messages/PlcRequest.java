@@ -42,9 +42,9 @@ public abstract class PlcRequest<REQUEST_ITEM extends RequestItem> implements Pl
         this.requestItems = requestItems;
     }
 
-    public void addItem(REQUEST_ITEM readRequestItem) {
-        Objects.requireNonNull(readRequestItem, "Request item must not be null");
-        getRequestItems().add(readRequestItem);
+    public void addItem(REQUEST_ITEM requestItem) {
+        Objects.requireNonNull(requestItem, "Request item must not be null");
+        getRequestItems().add(requestItem);
     }
 
     public List<REQUEST_ITEM> getRequestItems() {

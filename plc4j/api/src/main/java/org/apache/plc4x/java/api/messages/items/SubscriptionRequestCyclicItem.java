@@ -21,16 +21,17 @@ package org.apache.plc4x.java.api.messages.items;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.api.model.SubscriptionType;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public class SubscriptionRequestCyclicItem extends SubscriptionRequestItem {
+public class SubscriptionRequestCyclicItem<T> extends SubscriptionRequestItem<T> {
 
-    private TimeUnit timeUnit;
-    private int period;
+    private final TimeUnit timeUnit;
+    private final int period;
 
-    public SubscriptionRequestCyclicItem(Class datatype, Address address, Consumer consumer, TimeUnit timeUnit, int period) {
-        super(datatype, address, SubscriptionType.CYCLIC, consumer);
+    public SubscriptionRequestCyclicItem(Class<T> dataType, Address address, TimeUnit timeUnit, int period, Consumer<SubscriptionEventItem<T>> consumer) {
+        super(dataType, address, SubscriptionType.CYCLIC, consumer);
         this.timeUnit = timeUnit;
         this.period = period;
     }
@@ -43,4 +44,32 @@ public class SubscriptionRequestCyclicItem extends SubscriptionRequestItem {
         return period;
     }
 
+    @Override
+    public String toString() {
+        return "SubscriptionRequestCyclicItem{" +
+            "timeUnit=" + timeUnit +
+            ", period=" + period +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SubscriptionRequestCyclicItem)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        SubscriptionRequestCyclicItem that = (SubscriptionRequestCyclicItem) o;
+        return period == that.period &&
+            timeUnit == that.timeUnit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), timeUnit, period);
+    }
 }

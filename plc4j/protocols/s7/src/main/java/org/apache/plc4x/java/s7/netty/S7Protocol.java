@@ -33,24 +33,37 @@ import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DataTpdu;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.*;
-import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
-import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
-import org.apache.plc4x.java.s7.netty.model.params.SetupCommunicationParameter;
+import org.apache.plc4x.java.s7.netty.model.params.*;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuServicesPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslDataRecord;
+import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslModuleIdentificationDataRecord;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.strategies.S7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ * Communication Layer between the Application level ({@link Plc4XS7Protocol}) and the lower level (tcp) that sends and receives {@link S7Message}s.
+ * This layer also handles the control over the "wire", i.e., the queues of incoming and outgoing messages.
+ * Furthermore, here {@link S7Message}s are marshalled and unmarshalled to {@link ByteBuf}s to be send over wire.
+ *
+ * Before messages are send to the wire an optional {@link S7MessageProcessor} can be applied.
+ *
+ * @see S7MessageProcessor
+ */
 public class S7Protocol extends ChannelDuplexHandler {
 
     private static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
@@ -74,6 +87,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     private short maxAmqCaller;
     private short maxAmqCallee;
     private short pduSize;
+    private S7ControllerType controllerType;
 
     // For detecting the lower layers.
     private ChannelHandler prevChannelHandler;
@@ -197,19 +211,63 @@ public class S7Protocol extends ChannelDuplexHandler {
 
     private void encodePayloads(S7Message in, ByteBuf buf) {
         for (S7Payload payload : in.getPayloads()) {
-            ParameterType parameterType = payload.getType();
+            switch (payload.getType()) {
 
-            // When sending requests currently only write var has payloads.
-            if (parameterType == ParameterType.WRITE_VAR) {
-                VarPayload varPayload = (VarPayload) payload;
-                for (VarPayloadItem payloadItem : varPayload.getItems()) {
-                    buf.writeByte(payloadItem.getReturnCode().getCode());
-                    buf.writeByte(payloadItem.getDataTransportSize().getCode());
-                    // TODO: Check if this is correct?!?! Might be problems with sizeInBits = true/false
-                    buf.writeShort(payloadItem.getData().length);
-                    buf.writeBytes(payloadItem.getData());
-                    // TODO: It looks as if BIT type reads require a 0x00 fill byte at the end ...
-                }
+                case WRITE_VAR:
+                    VarPayload varPayload = (VarPayload) payload;
+                    for (VarPayloadItem payloadItem : varPayload.getItems()) {
+                        buf.writeByte(payloadItem.getReturnCode().getCode());
+                        buf.writeByte(payloadItem.getDataTransportSize().getCode());
+                        // TODO: Check if this is correct?!?! Might be problems with sizeInBits = true/false
+                        buf.writeShort(payloadItem.getData().length);
+                        buf.writeBytes(payloadItem.getData());
+                        // TODO: It looks as if BIT type reads require a 0x00 fill byte at the end ...
+                    }
+                    break;
+
+                case CPU_SERVICES:
+                    CpuServicesPayload cpuServicesPayload = (CpuServicesPayload) payload;
+                    buf.writeByte(cpuServicesPayload.getReturnCode().getCode());
+                    // This seems to be constantly set to this.
+                    buf.writeByte(DataTransportSize.OCTET_STRING.getCode());
+
+                    // A request payload is simple.
+                    if (cpuServicesPayload.getSslDataRecords().isEmpty()) {
+                        buf.writeShort(4);
+                        buf.writeShort(cpuServicesPayload.getSslId().getCode());
+                        buf.writeShort(cpuServicesPayload.getSslIndex());
+                    }
+                    // The response payload contains a lot more information.
+                    else {
+                        short length = 8;
+                        short sizeOfDataItem = 0;
+                        for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
+                            sizeOfDataItem = (short) (sslDataRecord.getLengthInWords() * (short) 2);
+                            length += sizeOfDataItem;
+                        }
+                        buf.writeShort(length);
+                        buf.writeShort(cpuServicesPayload.getSslId().getCode());
+                        buf.writeShort(cpuServicesPayload.getSslIndex());
+                        buf.writeShort(sizeOfDataItem);
+                        buf.writeShort(cpuServicesPayload.getSslDataRecords().size());
+                        // Output any sort of ssl list items, if there are any.
+                        for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
+                            if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
+                                SslModuleIdentificationDataRecord midr = (SslModuleIdentificationDataRecord) sslDataRecord;
+                                buf.writeShort(midr.getIndex());
+                                byte[] articleNumberBytes = midr.getArticleNumber().getBytes(StandardCharsets.UTF_8);
+                                // An array full of 20 spaces.
+                                byte[] data = new byte[]{0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
+                                    0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20};
+                                // Copy max 20 bytes from the article number into the dest array.
+                                System.arraycopy(articleNumberBytes, 0, data, 0, 20);
+                                buf.writeBytes(data);
+                                buf.writeShort(midr.getModuleOrOsVersion());
+                                buf.writeShort(midr.getPgDescriptionFileVersion());
+                            }
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -224,6 +282,9 @@ public class S7Protocol extends ChannelDuplexHandler {
                     break;
                 case SETUP_COMMUNICATION:
                     encodeParameterSetupCommunication(buf, (SetupCommunicationParameter) s7Parameter);
+                    break;
+                case CPU_SERVICES:
+                    encodeCpuServicesParameter(buf, (CpuServicesParameter) s7Parameter);
                     break;
                 default:
                     logger.error("writing this parameter type not implemented");
@@ -268,6 +329,30 @@ public class S7Protocol extends ChannelDuplexHandler {
             } else {
                 logger.error("writing this item type not implemented");
             }
+        }
+    }
+
+    private void encodeCpuServicesParameter(ByteBuf buf, CpuServicesParameter parameter) {
+        // Output the header for a CPU Services parameter.
+        buf.writeByte(0x01);
+        buf.writeByte(0x12);
+        // Length of the parameter.
+        buf.writeByte((parameter instanceof CpuServicesRequestParameter) ? 0x04 : 0x08);
+        // Is this a request or a response?
+        buf.writeByte((parameter instanceof CpuServicesRequestParameter) ? 0x11 : 0x12);
+        // This is a mixture of request/response and function group .
+        byte nextByte = (byte) (((parameter instanceof CpuServicesRequestParameter) ?
+            (byte) 0x40 : (byte) 0x80) | parameter.getFunctionGroup().getCode());
+        buf.writeByte(nextByte);
+        buf.writeByte(parameter.getSubFunctionGroup().getCode());
+        buf.writeByte(parameter.getSequenceNumber());
+
+        // A response parameter has some more fields.
+        if((parameter instanceof CpuServicesResponseParameter)) {
+            CpuServicesResponseParameter responseParameter = (CpuServicesResponseParameter) parameter;
+            buf.writeByte(responseParameter.getDataUnitReferenceNumber());
+            buf.writeByte(responseParameter.isLastDataUnit() ? 0x00 : 0x01);
+            buf.writeShort(responseParameter.getError().getCode());
         }
     }
 
@@ -347,7 +432,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             i += S7SizeHelper.getParameterLength(parameter);
         }
 
-        List<S7Payload> s7Payloads = decodePayloads(userData, isResponse, userDataLength, readWriteVarParameter);
+        List<S7Payload> s7Payloads = decodePayloads(userData, isResponse, userDataLength, s7Parameters);
 
         logger.debug("S7 Message with id {} received", tpduReference);
 
@@ -378,13 +463,35 @@ public class S7Protocol extends ChannelDuplexHandler {
 
                 if(responseMessage != null) {
                     out.add(responseMessage);
+
+                    // If this is a USER_DATA packet the probability is high that this is
+                    // a response to the identification request, we have to handle that.
+                    if(responseMessage.getMessageType() == MessageType.USER_DATA) {
+                        for (S7Payload payload : responseMessage.getPayloads()) {
+                            if(payload instanceof CpuServicesPayload) {
+                                handleIdentifyRemote(ctx, (CpuServicesPayload) payload);
+                            }
+                        }
+                    }
                 }
 
                 // Eventually send the next message (if there is one).
                 trySendingMessages(ctx);
             }
+
         } else {
-            // TODO: Find out if there is any situation in which a request is sent from the PLC
+            // CpuService responses are encoded as requests.
+            for (S7Parameter s7Parameter : s7Parameters) {
+                // Only if we have a response parameter, the payload is a response payload.
+                if(s7Parameter instanceof CpuServicesResponseParameter) {
+                    for (S7Payload s7Payload : s7Payloads) {
+                        if(s7Payload instanceof CpuServicesPayload) {
+                            CpuServicesPayload cpuServicesPayload = (CpuServicesPayload) s7Payload;
+                            handleIdentifyRemote(ctx, cpuServicesPayload);
+                        }
+                    }
+                }
+            }
             out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads, null));
         }
     }
@@ -397,44 +504,124 @@ public class S7Protocol extends ChannelDuplexHandler {
         logger.info("S7Connection established pdu-size {}, max-amq-caller {}, " +
                 "max-amq-callee {}", pduSize, maxAmqCaller, maxAmqCallee);
 
-        // Send an event that setup is complete.
+        // Prepare a message to request the remote to identify itself.
+        S7RequestMessage identifyRemoteMessage = new S7RequestMessage(MessageType.USER_DATA, (short) 2,
+            Collections.singletonList(new CpuServicesRequestParameter(
+                CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+                CpuServicesParameterSubFunctionGroup.READ_SSL, (byte) 0)),
+            Collections.singletonList(new CpuServicesPayload(DataTransportErrorCode.OK, SslId.MODULE_IDENTIFICATION,
+                (short) 0x0000)), null);
+        ctx.channel().writeAndFlush(identifyRemoteMessage);
+    }
+
+    private void handleIdentifyRemote(ChannelHandlerContext ctx, CpuServicesPayload cpuServicesPayload) {
+        controllerType = S7ControllerType.S7_ANY;
+        for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
+            if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
+                SslModuleIdentificationDataRecord sslModuleIdentificationDataRecord =
+                    (SslModuleIdentificationDataRecord) sslDataRecord;
+                if(sslModuleIdentificationDataRecord.getIndex() == (short) 0x0001) {
+                    controllerType = lookupControllerType(sslModuleIdentificationDataRecord.getArticleNumber());
+                }
+            }
+        }
+        logger.info("Successfully connected to S7: " + controllerType.name());
+        logger.info("- max amq caller: " + maxAmqCaller);
+        logger.info("- max amq callee: " + maxAmqCallee);
+        logger.info("- pdu size: " + pduSize);
+
+        // Send an event that connection setup is complete.
         ctx.channel().pipeline().fireUserEventTriggered(new S7ConnectedEvent());
     }
 
-    private List<S7Payload> decodePayloads(ByteBuf userData, boolean isResponse, short userDataLength, VarParameter readWriteVarParameter) {
-        int i = 0;
+    private List<S7Payload> decodePayloads(ByteBuf userData, boolean isResponse, short userDataLength, List<S7Parameter> s7Parameters) {
         List<S7Payload> s7Payloads = new LinkedList<>();
-        if (readWriteVarParameter != null) {
-            List<VarPayloadItem> payloadItems = new LinkedList<>();
-
-            // Just keep on reading payloads until the provided length is read.
-            while (i < userDataLength) {
-                DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
-                // This is a response to a WRITE_VAR request (It only contains the return code for every sent item.
-                if ((readWriteVarParameter.getType() == ParameterType.WRITE_VAR) && isResponse) {
-                    // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
-                    VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, null, null);
-                    payloadItems.add(payload);
-                    i += 1;
-                }
-                // This is a response to a READ_VAR request.
-                else if ((readWriteVarParameter.getType() == ParameterType.READ_VAR) && isResponse) {
-                    DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-                    short length = (dataTransportSize.isSizeInBits()) ?
-                        (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
-                    byte[] data = new byte[length];
-                    userData.readBytes(data);
-                    // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
-                    VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, dataTransportSize, data);
-                    payloadItems.add(payload);
-                    i += S7SizeHelper.getPayloadLength(payload);
-                }
+        for (S7Parameter s7Parameter : s7Parameters) {
+            if(s7Parameter instanceof VarParameter) {
+                VarParameter readWriteVarParameter = (VarParameter) s7Parameter;
+                VarPayload varPayload = decodeVarPayload(userData, isResponse, userDataLength, readWriteVarParameter);
+                s7Payloads.add(varPayload);
+            } else if(s7Parameter instanceof CpuServicesParameter) {
+                CpuServicesParameter cpuServicesParameter = (CpuServicesParameter) s7Parameter;
+                CpuServicesPayload cpuServicesPayload = decodeCpuServicesPayload(userData, isResponse, userDataLength,
+                    cpuServicesParameter);
+                s7Payloads.add(cpuServicesPayload);
             }
-
-            VarPayload varPayload = new VarPayload(readWriteVarParameter.getType(), payloadItems);
-            s7Payloads.add(varPayload);
         }
         return s7Payloads;
+    }
+
+    private VarPayload decodeVarPayload(ByteBuf userData, boolean isResponse, short userDataLength,
+                                        VarParameter readWriteVarParameter) {
+        List<VarPayloadItem> payloadItems = new LinkedList<>();
+
+        // Just keep on reading payloads until the provided length is read.
+        int i = 0;
+        while (i < userDataLength) {
+            DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
+            // This is a response to a WRITE_VAR request (It only contains the return code for every sent item.
+            if ((readWriteVarParameter.getType() == ParameterType.WRITE_VAR) && isResponse) {
+                // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
+                VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, null, null);
+                payloadItems.add(payload);
+                i += 1;
+            }
+            // This is a response to a READ_VAR request.
+            else if ((readWriteVarParameter.getType() == ParameterType.READ_VAR) && isResponse) {
+                DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+                short length = (dataTransportSize.isSizeInBits()) ?
+                    (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
+                byte[] data = new byte[length];
+                userData.readBytes(data);
+                // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
+                VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, dataTransportSize, data);
+                payloadItems.add(payload);
+                i += S7SizeHelper.getPayloadLength(payload);
+            }
+        }
+
+        return new VarPayload(readWriteVarParameter.getType(), payloadItems);
+    }
+
+    private CpuServicesPayload decodeCpuServicesPayload(ByteBuf userData, boolean isResponse, short userDataLength,
+                                                        CpuServicesParameter cpuServicesParameter) {
+        DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
+        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+        if(dataTransportSize != DataTransportSize.OCTET_STRING) {
+            // TODO: Output an error.
+        }
+        short length = userData.readShort();
+        SslId sslId = SslId.valueOf(userData.readShort());
+        short sslIndex = userData.readShort();
+        // If the length is 4 there is no `partial list length in bytes` and `partial list count` parameters.
+        if(length == 4) {
+            return new CpuServicesPayload(returnCode, sslId, sslIndex);
+        }
+        // If the length is not 4, then it has to be at least 8.
+        else if(length >= 8) {
+            // TODO: We should probably ensure we don't read more than this.
+            short partialListLengthInWords = userData.readShort();
+            short partialListCount = userData.readShort();
+            List<SslDataRecord> sslDataRecords = new LinkedList<>();
+            for(int i = 0; i < partialListCount; i++) {
+                short index = userData.readShort();
+                byte[] articleNumberBytes = new byte[20];
+                userData.readBytes(articleNumberBytes);
+                String articleNumber = null;
+                articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
+                short bgType = userData.readShort();
+                short moduleOrOsVersion = userData.readShort();
+                short pgDescriptionFileVersion = userData.readShort();
+                sslDataRecords.add(new SslModuleIdentificationDataRecord(
+                    index, articleNumber, bgType, moduleOrOsVersion, pgDescriptionFileVersion));
+            }
+            return new CpuServicesPayload(returnCode, sslId, sslIndex, sslDataRecords);
+        }
+        // In all other cases, it's probably an error.
+        else {
+            // TODO: Output an error.
+        }
+        return null;
     }
 
     private S7Parameter decodeParameter(ByteBuf in, boolean isResponse, int restLength) {
@@ -445,12 +632,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
         switch (parameterType) {
             case CPU_SERVICES:
-                // Just read in the rest of the header as content of this parameter.
-                // Will have to do a lot more investigation on how this parameter is
-                // constructed.
-                byte[] cpuServices = new byte[restLength - 1];
-                in.readBytes(cpuServices);
-                return null;
+                return decodeCpuServicesParameter(in);
             case READ_VAR:
             case WRITE_VAR:
                 List<VarParameterItem> varParamameter;
@@ -474,6 +656,43 @@ public class S7Protocol extends ChannelDuplexHandler {
                 }
         }
         return null;
+    }
+
+    private CpuServicesParameter decodeCpuServicesParameter(ByteBuf in) {
+        if(in.readShort() != 0x0112) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Expecting 0x0112 for CPU_SERVICES parameter");
+            }
+            return null;
+        }
+        byte parameterLength = in.readByte();
+        if((parameterLength != 4) && (parameterLength != 8)) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Parameter length should be 4 or 8, but was {}", parameterLength);
+            }
+            return null;
+        }
+        // Skipping this as it sort of contains redundant information.
+        in.readByte();
+        byte typeAndFunctionGroup = in.readByte();
+        // If bit 7 is set, it's a request (if bit 8 is set it's a response).
+        boolean requestParameter = (typeAndFunctionGroup & 0x64) != 0;
+        // The last 4 bits contain the function group value.
+        typeAndFunctionGroup = (byte) (typeAndFunctionGroup & 0xF);
+        CpuServicesParameterFunctionGroup functionGroup =
+            CpuServicesParameterFunctionGroup.valueOf(typeAndFunctionGroup);
+        CpuServicesParameterSubFunctionGroup subFunctionGroup =
+            CpuServicesParameterSubFunctionGroup.valueOf(in.readByte());
+        byte sequenceNumber = in.readByte();
+        if(!requestParameter) {
+            return new CpuServicesRequestParameter(functionGroup, subFunctionGroup, sequenceNumber);
+        } else {
+            byte dataUnitReferenceNumber = in.readByte();
+            boolean lastDataUnit = (in.readByte() == 0x00);
+            ParameterError error = ParameterError.valueOf(in.readShort());
+            return new CpuServicesResponseParameter(functionGroup, subFunctionGroup, sequenceNumber,
+                dataUnitReferenceNumber, lastDataUnit, error);
+        }
     }
 
     private List<VarParameterItem> decodeReadWriteVarParameter(ByteBuf in, byte numItems) {
@@ -554,6 +773,27 @@ public class S7Protocol extends ChannelDuplexHandler {
             }
         }
         ctx.flush();
+    }
+
+    private S7ControllerType lookupControllerType(String articleNumber) {
+        if(!articleNumber.startsWith("6ES7 ")) {
+            return S7ControllerType.S7_ANY;
+        }
+
+        String model = articleNumber.substring(articleNumber.indexOf(" ") + 1, articleNumber.indexOf(" ") + 2);
+        switch (model) {
+            case "2":
+                return S7ControllerType.S7_1200;
+            case "5":
+                return S7ControllerType.S7_1500;
+            case "3":
+                return S7ControllerType.S7_300;
+            case "4":
+                return S7ControllerType.S7_400;
+            default:
+                logger.info("Looking up unknown article number " + articleNumber);
+                return S7ControllerType.S7_ANY;
+        }
     }
 
 }

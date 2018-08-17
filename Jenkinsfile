@@ -21,7 +21,7 @@
 pipeline {
     agent {
         node {
-            //label 'ubuntu && !H33'
+            //label 'ubuntu && !H32'
             label 'plc4x'
         }
     }
@@ -128,14 +128,14 @@ pipeline {
             // Only the official build nodes have the credentials to deploy setup.
             agent {
                 node {
-                    label 'ubuntu'
+                    label 'ubuntu && !H32'
                 }
             }
             steps {
                 echo 'Deploying'
                 // Unstash the previously stashed build results.
                 unstash name: 'plc4x-build'
-                sh 'mvn -P${JENKINS_PROFILE} -Drat.skip=true -Djqassistant.skip=true -Dmaven.resources.skip=true -Dmaven.test.skip=true -Dmaven.install.skip=true deploy'
+                sh 'mvn -P${JENKINS_PROFILE} ${MVN_LOCAL_REPO_OPT} -Drat.skip=true -Djqassistant.skip=true -Dmaven.resources.skip=true -Dmaven.test.skip=true -Dmaven.install.skip=true deploy'
             }
         }
 

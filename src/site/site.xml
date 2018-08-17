@@ -89,8 +89,8 @@
     </head>
 
     <menu name="Community">
-      <item name="Getting Involved" href="community/help-wanted.adoc"/>
-      <item name="Conferences" href="community/conferences.adoc"/>
+      <item name="Getting Involved" href="community/getting-involved.html"/>
+      <item name="Conferences &amp; Meetups" href="community/conferences.html"/>
     </menu>
     <menu name="Users">
       <item name="Getting Started" href="users/gettingstarted.html"/>
@@ -111,9 +111,12 @@
     </menu>
     <menu name="Protocols">
       <item name="Features" href="protocols/features.html"/>
+      <item name="ADS" href="protocols/ads/index.html"/>
+      <item name="DeltaV" href="protocols/delta-v/index.html"/>
+      <item name="EtherNet/IP" href="protocols/ethernet-ip/index.html"/>
       <item name="Modbus" href="protocols/modbus/index.html"/>
       <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
-      <item name="S7/Profinet" href="protocols/s7/index.html"/>
+      <item name="S7" href="protocols/s7/index.html"/>
     </menu>
     <menu name="Reports" ref="reports" inherit="bottom"/>
     <menu name="Apache" inherit="bottom">

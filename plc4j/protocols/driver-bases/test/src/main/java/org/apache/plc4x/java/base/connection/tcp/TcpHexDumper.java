@@ -20,6 +20,7 @@ package org.apache.plc4x.java.base.connection.tcp;
 
 import org.apache.commons.io.HexDump;
 import org.apache.commons.io.IOUtils;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
                 accept = serverSocket.accept();
                 logger.info("Accepted {} and starting listener", accept);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new PlcRuntimeException(e);
             }
             pool.submit(() -> {
                 InputStream inputStream;
@@ -77,7 +78,7 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
                     inputStream = accept.getInputStream();
                     logger.info("Starting to read now");
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new PlcRuntimeException(e);
                 }
                 byte[] buffer = new byte[4096];
                 try {
@@ -87,7 +88,7 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
                         logger.info("Dump:\n{}", byteArrayOutputStream);
                     }
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new PlcRuntimeException(e);
                 }
             });
         });
@@ -112,7 +113,11 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
     public void after() {
         try {
             stop(true);
-        } catch (IOException | InterruptedException ignore) {
+        } catch (InterruptedException e) {
+            logger.info("Shutdown error", e);
+            Thread.currentThread().interrupt();
+        } catch (IOException e) {
+            logger.info("Shutdown error", e);
         }
     }
 
@@ -136,6 +141,7 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
         try {
             stop();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new IOException(e);
         }
     }

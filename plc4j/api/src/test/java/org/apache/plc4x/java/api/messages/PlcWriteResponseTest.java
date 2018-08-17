@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mock;
 public class PlcWriteResponseTest {
 
     @Test
-    public void constuctor() {
+    public void constructor() {
         new PlcWriteResponse(mock(PlcWriteRequest.class), mock(WriteResponseItem.class));
         new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(WriteResponseItem.class)));
     }
@@ -42,4 +42,8 @@ public class PlcWriteResponseTest {
             .getValue(mock(WriteRequestItem.class));
     }
 
+    @Test
+    public void testToString() {
+        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(WriteResponseItem.class)).toString();
+    }
 }
