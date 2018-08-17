@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.connection;
 
 import io.netty.channel.Channel;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,7 +47,7 @@ public class S7PlcConnectionIT {
     @Before
     public void setUp() {
         try {
-            s7PlcConnection = new S7PlcTestConnection(1, 2, "");
+            s7PlcConnection = new S7PlcTestConnection(1, 2, "", S7ControllerType.S7_1500);
             s7PlcConnection.connect();
             channel = s7PlcConnection.getChannel();
         } catch (PlcConnectionException e) {

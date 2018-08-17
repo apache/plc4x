@@ -20,35 +20,31 @@ package org.apache.plc4x.java.s7.netty.model.params;
 
 import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterSubFunctionGroup;
 import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterFunctionGroup;
-import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
+import org.apache.plc4x.java.s7.netty.model.types.ParameterError;
 
-public abstract class CpuServicesParameter implements S7Parameter {
+public class CpuServicesResponseParameter extends CpuServicesParameter {
 
-    private CpuServicesParameterFunctionGroup functionGroup;
-    private CpuServicesParameterSubFunctionGroup subFunctionGroup;
-    private byte sequenceNumber;
+    private byte dataUnitReferenceNumber;
+    private boolean lastDataUnit;
+    private ParameterError error;
 
-    public CpuServicesParameter(CpuServicesParameterFunctionGroup functionGroup, CpuServicesParameterSubFunctionGroup subFunctionGroup, byte sequenceNumber) {
-        this.functionGroup = functionGroup;
-        this.subFunctionGroup = subFunctionGroup;
-        this.sequenceNumber = sequenceNumber;
+    public CpuServicesResponseParameter(CpuServicesParameterFunctionGroup functionGroup, CpuServicesParameterSubFunctionGroup subFunctionGroup, byte sequenceNumber, byte dataUnitReferenceNumber, boolean lastDataUnit, ParameterError error) {
+        super(functionGroup, subFunctionGroup, sequenceNumber);
+        this.dataUnitReferenceNumber = dataUnitReferenceNumber;
+        this.lastDataUnit = lastDataUnit;
+        this.error = error;
     }
 
-    @Override
-    public ParameterType getType() {
-        return ParameterType.CPU_SERVICES;
+    public byte getDataUnitReferenceNumber() {
+        return dataUnitReferenceNumber;
     }
 
-    public CpuServicesParameterFunctionGroup getFunctionGroup() {
-        return functionGroup;
+    public boolean isLastDataUnit() {
+        return lastDataUnit;
     }
 
-    public CpuServicesParameterSubFunctionGroup getSubFunctionGroup() {
-        return subFunctionGroup;
-    }
-
-    public byte getSequenceNumber() {
-        return sequenceNumber;
+    public ParameterError getError() {
+        return error;
     }
 
 }

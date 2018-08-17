@@ -66,7 +66,7 @@ import static org.apache.plc4x.java.s7.netty.util.S7TypeEncoder.encodeData;
  */
 public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequestContainer> {
 
-    private static final AtomicInteger tpduGenerator = new AtomicInteger(1);
+    private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
     private Map<Short, PlcRequestContainer> requests;
 

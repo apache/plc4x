@@ -20,35 +20,11 @@ package org.apache.plc4x.java.s7.netty.model.params;
 
 import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterSubFunctionGroup;
 import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterFunctionGroup;
-import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
-public abstract class CpuServicesParameter implements S7Parameter {
+public class CpuServicesRequestParameter extends CpuServicesParameter {
 
-    private CpuServicesParameterFunctionGroup functionGroup;
-    private CpuServicesParameterSubFunctionGroup subFunctionGroup;
-    private byte sequenceNumber;
-
-    public CpuServicesParameter(CpuServicesParameterFunctionGroup functionGroup, CpuServicesParameterSubFunctionGroup subFunctionGroup, byte sequenceNumber) {
-        this.functionGroup = functionGroup;
-        this.subFunctionGroup = subFunctionGroup;
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    @Override
-    public ParameterType getType() {
-        return ParameterType.CPU_SERVICES;
-    }
-
-    public CpuServicesParameterFunctionGroup getFunctionGroup() {
-        return functionGroup;
-    }
-
-    public CpuServicesParameterSubFunctionGroup getSubFunctionGroup() {
-        return subFunctionGroup;
-    }
-
-    public byte getSequenceNumber() {
-        return sequenceNumber;
+    public CpuServicesRequestParameter(CpuServicesParameterFunctionGroup functionGroup, CpuServicesParameterSubFunctionGroup subFunctionGroup, byte sequenceNumber) {
+        super(functionGroup, subFunctionGroup, sequenceNumber);
     }
 
 }
