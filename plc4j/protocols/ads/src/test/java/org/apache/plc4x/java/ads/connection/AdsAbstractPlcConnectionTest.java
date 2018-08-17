@@ -39,6 +39,7 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -32,7 +32,7 @@ public class PlcLogger {
     public static void main(String[] args) throws Exception {
         if(args.length != 3) {
             System.out.println("Usage: PlcLogger {connection-string} {resource-address-string} {interval-ms}");
-            System.out.println("Example: PlcLogger s7://192.168.0.1/0/0 INPUTS/0 10");
+            System.out.println("Example: PlcLogger s7://10.10.64.20/0/0 INPUTS/0 10");
         }
 
         String connectionString = args[0];

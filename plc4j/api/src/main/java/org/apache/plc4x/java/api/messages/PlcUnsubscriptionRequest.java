@@ -18,12 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.apache.plc4x.java.api.messages.items.UnsubscriptionRequestItem;
 import org.apache.plc4x.java.api.model.SubscriptionHandle;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class PlcUnsubscriptionRequest implements PlcMessage {
 
@@ -49,6 +52,60 @@ public class PlcUnsubscriptionRequest implements PlcMessage {
 
     public int getNumberOfItems() {
         return getRequestItems().size();
+    }
+
+    public static PlcUnsubscriptionRequest.Builder builder() {
+        return new PlcUnsubscriptionRequest.Builder();
+    }
+
+    public static class Builder extends PlcRequest.Builder<UnsubscriptionRequestItem> {
+
+        public final Builder addHandle(SubscriptionHandle subscriptionHandle) {
+            requests.add(new UnsubscriptionRequestItem(subscriptionHandle));
+            return this;
+        }
+
+        public final Builder addHandle(SubscriptionHandle... subscriptionHandles) {
+            requests.addAll(Arrays.stream(subscriptionHandles).map(UnsubscriptionRequestItem::new).collect(Collectors.toList()));
+            return this;
+        }
+
+        public final Builder addHandle(List<SubscriptionHandle> subscriptionHandles) {
+            requests.addAll(subscriptionHandles.stream().map(UnsubscriptionRequestItem::new).collect(Collectors.toList()));
+            return this;
+        }
+
+        public final Builder addHandle(SubscriptionResponseItem subscriptionResponseItem) {
+            requests.add(new UnsubscriptionRequestItem(subscriptionResponseItem.getSubscriptionHandle()));
+            return this;
+        }
+
+        public final Builder addItem(UnsubscriptionRequestItem unsubscriptionRequestItem) {
+            requests.add(unsubscriptionRequestItem);
+            return this;
+        }
+
+        public final Builder addItem(UnsubscriptionRequestItem... unsubscriptionRequestItems) {
+            requests.addAll(Arrays.asList(unsubscriptionRequestItems));
+            return this;
+        }
+
+        public final Builder addItem(List<UnsubscriptionRequestItem> unsubscriptionRequestItems) {
+            requests.addAll(unsubscriptionRequestItems);
+            return this;
+        }
+
+        public final PlcUnsubscriptionRequest build() {
+            if (requests.isEmpty()) {
+                throw new IllegalStateException("No requests added");
+            }
+            PlcUnsubscriptionRequest plcUnsubscriptionRequest = new PlcUnsubscriptionRequest();
+            for (UnsubscriptionRequestItem request : requests) {
+                plcUnsubscriptionRequest.addItem(request);
+            }
+            return plcUnsubscriptionRequest;
+        }
+
     }
 
     @Override

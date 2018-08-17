@@ -25,7 +25,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
-import org.apache.plc4x.java.api.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ public class DummyProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestCont
     private static final Logger logger = LoggerFactory.getLogger(DummyProtocol.class);
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer in, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer in, List<Object> out) {
         PlcRequest request = in.getRequest();
         if (request instanceof PlcReadRequest) {
 
@@ -61,7 +61,7 @@ public class DummyProtocol extends MessageToMessageCodec<ByteBuf, PlcRequestCont
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         if(logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in));
         }
