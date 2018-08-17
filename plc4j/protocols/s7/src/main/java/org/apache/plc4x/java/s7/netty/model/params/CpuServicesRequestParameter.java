@@ -16,21 +16,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages.items;
+package org.apache.plc4x.java.s7.netty.model.params;
 
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.model.SubscriptionType;
+import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterSubFunctionGroup;
+import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterFunctionGroup;
 
-import java.util.function.Consumer;
+public class CpuServicesRequestParameter extends CpuServicesParameter {
 
-public class SubscriptionRequestEventItem<T> extends SubscriptionRequestItem<T> {
-
-    public SubscriptionRequestEventItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
-        super(dataType, address, SubscriptionType.EVENT, consumer);
+    public CpuServicesRequestParameter(CpuServicesParameterFunctionGroup functionGroup, CpuServicesParameterSubFunctionGroup subFunctionGroup, byte sequenceNumber) {
+        super(functionGroup, subFunctionGroup, sequenceNumber);
     }
 
-    @Override
-    public String toString() {
-        return "SubscriptionRequestEventItem{} " + super.toString();
-    }
 }

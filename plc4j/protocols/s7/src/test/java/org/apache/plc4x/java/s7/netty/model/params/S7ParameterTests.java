@@ -21,10 +21,7 @@ package org.apache.plc4x.java.s7.netty.model.params;
 
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
-import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
-import org.apache.plc4x.java.s7.netty.model.types.SpecificationType;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
+import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -60,7 +57,8 @@ public class S7ParameterTests {
     @Test
     @Category(FastTests.class)
     public void cpuServicesParameter() {
-        CpuServicesParameter cpuParameter = new CpuServicesParameter();
+        CpuServicesParameter cpuParameter = new CpuServicesRequestParameter(
+            CpuServicesParameterFunctionGroup.CPU_FUNCTIONS, CpuServicesParameterSubFunctionGroup.READ_SSL, (byte) 0);
         assertThat("Unexpected parameter type", cpuParameter.getType(), equalTo(ParameterType.CPU_SERVICES));
     }
     

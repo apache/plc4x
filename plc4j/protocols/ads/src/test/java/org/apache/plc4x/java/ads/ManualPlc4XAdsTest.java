@@ -22,15 +22,17 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
-import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.*;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 public class ManualPlc4XAdsTest {
 
@@ -57,20 +59,24 @@ public class ManualPlc4XAdsTest {
             System.out.println("ResponseItem " + responseItem);
             responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
 
-            Consumer<SubscriptionEventItem<Integer>> notificationConsumer = plcNotification -> System.out.println("Received notification " + plcNotification);
             PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("Subscribe not available"));
-            PlcSubscriptionRequest subscriptionRequest = new PlcSubscriptionRequest();
-            subscriptionRequest.addItem(new SubscriptionRequestChangeOfStateItem(Integer.class, address, notificationConsumer));
-            CompletableFuture<PlcSubscriptionResponse> subscriptionFuture = plcSubscriber.subscribe(subscriptionRequest);
-            PlcSubscriptionResponse subscriptionResponse = subscriptionFuture.get(5, TimeUnit.SECONDS);
-            SubscriptionResponseItem subscriptionResponseItem = subscriptionResponse.getResponseItem().get();
 
-            PlcUnsubscriptionRequest unsubscriptionRequest = new PlcUnsubscriptionRequest();
-            unsubscriptionRequest.addItem(
-                new UnsubscriptionRequestItem(subscriptionResponseItem.getSubscriptionHandle()));
-            CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionFuture =
-                plcSubscriber.unsubscribe(unsubscriptionRequest);
-            PlcUnsubscriptionResponse unsubscriptionResponse = unsubscriptionFuture.get(5, TimeUnit.SECONDS);
+            PlcSubscriptionRequest subscriptionRequest = PlcSubscriptionRequest.builder()
+                .addChangeOfStateItem(Integer.class, address, plcNotification -> System.out.println("Received notification " + plcNotification))
+                .build();
+
+            SubscriptionResponseItem subscriptionResponseItem = plcSubscriber.subscribe(subscriptionRequest)
+                .get(5, TimeUnit.SECONDS)
+                .getResponseItem().orElseThrow(() -> new RuntimeException("response not available"));
+
+            TimeUnit.SECONDS.sleep(5);
+
+            PlcUnsubscriptionRequest unsubscriptionRequest = PlcUnsubscriptionRequest.builder()
+                .addHandle(subscriptionResponseItem)
+                .build();
+
+            PlcUnsubscriptionResponse unsubscriptionResponse = plcSubscriber.unsubscribe(unsubscriptionRequest)
+                .get(5, TimeUnit.SECONDS);
             System.out.println(unsubscriptionResponse);
         }
         System.exit(0);

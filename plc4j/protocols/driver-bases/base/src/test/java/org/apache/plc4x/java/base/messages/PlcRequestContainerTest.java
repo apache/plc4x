@@ -16,8 +16,11 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.base.messages;
 
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.ProtocolMessage;
 import org.hamcrest.core.IsEqual;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+@SuppressWarnings("unchecked")
 public class PlcRequestContainerTest {
 
     private PlcRequestContainer<PlcRequest, PlcResponse> SUT;
@@ -37,7 +41,7 @@ public class PlcRequestContainerTest {
     private CompletableFuture<PlcResponse> future;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         plcResponse = mock(PlcResponse.class);
         plcRequest = mock(PlcRequest.class);
         future = CompletableFuture.completedFuture(plcResponse);

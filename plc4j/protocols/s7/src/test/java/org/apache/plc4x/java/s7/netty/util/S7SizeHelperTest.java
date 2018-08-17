@@ -22,7 +22,7 @@ import static org.hamcrest.core.Is.is;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.apache.plc4x.java.s7.netty.model.params.CpuServicesParameter;
+import org.apache.plc4x.java.s7.netty.model.params.CpuServicesRequestParameter;
 import org.apache.plc4x.java.s7.netty.model.params.SetupCommunicationParameter;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
@@ -60,7 +60,8 @@ public class S7SizeHelperTest {
     @Test
     public void getParameterLengthTest() {
         assertThat(S7SizeHelper.getParameterLength(
-            new CpuServicesParameter()), is((short) 0));
+            new CpuServicesRequestParameter(CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+                CpuServicesParameterSubFunctionGroup.READ_SSL, (byte) 0)), is((short) 8));
         assertThat(S7SizeHelper.getParameterLength(
             new SetupCommunicationParameter((short) 8, (short)8, (short)250)), is((short) 8));
         assertThat(S7SizeHelper.getParameterLength(

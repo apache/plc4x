@@ -25,6 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.java.base.connection.TestChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,8 +33,11 @@ import java.io.InputStream;
 
 public class S7PlcTestConnection extends S7PlcConnection {
 
-    public S7PlcTestConnection(int rack, int slot, String params) {
+    private S7ControllerType controllerType;
+
+    public S7PlcTestConnection(int rack, int slot, String params, S7ControllerType controllerType) {
         super(new TestChannelFactory(), rack, slot, params);
+        this.controllerType = controllerType;
     }
 
     /*
@@ -88,6 +92,35 @@ public class S7PlcTestConnection extends S7PlcConnection {
         byte[] setupCommunicationResponse = readPcapFile(
             "org/apache/plc4x/java/s7/connection/s7-setup-communication-response.pcap");
         channel.writeInbound(Unpooled.wrappedBuffer(setupCommunicationResponse));
+
+        // Read a S7 CPU Functions request.
+        writtenData = channel.readOutbound();
+        byte[] cpuFunctionsRequest = new byte[writtenData.readableBytes()];
+        writtenData.readBytes(cpuFunctionsRequest);
+        // TODO: Check the content of the S7 Setup Communication connection request.
+
+        // Send an S7 CPU Functions response back to the pipeline.
+        byte[] cpuFunctionsResponse = readPcapFile(
+            "org/apache/plc4x/java/s7/connection/s7-cpu-functions-response.pcap");
+        // Override the type of reported S7 device.
+        switch (controllerType) {
+            case S7_1200:
+                cpuFunctionsResponse[48] = '2';
+                break;
+            case S7_1500:
+                cpuFunctionsResponse[48] = '5';
+                break;
+            case S7_300:
+                cpuFunctionsResponse[48] = '3';
+                break;
+            case S7_400:
+                cpuFunctionsResponse[48] = '4';
+                break;
+            default:
+                cpuFunctionsResponse[48] = '1';
+                break;
+        }
+        channel.writeInbound(Unpooled.wrappedBuffer(cpuFunctionsResponse));
     }
 
     public static byte[] toByteArray(int[] in) {

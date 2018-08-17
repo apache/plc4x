@@ -16,21 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages.items;
+package org.apache.plc4x.java.s7.netty.model.payloads.ssls;
 
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.model.SubscriptionType;
+public interface SslDataRecord {
 
-import java.util.function.Consumer;
+    short getLengthInWords();
 
-public class SubscriptionRequestEventItem<T> extends SubscriptionRequestItem<T> {
-
-    public SubscriptionRequestEventItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
-        super(dataType, address, SubscriptionType.EVENT, consumer);
-    }
-
-    @Override
-    public String toString() {
-        return "SubscriptionRequestEventItem{} " + super.toString();
-    }
 }
