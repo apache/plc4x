@@ -22,7 +22,6 @@ import com.digitalpetri.enip.EnipPacket;
 import com.digitalpetri.enip.EnipStatus;
 import com.digitalpetri.enip.commands.*;
 import com.digitalpetri.enip.cpf.*;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -30,6 +29,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
+import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,6 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 
 public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, PlcRequestContainer<PlcRequest, PlcResponse>> {
 
