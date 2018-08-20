@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.ethernetip.model.EtherNetIpAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,19 +58,9 @@ public abstract class BaseEtherNetIpPlcConnection extends AbstractPlcConnection 
 
     @Override
     public Address parseAddress(String addressString) {
-        /*if (MaskWriteRegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return MaskWriteRegisterModbusAddress.of(addressString);
-        } else if (ReadDiscreteInputsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return ReadDiscreteInputsModbusAddress.of(addressString);
-        } else if (ReadHoldingRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return ReadHoldingRegistersModbusAddress.of(addressString);
-        } else if (ReadInputRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return ReadInputRegistersModbusAddress.of(addressString);
-        } else if (CoilAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return CoilAddress.of(addressString);
-        } else if (RegisterAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return RegisterAddress.of(addressString);
-        }*/
+        if(EtherNetIpAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+            return EtherNetIpAddress.of(addressString);
+        }
         return null;
     }
 

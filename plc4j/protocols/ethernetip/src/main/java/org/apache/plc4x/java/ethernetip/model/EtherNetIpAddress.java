@@ -18,20 +18,34 @@ under the License.
 */
 package org.apache.plc4x.java.ethernetip.model;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class EtherNetIpAddress implements Address {
+public class EtherNetIpAddress implements Address {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^#(?<class>.*?)#(?<instance>\\d{1,4})(?:#(?<attribute>\\d))?");
 
     private final int objectNumber;
     private final int instanceNumber;
     private final int attributeNumber;
 
     private int connectionId;
+
+    public static EtherNetIpAddress of(String addressString) {
+        Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
+        if (!matcher.matches()) {
+            throw new PlcRuntimeException(addressString + " doesn't match " + ADDRESS_PATTERN);
+        }
+        int classNumber = Integer.parseInt(matcher.group("class"));
+        int instanceNumber = Integer.parseInt(matcher.group("instance"));
+        int attributeNumber = Integer.parseInt(matcher.group("attribute"));
+
+        return new EtherNetIpAddress(classNumber, instanceNumber, attributeNumber);
+    }
 
     public EtherNetIpAddress(int objectNumber, int instanceNumber, int attributeNumber) {
         this.objectNumber = objectNumber;
@@ -77,8 +91,8 @@ public abstract class EtherNetIpAddress implements Address {
     public String toString() {
         return "EtherNetIpAddress{" +
             "object-number=" + objectNumber +
-            "instance-number=" + instanceNumber +
-            "attribute-number=" + attributeNumber +
+            ", instance-number=" + instanceNumber +
+            ", attribute-number=" + attributeNumber +
             '}';
     }
 }

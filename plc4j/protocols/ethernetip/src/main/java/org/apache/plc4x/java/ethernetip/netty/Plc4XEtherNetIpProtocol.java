@@ -167,6 +167,12 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
         }
 
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
+
+/*        CpfItem cpfItem = new ConnectedDataItemRequest();
+        CpfPacket cpfPacket = new CpfPacket(cpfItem);
+        EnipPacket enipPacket = new EnipPacket(CommandCode.SendRRData, 0, EnipStatus.EIP_SUCCESS,
+            messageId.getAndIncrement(), new SendRRData(cpfPacket));
+*/
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

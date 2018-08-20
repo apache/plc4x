@@ -33,14 +33,14 @@ public class ManualPlc4XEtherNetIpTest {
     public static void main(String... args) {
         String connectionUrl;
         System.out.println("Using tcp");
-        connectionUrl = "eip://192.168.42.39:44818";
-        //connectionUrl = "eip://10.10.64.30:44818";
+        //connectionUrl = "eip://192.168.42.39:44818";
+        connectionUrl = "eip://10.10.64.30:44818";
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            Address address = plcConnection.parseAddress("register:7");
+            Address address = plcConnection.parseAddress("#1#1#1");
             CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
                 .read(new TypeSafePlcReadRequest<>(Integer.class, address));
             TypeSafePlcReadResponse<Integer> readResponse = response.get();

@@ -61,15 +61,27 @@
       <scope>test</scope>
     </dependency>
 
-    <!--dependency>
+    <dependency>
       <groupId>com.digitalpetri.enip</groupId>
       <artifactId>cip-core</artifactId>
       <version>${ethernetip-driver.version}</version>
-    </dependency-->
+    </dependency>
     <dependency>
       <groupId>com.digitalpetri.enip</groupId>
       <artifactId>enip-core</artifactId>
       <version>${ethernetip-driver.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.digitalpetri.enip</groupId>
+      <artifactId>enip-client</artifactId>
+      <version>${ethernetip-driver.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.digitalpetri.enip</groupId>
+      <artifactId>cip-client</artifactId>
+      <version>${ethernetip-driver.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
