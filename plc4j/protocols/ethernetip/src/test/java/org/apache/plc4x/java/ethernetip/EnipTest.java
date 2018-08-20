@@ -1,21 +1,15 @@
 package org.apache.plc4x.java.ethernetip;
 
-import com.digitalpetri.enip.EtherNetIpClient;
 import com.digitalpetri.enip.EtherNetIpClientConfig;
 import com.digitalpetri.enip.cip.CipClient;
 import com.digitalpetri.enip.cip.epath.EPath;
 import com.digitalpetri.enip.cip.epath.LogicalSegment;
 import com.digitalpetri.enip.cip.epath.PortSegment;
-import com.digitalpetri.enip.cip.services.GetAttributeListService;
 import com.digitalpetri.enip.cip.services.GetAttributeSingleService;
-import com.digitalpetri.enip.commands.ListIdentity;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.buffer.UnpooledDirectByteBuf;
-import io.netty.util.ReferenceCountUtil;
 
 import java.time.Duration;
-import java.util.Arrays;
 
 /*
 Licensed to the Apache Software Foundation (ASF) under one
@@ -55,55 +49,19 @@ public class EnipTest {
         GetAttributeSingleService service = new GetAttributeSingleService(
             new EPath.PaddedEPath(new LogicalSegment.ClassId(0x04), new LogicalSegment.InstanceId(0x69), new LogicalSegment.AttributeId(0x03)));
 
-        ////////////////////////////////////////////////////////////////
-        // Doesn't work:
-        client.invokeUnconnected(service).whenComplete((as, ex) -> {
+        client.invoke(service).whenComplete((as, ex) -> {
             if (as != null) {
                 try {
-                    /*ByteBuf data = as[0].getData();
-                    int major = data.readUnsignedByte();
-                    int minor = data.readUnsignedByte();
-
-                    System.out.println(String.format("firmware v%s.%s", major, minor));*/
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                } finally {
-                    //Arrays.stream(as).forEach(a -> ReferenceCountUtil.release(a.getData()));
-                }
-            } else {
-                ex.printStackTrace();
-            }
-        });
-
-        ////////////////////////////////////////////////////////////////
-        // Works:
-        ByteBuf buf = Unpooled.buffer();
-        service.encodeRequest(buf);
-        client.sendUnconnectedData(buf).whenComplete((as, ex) -> {
-            if (as != null) {
-                try {
-                    byte serviceId = as.readByte();
-                    boolean response = (serviceId & 128) != 0;
-                    serviceId = (byte) (serviceId & (byte) 127);
-                    if((serviceId != 0x0E) || !response) {
-                        System.out.println("Error");
-                    }
-                    // Reserved
-                    as.readByte();
-                    byte status = as.readByte();
-                    byte statusSize = as.readByte();
                     short value = as.readShort();
-
                     System.out.println(String.format("Value is %s", value));
                 } catch (Throwable t) {
                     t.printStackTrace();
-                } finally {
-
                 }
             } else {
                 ex.printStackTrace();
             }
         });
+
     }
 
 }
