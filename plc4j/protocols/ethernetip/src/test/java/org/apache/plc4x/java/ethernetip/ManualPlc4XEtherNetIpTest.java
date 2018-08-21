@@ -21,9 +21,10 @@ package org.apache.plc4x.java.ethernetip;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,23 +32,29 @@ import java.util.concurrent.CompletableFuture;
 public class ManualPlc4XEtherNetIpTest {
 
     public static void main(String... args) {
-        String connectionUrl;
-        System.out.println("Using tcp");
-        //connectionUrl = "eip://192.168.42.39:44818";
-        connectionUrl = "eip://10.10.64.30:44818";
+        // Connection to our IoT Lab WAGO device.
+        String connectionUrl = "eip://10.10.64.30:44818";
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
+            // Get a reader instance.
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            Address address = plcConnection.parseAddress("#1#1#1");
-            CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
-                .read(new TypeSafePlcReadRequest<>(Integer.class, address));
-            TypeSafePlcReadResponse<Integer> readResponse = response.get();
-            System.out.println("Response " + readResponse);
-            ReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
+            // Parse the address.
+            Address address = plcConnection.parseAddress("#4#105#3");
+
+            // Create a new read request.
+            PlcReadRequest readRequest = new PlcReadRequest(new ReadRequestItem<>(Integer.class, address));
+
+            // Execute the read operation.
+            CompletableFuture<? extends PlcReadResponse> response = reader.read(readRequest);
+            PlcReadResponse readResponse = response.get();
+
+            // Output the response.
+            ReadResponseItem responseItem = readResponse.getResponseItem()
+                .orElseThrow(() -> new RuntimeException("No Item found"));
             System.out.println("ResponseItem " + responseItem);
-            responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
+            responseItem.getValues().stream().map(value -> "Value: " + value.toString()).forEach(System.out::println);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

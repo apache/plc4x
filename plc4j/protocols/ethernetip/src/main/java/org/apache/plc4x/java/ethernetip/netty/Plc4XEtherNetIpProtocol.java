@@ -20,16 +20,25 @@ package org.apache.plc4x.java.ethernetip.netty;
 
 import com.digitalpetri.enip.EnipPacket;
 import com.digitalpetri.enip.EnipStatus;
+import com.digitalpetri.enip.cip.epath.EPath;
+import com.digitalpetri.enip.cip.epath.LogicalSegment;
+import com.digitalpetri.enip.cip.services.GetAttributeSingleService;
+import com.digitalpetri.enip.cip.structs.MessageRouterResponse;
 import com.digitalpetri.enip.commands.*;
 import com.digitalpetri.enip.cpf.*;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.types.ResponseCode;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.ethernetip.model.EtherNetIpAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,11 +177,27 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
 
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
 
-/*        CpfItem cpfItem = new ConnectedDataItemRequest();
-        CpfPacket cpfPacket = new CpfPacket(cpfItem);
-        EnipPacket enipPacket = new EnipPacket(CommandCode.SendRRData, 0, EnipStatus.EIP_SUCCESS,
-            messageId.getAndIncrement(), new SendRRData(cpfPacket));
-*/
+        // Here we assume it's only one request item.
+        ReadRequestItem<?> requestItem = request.getRequestItem()
+            .orElseThrow(() -> new RuntimeException("Only single item requests allowed"));
+
+        // CIP Part
+        EtherNetIpAddress enipAddress = (EtherNetIpAddress) requestItem.getAddress();
+        EPath.PaddedEPath path = new EPath.PaddedEPath(new LogicalSegment.ClassId(enipAddress.getObjectNumber()),
+            new LogicalSegment.InstanceId(enipAddress.getInstanceNumber()),
+            new LogicalSegment.AttributeId(enipAddress.getAttributeNumber()));
+        GetAttributeSingleService service = new GetAttributeSingleService(path);
+
+        // ENIP Part
+        EnipPacket packet = new EnipPacket(CommandCode.SendRRData, sessionHandle, EnipStatus.EIP_SUCCESS,
+            messageId.getAndIncrement(), new SendRRData(new CpfPacket(
+            new NullAddressItem(),
+            new UnconnectedDataItemRequest(service::encodeRequest)
+        )));
+
+        requestsMap.put(packet.getSenderContext(), msg);
+
+        out.add(packet);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -407,11 +432,50 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
         if (plcRequestContainer == null) {
             ctx.channel().pipeline().fireExceptionCaught(
                 new PlcProtocolException("Unrelated payload received for message " + msg));
+            return;
         }
 
-        PlcRequest request = plcRequestContainer.getRequest();
-    }
+        if(!(plcRequestContainer.getRequest() instanceof PlcReadRequest)) {
+            ctx.fireExceptionCaught(new PlcProtocolException("Expecting a PlcReadRequest here."));
+        }
+        PlcReadRequest request = (PlcReadRequest) plcRequestContainer.getRequest();
+        ResponseCode responseCode;
+        if(msg.getStatus() != EnipStatus.EIP_SUCCESS) {
+            responseCode = ResponseCode.NOT_FOUND;
+        } else {
+            responseCode = ResponseCode.OK;
+        }
 
+        SendRRData sendRRDataCommand = (SendRRData) msg.getCommand();
+        if(sendRRDataCommand == null) {
+            ctx.fireExceptionCaught(new PlcProtocolException("Expecting a SendRRData command here."));
+        }
+        CpfItem[] items = sendRRDataCommand.getPacket().getItems();
+        if (items.length != 2) {
+            ctx.fireExceptionCaught(new PlcProtocolException("Expecting 2 items here."));
+        }
+        CpfItem payload = items[1];
+        if (!(payload instanceof UnconnectedDataItemResponse)) {
+            ctx.fireExceptionCaught(new PlcProtocolException("Item[1] should be of type UnconnectedDataItemResponse"));
+        }
+        UnconnectedDataItemResponse enipResponse = (UnconnectedDataItemResponse) payload;
+        ByteBuf data = enipResponse.getData();
+        if (data.readableBytes() > 0) {
+            MessageRouterResponse cipResponse = MessageRouterResponse.decode(data);
+            ReadRequestItem requestItem = request.getRequestItem().orElse(null);
+            Short value;
+            if(cipResponse.getData().readableBytes() >= 2) {
+                value = cipResponse.getData().readShort();
+            } else {
+                value = -1;
+            }
+            // TODO: This is not quite correct as we assume everything is an integer.
+            ReadResponseItem<Integer> responseItem = new ReadResponseItem<Integer>(requestItem, responseCode, value.intValue());
+            PlcReadResponse response = new PlcReadResponse(request, responseItem);
+
+            plcRequestContainer.getResponseFuture().complete(response);
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////
     // Encoding helpers.
