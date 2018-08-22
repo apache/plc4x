@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>19</version>
+    <version>21</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -101,6 +101,12 @@
     <netty.version>4.1.23.Final</netty.version>
     <pcap4j.version>1.7.3</pcap4j.version>
     <slf4j.version>1.7.25</slf4j.version>
+
+    <!-- Site properties -->
+    <bootstrap.version>3.3.7</bootstrap.version>
+    <jquery.version>3.3.1</jquery.version>
+    <anchorjs.version>3.2.2</anchorjs.version>
+    <fontawesome.version>5.2.0</fontawesome.version>
   </properties>
 
   <modules>
@@ -380,6 +386,10 @@
         ===================================
 
         Starting here the following plugins are used for generating the projects website.
+
+        Most of the complexity is due to the fact that we selected "localResouces" in the site.xml
+        This causes the generated output not to rely on external resources. Therefore we have to
+        manually take care of fetching and packaging these external resources with the generated site.
       -->
 
       <!--
@@ -413,24 +423,21 @@
                -->
               <artifactItems>
                 <artifactItem>
-                  <groupId>lt.velykis.maven.skins</groupId>
-                  <artifactId>reflow-maven-skin</artifactId>
-                  <version>1.1.1</version>
-                  <excludes>META-INF/**</excludes>
-                  <outputDirectory>${project.build.directory}/dependency/reflow-maven-skin-1.1.1/</outputDirectory>
-                </artifactItem>
-                <artifactItem>
                   <groupId>org.webjars</groupId>
                   <artifactId>bootstrap</artifactId>
-                  <version>2.3.2</version>
-                  <includes>META-INF/resources/webjars/**/*.min.*</includes>
+                  <version>${bootstrap.version}</version>
+                  <!-- We're replacing this by in the get-flatly-bootstrap-theme execution a few lines down -->
                   <excludes>META-INF/resources/webjars/**/bootstrap.min.css</excludes>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.webjars</groupId>
                   <artifactId>jquery</artifactId>
-                  <version>1.9.1</version>
-                  <includes>META-INF/resources/webjars/**/jquery.min.js</includes>
+                  <version>${jquery.version}</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.webjars</groupId>
+                  <artifactId>anchorjs</artifactId>
+                  <version>${anchorjs.version}</version>
                 </artifactItem>
               </artifactItems>
             </configuration>
@@ -453,8 +460,8 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>http://netdna.bootstrapcdn.com/bootswatch/2.3.2/flatly/bootstrap.min.css</url>
-              <outputDirectory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2/css/</outputDirectory>
+              <url>https://stackpath.bootstrapcdn.com/bootswatch/${bootstrap.version}/flatly/bootstrap.min.css</url>
+              <outputDirectory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/</outputDirectory>
               <outputFileName>bootstrap.min.css</outputFileName>
             </configuration>
           </execution>
@@ -465,7 +472,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://use.fontawesome.com/releases/v5.2.0/fontawesome-free-5.2.0-web.zip</url>
+              <url>https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip</url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
             </configuration>
@@ -487,20 +494,66 @@
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/2.3.2</directory>
-                </resource>
-                <resource>
-                  <directory>${project.build.directory}/dependency/fontawesome/fontawesome-free-5.2.0-web</directory>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/anchorjs/${anchorjs.version}</directory>
+                  <targetPath>${project.build.directory}/site/js</targetPath>
                   <includes>
-                    <include>css/all.min.css</include>
-                    <include>webfonts/**</include>
+                    <include>anchor.min.js</include>
                   </includes>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/1.9.1</directory>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}</directory>
+                  <includes>
+                    <include>css/bootstrap.min.css</include>
+                    <include>js/bootstrap.min.js</include>
+                    <include>fonts/**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web</directory>
+                  <includes>
+                    <include>css/all.min.css</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts</directory>
+                  <targetPath>${project.build.directory}/site/fonts</targetPath>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/${jquery.version}</directory>
                   <targetPath>${project.build.directory}/site/js</targetPath>
+                  <includes>
+                    <include>jquery.min.js</include>
+                  </includes>
                 </resource>
               </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+        The bootstrap uses "fonts" as directory for locating fonts and fontawesome uses "webfonts".
+        This plugin updates the css to also use "fonts".
+      -->
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <version>1.5.3</version>
+        <executions>
+          <execution>
+            <id>streamline-font-urls</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/site/css/all.min.css</file>
+              <replacements>
+                <replacement>
+                  <token>../webfonts/</token>
+                  <value>../fonts/</value>
+                </replacement>
+              </replacements>
             </configuration>
           </execution>
         </executions>
@@ -576,7 +629,6 @@
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.12</version>
           <configuration>
             <!--
                 Make rat output the files with missing licensed directly into the
@@ -596,7 +648,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.7.0</version>
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
@@ -605,36 +656,22 @@
           </configuration>
         </plugin>
 
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.20.1</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.20.1</version>
-        </plugin>
-
-        <plugin>
+        <!--plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
           <dependencies>
-            <!-- Try to get rid of out of heap errors on travis. -->
+            <!- Try to get rid of out of heap errors on travis. ->
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
               <artifactId>plexus-archiver</artifactId>
               <version>3.3</version>
             </dependency>
           </dependencies>
-        </plugin>
+        </plugin-->
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.0.1</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -644,25 +681,6 @@
               </goals>
             </execution>
           </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-
-        <!-- Make sure the DISCLAIMER contains the incubator version -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>1.5</version><!--$NO-MVN-MAN-VER$-->
         </plugin>
 
         <!--
@@ -692,13 +710,8 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <!--
-            Getting errors with site:site task when using any version above 3.4
-            (Hopefully 1.6.0 of the asciidoctor-maven-plugin will fix this)
-          -->
-          <version>3.4</version><!--$NO-MVN-MAN-VER$-->
           <configuration>
-            <templateFile>${session.executionRootDirectory}/src/site/template/maven-site.vm</templateFile>
+            <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>true</generateReports>
             <generateSitemap>true</generateSitemap>
             <relativizeDecorationLinks>false</relativizeDecorationLinks>
@@ -730,19 +743,9 @@
           <dependencies>
             <!-- All dependencies needed by the reflow skin -->
             <dependency>
-              <groupId>lt.velykis.maven.skins</groupId>
+              <groupId>io.github.devacfr.maven.skins</groupId>
               <artifactId>reflow-velocity-tools</artifactId>
-              <version>1.1.1</version>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.velocity</groupId>
-              <artifactId>velocity</artifactId>
-              <version>1.7</version>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.maven.doxia</groupId>
-              <artifactId>doxia-core</artifactId>
-              <version>1.6</version>
+              <version>1.3.10</version>
             </dependency>
             <!-- add support for scm/git site deployment -->
             <dependency>
@@ -792,7 +795,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.0.0</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
@@ -847,7 +849,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.20.1</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -943,7 +944,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-help-plugin</artifactId>
-            <version>2.2</version>
             <executions>
               <execution>
                 <id>generate-effective-pom</id>
@@ -1031,7 +1031,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.0.2</version>
             <executions>
               <execution>
                 <id>check-dependencies</id>
