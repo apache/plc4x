@@ -67,7 +67,7 @@ public class S7PlcConnectionTests {
             s7PlcConnection.parseAddress("");
         }
         catch (PlcException exception) {
-            assertThat(exception.getMessage(), startsWith("Address string doesn't match") );
+            assertThat(exception.getMessage(), startsWith(" doesn't match ") );
         }
     }
 

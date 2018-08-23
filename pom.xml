@@ -180,6 +180,11 @@
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>${netty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
         <artifactId>netty-resolver</artifactId>
         <version>${netty.version}</version>
       </dependency>
@@ -249,20 +254,6 @@
         <artifactId>maven-enforcer-plugin</artifactId>
         <version>3.0.0-M1</version> <!--$NO-MVN-MAN-VER$-->
         <executions>
-          <execution>
-            <id>enforce-maven</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>${maven.version}</version>
-                </requireMavenVersion>
-              </rules>
-            </configuration>
-          </execution>
           <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
           <execution>
             <id>vulnerability-checks</id>

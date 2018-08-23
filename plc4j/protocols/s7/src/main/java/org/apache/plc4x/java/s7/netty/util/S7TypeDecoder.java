@@ -19,8 +19,9 @@
 package org.apache.plc4x.java.s7.netty.util;
 
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -79,20 +80,16 @@ public class S7TypeDecoder {
                 // Every string value had a prefix of two bytes for which I have no idea, what the meaning is.
                 // This code assumes the string values doesn't contain UTF-8 values with a code of 0x00 as it
                 // uses this as termination char.
-                try {
-                    int j = 0;
-                    for (; j < s7Data.length; j++) {
-                        if (s7Data[j] == 0) {
-                            break;
-                        }
+                int j = 0;
+                for (; j < s7Data.length; j++) {
+                    if (s7Data[j] == 0) {
+                        break;
                     }
-                    result.add(new String(s7Data, 2, j - 2, "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    throw new PlcProtocolException("Error decoding String value", e);
                 }
+                result.add(new String(s7Data, 2, j - 2, StandardCharsets.UTF_8));
                 i += s7Data.length;
             } else {
-                throw new PlcProtocolException("Unsupported data type " + datatype.getSimpleName());
+                throw new PlcUnsupportedDataTypeException(datatype);
             }
         }
         return (List<T>) result;

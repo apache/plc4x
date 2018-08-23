@@ -22,6 +22,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -56,11 +57,11 @@ public class LittleEndianDecoder {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> List<T> decodeData(Class<T> datatype, byte[] adsData) throws PlcProtocolException {
-        if (datatype == byte[].class) {
+    public static <T> List<T> decodeData(Class<T> dataType, byte[] adsData) throws PlcProtocolException {
+        if (dataType == byte[].class) {
             return (List<T>) Collections.singletonList(adsData);
         }
-        if (datatype == Byte[].class) {
+        if (dataType == Byte[].class) {
             return (List<T>) Collections.singletonList(ArrayUtils.toObject(adsData));
         }
         List<Object> result = new LinkedList<>();
@@ -69,19 +70,19 @@ public class LittleEndianDecoder {
 
         // Expand arrays to avoid IndexOutOfBoundsException
         final byte[] safeLengthAdsData;
-        if (datatype == Short.class && length < 2) {
+        if (dataType == Short.class && length < 2) {
             safeLengthAdsData = new byte[2];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if (datatype == Integer.class && length < 4) {
+        } else if (dataType == Integer.class && length < 4) {
             safeLengthAdsData = new byte[4];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if (datatype == Float.class && length < 4) {
+        } else if (dataType == Float.class && length < 4) {
             safeLengthAdsData = new byte[4];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if (datatype == Double.class && length < 8) {
+        } else if (dataType == Double.class && length < 8) {
             safeLengthAdsData = new byte[8];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if ((datatype == Calendar.class || Calendar.class.isAssignableFrom(datatype)) && length < 8) {
+        } else if ((dataType == Calendar.class || Calendar.class.isAssignableFrom(dataType)) && length < 8) {
             safeLengthAdsData = new byte[8];
             System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
         } else {
@@ -90,35 +91,35 @@ public class LittleEndianDecoder {
 
         while (i < length) {
             byte byteOne = safeLengthAdsData[i];
-            if (datatype == String.class) {
+            if (dataType == String.class) {
                 i = decodeString(safeLengthAdsData, i, length, result);
-            } else if (datatype == Boolean.class) {
+            } else if (dataType == Boolean.class) {
                 result.add((byteOne & 0x01) == 0x01);
                 i += 1;
-            } else if (datatype == Byte.class) {
+            } else if (dataType == Byte.class) {
                 result.add(byteOne);
                 i += 1;
-            } else if (datatype == Short.class) {
+            } else if (dataType == Short.class) {
                 decodeShort(safeLengthAdsData, i, result);
                 i += 2;
-            } else if (datatype == Integer.class) {
+            } else if (dataType == Integer.class) {
                 decodeInteger(safeLengthAdsData, i, result);
                 i += 4;
-            } else if (datatype == BigInteger.class) {
+            } else if (dataType == BigInteger.class) {
                 decodeBigInteger(safeLengthAdsData, result);
                 // A big integer can consume the whole stream
                 i = length;
-            } else if (datatype == Float.class) {
+            } else if (dataType == Float.class) {
                 decodeFloat(safeLengthAdsData, i, result);
                 i += 4;
-            } else if (datatype == Double.class) {
+            } else if (dataType == Double.class) {
                 decodeDouble(safeLengthAdsData, i, result);
                 i += 8;
-            } else if (datatype == Calendar.class || Calendar.class.isAssignableFrom(datatype)) {
+            } else if (dataType == Calendar.class || Calendar.class.isAssignableFrom(dataType)) {
                 extractCalendar(safeLengthAdsData, i, result);
                 i += 8;
             } else {
-                throw new PlcProtocolException("Unsupported datatype " + datatype.getSimpleName());
+                throw new PlcUnsupportedDataTypeException(dataType);
             }
         }
         return (List<T>) result;

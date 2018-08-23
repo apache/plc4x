@@ -30,7 +30,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.*;
 import org.apache.plc4x.java.api.types.ResponseCode;
@@ -311,7 +311,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             } else if (value.getClass() == Double.class) {
                 coilSet = value.equals(1.0d);
             } else {
-                throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
+                throw new PlcUnsupportedDataTypeException(value.getClass());
             }
             byte coilToSet = coilSet ? (byte) 1 : (byte) 0;
             actualCoil = (byte) (actualCoil & 0xff | coilToSet << i);
@@ -404,7 +404,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 }
                 buffer.writeShort((int) Math.round((double) value));
             } else {
-                throw new PlcRuntimeException("Unsupported datatype detected " + value.getClass());
+                throw new PlcUnsupportedDataTypeException(value.getClass());
             }
         }
         byte[] result = new byte[buffer.writerIndex()];
@@ -468,7 +468,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 T itemToBeAdded = (T) Double.valueOf(coilFlag);
                 data.add(itemToBeAdded);
             } else {
-                throw new PlcRuntimeException("Unsupported datatype detected " + dataType);
+                throw new PlcUnsupportedDataTypeException(dataType);
             }
             bitIndex++;
         }
@@ -541,7 +541,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 T itemToBeAdded = (T) new Double(intValue);
                 data.add(itemToBeAdded);
             } else {
-                throw new PlcRuntimeException("Unsupported datatype detected " + dataType);
+                throw new PlcUnsupportedDataTypeException(dataType);
             }
         }
         return data;
