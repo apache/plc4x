@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddress;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -249,7 +249,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
 
     @Override
-    public Address parseAddress(String addressString) throws PlcException {
+    public Address parseAddress(String addressString) throws PlcInvalidAddress {
         Matcher datablockAddressMatcher = S7_DATABLOCK_ADDRESS_PATTERN.matcher(addressString);
         if (datablockAddressMatcher.matches()) {
             int datablockNumber = Integer.parseInt(datablockAddressMatcher.group("blockNumber"));
@@ -258,8 +258,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         }
         Matcher addressMatcher = S7_ADDRESS_PATTERN.matcher(addressString);
         if (!addressMatcher.matches()) {
-            throw new PlcConnectionException(
-                "Address string doesn't match the format '{area}/{offset}[/{bit-offset}]'");
+            throw new PlcInvalidAddress(addressString, S7_ADDRESS_PATTERN, "{area}/{offset}[/{bit-offset}]");
         }
         MemoryArea memoryArea = MemoryArea.valueOf(addressMatcher.group("memoryArea"));
         int byteOffset = Integer.parseInt(addressMatcher.group("byteOffset"));

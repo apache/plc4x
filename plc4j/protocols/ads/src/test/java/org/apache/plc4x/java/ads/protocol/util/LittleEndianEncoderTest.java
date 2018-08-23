@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.ads.protocol.util;
 
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -56,6 +56,6 @@ public class LittleEndianEncoderTest {
         assertByteEquals(new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}, LittleEndianEncoder.encodeData(String.class, "HelloWorld!"));
         assertByteEquals(new byte[]{0x70, 0x6c, 0x63, 0x34, 0x78, 0x00, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}, LittleEndianEncoder.encodeData(String.class, "plc4x", "HelloWorld!"));
 
-        assertThrows(PlcProtocolException.class, () -> LittleEndianEncoder.encodeData(this.getClass(), ""));
+        assertThrows(PlcUnsupportedDataTypeException.class, () -> LittleEndianEncoder.encodeData(this.getClass(), ""));
     }
 }
