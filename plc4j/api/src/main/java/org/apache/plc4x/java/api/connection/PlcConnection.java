@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddress;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Optional;
@@ -60,9 +60,9 @@ public interface PlcConnection extends AutoCloseable {
      *
      * @param addressString String representation of an address for the current type of PLC/protocol.
      * @return Address object identifying an address for the current type of PLC/protocol.
-     * @throws PlcInvalidAddress an exception if there was a problem parsing the address string.
+     * @throws PlcInvalidAddressException an exception if there was a problem parsing the address string.
      */
-    Address parseAddress(String addressString) throws PlcInvalidAddress;
+    Address parseAddress(String addressString) throws PlcInvalidAddressException;
 
     Optional<PlcLister> getLister();
 

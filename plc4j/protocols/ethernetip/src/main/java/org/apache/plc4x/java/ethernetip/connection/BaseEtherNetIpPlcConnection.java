@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ethernetip.connection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
@@ -57,11 +58,11 @@ public abstract class BaseEtherNetIpPlcConnection extends AbstractPlcConnection 
     }
 
     @Override
-    public Address parseAddress(String addressString) {
-        if(EtherNetIpAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
+    public Address parseAddress(String addressString) throws PlcInvalidAddressException {
+        if(EtherNetIpAddress.matches(addressString)) {
             return EtherNetIpAddress.of(addressString);
         }
-        return null;
+        throw new PlcInvalidAddressException(addressString);
     }
 
     @Override

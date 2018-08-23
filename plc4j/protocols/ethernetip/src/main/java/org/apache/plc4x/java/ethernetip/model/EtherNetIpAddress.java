@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.ethernetip.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Objects;
@@ -29,16 +29,14 @@ public class EtherNetIpAddress implements Address {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("^#(?<class>.*?)#(?<instance>\\d{1,4})(?:#(?<attribute>\\d))?");
 
-    private final int objectNumber;
-    private final int instanceNumber;
-    private final int attributeNumber;
+    public static boolean matches(String addressString) {
+        return ADDRESS_PATTERN.matcher(addressString).matches();
+    }
 
-    private int connectionId;
-
-    public static EtherNetIpAddress of(String addressString) {
+    public static EtherNetIpAddress of(String addressString) throws PlcInvalidAddressException {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcRuntimeException(addressString + " doesn't match " + ADDRESS_PATTERN);
+            throw new PlcInvalidAddressException(addressString, ADDRESS_PATTERN);
         }
         int classNumber = Integer.parseInt(matcher.group("class"));
         int instanceNumber = Integer.parseInt(matcher.group("instance"));
@@ -46,6 +44,12 @@ public class EtherNetIpAddress implements Address {
 
         return new EtherNetIpAddress(classNumber, instanceNumber, attributeNumber);
     }
+
+    private final int objectNumber;
+    private final int instanceNumber;
+    private final int attributeNumber;
+
+    private int connectionId;
 
     public EtherNetIpAddress(int objectNumber, int instanceNumber, int attributeNumber) {
         this.objectNumber = objectNumber;

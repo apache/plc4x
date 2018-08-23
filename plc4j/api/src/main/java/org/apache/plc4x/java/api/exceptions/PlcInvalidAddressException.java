@@ -23,31 +23,19 @@ import java.util.regex.Pattern;
 /**
  * Indicates an invalid Address.
  */
-public class PlcInvalidAddress extends PlcException {
+public class PlcInvalidAddressException extends PlcException {
     private static final long serialVersionUID = 1L;
 
-    public PlcInvalidAddress(String addressToBeParsed, Pattern pattern) {
+    public PlcInvalidAddressException(String addressToBeParsed) {
+        super(addressToBeParsed + " invalid");
+    }
+
+    public PlcInvalidAddressException(String addressToBeParsed, Pattern pattern) {
         super(addressToBeParsed + " doesn't match " + pattern);
     }
 
-    public PlcInvalidAddress(String addressToBeParsed, Pattern pattern, String readablePattern) {
+    public PlcInvalidAddressException(String addressToBeParsed, Pattern pattern, String readablePattern) {
         super(addressToBeParsed + " doesn't match " + readablePattern + '(' + pattern + ')');
-    }
-
-    public PlcInvalidAddress(String message) {
-        super(message);
-    }
-
-    public PlcInvalidAddress(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PlcInvalidAddress(Throwable cause) {
-        super(cause);
-    }
-
-    public PlcInvalidAddress(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }
