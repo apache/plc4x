@@ -60,9 +60,9 @@ under the License.
     width: 400px;
 }
 
-#bannerRight:after {
-    content: url("https://www.apache.org/events/current-event-234x60.png");
+#apacheEvents {
     position: relative;
+    width: 234px;
     top: 20px;
     left: 83px
 }

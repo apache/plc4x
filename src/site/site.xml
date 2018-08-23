@@ -85,6 +85,14 @@
 
   <body>
     <head>
+      <![CDATA[
+        <script>
+          /* Add an image for promoting Apache events below the right banner */
+          document.addEventListener("DOMContentLoaded", function(event) {
+            $("#bannerRight").append('<p id="apacheEvents"><a href="//www.apache.org/events/current-event.html"><img src="//www.apache.org/events/current-event-234x60.png"/></a></p>');
+          });
+        </script>
+      ]]>
     </head>
 
     <menu name="Community">
