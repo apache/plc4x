@@ -32,6 +32,7 @@ import org.apache.plc4x.java.ads.protocol.exception.AdsException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
@@ -48,6 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -183,12 +186,51 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
-        // TODO: multiplicator is missing is missing. So an integer 4Bytes and 10 of them should be 40 Bytes not one.
-        Length length = Length.of(readRequestItem.getSize());
+        Length length = Length.of(calculateLength(readRequestItem.getDatatype(), readRequestItem.getSize()));
         AmsPacket amsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         LOGGER.debug("encoded read request {}", amsPacket);
         out.add(amsPacket);
         requests.put(invokeId.getAsLong(), msg);
+    }
+
+    private long calculateLength(Class<?> dataType, int size) {
+        if (dataType == Boolean.class) {
+            // Boolean is one byte
+            return size;
+        } else if (dataType == Byte.class) {
+            // Byte is one byte
+            return size;
+        } else if (dataType == Short.class) {
+            return (Short.SIZE / Byte.SIZE) * size;
+        } else if (dataType == Float.class) {
+            return (Float.SIZE / Byte.SIZE) * size;
+        } else if (dataType == Integer.class) {
+            return (Integer.SIZE / Byte.SIZE) * size;
+        } else if (dataType == Double.class) {
+            return (Double.SIZE / Byte.SIZE) * size;
+        } else if (dataType == BigInteger.class) {
+            // TODO: how to calculate size for this?
+            //return (BigInteger.SIZE / Byte.SIZE) * size;
+            return 4 + size;
+        } else if (dataType == Calendar.class || Calendar.class.isAssignableFrom(dataType)) {
+            // TODO: how to calculate size for this?
+            //return (Calendar.SIZE / Byte.SIZE) * size;
+            return 4 + size;
+        } else if (dataType == String.class) {
+            // TODO: how to calculate size for this?
+            //return (String.SIZE / Byte.SIZE) * size;
+            return 4 + size;
+        } else if (dataType == byte[].class) {
+            // TODO: how to calculate size for this?
+            //return (byte[].SIZE / Byte.SIZE) * size;
+            return 4 + size;
+        } else if (dataType == Byte[].class) {
+            // TODO: how to calculate size for this?
+            //return (Byte[].SIZE / Byte.SIZE) * size;
+            return 4 + size;
+        } else {
+            throw new PlcUnsupportedDataTypeException(dataType);
+        }
     }
 
     private void encodeProprietaryRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcProtocolException {
