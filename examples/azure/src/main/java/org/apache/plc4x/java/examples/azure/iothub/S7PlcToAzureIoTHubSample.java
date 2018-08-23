@@ -18,7 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.examples.azure.iothub;
 
-import com.microsoft.azure.sdk.iot.device.*;
+import com.microsoft.azure.sdk.iot.device.DeviceClient;
+import com.microsoft.azure.sdk.iot.device.IotHubClientProtocol;
+import com.microsoft.azure.sdk.iot.device.Message;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -34,35 +36,25 @@ public class S7PlcToAzureIoTHubSample {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7PlcToAzureIoTHubSample.class);
 
-    private static IotHubClientProtocol protocol = IotHubClientProtocol.MQTT;
-    private static DeviceClient client;
-
-    public static class Callback implements IotHubEventCallback {
-
-        private static final Logger LOGGER = LoggerFactory.getLogger(Callback.class);
-
-        @Override
-        public void execute(IotHubStatusCode iotHubStatusCode, Object ctx) {
-            LOGGER.info("Received status: ", iotHubStatusCode);
-        }
-    }
-
     /**
      * Example code do demonstrate sending events from an S7 device to Microsoft Azure IoT Hub
      *
      * @param args Expected: [plc4x connection string, plc4x address, IoT-Hub connection string].
      */
     public static void main(String[] args) throws Exception {
-        LOGGER.info("Connecting");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(args[0])) {
+        String plc4xConnectionString = args[0];
+        String addressString = args[1];
+        String iotConnectionString = args[2];
+        LOGGER.info("Connecting {}, {}, {}", plc4xConnectionString, addressString, iotConnectionString);
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(plc4xConnectionString)) {
             LOGGER.info("Connected");
 
-            client = new DeviceClient(args[2], protocol);
+            DeviceClient client = new DeviceClient(iotConnectionString, IotHubClientProtocol.MQTT);
             client.open();
 
             PlcReader plcReader = plcConnection.getReader().orElseThrow(IllegalStateException::new);
 
-            Address outputs = plcConnection.parseAddress(args[1]);
+            Address outputs = plcConnection.parseAddress(addressString);
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
@@ -75,10 +67,9 @@ public class S7PlcToAzureIoTHubSample {
                             String result = Long.toBinaryString(byteValue.longValue());
                             LOGGER.info("Outputs {}", result);
                             Message msg = new Message("{ \"bits\" : \"" + result + "\"}");
-                            // Send the message.
-                            Callback callback = new Callback();
 
-                            client.sendEventAsync(msg, callback, new Object());
+                            // Send the message.
+                            client.sendEventAsync(msg, (responseStatus, callbackContext) -> LOGGER.info("Received status: ", responseStatus), new Object());
                         }
                     );
 
