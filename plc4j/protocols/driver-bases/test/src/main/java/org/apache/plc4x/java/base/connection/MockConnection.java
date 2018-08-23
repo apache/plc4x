@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.base.connection;
 
 import io.netty.channel.ChannelHandler;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.concurrent.CompletableFuture;
@@ -40,7 +39,7 @@ public class MockConnection extends AbstractPlcConnection {
     }
 
     @Override
-    public Address parseAddress(String addressString) throws PlcException {
+    public Address parseAddress(String addressString) {
         return null;
     }
 

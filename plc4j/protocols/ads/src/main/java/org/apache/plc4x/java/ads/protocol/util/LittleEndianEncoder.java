@@ -22,6 +22,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class LittleEndianEncoder {
         } else if (valueType == Byte[].class) {
             result = encodeBigByteArray(Arrays.stream(values).map(Byte[].class::cast));
         } else {
-            throw new PlcProtocolException("Unsupported datatype " + valueType);
+            throw new PlcUnsupportedDataTypeException(valueType);
         }
 
         // TODO: maybe we can replace this by a smarter flatmap
