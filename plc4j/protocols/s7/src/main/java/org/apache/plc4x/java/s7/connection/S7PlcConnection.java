@@ -59,8 +59,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Class implementing the Connection handling for Siemens S7.
@@ -87,11 +85,6 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     // Fetch values from configuration
     private static final Configuration CONF = new SystemConfiguration();
     private static final long CLOSE_DEVICE_TIMEOUT_MS = CONF.getLong("plc4x.s7connection.close.device,timeout", 1_000);
-
-    private static final Pattern S7_DATABLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^DATA_BLOCKS/(?<blockNumber>\\d{1,4})/(?<byteOffset>\\d{1,4})");
-    private static final Pattern S7_ADDRESS_PATTERN =
-        Pattern.compile("^(?<memoryArea>.*?)/(?<byteOffset>\\d{1,4})(?:/(?<bitOffset>\\d))?");
 
     private static final Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
 
@@ -247,26 +240,18 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         super.close();
     }
 
-
     @Override
     public Address parseAddress(String addressString) throws PlcInvalidAddressException {
-        Matcher datablockAddressMatcher = S7_DATABLOCK_ADDRESS_PATTERN.matcher(addressString);
-        if (datablockAddressMatcher.matches()) {
-            int datablockNumber = Integer.parseInt(datablockAddressMatcher.group("blockNumber"));
-            int datablockByteOffset = Integer.parseInt(datablockAddressMatcher.group("byteOffset"));
-            return new S7DataBlockAddress((short) datablockNumber, (short) datablockByteOffset);
+        if(S7DataBlockAddress.matches(addressString)) {
+            return S7DataBlockAddress.of(addressString);
         }
-        Matcher addressMatcher = S7_ADDRESS_PATTERN.matcher(addressString);
-        if (!addressMatcher.matches()) {
-            throw new PlcInvalidAddressException(addressString, S7_ADDRESS_PATTERN, "{area}/{offset}[/{bit-offset}]");
+        if(S7BitAddress.matches(addressString)) {
+            return S7BitAddress.of(addressString);
         }
-        MemoryArea memoryArea = MemoryArea.valueOf(addressMatcher.group("memoryArea"));
-        int byteOffset = Integer.parseInt(addressMatcher.group("byteOffset"));
-        String bitOffset = addressMatcher.group("bitOffset");
-        if (bitOffset != null) {
-            return new S7BitAddress(memoryArea, (short) byteOffset, Byte.valueOf(bitOffset));
+        if(S7Address.matches(addressString)) {
+            return S7Address.of(addressString);
         }
-        return new S7Address(memoryArea, (short) byteOffset);
+        throw new PlcInvalidAddressException(addressString);
     }
 
     @Override

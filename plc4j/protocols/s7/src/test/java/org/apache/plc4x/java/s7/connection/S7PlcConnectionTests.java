@@ -20,6 +20,7 @@ under the License.
 package org.apache.plc4x.java.s7.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 import org.apache.plc4x.java.s7.model.S7Address;
 import org.apache.plc4x.java.s7.model.S7BitAddress;
@@ -32,7 +33,9 @@ import org.junit.Test;
 import java.net.InetAddress;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -67,7 +70,8 @@ public class S7PlcConnectionTests {
             s7PlcConnection.parseAddress("");
         }
         catch (PlcException exception) {
-            assertThat(exception.getMessage(), startsWith(" doesn't match ") );
+            assertThat(exception, instanceOf(PlcInvalidAddressException.class));
+            assertThat(exception.getMessage(), containsString("invalid") );
         }
     }
 
