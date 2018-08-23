@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.protocol.util;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
@@ -49,11 +48,11 @@ public class LittleEndianDecoder {
         // Utility class
     }
 
-    public static Length getLengthFor(Class<?> clazz, long defaultValue) {
+    public static long getLengthFor(Class<?> clazz, long defaultValue) {
         if (Calendar.class.isAssignableFrom(clazz)) {
-            return Length.of(8);
+            return 8;
         }
-        return Length.of(LENGTH_MAP.getOrDefault(clazz, defaultValue));
+        return LENGTH_MAP.getOrDefault(clazz, defaultValue);
     }
 
     @SuppressWarnings("unchecked")

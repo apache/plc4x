@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.ads.protocol.util;
 
-import org.apache.plc4x.java.ads.api.commands.types.Length;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.junit.Test;
@@ -35,14 +34,14 @@ public class LittleEndianDecoderTest {
 
     @Test
     public void getLengthFor() {
-        assertEquals(LittleEndianDecoder.getLengthFor(Boolean.class, 0), Length.of(1));
-        assertEquals(LittleEndianDecoder.getLengthFor(Byte.class, 0), Length.of(1));
-        assertEquals(LittleEndianDecoder.getLengthFor(Short.class, 0), Length.of(2));
-        assertEquals(LittleEndianDecoder.getLengthFor(Integer.class, 0), Length.of(4));
-        assertEquals(LittleEndianDecoder.getLengthFor(Float.class, 0), Length.of(4));
-        assertEquals(LittleEndianDecoder.getLengthFor(Double.class, 0), Length.of(8));
-        assertEquals(LittleEndianDecoder.getLengthFor(Calendar.class, 0), Length.of(8));
-        assertEquals(LittleEndianDecoder.getLengthFor(LittleEndianDecoderTest.class, 666), Length.of(666));
+        assertEquals(LittleEndianDecoder.getLengthFor(Boolean.class, 0), 1);
+        assertEquals(LittleEndianDecoder.getLengthFor(Byte.class, 0), 1);
+        assertEquals(LittleEndianDecoder.getLengthFor(Short.class, 0), 2);
+        assertEquals(LittleEndianDecoder.getLengthFor(Integer.class, 0), 4);
+        assertEquals(LittleEndianDecoder.getLengthFor(Float.class, 0), 4);
+        assertEquals(LittleEndianDecoder.getLengthFor(Double.class, 0), 8);
+        assertEquals(LittleEndianDecoder.getLengthFor(Calendar.class, 0), 8);
+        assertEquals(LittleEndianDecoder.getLengthFor(LittleEndianDecoderTest.class, 666), 666);
     }
 
     @Test

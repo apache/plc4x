@@ -29,10 +29,10 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsAddress;
 import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
 import org.apache.plc4x.java.ads.protocol.exception.AdsException;
+import org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
 import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
@@ -49,8 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -194,43 +192,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     }
 
     private long calculateLength(Class<?> dataType, int size) {
-        if (dataType == Boolean.class) {
-            // Boolean is one byte
-            return size;
-        } else if (dataType == Byte.class) {
-            // Byte is one byte
-            return size;
-        } else if (dataType == Short.class) {
-            return (Short.SIZE / Byte.SIZE) * size;
-        } else if (dataType == Float.class) {
-            return (Float.SIZE / Byte.SIZE) * size;
-        } else if (dataType == Integer.class) {
-            return (Integer.SIZE / Byte.SIZE) * size;
-        } else if (dataType == Double.class) {
-            return (Double.SIZE / Byte.SIZE) * size;
-        } else if (dataType == BigInteger.class) {
-            // TODO: how to calculate size for this?
-            //return (BigInteger.SIZE / Byte.SIZE) * size;
-            return 4 + size;
-        } else if (dataType == Calendar.class || Calendar.class.isAssignableFrom(dataType)) {
-            // TODO: how to calculate size for this?
-            //return (Calendar.SIZE / Byte.SIZE) * size;
-            return 4 + size;
-        } else if (dataType == String.class) {
-            // TODO: how to calculate size for this?
-            //return (String.SIZE / Byte.SIZE) * size;
-            return 4 + size;
-        } else if (dataType == byte[].class) {
-            // TODO: how to calculate size for this?
-            //return (byte[].SIZE / Byte.SIZE) * size;
-            return 4 + size;
-        } else if (dataType == Byte[].class) {
-            // TODO: how to calculate size for this?
-            //return (Byte[].SIZE / Byte.SIZE) * size;
-            return 4 + size;
-        } else {
-            throw new PlcUnsupportedDataTypeException(dataType);
-        }
+        return LittleEndianDecoder.getLengthFor(dataType, 4) * size;
     }
 
     private void encodeProprietaryRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcProtocolException {
