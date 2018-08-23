@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.ads.model;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Objects;
@@ -36,11 +37,10 @@ public class SymbolicAdsAddress implements Address {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
     }
 
-    public static SymbolicAdsAddress of(String address) {
+    public static SymbolicAdsAddress of(String address) throws PlcInvalidAddressException {
         Matcher matcher = SYMBOLIC_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(
-                "address " + address + " doesn't match '{address}' RAW:" + SYMBOLIC_ADDRESS_PATTERN);
+            throw new PlcInvalidAddressException(address, SYMBOLIC_ADDRESS_PATTERN, "{address}");
         }
         String symbolicAddress = matcher.group("symbolicAddress");
 

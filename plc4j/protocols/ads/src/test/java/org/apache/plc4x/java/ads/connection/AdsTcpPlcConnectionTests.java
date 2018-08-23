@@ -29,6 +29,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.model.AdsAddress;
 import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
 import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
@@ -36,6 +37,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
 import org.apache.plc4x.java.api.messages.items.SubscriptionRequestChangeOfStateItem;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,13 +95,13 @@ public class AdsTcpPlcConnectionTests {
     public void emptyParseAddress() {
         try {
             SUT.parseAddress("");
-        } catch (IllegalArgumentException exception) {
-            assertTrue("Unexpected exception", exception.getMessage().startsWith("address  doesn't match "));
+        } catch (PlcInvalidAddressException exception) {
+            assertThat(exception.getMessage(), Matchers.startsWith(" invalid"));
         }
     }
 
     @Test
-    public void parseAddress() {
+    public void parseAddress() throws Exception {
         try {
             AdsAddress address = (AdsAddress) SUT.parseAddress("1/1");
             assertEquals(address.getIndexGroup(), 1);
@@ -110,7 +112,7 @@ public class AdsTcpPlcConnectionTests {
     }
 
     @Test
-    public void parseSymbolicAddress() {
+    public void parseSymbolicAddress() throws Exception {
         try {
             SymbolicAdsAddress address = (SymbolicAdsAddress) SUT.parseAddress("Main.variable");
             assertEquals(address.getSymbolicAddress(), "Main.variable");

@@ -65,7 +65,7 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void emptyParseAddress() {
+    public void emptyParseAddress() throws Exception {
         try {
             SUT.parseAddress("");
         } catch (IllegalArgumentException exception) {
@@ -74,7 +74,7 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void parseCoilModbusAddress() {
+    public void parseCoilModbusAddress() throws Exception {
         try {
             CoilModbusAddress address = (CoilModbusAddress) SUT.parseAddress("0/1");
             assertEquals(address.getAddress(), 0);
@@ -84,7 +84,7 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void parseMaskWriteRegisterModbusAddress() {
+    public void parseMaskWriteRegisterModbusAddress() throws Exception {
         try {
             MaskWriteRegisterModbusAddress address = (MaskWriteRegisterModbusAddress) SUT.parseAddress("0/1");
             assertEquals(address.getAddress(), 0);
@@ -94,7 +94,7 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void parseReadDiscreteInputsModbusAddress() {
+    public void parseReadDiscreteInputsModbusAddress() throws Exception {
         try {
             ReadDiscreteInputsModbusAddress address = (ReadDiscreteInputsModbusAddress) SUT.parseAddress("0/1");
             assertEquals(address.getAddress(), 0);
@@ -104,7 +104,7 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void parseReadHoldingRegistersModbusAddress() {
+    public void parseReadHoldingRegistersModbusAddress() throws Exception {
         try {
             ReadHoldingRegistersModbusAddress address = (ReadHoldingRegistersModbusAddress) SUT.parseAddress("0/1");
             assertEquals(address.getAddress(), 0);
@@ -114,7 +114,7 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void parseReadInputRegistersModbusAddress() {
+    public void parseReadInputRegistersModbusAddress() throws Exception {
         try {
             ReadInputRegistersModbusAddress address = (ReadInputRegistersModbusAddress) SUT.parseAddress("0/1");
             assertEquals(address.getAddress(), 0);
@@ -124,7 +124,7 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void parseRegisterAddress() {
+    public void parseRegisterAddress() throws Exception {
         try {
             RegisterModbusAddress address = (RegisterModbusAddress) SUT.parseAddress("0/1");
             assertEquals(address.getAddress(), 0);

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.model;
 
 import org.apache.plc4x.java.ads.api.util.ByteValue;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.model.Address;
 
 import java.util.Objects;
@@ -47,11 +48,10 @@ public class AdsAddress implements Address {
         return new AdsAddress(indexGroup, indexOffset);
     }
 
-    public static AdsAddress of(String address) {
+    public static AdsAddress of(String address) throws PlcInvalidAddressException {
         Matcher matcher = RESOURCE_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(
-                "address " + address + " doesn't match '{indexGroup}/{indexOffset}' RAW:" + RESOURCE_ADDRESS_PATTERN);
+            throw new PlcInvalidAddressException(address, RESOURCE_ADDRESS_PATTERN, "{indexGroup}/{indexOffset}");
         }
 
         String indexGroupStringHex = matcher.group("indexGroupHex");

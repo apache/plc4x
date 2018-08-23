@@ -25,6 +25,7 @@ import com.digitalpetri.modbus.responses.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
@@ -110,21 +111,34 @@ public class Plc4XModbusProtocolTest {
                 }
             })
             .map(dataTypePair -> Stream.of(
-                producePair(dataTypePair.getDataTypeClass(), CoilModbusAddress.of("coil:1"), new ReadCoilsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x1}))),
-                producePair(CoilModbusAddress.of("coil:1"), new WriteSingleCoilResponse(1, 1), mapDataTypePairForCoil(dataTypePair).getValue()),
+                producePair(dataTypePair.getDataTypeClass(), st(() -> CoilModbusAddress.of("coil:1")), new ReadCoilsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x1}))),
+                producePair(st(() -> CoilModbusAddress.of("coil:1")), new WriteSingleCoilResponse(1, 1), mapDataTypePairForCoil(dataTypePair).getValue()),
                 /* Read request no supported on maskwrite so how to handle?
                 producePair(pair.getDataTypeClass(), MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2)),
                 */
-                producePair(MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2"), new MaskWriteRegisterResponse(1, 1, 2), mapDataTypePairForRegister(dataTypePair).getValue()),
-                producePair(dataTypePair.getDataTypeClass(), ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1"), new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x01}))),
-                producePair(dataTypePair.getDataTypeClass(), ReadHoldingRegistersModbusAddress.of("readholdingregisters:1"), new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())))),
-                producePair(dataTypePair.getDataTypeClass(), ReadInputRegistersModbusAddress.of("readinputregisters:1"), new ReadInputRegistersResponse(Unpooled.wrappedBuffer(cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())))),
-                producePair(CoilModbusAddress.of("coil:1"), new WriteMultipleCoilsResponse(1, 3), mapDataTypePairForCoil(dataTypePair).getValue(), mapDataTypePairForCoil(dataTypePair).getValue(), mapDataTypePairForCoil(dataTypePair).getValue()),
-                producePair(RegisterModbusAddress.of("register:1"), new WriteMultipleRegistersResponse(1, 3), mapDataTypePairForRegister(dataTypePair).getValue(), mapDataTypePairForRegister(dataTypePair).getValue(), mapDataTypePairForRegister(dataTypePair).getValue()),
-                producePair(RegisterModbusAddress.of("register:1"), new WriteSingleRegisterResponse(1, cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())[0]), mapDataTypePairForRegister(dataTypePair).getValue())
+                producePair(st(() -> MaskWriteRegisterModbusAddress.of("maskwrite:1/1/2")), new MaskWriteRegisterResponse(1, 1, 2), mapDataTypePairForRegister(dataTypePair).getValue()),
+                producePair(dataTypePair.getDataTypeClass(), st(() -> ReadDiscreteInputsModbusAddress.of("readdiscreteinputs:1")), new ReadDiscreteInputsResponse(Unpooled.wrappedBuffer(new byte[]{(byte) 0x01}))),
+                producePair(dataTypePair.getDataTypeClass(), st(() -> ReadHoldingRegistersModbusAddress.of("readholdingregisters:1")), new ReadHoldingRegistersResponse(Unpooled.wrappedBuffer(cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())))),
+                producePair(dataTypePair.getDataTypeClass(), st(() -> ReadInputRegistersModbusAddress.of("readinputregisters:1")), new ReadInputRegistersResponse(Unpooled.wrappedBuffer(cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())))),
+                producePair(st(() -> CoilModbusAddress.of("coil:1")), new WriteMultipleCoilsResponse(1, 3), mapDataTypePairForCoil(dataTypePair).getValue(), mapDataTypePairForCoil(dataTypePair).getValue(), mapDataTypePairForCoil(dataTypePair).getValue()),
+                producePair(st(() -> RegisterModbusAddress.of("register:1")), new WriteMultipleRegistersResponse(1, 3), mapDataTypePairForRegister(dataTypePair).getValue(), mapDataTypePairForRegister(dataTypePair).getValue(), mapDataTypePairForRegister(dataTypePair).getValue()),
+                producePair(st(() -> RegisterModbusAddress.of("register:1")), new WriteSingleRegisterResponse(1, cutRegister(mapDataTypePairForRegister(dataTypePair).getByteRepresentation())[0]), mapDataTypePairForRegister(dataTypePair).getValue())
             ))
             .flatMap(stream -> stream)
             .map(pair -> new Object[]{pair.left.getRequest().getRequestItem().orElseThrow(IllegalStateException::new).getDatatype().getSimpleName(), pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getModbusPdu().getClass().getSimpleName()}).collect(Collectors.toList());
+    }
+
+    @FunctionalInterface
+    public interface AddressSupplier<T> {
+        T getAddress() throws PlcInvalidAddressException;
+    }
+
+    public static <T> T st(AddressSupplier<T> supplier) {
+        try {
+            return supplier.getAddress();
+        } catch (PlcInvalidAddressException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static ImmutablePair<PlcRequestContainer<PlcReadRequest, PlcResponse>, ModbusTcpPayload> producePair(Class type, Address address, ModbusPdu modbusPdu) {
@@ -167,6 +181,7 @@ public class Plc4XModbusProtocolTest {
     private static byte[] cutRegister(byte[] right) {
         return new byte[]{right.length > 1 ? right[right.length - 2] : 0x0, right[right.length - 1]};
     }
+
     @Before
     public void setUp() {
         SUT = new Plc4XModbusProtocol();

@@ -123,7 +123,7 @@ public class AdsAbstractPlcConnectionTest {
     }
 
     @Test
-    public void parseAddress() {
+    public void parseAddress() throws Exception {
         Address address = SUT.parseAddress("0/0");
         assertNotNull(address);
         Address SymbolicAddress = SUT.parseAddress("Main.byByte[0]");
@@ -192,7 +192,7 @@ public class AdsAbstractPlcConnectionTest {
     }
 
     @Test
-    public void mapAddress() {
+    public void mapAddress() throws Exception {
         // positive
         {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {

@@ -22,6 +22,7 @@ import io.netty.channel.ChannelFuture;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -61,7 +62,7 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     }
 
     @Override
-    public Address parseAddress(String addressString) {
+    public Address parseAddress(String addressString) throws PlcInvalidAddressException {
         if (MaskWriteRegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return MaskWriteRegisterModbusAddress.of(addressString);
         } else if (ReadDiscreteInputsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
@@ -75,7 +76,7 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
         } else if (RegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
             return RegisterModbusAddress.of(addressString);
         }
-        return null;
+        throw new PlcInvalidAddressException(addressString);
     }
 
     @Override

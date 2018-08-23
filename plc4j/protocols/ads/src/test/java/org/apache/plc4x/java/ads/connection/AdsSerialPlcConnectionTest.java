@@ -30,10 +30,12 @@ import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
 import org.apache.plc4x.java.ads.model.AdsAddress;
 import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,13 +79,13 @@ public class AdsSerialPlcConnectionTest {
     public void emptyParseAddress() {
         try {
             SUT.parseAddress("");
-        } catch (IllegalArgumentException exception) {
-            assertTrue("Unexpected exception", exception.getMessage().startsWith("address  doesn't match "));
+        } catch (PlcInvalidAddressException exception) {
+            assertThat(exception.getMessage(), Matchers.startsWith(" invalid"));
         }
     }
 
     @Test
-    public void parseAddress() {
+    public void parseAddress() throws Exception {
         try {
             AdsAddress address = (AdsAddress) SUT.parseAddress("0/1");
             assertEquals(address.getIndexGroup(), 0);
@@ -94,7 +96,7 @@ public class AdsSerialPlcConnectionTest {
     }
 
     @Test
-    public void parseSymbolicAddress() {
+    public void parseSymbolicAddress() throws Exception {
         try {
             SymbolicAdsAddress address = (SymbolicAdsAddress) SUT.parseAddress("Main.variable");
             assertEquals(address.getSymbolicAddress(), "Main.variable");
@@ -180,7 +182,7 @@ public class AdsSerialPlcConnectionTest {
                             FragmentNumber.of((byte) 0)
                         ).getByteBuf();
                         try {
-                            MethodUtils.invokeMethod(byteBuf, true,"setRefCnt", 2);
+                            MethodUtils.invokeMethod(byteBuf, true, "setRefCnt", 2);
                         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
                         }
@@ -210,7 +212,7 @@ public class AdsSerialPlcConnectionTest {
                             )
                         ).getByteBuf();
                         try {
-                            MethodUtils.invokeMethod(byteBuf, true,"setRefCnt", 2);
+                            MethodUtils.invokeMethod(byteBuf, true, "setRefCnt", 2);
                         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
                         }

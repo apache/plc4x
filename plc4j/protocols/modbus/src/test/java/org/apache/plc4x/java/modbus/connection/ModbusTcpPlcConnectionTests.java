@@ -21,7 +21,9 @@ package org.apache.plc4x.java.modbus.connection;
 
 import io.netty.channel.Channel;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.modbus.model.*;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,13 +66,13 @@ public class ModbusTcpPlcConnectionTests {
     public void emptyParseAddress() {
         try {
             SUT.parseAddress("");
-        } catch (IllegalArgumentException exception) {
-            assertTrue("Unexpected exception", exception.getMessage().startsWith("address  doesn't match "));
+        } catch (PlcInvalidAddressException exception) {
+            assertThat(exception.getMessage(), Matchers.startsWith(" invalid"));
         }
     }
 
     @Test
-    public void parseCoilModbusAddress() {
+    public void parseCoilModbusAddress() throws Exception {
         try {
             CoilModbusAddress address = (CoilModbusAddress) SUT.parseAddress("coil:0");
             assertEquals(address.getAddress(), 0);
@@ -80,7 +82,7 @@ public class ModbusTcpPlcConnectionTests {
     }
 
     @Test
-    public void parseMaskWriteRegisterModbusAddress() {
+    public void parseMaskWriteRegisterModbusAddress() throws Exception {
         try {
             MaskWriteRegisterModbusAddress address = (MaskWriteRegisterModbusAddress) SUT.parseAddress("maskwrite:1/2/3");
             assertEquals(address.getAddress(), 1);
@@ -92,7 +94,7 @@ public class ModbusTcpPlcConnectionTests {
     }
 
     @Test
-    public void parseReadDiscreteInputsModbusAddress() {
+    public void parseReadDiscreteInputsModbusAddress() throws Exception {
         try {
             ReadDiscreteInputsModbusAddress address = (ReadDiscreteInputsModbusAddress) SUT.parseAddress("readdiscreteinputs:0");
             assertEquals(address.getAddress(), 0);
@@ -102,7 +104,7 @@ public class ModbusTcpPlcConnectionTests {
     }
 
     @Test
-    public void parseReadHoldingRegistersModbusAddress() {
+    public void parseReadHoldingRegistersModbusAddress() throws Exception {
         try {
             ReadHoldingRegistersModbusAddress address = (ReadHoldingRegistersModbusAddress) SUT.parseAddress("readholdingregisters:0");
             assertEquals(address.getAddress(), 0);
@@ -112,7 +114,7 @@ public class ModbusTcpPlcConnectionTests {
     }
 
     @Test
-    public void parseReadInputRegistersModbusAddress() {
+    public void parseReadInputRegistersModbusAddress() throws Exception {
         try {
             ReadInputRegistersModbusAddress address = (ReadInputRegistersModbusAddress) SUT.parseAddress("readinputregisters:0");
             assertEquals(address.getAddress(), 0);
@@ -122,7 +124,7 @@ public class ModbusTcpPlcConnectionTests {
     }
 
     @Test
-    public void parseRegisterAddress() {
+    public void parseRegisterAddress() throws Exception {
         try {
             RegisterModbusAddress address = (RegisterModbusAddress) SUT.parseAddress("register:0");
             assertEquals(address.getAddress(), 0);

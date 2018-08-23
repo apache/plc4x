@@ -34,6 +34,7 @@ import org.apache.plc4x.java.api.connection.PlcProprietarySender;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.RequestItem;
@@ -94,12 +95,13 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
 
     @Override
-    public Address parseAddress(String addressString) {
+    public Address parseAddress(String addressString) throws PlcInvalidAddressException {
         if (AdsAddress.matches(addressString)) {
             return AdsAddress.of(addressString);
-        } else {
+        } else if (SymbolicAdsAddress.matches(addressString)) {
             return SymbolicAdsAddress.of(addressString);
         }
+        throw new PlcInvalidAddressException(addressString);
     }
 
     @Override

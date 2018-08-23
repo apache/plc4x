@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.modbus.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -37,10 +37,10 @@ public class MaskWriteRegisterModbusAddress extends ModbusAddress {
         this.orMask = orMask;
     }
 
-    public static MaskWriteRegisterModbusAddress of(String addressString) {
+    public static MaskWriteRegisterModbusAddress of(String addressString) throws PlcInvalidAddressException {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcRuntimeException(addressString + " doesn't match " + ADDRESS_PATTERN);
+            throw new PlcInvalidAddressException(addressString, ADDRESS_PATTERN);
         }
         int address = Integer.parseInt(matcher.group("address"));
         int andMask = Integer.parseInt(matcher.group("andMask"));
