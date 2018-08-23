@@ -183,6 +183,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
+        // TODO: multiplicator is missing is missing. So an integer 4Bytes and 10 of them should be 40 Bytes not one.
         Length length = Length.of(readRequestItem.getSize());
         AmsPacket amsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         LOGGER.debug("encoded read request {}", amsPacket);
