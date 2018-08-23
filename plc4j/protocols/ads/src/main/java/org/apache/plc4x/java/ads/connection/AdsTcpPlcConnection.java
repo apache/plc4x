@@ -174,6 +174,18 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             throw new IllegalArgumentException("Unsupported address type " + address.getClass());
         }
 
+        final TransmissionMode transmissionMode;
+        switch (subscriptionRequestItem.getSubscriptionType()) {
+            case CYCLIC:
+                transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE;
+                break;
+            case CHANGE_OF_STATE:
+                transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERONCHA;
+                break;
+            default:
+                throw new PlcRuntimeException("Unmapped type " + subscriptionRequestItem.getSubscriptionType());
+        }
+
         // Prepare the subscription request itself.
         AdsAddDeviceNotificationRequest adsAddDeviceNotificationRequest = AdsAddDeviceNotificationRequest.of(
             targetAmsNetId,
@@ -184,7 +196,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             indexGroup,
             indexOffset,
             LittleEndianDecoder.getLengthFor(datatype, 1),
-            TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE,
+            transmissionMode,
             MaxDelay.of(0),
             CycleTime.of(4000000)
         );
