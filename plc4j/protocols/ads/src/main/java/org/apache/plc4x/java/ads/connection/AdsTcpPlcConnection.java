@@ -195,6 +195,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             Invoke.NONE,
             indexGroup,
             indexOffset,
+            // TODO: length determination doesn't work here really as this is only known within the plc or by the developer
             Length.of(LittleEndianDecoder.getLengthFor(datatype, 1)),
             transmissionMode,
             MaxDelay.of(0),

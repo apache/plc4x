@@ -184,6 +184,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
+        // TODO: length determination doesn't work here really as this is only known within the plc or by the developer
         Length length = Length.of(calculateLength(readRequestItem.getDatatype(), readRequestItem.getSize()));
         AmsPacket amsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         LOGGER.debug("encoded read request {}", amsPacket);
@@ -192,7 +193,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     }
 
     private long calculateLength(Class<?> dataType, int size) {
-        return LittleEndianDecoder.getLengthFor(dataType, 4) * size;
+        return LittleEndianDecoder.getLengthFor(dataType, 16) * size;
     }
 
     private void encodeProprietaryRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcProtocolException {
