@@ -19,10 +19,10 @@ under the License.
 package org.apache.plc4x.java.isotp.netty.model;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.messages.RawMessage;
+import org.apache.plc4x.java.base.messages.PlcRawMessage;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.Tpdu;
 
-public class IsoTPMessage extends RawMessage {
+public class IsoTPMessage extends PlcRawMessage {
 
     private final Tpdu tpdu;
 

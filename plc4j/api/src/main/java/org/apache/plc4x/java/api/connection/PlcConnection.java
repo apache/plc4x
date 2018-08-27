@@ -19,15 +19,15 @@ under the License.
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Optional;
 
 /**
  * Interface defining the most basic methods a PLC4X connection should support.
  * This generally handles the connection establishment itself and the parsing of
- * address strings to the platform dependent Address instances.
+ * field address strings to the platform dependent PlcField instances.
  * <p>
  * The individual operations are then defined by other interfaces within this package.
  */
@@ -56,15 +56,13 @@ public interface PlcConnection extends AutoCloseable {
     void close() throws Exception;
 
     /**
-     * Parses a PLC/protocol dependent address string into an Address object.
+     * Parses a PLC/protocol dependent field string into an PlcField object.
      *
-     * @param addressString String representation of an address for the current type of PLC/protocol.
-     * @return Address object identifying an address for the current type of PLC/protocol.
-     * @throws PlcInvalidAddressException an exception if there was a problem parsing the address string.
+     * @param fieldString String representation of an address for the current type of PLC/protocol.
+     * @return PlcField object identifying a field for the current type of PLC/protocol.
+     * @throws PlcInvalidFieldException an exception if there was a problem parsing the address string.
      */
-    Address parseAddress(String addressString) throws PlcInvalidAddressException;
-
-    Optional<PlcLister> getLister();
+    PlcField prepareField(String fieldString) throws PlcInvalidFieldException;
 
     Optional<PlcReader> getReader();
 

@@ -27,9 +27,9 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.model.AdsAddress;
+import org.apache.plc4x.java.ads.model.AdsField;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
-import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
+import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.ads.protocol.Ads2PayloadProtocol;
 import org.apache.plc4x.java.ads.protocol.Payload2TcpProtocol;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
@@ -43,8 +43,8 @@ import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
 import org.apache.plc4x.java.api.messages.items.SubscriptionRequestItem;
 import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.apache.plc4x.java.api.messages.items.UnsubscriptionRequestItem;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.slf4j.Logger;
@@ -113,7 +113,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast(new Payload2TcpProtocol());
                 pipeline.addLast(new Ads2PayloadProtocol());
-                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, addressMapping));
+                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
             }
         };
     }
@@ -145,33 +145,33 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         SubscriptionRequestItem<?> subscriptionRequestItem = subscriptionRequest.getRequestItem().orElseThrow(NullPointerException::new);
 
         Objects.requireNonNull(subscriptionRequestItem.getConsumer());
-        Objects.requireNonNull(subscriptionRequestItem.getAddress());
+        Objects.requireNonNull(subscriptionRequestItem.getField());
         Objects.requireNonNull(subscriptionRequestItem.getDatatype());
 
-        Address address = subscriptionRequestItem.getAddress();
+        PlcField field = subscriptionRequestItem.getField();
         Class<?> datatype = subscriptionRequestItem.getDatatype();
 
         IndexGroup indexGroup;
         IndexOffset indexOffset;
-        // If this is a symbolic address, it has to be resolved first.
+        // If this is a symbolic field, it has to be resolved first.
         // TODO: This is blocking, should be changed to be async.
-        if (address instanceof SymbolicAdsAddress) {
-            mapAddress((SymbolicAdsAddress) address);
-            AdsAddress adsAddress = addressMapping.get(address);
-            if (adsAddress == null) {
-                throw new PlcRuntimeException("Unresolvable address" + address);
+        if (field instanceof SymbolicAdsField) {
+            mapFields((SymbolicAdsField) field);
+            AdsField adsField = fieldMapping.get(field);
+            if (adsField == null) {
+                throw new PlcRuntimeException("Unresolvable field " + field);
             }
-            indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
-            indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
+            indexGroup = IndexGroup.of(adsField.getIndexGroup());
+            indexOffset = IndexOffset.of(adsField.getIndexOffset());
         }
-        // If it's no symbolic address, we can continue immediately
+        // If it's no symbolic field, we can continue immediately
         // without having to do any resolving.
-        else if (address instanceof AdsAddress) {
-            AdsAddress adsAddress = (AdsAddress) address;
-            indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
-            indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
+        else if (field instanceof AdsField) {
+            AdsField adsField = (AdsField) field;
+            indexGroup = IndexGroup.of(adsField.getIndexGroup());
+            indexOffset = IndexOffset.of(adsField.getIndexOffset());
         } else {
-            throw new IllegalArgumentException("Unsupported address type " + address.getClass());
+            throw new IllegalArgumentException("Unsupported field type " + field.getClass());
         }
 
         final TransmissionMode transmissionMode;
@@ -215,7 +215,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         }
         AdsSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(response.getNotificationHandle());
         future.complete(new PlcSubscriptionResponse(subscriptionRequest, Collections.singletonList(
-            new SubscriptionResponseItem<>(subscriptionRequestItem, adsSubscriptionHandle, ResponseCode.OK))));
+            new SubscriptionResponseItem<>(subscriptionRequestItem, adsSubscriptionHandle, PlcResponseCode.OK))));
 
         Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer =
             adsDeviceNotificationRequest -> adsDeviceNotificationRequest.getAdsStampHeaders().forEach(adsStampHeader -> {

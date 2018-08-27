@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.ResponseItem;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -43,7 +43,7 @@ public class PlcProprietaryResponse<CUSTOM_RESPONSE> extends PlcResponse<PlcProp
     protected static class DummyResponseItem extends ResponseItem<PlcProprietaryRequest.DummyRequestItem> {
 
         public DummyResponseItem() {
-            super(new PlcProprietaryRequest.DummyRequestItem(), ResponseCode.OK);
+            super(new PlcProprietaryRequest.DummyRequestItem(), PlcResponseCode.OK);
         }
     }
 

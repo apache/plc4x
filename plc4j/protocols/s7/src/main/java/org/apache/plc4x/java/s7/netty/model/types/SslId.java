@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
-import org.apache.plc4x.java.s7.types.S7DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

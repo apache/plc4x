@@ -20,7 +20,7 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.apache.plc4x.java.api.messages.items.UnsubscriptionRequestItem;
-import org.apache.plc4x.java.api.model.SubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -60,17 +60,17 @@ public class PlcUnsubscriptionRequest implements PlcMessage {
 
     public static class Builder extends PlcRequest.Builder<UnsubscriptionRequestItem> {
 
-        public final Builder addHandle(SubscriptionHandle subscriptionHandle) {
+        public final Builder addHandle(PlcSubscriptionHandle subscriptionHandle) {
             requests.add(new UnsubscriptionRequestItem(subscriptionHandle));
             return this;
         }
 
-        public final Builder addHandle(SubscriptionHandle... subscriptionHandles) {
+        public final Builder addHandle(PlcSubscriptionHandle... subscriptionHandles) {
             requests.addAll(Arrays.stream(subscriptionHandles).map(UnsubscriptionRequestItem::new).collect(Collectors.toList()));
             return this;
         }
 
-        public final Builder addHandle(List<SubscriptionHandle> subscriptionHandles) {
+        public final Builder addHandle(List<PlcSubscriptionHandle> subscriptionHandles) {
             requests.addAll(subscriptionHandles.stream().map(UnsubscriptionRequestItem::new).collect(Collectors.toList()));
             return this;
         }

@@ -33,7 +33,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,14 +102,14 @@ public class PlcConnectionAdapter implements AutoCloseable {
         }
     }
 
-    public Address parseAddress(String addressString) throws PlcException {
-        return getConnection().parseAddress(addressString);
+    public PlcField prepareField(String fieldString) throws PlcException {
+        return getConnection().prepareField(fieldString);
     }
 
-    <T> Supplier<T> newSupplier(Class<T> datatype, String addressStr) {
+    <T> Supplier<T> newSupplier(Class<T> datatype, String fieldString) {
         PlcConnectionAdapter.checkDatatype(datatype);
         // satisfy sonar's "Reduce number of anonymous class lines" code smell
-        return new MySupplier<>(datatype, addressStr);
+        return new MySupplier<>(datatype, fieldString);
     }
     
     private class MySupplier<T> implements Supplier<T> {
@@ -125,18 +125,18 @@ public class PlcConnectionAdapter implements AutoCloseable {
         @Override
         public T get() {
             PlcConnection connection = null;
-            Address address = null;
+            PlcField field = null;
             try {
                 connection = getConnection();
-                address = connection.parseAddress(addressStr);
+                field = connection.prepareField(addressStr);
                 PlcReader reader = connection.getReader()
                   .orElseThrow(() -> new NullPointerException("No reader available"));
-                TypeSafePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, address);
+                TypeSafePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, field);
                 return reader.read(readRequest).get().getResponseItem()
                   .orElseThrow(() -> new IllegalStateException("No response available"))
                   .getValues().get(0);
             } catch (Exception e) {
-                logger.error("reading from plc device {} {} failed", connection, address, e);
+                logger.error("reading from plc device {} {} failed", connection, field, e);
                 return null;
             }
         }
@@ -170,16 +170,16 @@ public class PlcConnectionAdapter implements AutoCloseable {
             @Override
             public void accept(T arg0) {
                 PlcConnection connection = null;
-                Address address = null;
+                PlcField field = null;
                 try {
                     connection = getConnection();
-                    address = connection.parseAddress(addressStr);
+                    field = connection.prepareField(addressStr);
                     PlcWriter writer = connection.getWriter()
                         .orElseThrow(() -> new NullPointerException("No writer available"));
-                    PlcWriteRequest writeReq = PlcConnectionAdapter.newPlcWriteRequest(address, arg0);
+                    PlcWriteRequest writeReq = PlcConnectionAdapter.newPlcWriteRequest(field, arg0);
                     writer.write(writeReq).get();
                 } catch (Exception e) {
-                    logger.error("writing to plc device {} {} failed", connection, address, e);
+                    logger.error("writing to plc device {} {} failed", connection, field, e);
                 }
             }
 
@@ -194,18 +194,18 @@ public class PlcConnectionAdapter implements AutoCloseable {
             @Override
             public void accept(JsonObject jo) {
                 PlcConnection connection = null;
-                Address address = null;
+                PlcField field = null;
                 try {
                     connection = getConnection();
                     String addressStr = addressFn.apply(jo);
-                    address = connection.parseAddress(addressStr);
+                    field = connection.prepareField(addressStr);
                     T value = valueFn.apply(jo);
                     PlcWriter writer = connection.getWriter()
                         .orElseThrow(() -> new NullPointerException("No writer available"));
-                    PlcWriteRequest writeReq = newPlcWriteRequest(address, value);
+                    PlcWriteRequest writeReq = newPlcWriteRequest(field, value);
                     writer.write(writeReq).get();
                 } catch (Exception e) {
-                    logger.error("writing to plc device {} {} failed", connection, address, e);
+                    logger.error("writing to plc device {} {} failed", connection, field, e);
                 }
             }
 
@@ -221,13 +221,13 @@ public class PlcConnectionAdapter implements AutoCloseable {
     }
 
     @SuppressWarnings("unchecked")
-    static <T> TypeSafePlcWriteRequest<T> newPlcWriteRequest(Address address, T value) {
+    static <T> TypeSafePlcWriteRequest<T> newPlcWriteRequest(PlcField field, T value) {
         Class<T> cls = (Class<T>) value.getClass();
-        return new TypeSafePlcWriteRequest<>(cls, address, value);
+        return new TypeSafePlcWriteRequest<>(cls, field, value);
     }
 
-    static <T> TypeSafePlcReadRequest<T> newPlcReadRequest(Class<T> datatype, Address address) {
-        return new TypeSafePlcReadRequest<>(datatype, address);
+    static <T> TypeSafePlcReadRequest<T> newPlcReadRequest(Class<T> datatype, PlcField field) {
+        return new TypeSafePlcReadRequest<>(datatype, field);
     }
 
 }

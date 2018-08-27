@@ -18,30 +18,30 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.List;
 import java.util.Objects;
 
-public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
+public class PlcWriteRequest extends PlcRequest<PlcWriteRequestItem<?>> {
 
     public PlcWriteRequest() {
     }
 
-    public PlcWriteRequest(WriteRequestItem<?> requestItem) {
+    public PlcWriteRequest(PlcWriteRequestItem<?> requestItem) {
         addItem(requestItem);
     }
 
     @SafeVarargs
-    public <T> PlcWriteRequest(Class<T> dataType, Address address, T... values) {
+    public <T> PlcWriteRequest(Class<T> dataType, PlcField field, T... values) {
         Objects.requireNonNull(dataType, "Data type must not be null");
-        Objects.requireNonNull(address, "Address must not be null");
-        addItem(new WriteRequestItem<>(dataType, address, values));
+        Objects.requireNonNull(field, "PlcField must not be null");
+        addItem(new PlcWriteRequestItem<>(dataType, field, values));
     }
 
-    public PlcWriteRequest(List<WriteRequestItem<?>> requestItems) {
+    public PlcWriteRequest(List<PlcWriteRequestItem<?>> requestItems) {
         super(requestItems);
     }
 
@@ -49,24 +49,24 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
         return new Builder();
     }
 
-    public static class Builder extends PlcRequest.Builder<WriteRequestItem<?>> {
+    public static class Builder extends PlcRequest.Builder<PlcWriteRequestItem<?>> {
 
         @SuppressWarnings("unchecked")
-        public <T> PlcWriteRequest.Builder addItem(Address address, T value) {
+        public <T> PlcWriteRequest.Builder addItem(PlcField field, T value) {
             Objects.requireNonNull(value);
             checkType(value.getClass());
-            requests.add(new WriteRequestItem<>((Class<T>) value.getClass(), address, (T) value));
+            requests.add(new PlcWriteRequestItem<>((Class<T>) value.getClass(), field, (T) value));
             return this;
         }
 
         @SafeVarargs
-        public final <T> PlcWriteRequest.Builder addItem(Class<T> dataType, Address address, T... values) {
+        public final <T> PlcWriteRequest.Builder addItem(Class<T> dataType, PlcField field, T... values) {
             checkType(dataType);
-            requests.add(new WriteRequestItem<>(dataType, address, values));
+            requests.add(new PlcWriteRequestItem<>(dataType, field, values));
             return this;
         }
 
-        public final PlcWriteRequest.Builder addItem(WriteRequestItem<?> writeRequestItem) {
+        public final PlcWriteRequest.Builder addItem(PlcWriteRequestItem<?> writeRequestItem) {
             checkType(writeRequestItem.getDatatype());
             requests.add(writeRequestItem);
             return this;
@@ -82,7 +82,7 @@ public class PlcWriteRequest extends PlcRequest<WriteRequestItem<?>> {
             } else {
                 plcWriteRequest = new TypeSafePlcWriteRequest<>(firstType);
             }
-            for (WriteRequestItem request : requests) {
+            for (PlcWriteRequestItem request : requests) {
                 plcWriteRequest.addItem(request);
             }
             return plcWriteRequest;

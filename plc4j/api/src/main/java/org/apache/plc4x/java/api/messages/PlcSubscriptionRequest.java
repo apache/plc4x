@@ -19,7 +19,7 @@ under the License.
 */
 
 import org.apache.plc4x.java.api.messages.items.*;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -32,24 +32,24 @@ public class PlcSubscriptionRequest extends PlcRequest<SubscriptionRequestItem<?
 
     public static class Builder extends PlcRequest.Builder<SubscriptionRequestItem> {
 
-        public final <T> Builder addChangeOfStateItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
+        public final <T> Builder addChangeOfStateItem(Class<T> dataType, PlcField field, Consumer<SubscriptionEventItem<T>> consumer) {
             // As we don't get a list as response rather we have individual consumers we don't need type checking here.
             //checkType(dataType);
-            requests.add(new SubscriptionRequestChangeOfStateItem<>(dataType, address, consumer));
+            requests.add(new SubscriptionRequestChangeOfStateItem<>(dataType, field, consumer));
             return this;
         }
 
-        public final <T> Builder addCyclicItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer, TimeUnit timeUnit, int period) {
+        public final <T> Builder addCyclicItem(Class<T> dataType, PlcField field, Consumer<SubscriptionEventItem<T>> consumer, TimeUnit timeUnit, int period) {
             // As we don't get a list as response rather we have individual consumers we don't need type checking here.
             //checkType(dataType);
-            requests.add(new SubscriptionRequestCyclicItem<>(dataType, address, timeUnit, period, consumer));
+            requests.add(new SubscriptionRequestCyclicItem<>(dataType, field, timeUnit, period, consumer));
             return this;
         }
 
-        public final <T> Builder addEventItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
+        public final <T> Builder addEventItem(Class<T> dataType, PlcField field, Consumer<SubscriptionEventItem<T>> consumer) {
             // As we don't get a list as response rather we have individual consumers we don't need type checking here.
             //checkType(dataType);
-            requests.add(new SubscriptionRequestEventItem<>(dataType, address, consumer));
+            requests.add(new SubscriptionRequestEventItem<>(dataType, field, consumer));
             return this;
         }
 

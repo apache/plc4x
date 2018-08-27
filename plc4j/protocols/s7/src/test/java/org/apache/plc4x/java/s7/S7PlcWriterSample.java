@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +37,8 @@ public class S7PlcWriterSample {
      * Example code do demonstrate using the S7 Plc Driver.
      *
      * @param args ignored.
-     * @throws Exception something went wrong.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
@@ -49,7 +48,7 @@ public class S7PlcWriterSample {
             // Check if this connection support reading of data.
             if (writer.isPresent()) {
                 PlcWriter plcWriter = writer.get();
-                Address inputs = plcConnection.parseAddress("DATA_BLOCKS/1/2");
+                PlcField inputs = plcConnection.prepareField("DATA_BLOCKS/1/2");
                 //////////////////////////////////////////////////////////
                 // Write synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till

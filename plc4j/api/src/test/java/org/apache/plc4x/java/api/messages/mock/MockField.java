@@ -18,34 +18,35 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.mock;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
-public class MockAddress implements Address {
-  private final String address;
+public class MockField implements PlcField {
+
+  private final String field;
   
-  public MockAddress(String address) {
-    this.address = address;
+  public MockField(String field) {
+    this.field = field;
   }
   
-  public String getAddress() {
-    return address;
+  public String getField() {
+    return field;
   }
   
   @Override
   public String toString() {
-    return "mock address: "+address;
+    return "mock field: "+ field;
   }
   
   @Override
   public boolean equals(Object o) {
     return o != null
-        && o instanceof MockAddress
-        && ((MockAddress)o).address.equals(this.address);
+        && o instanceof MockField
+        && ((MockField)o).field.equals(this.field);
   }
 
   @Override
   public int hashCode() {
-    return address.hashCode();
+    return field.hashCode();
   }
 
 }

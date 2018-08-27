@@ -18,24 +18,24 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.model.SubscriptionType;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionType;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class SubscriptionRequestItem<T> extends RequestItem<T> {
 
-    private final SubscriptionType subscriptionType;
+    private final PlcSubscriptionType subscriptionType;
     private final Consumer<SubscriptionEventItem<T>> consumer;
 
-    public SubscriptionRequestItem(Class<T> datatype, Address address, SubscriptionType subscriptionType, Consumer<SubscriptionEventItem<T>> consumer) {
-        super(datatype, address);
+    public SubscriptionRequestItem(Class<T> datatype, PlcField field, PlcSubscriptionType subscriptionType, Consumer<SubscriptionEventItem<T>> consumer) {
+        super(datatype, field);
         this.subscriptionType = subscriptionType;
         this.consumer = consumer;
     }
 
-    public SubscriptionType getSubscriptionType() {
+    public PlcSubscriptionType getSubscriptionType() {
         return subscriptionType;
     }
 

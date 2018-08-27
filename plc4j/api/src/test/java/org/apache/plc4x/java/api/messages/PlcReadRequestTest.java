@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,20 +30,20 @@ import static org.mockito.Mockito.mock;
 
 public class PlcReadRequestTest {
 
-    Address dummyAddress;
+    PlcField dummyField;
 
     @Before
     public void setUp() {
-        dummyAddress = mock(Address.class);
+        dummyField = mock(PlcField.class);
     }
 
     @Test
     public void constructor() {
         new PlcReadRequest();
-        new PlcReadRequest(new ReadRequestItem<>(String.class, dummyAddress));
-        new PlcReadRequest(String.class, dummyAddress);
-        new PlcReadRequest(String.class, dummyAddress, 13);
-        new PlcReadRequest(Collections.singletonList(new ReadRequestItem<>(String.class, dummyAddress)));
+        new PlcReadRequest(new PlcReadRequestItem<>(String.class, dummyField));
+        new PlcReadRequest(String.class, dummyField);
+        new PlcReadRequest(String.class, dummyField, 13);
+        new PlcReadRequest(Collections.singletonList(new PlcReadRequestItem<>(String.class, dummyField)));
     }
 
     @Test
@@ -58,30 +58,30 @@ public class PlcReadRequestTest {
         }
         { // one item
             PlcReadRequest.builder()
-                .addItem(String.class, dummyAddress)
+                .addItem(String.class, dummyField)
                 .build();
         }
         { // one item sized
             PlcReadRequest.builder()
-                .addItem(String.class, dummyAddress, 13)
+                .addItem(String.class, dummyField, 13)
                 .build();
         }
         { // one item prebuild
             PlcReadRequest.builder()
-                .addItem(new ReadRequestItem<>(String.class, dummyAddress))
+                .addItem(new PlcReadRequestItem<>(String.class, dummyField))
                 .build();
         }
         { // two different item
             PlcReadRequest.builder()
-                .addItem(String.class, dummyAddress)
-                .addItem(Byte.class, dummyAddress)
+                .addItem(String.class, dummyField)
+                .addItem(Byte.class, dummyField)
                 .build();
         }
         { // two different item typeSafe
             try {
                 PlcReadRequest.builder()
-                    .addItem(String.class, dummyAddress)
-                    .addItem(Byte.class, dummyAddress)
+                    .addItem(String.class, dummyField)
+                    .addItem(Byte.class, dummyField)
                     .build(String.class);
                 fail("Should not succeed in building with mixed types.");
             } catch (IllegalStateException e) {
@@ -91,8 +91,8 @@ public class PlcReadRequestTest {
         { // two different item typeSafe
             try {
                 PlcReadRequest.builder()
-                    .addItem(String.class, dummyAddress)
-                    .addItem(Byte.class, dummyAddress)
+                    .addItem(String.class, dummyField)
+                    .addItem(Byte.class, dummyField)
                     .build(Byte.class);
                 fail("Should not succeed in building with mismatch of types.");
             } catch (ClassCastException e) {
@@ -101,8 +101,8 @@ public class PlcReadRequestTest {
         }
         { // two equal item typeSafe
             PlcReadRequest.builder()
-                .addItem(Byte.class, dummyAddress)
-                .addItem(Byte.class, dummyAddress)
+                .addItem(Byte.class, dummyField)
+                .addItem(Byte.class, dummyField)
                 .build(Byte.class);
         }
     }

@@ -1,4 +1,3 @@
-package org.apache.plc4x.java.s7.netty.strategies;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -17,11 +16,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
+package org.apache.plc4x.java.s7.netty.strategies;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
+import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
@@ -355,7 +355,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         return null;
     }
 
-    static class S7CompositeRequestMessage implements ProtocolMessage {
+    static class S7CompositeRequestMessage implements PlcProtocolMessage {
 
         private S7RequestMessage originalRequest;
         private Collection<S7RequestMessage> requestMessages;
@@ -368,7 +368,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         }
 
         @Override
-        public ProtocolMessage getParent() {
+        public PlcProtocolMessage getParent() {
             return originalRequest;
         }
 

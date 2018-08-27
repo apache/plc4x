@@ -19,10 +19,10 @@
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -41,14 +41,14 @@ public class PlcReaderTest {
     @Test
     public void read() throws Exception {
         ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, Collections.emptyList())))
-            .read(new TypeSafePlcReadRequest<>(String.class, mock(Address.class))).get();
+            .read(new TypeSafePlcReadRequest<>(String.class, mock(PlcField.class))).get();
     }
 
     @Test
     public void readWrongType() throws Exception {
         try {
-            ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, (List) Collections.singletonList(new ReadResponseItem(readRequest.getRequestItem().get(), ResponseCode.OK, 1)))))
-                .read(new TypeSafePlcReadRequest<>(String.class, mock(Address.class))).get();
+            ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, (List) Collections.singletonList(new PlcReadResponseItem(readRequest.getRequestItem().get(), PlcResponseCode.OK, 1)))))
+                .read(new TypeSafePlcReadRequest<>(String.class, mock(PlcField.class))).get();
             fail("Should throw an exception");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), equalTo("Datatype of 1 doesn't match required datatype of class java.lang.String"));

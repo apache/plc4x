@@ -30,12 +30,12 @@ import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.model.AdsAddress;
+import org.apache.plc4x.java.ads.model.AdsField;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.ResponseItem;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.junit.Before;
@@ -109,7 +109,7 @@ public class Plc4x2AdsProtocolTest {
                     new PlcRequestContainer<>(
                         PlcWriteRequest
                             .builder()
-                            .addItem(AdsAddress.of(1, 2), pair.getValue())
+                            .addItem(AdsField.of(1, 2), pair.getValue())
                             .build(), new CompletableFuture<>()),
                     AdsWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
                 ),
@@ -117,7 +117,7 @@ public class Plc4x2AdsProtocolTest {
                     new PlcRequestContainer<>(
                         PlcReadRequest
                             .builder()
-                            .addItem(pair.getDataTypeClass(), AdsAddress.of(1, 2))
+                            .addItem(pair.getDataTypeClass(), AdsField.of(1, 2))
                             .build(), new CompletableFuture<>()),
                     AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.getByteRepresentation()))
                 )
@@ -183,7 +183,7 @@ public class Plc4x2AdsProtocolTest {
         ResponseItem responseItem = (ResponseItem) plcResponse.getResponseItem().get();
         LOGGER.info("ResponseItem {}", responseItem);
         if (amsPacket instanceof AdsReadResponse) {
-            ReadResponseItem readResponseItem = (ReadResponseItem) responseItem;
+            PlcReadResponseItem readResponseItem = (PlcReadResponseItem) responseItem;
             Object value = readResponseItem.getValues().get(0);
             defaultAssert(value);
         }

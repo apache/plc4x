@@ -22,7 +22,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.TestChannelFactory;
 
@@ -51,7 +51,7 @@ public class MockConnection extends AbstractPlcConnection {
     }
 
     @Override
-    public Address parseAddress(String addressString) {
+    public PlcField prepareField(String fieldString) {
         return null;
     }
 

@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.ads.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -28,30 +28,31 @@ import java.util.regex.Pattern;
 /**
  * ADS address witch is defined by symbolic name (e.g. {@code Main.items[0]}).
  */
-public class SymbolicAdsAddress implements Address {
+public class SymbolicAdsField implements PlcField {
+
     private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)");
 
     private final String symbolicAddress;
 
-    private SymbolicAdsAddress(String symbolicAddress) {
+    private SymbolicAdsField(String symbolicAddress) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
     }
 
-    public static SymbolicAdsAddress of(String address) throws PlcInvalidAddressException {
+    public static SymbolicAdsField of(String address) throws PlcInvalidFieldException {
         Matcher matcher = SYMBOLIC_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
-            throw new PlcInvalidAddressException(address, SYMBOLIC_ADDRESS_PATTERN, "{address}");
+            throw new PlcInvalidFieldException(address, SYMBOLIC_ADDRESS_PATTERN, "{address}");
         }
         String symbolicAddress = matcher.group("symbolicAddress");
 
-        return new SymbolicAdsAddress(symbolicAddress);
+        return new SymbolicAdsField(symbolicAddress);
     }
 
     public static boolean matches(String address) {
         return SYMBOLIC_ADDRESS_PATTERN.matcher(address).matches();
     }
 
-    public String getSymbolicAddress() {
+    public String getSymbolicField() {
         return symbolicAddress;
     }
 
@@ -60,10 +61,10 @@ public class SymbolicAdsAddress implements Address {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SymbolicAdsAddress)) {
+        if (!(o instanceof SymbolicAdsField)) {
             return false;
         }
-        SymbolicAdsAddress that = (SymbolicAdsAddress) o;
+        SymbolicAdsField that = (SymbolicAdsField) o;
         return Objects.equals(symbolicAddress, that.symbolicAddress);
     }
 
@@ -74,7 +75,7 @@ public class SymbolicAdsAddress implements Address {
 
     @Override
     public String toString() {
-        return "SymbolicAdsAddress{" +
+        return "SymbolicAdsField{" +
             "symbolicAddress='" + symbolicAddress + '\'' +
             '}';
     }

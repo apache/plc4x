@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +50,8 @@ public class S7PlcReaderSample {
             if (reader.isPresent()) {
                 PlcReader plcReader = reader.get();
 
-                // Parse an address string.
-                Address inputs = plcConnection.parseAddress(args[1]);
+                // Parse an field string.
+                PlcField inputs = plcConnection.prepareField(args[1]);
 
                 //////////////////////////////////////////////////////////
                 // Read synchronously ...

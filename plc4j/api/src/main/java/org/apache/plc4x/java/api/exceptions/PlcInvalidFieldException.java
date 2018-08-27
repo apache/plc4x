@@ -21,21 +21,21 @@ package org.apache.plc4x.java.api.exceptions;
 import java.util.regex.Pattern;
 
 /**
- * Indicates an invalid Address.
+ * Indicates an invalid field address.
  */
-public class PlcInvalidAddressException extends PlcException {
+public class PlcInvalidFieldException extends PlcException {
     private static final long serialVersionUID = 1L;
 
-    public PlcInvalidAddressException(String addressToBeParsed) {
-        super(addressToBeParsed + " invalid");
+    public PlcInvalidFieldException(String fieldToBeParsed) {
+        super(fieldToBeParsed + " invalid");
     }
 
-    public PlcInvalidAddressException(String addressToBeParsed, Pattern pattern) {
-        super(addressToBeParsed + " doesn't match " + pattern);
+    public PlcInvalidFieldException(String fieldToBeParsed, Pattern pattern) {
+        super(fieldToBeParsed + " doesn't match " + pattern);
     }
 
-    public PlcInvalidAddressException(String addressToBeParsed, Pattern pattern, String readablePattern) {
-        super(addressToBeParsed + " doesn't match " + readablePattern + '(' + pattern + ')');
+    public PlcInvalidFieldException(String fieldToBeParsed, Pattern pattern, String readablePattern) {
+        super(fieldToBeParsed + " doesn't match " + readablePattern + '(' + pattern + ')');
     }
 
 }

@@ -39,7 +39,7 @@ public class TsapParameterTests {
 
     @Test
     @Category(FastTests.class)
-    public void calledPartameter() {
+    public void calledParameter() {
         short calledTsapId = 0x1234;
         tsapParameter = new CalledTsapParameter(calledTsapId);
 
@@ -49,7 +49,7 @@ public class TsapParameterTests {
 
     @Test
     @Category(FastTests.class)
-    public void callingPartameter() {
+    public void callingParameter() {
         short callingTsapId = 0x4321;
         tsapParameter = new CallingTsapParameter(callingTsapId);
 

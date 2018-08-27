@@ -22,12 +22,12 @@ import io.netty.channel.ChannelFuture;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
@@ -62,21 +62,21 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     }
 
     @Override
-    public Address parseAddress(String addressString) throws PlcInvalidAddressException {
-        if (MaskWriteRegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return MaskWriteRegisterModbusAddress.of(addressString);
-        } else if (ReadDiscreteInputsModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return ReadDiscreteInputsModbusAddress.of(addressString);
-        } else if (ReadHoldingRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return ReadHoldingRegistersModbusAddress.of(addressString);
-        } else if (ReadInputRegistersModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return ReadInputRegistersModbusAddress.of(addressString);
-        } else if (CoilModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return CoilModbusAddress.of(addressString);
-        } else if (RegisterModbusAddress.ADDRESS_PATTERN.matcher(addressString).matches()) {
-            return RegisterModbusAddress.of(addressString);
+    public PlcField prepareField(String fieldString) throws PlcInvalidFieldException {
+        if (MaskWriteRegisterModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            return MaskWriteRegisterModbusField.of(fieldString);
+        } else if (ReadDiscreteInputsModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            return ReadDiscreteInputsModbusField.of(fieldString);
+        } else if (ReadHoldingRegistersModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            return ReadHoldingRegistersModbusField.of(fieldString);
+        } else if (ReadInputRegistersModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            return ReadInputRegistersModbusField.of(fieldString);
+        } else if (CoilModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            return CoilModbusField.of(fieldString);
+        } else if (RegisterModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            return RegisterModbusField.of(fieldString);
         }
-        throw new PlcInvalidAddressException(addressString);
+        throw new PlcInvalidFieldException(fieldString);
     }
 
     @Override

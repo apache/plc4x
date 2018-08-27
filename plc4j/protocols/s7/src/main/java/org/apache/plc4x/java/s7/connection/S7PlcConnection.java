@@ -25,12 +25,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
@@ -43,9 +43,9 @@ import org.apache.plc4x.java.isotp.netty.model.tpdus.DisconnectRequestTpdu;
 import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.netty.model.types.DisconnectReason;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
-import org.apache.plc4x.java.s7.model.S7Address;
-import org.apache.plc4x.java.s7.model.S7BitAddress;
-import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
+import org.apache.plc4x.java.s7.model.S7BitField;
+import org.apache.plc4x.java.s7.model.S7DataBlockField;
+import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
@@ -241,17 +241,17 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public Address parseAddress(String addressString) throws PlcInvalidAddressException {
-        if(S7DataBlockAddress.matches(addressString)) {
-            return S7DataBlockAddress.of(addressString);
+    public PlcField prepareField(String fieldString) throws PlcInvalidFieldException {
+        if(S7DataBlockField.matches(fieldString)) {
+            return S7DataBlockField.of(fieldString);
         }
-        if(S7BitAddress.matches(addressString)) {
-            return S7BitAddress.of(addressString);
+        if(S7BitField.matches(fieldString)) {
+            return S7BitField.of(fieldString);
         }
-        if(S7Address.matches(addressString)) {
-            return S7Address.of(addressString);
+        if(S7Field.matches(fieldString)) {
+            return S7Field.of(fieldString);
         }
-        throw new PlcInvalidAddressException(addressString);
+        throw new PlcInvalidFieldException(fieldString);
     }
 
     @Override

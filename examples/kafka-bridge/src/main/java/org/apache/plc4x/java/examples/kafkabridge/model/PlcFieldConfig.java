@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.examples.kafkabridge.model;
 
-public class PlcAddress {
+public class PlcFieldConfig {
 
     private String name;
     private String description;

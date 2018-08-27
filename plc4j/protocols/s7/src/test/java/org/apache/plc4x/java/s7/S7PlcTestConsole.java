@@ -27,7 +27,7 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +39,8 @@ public class S7PlcTestConsole {
      * Example code do demonstrate using the S7 Plc Driver.
      *
      * @param args ignored.
-     * @throws Exception something went wrong.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://10.10.64.20/1/1")) {
@@ -56,8 +55,8 @@ public class S7PlcTestConsole {
                 String line;
                 while (!"exit".equalsIgnoreCase(line = scanner.next())) {
                     try {
-                        Address address = plcConnection.parseAddress(line);
-                        TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(new TypeSafePlcReadRequest<>(Byte.class, address)).get();
+                        PlcField field = plcConnection.prepareField(line);
+                        TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(new TypeSafePlcReadRequest<>(Byte.class, field)).get();
                         List<Byte> data = plcReadResponse.getResponseItem()
                             .orElseThrow(() -> new IllegalStateException("No response available"))
                             .getValues();

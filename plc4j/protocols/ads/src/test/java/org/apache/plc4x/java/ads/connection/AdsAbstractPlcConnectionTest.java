@@ -29,15 +29,15 @@ import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
-import org.apache.plc4x.java.ads.model.AdsAddress;
-import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
+import org.apache.plc4x.java.ads.model.AdsField;
+import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.junit.Before;
@@ -123,11 +123,11 @@ public class AdsAbstractPlcConnectionTest {
     }
 
     @Test
-    public void parseAddress() throws Exception {
-        Address address = SUT.parseAddress("0/0");
-        assertNotNull(address);
-        Address SymbolicAddress = SUT.parseAddress("Main.byByte[0]");
-        assertNotNull(SymbolicAddress);
+    public void prepareField() throws Exception {
+        PlcField field = SUT.prepareField("0/0");
+        assertNotNull(field);
+        PlcField symbolicField = SUT.prepareField("Main.byByte[0]");
+        assertNotNull(symbolicField);
     }
 
     @Test
@@ -187,12 +187,12 @@ public class AdsAbstractPlcConnectionTest {
     }
 
     @Test
-    public void mapAddresses() {
-        SUT.mapAddresses(mock(PlcRequest.class));
+    public void mapFields() {
+        SUT.mapFields(mock(PlcRequest.class));
     }
 
     @Test
-    public void mapAddress() throws Exception {
+    public void mapField() throws Exception {
         // positive
         {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
@@ -206,8 +206,8 @@ public class AdsAbstractPlcConnectionTest {
                 return mock(ChannelFuture.class);
             });
 
-            SUT.mapAddress(SymbolicAdsAddress.of("Main.byByte[0]"));
-            SUT.mapAddress(SymbolicAdsAddress.of("Main.byByte[0]"));
+            SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]"));
+            SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]"));
             verify(channel, times(1)).writeAndFlush(any(PlcRequestContainer.class));
             SUT.clearMapping();
             reset(channel);
@@ -224,7 +224,7 @@ public class AdsAbstractPlcConnectionTest {
                 return mock(ChannelFuture.class);
             });
 
-            assertThrows(PlcRuntimeException.class, () -> SUT.mapAddress(SymbolicAdsAddress.of("Main.byByte[0]")));
+            assertThrows(PlcRuntimeException.class, () -> SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]")));
             verify(channel, times(1)).writeAndFlush(any(PlcRequestContainer.class));
             SUT.clearMapping();
             reset(channel);
@@ -245,8 +245,8 @@ public class AdsAbstractPlcConnectionTest {
 
     @Test
     public void close() throws Exception {
-        Map addressMapping = (Map) FieldUtils.getDeclaredField(AdsAbstractPlcConnection.class, "addressMapping", true).get(SUT);
-        addressMapping.put(mock(SymbolicAdsAddress.class), mock(AdsAddress.class));
+        Map fieldMapping = (Map) FieldUtils.getDeclaredField(AdsAbstractPlcConnection.class, "fieldMapping", true).get(SUT);
+        fieldMapping.put(mock(SymbolicAdsField.class), mock(AdsField.class));
         SUT.close();
     }
 

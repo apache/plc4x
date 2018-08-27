@@ -33,7 +33,7 @@ import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.*;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
@@ -72,53 +72,53 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcWriteRequest request = (PlcWriteRequest) msg.getRequest();
         // TODO: support multiple requests
-        WriteRequestItem<?> writeRequestItem = request.getRequestItem().orElseThrow(() -> new PlcNotImplementedException("Only single message supported for now"));
+        PlcWriteRequestItem<?> writeRequestItem = request.getRequestItem().orElseThrow(() -> new PlcNotImplementedException("Only single message supported for now"));
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
         // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
         int quantity = writeRequestItem.getSize();
         short unitId = 0;
 
-        ModbusAddress address = (ModbusAddress) writeRequestItem.getAddress();
+        ModbusField field = (ModbusField) writeRequestItem.getField();
         ModbusPdu modbusRequest;
-        if (address instanceof RegisterModbusAddress) {
-            RegisterModbusAddress registerModbusAddress = (RegisterModbusAddress) address;
+        if (field instanceof RegisterModbusField) {
+            RegisterModbusField registerModbusField = (RegisterModbusField) field;
             if (quantity > 1) {
                 byte[] bytesToWrite = produceRegisterValue(writeRequestItem.getValues());
                 int requiredLength = 2 * quantity;
                 if (bytesToWrite.length != requiredLength) {
                     throw new PlcProtocolException("Invalid register values created. Should be at least quantity * 2 = N bytes. Was " + bytesToWrite.length + ", expected " + requiredLength);
                 }
-                modbusRequest = new WriteMultipleRegistersRequest(registerModbusAddress.getAddress(), quantity, bytesToWrite);
+                modbusRequest = new WriteMultipleRegistersRequest(registerModbusField.getAddress(), quantity, bytesToWrite);
             } else {
                 byte[] register = produceRegisterValue(writeRequestItem.getValues());
                 int intToWrite = register[0] << 8 | register[1] & 0xff;
-                modbusRequest = new WriteSingleRegisterRequest(registerModbusAddress.getAddress(), intToWrite);
+                modbusRequest = new WriteSingleRegisterRequest(registerModbusField.getAddress(), intToWrite);
             }
-        } else if (address instanceof CoilModbusAddress) {
-            CoilModbusAddress coilModbusAddress = (CoilModbusAddress) address;
+        } else if (field instanceof CoilModbusField) {
+            CoilModbusField coilModbusField = (CoilModbusField) field;
             if (quantity > 1) {
                 byte[] bytesToWrite = produceCoilValues(writeRequestItem.getValues());
                 int requiredLength = (quantity + 7) / 8;
                 if (bytesToWrite.length != requiredLength) {
                     throw new PlcProtocolException("Invalid coil values created. Should be at least (quantity + 7) / 8 = N bytes. Was " + bytesToWrite.length + ", expected " + requiredLength);
                 }
-                modbusRequest = new WriteMultipleCoilsRequest(coilModbusAddress.getAddress(), quantity, bytesToWrite);
+                modbusRequest = new WriteMultipleCoilsRequest(coilModbusField.getAddress(), quantity, bytesToWrite);
             } else {
                 boolean booleanToWrite = produceCoilValue(writeRequestItem.getValues());
-                modbusRequest = new WriteSingleCoilRequest(coilModbusAddress.getAddress(), booleanToWrite);
+                modbusRequest = new WriteSingleCoilRequest(coilModbusField.getAddress(), booleanToWrite);
             }
-        } else if (address instanceof MaskWriteRegisterModbusAddress) {
-            MaskWriteRegisterModbusAddress maskWriteRegisterModbusAddress = (MaskWriteRegisterModbusAddress) address;
+        } else if (field instanceof MaskWriteRegisterModbusField) {
+            MaskWriteRegisterModbusField maskWriteRegisterModbusField = (MaskWriteRegisterModbusField) field;
             if (quantity > 1) {
                 throw new PlcProtocolException("Mask write request can only write one value");
             } else {
                 // TODO: this should be better part of the payload not the addressing.
-                int andMask = maskWriteRegisterModbusAddress.getAndMask();
-                int orMask = maskWriteRegisterModbusAddress.getOrMask();
-                modbusRequest = new MaskWriteRegisterRequest(maskWriteRegisterModbusAddress.getAddress(), andMask, orMask);
+                int andMask = maskWriteRegisterModbusField.getAndMask();
+                int orMask = maskWriteRegisterModbusField.getOrMask();
+                modbusRequest = new MaskWriteRegisterRequest(maskWriteRegisterModbusField.getAddress(), andMask, orMask);
             }
         } else {
-            throw new PlcProtocolException("Unsupported address type " + address.getClass() + " for a write request.");
+            throw new PlcProtocolException("Unsupported field type " + field.getClass() + " for a write request.");
         }
         short transactionId = (short) this.transactionId.getAndIncrement();
         requestsMap.put(transactionId, msg);
@@ -128,32 +128,32 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     private void encodeReadRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
         // TODO: support multiple requests
-        ReadRequestItem<?> readRequestItem = request.getRequestItem().orElseThrow(() -> new PlcNotImplementedException("Only single message supported for now"));
+        PlcReadRequestItem<?> readRequestItem = request.getRequestItem().orElseThrow(() -> new PlcNotImplementedException("Only single message supported for now"));
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
         // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
         int quantity = readRequestItem.getSize();
         // TODO: the unit the should be used for multiple Requests
         short unitId = 0;
 
-        ModbusAddress address = (ModbusAddress) readRequestItem.getAddress();
+        ModbusField field = (ModbusField) readRequestItem.getField();
         ModbusPdu modbusRequest;
-        if (address instanceof CoilModbusAddress) {
-            CoilModbusAddress coilModbusAddress = (CoilModbusAddress) address;
-            modbusRequest = new ReadCoilsRequest(coilModbusAddress.getAddress(), quantity);
-        } else if (address instanceof RegisterModbusAddress) {
-            RegisterModbusAddress registerModbusAddress = (RegisterModbusAddress) address;
-            modbusRequest = new ReadHoldingRegistersRequest(registerModbusAddress.getAddress(), quantity);
-        } else if (address instanceof ReadDiscreteInputsModbusAddress) {
-            ReadDiscreteInputsModbusAddress readDiscreteInputsModbusAddress = (ReadDiscreteInputsModbusAddress) address;
-            modbusRequest = new ReadDiscreteInputsRequest(readDiscreteInputsModbusAddress.getAddress(), quantity);
-        } else if (address instanceof ReadHoldingRegistersModbusAddress) {
-            ReadHoldingRegistersModbusAddress readHoldingRegistersModbusAddress = (ReadHoldingRegistersModbusAddress) address;
-            modbusRequest = new ReadHoldingRegistersRequest(readHoldingRegistersModbusAddress.getAddress(), quantity);
-        } else if (address instanceof ReadInputRegistersModbusAddress) {
-            ReadInputRegistersModbusAddress readInputRegistersModbusAddress = (ReadInputRegistersModbusAddress) address;
-            modbusRequest = new ReadInputRegistersRequest(readInputRegistersModbusAddress.getAddress(), quantity);
+        if (field instanceof CoilModbusField) {
+            CoilModbusField coilModbusField = (CoilModbusField) field;
+            modbusRequest = new ReadCoilsRequest(coilModbusField.getAddress(), quantity);
+        } else if (field instanceof RegisterModbusField) {
+            RegisterModbusField registerModbusField = (RegisterModbusField) field;
+            modbusRequest = new ReadHoldingRegistersRequest(registerModbusField.getAddress(), quantity);
+        } else if (field instanceof ReadDiscreteInputsModbusField) {
+            ReadDiscreteInputsModbusField readDiscreteInputsModbusField = (ReadDiscreteInputsModbusField) field;
+            modbusRequest = new ReadDiscreteInputsRequest(readDiscreteInputsModbusField.getAddress(), quantity);
+        } else if (field instanceof ReadHoldingRegistersModbusField) {
+            ReadHoldingRegistersModbusField readHoldingRegistersModbusField = (ReadHoldingRegistersModbusField) field;
+            modbusRequest = new ReadHoldingRegistersRequest(readHoldingRegistersModbusField.getAddress(), quantity);
+        } else if (field instanceof ReadInputRegistersModbusField) {
+            ReadInputRegistersModbusField readInputRegistersModbusField = (ReadInputRegistersModbusField) field;
+            modbusRequest = new ReadInputRegistersRequest(readInputRegistersModbusField.getAddress(), quantity);
         } else {
-            throw new PlcProtocolException("Unsupported address type " + address.getClass() + " for a read request.");
+            throw new PlcProtocolException("Unsupported field type " + field.getClass() + " for a read request.");
         }
         short transactionId = (short) this.transactionId.getAndIncrement();
         requestsMap.put(transactionId, msg);
@@ -184,36 +184,36 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             // TODO: finish implementation
             WriteMultipleCoilsResponse writeMultipleCoilsResponse = (WriteMultipleCoilsResponse) modbusPdu;
             LOGGER.debug("{}: address:{}, quantity:{}", writeMultipleCoilsResponse, writeMultipleCoilsResponse.getAddress(), writeMultipleCoilsResponse.getQuantity());
-            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem) requestItem, ResponseCode.OK)));
+            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new PlcWriteResponseItem<>((PlcWriteRequestItem) requestItem, PlcResponseCode.OK)));
         } else if (modbusPdu instanceof WriteMultipleRegistersResponse) {
             // TODO: finish implementation
             WriteMultipleRegistersResponse writeMultipleRegistersResponse = (WriteMultipleRegistersResponse) modbusPdu;
             LOGGER.debug("{}: address:{}, quantity:{}", writeMultipleRegistersResponse, writeMultipleRegistersResponse.getAddress(), writeMultipleRegistersResponse.getQuantity());
-            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem) requestItem, ResponseCode.OK)));
+            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new PlcWriteResponseItem<>((PlcWriteRequestItem) requestItem, PlcResponseCode.OK)));
         } else if (modbusPdu instanceof WriteSingleCoilResponse) {
             // TODO: finish implementation
             WriteSingleCoilResponse writeSingleCoilResponse = (WriteSingleCoilResponse) modbusPdu;
             LOGGER.debug("{}: address:{}, value:{}", writeSingleCoilResponse, writeSingleCoilResponse.getAddress(), writeSingleCoilResponse.getValue());
-            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem) requestItem, ResponseCode.OK)));
+            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new PlcWriteResponseItem<>((PlcWriteRequestItem) requestItem, PlcResponseCode.OK)));
         } else if (modbusPdu instanceof WriteSingleRegisterResponse) {
             // TODO: finish implementation
             WriteSingleRegisterResponse writeSingleRegisterResponse = (WriteSingleRegisterResponse) modbusPdu;
             LOGGER.debug("{}: address:{}, value:{}", writeSingleRegisterResponse, writeSingleRegisterResponse.getAddress(), writeSingleRegisterResponse.getValue());
-            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem) requestItem, ResponseCode.OK)));
+            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new PlcWriteResponseItem<>((PlcWriteRequestItem) requestItem, PlcResponseCode.OK)));
         } else if (modbusPdu instanceof ReadCoilsResponse) {
             // TODO: finish implementation
             ReadCoilsResponse readCoilsResponse = (ReadCoilsResponse) modbusPdu;
             LOGGER.debug("{}: Nothing", readCoilsResponse);
             ByteBuf byteBuf = readCoilsResponse.getCoilStatus();
             List<?> data = produceCoilValueList(requestItem, dataType, byteBuf);
-            plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem) requestItem, ResponseCode.OK, data)));
+            plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new PlcReadResponseItem((PlcReadRequestItem) requestItem, PlcResponseCode.OK, data)));
         } else if (modbusPdu instanceof ReadDiscreteInputsResponse) {
             // TODO: finish implementation
             ReadDiscreteInputsResponse readDiscreteInputsResponse = (ReadDiscreteInputsResponse) modbusPdu;
             LOGGER.debug("{}: Nothing", readDiscreteInputsResponse);
             ByteBuf byteBuf = readDiscreteInputsResponse.getInputStatus();
             List<?> data = produceCoilValueList(requestItem, dataType, byteBuf);
-            plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem) requestItem, ResponseCode.OK, data)));
+            plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new PlcReadResponseItem((PlcReadRequestItem) requestItem, PlcResponseCode.OK, data)));
         } else if (modbusPdu instanceof ReadHoldingRegistersResponse) {
             // TODO: finish implementation
             ReadHoldingRegistersResponse readHoldingRegistersResponse = (ReadHoldingRegistersResponse) modbusPdu;
@@ -221,7 +221,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             ByteBuf byteBuf = readHoldingRegistersResponse.getRegisters();
             // TODO: use register method
             List<?> data = produceRegisterValueList(requestItem, dataType, byteBuf);
-            plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem) requestItem, ResponseCode.OK, data)));
+            plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new PlcReadResponseItem((PlcReadRequestItem) requestItem, PlcResponseCode.OK, data)));
         } else if (modbusPdu instanceof ReadInputRegistersResponse) {
             // TODO: finish implementation
             ReadInputRegistersResponse readInputRegistersResponse = (ReadInputRegistersResponse) modbusPdu;
@@ -229,12 +229,12 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             ByteBuf byteBuf = readInputRegistersResponse.getRegisters();
             // TODO: use register method
             List<?> data = produceRegisterValueList(requestItem, dataType, byteBuf);
-            plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new ReadResponseItem((ReadRequestItem) requestItem, ResponseCode.OK, data)));
+            plcRequestContainer.getResponseFuture().complete(new PlcReadResponse((PlcReadRequest) request, new PlcReadResponseItem((PlcReadRequestItem) requestItem, PlcResponseCode.OK, data)));
         } else if (modbusPdu instanceof MaskWriteRegisterResponse) {
             // TODO: finish implementation
             MaskWriteRegisterResponse maskWriteRegisterResponse = (MaskWriteRegisterResponse) modbusPdu;
             LOGGER.debug("{}: Nothing", maskWriteRegisterResponse);
-            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new WriteResponseItem<>((WriteRequestItem) requestItem, ResponseCode.OK)));
+            plcRequestContainer.getResponseFuture().complete(new PlcWriteResponse((PlcWriteRequest) request, new PlcWriteResponseItem<>((PlcWriteRequestItem) requestItem, PlcResponseCode.OK)));
         } else if (modbusPdu instanceof ExceptionResponse) {
             ExceptionResponse exceptionResponse = (ExceptionResponse) modbusPdu;
             throw new PlcProtocolException("Error received " + exceptionResponse.getExceptionCode());
@@ -416,7 +416,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     // Decoding helpers.
     ////////////////////////////////////////////////////////////////////////////////
     private <T> List<T> produceCoilValueList(RequestItem requestItem, Class<T> dataType, ByteBuf byteBuf) {
-        ReadRequestItem readRequestItem = (ReadRequestItem) requestItem;
+        PlcReadRequestItem readRequestItem = (PlcReadRequestItem) requestItem;
         byte[] bytes = new byte[byteBuf.readableBytes()];
         if (bytes.length < 1) {
             return Collections.emptyList();
@@ -476,7 +476,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     }
 
     private <T> List<T> produceRegisterValueList(RequestItem requestItem, Class<T> dataType, ByteBuf byteBuf) throws PlcProtocolException {
-        ReadRequestItem readRequestItem = (ReadRequestItem) requestItem;
+        PlcReadRequestItem readRequestItem = (PlcReadRequestItem) requestItem;
         int readableBytes = byteBuf.readableBytes();
         if (readableBytes % 2 != 0) {
             throw new PlcProtocolException("Readables bytes should even: " + readableBytes);

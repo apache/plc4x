@@ -21,13 +21,13 @@ package org.apache.plc4x.java.ethernetip.connection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.ethernetip.model.EtherNetIpAddress;
+import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,11 +58,11 @@ public abstract class BaseEtherNetIpPlcConnection extends AbstractPlcConnection 
     }
 
     @Override
-    public Address parseAddress(String addressString) throws PlcInvalidAddressException {
-        if(EtherNetIpAddress.matches(addressString)) {
-            return EtherNetIpAddress.of(addressString);
+    public PlcField prepareField(String fieldString) throws PlcInvalidFieldException {
+        if(EtherNetIpField.matches(fieldString)) {
+            return EtherNetIpField.of(fieldString);
         }
-        throw new PlcInvalidAddressException(addressString);
+        throw new PlcInvalidFieldException(fieldString);
     }
 
     @Override

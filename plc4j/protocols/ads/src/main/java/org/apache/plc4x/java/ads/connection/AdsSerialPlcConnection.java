@@ -60,7 +60,7 @@ public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
                 pipeline.addLast(new Payload2SerialProtocol());
                 pipeline.addLast(new SingleMessageRateLimiter());
                 pipeline.addLast(new Ads2PayloadProtocol());
-                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, addressMapping));
+                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
             }
         };
     }

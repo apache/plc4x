@@ -75,7 +75,7 @@ public class IsoTPProtocolTest {
 
         isoTPProtocol.encode(ctx, tpdu, out);
 
-        assertThat("RawMessage not decoded", out, hasSize(1));
+        assertThat("PlcRawMessage not decoded", out, hasSize(1));
 
         ByteBuf userData = ((IsoOnTcpMessage) out.get(0)).getUserData();
 

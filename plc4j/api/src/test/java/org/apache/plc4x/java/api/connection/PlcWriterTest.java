@@ -20,7 +20,7 @@ package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -33,7 +33,7 @@ public class PlcWriterTest {
     @Test
     public void write() throws Exception {
         PlcWriter dummyImplementation = writeRequest -> CompletableFuture.completedFuture(new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) writeRequest, Collections.emptyList()));
-        dummyImplementation.write(new TypeSafePlcWriteRequest<>(String.class, mock(Address.class))).get();
+        dummyImplementation.write(new TypeSafePlcWriteRequest<>(String.class, mock(PlcField.class))).get();
     }
 
 }

@@ -16,15 +16,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.examples.dummydriver.model;
+package org.apache.plc4x.java.modbus.model;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
-public class DummyAddress implements Address {
+import java.util.Objects;
+import java.util.regex.Pattern;
+
+public abstract class ModbusField implements PlcField {
+
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)");
 
     private final int address;
 
-    public DummyAddress(int address) {
+    protected ModbusField(int address) {
         this.address = address;
     }
 
@@ -32,4 +37,28 @@ public class DummyAddress implements Address {
         return address;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ModbusField)) {
+            return false;
+        }
+        ModbusField that = (ModbusField) o;
+        return address == that.address;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(address);
+    }
+
+    @Override
+    public String toString() {
+        return "ModbusField{" +
+            "address=" + address +
+            '}';
+    }
 }

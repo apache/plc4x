@@ -19,9 +19,9 @@ under the License.
 package org.apache.plc4x.java.isoontcp.netty.model;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.messages.RawMessage;
+import org.apache.plc4x.java.base.messages.PlcRawMessage;
 
-public class IsoOnTcpMessage extends RawMessage {
+public class IsoOnTcpMessage extends PlcRawMessage {
 
     public IsoOnTcpMessage(ByteBuf userData) {
         super(userData);

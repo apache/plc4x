@@ -18,12 +18,13 @@ under the License.
 */
 package org.apache.plc4x.edgent.mock;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
-public class MockAddress implements Address {
+public class MockField implements PlcField {
+
   private final String address;
   
-  public MockAddress(String address) {
+  public MockField(String address) {
     this.address = address;
   }
   
@@ -33,14 +34,14 @@ public class MockAddress implements Address {
   
   @Override
   public String toString() {
-    return "mock address: "+address;
+    return "mock field: "+address;
   }
   
   @Override
   public boolean equals(Object o) {
     return o != null
-        && o instanceof MockAddress
-        && ((MockAddress)o).address.equals(this.address);
+        && o instanceof MockField
+        && ((MockField)o).address.equals(this.address);
   }
 
   @Override

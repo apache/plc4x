@@ -168,7 +168,7 @@ public class PlcFunctions {
    * </ul>
    * 
    * @param adapter the @{link PlcConnectionAdapter}
-   * @param addressFn {@code Function} the returns a device {@code Address} from a {@code JsonObject}
+   * @param addressFn {@code Function} the returns a device {@code PlcField} from a {@code JsonObject}
    * @param valueFn {@code Function} the returns a {@code Value} from a {@code JsonObject}
    * @return the {@code Consumer<JsonObject>}
    *

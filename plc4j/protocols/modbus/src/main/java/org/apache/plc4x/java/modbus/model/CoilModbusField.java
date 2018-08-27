@@ -18,25 +18,25 @@
  */
 package org.apache.plc4x.java.modbus.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReadDiscreteInputsModbusAddress extends ModbusAddress {
+public class CoilModbusField extends ModbusField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("readdiscreteinputs:" + ModbusAddress.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("coil:" + ModbusField.ADDRESS_PATTERN);
 
-    protected ReadDiscreteInputsModbusAddress(int address) {
+    protected CoilModbusField(int address) {
         super(address);
     }
 
-    public static ReadDiscreteInputsModbusAddress of(String addressString) throws PlcInvalidAddressException {
+    public static CoilModbusField of(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcInvalidAddressException(addressString, ADDRESS_PATTERN);
+            throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
         }
         int address = Integer.parseInt(matcher.group("address"));
-        return new ReadDiscreteInputsModbusAddress(address);
+        return new CoilModbusField(address);
     }
 }

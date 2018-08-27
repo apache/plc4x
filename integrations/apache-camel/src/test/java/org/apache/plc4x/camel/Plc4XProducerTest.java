@@ -23,7 +23,7 @@ import org.apache.camel.ExchangePattern;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,8 +51,8 @@ public class Plc4XProducerTest {
         when(endpointMock.getPlcDriverManager()).thenReturn(plcDriverManagerMock);
         SUT = new Plc4XProducer(endpointMock);
         testExchange = mock(Exchange.class, RETURNS_DEEP_STUBS);
-        when(testExchange.getIn().getHeader(eq(Constants.ADDRESS_HEADER), eq(Address.class)))
-            .thenReturn(mock(Address.class));
+        when(testExchange.getIn().getHeader(eq(Constants.ADDRESS_HEADER), eq(PlcField.class)))
+            .thenReturn(mock(PlcField.class));
     }
 
     @Test

@@ -31,14 +31,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.ethernetip.model.EtherNetIpAddress;
+import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     // these here.
     // REMARK: Eventually we should add a timeout to these so we unregister them after not being used
     // for quire some time. Hereby freeing resources on both client and server.
-    private Map<Address, Long> addressConnectionMap = new ConcurrentHashMap<>();
+    private Map<PlcField, Long> fieldConnectionMap = new ConcurrentHashMap<>();
 
     private final Map<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requestsMap = new ConcurrentHashMap<>();
 
@@ -178,14 +178,14 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
 
         // Here we assume it's only one request item.
-        ReadRequestItem<?> requestItem = request.getRequestItem()
+        PlcReadRequestItem<?> requestItem = request.getRequestItem()
             .orElseThrow(() -> new RuntimeException("Only single item requests allowed"));
 
         // CIP Part
-        EtherNetIpAddress enipAddress = (EtherNetIpAddress) requestItem.getAddress();
-        EPath.PaddedEPath path = new EPath.PaddedEPath(new LogicalSegment.ClassId(enipAddress.getObjectNumber()),
-            new LogicalSegment.InstanceId(enipAddress.getInstanceNumber()),
-            new LogicalSegment.AttributeId(enipAddress.getAttributeNumber()));
+        EtherNetIpField enipField = (EtherNetIpField) requestItem.getField();
+        EPath.PaddedEPath path = new EPath.PaddedEPath(new LogicalSegment.ClassId(enipField.getObjectNumber()),
+            new LogicalSegment.InstanceId(enipField.getInstanceNumber()),
+            new LogicalSegment.AttributeId(enipField.getAttributeNumber()));
         GetAttributeSingleService service = new GetAttributeSingleService(path);
 
         // ENIP Part
@@ -304,7 +304,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
             supportsCipEncapsulation = false;
             supportsClass0Or1UdpConnections = false;
             nonCipInterfaces = null;
-            addressConnectionMap = null;
+            fieldConnectionMap = null;
         } else {
             ctx.channel().pipeline().fireExceptionCaught(new PlcProtocolException("Got a non-success response."));
         }
@@ -439,11 +439,11 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
             ctx.fireExceptionCaught(new PlcProtocolException("Expecting a PlcReadRequest here."));
         }
         PlcReadRequest request = (PlcReadRequest) plcRequestContainer.getRequest();
-        ResponseCode responseCode;
+        PlcResponseCode responseCode;
         if(msg.getStatus() != EnipStatus.EIP_SUCCESS) {
-            responseCode = ResponseCode.NOT_FOUND;
+            responseCode = PlcResponseCode.NOT_FOUND;
         } else {
-            responseCode = ResponseCode.OK;
+            responseCode = PlcResponseCode.OK;
         }
 
         SendRRData sendRRDataCommand = (SendRRData) msg.getCommand();
@@ -462,7 +462,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
         ByteBuf data = enipResponse.getData();
         if (data.readableBytes() > 0) {
             MessageRouterResponse cipResponse = MessageRouterResponse.decode(data);
-            ReadRequestItem requestItem = request.getRequestItem().orElse(null);
+            PlcReadRequestItem requestItem = request.getRequestItem().orElse(null);
             Short value;
             if(cipResponse.getData().readableBytes() >= 2) {
                 value = cipResponse.getData().readShort();
@@ -470,7 +470,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
                 value = -1;
             }
             // TODO: This is not quite correct as we assume everything is an integer.
-            ReadResponseItem<Integer> responseItem = new ReadResponseItem<Integer>(requestItem, responseCode, value.intValue());
+            PlcReadResponseItem<Integer> responseItem = new PlcReadResponseItem<Integer>(requestItem, responseCode, value.intValue());
             PlcReadResponse response = new PlcReadResponse(request, responseItem);
 
             plcRequestContainer.getResponseFuture().complete(response);

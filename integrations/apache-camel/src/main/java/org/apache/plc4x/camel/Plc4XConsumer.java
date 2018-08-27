@@ -33,7 +33,7 @@ import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
 import org.apache.plc4x.java.api.messages.items.SubscriptionRequestCyclicItem;
 import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.apache.plc4x.java.api.messages.items.UnsubscriptionRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     private AsyncProcessor processor;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private Address address;
+    private PlcField field;
     private Class<?> dataType;
     private PlcSubscriptionResponse subscriptionResponse;
 
@@ -62,7 +62,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        this.address = plcConnection.parseAddress(endpoint.getAddress());
+        this.field = plcConnection.prepareField(endpoint.getAddress());
     }
 
     @Override
@@ -87,7 +87,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     protected void doStart() throws InterruptedException, ExecutionException, TimeoutException {
         PlcSubscriptionRequest request = new PlcSubscriptionRequest();
         @SuppressWarnings("unchecked")
-        SubscriptionRequestCyclicItem subscriptionRequestCyclicItem = new SubscriptionRequestCyclicItem(dataType, address, TimeUnit.SECONDS, 3, this);
+        SubscriptionRequestCyclicItem subscriptionRequestCyclicItem = new SubscriptionRequestCyclicItem(dataType, field, TimeUnit.SECONDS, 3, this);
         request.addItem(subscriptionRequestCyclicItem);
         CompletableFuture<PlcSubscriptionResponse> subscriptionFuture = getSubscriber().subscribe(request);
         subscriptionResponse = subscriptionFuture.get(5, TimeUnit.SECONDS);

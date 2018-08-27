@@ -28,17 +28,17 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.model.AdsAddress;
-import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
+import org.apache.plc4x.java.ads.model.AdsField;
+import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.connection.PlcProprietarySender;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.messages.items.RequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
@@ -62,7 +62,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     protected final AmsPort sourceAmsPort;
 
-    protected final ConcurrentMap<SymbolicAdsAddress, AdsAddress> addressMapping;
+    protected final ConcurrentMap<SymbolicAdsField, AdsField> fieldMapping;
 
     protected AdsAbstractPlcConnection(ChannelFactory channelFactory, AmsNetId targetAmsNetId, AmsPort targetAmsPort) {
         this(channelFactory, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
@@ -74,7 +74,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
         this.sourceAmsPort = sourceAmsPort;
-        this.addressMapping = new ConcurrentHashMap<>();
+        this.fieldMapping = new ConcurrentHashMap<>();
     }
 
     public AmsNetId getTargetAmsNetId() {
@@ -95,18 +95,18 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
 
     @Override
-    public Address parseAddress(String addressString) throws PlcInvalidAddressException {
-        if (AdsAddress.matches(addressString)) {
-            return AdsAddress.of(addressString);
-        } else if (SymbolicAdsAddress.matches(addressString)) {
-            return SymbolicAdsAddress.of(addressString);
+    public PlcField prepareField(String fieldString) throws PlcInvalidFieldException {
+        if (AdsField.matches(fieldString)) {
+            return AdsField.of(fieldString);
+        } else if (SymbolicAdsField.matches(fieldString)) {
+            return SymbolicAdsField.of(fieldString);
         }
-        throw new PlcInvalidAddressException(addressString);
+        throw new PlcInvalidFieldException(fieldString);
     }
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        mapAddresses(readRequest);
+        mapFields(readRequest);
         CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(readRequest, readFuture));
         channelFuture.addListener(future -> {
@@ -119,7 +119,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        mapAddresses(writeRequest);
+        mapFields(writeRequest);
         CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(writeRequest, writeFuture));
         channelFuture.addListener(future -> {
@@ -132,7 +132,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     @Override
     public <T, R> CompletableFuture<PlcProprietaryResponse<R>> send(PlcProprietaryRequest<T> proprietaryRequest) {
-        mapAddresses(proprietaryRequest);
+        mapFields(proprietaryRequest);
         CompletableFuture<PlcProprietaryResponse<R>> sendFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(proprietaryRequest, sendFuture));
         channelFuture.addListener(future -> {
@@ -143,20 +143,20 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
         return sendFuture;
     }
 
-    protected void mapAddresses(PlcRequest<?> request) {
+    protected void mapFields(PlcRequest<?> request) {
         request.getRequestItems().stream()
             .parallel()
-            .map(RequestItem::getAddress)
-            .filter(SymbolicAdsAddress.class::isInstance)
-            .map(SymbolicAdsAddress.class::cast)
-            .forEach(this::mapAddress);
+            .map(RequestItem::getField)
+            .filter(SymbolicAdsField.class::isInstance)
+            .map(SymbolicAdsField.class::cast)
+            .forEach(this::mapFields);
     }
 
-    protected void mapAddress(SymbolicAdsAddress symbolicAdsAddress) {
-        // If the map doesn't contain an entry for the given symbolicAdsAddress,
+    protected void mapFields(SymbolicAdsField symbolicAdsField) {
+        // If the map doesn't contain an entry for the given symbolicAdsField,
         // resolve it and add it to the map.
-        addressMapping.computeIfAbsent(symbolicAdsAddress, symbolicAdsAddressInternal -> {
-            LOGGER.debug("Resolving {}", symbolicAdsAddressInternal);
+        fieldMapping.computeIfAbsent(symbolicAdsField, symbolicAdsFieldInternal -> {
+            LOGGER.debug("Resolving {}", symbolicAdsFieldInternal);
             AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
                 targetAmsNetId,
                 targetAmsPort,
@@ -166,7 +166,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
                 IndexOffset.NONE,
                 ReadLength.of(IndexOffset.NUM_BYTES),
-                Data.of(symbolicAdsAddressInternal.getSymbolicAddress())
+                Data.of(symbolicAdsFieldInternal.getSymbolicField())
             );
 
             // TODO: This is blocking, should be changed to be async.
@@ -180,7 +180,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             }
 
             IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
-            return AdsAddress.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
+            return AdsField.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
         });
     }
 
@@ -194,9 +194,9 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     @Override
     public void close() throws PlcConnectionException {
-        addressMapping.values().stream()
+        fieldMapping.values().stream()
             .parallel()
-            .map(adsAddress -> AdsWriteRequest.of(
+            .map(adsField -> AdsWriteRequest.of(
                 targetAmsNetId,
                 targetAmsPort,
                 sourceAmsNetId,
@@ -204,7 +204,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 Invoke.NONE,
                 IndexGroup.ReservedGroups.ADSIGRP_SYM_RELEASEHND,
                 IndexOffset.NONE,
-                Data.of(IndexGroup.of(adsAddress.getIndexGroup()).getBytes())
+                Data.of(IndexGroup.of(adsField.getIndexGroup()).getBytes())
             ))
             .map(adsWriteRequest -> new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))
             // We don't need a response so we just supply a throw away future.
@@ -214,10 +214,10 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     /**
-     * Clears the addressMapping.
+     * Clears the fieldMapping.
      */
     public void clearMapping() {
-        addressMapping.clear();
+        fieldMapping.clear();
     }
 
     protected <T> T getFromFuture(CompletableFuture<T> future, long timeout) {

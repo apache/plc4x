@@ -33,22 +33,22 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 public class MockConnection extends org.apache.plc4x.java.base.connection.MockConnection implements PlcReader, PlcWriter {
 
     private final String url;
     private final PlcAuthentication authentication;
-    private final Map<Address, Object> dataValueMap = new HashMap<>();
+    private final Map<PlcField, Object> dataValueMap = new HashMap<>();
     private long curReadCnt;
     private int readExceptionTriggerCount;
     private String readExceptionMsg;
@@ -73,8 +73,8 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
     }
 
     @Override
-    public Address parseAddress(String addressString) {
-        return new MockAddress(addressString);
+    public PlcField prepareField(String fieldString) {
+        return new MockField(fieldString);
     }
 
     @Override
@@ -86,12 +86,12 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
             cf.completeExceptionally(new PlcIoException(readExceptionMsg));
             return cf;
         }
-        List<ReadResponseItem<Object>> responseItems = new LinkedList<>();
-        for (ReadRequestItem<?> reqItem : readRequest.getRequestItems()) {
+        List<PlcReadResponseItem<Object>> responseItems = new LinkedList<>();
+        for (PlcReadRequestItem<?> reqItem : readRequest.getRequestItems()) {
             @SuppressWarnings("unchecked")
-            ReadRequestItem<Object> requestItem = (ReadRequestItem<Object>) reqItem;
-            ReadResponseItem<Object> responseItem = new ReadResponseItem<>(requestItem, ResponseCode.OK,
-                Collections.singletonList(getDataValue(requestItem.getAddress())));
+            PlcReadRequestItem<Object> requestItem = (PlcReadRequestItem<Object>) reqItem;
+            PlcReadResponseItem<Object> responseItem = new PlcReadResponseItem<>(requestItem, PlcResponseCode.OK,
+                Collections.singletonList(getDataValue(requestItem.getField())));
             responseItems.add(responseItem);
         }
         PlcReadResponse response;
@@ -115,11 +115,11 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
             cf.completeExceptionally(new PlcIoException(writeExceptionMsg));
             return cf;
         }
-        List<WriteResponseItem<Object>> responseItems = new LinkedList<>();
-        for (WriteRequestItem<?> reqItem : writeRequest.getRequestItems()) {
-            WriteRequestItem<Object> requestItem = (WriteRequestItem<Object>) reqItem;
-            setDataValue(requestItem.getAddress(), requestItem.getValues());
-            WriteResponseItem<Object> responseItem = new WriteResponseItem<>(requestItem, ResponseCode.OK);
+        List<PlcWriteResponseItem<Object>> responseItems = new LinkedList<>();
+        for (PlcWriteRequestItem<?> reqItem : writeRequest.getRequestItems()) {
+            PlcWriteRequestItem<Object> requestItem = (PlcWriteRequestItem<Object>) reqItem;
+            setDataValue(requestItem.getField(), requestItem.getValues());
+            PlcWriteResponseItem<Object> responseItem = new PlcWriteResponseItem<>(requestItem, PlcResponseCode.OK);
             responseItems.add(responseItem);
         }
         PlcWriteResponse response;
@@ -133,15 +133,15 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
         return CompletableFuture.completedFuture(response);
     }
 
-    public void setDataValue(Address address, Object o) {
-        dataValueMap.put(address, o);
+    public void setDataValue(PlcField field, Object o) {
+        dataValueMap.put(field, o);
     }
 
-    public Object getDataValue(Address address) {
-        return dataValueMap.get(address);
+    public Object getDataValue(PlcField field) {
+        return dataValueMap.get(field);
     }
 
-    public Map<Address, Object> getAllDataValues() {
+    public Map<PlcField, Object> getAllDataValues() {
         return dataValueMap;
     }
 
@@ -160,4 +160,5 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
         writeExceptionMsg = msg;
         curWriteCnt = 0;
     }
+
 }

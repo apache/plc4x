@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,16 +27,16 @@ import java.util.Optional;
 
 public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
 
-    public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, ReadResponseItem<T> responseItem) {
+    public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, PlcReadResponseItem<T> responseItem) {
         super(request, responseItem);
         Objects.requireNonNull(request, "Request must not be null");
         checkList(responseItem.getValues(), request.getDataType());
     }
 
-    public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, List<ReadResponseItem<T>> responseItems) {
+    public TypeSafePlcReadResponse(TypeSafePlcReadRequest<T> request, List<PlcReadResponseItem<T>> responseItems) {
         super(request, responseItems);
         Objects.requireNonNull(responseItems, "Request items on " + request + " must not be null");
-        for (ReadResponseItem<T> responseItem : responseItems) {
+        for (PlcReadResponseItem<T> responseItem : responseItems) {
             checkList(responseItem.getValues(), request.getDataType());
         }
     }
@@ -49,14 +49,14 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<? extends ReadResponseItem<T>> getResponseItems() {
-        return (List<? extends ReadResponseItem<T>>) super.getResponseItems();
+    public List<? extends PlcReadResponseItem<T>> getResponseItems() {
+        return (List<? extends PlcReadResponseItem<T>>) super.getResponseItems();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<ReadResponseItem<T>> getResponseItem() {
-        return (Optional<ReadResponseItem<T>>) super.getResponseItem();
+    public Optional<PlcReadResponseItem<T>> getResponseItem() {
+        return (Optional<PlcReadResponseItem<T>>) super.getResponseItem();
     }
 
     public static <T> TypeSafePlcReadResponse<T> of(PlcReadResponse plcReadResponse, Class<T> clazz) {
@@ -72,7 +72,7 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
             return typeSafePlcReadResponse;
         }
         @SuppressWarnings("unchecked")
-        List<ReadResponseItem<T>> responseItems = (List<ReadResponseItem<T>>) plcReadResponse.getResponseItems();
+        List<PlcReadResponseItem<T>> responseItems = (List<PlcReadResponseItem<T>>) plcReadResponse.getResponseItems();
         Objects.requireNonNull(responseItems, "Response items on " + plcReadResponse + " must not be null");
         if (plcReadResponse.getRequest() instanceof TypeSafePlcReadRequest) {
             @SuppressWarnings("unchecked")
@@ -83,7 +83,7 @@ public class TypeSafePlcReadResponse<T> extends PlcReadResponse {
             }
             return new TypeSafePlcReadResponse<>(typeSafePlcReadRequest, responseItems);
         }
-        for (ReadResponseItem<?> responseItem : responseItems) {
+        for (PlcReadResponseItem<?> responseItem : responseItems) {
             checkList(responseItem.getValues(), clazz);
         }
         TypeSafePlcReadRequest<T> request = new TypeSafePlcReadRequest<>(clazz, plcReadResponse.getRequest());

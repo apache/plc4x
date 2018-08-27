@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +38,8 @@ public class S7PlcScanner {
      * Example code do demonstrate using the S7 Plc Driver.
      *
      * @param args ignored.
-     * @throws Exception something went wrong.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://10.10.64.20/1/1")) {
@@ -56,14 +55,14 @@ public class S7PlcScanner {
                     System.out.println("------------------------------------------");
                     for (int i = 0; i < 8959; i++) {
                         try {
-                            Address address;
+                            PlcField field;
                             if (memoryArea == MemoryArea.DATA_BLOCKS) {
-                                address = plcConnection.parseAddress("DATA_BLOCKS/1/" + i);
+                                field = plcConnection.prepareField("DATA_BLOCKS/1/" + i);
                             } else {
-                                address = plcConnection.parseAddress(memoryArea.name() + "/" + i);
+                                field = plcConnection.prepareField(memoryArea.name() + "/" + i);
                             }
                             TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(
-                                new TypeSafePlcReadRequest<>(Byte.class, address)).get();
+                                new TypeSafePlcReadRequest<>(Byte.class, field)).get();
                             Byte data = plcReadResponse.getResponseItem()
                                 .orElseThrow(() -> new IllegalStateException("No response available"))
                                 .getValues().get(0);

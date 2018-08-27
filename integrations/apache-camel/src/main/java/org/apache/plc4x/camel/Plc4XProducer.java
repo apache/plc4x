@@ -27,8 +27,8 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -52,18 +52,18 @@ public class Plc4XProducer extends DefaultAsyncProducer {
     @Override
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();
-        Address address = in.getHeader(Constants.ADDRESS_HEADER, Address.class);
+        PlcField field = in.getHeader(Constants.ADDRESS_HEADER, PlcField.class);
         Object body = in.getBody();
         PlcWriteRequest.Builder builder = PlcWriteRequest.builder();
         if (body instanceof List) {
             List<?> bodyList = in.getBody(List.class);
             bodyList
                 .stream()
-                .map(o -> (WriteRequestItem<?>) new WriteRequestItem(o.getClass(), address, o))
+                .map(o -> (PlcWriteRequestItem<?>) new PlcWriteRequestItem(o.getClass(), field, o))
                 .forEach(builder::addItem);
         } else {
             Object value = in.getBody(Object.class);
-            builder.addItem(address, value);
+            builder.addItem(field, value);
         }
         PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
         CompletableFuture<? extends PlcWriteResponse> completableFuture = plcWriter.write(builder.build());

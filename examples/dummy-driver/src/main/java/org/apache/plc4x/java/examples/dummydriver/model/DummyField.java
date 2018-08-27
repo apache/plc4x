@@ -16,10 +16,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.connection;
+package org.apache.plc4x.java.examples.dummydriver.model;
 
-/**
- * Interface implemented by any PlcConnection that is able to list resources.
- */
-public interface PlcLister {
+import org.apache.plc4x.java.api.model.PlcField;
+
+public class DummyField implements PlcField {
+
+    private final int address;
+
+    public DummyField(int address) {
+        this.address = address;
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
 }

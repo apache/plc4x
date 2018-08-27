@@ -20,7 +20,7 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
+import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
 import org.hamcrest.core.IsEqual;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class PlcRequestContainerTest {
 
     @Test
     public void getParent() {
-        ProtocolMessage parent = SUT.getParent();
+        PlcProtocolMessage parent = SUT.getParent();
         assertNull(parent);
     }
 

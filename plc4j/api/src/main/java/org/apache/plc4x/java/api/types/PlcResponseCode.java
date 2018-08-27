@@ -16,32 +16,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.base.messages;
+package org.apache.plc4x.java.api.types;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
-
-public class RawMessage implements ProtocolMessage {
-
-    private final ByteBuf userData;
-    private final ProtocolMessage parent;
-
-    public RawMessage(ByteBuf userData) {
-        this(userData, null);
-    }
-
-    public RawMessage(ByteBuf userData, ProtocolMessage parent) {
-        this.userData = userData;
-        this.parent = parent;
-    }
-
-    public ByteBuf getUserData() {
-        return userData;
-    }
-
-    @Override
-    public ProtocolMessage getParent() {
-        return parent;
-    }
-
+public enum PlcResponseCode {
+    OK,
+    NOT_FOUND,
+    INVALID_ADDRESS,
+    INTERNAL_ERROR
 }

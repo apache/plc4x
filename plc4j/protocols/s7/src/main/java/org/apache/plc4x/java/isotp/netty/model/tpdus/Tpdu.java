@@ -19,15 +19,15 @@ under the License.
 package org.apache.plc4x.java.isotp.netty.model.tpdus;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
-import org.apache.plc4x.java.base.messages.RawMessage;
+import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
+import org.apache.plc4x.java.base.messages.PlcRawMessage;
 import org.apache.plc4x.java.isotp.netty.model.params.Parameter;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduCode;
 
 import java.util.List;
 import java.util.Optional;
 
-public abstract class Tpdu extends RawMessage {
+public abstract class Tpdu extends PlcRawMessage {
 
     private final TpduCode tpduCode;
     private final List<Parameter> parameters;
@@ -36,7 +36,7 @@ public abstract class Tpdu extends RawMessage {
         this(tpduCode, parameters, userData, null);
     }
 
-    public Tpdu(TpduCode tpduCode, List<Parameter> parameters, ByteBuf userData, ProtocolMessage parent) {
+    public Tpdu(TpduCode tpduCode, List<Parameter> parameters, ByteBuf userData, PlcProtocolMessage parent) {
         super(userData, parent);
         this.tpduCode = tpduCode;
         this.parameters = parameters;

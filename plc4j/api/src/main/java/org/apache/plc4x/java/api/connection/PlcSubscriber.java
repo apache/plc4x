@@ -19,10 +19,8 @@
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.Address;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 /**
  * Interface implemented by all PlcConnections that are able to receive notifications from remote resources.
@@ -30,7 +28,7 @@ import java.util.function.Consumer;
 public interface PlcSubscriber {
 
     /**
-     * Subscribes to addresses on the PLC.
+     * Subscribes to fields on the PLC.
      *
      * @param subscriptionRequest subscription request containing at least one subscription request item.
      * @return subscription response containing a subscription response item for each subscription request item.
@@ -38,7 +36,7 @@ public interface PlcSubscriber {
     CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest);
 
     /**
-     * Unsubscribes from addresses on the PLC. For unsubscribing the unsubscription request uses the subscription
+     * Unsubscribes from fields on the PLC. For unsubscribing the unsubscription request uses the subscription
      * handle returned as part of the subscription response item.
      *
      * @param unsubscriptionRequest unsubscription request containing at least one unsubscription request item.

@@ -66,7 +66,7 @@ When reading values in a request/response type of communication (explicit), ther
 We will concentrate on explicit connected access.
 
 In order to read/write values using connected access, first we have to get a connectionId for the resource we want to access.
-In subsequent read/write operations, we don't have to provide the address, but just provide the connection id and the server will already know what we want to access.
+In subsequent read/write operations, we don't have to provide the field, but just provide the connection id and the server will already know what we want to access.
 
 Getting the connection id, is performed by sending an unconnected request to the server referencing the `Forward Open Service`.
 This will register the connection in the Server and this will stay alive until the session is terminated.

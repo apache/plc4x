@@ -21,7 +21,7 @@ package org.apache.plc4x.edgent;
 import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
-import org.apache.plc4x.edgent.mock.MockAddress;
+import org.apache.plc4x.edgent.mock.MockField;
 import org.apache.plc4x.edgent.mock.MockConnection;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -45,29 +45,29 @@ public class PlcFunctionsTest {
   @Category(FastTests.class)
   public void testSupplier() throws Exception {
     String addressStr = "MyReadWriteAddress/0";
-    MockAddress address = new MockAddress(addressStr);
+    MockField address = new MockField(addressStr);
     PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
     MockConnection connection = (MockConnection) adapter.getConnection();
 
     Supplier<?> supplier;
     
     supplier = PlcFunctions.booleanSupplier(adapter, addressStr);
-    PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Boolean>)supplier, true, false);
+    PlcConnectionAdapterTest.checkSupplier(connection, address, supplier, true, false);
     
     supplier = PlcFunctions.byteSupplier(adapter, addressStr);
-    PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Byte>)supplier, (byte)0x1, (byte)0x2, (byte)0x3);
+    PlcConnectionAdapterTest.checkSupplier(connection, address, supplier, (byte)0x1, (byte)0x2, (byte)0x3);
 
     supplier = PlcFunctions.shortSupplier(adapter, addressStr);
-    PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Short>)supplier, (short)1, (short)2, (short)3);
+    PlcConnectionAdapterTest.checkSupplier(connection, address, supplier, (short)1, (short)2, (short)3);
 
     supplier = PlcFunctions.integerSupplier(adapter, addressStr);
-    PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Integer>)supplier, 1000, 1001, 1002);
+    PlcConnectionAdapterTest.checkSupplier(connection, address, supplier, 1000, 1001, 1002);
     
     supplier = PlcFunctions.floatSupplier(adapter, addressStr);
-    PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<Float>)supplier, 1000.5f, 1001.5f, 1002.5f);
+    PlcConnectionAdapterTest.checkSupplier(connection, address, supplier, 1000.5f, 1001.5f, 1002.5f);
     
     supplier = PlcFunctions.stringSupplier(adapter, addressStr);
-    PlcConnectionAdapterTest.checkSupplier(connection, address, (Supplier<String>)supplier, "one", "two", "three");
+    PlcConnectionAdapterTest.checkSupplier(connection, address, supplier, "one", "two", "three");
     
     adapter.close();
   }
@@ -79,7 +79,7 @@ public class PlcFunctionsTest {
   @Category(FastTests.class)
   public void testNewConsumer1() throws Exception {
     String addressStr = "MyReadWriteAddress/0";
-    MockAddress address = new MockAddress(addressStr);
+    MockField address = new MockField(addressStr);
     PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
     MockConnection connection = (MockConnection) adapter.getConnection();
 
@@ -113,7 +113,7 @@ public class PlcFunctionsTest {
   @Category(FastTests.class)
   public void testNewConsumer2() throws Exception {
     String addressStr = "MyReadWriteAddress/0";
-    MockAddress address = new MockAddress(addressStr);
+    MockField address = new MockField(addressStr);
     PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
     MockConnection connection = (MockConnection) adapter.getConnection();
 

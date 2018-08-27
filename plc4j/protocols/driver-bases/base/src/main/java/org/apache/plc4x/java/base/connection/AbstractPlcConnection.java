@@ -101,14 +101,6 @@ public abstract class AbstractPlcConnection implements PlcConnection {
     }
 
     @Override
-    public Optional<PlcLister> getLister() {
-        if (this instanceof PlcLister) {
-            return Optional.of((PlcLister) this);
-        }
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<PlcReader> getReader() {
         if (this instanceof PlcReader) {
             return Optional.of((PlcReader) this);
@@ -131,4 +123,5 @@ public abstract class AbstractPlcConnection implements PlcConnection {
         }
         return Optional.empty();
     }
+
 }

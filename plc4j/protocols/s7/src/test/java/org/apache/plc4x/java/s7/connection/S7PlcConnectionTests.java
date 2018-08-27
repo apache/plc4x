@@ -20,11 +20,11 @@ under the License.
 package org.apache.plc4x.java.s7.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
-import org.apache.plc4x.java.s7.model.S7Address;
-import org.apache.plc4x.java.s7.model.S7BitAddress;
-import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
+import org.apache.plc4x.java.s7.model.S7DataBlockField;
+import org.apache.plc4x.java.s7.model.S7Field;
+import org.apache.plc4x.java.s7.model.S7BitField;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +34,6 @@ import java.net.InetAddress;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -65,54 +64,54 @@ public class S7PlcConnectionTests {
     }
 
     @Test
-    public void emptyParseAddress() {
+    public void prepareEmptyField() {
         try {
-            s7PlcConnection.parseAddress("");
+            s7PlcConnection.prepareField("");
         }
         catch (PlcException exception) {
-            assertThat(exception, instanceOf(PlcInvalidAddressException.class));
+            assertThat(exception, instanceOf(PlcInvalidFieldException.class));
             assertThat(exception.getMessage(), containsString("invalid") );
         }
     }
 
     @Test
-    public void parseDatablockAddress() {
+    public void prepareDatablockField() {
         try {
-            S7DataBlockAddress address = (S7DataBlockAddress)
-                s7PlcConnection.parseAddress("DATA_BLOCKS/20/100");
+            S7DataBlockField field = (S7DataBlockField)
+                s7PlcConnection.prepareField("DATA_BLOCKS/20/100");
 
-            assertThat("unexpected data block", address.getDataBlockNumber(), equalTo((short) 20) );
-            assertThat("unexpected byte offset", address.getByteOffset(), equalTo((short) 100) );
+            assertThat("unexpected data block", field.getDataBlockNumber(), equalTo((short) 20) );
+            assertThat("unexpected byte offset", field.getByteOffset(), equalTo((short) 100) );
         }
         catch (PlcException exception) {
-            fail("valid data block address");
+            fail("valid data block field");
         }
     }
 
     @Test
-    public void parseAddressAddress() {
+    public void prepareField() {
         try {
-            S7Address address = (S7Address) s7PlcConnection.parseAddress("TIMERS/10");
+            S7Field field = (S7Field) s7PlcConnection.prepareField("TIMERS/10");
 
-            assertThat("unexpected memory area", address.getMemoryArea(), equalTo(MemoryArea.TIMERS) );
-            assertThat("unexpected byte offset", address.getByteOffset(), equalTo((short) 10) );
+            assertThat("unexpected memory area", field.getMemoryArea(), equalTo(MemoryArea.TIMERS) );
+            assertThat("unexpected byte offset", field.getByteOffset(), equalTo((short) 10) );
         }
         catch (PlcException exception) {
-            fail("valid timer block address");
+            fail("valid timer block field");
         }
     }
 
     @Test
-    public void parseAddressBitAddress() {
+    public void prepareBitField() {
         try {
-            S7BitAddress address = (S7BitAddress) s7PlcConnection.parseAddress("TIMERS/10/4");
+            S7BitField field = (S7BitField) s7PlcConnection.prepareField("TIMERS/10/4");
 
-            assertThat("unexpected memory area", address.getMemoryArea(), equalTo(MemoryArea.TIMERS) );
-            assertThat("unexpected byte offset", address.getByteOffset(), equalTo((short) 10) );
-            assertThat("unexpected but offset", address.getBitOffset(), equalTo((byte) 4) );
+            assertThat("unexpected memory area", field.getMemoryArea(), equalTo(MemoryArea.TIMERS) );
+            assertThat("unexpected byte offset", field.getByteOffset(), equalTo((short) 10) );
+            assertThat("unexpected but offset", field.getBitOffset(), equalTo((byte) 4) );
         }
         catch (PlcException exception) {
-            fail("valid timer block bit address");
+            fail("valid timer block bit field");
         }
     }
 

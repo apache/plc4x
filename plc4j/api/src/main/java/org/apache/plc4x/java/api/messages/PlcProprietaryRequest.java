@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.messages.items.RequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
 
@@ -43,7 +43,7 @@ public class PlcProprietaryRequest<CUSTOM_REQUEST> extends PlcRequest<PlcProprie
     protected static class DummyRequestItem extends RequestItem<Void> {
 
         public DummyRequestItem() {
-            super(Void.class, new Address() {
+            super(Void.class, new PlcField() {
             });
         }
     }

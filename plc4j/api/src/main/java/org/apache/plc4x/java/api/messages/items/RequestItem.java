@@ -18,41 +18,41 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
 
 /**
- * Wrapper Object to encapsulate an {@link Address} and the expected datatype as {@link Class}.
+ * Wrapper Object to encapsulate an {@link PlcField} and the expected datatype as {@link Class}.
  *
- * @param <DATA_TYPE> Generic Type of data at address
+ * @param <DATA_TYPE> Generic Type of data at field
  */
 public abstract class RequestItem<DATA_TYPE> {
 
     private final Class<DATA_TYPE> datatype;
 
-    private final Address address;
+    private final PlcField field;
 
-    public RequestItem(Class<DATA_TYPE> datatype, Address address) {
+    public RequestItem(Class<DATA_TYPE> datatype, PlcField field) {
         Objects.requireNonNull(datatype, "Data type must not be null");
-        Objects.requireNonNull(address, "Address type must not be null");
+        Objects.requireNonNull(field, "PlcField type must not be null");
         this.datatype = datatype;
-        this.address = address;
+        this.field = field;
     }
 
     public Class<DATA_TYPE> getDatatype() {
         return datatype;
     }
 
-    public Address getAddress() {
-        return address;
+    public PlcField getField() {
+        return field;
     }
 
     @Override
     public String toString() {
         return "RequestItem{" +
             "datatype=" + datatype +
-            ", address=" + address +
+            ", field=" + field +
             '}';
     }
 
@@ -66,12 +66,13 @@ public abstract class RequestItem<DATA_TYPE> {
         }
         RequestItem<?> that = (RequestItem<?>) o;
         return Objects.equals(datatype, that.datatype) &&
-            Objects.equals(address, that.address);
+            Objects.equals(field, that.field);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(datatype, address);
+        return Objects.hash(datatype, field);
     }
+
 }

@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,11 +33,11 @@ import static org.mockito.Mockito.when;
 
 public class TypeSafePlcReadRequestTest {
 
-    ReadRequestItem<String> readRequestItemString;
+    PlcReadRequestItem<String> readRequestItemString;
 
     @Before
     public void setUp() {
-        readRequestItemString = new ReadRequestItem<>(String.class, mock(Address.class));
+        readRequestItemString = new PlcReadRequestItem<>(String.class, mock(PlcField.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -47,8 +47,8 @@ public class TypeSafePlcReadRequestTest {
         PlcReadRequest request = mock(PlcReadRequest.class);
         when(request.getRequestItems()).thenReturn(Collections.singletonList(readRequestItemString));
         new TypeSafePlcReadRequest<>(String.class, request);
-        new TypeSafePlcReadRequest<>(String.class, mock(Address.class));
-        new TypeSafePlcReadRequest<>(String.class, mock(Address.class), 3);
+        new TypeSafePlcReadRequest<>(String.class, mock(PlcField.class));
+        new TypeSafePlcReadRequest<>(String.class, mock(PlcField.class), 3);
         new TypeSafePlcReadRequest<>(String.class, readRequestItemString);
 
         // expected to fail

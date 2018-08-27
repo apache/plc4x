@@ -19,7 +19,7 @@
 package org.apache.plc4x.camel;
 
 import org.apache.camel.Converter;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
 
 import java.util.stream.Collectors;
 
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class ResponseItemTypeConverter {
 
     @Converter
-    public static String toString(ReadResponseItem<?> responseItem) {
+    public static String toString(PlcReadResponseItem<?> responseItem) {
         return responseItem.getValues().stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 

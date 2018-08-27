@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class S7PlcToAzureIoTHubSample {
 
             PlcReader plcReader = plcConnection.getReader().orElseThrow(IllegalStateException::new);
 
-            Address outputs = plcConnection.parseAddress(addressString);
+            PlcField outputs = plcConnection.prepareField(addressString);
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.

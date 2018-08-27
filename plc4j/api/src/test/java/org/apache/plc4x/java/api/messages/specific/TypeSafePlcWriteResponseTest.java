@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,11 +31,12 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 public class TypeSafePlcWriteResponseTest {
-    WriteResponseItem<String> writeResponseItemString;
+
+    PlcWriteResponseItem<String> writeResponseItemString;
 
     @Before
     public void setUp() {
-        writeResponseItemString = new WriteResponseItem<>(mock(WriteRequestItem.class), ResponseCode.OK);
+        writeResponseItemString = new PlcWriteResponseItem<>(mock(PlcWriteRequestItem.class), PlcResponseCode.OK);
     }
 
     @Test

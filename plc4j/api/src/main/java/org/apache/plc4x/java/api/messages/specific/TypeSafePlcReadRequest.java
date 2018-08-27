@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.List;
 import java.util.Objects;
@@ -47,34 +47,34 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
         this(dataType);
         Objects.requireNonNull(plcReadRequest, "plc read request must not be null");
         Objects.requireNonNull(plcReadRequest.getRequestItems(), "plc read request item on " + plcReadRequest + " must not be null");
-        for (ReadRequestItem<?> readRequestItem : plcReadRequest.getRequestItems()) {
+        for (PlcReadRequestItem<?> readRequestItem : plcReadRequest.getRequestItems()) {
             addItem(readRequestItem);
         }
     }
 
-    public TypeSafePlcReadRequest(Class<T> dataType, Address address) {
+    public TypeSafePlcReadRequest(Class<T> dataType, PlcField field) {
         this(dataType);
-        Objects.requireNonNull(address, "Address must not be null");
-        addItem(new ReadRequestItem<>(dataType, address));
+        Objects.requireNonNull(field, "Field must not be null");
+        addItem(new PlcReadRequestItem<>(dataType, field));
     }
 
-    public TypeSafePlcReadRequest(Class<T> dataType, Address address, int size) {
+    public TypeSafePlcReadRequest(Class<T> dataType, PlcField field, int size) {
         this(dataType);
-        Objects.requireNonNull(address, "Address must not be null");
-        addItem(new ReadRequestItem<>(dataType, address, size));
+        Objects.requireNonNull(field, "Field must not be null");
+        addItem(new PlcReadRequestItem<>(dataType, field, size));
     }
 
     @SafeVarargs
-    public TypeSafePlcReadRequest(Class<T> dataType, ReadRequestItem<T>... requestItems) {
+    public TypeSafePlcReadRequest(Class<T> dataType, PlcReadRequestItem<T>... requestItems) {
         this(dataType);
         Objects.requireNonNull(requestItems, "Read request items must not be null");
-        for (ReadRequestItem<T> readRequestItem : requestItems) {
+        for (PlcReadRequestItem<T> readRequestItem : requestItems) {
             addItem(readRequestItem);
         }
     }
 
     @Override
-    public void addItem(ReadRequestItem<?> readRequestItem) {
+    public void addItem(PlcReadRequestItem<?> readRequestItem) {
         Objects.requireNonNull(readRequestItem, "Read request item must not be null");
         if (readRequestItem.getDatatype() != dataType) {
             throw new IllegalArgumentException("Unexpected data type " + readRequestItem.getDatatype() + " on readRequestItem. Expected " + dataType);
@@ -83,14 +83,14 @@ public class TypeSafePlcReadRequest<T> extends PlcReadRequest {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ReadRequestItem<T>> getCheckedReadRequestItems() {
+    public List<PlcReadRequestItem<T>> getCheckedReadRequestItems() {
         return (List) getRequestItems();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Optional<ReadRequestItem<T>> getRequestItem() {
-        return (Optional<ReadRequestItem<T>>) super.getRequestItem();
+    public Optional<PlcReadRequestItem<T>> getRequestItem() {
+        return (Optional<PlcReadRequestItem<T>>) super.getRequestItem();
     }
 
     public Class<T> getDataType() {

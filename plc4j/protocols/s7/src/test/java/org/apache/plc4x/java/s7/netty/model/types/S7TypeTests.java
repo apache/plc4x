@@ -102,8 +102,6 @@ public class S7TypeTests {
     @Test
     @Category(FastTests.class)
     public void unknownParameterType() {
-        ParameterType parameterType = ParameterType.UPLOAD;
-
         assertThat(ParameterType.valueOf((byte) 0xFF), nullValue());
     }
 

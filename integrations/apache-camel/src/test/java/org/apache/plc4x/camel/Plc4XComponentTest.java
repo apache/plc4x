@@ -21,7 +21,7 @@ package org.apache.plc4x.camel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -46,13 +46,13 @@ public class Plc4XComponentTest extends CamelTestSupport {
         return new RouteBuilder() {
             public void configure() {
                 from("direct:plc4x")
-                    .setHeader(Constants.ADDRESS_HEADER, constant(new Address() {
+                    .setHeader(Constants.ADDRESS_HEADER, constant(new PlcField() {
                     }))
                     .setBody(constant((byte) 0x0))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
                 from("direct:plc4x2")
-                    .setHeader(Constants.ADDRESS_HEADER, constant(new Address() {
+                    .setHeader(Constants.ADDRESS_HEADER, constant(new PlcField() {
                     }))
                     .setBody(constant(Arrays.asList((byte) 0x0, (byte) 0x1, (byte) 0x2, (byte) 0x3)))
                     .to("plc4x:mock:10.10.10.1/1/1")

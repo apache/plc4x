@@ -23,16 +23,14 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
 import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.model.SubscriptionHandle;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +68,7 @@ public class MockDriver implements PlcDriver {
         // Mock a connection.
         PlcConnection plcConnectionMock = mock(PlcConnection.class, RETURNS_DEEP_STUBS);
         try {
-            when(plcConnectionMock.parseAddress(anyString())).thenReturn(mock(Address.class));
+            when(plcConnectionMock.prepareField(anyString())).thenReturn(mock(PlcField.class));
         } catch (PlcException e) {
             throw new RuntimeException(e);
         }
@@ -96,7 +94,7 @@ public class MockDriver implements PlcDriver {
                         }
                     });
                     return new SubscriptionResponseItem<>(subscriptionRequestItem,
-                        mock(SubscriptionHandle.class, RETURNS_DEEP_STUBS), ResponseCode.OK);
+                        mock(PlcSubscriptionHandle.class, RETURNS_DEEP_STUBS), PlcResponseCode.OK);
                 }).collect(Collectors.toList());
             PlcSubscriptionResponse response = new PlcSubscriptionResponse(subscriptionRequest, responseItems);
             CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();

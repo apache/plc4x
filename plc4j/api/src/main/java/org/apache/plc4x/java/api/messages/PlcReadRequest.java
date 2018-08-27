@@ -18,46 +18,46 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
  * Request to read one or more values from a plc.
- * The {@link PlcReadRequest} is a container for one or more {@link ReadRequestItem}s that are contained.
+ * The {@link PlcReadRequest} is a container for one or more {@link PlcReadRequestItem}s that are contained.
  * <p>
- * By default this is NOT typesafe as it can contain {@link ReadRequestItem}s for different types.
- * If there are only {@link ReadRequestItem}s of the same type one can use the {@link TypeSafePlcReadRequest} to enforce
+ * By default this is NOT typesafe as it can contain {@link PlcReadRequestItem}s for different types.
+ * If there are only {@link PlcReadRequestItem}s of the same type one can use the {@link TypeSafePlcReadRequest} to enforce
  * type safety.
  * <p>
  * Provides a builder for object construction through {@link PlcReadRequest#builder()}.
  *
  * @see TypeSafePlcReadRequest
  */
-public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
+public class PlcReadRequest extends PlcRequest<PlcReadRequestItem<?>> {
 
     public PlcReadRequest() {
         // Exists for construction of inherited classes
     }
 
-    public PlcReadRequest(ReadRequestItem<?> requestItem) {
+    public PlcReadRequest(PlcReadRequestItem<?> requestItem) {
         addItem(requestItem);
     }
 
-    public PlcReadRequest(Class<?> dataType, Address address) {
-        addItem(new ReadRequestItem<>(dataType, address));
+    public PlcReadRequest(Class<?> dataType, PlcField field) {
+        addItem(new PlcReadRequestItem<>(dataType, field));
     }
 
-    public PlcReadRequest(Class<?> dataType, Address address, int size) {
+    public PlcReadRequest(Class<?> dataType, PlcField field, int size) {
         Objects.requireNonNull(dataType, "Data type must not be null");
-        Objects.requireNonNull(address, "Address must not be null");
-        addItem(new ReadRequestItem<>(dataType, address, size));
+        Objects.requireNonNull(field, "PlcField must not be null");
+        addItem(new PlcReadRequestItem<>(dataType, field, size));
     }
 
-    public PlcReadRequest(List<ReadRequestItem<?>> requestItems) {
+    public PlcReadRequest(List<PlcReadRequestItem<?>> requestItems) {
         super(requestItems);
     }
 
@@ -65,21 +65,21 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
         return new Builder();
     }
 
-    public static class Builder extends PlcRequest.Builder<ReadRequestItem<?>> {
+    public static class Builder extends PlcRequest.Builder<PlcReadRequestItem<?>> {
 
-        public final Builder addItem(Class<?> dataType, Address address) {
+        public final Builder addItem(Class<?> dataType, PlcField field) {
             checkType(dataType);
-            requests.add(new ReadRequestItem<>(dataType, address));
+            requests.add(new PlcReadRequestItem<>(dataType, field));
             return this;
         }
 
-        public final Builder addItem(Class<?> dataType, Address address, int size) {
+        public final Builder addItem(Class<?> dataType, PlcField field, int size) {
             checkType(dataType);
-            requests.add(new ReadRequestItem<>(dataType, address, size));
+            requests.add(new PlcReadRequestItem<>(dataType, field, size));
             return this;
         }
 
-        public final Builder addItem(ReadRequestItem readRequestItem) {
+        public final Builder addItem(PlcReadRequestItem readRequestItem) {
             checkType(readRequestItem.getDatatype());
             requests.add(readRequestItem);
             return this;
@@ -95,7 +95,7 @@ public class PlcReadRequest extends PlcRequest<ReadRequestItem<?>> {
             } else {
                 plcReadRequest = new TypeSafePlcReadRequest<>(firstType);
             }
-            for (ReadRequestItem request : requests) {
+            for (PlcReadRequestItem request : requests) {
                 plcReadRequest.addItem(request);
             }
             return plcReadRequest;

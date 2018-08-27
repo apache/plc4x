@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -32,18 +32,18 @@ public class PlcWriteResponseTest {
 
     @Test
     public void constructor() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(WriteResponseItem.class));
-        new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(WriteResponseItem.class)));
+        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(PlcWriteResponseItem.class));
+        new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(PlcWriteResponseItem.class)));
     }
 
     @Test
     public void getValue() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(WriteResponseItem.class, RETURNS_DEEP_STUBS)))
-            .getValue(mock(WriteRequestItem.class));
+        new PlcWriteResponse(mock(PlcWriteRequest.class), (List) Collections.singletonList(mock(PlcWriteResponseItem.class, RETURNS_DEEP_STUBS)))
+            .getValue(mock(PlcWriteRequestItem.class));
     }
 
     @Test
     public void testToString() {
-        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(WriteResponseItem.class)).toString();
+        new PlcWriteResponse(mock(PlcWriteRequest.class), mock(PlcWriteResponseItem.class)).toString();
     }
 }

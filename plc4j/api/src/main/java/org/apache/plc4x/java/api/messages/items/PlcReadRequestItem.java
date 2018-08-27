@@ -18,33 +18,33 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
 
 /**
- * Encapsulats one {@link RequestItem} that could be read multiple times, i.e., from the given Address on
- * {@link ReadRequestItem#size} number of Items with equal datatype are read.
+ * Encapsulats one {@link RequestItem} that could be read multiple times, i.e., from the given PlcField on
+ * {@link PlcReadRequestItem#size} number of Items with equal datatype are read.
  *
  * Thus,
  * <pre>
- *     new ReadRequestItem(Int.class, adress, 5)
+ *     new PlcReadRequestItem(Int.class, adress, 5)
  * </pre>
- * basically reads 5 consecutive integers starting at the given {@link Address}.
+ * basically reads 5 consecutive integers starting at the given {@link PlcField}.
  *
  * @param <T> Generic Type of expected Datatype.
  */
-public class ReadRequestItem<T> extends RequestItem<T> {
+public class PlcReadRequestItem<T> extends RequestItem<T> {
 
     private final int size;
 
-    public ReadRequestItem(Class<T> datatype, Address address) {
-        super(datatype, address);
+    public PlcReadRequestItem(Class<T> datatype, PlcField field) {
+        super(datatype, field);
         this.size = 1;
     }
 
-    public ReadRequestItem(Class<T> datatype, Address address, int size) {
-        super(datatype, address);
+    public PlcReadRequestItem(Class<T> datatype, PlcField field, int size) {
+        super(datatype, field);
         this.size = size;
     }
 
@@ -54,7 +54,7 @@ public class ReadRequestItem<T> extends RequestItem<T> {
 
     @Override
     public String toString() {
-        return "ReadRequestItem{" +
+        return "PlcReadRequestItem{" +
             "size=" + size +
             "} " + super.toString();
     }
@@ -64,13 +64,13 @@ public class ReadRequestItem<T> extends RequestItem<T> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ReadRequestItem)) {
+        if (!(o instanceof PlcReadRequestItem)) {
             return false;
         }
         if (!super.equals(o)) {
             return false;
         }
-        ReadRequestItem<?> that = (ReadRequestItem<?>) o;
+        PlcReadRequestItem<?> that = (PlcReadRequestItem<?>) o;
         return size == that.size;
     }
 

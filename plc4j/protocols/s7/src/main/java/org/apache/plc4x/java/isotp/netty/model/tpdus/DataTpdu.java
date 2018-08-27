@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.isotp.netty.model.tpdus;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
+import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
 import org.apache.plc4x.java.isotp.netty.model.params.Parameter;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduCode;
 
@@ -34,7 +34,7 @@ public class DataTpdu extends Tpdu {
         this(eot, tpduRef, parameters, userData, null);
     }
 
-    public DataTpdu(boolean eot, byte tpduRef, List<Parameter> parameters, ByteBuf userData, ProtocolMessage parent) {
+    public DataTpdu(boolean eot, byte tpduRef, List<Parameter> parameters, ByteBuf userData, PlcProtocolMessage parent) {
         super(TpduCode.DATA, parameters, userData, parent);
         this.eot = eot;
         this.tpduRef = tpduRef;

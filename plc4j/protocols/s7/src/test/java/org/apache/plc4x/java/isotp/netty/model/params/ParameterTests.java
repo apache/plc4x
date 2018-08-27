@@ -32,7 +32,7 @@ public class ParameterTests {
 
     @Test
     @Category(FastTests.class)
-    public void checksumPartameter() {
+    public void checksumParameter() {
         ChecksumParameter checksumParameter = new ChecksumParameter((byte) 1);
 
         assertThat("Checksum incorrect", checksumParameter.getChecksum(), equalTo((byte) 1));

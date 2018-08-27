@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,13 +32,13 @@ import static org.mockito.Mockito.*;
 
 public class TypeSafePlcReadResponseTest {
 
-    ReadResponseItem<String> readResponseItemString;
+    PlcReadResponseItem<String> readResponseItemString;
 
     @Before
     public void setUp() {
-        ReadRequestItem<String> mock = mock(ReadRequestItem.class);
+        PlcReadRequestItem<String> mock = mock(PlcReadRequestItem.class);
         when(mock.getDatatype()).thenReturn(String.class);
-        readResponseItemString = new ReadResponseItem<>(mock, ResponseCode.OK, "", "");
+        readResponseItemString = new PlcReadResponseItem<>(mock, PlcResponseCode.OK, "", "");
     }
 
     @Test

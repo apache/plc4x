@@ -45,13 +45,13 @@ import static org.mutabilitydetector.unittesting.MutabilityMatchers.areImmutable
 public class ImmutabilityTest {
 
     private static Set<Class<?>> NOT_YET_IMMUTABLE = Stream.of(
-        ReadResponseItem.class,
+        PlcReadResponseItem.class,
         SubscriptionEventItem.class,
         SubscriptionRequestCyclicItem.class,
         SubscriptionRequestItem.class,
         SubscriptionResponseItem.class,
         UnsubscriptionRequestItem.class,
-        WriteRequestItem.class,
+        PlcWriteRequestItem.class,
         PlcProprietaryRequest.class,
         PlcProprietaryResponse.class,
         PlcSubscriptionEvent.class,
@@ -65,8 +65,8 @@ public class ImmutabilityTest {
     public static Collection<Object[]> data() {
         return Stream.of(
             PlcUsernamePasswordAuthentication.class,
-            ReadRequestItem.class,
-            ReadResponseItem.class,
+            PlcReadRequestItem.class,
+            PlcReadResponseItem.class,
             SubscriptionEventItem.class,
             SubscriptionRequestChangeOfStateItem.class,
             SubscriptionRequestCyclicItem.class,
@@ -74,8 +74,8 @@ public class ImmutabilityTest {
             SubscriptionRequestItem.class,
             SubscriptionResponseItem.class,
             UnsubscriptionRequestItem.class,
-            WriteRequestItem.class,
-            WriteResponseItem.class,
+            PlcWriteRequestItem.class,
+            PlcWriteResponseItem.class,
             TypeSafePlcReadRequest.class,
             TypeSafePlcReadResponse.class,
             TypeSafePlcWriteRequest.class,

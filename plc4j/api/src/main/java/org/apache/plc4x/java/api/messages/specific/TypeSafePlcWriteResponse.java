@@ -22,15 +22,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
 
 public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
 
-    public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, WriteResponseItem<T> responseItem) {
+    public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, PlcWriteResponseItem<T> responseItem) {
         super(request, responseItem);
     }
 
-    public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, List<WriteResponseItem<T>> responseItems) {
+    public TypeSafePlcWriteResponse(TypeSafePlcWriteRequest<T> request, List<PlcWriteResponseItem<T>> responseItems) {
         super(request, responseItems);
     }
 
@@ -42,14 +42,14 @@ public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<? extends WriteResponseItem<T>> getResponseItems() {
-        return (List<WriteResponseItem<T>>) super.getResponseItems();
+    public List<? extends PlcWriteResponseItem<T>> getResponseItems() {
+        return (List<PlcWriteResponseItem<T>>) super.getResponseItems();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<WriteResponseItem<T>> getResponseItem() {
-        return (Optional<WriteResponseItem<T>>) super.getResponseItem();
+    public Optional<PlcWriteResponseItem<T>> getResponseItem() {
+        return (Optional<PlcWriteResponseItem<T>>) super.getResponseItem();
     }
 
     @SuppressWarnings("unchecked")
@@ -61,7 +61,7 @@ public class TypeSafePlcWriteResponse<T> extends PlcWriteResponse {
             return new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteResponse.getRequest(), plcWriteResponse.getResponseItems());
         }
         Class<?> referenceType = null;
-        for (WriteResponseItem<?> writeResponseItem : plcWriteResponse.getResponseItems()) {
+        for (PlcWriteResponseItem<?> writeResponseItem : plcWriteResponse.getResponseItems()) {
             Class<?> foundDataType = writeResponseItem.getRequestItem().getDatatype();
             if (referenceType == null) {
                 referenceType = foundDataType;

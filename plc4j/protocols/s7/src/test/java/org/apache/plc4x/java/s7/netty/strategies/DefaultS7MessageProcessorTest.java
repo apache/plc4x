@@ -1,4 +1,3 @@
-package org.apache.plc4x.java.s7.netty.strategies;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
+package org.apache.plc4x.java.s7.netty.strategies;
 
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
@@ -256,7 +256,7 @@ public class DefaultS7MessageProcessorTest {
     }
 
     /**
-     * In this request, we only send one single element to one single address. Nothing should be changed.
+     * In this request, we only send one single element to one single field. Nothing should be changed.
      *
      * @throws PlcException something went wrong.
      */
@@ -290,7 +290,7 @@ public class DefaultS7MessageProcessorTest {
     }
 
     /**
-     * In this request, we send an array of bit elements to a single address, the request should be broken
+     * In this request, we send an array of bit elements to a single field, the request should be broken
      * up into multiple single element write messages as the S7 doesn't seem to like writing of arrays.
      *
      * @throws PlcException something went wrong.
@@ -307,10 +307,10 @@ public class DefaultS7MessageProcessorTest {
         );
         Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
-        // Initialize a set of expected addresses.
-        Set<String> expectedAddresses = new HashSet<>(10);
+        // Initialize a set of expected fields.
+        Set<String> expectedFields = new HashSet<>(10);
         for(int i = 0; i < 10; i++) {
-            expectedAddresses.add(Integer.toString(i / 8) + "/" + Integer.toString(i % 8));
+            expectedFields.add(Integer.toString(i / 8) + "/" + Integer.toString(i % 8));
         }
 
         // We are expecting to receive 10 messages as we had an array of 10 items.
@@ -334,27 +334,27 @@ public class DefaultS7MessageProcessorTest {
             assertThat(s7AnyParameterItem.getMemoryArea(), is(MemoryArea.DATA_BLOCKS));
             assertThat(s7AnyParameterItem.getTransportSize(), is(TransportSize.BIT));
             assertThat(s7AnyParameterItem.getNumElements(), is((short) 1));
-            String addressString = Short.toString(
+            String fieldString = Short.toString(
                 s7AnyParameterItem.getByteOffset()) + "/" + Byte.toString(s7AnyParameterItem.getBitOffset());
-            assertThat(expectedAddresses, IsCollectionContaining.hasItem(addressString));
+            assertThat(expectedFields, IsCollectionContaining.hasItem(fieldString));
 
             VarPayloadItem payloadItem = varPayload.getItems().iterator().next();
-            // We are expecting that the payload is simply "the address of the byte + 1".
+            // We are expecting that the payload is simply "the field of the byte + 1".
             assertThat(payloadItem.getData().length, is(1));
             int value = (s7AnyParameterItem.getByteOffset() * 8) + s7AnyParameterItem.getBitOffset();
             byte expectedValue = (value % 2 == 0) ? (byte) 0x00 : (byte) 0x01;
             assertThat(payloadItem.getData()[0], is(expectedValue));
 
-            // Remove the used address from the list of available ones.
-            expectedAddresses.remove(addressString);
+            // Remove the used field from the list of available ones.
+            expectedFields.remove(fieldString);
         }
 
-        // In the end all addresses should have been used.
-        assertThat(expectedAddresses, hasSize(0));
+        // In the end all fields should have been used.
+        assertThat(expectedFields, hasSize(0));
     }
 
     /**
-     * In this request, we send an array of elements to a single address, the request should be broken
+     * In this request, we send an array of elements to a single field, the request should be broken
      * up into multiple single element write messages as the S7 doesn't seem to like writing of arrays.
      *
      * @throws PlcException something went wrong.
@@ -371,10 +371,10 @@ public class DefaultS7MessageProcessorTest {
         );
         Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
-        // Initialize a set of expected addresses.
-        Set<Short> expectedAddresses = new HashSet<>(10);
+        // Initialize a set of expected fields.
+        Set<Short> expectedFields = new HashSet<>(10);
         for(int i = 0; i < 10; i++) {
-            expectedAddresses.add((short) i);
+            expectedFields.add((short) i);
         }
 
         // We are expecting to receive 10 messages as we had an array of 10 items.
@@ -398,26 +398,26 @@ public class DefaultS7MessageProcessorTest {
             assertThat(s7AnyParameterItem.getMemoryArea(), is(MemoryArea.DATA_BLOCKS));
             assertThat(s7AnyParameterItem.getTransportSize(), is(TransportSize.BYTE));
             assertThat(s7AnyParameterItem.getNumElements(), is((short) 1));
-            // Check the address is in the expected range and hasn't been used yet.
-            assertThat(expectedAddresses.contains(s7AnyParameterItem.getByteOffset()), is(true));
+            // Check the field is in the expected range and hasn't been used yet.
+            assertThat(expectedFields.contains(s7AnyParameterItem.getByteOffset()), is(true));
             assertThat(s7AnyParameterItem.getBitOffset(), is((byte) 0));
 
             VarPayloadItem payloadItem = varPayload.getItems().iterator().next();
-            // We are expecting that the payload is simply "the address of the byte + 1".
+            // We are expecting that the payload is simply "the field of the byte + 1".
             assertThat(payloadItem.getData().length, is(1));
             byte expectedValue = (byte) ((byte) s7AnyParameterItem.getByteOffset() + (byte) 1);
             assertThat(payloadItem.getData()[0], is(expectedValue));
 
-            // Remove the used address from the list of available ones.
-            expectedAddresses.remove(s7AnyParameterItem.getByteOffset());
+            // Remove the used field from the list of available ones.
+            expectedFields.remove(s7AnyParameterItem.getByteOffset());
         }
 
-        // In the end all addresses should have been used.
-        assertThat(expectedAddresses, hasSize(0));
+        // In the end all fields should have been used.
+        assertThat(expectedFields, hasSize(0));
     }
 
     /**
-     * In this request, we send an array of elements to a single address, the request should be broken
+     * In this request, we send an array of elements to a single field, the request should be broken
      * up into multiple single element write messages as the S7 doesn't seem to like writing of arrays.
      *
      * @throws PlcException something went wrong.
@@ -442,10 +442,10 @@ public class DefaultS7MessageProcessorTest {
                     0x00, 0x00, 0x00, 0x0A})));
         Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
-        // Initialize a set of expected addresses.
-        Set<Short> expectedAddresses = new HashSet<>(10);
+        // Initialize a set of expected fields.
+        Set<Short> expectedFields = new HashSet<>(10);
         for(int i = 0; i < 10; i++) {
-            expectedAddresses.add((short) (i * 4));
+            expectedFields.add((short) (i * 4));
         }
 
         // We are expecting to receive 10 messages as we had an array of 10 items.
@@ -469,8 +469,8 @@ public class DefaultS7MessageProcessorTest {
             assertThat(s7AnyParameterItem.getMemoryArea(), is(MemoryArea.DATA_BLOCKS));
             assertThat(s7AnyParameterItem.getTransportSize(), is(TransportSize.DWORD));
             assertThat(s7AnyParameterItem.getNumElements(), is((short) 1));
-            // Check the address is in the expected range and hasn't been used yet.
-            assertThat(expectedAddresses.contains(s7AnyParameterItem.getByteOffset()), is(true));
+            // Check the field is in the expected range and hasn't been used yet.
+            assertThat(expectedFields.contains(s7AnyParameterItem.getByteOffset()), is(true));
             assertThat(s7AnyParameterItem.getBitOffset(), is((byte) 0));
 
             VarPayloadItem payloadItem = varPayload.getItems().iterator().next();
@@ -480,12 +480,12 @@ public class DefaultS7MessageProcessorTest {
             int actualValue = (payloadItem.getData()[0] << 32) + (payloadItem.getData()[1] << 16) + (payloadItem.getData()[2] << 8) + payloadItem.getData()[3];
             assertThat(actualValue, is(expectedValue));
 
-            // Remove the used address from the list of available ones.
-            expectedAddresses.remove(s7AnyParameterItem.getByteOffset());
+            // Remove the used field from the list of available ones.
+            expectedFields.remove(s7AnyParameterItem.getByteOffset());
         }
 
-        // In the end all addresses should have been used.
-        assertThat(expectedAddresses, hasSize(0));
+        // In the end all fields should have been used.
+        assertThat(expectedFields, hasSize(0));
     }
 
     /**

@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,11 +33,11 @@ import static org.mockito.Mockito.when;
 
 public class TypeSafePlcWriteRequestTest {
 
-    WriteRequestItem<String> writeRequestItemString;
+    PlcWriteRequestItem<String> writeRequestItemString;
 
     @Before
     public void setUp() {
-        writeRequestItemString = new WriteRequestItem<>(String.class, mock(Address.class));
+        writeRequestItemString = new PlcWriteRequestItem<>(String.class, mock(PlcField.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -47,8 +47,8 @@ public class TypeSafePlcWriteRequestTest {
         PlcWriteRequest request = mock(PlcWriteRequest.class);
         when(request.getRequestItems()).thenReturn(Collections.singletonList(writeRequestItemString));
         new TypeSafePlcWriteRequest<>(String.class, request);
-        new TypeSafePlcWriteRequest<>(String.class, mock(Address.class));
-        new TypeSafePlcWriteRequest<>(String.class, mock(Address.class), "");
+        new TypeSafePlcWriteRequest<>(String.class, mock(PlcField.class));
+        new TypeSafePlcWriteRequest<>(String.class, mock(PlcField.class), "");
         new TypeSafePlcWriteRequest<>(String.class, writeRequestItemString);
 
         // expects an exception

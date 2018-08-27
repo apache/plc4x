@@ -320,7 +320,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
     private void encodeParameterReadWriteVar(ByteBuf buf, VarParameter s7Parameter) {
         List<VarParameterItem> items = s7Parameter.getItems();
-        // ReadRequestItem count (Read one variable at a time)
+        // PlcReadRequestItem count (Read one variable at a time)
         buf.writeByte((byte) items.size());
         for (VarParameterItem item : items) {
             VariableAddressingMode addressMode = item.getAddressingMode();

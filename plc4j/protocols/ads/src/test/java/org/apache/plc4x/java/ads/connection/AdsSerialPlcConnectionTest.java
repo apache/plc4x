@@ -28,9 +28,9 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
-import org.apache.plc4x.java.ads.model.AdsAddress;
-import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.ads.model.AdsField;
+import org.apache.plc4x.java.ads.model.SymbolicAdsField;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
@@ -76,39 +76,39 @@ public class AdsSerialPlcConnectionTest {
     }
 
     @Test
-    public void emptyParseAddress() {
+    public void emptyPrepareField() {
         try {
-            SUT.parseAddress("");
-        } catch (PlcInvalidAddressException exception) {
+            SUT.prepareField("");
+        } catch (PlcInvalidFieldException exception) {
             assertThat(exception.getMessage(), Matchers.startsWith(" invalid"));
         }
     }
 
     @Test
-    public void parseAddress() throws Exception {
+    public void prepareField() throws Exception {
         try {
-            AdsAddress address = (AdsAddress) SUT.parseAddress("0/1");
-            assertEquals(address.getIndexGroup(), 0);
-            assertEquals(address.getIndexOffset(), 1);
+            AdsField field = (AdsField) SUT.prepareField("0/1");
+            assertEquals(field.getIndexGroup(), 0);
+            assertEquals(field.getIndexOffset(), 1);
         } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
+            fail("valid data block field");
         }
     }
 
     @Test
-    public void parseSymbolicAddress() throws Exception {
+    public void prepareSymbolicField() throws Exception {
         try {
-            SymbolicAdsAddress address = (SymbolicAdsAddress) SUT.parseAddress("Main.variable");
-            assertEquals(address.getSymbolicAddress(), "Main.variable");
+            SymbolicAdsField field = (SymbolicAdsField) SUT.prepareField("Main.variable");
+            assertEquals(field.getSymbolicField(), "Main.variable");
         } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
+            fail("valid data block field");
         }
     }
 
     @Test
     public void testRead() throws Exception {
         prepareSerialSimulator();
-        CompletableFuture<PlcReadResponse> read = SUT.read(new PlcReadRequest(String.class, SUT.parseAddress("0/0")));
+        CompletableFuture<PlcReadResponse> read = SUT.read(new PlcReadRequest(String.class, SUT.prepareField("0/0")));
         PlcReadResponse plcReadResponse = read.get(30, TimeUnit.SECONDS);
         assertNotNull(plcReadResponse);
     }

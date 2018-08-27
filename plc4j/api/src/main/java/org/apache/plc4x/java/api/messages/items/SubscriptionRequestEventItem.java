@@ -18,15 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.model.SubscriptionType;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionType;
 
 import java.util.function.Consumer;
 
 public class SubscriptionRequestEventItem<T> extends SubscriptionRequestItem<T> {
 
-    public SubscriptionRequestEventItem(Class<T> dataType, Address address, Consumer<SubscriptionEventItem<T>> consumer) {
-        super(dataType, address, SubscriptionType.EVENT, consumer);
+    public SubscriptionRequestEventItem(Class<T> dataType, PlcField field, Consumer<SubscriptionEventItem<T>> consumer) {
+        super(dataType, field, PlcSubscriptionType.EVENT, consumer);
     }
 
     @Override

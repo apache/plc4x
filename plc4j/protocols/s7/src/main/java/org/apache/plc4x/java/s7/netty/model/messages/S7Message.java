@@ -18,8 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.messages;
 
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
-import org.apache.plc4x.java.base.messages.RawMessage;
+import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
+import org.apache.plc4x.java.base.messages.PlcRawMessage;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
@@ -37,7 +37,7 @@ import java.util.Optional;
  *     <li>payloads - possible payload (for writes)</li>
  * </ul>
  */
-public abstract class S7Message extends RawMessage {
+public abstract class S7Message extends PlcRawMessage {
 
     private final MessageType messageType;
     private final short tpduReference;
@@ -50,7 +50,7 @@ public abstract class S7Message extends RawMessage {
     }
 
     protected S7Message(MessageType messageType, short tpduReference, List<S7Parameter> parameters,
-                        List<S7Payload> payloads, ProtocolMessage parent) {
+                        List<S7Payload> payloads, PlcProtocolMessage parent) {
         super(null, parent);
         this.messageType = messageType;
         this.tpduReference = tpduReference;

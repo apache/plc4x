@@ -142,7 +142,7 @@ public class PcapGenerator {
         (byte) 0x02, (byte) 0xF0, (byte) 0x80,
         // S7 packet
         // Job header
-        (byte) 0x32, (byte) 0x01 /* RawMessage Type [102] */,
+        (byte) 0x32, (byte) 0x01 /* Raw Message Type [102] */,
         //  Timezone
         (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
         (byte) 0x00, (byte) 0x0E, (byte) 0x00, (byte) 0x00,

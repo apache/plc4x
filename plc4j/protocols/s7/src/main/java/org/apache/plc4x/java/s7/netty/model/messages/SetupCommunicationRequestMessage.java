@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.messages;
 
-import org.apache.plc4x.java.api.messages.ProtocolMessage;
+import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
 import org.apache.plc4x.java.s7.netty.model.params.SetupCommunicationParameter;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 
@@ -27,7 +27,7 @@ import java.util.Collections;
 public class SetupCommunicationRequestMessage extends S7RequestMessage {
 
     public SetupCommunicationRequestMessage(short tpduReference, short maxAmqCaller, short maxAmqCallee,
-                                            short pduLength, ProtocolMessage parent) {
+                                            short pduLength, PlcProtocolMessage parent) {
         super(MessageType.JOB, tpduReference, Collections.singletonList(
             new SetupCommunicationParameter(maxAmqCaller, maxAmqCallee, pduLength)), Collections.emptyList(), parent);
     }

@@ -18,16 +18,16 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-public class WriteResponseItem<T> extends ResponseItem<WriteRequestItem<T>> {
+public class PlcWriteResponseItem<T> extends ResponseItem<PlcWriteRequestItem<T>> {
 
-    public WriteResponseItem(WriteRequestItem<T> requestItem, ResponseCode responseCode) {
+    public PlcWriteResponseItem(PlcWriteRequestItem<T> requestItem, PlcResponseCode responseCode) {
         super(requestItem, responseCode);
     }
 
     @Override
     public String toString() {
-        return "WriteResponseItem{} " + super.toString();
+        return "PlcWriteResponseItem{} " + super.toString();
     }
 }

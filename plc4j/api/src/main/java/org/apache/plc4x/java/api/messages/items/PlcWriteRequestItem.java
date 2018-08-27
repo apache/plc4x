@@ -18,45 +18,34 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.model.PlcField;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-/**
- * Response to a {@link ReadRequestItem}.
- * Can contain a list of values if the size in {@link ReadRequestItem} is larger zero.
- *
- * @param <T>
- */
-public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
+public class PlcWriteRequestItem<T> extends RequestItem<T> {
 
     private final List<T> values;
 
-    public ReadResponseItem(ReadRequestItem<T> requestItem, ResponseCode responseCode, List<T> values) {
-        super(requestItem, responseCode);
-        Objects.requireNonNull(values, "Values must not be null");
-        for (T value : values) {
-            if (!requestItem.getDatatype().isAssignableFrom(value.getClass())) {
-                throw new IllegalArgumentException("Datatype of " + value + " doesn't match required datatype of " + requestItem.getDatatype());
-            }
-        }
-        this.values = values;
-    }
-
     @SafeVarargs
-    public ReadResponseItem(ReadRequestItem<T> requestItem, ResponseCode responseCode, T... values) {
-        this(requestItem, responseCode, Arrays.asList(values));
+    public PlcWriteRequestItem(Class<T> dataType, PlcField field, T... values) {
+        super(dataType, field);
+        Objects.requireNonNull(values, "Values must not be null");
+        List<T> checkedList = Collections.checkedList(new ArrayList<>(), dataType);
+        checkedList.addAll(Arrays.asList(values));
+        this.values = checkedList;
     }
 
     public List<T> getValues() {
         return values;
     }
 
+    public int getSize() {
+        return values.size();
+    }
+
     @Override
     public String toString() {
-        return "ReadResponseItem{" +
+        return "PlcWriteRequestItem{" +
             "values=" + values +
             "} " + super.toString();
     }
@@ -66,13 +55,13 @@ public class ReadResponseItem<T> extends ResponseItem<ReadRequestItem<T>> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ReadResponseItem)) {
+        if (!(o instanceof PlcWriteRequestItem)) {
             return false;
         }
         if (!super.equals(o)) {
             return false;
         }
-        ReadResponseItem<?> that = (ReadResponseItem<?>) o;
+        PlcWriteRequestItem<?> that = (PlcWriteRequestItem<?>) o;
         return Objects.equals(values, that.values);
     }
 

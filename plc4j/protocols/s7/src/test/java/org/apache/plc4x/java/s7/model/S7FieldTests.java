@@ -27,37 +27,37 @@ import org.junit.experimental.categories.Category;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class S7AddressTests {
+public class S7FieldTests {
 
     @Test
     @Category(FastTests.class)
-    public void testS7Address() {
+    public void testS7Field() {
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        S7Address s7Address = new S7Address(memoryArea, (short) 0x100);
+        S7Field s7Field = new S7Field(memoryArea, (short) 0x100);
 
-        assertThat(s7Address.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
-        assertThat(s7Address.getByteOffset(), equalTo((short) 0x100));
+        assertThat(s7Field.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
+        assertThat(s7Field.getByteOffset(), equalTo((short) 0x100));
     }
 
     @Test
     @Category(FastTests.class)
-    public void testS7BitAddress() {
+    public void testS7BitField() {
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        S7BitAddress s7Address = new S7BitAddress(memoryArea, (short) 0x50, (byte) 0x4);
+        S7BitField s7Field = new S7BitField(memoryArea, (short) 0x50, (byte) 0x4);
 
-        assertThat(s7Address.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
-        assertThat(s7Address.getByteOffset(), equalTo((short) 0x50));
-        assertThat(s7Address.getBitOffset(), equalTo((byte) 0x4));
+        assertThat(s7Field.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
+        assertThat(s7Field.getByteOffset(), equalTo((short) 0x50));
+        assertThat(s7Field.getBitOffset(), equalTo((byte) 0x4));
     }
 
     @Test
     @Category(FastTests.class)
-    public void testS7DatBlockAddress() {
-        S7DataBlockAddress s7Address = new S7DataBlockAddress((short) 1, (short) 0x50);
+    public void testS7DatBlockField() {
+        S7DataBlockField s7Field = new S7DataBlockField((short) 1, (short) 0x50);
 
-        assertThat(s7Address.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
-        assertThat(s7Address.getDataBlockNumber(), equalTo((short) 1));
-        assertThat(s7Address.getByteOffset(), equalTo((short) 0x50));
+        assertThat(s7Field.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
+        assertThat(s7Field.getDataBlockNumber(), equalTo((short) 1));
+        assertThat(s7Field.getByteOffset(), equalTo((short) 0x50));
     }
 
 }

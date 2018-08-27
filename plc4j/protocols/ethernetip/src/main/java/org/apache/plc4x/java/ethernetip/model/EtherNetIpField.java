@@ -18,14 +18,14 @@ under the License.
 */
 package org.apache.plc4x.java.ethernetip.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EtherNetIpAddress implements Address {
+public class EtherNetIpField implements PlcField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("^#(?<class>.*?)#(?<instance>\\d{1,4})(?:#(?<attribute>\\d))?");
 
@@ -33,16 +33,16 @@ public class EtherNetIpAddress implements Address {
         return ADDRESS_PATTERN.matcher(addressString).matches();
     }
 
-    public static EtherNetIpAddress of(String addressString) throws PlcInvalidAddressException {
+    public static EtherNetIpField of(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcInvalidAddressException(addressString, ADDRESS_PATTERN);
+            throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
         }
         int classNumber = Integer.parseInt(matcher.group("class"));
         int instanceNumber = Integer.parseInt(matcher.group("instance"));
         int attributeNumber = Integer.parseInt(matcher.group("attribute"));
 
-        return new EtherNetIpAddress(classNumber, instanceNumber, attributeNumber);
+        return new EtherNetIpField(classNumber, instanceNumber, attributeNumber);
     }
 
     private final int objectNumber;
@@ -51,7 +51,7 @@ public class EtherNetIpAddress implements Address {
 
     private int connectionId;
 
-    public EtherNetIpAddress(int objectNumber, int instanceNumber, int attributeNumber) {
+    public EtherNetIpField(int objectNumber, int instanceNumber, int attributeNumber) {
         this.objectNumber = objectNumber;
         this.instanceNumber = instanceNumber;
         this.attributeNumber = attributeNumber;
@@ -76,10 +76,10 @@ public class EtherNetIpAddress implements Address {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof EtherNetIpAddress)) {
+        if (!(o instanceof EtherNetIpField)) {
             return false;
         }
-        EtherNetIpAddress that = (EtherNetIpAddress) o;
+        EtherNetIpField that = (EtherNetIpField) o;
         return objectNumber == that.objectNumber &&
             instanceNumber == that.instanceNumber &&
             attributeNumber == that.attributeNumber;
@@ -93,7 +93,7 @@ public class EtherNetIpAddress implements Address {
 
     @Override
     public String toString() {
-        return "EtherNetIpAddress{" +
+        return "EtherNetIpField{" +
             "object-number=" + objectNumber +
             ", instance-number=" + instanceNumber +
             ", attribute-number=" + attributeNumber +

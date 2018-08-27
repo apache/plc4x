@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,19 +30,19 @@ import static org.mockito.Mockito.mock;
 
 public class PlcWriteRequestTest {
 
-    Address dummyAddress;
+    PlcField dummyField;
 
     @Before
     public void setUp() {
-        dummyAddress = mock(Address.class);
+        dummyField = mock(PlcField.class);
     }
 
     @Test
     public void constructor() {
         new PlcWriteRequest();
-        new PlcWriteRequest(new WriteRequestItem<>(String.class, dummyAddress, ""));
-        new PlcWriteRequest(String.class, dummyAddress);
-        new PlcWriteRequest(Collections.singletonList(new WriteRequestItem<>(String.class, dummyAddress)));
+        new PlcWriteRequest(new PlcWriteRequestItem<>(String.class, dummyField, ""));
+        new PlcWriteRequest(String.class, dummyField);
+        new PlcWriteRequest(Collections.singletonList(new PlcWriteRequestItem<>(String.class, dummyField)));
     }
 
     @Test
@@ -57,30 +57,30 @@ public class PlcWriteRequestTest {
         }
         { // one item implicit type
             PlcWriteRequest.builder()
-                .addItem(dummyAddress, "")
+                .addItem(dummyField, "")
                 .build();
         }
         { // one item
             PlcWriteRequest.builder()
-                .addItem(String.class, dummyAddress)
+                .addItem(String.class, dummyField)
                 .build();
         }
         { // one item prebuild
             PlcWriteRequest.builder()
-                .addItem(new WriteRequestItem<>(String.class, dummyAddress))
+                .addItem(new PlcWriteRequestItem<>(String.class, dummyField))
                 .build();
         }
         { // two different item
             PlcWriteRequest.builder()
-                .addItem(String.class, dummyAddress)
-                .addItem(Byte.class, dummyAddress)
+                .addItem(String.class, dummyField)
+                .addItem(Byte.class, dummyField)
                 .build();
         }
         { // two different item typeSafe
             try {
                 PlcWriteRequest.builder()
-                    .addItem(String.class, dummyAddress)
-                    .addItem(Byte.class, dummyAddress)
+                    .addItem(String.class, dummyField)
+                    .addItem(Byte.class, dummyField)
                     .build(String.class);
                 fail("Mixed types build should fail.");
             } catch (IllegalStateException e) {
@@ -90,8 +90,8 @@ public class PlcWriteRequestTest {
         { // two different item typeSafe
             try {
                 PlcWriteRequest.builder()
-                    .addItem(String.class, dummyAddress)
-                    .addItem(Byte.class, dummyAddress)
+                    .addItem(String.class, dummyField)
+                    .addItem(Byte.class, dummyField)
                     .build(Byte.class);
                 fail("Mismatch of types should have failed.");
             } catch (ClassCastException e) {
@@ -100,8 +100,8 @@ public class PlcWriteRequestTest {
         }
         { // two equal item typeSafe
             PlcWriteRequest.builder()
-                .addItem(Byte.class, dummyAddress)
-                .addItem(Byte.class, dummyAddress)
+                .addItem(Byte.class, dummyField)
+                .addItem(Byte.class, dummyField)
                 .build(Byte.class);
         }
     }

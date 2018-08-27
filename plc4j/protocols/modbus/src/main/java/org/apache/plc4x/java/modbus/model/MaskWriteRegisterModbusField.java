@@ -18,34 +18,34 @@
  */
 package org.apache.plc4x.java.modbus.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MaskWriteRegisterModbusAddress extends ModbusAddress {
+public class MaskWriteRegisterModbusField extends ModbusField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("maskwrite:" + ModbusAddress.ADDRESS_PATTERN + "/" + "(?<andMask>\\d+)/(?<orMask>\\d+)");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("maskwrite:" + ModbusField.ADDRESS_PATTERN + "/" + "(?<andMask>\\d+)/(?<orMask>\\d+)");
 
     private final int andMask;
     private final int orMask;
 
-    protected MaskWriteRegisterModbusAddress(int address, int andMask, int orMask) {
+    protected MaskWriteRegisterModbusField(int address, int andMask, int orMask) {
         super(address);
         this.andMask = andMask;
         this.orMask = orMask;
     }
 
-    public static MaskWriteRegisterModbusAddress of(String addressString) throws PlcInvalidAddressException {
+    public static MaskWriteRegisterModbusField of(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
-            throw new PlcInvalidAddressException(addressString, ADDRESS_PATTERN);
+            throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
         }
         int address = Integer.parseInt(matcher.group("address"));
         int andMask = Integer.parseInt(matcher.group("andMask"));
         int orMask = Integer.parseInt(matcher.group("orMask"));
-        return new MaskWriteRegisterModbusAddress(address, andMask, orMask);
+        return new MaskWriteRegisterModbusField(address, andMask, orMask);
     }
 
     public int getAndMask() {
@@ -61,13 +61,13 @@ public class MaskWriteRegisterModbusAddress extends ModbusAddress {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MaskWriteRegisterModbusAddress)) {
+        if (!(o instanceof MaskWriteRegisterModbusField)) {
             return false;
         }
         if (!super.equals(o)) {
             return false;
         }
-        MaskWriteRegisterModbusAddress that = (MaskWriteRegisterModbusAddress) o;
+        MaskWriteRegisterModbusField that = (MaskWriteRegisterModbusField) o;
         return andMask == that.andMask &&
             orMask == that.orMask;
     }
@@ -80,7 +80,7 @@ public class MaskWriteRegisterModbusAddress extends ModbusAddress {
 
     @Override
     public String toString() {
-        return "MaskWriteRegisterModbusAddress{" +
+        return "MaskWriteRegisterModbusField{" +
             "andMask=" + andMask +
             ", orMask=" + orMask +
             "} " + super.toString();

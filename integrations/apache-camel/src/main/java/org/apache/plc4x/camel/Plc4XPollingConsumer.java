@@ -29,7 +29,7 @@ import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     private Plc4XEndpoint endpoint;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private Address address;
+    private PlcField field;
     private Class dataType;
 
 
@@ -55,7 +55,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        this.address = plcConnection.parseAddress(endpoint.getAddress());
+        this.field = plcConnection.prepareField(endpoint.getAddress());
     }
 
     @Override
@@ -79,7 +79,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive() {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, address));
+        CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, field));
         try {
             PlcReadResponse plcReadResponse = read.get();
             exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getResponseItems()));
@@ -97,7 +97,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive(long timeout) {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, address));
+        CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, field));
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
             exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getResponseItems()));

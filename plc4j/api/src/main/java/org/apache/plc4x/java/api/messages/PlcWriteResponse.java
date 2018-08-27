@@ -18,25 +18,25 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, WriteResponseItem<?>, WriteRequestItem<?>> {
+public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, PlcWriteResponseItem<?>, PlcWriteRequestItem<?>> {
 
-    public PlcWriteResponse(PlcWriteRequest request, WriteResponseItem<?> responseItem) {
+    public PlcWriteResponse(PlcWriteRequest request, PlcWriteResponseItem<?> responseItem) {
         super(request, Collections.singletonList(responseItem));
     }
 
-    public PlcWriteResponse(PlcWriteRequest request, List<? extends WriteResponseItem<?>> responseItems) {
+    public PlcWriteResponse(PlcWriteRequest request, List<? extends PlcWriteResponseItem<?>> responseItems) {
         super(request, responseItems);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Optional<WriteResponseItem<T>> getValue(WriteRequestItem<T> item) {
+    public <T> Optional<PlcWriteResponseItem<T>> getValue(PlcWriteRequestItem<T> item) {
         return (Optional) super.getValue(item);
     }
 

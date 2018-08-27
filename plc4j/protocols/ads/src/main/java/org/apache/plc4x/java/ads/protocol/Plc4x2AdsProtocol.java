@@ -26,24 +26,24 @@ import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.model.AdsAddress;
-import org.apache.plc4x.java.ads.model.SymbolicAdsAddress;
+import org.apache.plc4x.java.ads.model.AdsField;
+import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.ads.protocol.exception.AdsException;
 import org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     private final ConcurrentMap<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requests;
 
-    private final ConcurrentMap<SymbolicAdsAddress, AdsAddress> addressMapping;
+    private final ConcurrentMap<SymbolicAdsField, AdsField> fieldMapping;
 
     private List<Consumer<AdsDeviceNotificationRequest>> deviceNotificationListeners;
 
@@ -77,13 +77,13 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     private final AmsNetId sourceAmsNetId;
     private final AmsPort sourceAmsPort;
 
-    public Plc4x2AdsProtocol(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, ConcurrentMap<SymbolicAdsAddress, AdsAddress> addressMapping) {
+    public Plc4x2AdsProtocol(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, ConcurrentMap<SymbolicAdsField, AdsField> fieldMapping) {
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
         this.sourceAmsPort = sourceAmsPort;
         this.requests = new ConcurrentHashMap<>();
-        this.addressMapping = addressMapping;
+        this.fieldMapping = fieldMapping;
         this.deviceNotificationListeners = new LinkedList<>();
     }
 
@@ -139,20 +139,20 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         if (writeRequest.getRequestItems().size() != 1) {
             throw new PlcProtocolException("Only one item supported");
         }
-        WriteRequestItem<?> writeRequestItem = writeRequest.getRequestItems().get(0);
-        Address address = writeRequestItem.getAddress();
-        if (address instanceof SymbolicAdsAddress) {
-            AdsAddress mappedAddress = addressMapping.get(address);
-            LOGGER.debug("Replacing {} with {}", address, mappedAddress);
-            address = mappedAddress;
+        PlcWriteRequestItem<?> writeRequestItem = writeRequest.getRequestItems().get(0);
+        PlcField field = writeRequestItem.getField();
+        if (field instanceof SymbolicAdsField) {
+            AdsField mappedField = fieldMapping.get(field);
+            LOGGER.debug("Replacing {} with {}", field, mappedField);
+            field = mappedField;
         }
-        if (!(address instanceof AdsAddress)) {
-            throw new PlcProtocolException("Address not of type AdsAddress: " + address.getClass());
+        if (!(field instanceof AdsField)) {
+            throw new PlcProtocolException("PlcField not of type AdsField: " + field.getClass());
         }
-        AdsAddress adsAddress = (AdsAddress) address;
+        AdsField adsField = (AdsField) field;
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
-        IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
-        IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
+        IndexGroup indexGroup = IndexGroup.of(adsField.getIndexGroup());
+        IndexOffset indexOffset = IndexOffset.of(adsField.getIndexOffset());
         byte[] bytes = encodeData(writeRequestItem.getDatatype(), writeRequestItem.getValues().toArray());
         Data data = Data.of(bytes);
         AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
@@ -167,23 +167,23 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         if (readRequest.getRequestItems().size() != 1) {
             throw new PlcProtocolException("Only one item supported");
         }
-        ReadRequestItem<?> readRequestItem = readRequest.getRequestItems().get(0);
-        Address address = readRequestItem.getAddress();
-        if (address instanceof SymbolicAdsAddress) {
-            AdsAddress mappedAddress = addressMapping.get(address);
-            if (mappedAddress == null) {
-                throw new PlcProtocolException("No address mapping for " + address);
+        PlcReadRequestItem<?> readRequestItem = readRequest.getRequestItems().get(0);
+        PlcField field = readRequestItem.getField();
+        if (field instanceof SymbolicAdsField) {
+            AdsField mappedField = fieldMapping.get(field);
+            if (mappedField == null) {
+                throw new PlcProtocolException("No field mapping for " + field);
             }
-            LOGGER.debug("Replacing {} with {}", address, mappedAddress);
-            address = mappedAddress;
+            LOGGER.debug("Replacing {} with {}", field, mappedField);
+            field = mappedField;
         }
-        if (!(address instanceof AdsAddress)) {
-            throw new PlcProtocolException("Address not of type AdsAddress: " + address.getClass());
+        if (!(field instanceof AdsField)) {
+            throw new PlcProtocolException("PlcField not of type AdsField: " + field.getClass());
         }
-        AdsAddress adsAddress = (AdsAddress) address;
+        AdsField adsField = (AdsField) field;
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
-        IndexGroup indexGroup = IndexGroup.of(adsAddress.getIndexGroup());
-        IndexOffset indexOffset = IndexOffset.of(adsAddress.getIndexOffset());
+        IndexGroup indexGroup = IndexGroup.of(adsField.getIndexGroup());
+        IndexOffset indexOffset = IndexOffset.of(adsField.getIndexOffset());
         // TODO: length determination doesn't work here really as this is only known within the plc or by the developer
         Length length = Length.of(calculateLength(readRequestItem.getDatatype(), readRequestItem.getSize()));
         AmsPacket amsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
@@ -269,30 +269,30 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     @SuppressWarnings("unchecked")
     private PlcResponse decodeWriteResponse(AdsWriteResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) {
         PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
-        WriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(0);
+        PlcWriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(0);
 
-        ResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
+        PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
 
         if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
-            return new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, Collections.singletonList(new WriteResponseItem<>(requestItem, responseCode)));
+            return new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, Collections.singletonList(new PlcWriteResponseItem<>(requestItem, responseCode)));
         } else {
-            return new PlcWriteResponse(plcWriteRequest, Collections.singletonList(new WriteResponseItem<>(requestItem, responseCode)));
+            return new PlcWriteResponse(plcWriteRequest, Collections.singletonList(new PlcWriteResponseItem<>(requestItem, responseCode)));
         }
     }
 
     @SuppressWarnings("unchecked")
     private PlcResponse decodeReadResponse(AdsReadResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) throws PlcProtocolException {
         PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
-        ReadRequestItem requestItem = plcReadRequest.getRequestItems().get(0);
+        PlcReadRequestItem requestItem = plcReadRequest.getRequestItems().get(0);
 
-        ResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
+        PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
         byte[] bytes = responseMessage.getData().getBytes();
         List decoded = decodeData(requestItem.getDatatype(), bytes);
 
         if (plcReadRequest instanceof TypeSafePlcReadRequest) {
-            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, decoded)));
+            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, Collections.singletonList(new PlcReadResponseItem<>(requestItem, responseCode, decoded)));
         } else {
-            return new PlcReadResponse(plcReadRequest, Collections.singletonList(new ReadResponseItem<>(requestItem, responseCode, decoded)));
+            return new PlcReadResponse(plcReadRequest, Collections.singletonList(new PlcReadResponseItem<>(requestItem, responseCode, decoded)));
         }
     }
 
@@ -300,20 +300,20 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         return new PlcProprietaryResponse<>((PlcProprietaryRequest) plcRequestContainer.getRequest(), amsPacket);
     }
 
-    private ResponseCode decodeResponseCode(Result result) {
+    private PlcResponseCode decodeResponseCode(Result result) {
         switch (result.toAdsReturnCode()) {
             case ADS_CODE_0:
-                return ResponseCode.OK;
+                return PlcResponseCode.OK;
             case ADS_CODE_1:
-                return ResponseCode.INTERNAL_ERROR;
+                return PlcResponseCode.INTERNAL_ERROR;
             case ADS_CODE_2:
             case ADS_CODE_3:
             case ADS_CODE_4:
             case ADS_CODE_5:
-                return ResponseCode.INTERNAL_ERROR;
+                return PlcResponseCode.INTERNAL_ERROR;
             case ADS_CODE_6:
             case ADS_CODE_7:
-                return ResponseCode.INVALID_ADDRESS;
+                return PlcResponseCode.INVALID_ADDRESS;
             case ADS_CODE_8:
             case ADS_CODE_9:
             case ADS_CODE_10:
@@ -426,9 +426,9 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             case ADS_CODE_10060:
             case ADS_CODE_10061:
             case ADS_CODE_10065:
-                return ResponseCode.INTERNAL_ERROR;
+                return PlcResponseCode.INTERNAL_ERROR;
             case UNKNOWN:
-                return ResponseCode.INTERNAL_ERROR;
+                return PlcResponseCode.INTERNAL_ERROR;
         }
         throw new IllegalStateException(result.toAdsReturnCode() + " not mapped");
     }

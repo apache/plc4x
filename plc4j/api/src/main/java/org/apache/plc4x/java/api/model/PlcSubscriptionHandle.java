@@ -19,17 +19,14 @@ under the License.
 package org.apache.plc4x.java.api.model;
 
 /**
- * Base type for all address types.
- * Typically every driver provides an implementation of this interface in order
- * to be able to describe the address of a resource. As this is completely tied to
- * the implemented protocol, this base interface makes absolutely no assumption to
- * any information it should provide.
+ * When subscribing to remote resources, depending on the used protocol
+ * different data is used to identify a subscription. This interface is
+ * to be implemented in the individual Driver implementations to contain
+ * all information needed to pull or unsubscribe any form of subscription.
  *
- * In order to stay platform and protocol independent every driver connection implementation
- * provides a parseAddress(String) method that is able to parse a string representation of
- * a resource into it's individual address type. Manually constructing Address objects
- * manually makes the solution less independent from the protocol, but might be faster.
+ * For every subscribed item, a separate {@link PlcSubscriptionHandle} object is
+ * returned in order to allow fine granular unsubscriptions.
  */
-public interface Address {
+public interface PlcSubscriptionHandle {
 
 }

@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.ads.model;
 
 import org.apache.plc4x.java.ads.api.util.ByteValue;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -30,28 +30,29 @@ import java.util.regex.Pattern;
  * ADS address witch is defined by {@code indexGroup/indexOffset}. These values can be either supplied as int or hex
  * representation.
  */
-public class AdsAddress implements Address {
+public class AdsField implements PlcField {
+
     private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+))");
 
     private final long indexGroup;
 
     private final long indexOffset;
 
-    private AdsAddress(long indexGroup, long indexOffset) {
+    private AdsField(long indexGroup, long indexOffset) {
         ByteValue.checkUnsignedBounds(indexGroup, 4);
         this.indexGroup = indexGroup;
         ByteValue.checkUnsignedBounds(indexOffset, 4);
         this.indexOffset = indexOffset;
     }
 
-    public static AdsAddress of(long indexGroup, long indexOffset) {
-        return new AdsAddress(indexGroup, indexOffset);
+    public static AdsField of(long indexGroup, long indexOffset) {
+        return new AdsField(indexGroup, indexOffset);
     }
 
-    public static AdsAddress of(String address) throws PlcInvalidAddressException {
+    public static AdsField of(String address) throws PlcInvalidFieldException {
         Matcher matcher = RESOURCE_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
-            throw new PlcInvalidAddressException(address, RESOURCE_ADDRESS_PATTERN, "{indexGroup}/{indexOffset}");
+            throw new PlcInvalidFieldException(address, RESOURCE_ADDRESS_PATTERN, "{indexGroup}/{indexOffset}");
         }
 
         String indexGroupStringHex = matcher.group("indexGroupHex");
@@ -74,7 +75,7 @@ public class AdsAddress implements Address {
             indexOffset = Long.parseLong(indexOffsetString);
         }
 
-        return new AdsAddress(indexGroup, indexOffset);
+        return new AdsField(indexGroup, indexOffset);
     }
 
     public static boolean matches(String address) {
@@ -94,10 +95,10 @@ public class AdsAddress implements Address {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AdsAddress)) {
+        if (!(o instanceof AdsField)) {
             return false;
         }
-        AdsAddress that = (AdsAddress) o;
+        AdsField that = (AdsField) o;
         return indexGroup == that.indexGroup &&
             indexOffset == that.indexOffset;
     }
@@ -109,7 +110,7 @@ public class AdsAddress implements Address {
 
     @Override
     public String toString() {
-        return "AdsAddress{" +
+        return "AdsField{" +
             "indexGroup=" + indexGroup +
             ", indexOffset=" + indexOffset +
             '}';

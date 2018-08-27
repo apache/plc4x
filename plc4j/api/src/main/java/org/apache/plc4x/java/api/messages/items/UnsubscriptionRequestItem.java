@@ -18,20 +18,20 @@
 */
 package org.apache.plc4x.java.api.messages.items;
 
-import org.apache.plc4x.java.api.model.SubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
 import java.util.Objects;
 
 public class UnsubscriptionRequestItem {
 
-    private SubscriptionHandle subscriptionHandle;
+    private PlcSubscriptionHandle subscriptionHandle;
 
-    public UnsubscriptionRequestItem(SubscriptionHandle subscriptionHandle) {
-        Objects.requireNonNull(subscriptionHandle, "SubscriptionHandle must not be null");
+    public UnsubscriptionRequestItem(PlcSubscriptionHandle subscriptionHandle) {
+        Objects.requireNonNull(subscriptionHandle, "PlcSubscriptionHandle must not be null");
         this.subscriptionHandle = subscriptionHandle;
     }
 
-    public SubscriptionHandle getSubscriptionHandle() {
+    public PlcSubscriptionHandle getSubscriptionHandle() {
         return subscriptionHandle;
     }
 

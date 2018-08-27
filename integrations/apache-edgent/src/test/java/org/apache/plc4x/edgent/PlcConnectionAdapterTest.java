@@ -36,18 +36,18 @@ import java.util.concurrent.ExecutionException;
 import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
-import org.apache.plc4x.edgent.mock.MockAddress;
+import org.apache.plc4x.edgent.mock.MockField;
 import org.apache.plc4x.edgent.mock.MockConnection;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -56,7 +56,7 @@ import com.google.gson.JsonObject;
 
 public class PlcConnectionAdapterTest {
 
-    protected MockConnection getMockConnection() throws PlcConnectionException {
+    private MockConnection getMockConnection() throws PlcConnectionException {
         return (MockConnection) new PlcDriverManager().getConnection("mock-for-edgent-integration://some-cool-url");
     }
 
@@ -92,7 +92,7 @@ public class PlcConnectionAdapterTest {
 
     @Test
     @Category(FastTests.class)
-    public void testCheckDatatype() throws Exception {
+    public void testCheckDatatype() {
         PlcConnectionAdapter.checkDatatype(Boolean.class);
         PlcConnectionAdapter.checkDatatype(Byte.class);
         PlcConnectionAdapter.checkDatatype(Short.class);
@@ -115,7 +115,7 @@ public class PlcConnectionAdapterTest {
     private <T> void checkRead(MockConnection connection, TypeSafePlcReadRequest<T> request, T value) throws InterruptedException, ExecutionException {
         // this is really a tests of our mock tooling but knowing it's behaving as expected
         // will help identify problems in the adapter/supplier/consumer
-        connection.setDataValue(request.getCheckedReadRequestItems().get(0).getAddress(), value);
+        connection.setDataValue(request.getCheckedReadRequestItems().get(0).getField(), value);
 
         CompletableFuture<TypeSafePlcReadResponse<T>> cf = connection.read(request);
 
@@ -127,14 +127,14 @@ public class PlcConnectionAdapterTest {
     private <T> void checkWrite(MockConnection connection, TypeSafePlcWriteRequest<T> request, T value) throws InterruptedException, ExecutionException {
         // this is really a tests of our mock tooling but knowing it's behaving as expected
         // will help identify problems in the adapter/supplier/consumer
-        connection.setDataValue(request.getRequestItems().get(0).getAddress(), value);
+        connection.setDataValue(request.getRequestItems().get(0).getField(), value);
 
         CompletableFuture<TypeSafePlcWriteResponse<T>> cf = connection.write(request);
 
         assertThat(cf.isDone(), is(true));
         PlcWriteResponse response = cf.get();
         assertThat(response, notNullValue());
-        Object writtenData = connection.getDataValue(request.getRequestItems().get(0).getAddress());
+        Object writtenData = connection.getDataValue(request.getRequestItems().get(0).getField());
         if (writtenData.getClass().isArray()) {
             writtenData = Array.get(writtenData, 0);
         }
@@ -153,70 +153,70 @@ public class PlcConnectionAdapterTest {
     @Category(FastTests.class)
     public void testNewPlcReadRequest() throws Exception {
         String addressStr = "MyReadWriteAddress/0";
-        MockAddress address = new MockAddress(addressStr);
+        MockField address = new MockField(addressStr);
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
         MockConnection connection = (MockConnection) adapter.getConnection();
 
         {
             TypeSafePlcReadRequest<Boolean> request = PlcConnectionAdapter.newPlcReadRequest(Boolean.class, address);
-            ReadRequestItem<Boolean> requestItem = request.getCheckedReadRequestItems().get(0);
+            PlcReadRequestItem<Boolean> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Boolean> dataType = requestItem.getDatatype();
             assertThat(dataType, equalTo(Boolean.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkRead(connection, request, true);
             checkRead(connection, request, false);
         }
         {
             TypeSafePlcReadRequest<Byte> request = PlcConnectionAdapter.newPlcReadRequest(Byte.class, address);
-            ReadRequestItem<Byte> requestItem = request.getCheckedReadRequestItems().get(0);
+            PlcReadRequestItem<Byte> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Byte> dataType = requestItem.getDatatype();
             assertThat(dataType, equalTo(Byte.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkRead(connection, request, (byte) 0x13);
             checkRead(connection, request, (byte) 0x23);
         }
         {
             TypeSafePlcReadRequest<Short> request = PlcConnectionAdapter.newPlcReadRequest(Short.class, address);
-            ReadRequestItem<Short> requestItem = request.getCheckedReadRequestItems().get(0);
+            PlcReadRequestItem<Short> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Short> dataType = requestItem.getDatatype();
             assertThat(dataType, equalTo(Short.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkRead(connection, request, (short) 13);
             checkRead(connection, request, (short) 23);
         }
         {
             TypeSafePlcReadRequest<Integer> request = PlcConnectionAdapter.newPlcReadRequest(Integer.class, address);
-            ReadRequestItem<Integer> requestItem = request.getCheckedReadRequestItems().get(0);
+            PlcReadRequestItem<Integer> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Integer> dataType = requestItem.getDatatype();
             assertThat(dataType, equalTo(Integer.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkRead(connection, request, 33);
             checkRead(connection, request, -133);
         }
         {
             TypeSafePlcReadRequest<Float> request = PlcConnectionAdapter.newPlcReadRequest(Float.class, address);
-            ReadRequestItem<Float> requestItem = request.getCheckedReadRequestItems().get(0);
+            PlcReadRequestItem<Float> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Float> dataType = requestItem.getDatatype();
             assertThat(dataType, equalTo(Float.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkRead(connection, request, 43.5f);
             checkRead(connection, request, -143.5f);
         }
         {
             TypeSafePlcReadRequest<String> request = PlcConnectionAdapter.newPlcReadRequest(String.class, address);
-            ReadRequestItem<String> requestItem = request.getCheckedReadRequestItems().get(0);
+            PlcReadRequestItem<String> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<String> dataType = requestItem.getDatatype();
             assertThat(dataType, equalTo(String.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkRead(connection, request, "ReadySetGo");
             checkRead(connection, request, "OneMoreTime");
         }
         {
             TypeSafePlcReadRequest<Calendar> request = PlcConnectionAdapter.newPlcReadRequest(Calendar.class, address);
-            ReadRequestItem<Calendar> requestItem = request.getCheckedReadRequestItems().get(0);
+            PlcReadRequestItem<Calendar> requestItem = request.getCheckedReadRequestItems().get(0);
             Class<Calendar> dataType = requestItem.getDatatype();
             assertThat(dataType, equalTo(Calendar.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkRead(connection, request, Calendar.getInstance());
         }
         adapter.close();
@@ -230,65 +230,65 @@ public class PlcConnectionAdapterTest {
     @Category(FastTests.class)
     public void testNewPlcWriteRequest() throws Exception {
         String addressStr = "MyReadWriteAddress/0";
-        MockAddress address = new MockAddress(addressStr);
+        MockField address = new MockField(addressStr);
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
         MockConnection connection = (MockConnection) adapter.getConnection();
 
         {
             TypeSafePlcWriteRequest<Boolean> request = PlcConnectionAdapter.newPlcWriteRequest(address, true);
-            WriteRequestItem<Boolean> requestItem = request.getCheckedRequestItems().get(0);
+            PlcWriteRequestItem<Boolean> requestItem = request.getCheckedRequestItems().get(0);
             Class<Boolean> dataType = requestItem.getDatatype();
             assertThat(dataType, typeCompatibleWith(Boolean.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkWrite(connection, request, true);
         }
         {
             TypeSafePlcWriteRequest<Byte> request = PlcConnectionAdapter.newPlcWriteRequest(address, (byte) 0x113);
-            WriteRequestItem<Byte> requestItem = request.getCheckedRequestItems().get(0);
+            PlcWriteRequestItem<Byte> requestItem = request.getCheckedRequestItems().get(0);
             Class<Byte> dataType = requestItem.getDatatype();
             assertThat(dataType, typeCompatibleWith(Byte.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkWrite(connection, request, (byte) 0x113);
         }
         {
             TypeSafePlcWriteRequest<Short> request = PlcConnectionAdapter.newPlcWriteRequest(address, (short) 113);
-            WriteRequestItem<Short> requestItem = request.getCheckedRequestItems().get(0);
+            PlcWriteRequestItem<Short> requestItem = request.getCheckedRequestItems().get(0);
             Class<Short> dataType = requestItem.getDatatype();
             assertThat(dataType, typeCompatibleWith(Short.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkWrite(connection, request, (short) 113);
         }
         {
             TypeSafePlcWriteRequest<Integer> request = PlcConnectionAdapter.newPlcWriteRequest(address, 1033);
-            WriteRequestItem<Integer> requestItem = request.getCheckedRequestItems().get(0);
+            PlcWriteRequestItem<Integer> requestItem = request.getCheckedRequestItems().get(0);
             Class<Integer> dataType = requestItem.getDatatype();
             assertThat(dataType, typeCompatibleWith(Integer.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkWrite(connection, request, 1033);
         }
         {
             TypeSafePlcWriteRequest<Float> request = PlcConnectionAdapter.newPlcWriteRequest(address, 1043.5f);
-            WriteRequestItem<Float> requestItem = request.getCheckedRequestItems().get(0);
+            PlcWriteRequestItem<Float> requestItem = request.getCheckedRequestItems().get(0);
             Class<Float> dataType = requestItem.getDatatype();
             assertThat(dataType, typeCompatibleWith(Float.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkWrite(connection, request, 1043.5f);
         }
         {
             TypeSafePlcWriteRequest<String> request = PlcConnectionAdapter.newPlcWriteRequest(address, "A written value");
-            WriteRequestItem<String> requestItem = request.getCheckedRequestItems().get(0);
+            PlcWriteRequestItem<String> requestItem = request.getCheckedRequestItems().get(0);
             Class<String> dataType = requestItem.getDatatype();
             assertThat(dataType, typeCompatibleWith(String.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkWrite(connection, request, "A written value");
         }
         {
             Calendar calValue = Calendar.getInstance();
             TypeSafePlcWriteRequest<Calendar> request = PlcConnectionAdapter.newPlcWriteRequest(address, calValue);
-            WriteRequestItem<Calendar> requestItem = request.getCheckedRequestItems().get(0);
+            PlcWriteRequestItem<Calendar> requestItem = request.getCheckedRequestItems().get(0);
             Class<Calendar> dataType = requestItem.getDatatype();
             assertThat(dataType, typeCompatibleWith(Calendar.class));
-            assertThat(address, sameInstance(requestItem.getAddress()));
+            assertThat(address, sameInstance(requestItem.getField()));
             checkWrite(connection, request, calValue);
         }
         adapter.close();
@@ -301,7 +301,7 @@ public class PlcConnectionAdapterTest {
     @Category(FastTests.class)
     public void testNewSupplier() throws Exception {
         String addressStr = "MyReadWriteAddress/0";
-        MockAddress address = new MockAddress(addressStr);
+        MockField address = new MockField(addressStr);
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
         MockConnection connection = (MockConnection) adapter.getConnection();
 
@@ -340,7 +340,7 @@ public class PlcConnectionAdapterTest {
     @Category(FastTests.class)
     public void testNewSupplierNeg() throws Exception {
         String addressStr = "MyReadWriteAddress/0";
-        MockAddress address = new MockAddress(addressStr);
+        MockField address = new MockField(addressStr);
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
         MockConnection connection = (MockConnection) adapter.getConnection();
 
@@ -350,17 +350,17 @@ public class PlcConnectionAdapterTest {
         adapter.close();
     }
 
-    static <T> void checkSupplier(MockConnection connection, Address address, Supplier<T> supplier, Object... values) throws Exception {
-        checkSupplier(0, connection, address, supplier, values);
+    static <T> void checkSupplier(MockConnection connection, PlcField field, Supplier<T> supplier, Object... values) throws Exception {
+        checkSupplier(0, connection, field, supplier, values);
     }
 
-    private static <T> void checkSupplier(int readFailureCountTrigger, MockConnection connection, Address address, Supplier<T> supplier, Object... values) throws Exception {
+    private static <T> void checkSupplier(int readFailureCountTrigger, MockConnection connection, PlcField field, Supplier<T> supplier, Object... values) {
         // verify that a read failure doesn't kill the consumer
         // it logs (not verified) but returns null (as designed) and keeps working for the subsequent reads
         connection.setReadException(readFailureCountTrigger, "This is a mock read exception");
         int readCount = 0;
         for (Object value : values) {
-            connection.setDataValue(address, value);
+            connection.setDataValue(field, value);
             T readData = supplier.get();
             // System.out.println("checkSupplier"+(readFailureCountTrigger > 0 ? "NEG" : "")+": value:"+value+" readData:"+readData);
             if (readFailureCountTrigger <= 0)
@@ -381,7 +381,7 @@ public class PlcConnectionAdapterTest {
     @Category(FastTests.class)
     public void testNewConsumer1() throws Exception {
         String addressStr = "MyReadWriteAddress/0";
-        MockAddress address = new MockAddress(addressStr);
+        MockField address = new MockField(addressStr);
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
         MockConnection connection = (MockConnection) adapter.getConnection();
 
@@ -416,7 +416,7 @@ public class PlcConnectionAdapterTest {
     @Category(FastTests.class)
     public void testNewConsumer1Neg() throws Exception {
         String addressStr = "MyReadWriteAddress/0";
-        MockAddress address = new MockAddress(addressStr);
+        MockField address = new MockField(addressStr);
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
         MockConnection connection = (MockConnection) adapter.getConnection();
 
@@ -428,11 +428,11 @@ public class PlcConnectionAdapterTest {
         adapter.close();
     }
 
-    static <T> void checkConsumer(MockConnection connection, Address address, Consumer<T> consumer, Object... values) throws Exception {
-        checkConsumer(0, connection, address, consumer, values);
+    static <T> void checkConsumer(MockConnection connection, PlcField field, Consumer<T> consumer, Object... values) throws Exception {
+        checkConsumer(0, connection, field, consumer, values);
     }
 
-    private static <T> void checkConsumer(int writeFailureCountTrigger, MockConnection connection, Address address, Consumer<T> consumer, Object... values) throws Exception {
+    private static <T> void checkConsumer(int writeFailureCountTrigger, MockConnection connection, PlcField field, Consumer<T> consumer, Object... values) {
         // verify that a write failure doesn't kill the consumer
         // it logs (not verified) but keeps working for the subsequent writes
         connection.setWriteException(writeFailureCountTrigger, "This is a mock write exception");
@@ -442,7 +442,7 @@ public class PlcConnectionAdapterTest {
             @SuppressWarnings("unchecked")
             T tValue = (T) value;
             consumer.accept(tValue);
-            Object writtenData = connection.getDataValue(address);
+            Object writtenData = connection.getDataValue(field);
             if (List.class.isAssignableFrom(writtenData.getClass())) {
               @SuppressWarnings("unchecked")
               List<Object> writtenDataList = (List<Object>) writtenData;
@@ -471,7 +471,7 @@ public class PlcConnectionAdapterTest {
     @Category(FastTests.class)
     public void testNewConsumer2() throws Exception {
         String addressStr = "MyReadWriteAddress/0";
-        MockAddress address = new MockAddress(addressStr);
+        MockField address = new MockField(addressStr);
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
         MockConnection connection = (MockConnection) adapter.getConnection();
 
@@ -507,7 +507,7 @@ public class PlcConnectionAdapterTest {
     @Category(FastTests.class)
     public void testNewConsumer2Neg() throws Exception {
         String addressStr = "MyReadWriteAddress/0";
-        MockAddress address = new MockAddress(addressStr);
+        MockField address = new MockField(addressStr);
         PlcConnectionAdapter adapter = new PlcConnectionAdapter(getMockConnection());
         MockConnection connection = (MockConnection) adapter.getConnection();
 
@@ -521,11 +521,12 @@ public class PlcConnectionAdapterTest {
         adapter.close();
     }
 
-    static <T> void checkConsumerJson(MockConnection connection, MockAddress address, Consumer<JsonObject> consumer, Object... values) throws Exception {
+    static <T> void checkConsumerJson(MockConnection connection, MockField address, Consumer<JsonObject> consumer, Object... values) {
         checkConsumerJson(0, connection, address, consumer, values);
     }
 
-    private static <T> void checkConsumerJson(int writeFailureCountTrigger, MockConnection connection, MockAddress address, Consumer<JsonObject> consumer, Object... values) throws Exception {
+    private static <T> void checkConsumerJson(int writeFailureCountTrigger, MockConnection connection,
+                                              MockField field, Consumer<JsonObject> consumer, Object... values) {
         if (writeFailureCountTrigger > 0)
             connection.setWriteException(writeFailureCountTrigger, "This is a mock write exception");
         int writeCount = 0;
@@ -534,7 +535,7 @@ public class PlcConnectionAdapterTest {
 
             // build the JsonObject to consume
             JsonObject jo = new JsonObject();
-            jo.addProperty("address", address.getAddress());
+            jo.addProperty("address", field.getAddress());
             if (value instanceof Boolean)
                 jo.addProperty("value", (Boolean) value);
             else if (value instanceof Number)
@@ -544,10 +545,10 @@ public class PlcConnectionAdapterTest {
 
             consumer.accept(jo);
 
-            Object writtenData = connection.getDataValue(address);
+            Object writtenData = connection.getDataValue(field);
             if (writtenData.getClass().isArray()) {
                 Object[] writtenDataArray = (Object[]) writtenData;
-                writtenData = Array.get((Object[]) writtenDataArray, 0);
+                writtenData = Array.get(writtenDataArray, 0);
             }
             if (List.class.isAssignableFrom(writtenData.getClass())) {
                 @SuppressWarnings("unchecked")

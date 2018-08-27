@@ -18,47 +18,48 @@
  */
 package org.apache.plc4x.java.ads.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class AdsAddressTest {
+public class AdsFieldTest {
 
     @Test
     public void of() throws Exception {
-        AdsAddress address = AdsAddress.of("1/10");
-        assertThat(address.getIndexGroup(), is(1L));
-        assertThat(address.getIndexOffset(), is(10L));
+        AdsField field = AdsField.of("1/10");
+        assertThat(field.getIndexGroup(), is(1L));
+        assertThat(field.getIndexOffset(), is(10L));
     }
 
     @Test
     public void ofHex() throws Exception {
-        AdsAddress address = AdsAddress.of("0x1/0xff");
-        assertThat(address.getIndexGroup(), is(1L));
-        assertThat(address.getIndexOffset(), is(255L));
+        AdsField field = AdsField.of("0x1/0xff");
+        assertThat(field.getIndexGroup(), is(1L));
+        assertThat(field.getIndexOffset(), is(255L));
     }
 
-    @Test(expected = PlcInvalidAddressException.class)
-    public void stringInAddress() throws Exception {
-        AdsAddress address = AdsAddress.of("group/offset");
+    @Test(expected = PlcInvalidFieldException.class)
+    public void stringInField() throws Exception {
+        AdsField field = AdsField.of("group/offset");
     }
 
-    @Test(expected = PlcInvalidAddressException.class)
-    public void singleNumberAddress() throws Exception {
-        AdsAddress address = AdsAddress.of("10");
+    @Test(expected = PlcInvalidFieldException.class)
+    public void singleNumberField() throws Exception {
+        AdsField field = AdsField.of("10");
     }
 
-    @Test(expected = PlcInvalidAddressException.class)
+    @Test(expected = PlcInvalidFieldException.class)
     public void wrongSeperator() throws Exception {
-        AdsAddress address = AdsAddress.of("1:10");
+        AdsField field = AdsField.of("1:10");
     }
 
     @Test
     public void getGroupAndOffset() {
-        AdsAddress address = AdsAddress.of(2L, 20L);
-        assertThat(address.getIndexGroup(), is(2L));
-        assertThat(address.getIndexOffset(), is(20L));
+        AdsField field = AdsField.of(2L, 20L);
+        assertThat(field.getIndexGroup(), is(2L));
+        assertThat(field.getIndexOffset(), is(20L));
     }
+
 }

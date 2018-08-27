@@ -27,11 +27,11 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.examples.dummydriver.model.DummyAddress;
+import org.apache.plc4x.java.examples.dummydriver.model.DummyField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,8 +60,8 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public Address parseAddress(String addressString) {
-        return new DummyAddress(Integer.parseInt(addressString));
+    public PlcField prepareField(String fieldString) {
+        return new DummyField(Integer.parseInt(fieldString));
     }
 
     @Override

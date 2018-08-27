@@ -65,7 +65,7 @@ public class IsotpTypeTests {
 
     @Test
     @Category(FastTests.class)
-    public void diosconectReasonUnknown() {
+    public void disconnectReasonUnknown() {
         DisconnectReason disconnectReason = DisconnectReason.valueOf((byte) 4);
 
         assertThat(disconnectReason, nullValue());

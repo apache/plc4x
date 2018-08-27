@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,29 +39,29 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
         this(dataType);
         Objects.requireNonNull(plcWriteRequest, "PLC write request must not be null");
         Objects.requireNonNull(plcWriteRequest.getRequestItems(), "plc write request item on " + plcWriteRequest + " must not be null");
-        for (WriteRequestItem<?> WriteRequestItem : plcWriteRequest.getRequestItems()) {
+        for (PlcWriteRequestItem<?> WriteRequestItem : plcWriteRequest.getRequestItems()) {
             addItem(WriteRequestItem);
         }
     }
 
     @SafeVarargs
-    public TypeSafePlcWriteRequest(Class<T> dataType, Address address, T... values) {
+    public TypeSafePlcWriteRequest(Class<T> dataType, PlcField field, T... values) {
         this(dataType);
-        Objects.requireNonNull(address, "Address must not be null");
-        addItem(new WriteRequestItem<>(dataType, address, values));
+        Objects.requireNonNull(field, "Field must not be null");
+        addItem(new PlcWriteRequestItem<>(dataType, field, values));
     }
 
     @SafeVarargs
-    public TypeSafePlcWriteRequest(Class<T> dataType, WriteRequestItem<T>... requestItems) {
+    public TypeSafePlcWriteRequest(Class<T> dataType, PlcWriteRequestItem<T>... requestItems) {
         this(dataType);
         Objects.requireNonNull(requestItems, "Request item must not be null");
-        for (WriteRequestItem<T> requestItem : requestItems) {
+        for (PlcWriteRequestItem<T> requestItem : requestItems) {
             getRequestItems().add(requestItem);
         }
     }
 
     @Override
-    public void addItem(WriteRequestItem<?> writeRequestItem) {
+    public void addItem(PlcWriteRequestItem<?> writeRequestItem) {
         Objects.requireNonNull(writeRequestItem, "Write request item must not be null");
         if (writeRequestItem.getDatatype() != dataType) {
             throw new IllegalArgumentException("Incompatible dataType " + writeRequestItem.getDatatype());
@@ -70,14 +70,14 @@ public class TypeSafePlcWriteRequest<T> extends PlcWriteRequest {
     }
 
     @SuppressWarnings("unchecked")
-    public List<WriteRequestItem<T>> getCheckedRequestItems() {
+    public List<PlcWriteRequestItem<T>> getCheckedRequestItems() {
         return (List) getRequestItems();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<WriteRequestItem<T>> getRequestItem() {
-        return (Optional<WriteRequestItem<T>>) super.getRequestItem();
+    public Optional<PlcWriteRequestItem<T>> getRequestItem() {
+        return (Optional<PlcWriteRequestItem<T>>) super.getRequestItem();
     }
 
     public Class<T> getDataType() {

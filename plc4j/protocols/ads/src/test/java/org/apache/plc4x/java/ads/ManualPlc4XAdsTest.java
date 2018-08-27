@@ -25,11 +25,11 @@ import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
 import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -50,19 +50,19 @@ public class ManualPlc4XAdsTest {
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            Address address = plcConnection.parseAddress("Allgemein_S2.Station");
+            PlcField field = plcConnection.prepareField("Allgemein_S2.Station");
             CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
-                .read(new TypeSafePlcReadRequest<>(Integer.class, address));
+                .read(new TypeSafePlcReadRequest<>(Integer.class, field));
             TypeSafePlcReadResponse<Integer> readResponse = response.get();
             System.out.println("Response " + readResponse);
-            ReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
+            PlcReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
             System.out.println("ResponseItem " + responseItem);
             responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
 
             PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("Subscribe not available"));
 
             PlcSubscriptionRequest subscriptionRequest = PlcSubscriptionRequest.builder()
-                .addChangeOfStateItem(Integer.class, address, plcNotification -> System.out.println("Received notification " + plcNotification))
+                .addChangeOfStateItem(Integer.class, field, plcNotification -> System.out.println("Received notification " + plcNotification))
                 .build();
 
             SubscriptionResponseItem subscriptionResponseItem = plcSubscriber.subscribe(subscriptionRequest)

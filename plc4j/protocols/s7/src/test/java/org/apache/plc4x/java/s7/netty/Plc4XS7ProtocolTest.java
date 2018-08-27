@@ -25,9 +25,9 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.netty.NettyTestBase;
-import org.apache.plc4x.java.s7.model.S7Address;
-import org.apache.plc4x.java.s7.model.S7BitAddress;
-import org.apache.plc4x.java.s7.model.S7DataBlockAddress;
+import org.apache.plc4x.java.s7.model.S7BitField;
+import org.apache.plc4x.java.s7.model.S7DataBlockField;
+import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
@@ -82,19 +82,19 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
     public Class<?> type;
 
     @Parameterized.Parameter(1)
-    public S7Address address;
+    public S7Field field;
 
     @Parameterized.Parameters(name = "{index} Type:{0} {1}")
     public static Collection<Object[]> data() {
         List<Object[]> arguments = new LinkedList<>();
-        // Build the cross product of all variables and address types.
+        // Build the cross product of all variables and field types.
         streamOfPlc4XSupportedDataTypes()
             .forEach(
                 aClass -> Arrays.asList(
-                    mock(S7Address.class),
-                    mock(S7BitAddress.class),
-                    mock(S7DataBlockAddress.class))
-                    .forEach(s7Address -> arguments.add(new Object[]{aClass, s7Address}))
+                    mock(S7Field.class),
+                    mock(S7BitField.class),
+                    mock(S7DataBlockField.class))
+                    .forEach(field -> arguments.add(new Object[]{aClass, field}))
             );
         return arguments;
     }
@@ -112,14 +112,14 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
         // Read Request Tests
         {
             LinkedList<Object> out = new LinkedList<>();
-            SUT.encode(null, createMockedContainer(new TypeSafePlcReadRequest(type, address)), out);
+            SUT.encode(null, createMockedContainer(new TypeSafePlcReadRequest(type, field)), out);
             // TODO: finish the asserts
             assertThat(out, hasSize(1));
         }
         // Write Request Tests
         {
             LinkedList<Object> out = new LinkedList<>();
-            SUT.encode(null, createMockedContainer(new TypeSafePlcWriteRequest(type, address, fakeValueFor(type))), out);
+            SUT.encode(null, createMockedContainer(new TypeSafePlcWriteRequest(type, field, fakeValueFor(type))), out);
             // TODO: finish the asserts
             assertThat(out, hasSize(1));
         }
@@ -137,7 +137,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
                 Field requests = Plc4XS7Protocol.class.getDeclaredField("requests");
                 requests.setAccessible(true);
                 Map<Short, PlcRequestContainer> requestContainerMap = (Map<Short, PlcRequestContainer>) requests.get(SUT);
-                requestContainerMap.put(fakeTpduReference, createMockedContainer(new TypeSafePlcReadRequest(type, address)));
+                requestContainerMap.put(fakeTpduReference, createMockedContainer(new TypeSafePlcReadRequest(type, field)));
             }
             S7ResponseMessage msg = new S7ResponseMessage(
                 MessageType.ACK,
@@ -159,7 +159,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
                 Field requests = Plc4XS7Protocol.class.getDeclaredField("requests");
                 requests.setAccessible(true);
                 Map<Short, PlcRequestContainer> requestContainerMap = (Map<Short, PlcRequestContainer>) requests.get(SUT);
-                requestContainerMap.put(fakeTpduReference, createMockedContainer(new TypeSafePlcWriteRequest(type, address, fakeValueFor(type))));
+                requestContainerMap.put(fakeTpduReference, createMockedContainer(new TypeSafePlcWriteRequest(type, field, fakeValueFor(type))));
             }
             S7ResponseMessage msg = new S7ResponseMessage(
                 MessageType.ACK,

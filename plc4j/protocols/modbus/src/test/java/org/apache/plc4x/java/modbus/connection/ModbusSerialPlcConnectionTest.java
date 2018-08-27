@@ -65,69 +65,69 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void emptyParseAddress() throws Exception {
+    public void prepareEmptyField() throws Exception {
         try {
-            SUT.parseAddress("");
+            SUT.prepareField("");
         } catch (IllegalArgumentException exception) {
-            assertTrue("Unexpected exception", exception.getMessage().startsWith("address  doesn't match "));
+            assertTrue("Unexpected exception", exception.getMessage().startsWith("address doesn't match "));
         }
     }
 
     @Test
-    public void parseCoilModbusAddress() throws Exception {
+    public void prepareField() throws Exception {
         try {
-            CoilModbusAddress address = (CoilModbusAddress) SUT.parseAddress("0/1");
-            assertEquals(address.getAddress(), 0);
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
-        }
-    }
-
-    @Test
-    public void parseMaskWriteRegisterModbusAddress() throws Exception {
-        try {
-            MaskWriteRegisterModbusAddress address = (MaskWriteRegisterModbusAddress) SUT.parseAddress("0/1");
-            assertEquals(address.getAddress(), 0);
+            CoilModbusField field = (CoilModbusField) SUT.prepareField("0/1");
+            assertEquals(field.getAddress(), 0);
         } catch (IllegalArgumentException exception) {
             fail("valid data block address");
         }
     }
 
     @Test
-    public void parseReadDiscreteInputsModbusAddress() throws Exception {
+    public void prepareMaskWriteRegisterModbusField() throws Exception {
         try {
-            ReadDiscreteInputsModbusAddress address = (ReadDiscreteInputsModbusAddress) SUT.parseAddress("0/1");
-            assertEquals(address.getAddress(), 0);
+            MaskWriteRegisterModbusField field = (MaskWriteRegisterModbusField) SUT.prepareField("0/1");
+            assertEquals(field.getAddress(), 0);
         } catch (IllegalArgumentException exception) {
             fail("valid data block address");
         }
     }
 
     @Test
-    public void parseReadHoldingRegistersModbusAddress() throws Exception {
+    public void prepareReadDiscreteInputsModbusField() throws Exception {
         try {
-            ReadHoldingRegistersModbusAddress address = (ReadHoldingRegistersModbusAddress) SUT.parseAddress("0/1");
-            assertEquals(address.getAddress(), 0);
+            ReadDiscreteInputsModbusField field = (ReadDiscreteInputsModbusField) SUT.prepareField("0/1");
+            assertEquals(field.getAddress(), 0);
         } catch (IllegalArgumentException exception) {
             fail("valid data block address");
         }
     }
 
     @Test
-    public void parseReadInputRegistersModbusAddress() throws Exception {
+    public void prepareReadHoldingRegistersModbusField() throws Exception {
         try {
-            ReadInputRegistersModbusAddress address = (ReadInputRegistersModbusAddress) SUT.parseAddress("0/1");
-            assertEquals(address.getAddress(), 0);
+            ReadHoldingRegistersModbusField field = (ReadHoldingRegistersModbusField) SUT.prepareField("0/1");
+            assertEquals(field.getAddress(), 0);
         } catch (IllegalArgumentException exception) {
             fail("valid data block address");
         }
     }
 
     @Test
-    public void parseRegisterAddress() throws Exception {
+    public void prepareReadInputRegistersModbusField() throws Exception {
         try {
-            RegisterModbusAddress address = (RegisterModbusAddress) SUT.parseAddress("0/1");
-            assertEquals(address.getAddress(), 0);
+            ReadInputRegistersModbusField field = (ReadInputRegistersModbusField) SUT.prepareField("0/1");
+            assertEquals(field.getAddress(), 0);
+        } catch (IllegalArgumentException exception) {
+            fail("valid data block address");
+        }
+    }
+
+    @Test
+    public void prepareRegisterField() throws Exception {
+        try {
+            RegisterModbusField field = (RegisterModbusField) SUT.prepareField("0/1");
+            assertEquals(field.getAddress(), 0);
         } catch (IllegalArgumentException exception) {
             fail("valid data block address");
         }
@@ -136,7 +136,7 @@ public class ModbusSerialPlcConnectionTest {
     @Test
     public void testRead() throws Exception {
         prepareSerialSimulator();
-        CompletableFuture<PlcReadResponse> read = SUT.read(new PlcReadRequest(String.class, SUT.parseAddress("0/0")));
+        CompletableFuture<PlcReadResponse> read = SUT.read(new PlcReadRequest(String.class, SUT.prepareField("0/0")));
         PlcReadResponse plcReadResponse = read.get(30, TimeUnit.SECONDS);
         assertNotNull(plcReadResponse);
     }

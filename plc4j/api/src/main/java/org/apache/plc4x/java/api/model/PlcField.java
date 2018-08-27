@@ -1,4 +1,3 @@
-package org.apache.plc4x.java.api.model;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -17,16 +16,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
+package org.apache.plc4x.java.api.model;
 
 /**
- * When subscribing to remote resources, depending on the used protocol
- * different data is used to identify a subscription. This interface is
- * to be implemented in the individual Driver implementations to contain
- * all information needed to pull or unsubscribe any form of subscription.
+ * Base type for all field types.
+ * Typically every driver provides an implementation of this interface in order
+ * to be able to describe the fields of a resource. As this is completely tied to
+ * the implemented protocol, this base interface makes absolutely no assumption to
+ * any information it should provide.
  *
- * For every subscribed item, a separate {@link SubscriptionHandle} object is
- * returned in order to allow fine granular unsubscriptions.
+ * In order to stay platform and protocol independent every driver connection implementation
+ * provides a prepareField(String) method that is able to parse a string representation of
+ * a resource into it's individual field type. Manually constructing PlcField objects
+ * manually makes the solution less independent from the protocol, but might be faster.
  */
-public interface SubscriptionHandle {
+public interface PlcField {
 
 }

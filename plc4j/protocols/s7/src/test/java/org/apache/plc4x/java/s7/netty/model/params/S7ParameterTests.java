@@ -51,7 +51,7 @@ public class S7ParameterTests {
 
         VarParameter varParameter = new VarParameter(parameterType, parameterItems);
         assertThat("Unexpected parameter type", varParameter.getType(), equalTo(ParameterType.READ_VAR));
-        assertThat("Unexpected paramater items", varParameter.getItems(), contains(parameterItems.toArray()));
+        assertThat("Unexpected parameter items", varParameter.getItems(), contains(parameterItems.toArray()));
     }
 
     @Test

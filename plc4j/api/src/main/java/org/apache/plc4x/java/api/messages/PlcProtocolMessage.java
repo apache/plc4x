@@ -17,8 +17,8 @@ specific language governing permissions and limitations
 under the License.
 */
 
-public interface ProtocolMessage {
+public interface PlcProtocolMessage {
 
-    ProtocolMessage getParent();
+    PlcProtocolMessage getParent();
 
 }

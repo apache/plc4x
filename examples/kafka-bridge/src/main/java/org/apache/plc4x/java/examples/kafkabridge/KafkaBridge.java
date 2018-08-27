@@ -39,10 +39,10 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.examples.kafkabridge.model.PlcAddress;
+import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
+import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.examples.kafkabridge.model.PlcFieldConfig;
 import org.apache.plc4x.java.examples.kafkabridge.model.Configuration;
 import org.apache.plc4x.java.examples.kafkabridge.model.PlcMemoryBlock;
 import org.slf4j.Logger;
@@ -79,14 +79,14 @@ public class KafkaBridge {
         Topology top = dp.newTopology("kafka-bridge");
 
         // Build the entire request.
-        Map<ReadRequestItem, String> names = new HashMap<>();
+        Map<PlcReadRequestItem, String> names = new HashMap<>();
         PlcReadRequest readRequest = new PlcReadRequest();
         for(PlcMemoryBlock plcMemoryBlock : config.getPlcConfig().getPlcMemoryBlocks()) {
-            for (PlcAddress address : config.getPlcConfig().getPlcAddresses()) {
+            for (PlcFieldConfig address : config.getPlcConfig().getPlcFields()) {
                 try {
-                    Address plcAddress = plcAdapter.parseAddress(
+                    PlcField field = plcAdapter.prepareField(
                             "DATA_BLOCKS/" + plcMemoryBlock.getAddress() + "/" + address.getAddress());
-                    ReadRequestItem readItem = new ReadRequestItem<>(address.getType(), plcAddress,
+                    PlcReadRequestItem readItem = new PlcReadRequestItem<>(address.getType(), field,
                             +address.getSize());
                     readRequest.addItem(readItem);
                     names.put(readItem, plcMemoryBlock.getName() + "/" + address.getName());
@@ -109,7 +109,7 @@ public class KafkaBridge {
         // Convert the byte into a string.
         TStream<String> jsonSource = source.map(value -> {
             JsonObject jsonObject = new JsonObject();
-            for (ReadResponseItem<?> readResponseItem : value.getResponseItems()) {
+            for (PlcReadResponseItem<?> readResponseItem : value.getResponseItems()) {
                 String name = names.get(readResponseItem.getRequestItem());
                 if(readResponseItem.getValues().size() == 1) {
                     jsonObject.addProperty(name, Byte.toString((Byte) readResponseItem.getValues().get(0)));
