@@ -42,6 +42,7 @@
     <module>kafka-bridge</module>
     <module>plclogger</module>
     <module>azure</module>
+    <module>google</module>
   </modules>
 
   <dependencyManagement>
