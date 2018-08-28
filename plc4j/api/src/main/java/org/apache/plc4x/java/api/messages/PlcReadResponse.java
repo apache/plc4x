@@ -18,40 +18,67 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * Response to a {@link PlcReadRequest}.
- * Contains the values read from the PLC but untyped.
- * <p>
- * Values are extracted using the {@link PlcReadRequestItem}s that were send in the read request.
- * <p>
- * If only a variables of one type are requested it is better to use
- * {@link org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest} which leads to a
- * {@link org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse}.
  */
-public class PlcReadResponse extends PlcResponse<PlcReadRequest, PlcReadResponseItem<?>, PlcReadRequestItem<?>> {
+public interface PlcReadResponse extends PlcFieldResponse<PlcReadRequest> {
 
-    public PlcReadResponse(PlcReadRequest request, PlcReadResponseItem<?> responseItems) {
-        super(request, Collections.singletonList(responseItems));
-    }
+    int getNumValues(String name);
 
-    public PlcReadResponse(PlcReadRequest request, List<? extends PlcReadResponseItem<?>> responseItems) {
-        super(request, responseItems);
-    }
+    boolean isRaw(String name);
+    byte[] getRaw(String name);
+    byte[] getRaw(String name, int index);
 
-    @SuppressWarnings("unchecked")
-    public <T> Optional<PlcReadResponseItem<T>> getValue(PlcReadRequestItem<T> item) {
-        return (Optional) super.getValue(item);
-    }
+    boolean isObject(String name);
+    Object getObject(String name);
+    Object getObject(String name, int index);
 
-    @Override
-    public String toString() {
-        return "PlcReadResponse{} " + super.toString();
-    }
+    boolean isBoolean(String name);
+    Boolean getBoolean(String name);
+    Boolean getBoolean(String name, int index);
+
+    boolean isByte(String name);
+    Byte getByte(String name);
+    Byte getByte(String name, int index);
+
+    boolean isShort(String name);
+    Short getShort(String name);
+    Short getShort(String name, int index);
+
+    boolean isInteger(String name);
+    Integer getInteger(String name);
+    Integer getInteger(String name, int index);
+
+    boolean isLong(String name);
+    Long getLong(String name);
+    Long getLong(String name, int index);
+
+    boolean isFloat(String name);
+    Float getFloat(String name);
+    Float getFloat(String name, int index);
+
+    boolean isDouble(String name);
+    Double getDouble(String name);
+    Double getDouble(String name, int index);
+
+    boolean isString(String name);
+    String getString(String name);
+    String getString(String name, int index);
+
+    boolean isTime(String name);
+    LocalTime getTime(String name);
+    LocalTime getTime(String name, int index);
+
+    boolean isDate(String name);
+    LocalDate getDate(String name);
+    LocalDate getDate(String name, int index);
+
+    boolean isDateTime(String name);
+    LocalDateTime getDateTime(String name);
+    LocalDateTime getDateTime(String name, int index);
+
 }

@@ -18,30 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
+public interface PlcWriteResponse extends PlcFieldResponse<PlcWriteRequest> {
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-public class PlcWriteResponse extends PlcResponse<PlcWriteRequest, PlcWriteResponseItem<?>, PlcWriteRequestItem<?>> {
-
-    public PlcWriteResponse(PlcWriteRequest request, PlcWriteResponseItem<?> responseItem) {
-        super(request, Collections.singletonList(responseItem));
-    }
-
-    public PlcWriteResponse(PlcWriteRequest request, List<? extends PlcWriteResponseItem<?>> responseItems) {
-        super(request, responseItems);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> Optional<PlcWriteResponseItem<T>> getValue(PlcWriteRequestItem<T> item) {
-        return (Optional) super.getValue(item);
-    }
-
-    @Override
-    public String toString() {
-        return "PlcWriteResponse{} " + super.toString();
-    }
 }

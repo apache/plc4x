@@ -22,5 +22,6 @@ public enum PlcResponseCode {
     OK,
     NOT_FOUND,
     INVALID_ADDRESS,
-    INTERNAL_ERROR
+    INTERNAL_ERROR,
+    RESPONSE_PENDING
 }

@@ -1,10 +1,3 @@
-package org.apache.plc4x.java.api.messages;
-
-import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
-
-import java.util.List;
-import java.util.Objects;
-
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -23,39 +16,8 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-public class PlcSubscriptionEvent {
+package org.apache.plc4x.java.api.messages;
 
-    protected final List<SubscriptionEventItem<?>> eventItems;
+public interface PlcSubscriptionEvent {
 
-    public PlcSubscriptionEvent(List<SubscriptionEventItem<?>> eventItems) {
-        this.eventItems = eventItems;
-    }
-
-    public List<SubscriptionEventItem<?>> getEventItems() {
-        return eventItems;
-    }
-
-    @Override
-    public String toString() {
-        return "PlcSubscriptionEvent{" +
-            "eventItems=" + eventItems +
-            '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PlcSubscriptionEvent)) {
-            return false;
-        }
-        PlcSubscriptionEvent that = (PlcSubscriptionEvent) o;
-        return Objects.equals(eventItems, that.eventItems);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(eventItems);
-    }
 }

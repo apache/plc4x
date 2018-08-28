@@ -1,4 +1,3 @@
-package org.apache.plc4x.java.api.messages;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -17,10 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-public class PlcUnsubscriptionResponse implements PlcMessage {
+package org.apache.plc4x.java.api.messages;
 
-    @Override
-    public String toString() {
-        return "PlcUnsubscriptionResponse{}";
+public interface PlcUnsubscriptionResponse extends PlcFieldResponse<PlcUnsubscriptionRequest> {
+
+    interface Builder extends PlcMessageBuilder<PlcUnsubscriptionResponse> {
+        /**
+         * Adds a new field to the to be constructed request which should cancel a previously
+         * created subscription.
+         *
+         * @param name alias of the field.
+         * @return
+         */
+        PlcReadRequest.Builder addField(String name);
     }
+
 }

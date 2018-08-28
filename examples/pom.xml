@@ -36,12 +36,13 @@
   <description>Parent of all application example modules.</description>
 
   <modules>
+    <module>azure</module>
     <module>dummy-driver</module>
+    <module>hello-plc4x</module>
     <module>iot-factory</module>
     <module>iotree</module>
     <module>kafka-bridge</module>
     <module>plclogger</module>
-    <module>azure</module>
   </modules>
 
   <dependencyManagement>

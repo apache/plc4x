@@ -16,21 +16,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages.items;
+package org.apache.plc4x.java.api.types;
 
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.model.PlcSubscriptionType;
+/**
+ * {@link PlcSubscriptionType} specifies the nature of the subscription.
+ * In general PLC4X supports exactly 3 types of subscriptions.
+ */
+public enum PlcSubscriptionType {
 
-import java.util.function.Consumer;
+    /**
+     * A cyclic subscription where a value is sent no matter if it's value changed in a given interval.
+     */
+    CYCLIC,
 
-public class SubscriptionRequestEventItem<T> extends SubscriptionRequestItem<T> {
+    /**
+     * Only send data, if a value in the PLC changed.
+     */
+    CHANGE_OF_STATE,
 
-    public SubscriptionRequestEventItem(Class<T> dataType, PlcField field, Consumer<SubscriptionEventItem<T>> consumer) {
-        super(dataType, field, PlcSubscriptionType.EVENT, consumer);
-    }
+    /**
+     * Subscribe to events created by the PLC which usually are defined in the PLCs application (Alarms).
+     */
+    EVENT
 
-    @Override
-    public String toString() {
-        return "SubscriptionRequestEventItem{} " + super.toString();
-    }
 }

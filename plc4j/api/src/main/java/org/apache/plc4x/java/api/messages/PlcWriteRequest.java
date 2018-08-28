@@ -18,91 +18,39 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.model.PlcField;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-import java.util.List;
-import java.util.Objects;
+public interface PlcWriteRequest extends PlcFieldRequest {
 
-public class PlcWriteRequest extends PlcRequest<PlcWriteRequestItem<?>> {
+    interface Builder extends PlcMessageBuilder<PlcWriteRequest> {
 
-    public PlcWriteRequest() {
+        /* NOT Quite sure about these two ...
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, byte[]... values);
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Object... values);*/
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Boolean... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Byte... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Short... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Integer... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Long... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Float... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Double... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, String... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, LocalTime... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, LocalDate... values);
+
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, LocalDateTime... values);
     }
 
-    public PlcWriteRequest(PlcWriteRequestItem<?> requestItem) {
-        addItem(requestItem);
-    }
-
-    @SafeVarargs
-    public <T> PlcWriteRequest(Class<T> dataType, PlcField field, T... values) {
-        Objects.requireNonNull(dataType, "Data type must not be null");
-        Objects.requireNonNull(field, "PlcField must not be null");
-        addItem(new PlcWriteRequestItem<>(dataType, field, values));
-    }
-
-    public PlcWriteRequest(List<PlcWriteRequestItem<?>> requestItems) {
-        super(requestItems);
-    }
-
-    public static PlcWriteRequest.Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder extends PlcRequest.Builder<PlcWriteRequestItem<?>> {
-
-        @SuppressWarnings("unchecked")
-        public <T> PlcWriteRequest.Builder addItem(PlcField field, T value) {
-            Objects.requireNonNull(value);
-            checkType(value.getClass());
-            requests.add(new PlcWriteRequestItem<>((Class<T>) value.getClass(), field, (T) value));
-            return this;
-        }
-
-        @SafeVarargs
-        public final <T> PlcWriteRequest.Builder addItem(Class<T> dataType, PlcField field, T... values) {
-            checkType(dataType);
-            requests.add(new PlcWriteRequestItem<>(dataType, field, values));
-            return this;
-        }
-
-        public final PlcWriteRequest.Builder addItem(PlcWriteRequestItem<?> writeRequestItem) {
-            checkType(writeRequestItem.getDatatype());
-            requests.add(writeRequestItem);
-            return this;
-        }
-
-        public final PlcWriteRequest build() {
-            if (requests.isEmpty()) {
-                throw new IllegalStateException("No requests added");
-            }
-            PlcWriteRequest plcWriteRequest;
-            if (mixed) {
-                plcWriteRequest = new PlcWriteRequest();
-            } else {
-                plcWriteRequest = new TypeSafePlcWriteRequest<>(firstType);
-            }
-            for (PlcWriteRequestItem request : requests) {
-                plcWriteRequest.addItem(request);
-            }
-            return plcWriteRequest;
-        }
-
-        @SuppressWarnings("unchecked")
-        public final <T> TypeSafePlcWriteRequest<T> build(Class<T> type) {
-            if (firstType != type) {
-                throw new ClassCastException("Incompatible type " + type + ". Required " + firstType);
-            }
-            if (mixed) {
-                throw new IllegalStateException("Mixed types contained");
-            }
-            return (TypeSafePlcWriteRequest<T>) build();
-        }
-
-    }
-
-    @Override
-    public String toString() {
-        return "PlcWriteRequest{} " + super.toString();
-    }
 }

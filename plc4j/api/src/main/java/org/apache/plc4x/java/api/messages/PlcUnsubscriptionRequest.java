@@ -18,117 +18,42 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
-import org.apache.plc4x.java.api.messages.items.UnsubscriptionRequestItem;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import java.time.Duration;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+public interface PlcUnsubscriptionRequest extends PlcFieldRequest {
 
-public class PlcUnsubscriptionRequest implements PlcMessage {
+    interface Builder extends PlcMessageBuilder<PlcUnsubscriptionRequest> {
+        /**
+         * Adds a new field to the to be constructed request which should be polled cyclically.
+         *
+         * @param name alias of the field.
+         * @param fieldQuery field query string for accessing the field.
+         * @param pollingInterval interval, in which the field should be polled.
+         * @return
+         */
+        PlcReadRequest.Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval);
 
-    protected final List<UnsubscriptionRequestItem> requestItems;
+        /**
+         * Adds a new field to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
+         * @param name alias of the field.
+         * @param fieldQuery field query string for accessing the field.
+         * @return
+         */
+        PlcReadRequest.Builder addChangeOfStateField(String name, String fieldQuery);
 
-    public PlcUnsubscriptionRequest() {
-        this.requestItems = new LinkedList<>();
+        /**
+         * Adds a new subscription to the to be constructed request which should be updated
+         * as soon as an event occurs.
+         *
+         * REMARK: We will have to see if this signature is correct as soon as we start using this type of subscription.
+         *
+         * @param name alias of the field.
+         * @param fieldQuery field query string for accessing the field.
+         * @return
+         */
+        PlcReadRequest.Builder addEventField(String name, String fieldQuery);
     }
 
-    public PlcUnsubscriptionRequest(List<UnsubscriptionRequestItem> requestItems) {
-        Objects.requireNonNull(requestItems, "Request items must not be null");
-        this.requestItems = requestItems;
-    }
-
-    public void addItem(UnsubscriptionRequestItem unsubscriptionRequestItem) {
-        Objects.requireNonNull(unsubscriptionRequestItem, "Request item must not be null");
-        getRequestItems().add(unsubscriptionRequestItem);
-    }
-
-    public List<UnsubscriptionRequestItem> getRequestItems() {
-        return requestItems;
-    }
-
-    public int getNumberOfItems() {
-        return getRequestItems().size();
-    }
-
-    public static PlcUnsubscriptionRequest.Builder builder() {
-        return new PlcUnsubscriptionRequest.Builder();
-    }
-
-    public static class Builder extends PlcRequest.Builder<UnsubscriptionRequestItem> {
-
-        public final Builder addHandle(PlcSubscriptionHandle subscriptionHandle) {
-            requests.add(new UnsubscriptionRequestItem(subscriptionHandle));
-            return this;
-        }
-
-        public final Builder addHandle(PlcSubscriptionHandle... subscriptionHandles) {
-            requests.addAll(Arrays.stream(subscriptionHandles).map(UnsubscriptionRequestItem::new).collect(Collectors.toList()));
-            return this;
-        }
-
-        public final Builder addHandle(List<PlcSubscriptionHandle> subscriptionHandles) {
-            requests.addAll(subscriptionHandles.stream().map(UnsubscriptionRequestItem::new).collect(Collectors.toList()));
-            return this;
-        }
-
-        public final Builder addHandle(SubscriptionResponseItem subscriptionResponseItem) {
-            requests.add(new UnsubscriptionRequestItem(subscriptionResponseItem.getSubscriptionHandle()));
-            return this;
-        }
-
-        public final Builder addItem(UnsubscriptionRequestItem unsubscriptionRequestItem) {
-            requests.add(unsubscriptionRequestItem);
-            return this;
-        }
-
-        public final Builder addItem(UnsubscriptionRequestItem... unsubscriptionRequestItems) {
-            requests.addAll(Arrays.asList(unsubscriptionRequestItems));
-            return this;
-        }
-
-        public final Builder addItem(List<UnsubscriptionRequestItem> unsubscriptionRequestItems) {
-            requests.addAll(unsubscriptionRequestItems);
-            return this;
-        }
-
-        public final PlcUnsubscriptionRequest build() {
-            if (requests.isEmpty()) {
-                throw new IllegalStateException("No requests added");
-            }
-            PlcUnsubscriptionRequest plcUnsubscriptionRequest = new PlcUnsubscriptionRequest();
-            for (UnsubscriptionRequestItem request : requests) {
-                plcUnsubscriptionRequest.addItem(request);
-            }
-            return plcUnsubscriptionRequest;
-        }
-
-    }
-
-    @Override
-    public String toString() {
-        return "PlcUnsubscriptionRequest{" +
-            "requestItems=" + requestItems +
-            '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PlcUnsubscriptionRequest)) {
-            return false;
-        }
-        PlcUnsubscriptionRequest that = (PlcUnsubscriptionRequest) o;
-        return Objects.equals(requestItems, that.requestItems);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(requestItems);
-    }
 }

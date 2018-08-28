@@ -18,94 +18,13 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.RequestItem;
-import org.apache.plc4x.java.api.messages.items.ResponseItem;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 /**
  * Base type for all response messages sent as response for a prior request
  * from a plc to the plc4x system.
- * @param <REQUEST> 
- * @param <RESPONSE_ITEM> 
- * @param <REQUEST_ITEM> 
+ * @param <REQUEST_TYPE>
  */
-public abstract class PlcResponse<REQUEST extends PlcRequest, RESPONSE_ITEM extends ResponseItem, REQUEST_ITEM extends RequestItem> implements PlcMessage {
+public interface PlcResponse<REQUEST_TYPE extends PlcRequest> extends PlcMessage {
 
-    private final REQUEST request;
+    REQUEST_TYPE getRequest();
 
-    private final List<? extends RESPONSE_ITEM> responseItems;
-
-    public PlcResponse(REQUEST request, List<? extends RESPONSE_ITEM> responseItems) {
-        Objects.requireNonNull(request, "Request must not be null");
-        Objects.requireNonNull(responseItems, "Response items must not be null");
-        this.request = request;
-        this.responseItems = responseItems;
-    }
-
-    public REQUEST getRequest() {
-        return request;
-    }
-
-    public List<? extends RESPONSE_ITEM> getResponseItems() {
-        return responseItems;
-    }
-
-    public Optional<? extends RESPONSE_ITEM> getResponseItem() {
-        if (isMultiValue()) {
-            throw new IllegalStateException("Too many items " + getNumberOfItems());
-        }
-        if (isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(getResponseItems().get(0));
-    }
-
-    public int getNumberOfItems() {
-        return getResponseItems().size();
-    }
-
-    public boolean isMultiValue() {
-        return getNumberOfItems() > 1;
-    }
-
-    public boolean isEmpty() {
-        return getNumberOfItems() < 1;
-    }
-
-    public Optional<RESPONSE_ITEM> getValue(REQUEST_ITEM item) {
-        return getResponseItems().stream()
-            .filter(x -> x.getRequestItem().equals(item))
-            .map(e -> (RESPONSE_ITEM) e)
-            .findAny();
-    }
-
-    @Override
-    public String toString() {
-        return "PlcResponse{" +
-            "request=" + request +
-            ", responseItems=" + responseItems +
-            '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PlcResponse)) {
-            return false;
-        }
-        PlcResponse<?, ?, ?> that = (PlcResponse<?, ?, ?>) o;
-        return Objects.equals(request, that.request) &&
-            Objects.equals(responseItems, that.responseItems);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(request, responseItems);
-    }
 }

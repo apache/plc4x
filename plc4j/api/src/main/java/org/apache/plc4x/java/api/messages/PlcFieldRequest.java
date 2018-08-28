@@ -1,4 +1,3 @@
-package org.apache.plc4x.java.api.model;
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -17,26 +16,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
+package org.apache.plc4x.java.api.messages;
 
-/**
- * {@link PlcSubscriptionType} specifies the nature of the subscription.
- * In general PLC4X supports exactly 3 types of subscriptions.
- */
-public enum PlcSubscriptionType {
+import org.apache.plc4x.java.api.model.PlcField;
 
-    /**
-     * A cyclic subscription where a value is sent no matter if it's value changed in a given interval.
-     */
-    CYCLIC,
+import java.util.Collection;
+import java.util.Map;
 
-    /**
-     * Only send data, if a value in the PLC changed.
-     */
-    CHANGE_OF_STATE,
+public interface PlcFieldRequest extends PlcRequest {
 
-    /**
-     * Subscribe to events created by the PLC which usually are defined in the PLCs application (Alarms).
-     */
-    EVENT
+    Map<String, PlcField> getFields();
+
+    Collection<String> getFieldNames();
+
+    PlcField getField(String name);
+
+
 
 }

@@ -16,21 +16,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages.items;
+package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.model.PlcSubscriptionType;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-import java.util.function.Consumer;
+import java.util.Collection;
+import java.util.Map;
 
-public class SubscriptionRequestChangeOfStateItem<T> extends SubscriptionRequestItem<T> {
+/**
+ * Base type for all response messages sent as response for a prior request
+ * from a plc to the plc4x system.
+ * @param <REQUEST_TYPE>
+ */
+public interface PlcFieldResponse<REQUEST_TYPE extends PlcFieldRequest> extends PlcResponse<REQUEST_TYPE> {
 
-    public SubscriptionRequestChangeOfStateItem(Class<T> datatype, PlcField field, Consumer<SubscriptionEventItem<T>> consumer) {
-        super(datatype, field, PlcSubscriptionType.CHANGE_OF_STATE, consumer);
-    }
+    Map<String, PlcField> getFields();
 
-    @Override
-    public String toString() {
-        return "SubscriptionRequestChangeOfStateItem{} " + super.toString();
-    }
+    Collection<String> getFieldNames();
+
+    PlcField getField(String name);
+
+    PlcResponseCode getResponseCode(String name);
+
 }
