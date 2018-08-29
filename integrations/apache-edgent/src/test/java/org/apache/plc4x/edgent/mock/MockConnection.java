@@ -33,14 +33,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
-import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
@@ -89,7 +81,7 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
         List<PlcReadResponseItem<Object>> responseItems = new LinkedList<>();
         for (PlcReadRequestItem<?> reqItem : readRequest.getRequestItems()) {
             @SuppressWarnings("unchecked")
-            PlcReadRequestItem<Object> requestItem = (PlcReadRequestItem<Object>) reqItem;
+            PlcReadRequestItem<Object> requestItem = reqItem;
             PlcReadResponseItem<Object> responseItem = new PlcReadResponseItem<>(requestItem, PlcResponseCode.OK,
                 Collections.singletonList(getDataValue(requestItem.getField())));
             responseItems.add(responseItem);
@@ -117,7 +109,7 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
         }
         List<PlcWriteResponseItem<Object>> responseItems = new LinkedList<>();
         for (PlcWriteRequestItem<?> reqItem : writeRequest.getRequestItems()) {
-            PlcWriteRequestItem<Object> requestItem = (PlcWriteRequestItem<Object>) reqItem;
+            PlcWriteRequestItem<Object> requestItem = reqItem;
             setDataValue(requestItem.getField(), requestItem.getValues());
             PlcWriteResponseItem<Object> responseItem = new PlcWriteResponseItem<>(requestItem, PlcResponseCode.OK);
             responseItems.add(responseItem);

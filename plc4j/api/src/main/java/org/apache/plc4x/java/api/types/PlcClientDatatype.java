@@ -16,26 +16,22 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.connection;
+package org.apache.plc4x.java.api.types;
 
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+public enum PlcClientDatatype {
 
-import java.util.concurrent.CompletableFuture;
-
-/**
- * Interface implemented by all PlcConnections that are able to write to remote resources.
- */
-public interface PlcWriter {
-
-    /**
-     * Writes a given value to a PLC.
-     *
-     * @param writeRequest object describing the type, location and value that whould be written.
-     * @return a {@link CompletableFuture} giving async access to the response of the write operation.
-     */
-    CompletableFuture<? extends PlcWriteResponse> write(PlcWriteRequest writeRequest);
-
-    PlcWriteRequest.Builder writeRequestBuilder();
+    RAW,
+    OBJECT,
+    BOOLEAN,
+    BYTE,
+    SHORT,
+    INTEGER,
+    LONG,
+    FLOAT,
+    DOUBLE,
+    STRING,
+    TIME,
+    DATE,
+    DATE_TIME
 
 }

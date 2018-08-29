@@ -26,31 +26,31 @@ public interface PlcWriteRequest extends PlcFieldRequest {
 
     interface Builder extends PlcMessageBuilder<PlcWriteRequest> {
 
-        /* NOT Quite sure about these two ...
         PlcReadRequest.Builder addItem(String name, String fieldQuery, byte[]... values);
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Object... values);*/
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Boolean... values);
+        PlcReadRequest.Builder addItem(String name, String fieldQuery, Object... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Byte... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Boolean... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Short... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Byte... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Integer... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Short... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Long... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Integer... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Float... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Long... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Double... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Float... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, String... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Double... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, LocalTime... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, String... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, LocalDate... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalTime... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, LocalDateTime... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDate... values);
+
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDateTime... values);
     }
 
 }

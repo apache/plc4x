@@ -35,13 +35,9 @@ import org.apache.edgent.topology.TStream;
 import org.apache.edgent.topology.Topology;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.examples.kafkabridge.model.PlcFieldConfig;
 import org.apache.plc4x.java.examples.kafkabridge.model.Configuration;
 import org.apache.plc4x.java.examples.kafkabridge.model.PlcMemoryBlock;
@@ -79,26 +75,14 @@ public class KafkaBridge {
         Topology top = dp.newTopology("kafka-bridge");
 
         // Build the entire request.
-        Map<PlcReadRequestItem, String> names = new HashMap<>();
-        PlcReadRequest readRequest = new PlcReadRequest();
+        PlcReadRequest.Builder builder = plcAdapter.readRequestBuilder();
         for(PlcMemoryBlock plcMemoryBlock : config.getPlcConfig().getPlcMemoryBlocks()) {
             for (PlcFieldConfig address : config.getPlcConfig().getPlcFields()) {
-                try {
-                    PlcField field = plcAdapter.prepareField(
-                            "DATA_BLOCKS/" + plcMemoryBlock.getAddress() + "/" + address.getAddress());
-                    PlcReadRequestItem readItem = new PlcReadRequestItem<>(address.getType(), field,
-                            +address.getSize());
-                    readRequest.addItem(readItem);
-                    names.put(readItem, plcMemoryBlock.getName() + "/" + address.getName());
-                } catch (PlcConnectionException e) {
-                    logger.error("Error connecting to remote", e);
-                    throw e;
-                } catch (PlcException e) {
-                    logger.error("Error parsing address {}", address.getAddress(), e);
-                    throw e;
-                }
+                builder = builder.addItem(plcMemoryBlock.getName() + "/" + address.getName(),
+                    "DATA_BLOCKS/" + plcMemoryBlock.getAddress() + "/" + address.getAddress());
             }
         }
+        PlcReadRequest readRequest = builder.build();
 
         // Create a supplier that is able to read the batch we just created.
         Supplier<PlcReadResponse> plcSupplier = PlcFunctions.batchSupplier(plcAdapter, readRequest);
@@ -109,18 +93,15 @@ public class KafkaBridge {
         // Convert the byte into a string.
         TStream<String> jsonSource = source.map(value -> {
             JsonObject jsonObject = new JsonObject();
-            for (PlcReadResponseItem<?> readResponseItem : value.getResponseItems()) {
-                String name = names.get(readResponseItem.getRequestItem());
-                if(readResponseItem.getValues().size() == 1) {
-                    jsonObject.addProperty(name, Byte.toString((Byte) readResponseItem.getValues().get(0)));
-                } else if (readResponseItem.getValues().size() > 1) {
+            value.getFieldNames().forEach(fieldName -> {
+                if(value.getNumValues(fieldName) == 1) {
+                    jsonObject.addProperty(fieldName, Byte.toString(value.getByte(fieldName)));
+                } else if (value.getNumValues(fieldName) > 1) {
                     JsonArray values = new JsonArray();
-                    for (Object valueElement : readResponseItem.getValues()) {
-                        values.add((Byte) valueElement);
-                    }
-                    jsonObject.add(name, values);
+                    value.getAllBytes(fieldName).forEach(values::add);
+                    jsonObject.add(fieldName, values);
                 }
-            }
+            });
             return jsonObject.toString();
         });
 

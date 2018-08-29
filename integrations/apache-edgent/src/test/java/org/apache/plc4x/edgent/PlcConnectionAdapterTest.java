@@ -350,7 +350,7 @@ public class PlcConnectionAdapterTest {
         adapter.close();
     }
 
-    static <T> void checkSupplier(MockConnection connection, PlcField field, Supplier<T> supplier, Object... values) throws Exception {
+    static <T> void checkSupplier(MockConnection connection, PlcField field, Supplier<T> supplier, Object... values) {
         checkSupplier(0, connection, field, supplier, values);
     }
 
@@ -375,7 +375,7 @@ public class PlcConnectionAdapterTest {
     }
 
     /*
-     * test PlcConnectionAdapter.newConsumer(address)
+     * test PlcConnectionAdapter.newJsonConsumer(address)
      */
     @Test
     @Category(FastTests.class)
@@ -410,7 +410,7 @@ public class PlcConnectionAdapterTest {
     }
 
     /*
-     * test PlcConnectionAdapter.newConsumer(address) with write exception
+     * test PlcConnectionAdapter.newJsonConsumer(address) with write exception
      */
     @Test
     @Category(FastTests.class)
@@ -428,7 +428,7 @@ public class PlcConnectionAdapterTest {
         adapter.close();
     }
 
-    static <T> void checkConsumer(MockConnection connection, PlcField field, Consumer<T> consumer, Object... values) throws Exception {
+    static <T> void checkConsumer(MockConnection connection, PlcField field, Consumer<T> consumer, Object... values) {
         checkConsumer(0, connection, field, consumer, values);
     }
 
@@ -465,7 +465,7 @@ public class PlcConnectionAdapterTest {
     }
 
     /*
-     * test PlcConnectionAdapter.newConsumer(addressFn, valueFn)
+     * test PlcConnectionAdapter.newJsonConsumer(addressFn, valueFn)
      */
     @Test
     @Category(FastTests.class)
@@ -479,29 +479,29 @@ public class PlcConnectionAdapterTest {
 
         Function<JsonObject, String> addressFn = t -> t.get("address").getAsString();
 
-        consumer = adapter.newConsumer(Boolean.class, addressFn, t -> t.get("value").getAsBoolean());
+        consumer = adapter.newJsonConsumer(Boolean.class, addressFn, t -> t.get("value").getAsBoolean());
         checkConsumerJson(connection, address, consumer, true, false);
 
-        consumer = adapter.newConsumer(Byte.class, addressFn, t -> t.get("value").getAsByte());
+        consumer = adapter.newJsonConsumer(Byte.class, addressFn, t -> t.get("value").getAsByte());
         checkConsumerJson(connection, address, consumer, (byte) 0x1, (byte) 0x2, (byte) 0x3);
 
-        consumer = adapter.newConsumer(Short.class, addressFn, t -> t.get("value").getAsShort());
+        consumer = adapter.newJsonConsumer(Short.class, addressFn, t -> t.get("value").getAsShort());
         checkConsumerJson(connection, address, consumer, (short) 1, (short) 2, (short) 3);
 
-        consumer = adapter.newConsumer(Integer.class, addressFn, t -> t.get("value").getAsInt());
+        consumer = adapter.newJsonConsumer(Integer.class, addressFn, t -> t.get("value").getAsInt());
         checkConsumerJson(connection, address, consumer, 1000, 1001, 1002);
 
-        consumer = adapter.newConsumer(Float.class, addressFn, t -> t.get("value").getAsFloat());
+        consumer = adapter.newJsonConsumer(Float.class, addressFn, t -> t.get("value").getAsFloat());
         checkConsumerJson(connection, address, consumer, 1000.5f, 1001.5f, 1002.5f);
 
-        consumer = adapter.newConsumer(String.class, addressFn, t -> t.get("value").getAsString());
+        consumer = adapter.newJsonConsumer(String.class, addressFn, t -> t.get("value").getAsString());
         checkConsumerJson(connection, address, consumer, "one", "two", "three");
 
         adapter.close();
     }
 
     /*
-     * test PlcConnectionAdapter.newConsumer(addressFn, valueFn) with write failure
+     * test PlcConnectionAdapter.newJsonConsumer(addressFn, valueFn) with write failure
      */
     @Test
     @Category(FastTests.class)
@@ -515,7 +515,7 @@ public class PlcConnectionAdapterTest {
 
         Function<JsonObject, String> addressFn = t -> t.get("address").getAsString();
 
-        consumer = adapter.newConsumer(String.class, addressFn, t -> t.get("value").getAsString());
+        consumer = adapter.newJsonConsumer(String.class, addressFn, t -> t.get("value").getAsString());
         checkConsumerJson(2, connection, address, consumer, "one", "two", "three");
 
         adapter.close();

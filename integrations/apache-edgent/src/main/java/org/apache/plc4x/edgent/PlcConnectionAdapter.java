@@ -18,8 +18,7 @@ under the License.
 */
 package org.apache.plc4x.edgent;
 
-import java.util.Calendar;
-
+import com.google.gson.JsonObject;
 import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
@@ -31,13 +30,14 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcClientDatatype;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.JsonObject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * PlcConnectionAdapter encapsulates a plc4x {@link PlcConnection}.
@@ -65,17 +65,18 @@ import com.google.gson.JsonObject;
 public class PlcConnectionAdapter implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(PlcConnectionAdapter.class);
-    private static final Class<?>[] allowedDataTypes = new Class[]{Boolean.class, Byte.class, Short.class, Integer.class, Float.class,  String.class, Calendar.class};
-    
+
+    private static final String FIELD_NAME = "default";
+
     private String plcConnectionUrl;
     private PlcConnection plcConnection;
 
     /*
-   * NOTES:
-   * - if we get to the point of the application needing some feedback (possibly control)
-   *   of read or write errors, my thinking is to enhance the PlcConnectionAdapter
-   *   to enable the app to register an error callback handler or such.
-   */
+     * NOTES:
+     * - if we get to the point of the application needing some feedback (possibly control)
+     *   of read or write errors, my thinking is to enhance the PlcConnectionAdapter
+     *   to enable the app to register an error callback handler or such.
+     */
 
     public PlcConnectionAdapter(PlcConnection plcConnection) {
         this.plcConnection = plcConnection;
@@ -102,44 +103,9 @@ public class PlcConnectionAdapter implements AutoCloseable {
         }
     }
 
-    public PlcField prepareField(String fieldString) throws PlcException {
-        return getConnection().prepareField(fieldString);
-    }
-
-    <T> Supplier<T> newSupplier(Class<T> datatype, String fieldString) {
-        PlcConnectionAdapter.checkDatatype(datatype);
-        // satisfy sonar's "Reduce number of anonymous class lines" code smell
-        return new MySupplier<>(datatype, fieldString);
-    }
-    
-    private class MySupplier<T> implements Supplier<T> {
-        private static final long serialVersionUID = 1L;
-        private Class<T> datatype;
-        private String addressStr;
-      
-        MySupplier(Class<T> datatype, String addressStr) {
-            this.datatype = datatype;
-            this.addressStr = addressStr;
-        }
-
-        @Override
-        public T get() {
-            PlcConnection connection = null;
-            PlcField field = null;
-            try {
-                connection = getConnection();
-                field = connection.prepareField(addressStr);
-                PlcReader reader = connection.getReader()
-                  .orElseThrow(() -> new NullPointerException("No reader available"));
-                TypeSafePlcReadRequest<T> readRequest = PlcConnectionAdapter.newPlcReadRequest(datatype, field);
-                return reader.read(readRequest).get().getResponseItem()
-                  .orElseThrow(() -> new IllegalStateException("No response available"))
-                  .getValues().get(0);
-            } catch (Exception e) {
-                logger.error("reading from plc device {} {} failed", connection, field, e);
-                return null;
-            }
-        }
+    public PlcReadRequest.Builder readRequestBuilder() throws PlcException {
+        return getConnection().getReader().orElseThrow(
+            () -> new PlcException("This connection doesn't support reading")).readRequestBuilder();
     }
 
     Supplier<PlcReadResponse> newSupplier(PlcReadRequest readRequest) {
@@ -152,7 +118,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 try {
                     connection = getConnection();
                     PlcReader reader = connection.getReader()
-                        .orElseThrow(() -> new NullPointerException("No reader available"));
+                        .orElseThrow(() -> new PlcException("This connection doesn't support reading"));
                     return reader.read(readRequest).get();
                 } catch (Exception e) {
                     logger.error("reading from plc device {} {} failed", connection, readRequest, e);
@@ -162,72 +128,217 @@ public class PlcConnectionAdapter implements AutoCloseable {
         };
     }
 
-    <T> Consumer<T> newConsumer(Class<T> datatype, String addressStr) {
-        PlcConnectionAdapter.checkDatatype(datatype);
-        return new Consumer<T>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void accept(T arg0) {
-                PlcConnection connection = null;
-                PlcField field = null;
-                try {
-                    connection = getConnection();
-                    field = connection.prepareField(addressStr);
-                    PlcWriter writer = connection.getWriter()
-                        .orElseThrow(() -> new NullPointerException("No writer available"));
-                    PlcWriteRequest writeReq = PlcConnectionAdapter.newPlcWriteRequest(field, arg0);
-                    writer.write(writeReq).get();
-                } catch (Exception e) {
-                    logger.error("writing to plc device {} {} failed", connection, field, e);
-                }
-            }
-
-        };
+    <T> Supplier<T> newSupplier(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
+        // satisfy sonar's "Reduce number of anonymous class lines" code smell
+        return new MySupplier<>(genericDatatype, clientDatatype, fieldQuery);
     }
 
-    <T> Consumer<JsonObject> newConsumer(Class<T> datatype, Function<JsonObject, String> addressFn, Function<JsonObject, T> valueFn) {
-        PlcConnectionAdapter.checkDatatype(datatype);
-        return new Consumer<JsonObject>() {
-            private static final long serialVersionUID = 1L;
+    private class MySupplier<T> implements Supplier<T> {
 
-            @Override
-            public void accept(JsonObject jo) {
-                PlcConnection connection = null;
-                PlcField field = null;
-                try {
-                    connection = getConnection();
-                    String addressStr = addressFn.apply(jo);
-                    field = connection.prepareField(addressStr);
-                    T value = valueFn.apply(jo);
-                    PlcWriter writer = connection.getWriter()
-                        .orElseThrow(() -> new NullPointerException("No writer available"));
-                    PlcWriteRequest writeReq = newPlcWriteRequest(field, value);
-                    writer.write(writeReq).get();
-                } catch (Exception e) {
-                    logger.error("writing to plc device {} {} failed", connection, field, e);
-                }
-            }
+        private static final long serialVersionUID = 1L;
 
-        };
-    }
+        private Class<T> genericDatatype;
+        private PlcClientDatatype clientDatatype;
+        private String fieldQuery;
 
-    static void checkDatatype(Class<?> cls) {
-        for (Class<?> check: allowedDataTypes) {
-            if (check == cls)
-                return;
+        MySupplier(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
+            this.genericDatatype = genericDatatype;
+            this.clientDatatype = clientDatatype;
+            this.fieldQuery = fieldQuery;
         }
-        throw new IllegalArgumentException("Not a legal plc data type: " + cls.getSimpleName());
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public T get() {
+            PlcConnection connection = null;
+            PlcField field = null;
+            try {
+                connection = getConnection();
+                field = connection.prepareField(fieldQuery);
+                PlcReader reader = connection.getReader()
+                    .orElseThrow(() -> new PlcException("This connection doesn't support reading"));
+                PlcReadRequest readRequest = reader.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadResponse readResponse = reader.read(readRequest).get();
+                Object value = null;
+                switch (clientDatatype) {
+                    case RAW:
+                        value = readResponse.getRaw(FIELD_NAME);
+                        break;
+                    case OBJECT:
+                        value = readResponse.getObject(FIELD_NAME);
+                        break;
+                    case BYTE:
+                        value = readResponse.getByte(FIELD_NAME);
+                        break;
+                    case SHORT:
+                        value = readResponse.getShort(FIELD_NAME);
+                        break;
+                    case INTEGER:
+                        value = readResponse.getInteger(FIELD_NAME);
+                        break;
+                    case LONG:
+                        value = readResponse.getLong(FIELD_NAME);
+                        break;
+                    case FLOAT:
+                        value = readResponse.getFloat(FIELD_NAME);
+                        break;
+                    case DOUBLE:
+                        value = readResponse.getDouble(FIELD_NAME);
+                        break;
+                    case STRING:
+                        value = readResponse.getString(FIELD_NAME);
+                        break;
+                    case TIME:
+                        value = readResponse.getTime(FIELD_NAME);
+                        break;
+                    case DATE:
+                        value = readResponse.getDate(FIELD_NAME);
+                        break;
+                    case DATE_TIME:
+                        value = readResponse.getDateTime(FIELD_NAME);
+                        break;
+                }
+                if (value != null) {
+                    if (genericDatatype.isAssignableFrom(value.getClass())) {
+                        return (T) value;
+                    } else {
+                        logger.error("types don't match {} should be of type {}", value.getClass(), genericDatatype);
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("reading from plc device {} {} failed", connection, field, e);
+            }
+            return null;
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    static <T> TypeSafePlcWriteRequest<T> newPlcWriteRequest(PlcField field, T value) {
-        Class<T> cls = (Class<T>) value.getClass();
-        return new TypeSafePlcWriteRequest<>(cls, field, value);
+    <T> Consumer<T> newJsonConsumer(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
+        return new ObjectConsumer<>(genericDatatype, clientDatatype, fieldQuery);
     }
 
-    static <T> TypeSafePlcReadRequest<T> newPlcReadRequest(Class<T> datatype, PlcField field) {
-        return new TypeSafePlcReadRequest<>(datatype, field);
+    <T> Consumer<JsonObject> newJsonConsumer(PlcClientDatatype clientDatatype, Function<JsonObject, String> fieldQueryFn, Function<JsonObject, T> fieldValueFn) {
+        return new JsonConsumer<>(clientDatatype, fieldQueryFn, fieldValueFn);
+    }
+
+    private abstract class BaseConsumer<T> implements Consumer<T> {
+
+        protected void write(PlcClientDatatype clientDatatype, String fieldQuery, Object fieldValue) {
+            PlcConnection connection = null;
+            try {
+                connection = getConnection();
+                PlcWriter writer = connection.getWriter()
+                    .orElseThrow(() -> new PlcException("This connection doesn't support writing"));
+                PlcWriteRequest.Builder builder = writer.writeRequestBuilder();
+                PlcWriteRequest writeRequest = builder.build();
+                addItem(builder, clientDatatype, fieldQuery, fieldValue);
+                writer.write(writeRequest).get();
+            } catch (Exception e) {
+                logger.error("writing to plc device {} {} failed", connection, fieldQuery, e);
+            }
+
+        }
+
+        private void addItem(PlcWriteRequest.Builder builder,
+                               PlcClientDatatype clientDatatype, String fieldQuery, Object fieldValue) {
+            switch (clientDatatype) {
+                case RAW:
+                    if (fieldValue instanceof byte[]) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (byte[]) fieldValue);
+                    }
+                    break;
+                case OBJECT:
+                    builder.addItem(FIELD_NAME, fieldQuery, fieldValue);
+                    break;
+                case BYTE:
+                    if (fieldValue instanceof Byte) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (Byte) fieldValue);
+                    }
+                    break;
+                case SHORT:
+                    if (fieldValue instanceof Short) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (Short) fieldValue);
+                    }
+                    break;
+                case INTEGER:
+                    if (fieldValue instanceof Integer) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (Integer) fieldValue);
+                    }
+                    break;
+                case LONG:
+                    if (fieldValue instanceof Long) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (Long) fieldValue);
+                    }
+                    break;
+                case FLOAT:
+                    if (fieldValue instanceof Float) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (Float) fieldValue);
+                    }
+                    break;
+                case DOUBLE:
+                    if (fieldValue instanceof Double) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (Double) fieldValue);
+                    }
+                    break;
+                case STRING:
+                    if (fieldValue instanceof String) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (String) fieldValue);
+                    }
+                    break;
+                case TIME:
+                    if (fieldValue instanceof LocalTime) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (LocalTime) fieldValue);
+                    }
+                    break;
+                case DATE:
+                    if (fieldValue instanceof LocalDate) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (LocalDate) fieldValue);
+                    }
+                    break;
+                case DATE_TIME:
+                    if (fieldValue instanceof LocalDateTime) {
+                        builder.addItem(FIELD_NAME, fieldQuery, (LocalDateTime) fieldValue);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private class ObjectConsumer<T> extends  BaseConsumer<T> {
+        private static final long serialVersionUID = 1L;
+
+        private PlcClientDatatype clientDatatype;
+        private String fieldQuery;
+
+        ObjectConsumer(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
+            this.clientDatatype = clientDatatype;
+            this.fieldQuery = fieldQuery;
+        }
+
+        @Override
+        public void accept(Object fieldValue) {
+            write(clientDatatype, fieldQuery, fieldValue);
+        }
+    }
+
+    private class JsonConsumer<T> extends BaseConsumer<JsonObject> {
+        private static final long serialVersionUID = 1L;
+
+        private PlcClientDatatype clientDatatype;
+        private Function<JsonObject, String> fieldQueryFn;
+        private Function<JsonObject, T> fieldValueFn;
+
+        JsonConsumer(PlcClientDatatype clientDatatype, Function<JsonObject, String> fieldQueryFn, Function<JsonObject, T> fieldValueFn) {
+            this.clientDatatype = clientDatatype;
+            this.fieldQueryFn = fieldQueryFn;
+            this.fieldValueFn = fieldValueFn;
+        }
+
+        @Override
+        public void accept(JsonObject jsonObject) {
+            String fieldQuery = fieldQueryFn.apply(jsonObject);
+            Object fieldValue = fieldValueFn.apply(jsonObject);
+            write(clientDatatype, fieldQuery, fieldValue);
+        }
     }
 
 }

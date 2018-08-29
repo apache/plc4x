@@ -73,7 +73,7 @@ public class PlcFunctionsTest {
   }
 
   /*
-   * test PlcConnectionAdapter.newConsumer(address)
+   * test PlcConnectionAdapter.newJsonConsumer(address)
    */
   @Test
   @Category(FastTests.class)
@@ -107,7 +107,7 @@ public class PlcFunctionsTest {
   }
 
   /*
-   * test PlcConnectionAdapter.newConsumer(addressFn, valueFn)
+   * test PlcConnectionAdapter.newJsonConsumer(addressFn, valueFn)
    */
   @Test
   @Category(FastTests.class)

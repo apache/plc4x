@@ -24,9 +24,8 @@ import com.microsoft.azure.sdk.iot.device.Message;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,35 +35,45 @@ public class S7PlcToAzureIoTHubSample {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7PlcToAzureIoTHubSample.class);
 
+    private static final String FIELD_NAME = "value";
+
     /**
      * Example code do demonstrate sending events from an S7 device to Microsoft Azure IoT Hub
      *
-     * @param args Expected: [plc4x connection string, plc4x address, IoT-Hub connection string].
+     * @param args Expected: [plc4x connection string, plc4x field address, IoT-Hub connection string].
      */
     public static void main(String[] args) throws Exception {
+        if(args.length != 3) {
+            System.out.println("Usage: S7PlcToAzureIoTHubSample " +
+                "{plc4x-connection-string} {plc4x-field-address} {iot-hub-connection-string}");
+            return;
+        }
+
         String plc4xConnectionString = args[0];
         String addressString = args[1];
         String iotConnectionString = args[2];
         LOGGER.info("Connecting {}, {}, {}", plc4xConnectionString, addressString, iotConnectionString);
+
+        // Open a connection to the remote PLC.
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(plc4xConnectionString)) {
             LOGGER.info("Connected");
 
+            // Open a connection to the cloud service.
             DeviceClient client = new DeviceClient(iotConnectionString, IotHubClientProtocol.MQTT);
             client.open();
 
+            // Get a reader instance.
             PlcReader plcReader = plcConnection.getReader().orElseThrow(IllegalStateException::new);
 
-            PlcField outputs = plcConnection.prepareField(addressString);
+            // Prepare a read request.
+            PlcReadRequest request = plcReader.readRequestBuilder().addItem(FIELD_NAME, addressString).build();
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
-                TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(
-                    new TypeSafePlcReadRequest<>(Byte.class, outputs)).get();
-
-                plcReadResponse.getResponseItems().stream()
-                    .flatMap(readResponseItem -> readResponseItem.getValues().stream())
-                    .forEach(byteValue -> {
-                            String result = Long.toBinaryString(byteValue.longValue());
+                PlcReadResponse response = plcReader.read(request).get();
+                response.getAllLongs(FIELD_NAME)
+                    .forEach(longValue -> {
+                            String result = Long.toBinaryString(longValue);
                             LOGGER.info("Outputs {}", result);
                             Message msg = new Message("{ \"bits\" : \"" + result + "\"}");
 
@@ -73,6 +82,7 @@ public class S7PlcToAzureIoTHubSample {
                         }
                     );
 
+                // Wait a second.
                 TimeUnit.SECONDS.sleep(1);
             }
 

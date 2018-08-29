@@ -65,12 +65,24 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
+    public PlcReadRequest.Builder readRequestBuilder() {
+        // TODO: Implement this ...
+        return null;
+    }
+
+    @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
         PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
             new PlcRequestContainer<>(readRequest, readFuture);
         channel.writeAndFlush(container);
         return readFuture;
+    }
+
+    @Override
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        // TODO: Implement this ...
+        return null;
     }
 
     @Override
