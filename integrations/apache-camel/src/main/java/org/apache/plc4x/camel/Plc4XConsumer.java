@@ -26,31 +26,26 @@ import org.apache.camel.util.AsyncProcessorConverterHelper;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
-import org.apache.plc4x.java.api.messages.items.SubscriptionRequestCyclicItem;
-import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
-import org.apache.plc4x.java.api.messages.items.UnsubscriptionRequestItem;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util.function.Consumer<SubscriptionEventItem> {
+public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util.function.Consumer<PlcSubscriptionEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
 
     private Plc4XEndpoint endpoint;
     private AsyncProcessor processor;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private PlcField field;
+    private String fieldQuery;
     private Class<?> dataType;
     private PlcSubscriptionResponse subscriptionResponse;
 
@@ -62,7 +57,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        this.field = plcConnection.prepareField(endpoint.getAddress());
+        this.fieldQuery = endpoint.getAddress();
     }
 
     @Override
@@ -84,22 +79,29 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     }
 
     @Override
-    protected void doStart() throws InterruptedException, ExecutionException, TimeoutException {
-        PlcSubscriptionRequest request = new PlcSubscriptionRequest();
-        @SuppressWarnings("unchecked")
-        SubscriptionRequestCyclicItem subscriptionRequestCyclicItem = new SubscriptionRequestCyclicItem(dataType, field, TimeUnit.SECONDS, 3, this);
-        request.addItem(subscriptionRequestCyclicItem);
+    protected void doStart() throws InterruptedException, ExecutionException, TimeoutException, PlcException {
+        PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(
+            () -> new PlcException("Connection doesn't support subscriptions."));
+        // TODO: Is it correct to only support one field?
+        PlcSubscriptionRequest request = plcSubscriber.subscriptionRequestBuilder()
+            .addCyclicField("default", fieldQuery, Duration.of(3, ChronoUnit.SECONDS)).build();
         CompletableFuture<PlcSubscriptionResponse> subscriptionFuture = getSubscriber().subscribe(request);
         subscriptionResponse = subscriptionFuture.get(5, TimeUnit.SECONDS);
     }
 
     @Override
-    protected void doStop() {
-        PlcUnsubscriptionRequest request = new PlcUnsubscriptionRequest();
-        subscriptionResponse.getResponseItems().stream()
-            .map(SubscriptionResponseItem::getSubscriptionHandle)
-            .map(UnsubscriptionRequestItem::new)
-            .forEach(request::addItem);
+    protected void doStop() throws InterruptedException, ExecutionException, TimeoutException, PlcException {
+        PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(
+            () -> new PlcException("Connection doesn't support subscriptions."));
+        PlcUnsubscriptionRequest.Builder builder = plcSubscriber.unsubscriptionRequestBuilder();
+        // For every field we subscribed for, now unsubscribe.
+        subscriptionResponse.getFieldNames().forEach(fieldName -> {
+            builder.addField(fieldName, subscriptionResponse.getSubscriptionHandle(fieldName));
+        });
+        PlcUnsubscriptionRequest request = builder.build();
+        CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionFuture = plcSubscriber.unsubscribe(request);
+        PlcUnsubscriptionResponse unsubscriptionResponse = unsubscriptionFuture.get(5, TimeUnit.SECONDS);
+        // TODO: Handle the response ...
         try {
             plcConnection.close();
         } catch (Exception e) {
@@ -112,25 +114,25 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     }
 
     @Override
-    public void accept(SubscriptionEventItem subscriptionEventItem) {
-        LOGGER.debug("Received {}", subscriptionEventItem);
+    public void accept(PlcSubscriptionEvent plcSubscriptionEvent) {
+        LOGGER.debug("Received {}", plcSubscriptionEvent);
         try {
             Exchange exchange = endpoint.createExchange();
-            exchange.getIn().setBody(unwrapIfSingle(subscriptionEventItem.getValues()));
+            exchange.getIn().setBody(unwrapIfSingle(plcSubscriptionEvent.getAllObjects("default")));
             processor.process(exchange);
         } catch (Exception e) {
             exceptionHandler.handleException(e);
         }
     }
 
-    private Object unwrapIfSingle(List list) {
-        if (list.isEmpty()) {
+    private Object unwrapIfSingle(Collection collection) {
+        if (collection.isEmpty()) {
             return null;
         }
-        if (list.size() == 1) {
-            return list.get(0);
+        if (collection.size() == 1) {
+            return collection.iterator().next();
         }
-        return list;
+        return collection;
     }
 
 }

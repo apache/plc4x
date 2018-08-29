@@ -44,8 +44,8 @@ public interface PlcSubscriber {
      */
     CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest);
 
-    PlcMessageBuilder<PlcSubscriptionRequest> subsciptionRequestBuilder();
+    PlcSubscriptionRequest.Builder subscriptionRequestBuilder();
 
-    PlcMessageBuilder<PlcUnsubscriptionRequest> unsubsciptionRequestBuilder();
+    PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder();
 
 }

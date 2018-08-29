@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.connection;
 import io.netty.channel.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
@@ -31,11 +32,15 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcClientDatatype;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.isoontcp.netty.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
@@ -43,8 +48,6 @@ import org.apache.plc4x.java.isotp.netty.model.tpdus.DisconnectRequestTpdu;
 import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.netty.model.types.DisconnectReason;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
-import org.apache.plc4x.java.s7.model.S7BitField;
-import org.apache.plc4x.java.s7.model.S7DataBlockField;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
@@ -78,7 +81,7 @@ import java.util.concurrent.TimeoutException;
  * where the {bit-offset} is optional.
  * All Available Memory Areas for this mode are defined in the {@link MemoryArea} enum.
  */
-public class S7PlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
+public class S7PlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcFieldHandler {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
@@ -241,17 +244,32 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public PlcField prepareField(String fieldString) throws PlcInvalidFieldException {
-        if(S7DataBlockField.matches(fieldString)) {
-            return S7DataBlockField.of(fieldString);
+    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+        if(S7DataBlockField.matches(fieldQuery)) {
+            return S7DataBlockField.of(fieldQuery);
         }
-        if(S7BitField.matches(fieldString)) {
-            return S7BitField.of(fieldString);
+        if(S7BitField.matches(fieldQuery)) {
+            return S7BitField.of(fieldQuery);
         }
-        if(S7Field.matches(fieldString)) {
-            return S7Field.of(fieldString);
+        if(S7Field.matches(fieldQuery)) {
+            return S7Field.of(fieldQuery);
         }
-        throw new PlcInvalidFieldException(fieldString);
+        throw new PlcInvalidFieldException(fieldQuery);
+    }
+
+    @Override
+    public byte[][] encode(PlcField field, PlcClientDatatype clientDatatype, Object[] values) {
+        throw new NotImplementedException("Not implemented ...");
+    }
+
+    @Override
+    public Object[] decode(PlcField field, PlcClientDatatype clientDatatype, byte[][] rawData) {
+        throw new NotImplementedException("Not implemented ...");
+    }
+
+    @Override
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.DefaultPlcReadRequestBuilder(this);
     }
 
     @Override
@@ -263,6 +281,11 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
             if (!f.isSuccess()) future.completeExceptionally(f.cause());
         });
         return future;
+    }
+
+    @Override
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(this);
     }
 
     @Override

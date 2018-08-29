@@ -29,11 +29,10 @@ import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -45,9 +44,9 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     private Plc4XEndpoint endpoint;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private PlcField field;
+    private PlcReader plcReader;
+    private PlcReadRequest readRequest;
     private Class dataType;
-
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
         this.endpoint = endpoint;
@@ -55,7 +54,8 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        this.field = plcConnection.prepareField(endpoint.getAddress());
+        this.plcReader = plcConnection.getReader().orElseThrow(() -> new PlcException("This connection doesn't support reading."));
+        readRequest = plcReader.readRequestBuilder().addItem("default", endpoint.getAddress()).build();
     }
 
     @Override
@@ -79,10 +79,10 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive() {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, field));
+        CompletableFuture<PlcReadResponse> read = plcReader.read(readRequest);
         try {
             PlcReadResponse plcReadResponse = read.get();
-            exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getResponseItems()));
+            exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
         } catch (InterruptedException | ExecutionException e) {
             exchange.setException(e);
         }
@@ -97,18 +97,14 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive(long timeout) {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<? extends PlcReadResponse> read = getReader().read(new PlcReadRequest(dataType, field));
+        CompletableFuture<PlcReadResponse> read = plcReader.read(readRequest);
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
-            exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getResponseItems()));
+            exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             exchange.setException(e);
         }
         return exchange;
-    }
-
-    public PlcReader getReader() {
-        return plcConnection.getReader().orElseThrow(() -> new RuntimeException("No reader avaiable"));
     }
 
     @Override
@@ -125,14 +121,14 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         }
     }
 
-    private Object unwrapIfSingle(List list) {
-        if (list.isEmpty()) {
+    private Object unwrapIfSingle(Collection collection) {
+        if (collection.isEmpty()) {
             return null;
         }
-        if (list.size() == 1) {
-            return list.get(0);
+        if (collection.size() == 1) {
+            return collection.iterator().next();
         }
-        return list;
+        return collection;
     }
 
 }

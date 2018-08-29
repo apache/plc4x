@@ -19,8 +19,6 @@ under the License.
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Optional;
 
@@ -54,15 +52,6 @@ public interface PlcConnection extends AutoCloseable {
      */
     @Override
     void close() throws Exception;
-
-    /**
-     * Parses a PLC/protocol dependent field string into an PlcField object.
-     *
-     * @param fieldString String representation of an address for the current type of PLC/protocol.
-     * @return PlcField object identifying a field for the current type of PLC/protocol.
-     * @throws PlcInvalidFieldException an exception if there was a problem parsing the address string.
-     */
-    PlcField prepareField(String fieldString) throws PlcInvalidFieldException;
 
     Optional<PlcReader> getReader();
 

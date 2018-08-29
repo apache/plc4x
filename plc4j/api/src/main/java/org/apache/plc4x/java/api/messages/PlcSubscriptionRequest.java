@@ -18,8 +18,44 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import java.time.Duration;
+
 public interface PlcSubscriptionRequest extends PlcFieldRequest {
 
     PlcMessageBuilder<PlcSubscriptionRequest> builder();
+
+    interface Builder extends PlcMessageBuilder<PlcSubscriptionRequest> {
+        /**
+         * Adds a new field to the to be constructed request which should be polled cyclically.
+         *
+         * @param name alias of the field.
+         * @param fieldQuery field query string for accessing the field.
+         * @param pollingInterval interval, in which the field should be polled.
+         * @return
+         */
+        PlcSubscriptionRequest.Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval);
+
+        /**
+         * Adds a new field to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
+         * @param name alias of the field.
+         * @param fieldQuery field query string for accessing the field.
+         * @return
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateField(String name, String fieldQuery);
+
+        /**
+         * Adds a new subscription to the to be constructed request which should be updated
+         * as soon as an event occurs.
+         *
+         * REMARK: We will have to see if this signature is correct as soon as we start using this type of subscription.
+         *
+         * @param name alias of the field.
+         * @param fieldQuery field query string for accessing the field.
+         * @return
+         */
+        PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery);
+    }
 
 }

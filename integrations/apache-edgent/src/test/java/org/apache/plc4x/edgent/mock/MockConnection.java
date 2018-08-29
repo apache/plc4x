@@ -70,6 +70,11 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
     }
 
     @Override
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return null;
+    }
+
+    @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         curReadCnt++;
         if (readExceptionTriggerCount > 0 && curReadCnt == readExceptionTriggerCount) {
@@ -95,6 +100,11 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
             response = new PlcReadResponse(readRequest, responseItems);
         }
         return CompletableFuture.completedFuture(response);
+    }
+
+    @Override
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return null;
     }
 
     @SuppressWarnings("unchecked")

@@ -18,6 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-public interface PlcSubscriptionEvent {
+public interface PlcSubscriptionEvent extends PlcReadResponse {
 
 }

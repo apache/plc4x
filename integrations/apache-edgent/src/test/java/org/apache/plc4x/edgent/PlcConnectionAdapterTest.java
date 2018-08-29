@@ -90,28 +90,6 @@ public class PlcConnectionAdapterTest {
         adapter.close();
     }
 
-    @Test
-    @Category(FastTests.class)
-    public void testCheckDatatype() {
-        PlcConnectionAdapter.checkDatatype(Boolean.class);
-        PlcConnectionAdapter.checkDatatype(Byte.class);
-        PlcConnectionAdapter.checkDatatype(Short.class);
-        PlcConnectionAdapter.checkDatatype(Integer.class);
-        PlcConnectionAdapter.checkDatatype(Float.class);
-        PlcConnectionAdapter.checkDatatype(String.class);
-        PlcConnectionAdapter.checkDatatype(Calendar.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testLongDataTypeIsInvalid() {
-        PlcConnectionAdapter.checkDatatype(Long.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testDoubleDataTypeIsInvalid() {
-        PlcConnectionAdapter.checkDatatype(Double.class);
-    }
-
     private <T> void checkRead(MockConnection connection, TypeSafePlcReadRequest<T> request, T value) throws InterruptedException, ExecutionException {
         // this is really a tests of our mock tooling but knowing it's behaving as expected
         // will help identify problems in the adapter/supplier/consumer

@@ -117,39 +117,32 @@ public enum S7DataType {
      * that matches the provided size-code.
      * - If a sub-type was provided, all we do, is check if the size-code matches
      *
-     * @param javaType java type used in the request item
      * @param s7Type   type or sub-type provided (optional)
      * @param sizeCode size-code provided (optional)
      * @return best matching type.
      * @throws IllegalArgumentException no type with matching type and size-code was found.
      */
-    static S7DataType findMatchingType(Class<?> javaType, S7DataType s7Type, String sizeCode) throws IllegalArgumentException {
+    public static S7DataType findMatchingType(S7DataType s7Type, String sizeCode) throws IllegalArgumentException {
         assert s7Type != null;
 
-        if (javaType != null) {
-
-            if (sizeCode != null) {
-                // If this is a base type, we will try to check if we can select a better fitting sub-type.
-                if (s7Type.isBaseType()) {
-                    S7DataType subType = s7Type.getSubType(sizeCode);
-                    if (subType == null) {
-                        throw new IllegalArgumentException(String.format(
-                            "Selected base type %s does not have a sub-type for provided size code %s", s7Type, sizeCode));
-                    }
-                    s7Type = subType;
+        if (sizeCode != null) {
+            // If this is a base type, we will try to check if we can select a better fitting sub-type.
+            if (s7Type.isBaseType()) {
+                S7DataType subType = s7Type.getSubType(sizeCode);
+                if (subType == null) {
+                    throw new IllegalArgumentException(String.format(
+                        "Selected base type %s does not have a sub-type for provided size code %s", s7Type, sizeCode));
                 }
-                // If this is not a base type, we have to check if the sizeCode matches the selected sub-type.
-                else {
-                    if (!s7Type.getSizeCode().equals(sizeCode)) {
-                        throw new IllegalArgumentException(
-                            String.format("Selected data type %s does not match provided size code %s", s7Type, sizeCode));
-                    }
+                s7Type = subType;
+            }
+            // If this is not a base type, we have to check if the sizeCode matches the selected sub-type.
+            else {
+                if (!s7Type.getSizeCode().equals(sizeCode)) {
+                    throw new IllegalArgumentException(
+                        String.format("Selected data type %s does not match provided size code %s", s7Type, sizeCode));
                 }
             }
-
         }
-        // TODO: Check compatibility with the java-type.
-        return s7Type;
     }
 
 }

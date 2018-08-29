@@ -16,25 +16,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.base.messages;
 
-import io.netty.channel.ChannelHandler;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Collection;
+import java.util.Map;
 
-public class MockConnection extends AbstractPlcConnection {
+public class DefaultPlcWriteResponse implements PlcWriteResponse {
 
-    public MockConnection() {
-        super(new TestChannelFactory());
-    }
-
-    public MockConnection(boolean awaitSessionSetupComplete) {
-        super(new TestChannelFactory(), awaitSessionSetupComplete);
+    @Override
+    public Map<String, PlcField> getFields() {
+        return null;
     }
 
     @Override
-    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+    public Collection<String> getFieldNames() {
+        return null;
+    }
+
+    @Override
+    public PlcField getField(String name) {
+        return null;
+    }
+
+    @Override
+    public PlcResponseCode getResponseCode(String name) {
+        return null;
+    }
+
+    @Override
+    public PlcWriteRequest getRequest() {
         return null;
     }
 

@@ -21,16 +21,11 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Collection;
-import java.util.Map;
 
 public interface PlcFieldRequest extends PlcRequest {
-
-    Map<String, PlcField> getFields();
 
     Collection<String> getFieldNames();
 
     PlcField getField(String name);
-
-
 
 }

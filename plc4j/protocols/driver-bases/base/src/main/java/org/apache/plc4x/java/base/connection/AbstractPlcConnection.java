@@ -101,7 +101,7 @@ public abstract class AbstractPlcConnection implements PlcConnection {
     }
 
     @Override
-    public Optional<PlcReader> getReader() {
+    public Optional<PlcReader>getReader() {
         if (this instanceof PlcReader) {
             return Optional.of((PlcReader) this);
         }

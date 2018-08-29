@@ -27,43 +27,38 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
-import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XProducer extends DefaultAsyncProducer {
-    @SuppressWarnings("unused")
-    private Plc4XEndpoint endpoint;
     private PlcConnection plcConnection;
+    private PlcWriter plcWriter;
     private AtomicInteger openRequests;
 
     public Plc4XProducer(Plc4XEndpoint endpoint) throws PlcException {
         super(endpoint);
-        this.endpoint = endpoint;
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
+        plcWriter = plcConnection.getWriter().orElseThrow(() -> new PlcException("This connection doesn't support writing."));
         openRequests = new AtomicInteger();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();
-        PlcField field = in.getHeader(Constants.ADDRESS_HEADER, PlcField.class);
+        String fieldName = in.getHeader(Constants.FIELD_NAME_HEADER, String.class);
+        String fieldQuery = in.getHeader(Constants.FIELD_QUERY_HEADER, String.class);
         Object body = in.getBody();
-        PlcWriteRequest.Builder builder = PlcWriteRequest.builder();
+        PlcWriteRequest.Builder builder = plcWriter.writeRequestBuilder();
         if (body instanceof List) {
             List<?> bodyList = in.getBody(List.class);
-            bodyList
-                .stream()
-                .map(o -> (PlcWriteRequestItem<?>) new PlcWriteRequestItem(o.getClass(), field, o))
-                .forEach(builder::addItem);
+            Object[] values = bodyList.toArray();
+            builder.addItem(fieldName, fieldQuery, values);
         } else {
             Object value = in.getBody(Object.class);
-            builder.addItem(field, value);
+            builder.addItem(fieldName, fieldQuery, value);
         }
         PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
         CompletableFuture<? extends PlcWriteResponse> completableFuture = plcWriter.write(builder.build());

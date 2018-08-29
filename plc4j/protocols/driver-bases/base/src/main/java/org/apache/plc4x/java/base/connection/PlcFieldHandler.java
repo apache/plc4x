@@ -16,16 +16,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.base.connection;
 
-/**
- * Request to read one or more values from a plc.
- */
-public interface PlcReadRequest extends PlcFieldRequest {
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcClientDatatype;
 
-    interface Builder extends PlcMessageBuilder<PlcReadRequest> {
-        Builder addItem(String name, String fieldQuery);
-    }
+public interface PlcFieldHandler {
+
+    PlcField createField(String fieldQuery) throws PlcInvalidFieldException;
+
+    byte[][] encode(PlcField field, PlcClientDatatype clientDatatype, Object[] values);
+    Object[] decode(PlcField field, PlcClientDatatype clientDatatype, byte[][] rawData);
 
 }
-

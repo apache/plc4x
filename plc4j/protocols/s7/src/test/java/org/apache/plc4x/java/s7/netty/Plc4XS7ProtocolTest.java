@@ -25,8 +25,6 @@ import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
 import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.netty.NettyTestBase;
-import org.apache.plc4x.java.s7.model.S7BitField;
-import org.apache.plc4x.java.s7.model.S7DataBlockField;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;

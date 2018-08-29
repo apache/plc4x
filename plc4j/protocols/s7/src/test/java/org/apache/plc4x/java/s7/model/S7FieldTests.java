@@ -29,6 +29,11 @@ import static org.junit.Assert.assertThat;
 
 public class S7FieldTests {
 
+    // %I0.1:BOOL           <-- Digital Input
+    // %IW64:REAL           <-- Analog Input
+    // %Q0.4:BOOL           <-- Digital Output
+    // %DB1.DBX38.1:BOOL    <-- Memory block DB1
+
     @Test
     @Category(FastTests.class)
     public void testS7Field() {

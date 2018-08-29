@@ -34,9 +34,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.s7.model.S7DataBlockField;
 import org.apache.plc4x.java.s7.model.S7Field;
-import org.apache.plc4x.java.s7.model.S7BitField;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
@@ -168,10 +166,17 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         List<VarPayloadItem> payloadItems = new LinkedList<>();
 
         PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
-        for (PlcWriteRequestItem requestItem : writeRequest.getRequestItems()) {
+        for (String fieldName : writeRequest.getFieldNames()) {
+            PlcField field = writeRequest.getField(fieldName);
+            if(!(field instanceof S7Field)) {
+                throw new PlcException("The field should have been of type S7Field");
+            }
+
+            S7Field s7Field = (S7Field) field;
+
             // Try to get the correct S7 transport size for the given data type.
             // (Map PLC4X data type to S7 data type)
-            TransportSize transportSize = encodeTransportSize(requestItem.getDatatype());
+            TransportSize transportSize = encodeTransportSize(s7Field.getDatatype());
             if (transportSize == null) {
                 throw new PlcException("Unknown transport size for datatype " + requestItem.getDatatype());
             }

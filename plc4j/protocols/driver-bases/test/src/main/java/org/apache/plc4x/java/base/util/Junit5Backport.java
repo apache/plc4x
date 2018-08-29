@@ -37,4 +37,5 @@ public class Junit5Backport {
     public interface Acceptor<T extends Exception> {
         void accept() throws T;
     }
+
 }

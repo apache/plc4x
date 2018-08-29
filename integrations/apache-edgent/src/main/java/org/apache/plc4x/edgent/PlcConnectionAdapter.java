@@ -154,7 +154,6 @@ public class PlcConnectionAdapter implements AutoCloseable {
             PlcField field = null;
             try {
                 connection = getConnection();
-                field = connection.prepareField(fieldQuery);
                 PlcReader reader = connection.getReader()
                     .orElseThrow(() -> new PlcException("This connection doesn't support reading"));
                 PlcReadRequest readRequest = reader.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();

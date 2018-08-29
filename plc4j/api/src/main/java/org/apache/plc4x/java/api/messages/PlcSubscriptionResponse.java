@@ -18,6 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+
 public interface PlcSubscriptionResponse extends PlcFieldResponse<PlcSubscriptionRequest> {
+
+    PlcSubscriptionHandle getSubscriptionHandle(String name);
 
 }

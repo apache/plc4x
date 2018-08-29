@@ -24,11 +24,13 @@ import java.time.LocalTime;
 
 public interface PlcWriteRequest extends PlcFieldRequest {
 
+    byte[][] getValues(String name);
+
     interface Builder extends PlcMessageBuilder<PlcWriteRequest> {
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, byte[]... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, byte[]... values);
 
-        PlcReadRequest.Builder addItem(String name, String fieldQuery, Object... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Object... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Boolean... values);
 
