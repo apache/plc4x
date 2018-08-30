@@ -31,10 +31,6 @@ public class DefaultPlcReadRequest implements PlcReadRequest {
 
     private Map<String, PlcField> fields;
 
-    private DefaultPlcReadRequest() {
-        this.fields = new TreeMap<>();
-    }
-
     private DefaultPlcReadRequest(Map<String, PlcField> fields) {
         this.fields = fields;
     }

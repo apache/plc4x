@@ -85,4 +85,5 @@ public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> im
     public int hashCode() {
         return Objects.hash(request, responseFuture);
     }
+
 }

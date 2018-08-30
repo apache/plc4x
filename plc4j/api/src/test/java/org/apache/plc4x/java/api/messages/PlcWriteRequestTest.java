@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ import static org.mockito.Mockito.mock;
 
 public class PlcWriteRequestTest {
 
-    PlcField dummyField;
+/*    PlcField dummyField;
 
     @Before
     public void setUp() {
@@ -109,5 +108,6 @@ public class PlcWriteRequestTest {
     @Test
     public void testToString() {
         new PlcWriteRequest().toString();
-    }
+    }*/
+
 }

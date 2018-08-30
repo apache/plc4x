@@ -20,11 +20,6 @@ package org.apache.plc4x.java.api;
 
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.*;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -45,7 +40,7 @@ import static org.mutabilitydetector.unittesting.MutabilityMatchers.areImmutable
 public class ImmutabilityTest {
 
     private static Set<Class<?>> NOT_YET_IMMUTABLE = Stream.of(
-        PlcReadResponseItem.class,
+        /*PlcReadResponseItem.class,
         SubscriptionEventItem.class,
         SubscriptionRequestCyclicItem.class,
         SubscriptionRequestItem.class,
@@ -53,7 +48,7 @@ public class ImmutabilityTest {
         UnsubscriptionRequestItem.class,
         PlcWriteRequestItem.class,
         PlcProprietaryRequest.class,
-        PlcProprietaryResponse.class,
+        PlcProprietaryResponse.class,*/
         PlcSubscriptionEvent.class,
         PlcUnsubscriptionRequest.class
     ).collect(Collectors.toSet());
@@ -65,7 +60,7 @@ public class ImmutabilityTest {
     public static Collection<Object[]> data() {
         return Stream.of(
             PlcUsernamePasswordAuthentication.class,
-            PlcReadRequestItem.class,
+            /*PlcReadRequestItem.class,
             PlcReadResponseItem.class,
             SubscriptionEventItem.class,
             SubscriptionRequestChangeOfStateItem.class,
@@ -81,7 +76,7 @@ public class ImmutabilityTest {
             TypeSafePlcWriteRequest.class,
             TypeSafePlcWriteResponse.class,
             PlcProprietaryRequest.class,
-            PlcProprietaryResponse.class,
+            PlcProprietaryResponse.class,*/
             PlcSubscriptionEvent.class,
             PlcSubscriptionRequest.class,
             PlcSubscriptionResponse.class,

@@ -25,8 +25,6 @@ import java.util.Scanner;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +38,7 @@ public class S7PlcTestConsole {
      *
      * @param args ignored.
      */
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://10.10.64.20/1/1")) {
@@ -74,6 +72,6 @@ public class S7PlcTestConsole {
         }
         // The application would cleanly terminate after several seconds ... this just speeds things up.
         System.exit(0);
-    }
+    }*/
 
 }

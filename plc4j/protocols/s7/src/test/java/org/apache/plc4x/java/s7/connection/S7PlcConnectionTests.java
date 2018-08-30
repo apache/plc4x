@@ -61,7 +61,7 @@ public class S7PlcConnectionTests {
         assertThat("Max AMQ Callee size is incorrect", s7PlcConnection.getParamMaxAmqCallee(), equalTo(3) );
     }
 
-    @Test
+/*    @Test
     public void prepareEmptyField() {
         try {
             s7PlcConnection.prepareField("");
@@ -111,6 +111,6 @@ public class S7PlcConnectionTests {
         catch (PlcException exception) {
             fail("valid timer block bit field");
         }
-    }
+    }*/
 
 }

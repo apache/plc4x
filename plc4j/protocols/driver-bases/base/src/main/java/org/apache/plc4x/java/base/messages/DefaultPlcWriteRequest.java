@@ -161,6 +161,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
                 this.clientDatatype = clientDatatype;
                 this.values = values;
             }
+
         }
 
     }

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 
 public class PlcSubscriptionResponseTest {
 
-    @Test
+/*    @Test
     public void constructor() {
         new PlcSubscriptionResponse(mock(PlcSubscriptionRequest.class), mock(List.class));
     }
@@ -34,5 +34,6 @@ public class PlcSubscriptionResponseTest {
     @Test
     public void testToString() {
         new PlcSubscriptionResponse(mock(PlcSubscriptionRequest.class), mock(List.class)).toString();
-    }
+    }*/
+
 }

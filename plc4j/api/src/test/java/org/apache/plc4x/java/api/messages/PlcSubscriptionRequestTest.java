@@ -22,8 +22,9 @@ import org.junit.Test;
 
 public class PlcSubscriptionRequestTest {
 
-    @Test
+/*    @Test
     public void testToString() {
         new PlcSubscriptionRequest().toString();
-    }
+    }*/
+
 }

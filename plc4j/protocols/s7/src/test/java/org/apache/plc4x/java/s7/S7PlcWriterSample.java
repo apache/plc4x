@@ -21,8 +21,6 @@ package org.apache.plc4x.java.s7;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +36,7 @@ public class S7PlcWriterSample {
      *
      * @param args ignored.
      */
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
         logger.info("Connecting");
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")) {
@@ -66,6 +64,6 @@ public class S7PlcWriterSample {
         }
         // The application would cleanly terminate after several seconds ... this just speeds things up.
         System.exit(0);
-    }
+    }*/
 
 }

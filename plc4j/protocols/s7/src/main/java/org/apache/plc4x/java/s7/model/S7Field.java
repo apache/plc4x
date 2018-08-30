@@ -47,34 +47,39 @@ public class S7Field implements PlcField {
         Matcher matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString);
         if(matcher.matches()) {
             S7DataType dataType = S7DataType.valueOf(matcher.group("dataType"));
+            MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             String transferSizeCode = matcher.group("transferSizeCode");
-            if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
-                throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
-                    "' doesn't match specified data type '" + dataType.name() + "'");
-            }
-            MemoryArea memoryArea = MemoryArea.INSTANCE_DATA_BLOCKS;
+            short blockNumber = Short.parseShort(matcher.group("blockNumber"));
             short byteOffset = Short.parseShort(matcher.group("byteOffset"));
             short bitOffset = 0;
             if(matcher.group("bitOffset") != null) {
                 bitOffset = Short.parseShort(matcher.group("bitOffset"));
+            } else if(dataType == S7DataType.BOOL) {
+                throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
-            return new S7Field(dataType, memoryArea, byteOffset, bitOffset);
+            if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
+                throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
+                    "' doesn't match specified data type '" + dataType.name() + "'");
+            }
+            return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset);
         } else {
             matcher = ADDRESS_PATTERN.matcher(fieldString);
             if (matcher.matches()) {
                 S7DataType dataType = S7DataType.valueOf(matcher.group("dataType"));
+                MemoryArea memoryArea = MemoryArea.valueOfShortName(matcher.group("memoryArea"));
                 String transferSizeCode = matcher.group("transferSizeCode");
-                if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
-                    throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
-                        "' doesn't match specified data type '" + dataType.name() + "'");
-                }
-                MemoryArea memoryArea = MemoryArea.valueOf(matcher.group("memoryArea"));
                 short byteOffset = Short.parseShort(matcher.group("byteOffset"));
                 short bitOffset = 0;
                 if(matcher.group("bitOffset") != null) {
                     bitOffset = Short.parseShort(matcher.group("bitOffset"));
+                } else if(dataType == S7DataType.BOOL) {
+                    throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
                 }
-                return new S7Field(dataType, memoryArea, byteOffset, bitOffset);
+                if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
+                    throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
+                        "' doesn't match specified data type '" + dataType.name() + "'");
+                }
+                return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset);
             }
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
@@ -82,12 +87,14 @@ public class S7Field implements PlcField {
 
     private final S7DataType dataType;
     private final MemoryArea memoryArea;
+    private final short blockNumber;
     private final short byteOffset;
     private final short bitOffset;
 
-    public S7Field(S7DataType dataType, MemoryArea memoryArea, short byteOffset, short bitOffset) {
+    public S7Field(S7DataType dataType, MemoryArea memoryArea, short blockNumber, short byteOffset, short bitOffset) {
         this.dataType = dataType;
         this.memoryArea = memoryArea;
+        this.blockNumber = blockNumber;
         this.byteOffset = byteOffset;
         this.bitOffset = bitOffset;
     }
@@ -98,6 +105,10 @@ public class S7Field implements PlcField {
 
     public MemoryArea getMemoryArea() {
         return memoryArea;
+    }
+
+    public short getBlockNumber() {
+        return blockNumber;
     }
 
     public short getByteOffset() {

@@ -19,8 +19,6 @@
 package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 public class TypeSafePlcWriteResponseTest {
 
-    PlcWriteResponseItem<String> writeResponseItemString;
+/*    PlcWriteResponseItem<String> writeResponseItemString;
 
     @Before
     public void setUp() {
@@ -75,6 +73,6 @@ public class TypeSafePlcWriteResponseTest {
     @Test
     public void getResponseItem() {
         new TypeSafePlcWriteResponse<>(mock(TypeSafePlcWriteRequest.class), Collections.emptyList()).getResponseItem();
-    }
+    }*/
 
 }

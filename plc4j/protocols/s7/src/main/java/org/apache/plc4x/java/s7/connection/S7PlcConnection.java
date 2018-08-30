@@ -245,12 +245,6 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-        if(S7DataBlockField.matches(fieldQuery)) {
-            return S7DataBlockField.of(fieldQuery);
-        }
-        if(S7BitField.matches(fieldQuery)) {
-            return S7BitField.of(fieldQuery);
-        }
         if(S7Field.matches(fieldQuery)) {
             return S7Field.of(fieldQuery);
         }

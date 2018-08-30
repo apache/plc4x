@@ -19,50 +19,67 @@ under the License.
 
 package org.apache.plc4x.java.s7.model;
 
+import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.types.S7DataType;
 import org.apache.plc4x.test.FastTests;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
-public class S7FieldTests {
+class S7FieldTests {
 
-    // %I0.1:BOOL           <-- Digital Input
-    // %IW64:REAL           <-- Analog Input
-    // %Q0.4:BOOL           <-- Digital Output
-    // %DB1.DBX38.1:BOOL    <-- Memory block DB1
-
-    @Test
-    @Category(FastTests.class)
-    public void testS7Field() {
-        MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        S7Field s7Field = new S7Field(memoryArea, (short) 0x100);
-
-        assertThat(s7Field.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
-        assertThat(s7Field.getByteOffset(), equalTo((short) 0x100));
+    private static Stream<Arguments> validFieldQueries() {
+        return Stream.of(
+            Arguments.of("%I0.1:BOOL",          S7DataType.BOOL,  MemoryArea.INPUTS,      0,  0,  1),
+            Arguments.of("%ID64:REAL",          S7DataType.REAL,  MemoryArea.INPUTS,      0,  64, 0),
+            Arguments.of("%Q0.4:BOOL",          S7DataType.BOOL,  MemoryArea.OUTPUTS,     0,  0,  4),
+            Arguments.of("%DB1.DBX38.1:BOOL",   S7DataType.BOOL,  MemoryArea.DATA_BLOCKS, 1,  38, 1)
+        );
     }
 
-    @Test
-    @Category(FastTests.class)
-    public void testS7BitField() {
-        MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        S7BitField s7Field = new S7BitField(memoryArea, (short) 0x50, (byte) 0x4);
-
-        assertThat(s7Field.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
-        assertThat(s7Field.getByteOffset(), equalTo((short) 0x50));
-        assertThat(s7Field.getBitOffset(), equalTo((byte) 0x4));
+    private static Stream<Arguments> invalidFieldQueries() {
+        return Stream.of(
+            Arguments.of("%I0:BOOL"),
+            Arguments.of("%IW64:REAL"),
+            Arguments.of("%DB1.DBX38:BOOL")
+        );
     }
 
-    @Test
+    @ParameterizedTest
     @Category(FastTests.class)
-    public void testS7DatBlockField() {
-        S7DataBlockField s7Field = new S7DataBlockField((short) 1, (short) 0x50);
-
-        assertThat(s7Field.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
-        assertThat(s7Field.getDataBlockNumber(), equalTo((short) 1));
-        assertThat(s7Field.getByteOffset(), equalTo((short) 0x50));
+    @MethodSource("validFieldQueries")
+    void testValidFieldQueryParsing(String fieldQuery, S7DataType expectedClientType, MemoryArea expectedMemoryArea,
+                                    int expectedMemoryBlockNumber, int expectedByteOffset, int expectedBitOffset) {
+        S7Field field = S7Field.of(fieldQuery);
+        assertThat(field, notNullValue());
+        assertThat(field.getDataType(), equalTo(expectedClientType));
+        assertThat(field.getMemoryArea(), equalTo(expectedMemoryArea));
+        assertThat(field.getBlockNumber(), equalTo((short) expectedMemoryBlockNumber));
+        assertThat(field.getByteOffset(), equalTo((short) expectedByteOffset));
+        assertThat(field.getBitOffset(), equalTo((short) expectedBitOffset));
     }
+
+    @ParameterizedTest
+    @Category(FastTests.class)
+    @MethodSource("invalidFieldQueries")
+    void testInvalidFieldQueryParsing(String fieldQuery) {
+        try {
+            S7Field.of(fieldQuery);
+            fail("Should have thrown an exception");
+        } catch (PlcRuntimeException e) {
+            // This was expected.
+        }
+    }
+
 
 }

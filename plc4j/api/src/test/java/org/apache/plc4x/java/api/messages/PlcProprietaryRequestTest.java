@@ -26,7 +26,7 @@ import static org.junit.Assert.assertThat;
 
 public class PlcProprietaryRequestTest {
 
-    @Test
+/*    @Test
     public void constructor() {
         new PlcProprietaryRequest<>(new Object());
     }
@@ -40,5 +40,6 @@ public class PlcProprietaryRequestTest {
         assertThat(SUT.equals(other), equalTo(true));
         assertThat(SUT.equals(new Object()), equalTo(false));
         assertEquals(SUT, SUT);
-    }
+    }*/
+
 }

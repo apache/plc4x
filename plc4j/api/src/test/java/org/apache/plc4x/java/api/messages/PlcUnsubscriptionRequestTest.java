@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.UnsubscriptionRequestItem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.mock;
 
 public class PlcUnsubscriptionRequestTest {
 
-    private PlcUnsubscriptionRequest SUT;
+/*    private PlcUnsubscriptionRequest SUT;
 
     @Before
     public void setUp() {
@@ -72,5 +71,6 @@ public class PlcUnsubscriptionRequestTest {
     @Test
     public void testToString() {
         SUT.toString();
-    }
+    }*/
+
 }

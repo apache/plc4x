@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ import static org.mockito.Mockito.mock;
 
 public class PlcReadRequestTest {
 
-    PlcField dummyField;
+/*    PlcField dummyField;
 
     @Before
     public void setUp() {
@@ -105,6 +104,6 @@ public class PlcReadRequestTest {
                 .addItem(Byte.class, dummyField)
                 .build(Byte.class);
         }
-    }
+    }*/
 
 }

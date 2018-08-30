@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.RequestItem;
-import org.apache.plc4x.java.api.messages.items.ResponseItem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +34,7 @@ import static org.mockito.Mockito.mock;
 
 public class PlcResponseTest {
 
-    private PlcResponse<PlcRequest, ResponseItem, RequestItem> SUT;
+/*    private PlcResponse<PlcRequest, ResponseItem, RequestItem> SUT;
 
     private List<ResponseItem> responseItems;
 
@@ -102,5 +100,6 @@ public class PlcResponseTest {
         assertThat(SUT.equals(other), equalTo(true));
         assertThat(SUT.equals(new Object()), equalTo(false));
         assertEquals(SUT, SUT);
-    }
+    }*/
+
 }

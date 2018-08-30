@@ -21,14 +21,6 @@ package org.apache.plc4x.java.s7.netty;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
@@ -135,16 +127,16 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) {
         PlcRequest request = msg.getRequest();
-        if (request instanceof PlcReadRequest) {
+        /*if (request instanceof PlcReadRequest) {
             encodeReadRequest(msg, out);
         } else if (request instanceof PlcWriteRequest) {
             encodeWriteRequest(msg, out);
-        }
+        }*/
     }
 
-    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+/*    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
         List<VarParameterItem> parameterItems = new LinkedList<>();
 
         PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
@@ -291,7 +283,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             return DataTransportSize.OCTET_STRING;
         }
         return null;
-    }
+    }*/
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Decoding
@@ -299,7 +291,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) {
         if (!(msg instanceof S7ResponseMessage)) {
             return;
         }
@@ -311,7 +303,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             PlcResponse response = null;
 
             // Handle the response to a read request.
-            if (request instanceof PlcReadRequest) {
+            /*if (request instanceof PlcReadRequest) {
                 response = decodeReadResponse(responseMessage, requestContainer);
             } else if (request instanceof PlcWriteRequest) {
                 response = decodeWriteResponse(responseMessage, requestContainer);
@@ -320,11 +312,11 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             // Confirm the response being handled.
             if (response != null) {
                 requestContainer.getResponseFuture().complete(response);
-            }
+            }*/
         }
     }
 
-    @SuppressWarnings("unchecked")
+    /*@SuppressWarnings("unchecked")
     private PlcResponse decodeReadResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
         PlcResponse response;
         PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
@@ -424,6 +416,6 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             default:
                 return PlcResponseCode.INTERNAL_ERROR;
         }
-    }
+    }*/
 
 }

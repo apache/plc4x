@@ -50,9 +50,4 @@ public class MockConnection extends AbstractPlcConnection {
         return authentication;
     }
 
-    @Override
-    public PlcField prepareField(String fieldString) {
-        return null;
-    }
-
 }

@@ -18,12 +18,10 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.items.RequestItem;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -36,7 +34,7 @@ import static org.mockito.Mockito.mock;
 
 public class PlcRequestTest {
 
-    private List<RequestItem> requestItems;
+/*    private List<RequestItem> requestItems;
 
     private PlcRequest<RequestItem> SUT;
 
@@ -105,5 +103,5 @@ public class PlcRequestTest {
         assertThat(SUT.equals(other), equalTo(true));
         assertThat(SUT.equals(new Object()), equalTo(false));
         assertEquals(SUT, SUT);
-    }
+    }*/
 }

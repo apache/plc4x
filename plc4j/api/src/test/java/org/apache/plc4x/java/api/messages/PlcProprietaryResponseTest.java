@@ -27,7 +27,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class PlcProprietaryResponseTest {
-    @Test
+
+/*    @Test
     public void constructor() {
         new PlcProprietaryResponse<>(mock(PlcProprietaryRequest.class), new Object());
     }
@@ -49,5 +50,6 @@ public class PlcProprietaryResponseTest {
         assertThat(SUT.equals(other), IsEqual.equalTo(true));
         assertThat(SUT.equals(new Object()), IsEqual.equalTo(false));
         assertEquals(SUT, SUT);
-    }
+    }*/
+
 }

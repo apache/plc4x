@@ -21,8 +21,10 @@ package org.apache.plc4x.java.api.messages;
 import org.junit.Test;
 
 public class PlcUnsubscriptionResponseTest {
-    @Test
+
+/*    @Test
     public void testToString() {
         new PlcUnsubscriptionResponse().toString();
-    }
+    }*/
+
 }
