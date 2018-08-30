@@ -33,9 +33,9 @@ import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.java.s7.netty.util.S7RequestSizeCalculator;
 import org.apache.plc4x.java.s7.netty.util.S7ResponseSizeEstimator;
+import org.apache.plc4x.java.s7.types.S7DataType;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -93,7 +93,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             // If this is a read operation, try to get as many items in as possible.
             if(varParameter.getType() == ParameterType.READ_VAR) {
                 // Create a var parameter without any items (yet).
-                S7Parameter subVarParameter = new VarParameter(varParameter.getType(), new LinkedList<>());
+                VarParameter subVarParameter = new VarParameter(varParameter.getType(), new LinkedList<>());
 
                 // Create a sub message with only this empty parameter.
                 S7RequestMessage subMessage = new S7RequestMessage(
@@ -147,7 +147,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                     }
 
                     // Add the item to the current subVarParameter.
-                    ((VarParameter) subVarParameter).getItems().add(varParameterItem);
+                    subVarParameter.getItems().add(varParameterItem);
                 }
             }
 
@@ -168,14 +168,14 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                     if (varParameterItem instanceof S7AnyVarParameterItem) {
                         S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameterItem;
                         short byteOffset = s7AnyVarParameterItem.getByteOffset();
-                        if (s7AnyVarParameterItem.getTransportSize() == TransportSize.BIT) {
+                        if (s7AnyVarParameterItem.getDataType() == S7DataType.BOOL) {
                             byte bitOffset = 0;
                             for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
                                 // Create a new message with only one single value item in the var parameter.
                                 VarParameterItem item = new S7AnyVarParameterItem(
                                     s7AnyVarParameterItem.getSpecificationType(),
                                     s7AnyVarParameterItem.getMemoryArea(),
-                                    s7AnyVarParameterItem.getTransportSize(), (short) 1,
+                                    s7AnyVarParameterItem.getDataType(), (short) 1,
                                     s7AnyVarParameterItem.getDataBlockNumber(),
                                     byteOffset, bitOffset);
                                 S7Parameter subVarParameter = new VarParameter(varParameter.getType(),
@@ -213,13 +213,13 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                         } else {
                             int payloadPosition = 0;
                             for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
-                                int elementSize = s7AnyVarParameterItem.getTransportSize().getSizeInBytes();
+                                int elementSize = s7AnyVarParameterItem.getDataType().getSizeInBytes();
 
                                 // Create a new message with only one single value item in the var parameter.
                                 VarParameterItem itemParameter = new S7AnyVarParameterItem(
                                     s7AnyVarParameterItem.getSpecificationType(),
                                     s7AnyVarParameterItem.getMemoryArea(),
-                                    s7AnyVarParameterItem.getTransportSize(), (short) 1,
+                                    s7AnyVarParameterItem.getDataType(), (short) 1,
                                     s7AnyVarParameterItem.getDataBlockNumber(),
                                     byteOffset, (byte) 0);
                                 S7Parameter subVarParameter = new VarParameter(varParameter.getType(),

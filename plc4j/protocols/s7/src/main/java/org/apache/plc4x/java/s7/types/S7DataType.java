@@ -18,61 +18,66 @@ under the License.
 */
 package org.apache.plc4x.java.s7.types;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
+
+import java.util.*;
 
 public enum S7DataType {
 
     /**
      * TODO: For the types with code 0x00 we need to put some additional effort in reverse engineering the codes for these types.
      */
-    BOOL(0x01, "X", null, S7ControllerType.S7_ANY),
+    BOOL(0x01, "X", 1, null, DataTransportSize.BIT, S7ControllerType.S7_ANY),
 
-    BYTE(0x02, "B", null, S7ControllerType.S7_ANY),
+    BYTE(0x02, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
 
-    CHAR(0x03, "B", null, S7ControllerType.S7_ANY),
+    CHAR(0x03, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
 
-    WORD(0x04, "W", null, S7ControllerType.S7_ANY),
-    DWORD(0x06, "D", WORD, S7ControllerType.S7_ANY),
+    WORD(0x04, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    DWORD(0x06, "D", 4, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Only got a basic TIA license (S7-1500 needed to find this out)
-    LWORD(0x00, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    LWORD(0x00, null, 8, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
 
-    INT(0x05, "W", null, S7ControllerType.S7_ANY),
+    INT(0x05, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Double Precision Int
-    DINT(0x07, "D", INT, S7ControllerType.S7_ANY),
+    DINT(0x07, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Unsigned Small Int
-    USINT(0x00, "B", INT, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    USINT(0x00, "B", 1, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // (Signed) Small Int
-    SINT(0x00, "B", INT, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    SINT(0x00, "B", 1, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Unsigned Int
-    UINT(0x00, "W", INT, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    UINT(0x00, "W", 2, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Unsigned Double Precision Int
-    UDINT(0x00, "D", INT, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    UDINT(0x00, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
-    UDLINT(0x00, null, INT, S7ControllerType.S7_1500),
+    LINT(0x00, null, 8, INT, null, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
-    LINT(0x00, null, INT, S7ControllerType.S7_1500),
+    UDLINT(0x00, null, 16, INT, null, S7ControllerType.S7_1500),
 
-    REAL(0x08, "D", null, S7ControllerType.S7_ANY),
-    // Ok ... this is strange ...
-    LREAL(0x00, "X", REAL, S7ControllerType.S7_1200, S7ControllerType.S7_1500);
+    REAL(0x08, "D", 4, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    // TODO: Ok ... this is strange ... X sort of implies Boolean ...
+    LREAL(0x00, "X", 8, REAL, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500);
 
     /* TO BE CONTINUED */
 
-    private byte typeCode;
-    private String sizeCode;
-    private Set<S7ControllerType> supportedControllerTypes;
-    private S7DataType baseType;
+    private final byte typeCode;
+    private final String sizeCode;
+    private int sizeInBytes;
+    private final Set<S7ControllerType> supportedControllerTypes;
+    private final S7DataType baseType;
+    private final DataTransportSize dataTransportSize;
 
-    S7DataType(int typeCode, String sizeCode, S7DataType baseType, S7ControllerType... supportedControllerTypes) {
+    S7DataType(int typeCode, String sizeCode, int sizeInBytes, S7DataType baseType, DataTransportSize dataTransportSize,
+               S7ControllerType... supportedControllerTypes) {
         this.typeCode = (byte) typeCode;
         this.sizeCode = sizeCode;
+        this.sizeInBytes = sizeInBytes;
         this.supportedControllerTypes = new HashSet<>(Arrays.asList(supportedControllerTypes));
         this.baseType = baseType;
+        this.dataTransportSize = dataTransportSize;
     }
 
-    byte getTypeCode() {
+    public byte getTypeCode() {
         return typeCode;
     }
 
@@ -80,7 +85,11 @@ public enum S7DataType {
         return sizeCode;
     }
 
-    boolean isBaseType() {
+    public int getSizeInBytes() {
+        return sizeInBytes;
+    }
+
+    public boolean isBaseType() {
         return baseType == null;
     }
 
@@ -104,8 +113,25 @@ public enum S7DataType {
         return null;
     }
 
+    public DataTransportSize getDataTransportSize() {
+        return dataTransportSize;
+    }
+
     boolean isControllerTypeSupported(S7ControllerType controllerType) {
         return supportedControllerTypes.contains(controllerType);
+    }
+
+    private final static Map<Byte, S7DataType> map;
+
+    static {
+        map = new HashMap<>();
+        for (S7DataType dataType : S7DataType.values()) {
+            map.put(dataType.typeCode, dataType);
+        }
+    }
+
+    public static S7DataType valueOf(byte code) {
+        return map.get(code);
     }
 
 }

@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -27,31 +29,40 @@ import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class DefaultPlcWriteRequest implements PlcWriteRequest {
 
-    private final Map<String, Item> fields;
+    private final LinkedHashMap<String, Pair<PlcField, byte[][]>> fields;
 
-    private DefaultPlcWriteRequest(Map<String, Item> fields) {
+    private DefaultPlcWriteRequest(LinkedHashMap<String, Pair<PlcField, byte[][]>> fields) {
         this.fields = fields;
     }
 
     @Override
-    public Collection<String> getFieldNames() {
-        return fields.keySet();
+    public int getNumFields() {
+        return fields.size();
+    }
+
+    @Override
+    public LinkedHashSet<String> getFieldNames() {
+        // TODO: Check if this already is a LinkedHashSet.
+        return new LinkedHashSet<>(fields.keySet());
     }
 
     @Override
     public PlcField getField(String name) {
-        return fields.get(name).field;
+        return fields.get(name).getKey();
     }
 
     @Override
     public byte[][] getValues(String name) {
-        return fields.get(name).values;
+        return fields.get(name).getValue();
+    }
+
+    @Override
+    public int getNumValues(String name) {
+        return fields.get(name).getValue().length;
     }
 
     public static class Builder implements PlcWriteRequest.Builder {
@@ -131,13 +142,13 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
 
         @Override
         public PlcWriteRequest build() {
-            Map<String, DefaultPlcWriteRequest.Item> parsedFields = new TreeMap<>();
+            LinkedHashMap<String, Pair<PlcField, byte[][]>> parsedFields = new LinkedHashMap<>();
             fields.forEach((name, builderItem) -> {
                 // Compile the query string.
                 PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
                 // Encode the payload.
                 byte[][] rawData = fieldHandler.encode(parsedField, builderItem.clientDatatype, builderItem.values);
-                parsedFields.put(name, new DefaultPlcWriteRequest.Item(parsedField, rawData));
+                parsedFields.put(name, new ImmutablePair<>(parsedField, rawData));
             });
             return new DefaultPlcWriteRequest(parsedFields);
         }
@@ -162,18 +173,6 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
                 this.values = values;
             }
 
-        }
-
-    }
-
-    private static class Item {
-
-        private final PlcField field;
-        private final byte[][] values;
-
-        private Item(PlcField field, byte[][] values) {
-            this.field = field;
-            this.values = values;
         }
 
     }

@@ -124,7 +124,8 @@ public class S7SizeHelper {
 
         if(parameterItem instanceof S7AnyVarParameterItem) {
             S7AnyVarParameterItem anyVarParameterItem = (S7AnyVarParameterItem) parameterItem;
-            return (short) (4 + (((int) anyVarParameterItem.getNumElements()) * anyVarParameterItem.getTransportSize().getSizeInBytes()));
+            return (short) (4 + (
+                (anyVarParameterItem.getNumElements()) * anyVarParameterItem.getDataType().getSizeInBytes()));
         } else {
             logger.error("Not implemented");
             return 0;

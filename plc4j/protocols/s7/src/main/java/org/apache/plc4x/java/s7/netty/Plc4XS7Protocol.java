@@ -19,12 +19,16 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
@@ -41,9 +45,6 @@ import org.apache.plc4x.java.s7.netty.model.types.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.apache.plc4x.java.s7.netty.util.S7TypeDecoder.decodeData;
-import static org.apache.plc4x.java.s7.netty.util.S7TypeEncoder.encodeData;
 
 /**
  * This layer transforms between {@link PlcRequestContainer}s {@link S7Message}s.
@@ -127,20 +128,32 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) {
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws PlcException {
         PlcRequest request = msg.getRequest();
-        /*if (request instanceof PlcReadRequest) {
+        if (request instanceof PlcReadRequest) {
             encodeReadRequest(msg, out);
         } else if (request instanceof PlcWriteRequest) {
             encodeWriteRequest(msg, out);
-        }*/
+        }
     }
 
-/*    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+    private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
         List<VarParameterItem> parameterItems = new LinkedList<>();
 
         PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
-        encodeParameterItems(parameterItems, readRequest);
+        for (String fieldName : readRequest.getFieldNames()) {
+            PlcField field = readRequest.getField(fieldName);
+            if (!(field instanceof S7Field)) {
+                throw new PlcException("The field should have been of type S7Field");
+            }
+            S7Field s7Field = (S7Field) field;
+
+            VarParameterItem varParameterItem = new S7AnyVarParameterItem(
+                SpecificationType.VARIABLE_SPECIFICATION, s7Field.getMemoryArea(),
+                s7Field.getDataType(),
+                s7Field.getNumElements(), s7Field.getBlockNumber(), s7Field.getByteOffset(), (byte) s7Field.getBitOffset());
+            parameterItems.add(varParameterItem);
+        }
         VarParameter readVarParameter = new VarParameter(ParameterType.READ_VAR, parameterItems);
 
         // Assemble the request.
@@ -163,28 +176,25 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             if(!(field instanceof S7Field)) {
                 throw new PlcException("The field should have been of type S7Field");
             }
-
             S7Field s7Field = (S7Field) field;
 
-            // Try to get the correct S7 transport size for the given data type.
-            // (Map PLC4X data type to S7 data type)
-            TransportSize transportSize = encodeTransportSize(s7Field.getDatatype());
-            if (transportSize == null) {
-                throw new PlcException("Unknown transport size for datatype " + requestItem.getDatatype());
+            // The number of elements provided in the request must match the number defined in the field, or
+            // bad things are going to happen.
+            if(writeRequest.getNumValues(fieldName) != s7Field.getNumElements()) {
+                throw new PlcException("The number of values provided doesn't match the number specified by the field.");
             }
-
-            // Depending on the field type, generate the corresponding type of request item.
-            VarParameterItem varParameterItem = encodeVarParameterItem(
-                requestItem.getField(), transportSize, requestItem.getValues().size());
+            VarParameterItem varParameterItem = new S7AnyVarParameterItem(
+                SpecificationType.VARIABLE_SPECIFICATION, s7Field.getMemoryArea(),
+                s7Field.getDataType(),
+                s7Field.getNumElements(), s7Field.getBlockNumber(), s7Field.getByteOffset(), (byte) s7Field.getBitOffset());
             parameterItems.add(varParameterItem);
 
-            DataTransportSize dataTransportSize = encodeDataTransportSize(requestItem.getDatatype());
-            if (dataTransportSize == null) {
-                throw new PlcException("Unknown data transport size for datatype " + requestItem.getDatatype());
-            }
+            DataTransportSize dataTransportSize = s7Field.getDataType().getDataTransportSize();
+
+            // TODO: Checkout if the payload items are sort of a flatMap of all request items.
 
             VarPayloadItem varPayloadItem = new VarPayloadItem(
-                DataTransportErrorCode.RESERVED, dataTransportSize, encodeData(requestItem.getValues().toArray()));
+                DataTransportErrorCode.RESERVED, dataTransportSize, writeRequest.getValues(fieldName)[0]);
 
             payloadItems.add(varPayloadItem);
         }
@@ -201,109 +211,27 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         out.add(s7WriteRequest);
     }
 
-    private void encodeParameterItems(List<VarParameterItem> parameterItems, PlcReadRequest readRequest) throws PlcException {
-        for (PlcReadRequestItem requestItem : readRequest.getRequestItems()) {
-            // Try to get the correct S7 transport size for the given data type.
-            // (Map PLC4X data type to S7 data type)
-            TransportSize transportSize = encodeTransportSize(requestItem.getDatatype());
-            if (transportSize == null) {
-                throw new PlcException("Unknown transport size for datatype " + requestItem.getDatatype());
-            }
-
-            // Depending on the field type, generate the corresponding type of request item.
-            VarParameterItem varParameterItem = encodeVarParameterItem(requestItem.getField(), transportSize, requestItem.getSize());
-            parameterItems.add(varParameterItem);
-        }
-    }
-
-    private VarParameterItem encodeVarParameterItem(PlcField field, TransportSize transportSize, int size) throws PlcProtocolException {
-        // Depending on the field type, generate the corresponding type of request item.
-        if (!(field instanceof S7Field)) {
-            throw new PlcProtocolException("Can only use S7Field types on S7 connection");
-        }
-        S7Field s7Field = (S7Field) field;
-        if (s7Field instanceof S7DataBlockField) {
-            S7DataBlockField s7DataBlockField = (S7DataBlockField) s7Field;
-            return new S7AnyVarParameterItem(
-                SpecificationType.VARIABLE_SPECIFICATION, s7Field.getMemoryArea(),
-                transportSize, (short) size,
-                s7DataBlockField.getDataBlockNumber(), s7DataBlockField.getByteOffset(), (byte) 0);
-        } else if (s7Field instanceof S7BitField) {
-            S7BitField s7BitField = (S7BitField) s7Field;
-            return new S7AnyVarParameterItem(
-                SpecificationType.VARIABLE_SPECIFICATION, s7Field.getMemoryArea(),
-                transportSize, (short) size, (short) 0,
-                s7Field.getByteOffset(), s7BitField.getBitOffset());
-        } else {
-            return new S7AnyVarParameterItem(
-                SpecificationType.VARIABLE_SPECIFICATION, s7Field.getMemoryArea(),
-                transportSize, (short) size, (short) 0,
-                s7Field.getByteOffset(), (byte) 0);
-        }
-    }
-
-    private TransportSize encodeTransportSize(Class<?> datatype) {
-        if (datatype == Boolean.class) {
-            return TransportSize.BIT;
-        } else if (datatype == Byte.class) {
-            return TransportSize.BYTE;
-        } else if (datatype == Short.class) {
-            return TransportSize.WORD;
-        } else if (datatype == Calendar.class) {
-            return TransportSize.DATE_AND_TIME;
-        } else if (datatype == Float.class) {
-            return TransportSize.REAL;
-        } else if (datatype == Double.class) {
-            return TransportSize.REAL;
-        } else if (datatype == Integer.class) {
-            return TransportSize.DWORD;
-        } else if (datatype == String.class) {
-            return TransportSize.CHAR;
-        }
-        return null;
-    }
-
-    private DataTransportSize encodeDataTransportSize(Class<?> datatype) {
-        if (datatype == Boolean.class) {
-            return DataTransportSize.BIT;
-        } else if (datatype == Byte.class) {
-            return DataTransportSize.BYTE_WORD_DWORD;
-        } else if (datatype == Short.class) {
-            return DataTransportSize.BYTE_WORD_DWORD;
-        } else if (datatype == Calendar.class) {
-            // TODO: Decide what to do here ...
-            throw new PlcNotImplementedException("Calender support in S7 not yet implemented");
-        } else if (datatype == Float.class) {
-            return DataTransportSize.REAL;
-        } else if (datatype == Double.class) {
-            return DataTransportSize.REAL;
-        } else if (datatype == Integer.class) {
-            return DataTransportSize.BYTE_WORD_DWORD;
-        } else if (datatype == String.class) {
-            return DataTransportSize.OCTET_STRING;
-        }
-        return null;
-    }*/
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Decoding
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) {
+    protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws PlcException {
+        // We're currently just expecting responses.
         if (!(msg instanceof S7ResponseMessage)) {
             return;
         }
         S7ResponseMessage responseMessage = (S7ResponseMessage) msg;
         short tpduReference = responseMessage.getTpduReference();
         if (requests.containsKey(tpduReference)) {
+            // As every response has a matching request, get this request based on the tpdu.
             PlcRequestContainer requestContainer = requests.remove(tpduReference);
             PlcRequest request = requestContainer.getRequest();
-            PlcResponse response = null;
 
-            // Handle the response to a read request.
-            /*if (request instanceof PlcReadRequest) {
+            // Handle the response.
+            PlcResponse response = null;
+            if (request instanceof PlcReadRequest) {
                 response = decodeReadResponse(responseMessage, requestContainer);
             } else if (request instanceof PlcWriteRequest) {
                 response = decodeWriteResponse(responseMessage, requestContainer);
@@ -312,94 +240,77 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             // Confirm the response being handled.
             if (response != null) {
                 requestContainer.getResponseFuture().complete(response);
-            }*/
+            }
         }
     }
 
-    /*@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     private PlcResponse decodeReadResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
-        PlcResponse response;
         PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
 
-        List<PlcReadResponseItem<?>> responseItems = new LinkedList<>();
         VarPayload payload = responseMessage.getPayload(VarPayload.class)
             .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
+
+        // TODO: Checkout if the payload items are sort of a flatMap of all request items.
 
         // If the numbers of items don't match, we're in big trouble as the only
         // way to know how to interpret the responses is by aligning them with the
         // items from the request as this information is not returned by the PLC.
-        if (plcReadRequest.getRequestItems().size() != payload.getItems().size()) {
+        if (plcReadRequest.getNumFields() != payload.getItems().size()) {
             throw new PlcProtocolException(
                 "The number of requested items doesn't match the number of returned items");
         }
 
+        Map<String, Pair<PlcResponseCode, byte[][]>> values = new HashMap<>();
         List<VarPayloadItem> payloadItems = payload.getItems();
-        final int noPayLoadItems = payloadItems.size();
-        for (int i = 0; i < noPayLoadItems; i++) {
-            VarPayloadItem payloadItem = payloadItems.get(i);
-
-            // Get the request item for this payload item
-            PlcReadRequestItem requestItem = plcReadRequest.getRequestItems().get(i);
+        int index = 0;
+        for (String fieldName : plcReadRequest.getFieldNames()) {
+            VarPayloadItem payloadItem = payloadItems.get(index);
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
+            byte[][] data = null;
+            if (responseCode == PlcResponseCode.OK) {
+                data = new byte[1][];
+                data[0] = payloadItem.getData();
+            }
+            Pair<PlcResponseCode, byte[][]> result = new ImmutablePair<>(responseCode, data);
+            values.put(fieldName, result);
+            index++;
+        }
 
-            PlcReadResponseItem responseItem;
-            // Something went wrong.
-            if (responseCode != PlcResponseCode.OK) {
-                responseItem = new PlcReadResponseItem<>(requestItem, responseCode);
-            }
-            // All Ok.
-            else {
-                byte[] data = payloadItem.getData();
-                Class<?> datatype = requestItem.getDatatype();
-                List<?> value = decodeData(datatype, data);
-                responseItem = new PlcReadResponseItem(requestItem, responseCode, value);
-            }
-            responseItems.add(responseItem);
-        }
-        if (plcReadRequest instanceof TypeSafePlcReadRequest) {
-            response = new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, responseItems);
-        } else {
-            response = new PlcReadResponse(plcReadRequest, responseItems);
-        }
-        return response;
+        return new DefaultPlcReadResponse(plcReadRequest, values);
     }
 
     @SuppressWarnings("unchecked")
     private PlcResponse decodeWriteResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
-        PlcResponse response;
         PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
-        List<PlcWriteResponseItem<?>> responseItems = new LinkedList<>();
         VarPayload payload = responseMessage.getPayload(VarPayload.class)
             .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
+
+        // TODO: Checkout if the payload items are sort of a flatMap of all request items.
+
         // If the numbers of items don't match, we're in big trouble as the only
         // way to know how to interpret the responses is by aligning them with the
         // items from the request as this information is not returned by the PLC.
-        if (plcWriteRequest.getRequestItems().size() != payload.getItems().size()) {
+        if (plcWriteRequest.getNumFields() != payload.getItems().size()) {
             throw new PlcProtocolException(
                 "The number of requested items doesn't match the number of returned items");
         }
-        List<VarPayloadItem> payloadItems = payload.getItems();
-        final int noPayLoadItems = payloadItems.size();
-        for (int i = 0; i < noPayLoadItems; i++) {
-            VarPayloadItem payloadItem = payloadItems.get(i);
 
-            // Get the request item for this payload item
-            PlcWriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(i);
+        Map<String, PlcResponseCode> values = new HashMap<>();
+        List<VarPayloadItem> payloadItems = payload.getItems();
+        int index = 0;
+        for (String fieldName : plcWriteRequest.getFieldNames()) {
+            VarPayloadItem payloadItem = payloadItems.get(index);
 
             // A write response contains only the return code for every item.
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
 
-            PlcWriteResponseItem responseItem = new PlcWriteResponseItem(requestItem, responseCode);
-            responseItems.add(responseItem);
+            values.put(fieldName, responseCode);
+            index++;
         }
 
-        if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
-            response = new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, responseItems);
-        } else {
-            response = new PlcWriteResponse(plcWriteRequest, responseItems);
-        }
-        return response;
+        return new DefaultPlcWriteResponse(plcWriteRequest, values);
     }
 
     private PlcResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
@@ -416,6 +327,6 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             default:
                 return PlcResponseCode.INTERNAL_ERROR;
         }
-    }*/
+    }
 
 }

@@ -24,6 +24,8 @@ import java.time.LocalTime;
 
 public interface PlcWriteRequest extends PlcFieldRequest {
 
+    int getNumValues(String name);
+
     byte[][] getValues(String name);
 
     interface Builder extends PlcMessageBuilder<PlcWriteRequest> {

@@ -47,10 +47,10 @@ import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.strategies.S7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
+import org.apache.plc4x.java.s7.types.S7DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -361,7 +361,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         // Length of this item (excluding spec type and length)
         buf.writeByte((byte) 0x0a);
         buf.writeByte(s7AnyRequestItem.getAddressingMode().getCode());
-        buf.writeByte(s7AnyRequestItem.getTransportSize().getCode());
+        buf.writeByte(s7AnyRequestItem.getDataType().getTypeCode());
         buf.writeShort(s7AnyRequestItem.getNumElements());
         buf.writeShort(s7AnyRequestItem.getDataBlockNumber());
         buf.writeByte(s7AnyRequestItem.getMemoryArea().getCode());
@@ -707,7 +707,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             }
             VariableAddressingMode variableAddressingMode = VariableAddressingMode.valueOf(in.readByte());
             if (variableAddressingMode == VariableAddressingMode.S7ANY) {
-                TransportSize transportSize = TransportSize.valueOf(in.readByte());
+                S7DataType dataType = S7DataType.valueOf(in.readByte());
                 short length = in.readShort();
                 short dbNumber = in.readShort();
                 MemoryArea memoryArea = MemoryArea.valueOf(in.readByte());
@@ -718,7 +718,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 // Bits 4-8 belong to the byte address
                 byteAddress = (short) (byteAddress | (tmp >> 3));
                 S7AnyVarParameterItem item = new S7AnyVarParameterItem(
-                        specificationType, memoryArea, transportSize,
+                        specificationType, memoryArea, dataType,
                         length, dbNumber, byteAddress, bitAddress);
                 items.add(item);
             } else {

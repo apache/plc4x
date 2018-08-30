@@ -25,7 +25,7 @@ import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
-import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
+import org.apache.plc4x.java.s7.types.S7DataType;
 
 import java.util.List;
 
@@ -155,12 +155,9 @@ public class S7ResponseSizeEstimator {
         short length = 4;
         S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameterItem;
         length +=
-            s7AnyVarParameterItem.getNumElements() * s7AnyVarParameterItem.getTransportSize().getSizeInBytes();
-        // Get the corresponding "Data Transport Size" for a given "Transport Size".
-        DataTransportSize dataTransportSize =
-            DataTransportSize.getForTransportSize(s7AnyVarParameterItem.getTransportSize());
+            s7AnyVarParameterItem.getNumElements() * s7AnyVarParameterItem.getDataType().getSizeInBytes();
         // It seems that bit payloads need a additional separating 0x00 byte.
-        if((dataTransportSize != null) && dataTransportSize.isSizeInBits()) {
+        if(s7AnyVarParameterItem.getDataType() == S7DataType.BOOL) {
             length += 1;
         }
         return length;

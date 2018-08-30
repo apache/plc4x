@@ -43,7 +43,12 @@ class S7FieldTests {
             Arguments.of("%I0.1:BOOL",          S7DataType.BOOL,  MemoryArea.INPUTS,      0,  0,  1),
             Arguments.of("%ID64:REAL",          S7DataType.REAL,  MemoryArea.INPUTS,      0,  64, 0),
             Arguments.of("%Q0.4:BOOL",          S7DataType.BOOL,  MemoryArea.OUTPUTS,     0,  0,  4),
-            Arguments.of("%DB1.DBX38.1:BOOL",   S7DataType.BOOL,  MemoryArea.DATA_BLOCKS, 1,  38, 1)
+            Arguments.of("%DB1.DBX38.1:BOOL",   S7DataType.BOOL,  MemoryArea.DATA_BLOCKS, 1,  38, 1)/*,
+            // Not quite sure about how Data Block addresses look like, in my TIA portal they all have the prefix "DB".
+            Arguments.of("%DB3.DX4.1:BOOL",     S7DataType.BOOL,  MemoryArea.DATA_BLOCKS, 3,  4,  1),
+            Arguments.of("%DB3.DB4:INT",        S7DataType.INT,   MemoryArea.DATA_BLOCKS, 3,  4,  0),
+            Arguments.of("%DB3.DB4:UINT",       S7DataType.UINT,  MemoryArea.DATA_BLOCKS, 3,  4,  0),
+            Arguments.of("%DB3.DW4:REAL",       S7DataType.REAL,  MemoryArea.DATA_BLOCKS, 3,  4,  0)*/
         );
     }
 

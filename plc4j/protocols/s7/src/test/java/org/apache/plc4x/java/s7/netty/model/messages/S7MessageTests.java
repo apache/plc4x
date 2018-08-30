@@ -28,6 +28,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
+import org.apache.plc4x.java.s7.types.S7DataType;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -105,13 +106,13 @@ public class S7MessageTests {
         List<VarParameterItem> parameterItems = new ArrayList<>();
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        TransportSize transportSize = TransportSize.INT;
+        S7DataType dataType = S7DataType.INT;
         short numElements = 1;
         byte dataBlock = (byte) 0x1;
         byte byteOffset = (byte) 0x10;
         byte bitOffset = (byte) 0x0;
 
-        parameterItems.add(new S7AnyVarParameterItem(specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset));
+        parameterItems.add(new S7AnyVarParameterItem(specificationType, memoryArea, dataType, numElements, dataBlock, byteOffset, bitOffset));
 
         VarParameter varParameter = new VarParameter(parameterType, parameterItems);
 
@@ -169,18 +170,18 @@ public class S7MessageTests {
         List<VarParameterItem> parameterItems = new ArrayList<>();
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        TransportSize transportSize = TransportSize.INT;
-        short numElements = 1;
+        S7DataType dataType = S7DataType.INT;
+        int numElements = 1;
         byte dataBlock = (byte) 0x1;
         byte byteOffset = (byte) 0x10;
         byte bitOffset = (byte) 0x0;
 
         S7AnyVarParameterItem parameterItem = new S7AnyVarParameterItem(
-            specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset);
+            specificationType, memoryArea, dataType, numElements, dataBlock, byteOffset, bitOffset);
 
         assertThat("Unexpected specification type", parameterItem.getSpecificationType(), equalTo(specificationType));
         assertThat("Unexpected memory area", parameterItem.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
-        assertThat("Unexpected transport size", parameterItem.getTransportSize(), equalTo(transportSize));
+        assertThat("Unexpected transport size", parameterItem.getDataType(), equalTo(dataType));
         assertThat("Unexpected number elements", parameterItem.getNumElements(), equalTo(numElements));
         assertThat("Unexpected data block", parameterItem.getDataBlockNumber(), equalTo((short) dataBlock));
         assertThat("Unexpected byte offset", parameterItem.getByteOffset(), equalTo((short) byteOffset));

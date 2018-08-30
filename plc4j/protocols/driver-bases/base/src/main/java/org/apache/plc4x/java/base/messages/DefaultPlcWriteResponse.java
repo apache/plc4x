@@ -28,29 +28,32 @@ import java.util.Map;
 
 public class DefaultPlcWriteResponse implements PlcWriteResponse {
 
-    @Override
-    public Map<String, PlcField> getFields() {
-        return null;
-    }
+    private final PlcWriteRequest request;
+    private final Map<String, PlcResponseCode> values;
 
-    @Override
-    public Collection<String> getFieldNames() {
-        return null;
-    }
-
-    @Override
-    public PlcField getField(String name) {
-        return null;
-    }
-
-    @Override
-    public PlcResponseCode getResponseCode(String name) {
-        return null;
+    public DefaultPlcWriteResponse(PlcWriteRequest request, Map<String, PlcResponseCode> values) {
+        this.request = request;
+        this.values = values;
     }
 
     @Override
     public PlcWriteRequest getRequest() {
-        return null;
+        return request;
+    }
+
+    @Override
+    public Collection<String> getFieldNames() {
+        return request.getFieldNames();
+    }
+
+    @Override
+    public PlcField getField(String name) {
+        return request.getField(name);
+    }
+
+    @Override
+    public PlcResponseCode getResponseCode(String name) {
+        return values.get(name);
     }
 
 }

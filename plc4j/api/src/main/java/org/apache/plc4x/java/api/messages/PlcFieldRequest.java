@@ -20,11 +20,13 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.PlcField;
 
-import java.util.Collection;
+import java.util.LinkedHashSet;
 
 public interface PlcFieldRequest extends PlcRequest {
 
-    Collection<String> getFieldNames();
+    int getNumFields();
+
+    LinkedHashSet<String> getFieldNames();
 
     PlcField getField(String name);
 

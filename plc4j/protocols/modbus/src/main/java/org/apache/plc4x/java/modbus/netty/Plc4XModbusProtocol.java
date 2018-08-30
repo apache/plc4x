@@ -32,7 +32,6 @@ import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.modbus.model.*;

@@ -23,21 +23,25 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class DefaultPlcReadRequest implements PlcReadRequest {
 
-    private Map<String, PlcField> fields;
+    private LinkedHashMap<String, PlcField> fields;
 
-    private DefaultPlcReadRequest(Map<String, PlcField> fields) {
+    private DefaultPlcReadRequest(LinkedHashMap<String, PlcField> fields) {
         this.fields = fields;
     }
 
     @Override
-    public Collection<String> getFieldNames() {
-        return fields.keySet();
+    public int getNumFields() {
+        return fields.size();
+    }
+
+    @Override
+    public LinkedHashSet<String> getFieldNames() {
+        // TODO: Check if this already is a LinkedHashSet.
+        return new LinkedHashSet<>(fields.keySet());
     }
 
     @Override
@@ -66,7 +70,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest {
 
         @Override
         public PlcReadRequest build() {
-            Map<String, PlcField> parsedFields = new TreeMap<>();
+            LinkedHashMap<String, PlcField> parsedFields = new LinkedHashMap<>();
             fields.forEach((name, fieldQuery) -> {
                 PlcField parsedField = fieldHandler.createField(fieldQuery);
                 parsedFields.put(name, parsedField);

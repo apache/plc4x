@@ -33,14 +33,15 @@ public enum MemoryArea {
     FLAGS("F", (byte) 0x83), // TODO: Double check shortName
     DATA_BLOCKS("DB", (byte) 0x84),
     INSTANCE_DATA_BLOCKS("DBI", (byte) 0x85), // TODO: Double check shortName
-    LOCAL_DATA("LD", (byte) 0x86), // TODO: Double check shortName
+    LOCAL_DATA("LD", (byte) 0x86); // TODO: Double check shortName
 
-    S7_200_SYSTEM_INFO(null, (byte) 0x03), /* Renamed from "System info of 200 family" */
-    S7_200_FLAGS(null, (byte) 0x05), /* Renamed from "System flags of 200 family" */
-    S7_200_INPUTS(null, (byte) 0x06), /* Renamed from "System inputs of 200 family" */
-    S7_200_OUTPUTS(null, (byte) 0x07), /* Renamed from "System outputs of 200 family" */
-    S7_200_IEC_COUNTERS(null, (byte) 0x1E), /* Renamed from "IEC counters (200 family)" */
-    S7_200_IEC_TIMERS(null, (byte) 0x1F); /* Renamed from "IEC timers (200 family)" */
+    // TODO: I think we should remove these ...
+    /*S7_200_SYSTEM_INFO(null, (byte) 0x03), * Renamed from "System info of 200 family" *
+    S7_200_FLAGS(null, (byte) 0x05), * Renamed from "System flags of 200 family" *
+    S7_200_INPUTS(null, (byte) 0x06), * Renamed from "System inputs of 200 family" *
+    S7_200_OUTPUTS(null, (byte) 0x07), * Renamed from "System outputs of 200 family" *
+    S7_200_IEC_COUNTERS(null, (byte) 0x1E), * Renamed from "IEC counters (200 family)" *
+    S7_200_IEC_TIMERS(null, (byte) 0x1F); * Renamed from "IEC timers (200 family)" */
 
     private final String shortName;
     private final byte code;

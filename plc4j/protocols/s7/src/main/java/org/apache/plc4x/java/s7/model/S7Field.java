@@ -28,15 +28,10 @@ import java.util.regex.Pattern;
 
 public class S7Field implements PlcField {
 
-    // %I0.1:BOOL           <-- Digital Input
-    // %IW64:REAL           <-- Analog Input
-    // %Q0.4:BOOL           <-- Digital Output
-    // %DB1.DBX38.1:BOOL    <-- Memory block DB1
-
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>.?)(?<byteOffset>\\d{1,4})(.(?<bitOffset>[0-7]))?:(?<dataType>.+)");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>.?)(?<byteOffset>\\d{1,4})(.(?<bitOffset>[0-7]))?:(?<dataType>.+)(\\[(?<numElements>\\d)])?");
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,4}).DB(?<transferSizeCode>.?)(?<byteOffset>\\d{1,4})(.(?<bitOffset>[0-7]))?:(?<dataType>.+)");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,4}).DB(?<transferSizeCode>.?)(?<byteOffset>\\d{1,4})(.(?<bitOffset>[0-7]))?:(?<dataType>.+)(\\[(?<numElements>\\d)])?");
 
     public static boolean matches(String fieldString) {
         return DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString).matches() ||
@@ -57,11 +52,15 @@ public class S7Field implements PlcField {
             } else if(dataType == S7DataType.BOOL) {
                 throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
+            int numElements = 0;
+            if(matcher.group("numElements") != null) {
+                numElements = Integer.parseInt(matcher.group("numElements"));
+            }
             if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
-            return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset);
+            return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
         } else {
             matcher = ADDRESS_PATTERN.matcher(fieldString);
             if (matcher.matches()) {
@@ -75,11 +74,15 @@ public class S7Field implements PlcField {
                 } else if(dataType == S7DataType.BOOL) {
                     throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
                 }
+                int numElements = 0;
+                if(matcher.group("numElements") != null) {
+                    numElements = Integer.parseInt(matcher.group("numElements"));
+                }
                 if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
                     throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                         "' doesn't match specified data type '" + dataType.name() + "'");
                 }
-                return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset);
+                return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
             }
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
@@ -90,13 +93,15 @@ public class S7Field implements PlcField {
     private final short blockNumber;
     private final short byteOffset;
     private final short bitOffset;
+    private final int numElements;
 
-    public S7Field(S7DataType dataType, MemoryArea memoryArea, short blockNumber, short byteOffset, short bitOffset) {
+    private S7Field(S7DataType dataType, MemoryArea memoryArea, short blockNumber, short byteOffset, short bitOffset, int numElements) {
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
         this.byteOffset = byteOffset;
         this.bitOffset = bitOffset;
+        this.numElements = numElements;
     }
 
     public S7DataType getDataType() {
@@ -117,6 +122,10 @@ public class S7Field implements PlcField {
 
     public short getBitOffset() {
         return bitOffset;
+    }
+
+    public int getNumElements() {
+        return numElements;
     }
 
 }

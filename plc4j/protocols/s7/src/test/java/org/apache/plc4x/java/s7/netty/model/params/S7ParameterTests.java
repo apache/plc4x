@@ -22,6 +22,7 @@ package org.apache.plc4x.java.s7.netty.model.params;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
+import org.apache.plc4x.java.s7.types.S7DataType;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,13 +42,13 @@ public class S7ParameterTests {
         ArrayList<VarParameterItem> parameterItems = new ArrayList<>();
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        TransportSize transportSize = TransportSize.INT;
+        S7DataType dataType = S7DataType.INT;
         short numElements = 1;
         byte dataBlock = (byte) 0x1;
         byte byteOffset = (byte) 0x10;
         byte bitOffset = (byte) 0x0;
 
-        parameterItems.add(new S7AnyVarParameterItem(specificationType, memoryArea, transportSize, numElements, dataBlock, byteOffset, bitOffset));
+        parameterItems.add(new S7AnyVarParameterItem(specificationType, memoryArea, dataType, numElements, dataBlock, byteOffset, bitOffset));
 
         VarParameter varParameter = new VarParameter(parameterType, parameterItems);
         assertThat("Unexpected parameter type", varParameter.getType(), equalTo(ParameterType.READ_VAR));

@@ -31,8 +31,6 @@ import java.util.Map;
  */
 public interface PlcFieldResponse<REQUEST_TYPE extends PlcFieldRequest> extends PlcResponse<REQUEST_TYPE> {
 
-    Map<String, PlcField> getFields();
-
     Collection<String> getFieldNames();
 
     PlcField getField(String name);

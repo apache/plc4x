@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -31,9 +32,46 @@ import java.util.Map;
 
 public class DefaultPlcReadResponse implements PlcReadResponse {
 
+    private final PlcReadRequest request;
+    private final Map<String, Pair<PlcResponseCode, byte[][]>> values;
+
+    public DefaultPlcReadResponse(PlcReadRequest request, Map<String, Pair<PlcResponseCode, byte[][]>> values) {
+        this.request = request;
+        this.values = values;
+    }
+
+    @Override
+    public PlcReadRequest getRequest() {
+        return request;
+    }
+
     @Override
     public int getNumValues(String name) {
-        return 0;
+        if(values.get(name) == null) {
+            return 0;
+        }
+        if(values.get(name).getKey() != PlcResponseCode.OK) {
+            return 0;
+        }
+        return values.get(name).getValue().length;
+    }
+
+    @Override
+    public Collection<String> getFieldNames() {
+        return request.getFieldNames();
+    }
+
+    @Override
+    public PlcField getField(String name) {
+        return request.getField(name);
+    }
+
+    @Override
+    public PlcResponseCode getResponseCode(String name) {
+        if(values.get(name) == null) {
+            return null;
+        }
+        return values.get(name).getKey();
     }
 
     @Override
@@ -43,7 +81,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public byte[] getRaw(String name) {
-        return new byte[0];
+        return getRaw(name, 0);
     }
 
     @Override
@@ -63,7 +101,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Object getObject(String name) {
-        return null;
+        return getObject(name, 0);
     }
 
     @Override
@@ -83,7 +121,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Boolean getBoolean(String name) {
-        return null;
+        return getBoolean(name, 0);
     }
 
     @Override
@@ -103,7 +141,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Byte getByte(String name) {
-        return null;
+        return getByte(name, 0);
     }
 
     @Override
@@ -123,7 +161,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Short getShort(String name) {
-        return null;
+        return getShort(name, 0);
     }
 
     @Override
@@ -143,7 +181,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Integer getInteger(String name) {
-        return null;
+        return getInteger(name, 0);
     }
 
     @Override
@@ -163,7 +201,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Long getLong(String name) {
-        return null;
+        return getLong(name, 0);
     }
 
     @Override
@@ -183,7 +221,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Float getFloat(String name) {
-        return null;
+        return getFloat(name, 0);
     }
 
     @Override
@@ -203,7 +241,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Double getDouble(String name) {
-        return null;
+        return getDouble(name, 0);
     }
 
     @Override
@@ -223,7 +261,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public String getString(String name) {
-        return null;
+        return getString(name, 0);
     }
 
     @Override
@@ -243,7 +281,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public LocalTime getTime(String name) {
-        return null;
+        return getTime(name, 0);
     }
 
     @Override
@@ -263,7 +301,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public LocalDate getDate(String name) {
-        return null;
+        return getDate(name, 0);
     }
 
     @Override
@@ -283,7 +321,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public LocalDateTime getDateTime(String name) {
-        return null;
+        return getDateTime(name, 0);
     }
 
     @Override
@@ -293,31 +331,6 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
 
     @Override
     public Collection<LocalDateTime> getAllDateTimes(String name) {
-        return null;
-    }
-
-    @Override
-    public Map<String, PlcField> getFields() {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getFieldNames() {
-        return null;
-    }
-
-    @Override
-    public PlcField getField(String name) {
-        return null;
-    }
-
-    @Override
-    public PlcResponseCode getResponseCode(String name) {
-        return null;
-    }
-
-    @Override
-    public PlcReadRequest getRequest() {
         return null;
     }
 

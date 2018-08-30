@@ -58,10 +58,10 @@ import static org.junit.Assume.assumeThat;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
-@RunWith(Parameterized.class)
+//@RunWith(Parameterized.class)
 public class Plc4XS7ProtocolTest extends NettyTestBase {
 
-    private Plc4XS7Protocol SUT;
+/*    private Plc4XS7Protocol SUT;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -98,7 +98,7 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
         SUT = new Plc4XS7Protocol();
     }
 
-/*    @Test
+    @Test
     @Category(FastTests.class)
     public void encode() throws Exception {
         assumeThat(type + " not yet implemented", notYetSupportedDataType, not(hasItem(type.getSimpleName())));
