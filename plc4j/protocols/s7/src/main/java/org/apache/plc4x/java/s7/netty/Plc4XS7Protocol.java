@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,6 +32,9 @@ import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.items.BooleanFieldItem;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.FloatingPointFieldItem;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
@@ -43,6 +48,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -261,19 +267,108 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        Map<String, Pair<PlcResponseCode, byte[][]>> values = new HashMap<>();
+        Map<String, Pair<PlcResponseCode, FieldItem>> values = new HashMap<>();
         List<VarPayloadItem> payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcReadRequest.getFieldNames()) {
+            S7Field field = (S7Field) plcReadRequest.getField(fieldName);
             VarPayloadItem payloadItem = payloadItems.get(index);
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            byte[][] data = null;
+            FieldItem fieldItem = null;
+            ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
-                data = new byte[1][];
-                data[0] = payloadItem.getData();
+                switch(field.getDataType()) {
+                    // -----------------------------------------
+                    // Bit
+                    // -----------------------------------------
+                    case BOOL: {
+                        // TODO: Multiple boolean are encoded in one byte ...
+                        fieldItem = new BooleanFieldItem();
+                        break;
+                    }
+                    // -----------------------------------------
+                    // Bit-strings
+                    // -----------------------------------------
+                    case BYTE: { // 1 byte
+                        Long longValue = (long) data.readByte();
+                        break;
+                    }
+                    case WORD: { // 2 byte (16 bit)
+                        Long longValue = (long) data.readShort();
+                        break;
+                    }
+                    case DWORD: { // 4 byte (32 bit)
+                        Long longValue = (long) data.readInt();
+                        break;
+                    }
+                    case LWORD: { // 8 byte (64 bit)
+                        Long longValue = data.readLong();
+                        break;
+                    }
+                    // -----------------------------------------
+                    // Integers
+                    // -----------------------------------------
+                    // 8 bit:
+                    case SINT: {
+                        Long longValue = (long) data.readShort();
+
+                        break;
+                    }
+                    case USINT: {
+                        Long longValue = (long) data.readUnsignedShort();
+                        break;
+                    }
+                    // 16 bit:
+                    case INT: {
+                        Long longValue = (long) data.readInt();
+                        break;
+                    }
+                    case UINT: {
+                        Long longValue = data.readUnsignedInt();
+                        break;
+                    }
+                    // 32 bit:
+                    case DINT: {
+                        Long longValue = data.readLong();
+                        break;
+                    }
+                    case UDINT: {
+                        BigInteger bigIntegerValue = readUnsignedLong(data);
+                        break;
+                    }
+                    // 64 bit:
+                    case LINT: {
+                        BigInteger bigIntegerValue = readSigned64BitInteger(data);
+                        break;
+                    }
+                    case ULINT: {
+                        BigInteger bigIntegerValue = readUnsigned64BitInteger(data);
+                        break;
+                    }
+                    // -----------------------------------------
+                    // Floating point values
+                    // -----------------------------------------
+                    case REAL: {
+                        float floatValue = data.readFloat();
+                        break;
+                    }
+                    case LREAL: {
+                        double doubleValue = data.readDouble();
+                        break;
+                    }
+                    // -----------------------------------------
+                    // Characters & Strings
+                    // -----------------------------------------
+                    case CHAR: { // 1 byte (8 bit)
+                        Long longValue = (long) data.readChar();
+                        break;
+                    }
+                    default:
+                        throw new PlcProtocolException("Unsupported type " + field.getDataType());
+                }
             }
-            Pair<PlcResponseCode, byte[][]> result = new ImmutablePair<>(responseCode, data);
+            Pair<PlcResponseCode, FieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
             values.put(fieldName, result);
             index++;
         }
@@ -327,6 +422,35 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             default:
                 return PlcResponseCode.INTERNAL_ERROR;
         }
+    }
+
+    private static BigInteger readUnsignedLong(ByteBuf data) {
+        // as there is no unsigned long primitive, we have to switch to
+        // BigDecimal and manually convert the bytes to a BigDecimal.
+        // In order to be unsigned 4 bytes, we create an array of 5 bytes
+        // where the 5th byte is set to 0. The most significant bit being
+        // 0 we are guaranteed to interpret the input a positive value.
+        byte[] bytes = new byte[5];
+        // Set the first byte to 0
+        bytes[0] = 0;
+        // Read the next 4 bytes into the rest.
+        data.readBytes(bytes, 1, 4);
+        return new BigInteger(bytes);
+    }
+
+    private static BigInteger readSigned64BitInteger(ByteBuf data) {
+        byte[] bytes = new byte[8];
+        data.readBytes(bytes, 0,  8);
+        return new BigInteger(bytes);
+    }
+
+    private static BigInteger readUnsigned64BitInteger(ByteBuf data) {
+        byte[] bytes = new byte[9];
+        // Set the first byte to 0
+        bytes[0] = 0;
+        // Read the next 8 bytes into the rest.
+        data.readBytes(bytes, 1, 8);
+        return new BigInteger(bytes);
     }
 
 }

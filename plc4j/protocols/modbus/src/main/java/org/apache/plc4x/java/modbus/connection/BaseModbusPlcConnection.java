@@ -28,8 +28,12 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcClientDatatype;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.connection.PlcFieldHandler;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
@@ -37,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class BaseModbusPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
+public abstract class BaseModbusPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcFieldHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseModbusPlcConnection.class);
 
@@ -62,21 +66,8 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     }
 
     @Override
-    public PlcField prepareField(String fieldString) throws PlcInvalidFieldException {
-        if (MaskWriteRegisterModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
-            return MaskWriteRegisterModbusField.of(fieldString);
-        } else if (ReadDiscreteInputsModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
-            return ReadDiscreteInputsModbusField.of(fieldString);
-        } else if (ReadHoldingRegistersModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
-            return ReadHoldingRegistersModbusField.of(fieldString);
-        } else if (ReadInputRegistersModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
-            return ReadInputRegistersModbusField.of(fieldString);
-        } else if (CoilModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
-            return CoilModbusField.of(fieldString);
-        } else if (RegisterModbusField.ADDRESS_PATTERN.matcher(fieldString).matches()) {
-            return RegisterModbusField.of(fieldString);
-        }
-        throw new PlcInvalidFieldException(fieldString);
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.DefaultPlcReadRequestBuilder(this);
     }
 
     @Override
@@ -92,6 +83,10 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     }
 
     @Override
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(this);
+    }
+    @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(writeRequest, writeFuture));
@@ -101,5 +96,33 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
             }
         });
         return writeFuture;
+    }
+
+    @Override
+    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+        if (MaskWriteRegisterModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return MaskWriteRegisterModbusField.of(fieldQuery);
+        } else if (ReadDiscreteInputsModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return ReadDiscreteInputsModbusField.of(fieldQuery);
+        } else if (ReadHoldingRegistersModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return ReadHoldingRegistersModbusField.of(fieldQuery);
+        } else if (ReadInputRegistersModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return ReadInputRegistersModbusField.of(fieldQuery);
+        } else if (CoilModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return CoilModbusField.of(fieldQuery);
+        } else if (RegisterModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return RegisterModbusField.of(fieldQuery);
+        }
+        throw new PlcInvalidFieldException(fieldQuery);
+    }
+
+    @Override
+    public byte[][] encode(PlcField field, PlcClientDatatype clientDatatype, Object[] values) {
+        return new byte[0][];
+    }
+
+    @Override
+    public Object[] decode(PlcField field, PlcClientDatatype clientDatatype, byte[][] rawData) {
+        return new Object[0];
     }
 }

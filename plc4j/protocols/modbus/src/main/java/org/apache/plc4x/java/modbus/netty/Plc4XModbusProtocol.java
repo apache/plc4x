@@ -70,40 +70,70 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
     private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcWriteRequest request = (PlcWriteRequest) msg.getRequest();
+
         // TODO: support multiple requests
-        PlcWriteRequestItem<?> writeRequestItem = request.getRequestItem().orElseThrow(() -> new PlcNotImplementedException("Only single message supported for now"));
+        if(request.getFieldNames().size() != 1) {
+            throw new PlcNotImplementedException("Only single message supported for now")
+        }
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
-        // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
-        int quantity = writeRequestItem.getSize();
+        // TODO: for higher data types float, double etc we might need to split the bytes into chunks
+        String fieldName = request.getFieldNames().iterator().next();
+        int quantity = request.getNumValues(fieldName);
         short unitId = 0;
 
-        ModbusField field = (ModbusField) writeRequestItem.getField();
+        /*
+         * It seems that in Modbus, there are only two types of resources, that can be accessed:
+         * - Register: 2 byte value
+         * - Coil: 1 bit value
+         *
+         * Registers:
+         * When writing a bit, byte or char (a one byte or less data types) into a register the value is filled up to
+         * fit the 2 bytes.
+         * When writing a data type that has more than 2 bytes, subsequent registers are written to automatically.
+         *
+         * Coils:
+         * When transferring data from/to a coil, 8 coil values can be transferred in a single byte.
+         * Naturally a coil is a boolean data type, however, similar to the registers bigger data types can be
+         * transported, by setting multiple subsequent coils: 32bit int -> 32 coils
+         *
+         * In all cases where we are accessing more than the natural size of the datatype, we have to keep this in mind
+         * when addressing them. So if reading 2 32bit integers, this is split up into four registers. So for the second
+         * int we have to increment the address accordingly.
+         */
+        ModbusField field = (ModbusField) request.getField(fieldName);
         ModbusPdu modbusRequest;
         if (field instanceof RegisterModbusField) {
             RegisterModbusField registerModbusField = (RegisterModbusField) field;
             if (quantity > 1) {
-                byte[] bytesToWrite = produceRegisterValue(writeRequestItem.getValues());
+                byte[] bytesToWrite = flattenByteValues(request.getValues(fieldName));
+                // A register is a 16 bit (2 byte) value ... so every value needs 2 byte.
                 int requiredLength = 2 * quantity;
                 if (bytesToWrite.length != requiredLength) {
                     throw new PlcProtocolException("Invalid register values created. Should be at least quantity * 2 = N bytes. Was " + bytesToWrite.length + ", expected " + requiredLength);
                 }
                 modbusRequest = new WriteMultipleRegistersRequest(registerModbusField.getAddress(), quantity, bytesToWrite);
             } else {
-                byte[] register = produceRegisterValue(writeRequestItem.getValues());
+                byte[] register = request.getValues(fieldName)[0];
+                if (register.length != 2) {
+                    throw new PlcProtocolException("Invalid register values created. Should be 2 bytes. Was " + register.length);
+                }
+                // Reconvert the two bytes back to an int.
                 int intToWrite = register[0] << 8 | register[1] & 0xff;
                 modbusRequest = new WriteSingleRegisterRequest(registerModbusField.getAddress(), intToWrite);
             }
         } else if (field instanceof CoilModbusField) {
             CoilModbusField coilModbusField = (CoilModbusField) field;
             if (quantity > 1) {
-                byte[] bytesToWrite = produceCoilValues(writeRequestItem.getValues());
-                int requiredLength = (quantity + 7) / 8;
+                byte[] bytesToWrite = flattenBitValues(request.getValues(fieldName));
+                // As each coil value represents a bit, the number of bytes needed
+                // equals "ceil(quantity/8)" (a 3 bit shift is a division by 8 ... the +1 is the "ceil")
+                int requiredLength = (quantity >> 3) + 1;
                 if (bytesToWrite.length != requiredLength) {
-                    throw new PlcProtocolException("Invalid coil values created. Should be at least (quantity + 7) / 8 = N bytes. Was " + bytesToWrite.length + ", expected " + requiredLength);
+                    throw new PlcProtocolException("Invalid coil values created. Should be big enough to transport N bits. Was " + bytesToWrite.length + ", expected " + requiredLength);
                 }
                 modbusRequest = new WriteMultipleCoilsRequest(coilModbusField.getAddress(), quantity, bytesToWrite);
             } else {
-                boolean booleanToWrite = produceCoilValue(writeRequestItem.getValues());
+                boolean booleanToWrite = produceCoilValue(request.getValues(fieldName));
                 modbusRequest = new WriteSingleCoilRequest(coilModbusField.getAddress(), booleanToWrite);
             }
         } else if (field instanceof MaskWriteRegisterModbusField) {
@@ -127,14 +157,18 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     private void encodeReadRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
         // TODO: support multiple requests
-        PlcReadRequestItem<?> readRequestItem = request.getRequestItem().orElseThrow(() -> new PlcNotImplementedException("Only single message supported for now"));
+        if(request.getFieldNames().size() != 1) {
+            throw new PlcNotImplementedException("Only single message supported for now")
+        }
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
-        // TODO: for higher datatypes float, double etc we might need to split the bytes into chunks
-        int quantity = readRequestItem.getSize();
+        // TODO: for higher data types float, double etc we might need to split the bytes into chunks
+        String fieldName = request.getFieldNames().iterator().next();
+        // TODO: The quantity is encoded in the field attribute
+        int quantity = 1;
         // TODO: the unit the should be used for multiple Requests
         short unitId = 0;
 
-        ModbusField field = (ModbusField) readRequestItem.getField();
+        ModbusField field = (ModbusField) request.getField(fieldName);
         ModbusPdu modbusRequest;
         if (field instanceof CoilModbusField) {
             CoilModbusField coilModbusField = (CoilModbusField) field;
@@ -172,9 +206,11 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
 
         // TODO: only single Item supported for now
-        PlcRequest<?> request = plcRequestContainer.getRequest();
-        RequestItem requestItem = request.getRequestItem().orElseThrow(() -> new PlcNotImplementedException("Only single message supported for now"));
-        Class<?> dataType = requestItem.getDatatype();
+        PlcRequest request = plcRequestContainer.getRequest();
+        // TODO: support multiple requests (Shouldn't be needed as the request wouldn't have been sent)
+        if(request.getFieldNames().size() != 1) {
+            throw new PlcNotImplementedException("Only single message supported for now")
+        }
 
         ModbusPdu modbusPdu = msg.getModbusPdu();
         short unitId = msg.getUnitId();
@@ -326,6 +362,24 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             return new byte[]{actualCoil};
         }
         return ArrayUtils.toPrimitive(coils.toArray(new Byte[0]));
+    }
+
+    private byte[] flattenByteValues(byte[][] values) {
+        byte[] rawValues = new byte[values.length * values[0].length];
+        for(int i = 0; i < values.length; i ++) {
+            byte[] value = values[i];
+            System.arraycopy(value, 0, rawValues, i * value.length, value.length);
+        }
+        return rawValues;
+    }
+
+    private byte[] flattenBitValues(byte[][] values) {
+        byte[] rawValues = new byte[values.length * values[0].length];
+        for(int i = 0; i < values.length; i ++) {
+            byte[] value = values[i];
+            System.arraycopy(value, 0, rawValues, i * value.length, value.length);
+        }
+        return rawValues;
     }
 
     private byte[] produceRegisterValue(List<?> values) throws PlcProtocolException {

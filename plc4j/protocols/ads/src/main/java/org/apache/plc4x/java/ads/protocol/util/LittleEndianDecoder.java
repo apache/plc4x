@@ -156,7 +156,10 @@ public class LittleEndianDecoder {
 
     private static void decodeBigInteger(byte[] adsData, List<Object> result) {
         byte[] clone = ArrayUtils.clone(adsData);
+        // In ADS data is transferred Little Endian
         ArrayUtils.reverse(clone);
+        // Adding a 0 ensures that this is interpreted as a positive
+        // number as the most significant bit is guaranteed to be 0.
         byte[] bigIntegerByteArray = ArrayUtils.insert(0, clone, (byte) 0x0);
         result.add(new BigInteger(bigIntegerByteArray));
     }

@@ -44,6 +44,13 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
+    <!-- CBOR (Concise Binary Object Representation) -->
+    <dependency>
+      <groupId>co.nstant.in</groupId>
+      <artifactId>cbor</artifactId>
+      <version>0.8</version>
+    </dependency>
+
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>

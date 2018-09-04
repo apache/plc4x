@@ -27,17 +27,23 @@ public enum S7DataType {
     /**
      * TODO: For the types with code 0x00 we need to put some additional effort in reverse engineering the codes for these types.
      */
+    // -----------------------------------------
+    // Single bit
+    // -----------------------------------------
     BOOL(0x01, "X", 1, null, DataTransportSize.BIT, S7ControllerType.S7_ANY),
 
+    // -----------------------------------------
+    // Bit strings
+    // -----------------------------------------
     BYTE(0x02, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
-
-    CHAR(0x03, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
-
     WORD(0x04, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     DWORD(0x06, "D", 4, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Only got a basic TIA license (S7-1500 needed to find this out)
     LWORD(0x00, null, 8, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
 
+    // -----------------------------------------
+    // Integers
+    // -----------------------------------------
     INT(0x05, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Double Precision Int
     DINT(0x07, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
@@ -52,11 +58,48 @@ public enum S7DataType {
     // Only got a basic TIA license (S7-1500 needed to find this out)
     LINT(0x00, null, 8, INT, null, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
-    UDLINT(0x00, null, 16, INT, null, S7ControllerType.S7_1500),
+    ULINT(0x00, null, 16, INT, null, S7ControllerType.S7_1500),
 
+    // -----------------------------------------
+    // Reals
+    // -----------------------------------------
     REAL(0x08, "D", 4, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
-    // TODO: Ok ... this is strange ... X sort of implies Boolean ...
-    LREAL(0x00, "X", 8, REAL, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500);
+    LREAL(0x00, "X", 8, REAL, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+
+    // -----------------------------------------
+    // Durations
+    // -----------------------------------------
+    // IEC time
+    TIME(0x0B, "", 4, null, null, S7ControllerType.S7_ANY),
+
+    // -----------------------------------------
+    // Date
+    // -----------------------------------------
+    // IEC date (yyyy-m-d)
+    DATE(0x00, "", 2, null, null, S7ControllerType.S7_ANY),
+
+    // -----------------------------------------
+    // Time of day
+    // -----------------------------------------
+    // Time (hh:mm:ss.S)
+    TIME_OF_DAY(0x0A, "", 4, null, null, S7ControllerType.S7_ANY),
+
+    // -----------------------------------------
+    // Date and time of day
+    // -----------------------------------------
+    DATE_AND_TIME(0x0F, "", 8, null, null, S7ControllerType.S7_ANY),
+
+    // -----------------------------------------
+    // ASCII Strings
+    // -----------------------------------------
+    // Single-byte character
+    CHAR(0x03, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    // Double-byte character
+    WCHAR(0x00, "", 2, null, null, S7ControllerType.S7_ANY),
+    // Variable-length single-byte character string
+    STRING(0x00, "", -1, null, null, S7ControllerType.S7_ANY),
+    // Variable-length double-byte character string
+    WSTRING(0x00, "", -1, null, null, S7ControllerType.S7_ANY);
 
     /* TO BE CONTINUED */
 

@@ -253,11 +253,13 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     @Override
     public byte[][] encode(PlcField field, PlcClientDatatype clientDatatype, Object[] values) {
+        // TODO: Implement this ...
         throw new NotImplementedException("Not implemented ...");
     }
 
     @Override
     public Object[] decode(PlcField field, PlcClientDatatype clientDatatype, byte[][] rawData) {
+        // TODO: Implement this ...
         throw new NotImplementedException("Not implemented ...");
     }
 
