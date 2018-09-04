@@ -24,7 +24,7 @@ import java.time.LocalTime;
 
 public class TimeFieldItem extends FieldItem<LocalDateTime> {
 
-    public TimeFieldItem(LocalDateTime[] values) {
+    public TimeFieldItem(LocalDateTime... values) {
         super(values);
     }
 

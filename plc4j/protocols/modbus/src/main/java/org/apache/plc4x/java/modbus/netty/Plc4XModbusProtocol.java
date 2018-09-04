@@ -73,7 +73,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
         // TODO: support multiple requests
         if(request.getFieldNames().size() != 1) {
-            throw new PlcNotImplementedException("Only single message supported for now")
+            throw new PlcNotImplementedException("Only single message supported for now");
         }
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
         // TODO: for higher data types float, double etc we might need to split the bytes into chunks
@@ -158,7 +158,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
         // TODO: support multiple requests
         if(request.getFieldNames().size() != 1) {
-            throw new PlcNotImplementedException("Only single message supported for now")
+            throw new PlcNotImplementedException("Only single message supported for now");
         }
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
         // TODO: for higher data types float, double etc we might need to split the bytes into chunks
@@ -209,7 +209,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         PlcRequest request = plcRequestContainer.getRequest();
         // TODO: support multiple requests (Shouldn't be needed as the request wouldn't have been sent)
         if(request.getFieldNames().size() != 1) {
-            throw new PlcNotImplementedException("Only single message supported for now")
+            throw new PlcNotImplementedException("Only single message supported for now");
         }
 
         ModbusPdu modbusPdu = msg.getModbusPdu();

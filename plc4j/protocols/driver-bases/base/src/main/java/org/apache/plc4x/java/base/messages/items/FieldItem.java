@@ -116,10 +116,10 @@ public abstract class FieldItem<T> {
     }
 
     protected T getValue(int index) {
-        if(values.length < index) {
-            return values[index];
+        if (index < 0 || (index >= values.length)) {
+            return null;
         }
-        return null;
+        return values[index];
     }
 
 }

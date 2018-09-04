@@ -20,7 +20,7 @@ package org.apache.plc4x.java.base.messages.items;
 
 public class StringFieldItem extends FieldItem<String> {
 
-    public StringFieldItem(String[] values) {
+    public StringFieldItem(String... values) {
         super(values);
     }
 

@@ -20,7 +20,7 @@ package org.apache.plc4x.java.base.messages.items;
 
 public class IntegerFieldItem extends FieldItem<Long> {
 
-    public IntegerFieldItem(Long[] values) {
+    public IntegerFieldItem(Long... values) {
         super(values);
     }
 
@@ -73,7 +73,10 @@ public class IntegerFieldItem extends FieldItem<Long> {
 
     @Override
     public Integer getInteger(int index) {
-        return super.getInteger(index);
+        if(isValidInteger(index)) {
+            return getValue(index).intValue();
+        }
+        return null;
     }
 
     @Override

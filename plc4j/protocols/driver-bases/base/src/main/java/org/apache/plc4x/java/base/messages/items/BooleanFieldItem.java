@@ -20,7 +20,7 @@ package org.apache.plc4x.java.base.messages.items;
 
 public class BooleanFieldItem extends FieldItem<Boolean> {
 
-    public BooleanFieldItem(Boolean[] values) {
+    public BooleanFieldItem(Boolean... values) {
         super(values);
     }
 

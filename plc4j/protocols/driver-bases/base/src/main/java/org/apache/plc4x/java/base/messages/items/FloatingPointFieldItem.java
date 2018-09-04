@@ -20,7 +20,7 @@ package org.apache.plc4x.java.base.messages.items;
 
 public class FloatingPointFieldItem extends FieldItem<Double> {
 
-    public FloatingPointFieldItem(Double[] values) {
+    public FloatingPointFieldItem(Double... values) {
         super(values);
     }
 

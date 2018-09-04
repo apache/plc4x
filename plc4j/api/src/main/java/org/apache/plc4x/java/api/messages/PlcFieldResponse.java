@@ -22,7 +22,6 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * Base type for all response messages sent as response for a prior request

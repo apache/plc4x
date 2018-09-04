@@ -32,9 +32,7 @@ import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.base.messages.items.BooleanFieldItem;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
-import org.apache.plc4x.java.base.messages.items.FloatingPointFieldItem;
+import org.apache.plc4x.java.base.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
@@ -49,6 +47,7 @@ import org.apache.plc4x.java.s7.netty.model.types.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -283,8 +282,8 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // Bit
                     // -----------------------------------------
                     case BOOL: {
-                        // TODO: Multiple boolean are encoded in one byte ...
-                        fieldItem = new BooleanFieldItem();
+                        byte byteValue = data.readByte();
+                        fieldItem = new BooleanFieldItem(byteValue != 0x00);
                         break;
                     }
                     // -----------------------------------------
@@ -292,18 +291,22 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // -----------------------------------------
                     case BYTE: { // 1 byte
                         Long longValue = (long) data.readByte();
+                        // TODO: Implement this ...
                         break;
                     }
                     case WORD: { // 2 byte (16 bit)
                         Long longValue = (long) data.readShort();
+                        // TODO: Implement this ...
                         break;
                     }
                     case DWORD: { // 4 byte (32 bit)
                         Long longValue = (long) data.readInt();
+                        // TODO: Implement this ...
                         break;
                     }
                     case LWORD: { // 8 byte (64 bit)
                         Long longValue = data.readLong();
+                        // TODO: Implement this ...
                         break;
                     }
                     // -----------------------------------------
@@ -312,56 +315,92 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // 8 bit:
                     case SINT: {
                         Long longValue = (long) data.readShort();
-
+                        fieldItem = new IntegerFieldItem(longValue);
                         break;
                     }
                     case USINT: {
                         Long longValue = (long) data.readUnsignedShort();
+                        fieldItem = new IntegerFieldItem(longValue);
                         break;
                     }
                     // 16 bit:
                     case INT: {
                         Long longValue = (long) data.readInt();
+                        fieldItem = new IntegerFieldItem(longValue);
                         break;
                     }
                     case UINT: {
                         Long longValue = data.readUnsignedInt();
+                        fieldItem = new IntegerFieldItem(longValue);
                         break;
                     }
                     // 32 bit:
                     case DINT: {
                         Long longValue = data.readLong();
+                        fieldItem = new IntegerFieldItem(longValue);
                         break;
                     }
                     case UDINT: {
                         BigInteger bigIntegerValue = readUnsignedLong(data);
+                        fieldItem = new BigIntegerFieldItem(bigIntegerValue);
                         break;
                     }
                     // 64 bit:
                     case LINT: {
                         BigInteger bigIntegerValue = readSigned64BitInteger(data);
+                        fieldItem = new BigIntegerFieldItem(bigIntegerValue);
                         break;
                     }
                     case ULINT: {
                         BigInteger bigIntegerValue = readUnsigned64BitInteger(data);
+                        fieldItem = new BigIntegerFieldItem(bigIntegerValue);
                         break;
                     }
                     // -----------------------------------------
                     // Floating point values
                     // -----------------------------------------
                     case REAL: {
-                        float floatValue = data.readFloat();
+                        double doubleValue = data.readFloat();
+                        fieldItem = new FloatingPointFieldItem(doubleValue);
                         break;
                     }
                     case LREAL: {
                         double doubleValue = data.readDouble();
+                        fieldItem = new FloatingPointFieldItem(doubleValue);
                         break;
                     }
                     // -----------------------------------------
                     // Characters & Strings
                     // -----------------------------------------
                     case CHAR: { // 1 byte (8 bit)
-                        Long longValue = (long) data.readChar();
+                        // TODO: Double check, if this is ok?
+                        String stringValue = data.readCharSequence(1, Charset.forName("UTF-8")).toString();
+                        fieldItem = new StringFieldItem(stringValue);
+                        break;
+                    }
+                    case WCHAR: { // 2 byte
+                        // TODO: Double check, if this is ok?
+                        String stringValue = data.readCharSequence(2, Charset.forName("UTF-16")).toString();
+                        fieldItem = new StringFieldItem(stringValue);
+                        break;
+                    }
+                    case STRING: {
+                        // Max length ... ignored.
+                        data.readByte();
+                        byte actualLength = data.readByte();
+                        // TODO: Double check, if this is ok?
+                        String stringValue = data.readCharSequence(actualLength, Charset.forName("UTF-8")).toString();
+                        fieldItem = new StringFieldItem(stringValue);
+                        break;
+                    }
+                    case WSTRING: {
+                        // Max length ... ignored.
+                        data.readByte();
+                        byte actualLength = data.readByte();
+                        // TODO: Double check, if this is ok?
+                        String stringValue = data.readCharSequence(
+                            actualLength * 2, Charset.forName("UTF-16")).toString();
+                        fieldItem = new StringFieldItem(stringValue);
                         break;
                     }
                     default:
