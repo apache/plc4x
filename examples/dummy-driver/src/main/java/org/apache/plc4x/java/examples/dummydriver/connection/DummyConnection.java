@@ -60,11 +60,6 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public PlcField prepareField(String fieldString) {
-        return new DummyField(Integer.parseInt(fieldString));
-    }
-
-    @Override
     public PlcReadRequest.Builder readRequestBuilder() {
         // TODO: Implement this ...
         return null;

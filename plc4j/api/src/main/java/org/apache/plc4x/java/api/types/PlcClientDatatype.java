@@ -20,8 +20,6 @@ package org.apache.plc4x.java.api.types;
 
 public enum PlcClientDatatype {
 
-    RAW,
-    OBJECT,
     BOOLEAN,
     BYTE,
     SHORT,

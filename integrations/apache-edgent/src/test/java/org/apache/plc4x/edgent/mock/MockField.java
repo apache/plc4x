@@ -39,9 +39,8 @@ public class MockField implements PlcField {
   
   @Override
   public boolean equals(Object o) {
-    return o != null
-        && o instanceof MockField
-        && ((MockField)o).address.equals(this.address);
+    return o instanceof MockField
+        && ((MockField) o).address.equals(this.address);
   }
 
   @Override

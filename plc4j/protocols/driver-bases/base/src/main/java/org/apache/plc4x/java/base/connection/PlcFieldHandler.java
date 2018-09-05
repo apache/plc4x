@@ -20,13 +20,32 @@ package org.apache.plc4x.java.base.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.types.PlcClientDatatype;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 
 public interface PlcFieldHandler {
 
     PlcField createField(String fieldQuery) throws PlcInvalidFieldException;
 
-    byte[][] encode(PlcField field, PlcClientDatatype clientDatatype, Object[] values);
-    Object[] decode(PlcField field, PlcClientDatatype clientDatatype, byte[][] rawData);
+    FieldItem encodeBoolean(PlcField field, Object[] values);
+
+    FieldItem encodeByte(PlcField field, Object[] values);
+
+    FieldItem encodeShort(PlcField field, Object[] values);
+
+    FieldItem encodeInteger(PlcField field, Object[] values);
+
+    FieldItem encodeLong(PlcField field, Object[] values);
+
+    FieldItem encodeFloat(PlcField field, Object[] values);
+
+    FieldItem encodeDouble(PlcField field, Object[] values);
+
+    FieldItem encodeString(PlcField field, Object[] values);
+
+    FieldItem encodeTime(PlcField field, Object[] values);
+
+    FieldItem encodeDate(PlcField field, Object[] values);
+
+    FieldItem encodeDateTime(PlcField field, Object[] values);
 
 }

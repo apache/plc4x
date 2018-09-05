@@ -28,7 +28,7 @@ import java.util.Collection;
  */
 public interface PlcReadResponse extends PlcFieldResponse<PlcReadRequest> {
 
-    int getNumValues(String name);
+    int getNumberOfValues(String name);
 
     boolean isValidObject(String name);
     boolean isValidObject(String name, int index);

@@ -185,7 +185,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
 
             // The number of elements provided in the request must match the number defined in the field, or
             // bad things are going to happen.
-            if(writeRequest.getNumValues(fieldName) != s7Field.getNumElements()) {
+            if(writeRequest.getNumberOfValues(fieldName) != s7Field.getNumElements()) {
                 throw new PlcException("The number of values provided doesn't match the number specified by the field.");
             }
             VarParameterItem varParameterItem = new S7AnyVarParameterItem(
@@ -197,11 +197,143 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             DataTransportSize dataTransportSize = s7Field.getDataType().getDataTransportSize();
 
             // TODO: Checkout if the payload items are sort of a flatMap of all request items.
+            byte[] byteData;
+            /*switch(s7Field.getDataType()) {
+                // -----------------------------------------
+                // Bit
+                // -----------------------------------------
+                case BOOL: {
+                    if()
+                    byte byteValue = data.readByte();
+                    fieldItem = new BooleanFieldItem(byteValue != 0x00);
+                    break;
+                }
+                // -----------------------------------------
+                // Bit-strings
+                // -----------------------------------------
+                case BYTE: { // 1 byte
+                    Long longValue = (long) data.readByte();
+                    // TODO: Implement this ...
+                    break;
+                }
+                case WORD: { // 2 byte (16 bit)
+                    Long longValue = (long) data.readShort();
+                    // TODO: Implement this ...
+                    break;
+                }
+                case DWORD: { // 4 byte (32 bit)
+                    Long longValue = (long) data.readInt();
+                    // TODO: Implement this ...
+                    break;
+                }
+                case LWORD: { // 8 byte (64 bit)
+                    Long longValue = data.readLong();
+                    // TODO: Implement this ...
+                    break;
+                }
+                // -----------------------------------------
+                // Integers
+                // -----------------------------------------
+                // 8 bit:
+                case SINT: {
+                    Long longValue = (long) data.readShort();
+                    fieldItem = new IntegerFieldItem(longValue);
+                    break;
+                }
+                case USINT: {
+                    Long longValue = (long) data.readUnsignedShort();
+                    fieldItem = new IntegerFieldItem(longValue);
+                    break;
+                }
+                // 16 bit:
+                case INT: {
+                    Long longValue = (long) data.readInt();
+                    fieldItem = new IntegerFieldItem(longValue);
+                    break;
+                }
+                case UINT: {
+                    Long longValue = data.readUnsignedInt();
+                    fieldItem = new IntegerFieldItem(longValue);
+                    break;
+                }
+                // 32 bit:
+                case DINT: {
+                    Long longValue = data.readLong();
+                    fieldItem = new IntegerFieldItem(longValue);
+                    break;
+                }
+
+                case UDINT: {
+                    BigInteger bigIntegerValue = readUnsignedLong(data);
+                    fieldItem = new BigIntegerFieldItem(bigIntegerValue);
+                    break;
+                }
+                // 64 bit:
+                case LINT: {
+                    BigInteger bigIntegerValue = readSigned64BitInteger(data);
+                    fieldItem = new BigIntegerFieldItem(bigIntegerValue);
+                    break;
+                }
+                case ULINT: {
+                    BigInteger bigIntegerValue = readUnsigned64BitInteger(data);
+                    fieldItem = new BigIntegerFieldItem(bigIntegerValue);
+                    break;
+                }
+                // -----------------------------------------
+                // Floating point values
+                // -----------------------------------------
+                case REAL: {
+                    double doubleValue = data.readFloat();
+                    fieldItem = new FloatingPointFieldItem(doubleValue);
+                    break;
+                }
+                case LREAL: {
+                    double doubleValue = data.readDouble();
+                    fieldItem = new FloatingPointFieldItem(doubleValue);
+                    break;
+                }
+                // -----------------------------------------
+                // Characters & Strings
+                // -----------------------------------------
+                case CHAR: { // 1 byte (8 bit)
+                    // TODO: Double check, if this is ok?
+                    String stringValue = data.readCharSequence(1, Charset.forName("UTF-8")).toString();
+                    fieldItem = new StringFieldItem(stringValue);
+                    break;
+                }
+                case WCHAR: { // 2 byte
+                    // TODO: Double check, if this is ok?
+                    String stringValue = data.readCharSequence(2, Charset.forName("UTF-16")).toString();
+                    fieldItem = new StringFieldItem(stringValue);
+                    break;
+                }
+                case STRING: {
+                    // Max length ... ignored.
+                    data.readByte();
+                    byte actualLength = data.readByte();
+                    // TODO: Double check, if this is ok?
+                    String stringValue = data.readCharSequence(actualLength, Charset.forName("UTF-8")).toString();
+                    fieldItem = new StringFieldItem(stringValue);
+                    break;
+                }
+                case WSTRING: {
+                    // Max length ... ignored.
+                    data.readByte();
+                    byte actualLength = data.readByte();
+                    // TODO: Double check, if this is ok?
+                    String stringValue = data.readCharSequence(
+                        actualLength * 2, Charset.forName("UTF-16")).toString();
+                    fieldItem = new StringFieldItem(stringValue);
+                    break;
+                }
+                default:
+                    throw new PlcProtocolException("Unsupported type " + field.getDataType());
+            }
 
             VarPayloadItem varPayloadItem = new VarPayloadItem(
                 DataTransportErrorCode.RESERVED, dataTransportSize, writeRequest.getValues(fieldName)[0]);
 
-            payloadItems.add(varPayloadItem);
+            payloadItems.add(varPayloadItem);*/
         }
         VarParameter writeVarParameter = new VarParameter(ParameterType.WRITE_VAR, parameterItems);
         VarPayload writeVarPayload = new VarPayload(ParameterType.WRITE_VAR, payloadItems);

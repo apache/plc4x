@@ -18,13 +18,11 @@ under the License.
 */
 package org.apache.plc4x.edgent.mock;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
@@ -35,12 +33,16 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 
 public class MockConnection extends org.apache.plc4x.java.base.connection.MockConnection implements PlcReader, PlcWriter {
 
     private final String url;
     private final PlcAuthentication authentication;
-    private final Map<PlcField, Object> dataValueMap = new HashMap<>();
+    private final Map<PlcField, FieldItem<Long>> dataValueMap = new HashMap<>();
     private long curReadCnt;
     private int readExceptionTriggerCount;
     private String readExceptionMsg;
@@ -65,11 +67,6 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
     }
 
     @Override
-    public PlcField prepareField(String fieldString) {
-        return new MockField(fieldString);
-    }
-
-    @Override
     public PlcReadRequest.Builder readRequestBuilder() {
         return null;
     }
@@ -83,22 +80,12 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
             cf.completeExceptionally(new PlcIoException(readExceptionMsg));
             return cf;
         }
-        List<PlcReadResponseItem<Object>> responseItems = new LinkedList<>();
-        for (PlcReadRequestItem<?> reqItem : readRequest.getRequestItems()) {
-            @SuppressWarnings("unchecked")
-            PlcReadRequestItem<Object> requestItem = reqItem;
-            PlcReadResponseItem<Object> responseItem = new PlcReadResponseItem<>(requestItem, PlcResponseCode.OK,
-                Collections.singletonList(getDataValue(requestItem.getField())));
-            responseItems.add(responseItem);
+        Map<String, Pair<PlcResponseCode, FieldItem>> fields = new LinkedHashMap<>();
+        for (String fieldName : readRequest.getFieldNames()) {
+            PlcField field = readRequest.getField(fieldName);
+            fields.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, getFieldItem(field)));
         }
-        PlcReadResponse response;
-        if (readRequest instanceof TypeSafePlcReadRequest) {
-            @SuppressWarnings("unchecked")
-            TypeSafePlcReadRequest<Object> readReq = (TypeSafePlcReadRequest<Object>) readRequest;
-            response = new TypeSafePlcReadResponse<>(readReq, responseItems);
-        } else {
-            response = new PlcReadResponse(readRequest, responseItems);
-        }
+        PlcReadResponse response = new DefaultPlcReadResponse(readRequest, fields);
         return CompletableFuture.completedFuture(response);
     }
 
@@ -110,6 +97,7 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
     @SuppressWarnings("unchecked")
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        DefaultPlcWriteRequest defaultPlcWriteRequest = (DefaultPlcWriteRequest) writeRequest;
         curWriteCnt++;
         if (writeExceptionTriggerCount > 0 && curWriteCnt == writeExceptionTriggerCount) {
             curWriteCnt = 0;
@@ -117,37 +105,30 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
             cf.completeExceptionally(new PlcIoException(writeExceptionMsg));
             return cf;
         }
-        List<PlcWriteResponseItem<Object>> responseItems = new LinkedList<>();
-        for (PlcWriteRequestItem<?> reqItem : writeRequest.getRequestItems()) {
-            PlcWriteRequestItem<Object> requestItem = reqItem;
-            setDataValue(requestItem.getField(), requestItem.getValues());
-            PlcWriteResponseItem<Object> responseItem = new PlcWriteResponseItem<>(requestItem, PlcResponseCode.OK);
-            responseItems.add(responseItem);
+        Map<String, PlcResponseCode> fields = new LinkedHashMap<>();
+        for (String fieldName : defaultPlcWriteRequest.getFieldNames()) {
+            PlcField field = defaultPlcWriteRequest.getField(fieldName);
+            setFieldItem(field, defaultPlcWriteRequest.getFieldItem(fieldName));
+            fields.put(fieldName, PlcResponseCode.OK);
         }
-        PlcWriteResponse response;
-        if (writeRequest instanceof TypeSafePlcWriteRequest) {
-            TypeSafePlcWriteRequest<Object> writeReq = (TypeSafePlcWriteRequest<Object>) writeRequest;
-            response = new TypeSafePlcWriteResponse<>(writeReq, responseItems);
-        } else {
-            response = new PlcWriteResponse(writeRequest, responseItems);
-        }
+        PlcWriteResponse response = new DefaultPlcWriteResponse(defaultPlcWriteRequest, fields);
 
         return CompletableFuture.completedFuture(response);
     }
 
-    public void setDataValue(PlcField field, Object o) {
-        dataValueMap.put(field, o);
+    public void setFieldItem(PlcField field, FieldItem<Long> fieldItem) {
+        dataValueMap.put(field, fieldItem);
     }
 
-    public Object getDataValue(PlcField field) {
+    public FieldItem<Long> getFieldItem(PlcField field) {
         return dataValueMap.get(field);
     }
 
-    public Map<PlcField, Object> getAllDataValues() {
+    public Map<PlcField, FieldItem<Long>> getAllFieldItems() {
         return dataValueMap;
     }
 
-    public void clearAllDataValues() {
+    public void clearAllFieldItems() {
         dataValueMap.clear();
     }
 

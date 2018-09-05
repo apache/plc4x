@@ -160,9 +160,6 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 PlcReadResponse readResponse = reader.read(readRequest).get();
                 Object value = null;
                 switch (clientDatatype) {
-                    case RAW:
-                        value = readResponse.getRaw(FIELD_NAME);
-                        break;
                     case OBJECT:
                         value = readResponse.getObject(FIELD_NAME);
                         break;

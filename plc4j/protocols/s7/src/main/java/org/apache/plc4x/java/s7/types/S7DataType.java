@@ -39,7 +39,7 @@ public enum S7DataType {
     WORD(0x04, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     DWORD(0x06, "D", 4, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Only got a basic TIA license (S7-1500 needed to find this out)
-    LWORD(0x00, null, 8, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    LWORD(0x00, "X", 8, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
 
     // -----------------------------------------
     // Integers
@@ -56,9 +56,9 @@ public enum S7DataType {
     // Unsigned Double Precision Int
     UDINT(0x00, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
-    LINT(0x00, null, 8, INT, null, S7ControllerType.S7_1500),
+    LINT(0x00, "X", 8, INT, null, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
-    ULINT(0x00, null, 16, INT, null, S7ControllerType.S7_1500),
+    ULINT(0x00, "X", 16, INT, null, S7ControllerType.S7_1500),
 
     // -----------------------------------------
     // Reals
@@ -70,24 +70,24 @@ public enum S7DataType {
     // Durations
     // -----------------------------------------
     // IEC time
-    TIME(0x0B, "", 4, null, null, S7ControllerType.S7_ANY),
+    TIME(0x0B, "X", 4, null, null, S7ControllerType.S7_ANY),
 
     // -----------------------------------------
     // Date
     // -----------------------------------------
     // IEC date (yyyy-m-d)
-    DATE(0x00, "", 2, null, null, S7ControllerType.S7_ANY),
+    DATE(0x00, "X", 2, null, null, S7ControllerType.S7_ANY),
 
     // -----------------------------------------
     // Time of day
     // -----------------------------------------
     // Time (hh:mm:ss.S)
-    TIME_OF_DAY(0x0A, "", 4, null, null, S7ControllerType.S7_ANY),
+    TIME_OF_DAY(0x0A, "X", 4, null, null, S7ControllerType.S7_ANY),
 
     // -----------------------------------------
     // Date and time of day
     // -----------------------------------------
-    DATE_AND_TIME(0x0F, "", 8, null, null, S7ControllerType.S7_ANY),
+    DATE_AND_TIME(0x0F, "X", 8, null, null, S7ControllerType.S7_ANY),
 
     // -----------------------------------------
     // ASCII Strings
@@ -95,11 +95,11 @@ public enum S7DataType {
     // Single-byte character
     CHAR(0x03, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Double-byte character
-    WCHAR(0x00, "", 2, null, null, S7ControllerType.S7_ANY),
+    WCHAR(0x00, "X", 2, null, null, S7ControllerType.S7_ANY),
     // Variable-length single-byte character string
-    STRING(0x00, "", -1, null, null, S7ControllerType.S7_ANY),
+    STRING(0x00, "X", -1, null, null, S7ControllerType.S7_ANY),
     // Variable-length double-byte character string
-    WSTRING(0x00, "", -1, null, null, S7ControllerType.S7_ANY);
+    WSTRING(0x00, "X", -1, null, null, S7ControllerType.S7_ANY);
 
     /* TO BE CONTINUED */
 

@@ -46,7 +46,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse {
     }
 
     @Override
-    public int getNumValues(String name) {
+    public int getNumberOfValues(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if(fieldInternal != null) {
             return fieldInternal.getNumValues();

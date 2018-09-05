@@ -94,9 +94,9 @@ public class KafkaBridge {
         TStream<String> jsonSource = source.map(value -> {
             JsonObject jsonObject = new JsonObject();
             value.getFieldNames().forEach(fieldName -> {
-                if(value.getNumValues(fieldName) == 1) {
+                if(value.getNumberOfValues(fieldName) == 1) {
                     jsonObject.addProperty(fieldName, Byte.toString(value.getByte(fieldName)));
-                } else if (value.getNumValues(fieldName) > 1) {
+                } else if (value.getNumberOfValues(fieldName) > 1) {
                     JsonArray values = new JsonArray();
                     value.getAllBytes(fieldName).forEach(values::add);
                     jsonObject.add(fieldName, values);
