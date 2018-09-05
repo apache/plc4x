@@ -27,7 +27,6 @@ import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +44,10 @@ public class Plc4xSourceConnector extends SourceConnector {
     @Override
     public List<Map<String, String>> taskConfigs(int maxTasks) {
         log.info("Setting task configurations for {} workers.", maxTasks);
+
         // Only one task will be created; ignoring maxTasks for now
         final List<Map<String, String>> configs = Collections.singletonList(configProperties);
+
         return configs;
     }
 
