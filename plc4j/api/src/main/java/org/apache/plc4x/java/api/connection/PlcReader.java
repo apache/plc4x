@@ -34,7 +34,7 @@ public interface PlcReader {
      * @param readRequest object describing the type and location of the value.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    CompletableFuture<? extends PlcReadResponse> read(PlcReadRequest readRequest);
+    CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
 
     PlcReadRequest.Builder readRequestBuilder();
 

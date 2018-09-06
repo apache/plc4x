@@ -92,7 +92,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public CompletableFuture<InternalPlcReadResponse> read(PlcReadRequest readRequest) {
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         mapFields(readRequest);
         CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, readFuture));
@@ -101,7 +101,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 readFuture.completeExceptionally(future.cause());
             }
         });
-        return readFuture;
+        return readFuture
+            .thenApply(PlcReadResponse.class::cast);
     }
 
     @Override
@@ -110,7 +111,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public CompletableFuture<InternalPlcWriteResponse> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         mapFields(writeRequest);
         CompletableFuture<InternalPlcWriteResponse> writeFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, writeFuture));
@@ -119,7 +120,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 writeFuture.completeExceptionally(future.cause());
             }
         });
-        return writeFuture;
+        return writeFuture
+            .thenApply(PlcWriteResponse.class::cast);
     }
 
     @Override
@@ -128,7 +130,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public <PROP_REQUEST, PROP_RESPONSE> CompletableFuture<? extends PlcProprietaryResponse<? extends PlcProprietaryRequest<PROP_REQUEST>, PROP_RESPONSE>> send(PlcProprietaryRequest<PROP_REQUEST> proprietaryRequest) {
+    public <PROP_REQUEST, PROP_RESPONSE> CompletableFuture<PlcProprietaryResponse<PlcProprietaryRequest<PROP_REQUEST>, PROP_RESPONSE>> send(PlcProprietaryRequest<PROP_REQUEST> proprietaryRequest) {
         CompletableFuture<InternalPlcProprietaryResponse<PROP_REQUEST, PROP_RESPONSE>> sendFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcProprietaryRequest<PROP_REQUEST>) proprietaryRequest, sendFuture));
         channelFuture.addListener(future -> {
@@ -136,7 +138,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 sendFuture.completeExceptionally(future.cause());
             }
         });
-        return sendFuture;
+        return sendFuture
+            .thenApply(PlcProprietaryResponse.class::cast);
     }
 
     protected void mapFields(PlcFieldRequest request) {

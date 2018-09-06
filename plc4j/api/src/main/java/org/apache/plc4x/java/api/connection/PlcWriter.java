@@ -34,7 +34,7 @@ public interface PlcWriter {
      * @param writeRequest object describing the type, location and value that whould be written.
      * @return a {@link CompletableFuture} giving async access to the response of the write operation.
      */
-    CompletableFuture<? extends PlcWriteResponse> write(PlcWriteRequest writeRequest);
+    CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest);
 
     PlcWriteRequest.Builder writeRequestBuilder();
 
