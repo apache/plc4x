@@ -49,7 +49,7 @@ public interface PlcSubscriber {
     CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest);
 
     /**
-     * Convenience method to subscribe a {@link Consumer<PlcSubscriptionEvent>} to all fields of the subscription.
+     * Convenience method to subscribe a {@link Consumer} to all fields of the subscription.
      *
      * @param subscriptionRequest subscription request
      * @param consumer consumer for all {@link PlcSubscriptionEvent}s

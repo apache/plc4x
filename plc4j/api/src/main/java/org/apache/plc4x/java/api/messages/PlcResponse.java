@@ -21,7 +21,7 @@ package org.apache.plc4x.java.api.messages;
 /**
  * Base type for all response messages sent as response for a prior request
  * from a plc to the plc4x system.
- * @param <REQUEST_TYPE>
+ * @param <REQUEST_TYPE> the type of the matching request.
  */
 public interface PlcResponse<REQUEST_TYPE extends PlcRequest> extends PlcMessage {
 

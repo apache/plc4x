@@ -26,7 +26,7 @@ public interface PlcUnsubscriptionResponse extends PlcFieldResponse<PlcUnsubscri
          * created subscription.
          *
          * @param name alias of the field.
-         * @return
+         * @return builder.
          */
         PlcReadRequest.Builder addField(String name);
     }

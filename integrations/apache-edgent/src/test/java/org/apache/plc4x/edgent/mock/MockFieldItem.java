@@ -27,4 +27,8 @@ public class MockFieldItem extends FieldItem<Object> {
         super(values);
     }
 
+    public Object getObject(int index) {
+        return getValue(index);
+    }
+
 }

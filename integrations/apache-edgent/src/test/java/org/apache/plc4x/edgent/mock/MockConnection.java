@@ -42,7 +42,7 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
 
     private final String url;
     private final PlcAuthentication authentication;
-    private final Map<PlcField, FieldItem<Long>> dataValueMap = new HashMap<>();
+    private final Map<PlcField, FieldItem<?>> dataValueMap = new HashMap<>();
     private long curReadCnt;
     private int readExceptionTriggerCount;
     private String readExceptionMsg;
@@ -116,15 +116,15 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
         return CompletableFuture.completedFuture(response);
     }
 
-    public void setFieldItem(PlcField field, FieldItem<Long> fieldItem) {
+    public void setFieldItem(PlcField field, FieldItem<?> fieldItem) {
         dataValueMap.put(field, fieldItem);
     }
 
-    public FieldItem<Long> getFieldItem(PlcField field) {
+    public FieldItem<?> getFieldItem(PlcField field) {
         return dataValueMap.get(field);
     }
 
-    public Map<PlcField, FieldItem<Long>> getAllFieldItems() {
+    public Map<PlcField, FieldItem<?>> getAllFieldItems() {
         return dataValueMap;
     }
 

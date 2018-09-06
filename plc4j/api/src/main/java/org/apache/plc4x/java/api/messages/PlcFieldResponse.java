@@ -26,7 +26,7 @@ import java.util.Collection;
 /**
  * Base type for all response messages sent as response for a prior request
  * from a plc to the plc4x system.
- * @param <REQUEST_TYPE>
+ * @param <REQUEST_TYPE> the type of the matching request.
  */
 public interface PlcFieldResponse<REQUEST_TYPE extends PlcFieldRequest> extends PlcResponse<REQUEST_TYPE> {
 

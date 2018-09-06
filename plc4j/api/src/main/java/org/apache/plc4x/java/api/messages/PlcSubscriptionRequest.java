@@ -31,7 +31,7 @@ public interface PlcSubscriptionRequest extends PlcFieldRequest {
          * @param name            alias of the field.
          * @param fieldQuery      field query string for accessing the field.
          * @param pollingInterval interval, in which the field should be polled.
-         * @return
+         * @return builder.
          */
         PlcSubscriptionRequest.Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval);
 
@@ -41,7 +41,7 @@ public interface PlcSubscriptionRequest extends PlcFieldRequest {
          *
          * @param name       alias of the field.
          * @param fieldQuery field query string for accessing the field.
-         * @return
+         * @return builder.
          */
         PlcSubscriptionRequest.Builder addChangeOfStateField(String name, String fieldQuery);
 
@@ -53,7 +53,7 @@ public interface PlcSubscriptionRequest extends PlcFieldRequest {
          *
          * @param name       alias of the field.
          * @param fieldQuery field query string for accessing the field.
-         * @return
+         * @return builder.
          */
         PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery);
     }

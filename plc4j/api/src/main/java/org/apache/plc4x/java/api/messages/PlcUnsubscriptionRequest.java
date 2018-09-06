@@ -28,7 +28,7 @@ public interface PlcUnsubscriptionRequest extends PlcFieldRequest {
          *
          * @param name alias of the field.
          * @param handle subscription handle containing information about the subscription.
-         * @return
+         * @return builder.
          */
         PlcUnsubscriptionRequest.Builder addField(String name, PlcSubscriptionHandle handle);
     }
