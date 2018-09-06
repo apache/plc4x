@@ -18,26 +18,24 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class DefaultPlcWriteResponse implements PlcWriteResponse {
+public class DefaultPlcWriteResponse implements InternalPlcWriteResponse {
 
-    private final PlcWriteRequest request;
+    private final InternalPlcWriteRequest request;
     private final Map<String, PlcResponseCode> values;
 
-    public DefaultPlcWriteResponse(PlcWriteRequest request, Map<String, PlcResponseCode> values) {
+    public DefaultPlcWriteResponse(InternalPlcWriteRequest request, Map<String, PlcResponseCode> values) {
         this.request = request;
         this.values = values;
     }
 
     @Override
-    public PlcWriteRequest getRequest() {
+    public InternalPlcWriteRequest getRequest() {
         return request;
     }
 

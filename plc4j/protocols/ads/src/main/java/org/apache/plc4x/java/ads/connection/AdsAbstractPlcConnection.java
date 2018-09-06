@@ -29,17 +29,19 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsField;
+import org.apache.plc4x.java.ads.model.AdsPlcFieldHandler;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
+import org.apache.plc4x.java.api.connection.PlcProprietarySender;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.RequestItem;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.messages.DefaultPlcProprietaryRequest;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,17 +94,6 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
         return sourceAmsPort;
     }
 
-
-    @Override
-    public PlcField prepareField(String fieldString) throws PlcInvalidFieldException {
-        if (AdsField.matches(fieldString)) {
-            return AdsField.of(fieldString);
-        } else if (SymbolicAdsField.matches(fieldString)) {
-            return SymbolicAdsField.of(fieldString);
-        }
-        throw new PlcInvalidFieldException(fieldString);
-    }
-
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         mapFields(readRequest);
@@ -114,6 +105,11 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             }
         });
         return readFuture;
+    }
+
+    @Override
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(new AdsPlcFieldHandler());
     }
 
     @Override
@@ -130,9 +126,13 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public <T, R> CompletableFuture<PlcProprietaryResponse<R>> send(PlcProprietaryRequest<T> proprietaryRequest) {
-        mapFields(proprietaryRequest);
-        CompletableFuture<PlcProprietaryResponse<R>> sendFuture = new CompletableFuture<>();
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(new AdsPlcFieldHandler());
+    }
+
+    @Override
+    public <REQUEST, RESPONSE> CompletableFuture<PlcProprietaryResponse<REQUEST, RESPONSE>> send(PlcProprietaryRequest<REQUEST> proprietaryRequest) {
+        CompletableFuture<PlcProprietaryResponse<REQUEST, RESPONSE>> sendFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(proprietaryRequest, sendFuture));
         channelFuture.addListener(future -> {
             if (!future.isSuccess()) {
@@ -142,10 +142,9 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
         return sendFuture;
     }
 
-    protected void mapFields(PlcRequest<?> request) {
-        request.getRequestItems().stream()
+    protected void mapFields(PlcFieldRequest request) {
+        request.getFields().stream()
             .parallel()
-            .map(RequestItem::getField)
             .filter(SymbolicAdsField.class::isInstance)
             .map(SymbolicAdsField.class::cast)
             .forEach(this::mapFields);
@@ -169,9 +168,9 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             );
 
             // TODO: This is blocking, should be changed to be async.
-            CompletableFuture<PlcProprietaryResponse<AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
-            channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
-            PlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
+            CompletableFuture<PlcProprietaryResponse<AdsReadWriteRequest, AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
+            channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
+            PlcProprietaryResponse<AdsReadWriteRequest, AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
             AdsReadWriteResponse response = getHandleResponse.getResponse();
 
             if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
@@ -205,7 +204,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
                 IndexOffset.NONE,
                 Data.of(IndexGroup.of(adsField.getIndexGroup()).getBytes())
             ))
-            .map(adsWriteRequest -> new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))
+            .map(adsWriteRequest -> new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))
             // We don't need a response so we just supply a throw away future.
             .forEach(channel::write);
         channel.flush();

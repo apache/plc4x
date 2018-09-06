@@ -27,11 +27,9 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.examples.dummydriver.model.DummyField;
+import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,10 +64,10 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
-            new PlcRequestContainer<>(readRequest, readFuture);
+    public CompletableFuture<? extends PlcReadResponse> read(PlcReadRequest readRequest) {
+        CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
+            new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, readFuture);
         channel.writeAndFlush(container);
         return readFuture;
     }
@@ -81,10 +79,10 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcWriteRequest, PlcWriteResponse> container =
-            new PlcRequestContainer<>(writeRequest, writeFuture);
+    public CompletableFuture<? extends PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        CompletableFuture<InternalPlcWriteResponse> writeFuture = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
+            new PlcRequestContainer<>((InternalPlcWriteRequest)writeRequest, writeFuture);
         channel.writeAndFlush(container);
         return writeFuture;
     }

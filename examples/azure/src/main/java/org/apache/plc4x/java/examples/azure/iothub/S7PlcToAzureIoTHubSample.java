@@ -43,7 +43,7 @@ public class S7PlcToAzureIoTHubSample {
      * @param args Expected: [plc4x connection string, plc4x field address, IoT-Hub connection string].
      */
     public static void main(String[] args) throws Exception {
-        if(args.length != 3) {
+        if (args.length != 3) {
             System.out.println("Usage: S7PlcToAzureIoTHubSample " +
                 "{plc4x-connection-string} {plc4x-field-address} {iot-hub-connection-string}");
             return;

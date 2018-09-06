@@ -18,16 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
-
 public class TypeSafePlcReadResponseTest {
 
 /*    PlcReadResponseItem<String> readResponseItemString;
@@ -65,7 +55,7 @@ public class TypeSafePlcReadResponseTest {
             PlcReadResponse response = mock(PlcReadResponse.class, RETURNS_DEEP_STUBS);
             TypeSafePlcReadRequest typeSafePlcReadRequest = mock(TypeSafePlcReadRequest.class, RETURNS_DEEP_STUBS);
             when(typeSafePlcReadRequest.getDataType()).thenReturn(String.class);
-            when(response.getRequest()).thenReturn(typeSafePlcReadRequest);
+            when(response.getProprietaryRequest()).thenReturn(typeSafePlcReadRequest);
             TypeSafePlcReadResponse.of(response, String.class);
         }
         {
@@ -76,8 +66,8 @@ public class TypeSafePlcReadResponseTest {
     }
 
     @Test
-    public void getRequest() {
-        new TypeSafePlcReadResponse<>(mock(TypeSafePlcReadRequest.class), Collections.emptyList()).getRequest();
+    public void getProprietaryRequest() {
+        new TypeSafePlcReadResponse<>(mock(TypeSafePlcReadRequest.class), Collections.emptyList()).getProprietaryRequest();
     }
 
     @Test

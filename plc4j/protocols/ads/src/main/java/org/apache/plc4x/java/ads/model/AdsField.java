@@ -32,27 +32,36 @@ import java.util.regex.Pattern;
  */
 public class AdsField implements PlcField {
 
-    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+))");
+    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>.+)(\\[(?<numberOfElements>\\d)])?");
 
     private final long indexGroup;
 
     private final long indexOffset;
 
-    private AdsField(long indexGroup, long indexOffset) {
+    private final AdsDataType adsDataType;
+
+    private final int numberOfElements;
+
+    private AdsField(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements) {
         ByteValue.checkUnsignedBounds(indexGroup, 4);
         this.indexGroup = indexGroup;
         ByteValue.checkUnsignedBounds(indexOffset, 4);
         this.indexOffset = indexOffset;
+        this.adsDataType = adsDataType;
+        this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
+        if (this.numberOfElements <= 0) {
+            throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
+        }
     }
 
-    public static AdsField of(long indexGroup, long indexOffset) {
-        return new AdsField(indexGroup, indexOffset);
+    public static AdsField of(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements) {
+        return new AdsField(indexGroup, indexOffset, adsDataType, numberOfElements);
     }
 
     public static AdsField of(String address) throws PlcInvalidFieldException {
         Matcher matcher = RESOURCE_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
-            throw new PlcInvalidFieldException(address, RESOURCE_ADDRESS_PATTERN, "{indexGroup}/{indexOffset}");
+            throw new PlcInvalidFieldException(address, RESOURCE_ADDRESS_PATTERN, "{indexGroup}/{indexOffset}:{adsDataType}([numberOfElements])?");
         }
 
         String indexGroupStringHex = matcher.group("indexGroupHex");
@@ -61,21 +70,30 @@ public class AdsField implements PlcField {
         String indexOffsetStringHex = matcher.group("indexOffsetHex");
         String indexOffsetString = matcher.group("indexOffset");
 
-        Long indexGroup;
+        long indexGroup;
         if (indexGroupStringHex != null) {
             indexGroup = Long.parseLong(indexGroupStringHex, 16);
         } else {
             indexGroup = Long.parseLong(indexGroupString);
         }
 
-        Long indexOffset;
+        long indexOffset;
         if (indexOffsetStringHex != null) {
             indexOffset = Long.parseLong(indexOffsetStringHex, 16);
         } else {
             indexOffset = Long.parseLong(indexOffsetString);
         }
 
-        return new AdsField(indexGroup, indexOffset);
+        String adsDataTypeString = matcher.group("adsDataType");
+        AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
+
+        Integer numberOfElements = null;
+        String numberOfElementsString = matcher.group("numberOfElements");
+        if (numberOfElementsString != null) {
+            numberOfElements = Integer.valueOf(numberOfElementsString);
+        }
+
+        return new AdsField(indexGroup, indexOffset, adsDataType, numberOfElements);
     }
 
     public static boolean matches(String address) {
@@ -88,6 +106,14 @@ public class AdsField implements PlcField {
 
     public long getIndexOffset() {
         return indexOffset;
+    }
+
+    public AdsDataType getAdsDataType() {
+        return adsDataType;
+    }
+
+    public int getNumberOfElements() {
+        return numberOfElements;
     }
 
     @Override

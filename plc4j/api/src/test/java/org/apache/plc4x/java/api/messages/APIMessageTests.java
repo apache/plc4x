@@ -19,22 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.messages.mock.MockField;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.test.FastTests;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-
 public class APIMessageTests {
 
     /*@Test
@@ -105,7 +89,7 @@ public class APIMessageTests {
     public void plcProprietaryRequest() {
         Object customMessage = new Object();
         PlcProprietaryRequest<Object> plcProprietaryRequest = new PlcProprietaryRequest<>(customMessage);
-        assertThat("Unexpected request type", plcProprietaryRequest.getRequest(), equalTo(customMessage));
+        assertThat("Unexpected request type", plcProprietaryRequest.getProprietaryRequest(), equalTo(customMessage));
     }
 
     @Test
@@ -165,8 +149,8 @@ public class APIMessageTests {
         PlcReadResponseItem<Byte> readResponseItem = new PlcReadResponseItem<>(readRequestItem, PlcResponseCode.OK);
         responseItems.add(readResponseItem);
         PlcReadResponse plcReadResponse = new PlcReadResponse(plcReadRequest, responseItems);
-        assertThat("Unexpected number of response items", plcReadResponse.getRequest().getNumberOfItems(), equalTo(0));
-        assertThat("Unexpected read request", plcReadResponse.getRequest(), equalTo(plcReadRequest));
+        assertThat("Unexpected number of response items", plcReadResponse.getProprietaryRequest().getNumberOfItems(), equalTo(0));
+        assertThat("Unexpected read request", plcReadResponse.getProprietaryRequest(), equalTo(plcReadRequest));
         assertThat("Unexpected number of response items", plcReadResponse.getResponseItems(), hasSize(1));
         assertThat("Unexpected items in response items", plcReadResponse.getResponseItems(), contains(readResponseItem));
     }
@@ -213,8 +197,8 @@ public class APIMessageTests {
         PlcWriteResponseItem<Byte> writeResponseItem = new PlcWriteResponseItem<>(writeRequestItem, PlcResponseCode.OK);
         responseItems.add(writeResponseItem);
         PlcWriteResponse plcReadResponse = new PlcWriteResponse(plcWriteRequest, responseItems);
-        assertThat("Unexpected number of response items", plcReadResponse.getRequest().getNumberOfItems(), equalTo(0));
-        assertThat("Unexpected read request", plcReadResponse.getRequest(), equalTo(plcWriteRequest));
+        assertThat("Unexpected number of response items", plcReadResponse.getProprietaryRequest().getNumberOfItems(), equalTo(0));
+        assertThat("Unexpected read request", plcReadResponse.getProprietaryRequest(), equalTo(plcWriteRequest));
         assertThat("Unexpected number of response items", plcReadResponse.getResponseItems(), hasSize(1));
         assertThat("Unexpected items in response items", plcReadResponse.getResponseItems(), contains(writeResponseItem));
     }

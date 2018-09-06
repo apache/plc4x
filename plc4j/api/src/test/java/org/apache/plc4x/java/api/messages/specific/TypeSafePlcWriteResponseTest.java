@@ -18,16 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
-
 public class TypeSafePlcWriteResponseTest {
 
 /*    PlcWriteResponseItem<String> writeResponseItemString;
@@ -50,7 +40,7 @@ public class TypeSafePlcWriteResponseTest {
         }
         {
             PlcWriteResponse response = mock(PlcWriteResponse.class, RETURNS_DEEP_STUBS);
-            when(response.getRequest()).thenReturn(mock(TypeSafePlcWriteRequest.class, RETURNS_DEEP_STUBS));
+            when(response.getProprietaryRequest()).thenReturn(mock(TypeSafePlcWriteRequest.class, RETURNS_DEEP_STUBS));
             TypeSafePlcWriteResponse.of(response);
         }
         {
@@ -61,8 +51,8 @@ public class TypeSafePlcWriteResponseTest {
     }
 
     @Test
-    public void getRequest() {
-        new TypeSafePlcWriteResponse<>(mock(TypeSafePlcWriteRequest.class), Collections.emptyList()).getRequest();
+    public void getProprietaryRequest() {
+        new TypeSafePlcWriteResponse<>(mock(TypeSafePlcWriteRequest.class), Collections.emptyList()).getProprietaryRequest();
     }
 
     @Test

@@ -18,9 +18,8 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcRequest;
-import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
+import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.hamcrest.core.IsEqual;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,16 +33,16 @@ import static org.mockito.Mockito.mock;
 @SuppressWarnings("unchecked")
 public class PlcRequestContainerTest {
 
-    private PlcRequestContainer<PlcRequest, PlcResponse> SUT;
+    private PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> SUT;
 
-    private PlcResponse plcResponse;
-    private PlcRequest plcRequest;
-    private CompletableFuture<PlcResponse> future;
+    private InternalPlcResponse plcResponse;
+    private InternalPlcRequest plcRequest;
+    private CompletableFuture<InternalPlcResponse> future;
 
     @Before
     public void setUp() {
-        plcResponse = mock(PlcResponse.class);
-        plcRequest = mock(PlcRequest.class);
+        plcResponse = mock(InternalPlcResponse.class);
+        plcRequest = mock(InternalPlcRequest.class);
         future = CompletableFuture.completedFuture(plcResponse);
         SUT = new PlcRequestContainer<>(plcRequest, future);
     }
@@ -56,7 +55,7 @@ public class PlcRequestContainerTest {
 
     @Test
     public void getResponseFuture() throws Exception {
-        CompletableFuture<PlcResponse> responseFuture = SUT.getResponseFuture();
+        CompletableFuture<InternalPlcResponse> responseFuture = SUT.getResponseFuture();
         assertNotNull(responseFuture);
         assertNotNull(responseFuture.get(1, TimeUnit.NANOSECONDS));
     }
@@ -69,7 +68,7 @@ public class PlcRequestContainerTest {
 
     @Test
     public void equalsAndHashCode() {
-        PlcRequestContainer<PlcRequest, PlcResponse> other = new PlcRequestContainer<>(plcRequest, future);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> other = new PlcRequestContainer<>(plcRequest, future);
         assertThat(SUT.hashCode(), IsEqual.equalTo(other.hashCode()));
         assertThat(SUT.equals(other), IsEqual.equalTo(true));
         assertThat(SUT.equals(new Object()), IsEqual.equalTo(false));

@@ -25,7 +25,7 @@ import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 
 import java.util.*;
 
-public class DefaultPlcReadRequest implements PlcReadRequest {
+public class DefaultPlcReadRequest implements InternalPlcReadRequest {
 
     private LinkedHashMap<String, PlcField> fields;
 
@@ -49,6 +49,11 @@ public class DefaultPlcReadRequest implements PlcReadRequest {
         return fields.get(name);
     }
 
+    @Override
+    public LinkedList<PlcField> getFields() {
+        return new LinkedList<>(fields.values());
+    }
+
     public static class Builder implements PlcReadRequest.Builder {
 
         private final PlcFieldHandler fieldHandler;
@@ -61,7 +66,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest {
 
         @Override
         public PlcReadRequest.Builder addItem(String name, String fieldQuery) {
-            if(fields.containsKey(name)) {
+            if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
             fields.put(name, fieldQuery);

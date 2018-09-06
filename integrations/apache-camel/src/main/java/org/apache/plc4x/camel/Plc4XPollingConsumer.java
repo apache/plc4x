@@ -79,7 +79,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive() {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<PlcReadResponse> read = plcReader.read(readRequest);
+        CompletableFuture<? extends PlcReadResponse> read = plcReader.read(readRequest);
         try {
             PlcReadResponse plcReadResponse = read.get();
             exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
@@ -97,7 +97,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive(long timeout) {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<PlcReadResponse> read = plcReader.read(readRequest);
+        CompletableFuture<? extends PlcReadResponse> read = plcReader.read(readRequest);
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
             exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));

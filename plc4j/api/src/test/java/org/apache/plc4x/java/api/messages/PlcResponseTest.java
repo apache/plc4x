@@ -18,20 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-
 public class PlcResponseTest {
 
 /*    private PlcResponse<PlcRequest, ResponseItem, RequestItem> SUT;
@@ -49,8 +35,8 @@ public class PlcResponseTest {
     }
 
     @Test
-    public void getRequest() {
-        assertThat(SUT.getRequest(), notNullValue());
+    public void getProprietaryRequest() {
+        assertThat(SUT.getProprietaryRequest(), notNullValue());
     }
 
     @Test

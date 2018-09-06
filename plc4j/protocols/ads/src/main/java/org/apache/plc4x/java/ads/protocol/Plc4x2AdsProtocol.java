@@ -34,16 +34,10 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcWriteResponseItem;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.PlcWriteRequestItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.InternalPlcRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcResponse;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,15 +52,14 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 import static org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder.decodeData;
-import static org.apache.plc4x.java.ads.protocol.util.LittleEndianEncoder.encodeData;
 
-public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcRequestContainer<PlcRequest, PlcResponse>> {
+public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4x2AdsProtocol.class);
 
     private static final AtomicLong correlationBuilder = new AtomicLong(1);
 
-    private final ConcurrentMap<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requests;
+    private final ConcurrentMap<Long, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> requests;
 
     private final ConcurrentMap<SymbolicAdsField, AdsField> fieldMapping;
 
@@ -88,7 +81,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws Exception {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
         PlcRequest request = msg.getRequest();
         if (request instanceof PlcReadRequest) {
@@ -108,7 +101,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         if (cause instanceof AdsException) {
             Invoke invokeId = ((AdsException) cause).getInvokeId();
             if (invokeId != null) {
-                PlcRequestContainer<PlcRequest, PlcResponse> remove = requests.remove(invokeId.getAsLong());
+                PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> remove = requests.remove(invokeId.getAsLong());
                 if (remove != null) {
                     remove.getResponseFuture().completeExceptionally(new PlcIoException(cause));
                 } else {
@@ -134,13 +127,12 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         }
     }
 
-    private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
+    private void encodeWriteRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcException {
         PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
-        if (writeRequest.getRequestItems().size() != 1) {
+        if (writeRequest.getFields().size() != 1) {
             throw new PlcProtocolException("Only one item supported");
         }
-        PlcWriteRequestItem<?> writeRequestItem = writeRequest.getRequestItems().get(0);
-        PlcField field = writeRequestItem.getField();
+        PlcField field = writeRequest.getFields().get(0);
         if (field instanceof SymbolicAdsField) {
             AdsField mappedField = fieldMapping.get(field);
             LOGGER.debug("Replacing {} with {}", field, mappedField);
@@ -153,7 +145,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsField.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsField.getIndexOffset());
-        byte[] bytes = encodeData(writeRequestItem.getDatatype(), writeRequestItem.getValues().toArray());
+        byte[] bytes = encodeData(adsField.getAdsDataType(), writeRequestItem.getValues().toArray());
         Data data = Data.of(bytes);
         AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
         LOGGER.debug("encoded write request {}", amsPacket);
@@ -161,14 +153,13 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         requests.put(invokeId.getAsLong(), msg);
     }
 
-    private void encodeReadRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
+    private void encodeReadRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcException {
         PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
 
-        if (readRequest.getRequestItems().size() != 1) {
+        if (readRequest.getFields().size() != 1) {
             throw new PlcProtocolException("Only one item supported");
         }
-        PlcReadRequestItem<?> readRequestItem = readRequest.getRequestItems().get(0);
-        PlcField field = readRequestItem.getField();
+        PlcField field = readRequest.getFields().get(0);
         if (field instanceof SymbolicAdsField) {
             AdsField mappedField = fieldMapping.get(field);
             if (mappedField == null) {
@@ -198,10 +189,10 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     private void encodeProprietaryRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcProtocolException {
         PlcProprietaryRequest plcProprietaryRequest = (PlcProprietaryRequest) msg.getRequest();
-        if (!(plcProprietaryRequest.getRequest() instanceof AmsPacket)) {
-            throw new PlcProtocolException("Unsupported proprietary type for this driver " + plcProprietaryRequest.getRequest().getClass());
+        if (!(plcProprietaryRequest.getProprietaryRequest() instanceof AmsPacket)) {
+            throw new PlcProtocolException("Unsupported proprietary type for this driver " + plcProprietaryRequest.getProprietaryRequest().getClass());
         }
-        AmsPacket amsPacket = (AmsPacket) plcProprietaryRequest.getRequest();
+        AmsPacket amsPacket = (AmsPacket) plcProprietaryRequest.getProprietaryRequest();
         LOGGER.debug("encoded proprietary request {}", amsPacket);
         out.add(amsPacket);
         requests.put(amsPacket.getAmsHeader().getInvokeId().getAsLong(), msg);

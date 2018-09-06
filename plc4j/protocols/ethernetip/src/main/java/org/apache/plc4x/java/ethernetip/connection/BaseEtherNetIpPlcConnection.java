@@ -26,6 +26,8 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcReadResponse;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 import org.slf4j.Logger;
@@ -68,7 +70,7 @@ public abstract class BaseEtherNetIpPlcConnection extends AbstractPlcConnection 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
+        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
             new PlcRequestContainer<>(readRequest, readFuture);
         channel.writeAndFlush(container);
         return readFuture;

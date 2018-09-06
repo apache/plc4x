@@ -31,8 +31,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
-public class DefaultPlcWriteRequest implements PlcWriteRequest {
+public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
 
     private final LinkedHashMap<String, Pair<PlcField, FieldItem>> fields;
 
@@ -54,6 +55,11 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
     @Override
     public PlcField getField(String name) {
         return fields.get(name).getKey();
+    }
+
+    @Override
+    public LinkedList<PlcField> getFields() {
+        return new LinkedList<>(fields.values().stream().map(Pair::getKey).collect(Collectors.toList()));
     }
 
     public FieldItem getFieldItem(String name) {
@@ -145,7 +151,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
         }
 
         private Builder addItem(String name, String fieldQuery, Object[] values, BiFunction<PlcField, Object[], FieldItem> encoder) {
-            if(fields.containsKey(name)) {
+            if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
             fields.put(name, new BuilderItem<>(fieldQuery, values, encoder));
@@ -156,6 +162,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
             private final String fieldQuery;
             private final T[] values;
             private final BiFunction<PlcField, T[], FieldItem> encoder;
+
             private BuilderItem(String fieldQuery, T[] values, BiFunction<PlcField, T[], FieldItem> encoder) {
                 this.fieldQuery = fieldQuery;
                 this.values = values;

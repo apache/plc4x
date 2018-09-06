@@ -138,10 +138,11 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         // TODO: Make this multi-value
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
-        if (subscriptionRequest.getNumberOfItems() != 1) {
+        if (subscriptionRequest.getNumberOfFields() != 1) {
             throw new PlcNotImplementedException("Multirequest on subscribe not implemented yet");
         }
 
+        PlcField plcField = subscriptionRequest.getFields().get(0);
         SubscriptionRequestItem<?> subscriptionRequestItem = subscriptionRequest.getRequestItem().orElseThrow(NullPointerException::new);
 
         Objects.requireNonNull(subscriptionRequestItem.getConsumer());

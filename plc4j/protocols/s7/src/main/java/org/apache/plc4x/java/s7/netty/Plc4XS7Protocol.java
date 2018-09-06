@@ -23,15 +23,19 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.exceptions.*;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcIoException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
@@ -54,9 +58,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * This layer transforms between {@link PlcRequestContainer}s {@link S7Message}s.
  * And stores all "in-flight" requests in an internal structure ({@link Plc4XS7Protocol#requests}).
- *
+ * <p>
  * While sending a request, a {@link S7RequestMessage} is generated and send downstream (to the {@link S7Protocol}.
- *
+ * <p>
  * When a {@link S7ResponseMessage} is received it takes the existing request container from its Map and finishes
  * the {@link PlcRequestContainer}s future with the {@link PlcResponse}.
  */
@@ -178,14 +182,14 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
         for (String fieldName : writeRequest.getFieldNames()) {
             PlcField field = writeRequest.getField(fieldName);
-            if(!(field instanceof S7Field)) {
+            if (!(field instanceof S7Field)) {
                 throw new PlcException("The field should have been of type S7Field");
             }
             S7Field s7Field = (S7Field) field;
 
             // The number of elements provided in the request must match the number defined in the field, or
             // bad things are going to happen.
-            if(writeRequest.getNumberOfValues(fieldName) != s7Field.getNumElements()) {
+            if (writeRequest.getNumberOfValues(fieldName) != s7Field.getNumElements()) {
                 throw new PlcException("The number of values provided doesn't match the number specified by the field.");
             }
             VarParameterItem varParameterItem = new S7AnyVarParameterItem(
@@ -383,7 +387,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
 
     @SuppressWarnings("unchecked")
     private PlcResponse decodeReadResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
-        PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
+        InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
 
         VarPayload payload = responseMessage.getPayload(VarPayload.class)
             .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
@@ -409,7 +413,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             FieldItem fieldItem = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
-                switch(field.getDataType()) {
+                switch (field.getDataType()) {
                     // -----------------------------------------
                     // Bit
                     // -----------------------------------------
@@ -549,7 +553,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
 
     @SuppressWarnings("unchecked")
     private PlcResponse decodeWriteResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
-        PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
+        InternalPlcWriteRequest plcWriteRequest = (InternalPlcWriteRequest) requestContainer.getRequest();
         VarPayload payload = responseMessage.getPayload(VarPayload.class)
             .orElseThrow(() -> new PlcProtocolException("No VarPayload supplied"));
 
@@ -611,7 +615,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
 
     private static BigInteger readSigned64BitInteger(ByteBuf data) {
         byte[] bytes = new byte[8];
-        data.readBytes(bytes, 0,  8);
+        data.readBytes(bytes, 0, 8);
         return new BigInteger(bytes);
     }
 

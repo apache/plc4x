@@ -18,6 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-public interface PlcWriteResponse extends PlcFieldResponse<PlcWriteRequest> {
+public interface PlcWriteResponse<T extends PlcWriteRequest> extends PlcFieldResponse<T> {
 
 }

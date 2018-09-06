@@ -18,9 +18,6 @@ under the License.
 */
 package org.apache.plc4x.edgent.mock;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -33,11 +30,13 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
+import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class MockConnection extends org.apache.plc4x.java.base.connection.MockConnection implements PlcReader, PlcWriter {
 
@@ -86,7 +85,7 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
             PlcField field = readRequest.getField(fieldName);
             fields.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, getFieldItem(field)));
         }
-        PlcReadResponse response = new DefaultPlcReadResponse(readRequest, fields);
+        PlcReadResponse response = new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, fields);
         return CompletableFuture.completedFuture(response);
     }
 

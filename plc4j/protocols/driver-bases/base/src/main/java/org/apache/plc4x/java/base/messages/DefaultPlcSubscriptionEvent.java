@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
@@ -29,7 +28,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 
-public class DefaultPlcSubscriptionEvent implements PlcSubscriptionEvent {
+public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent {
 
     @Override
     public int getNumberOfValues(String name) {

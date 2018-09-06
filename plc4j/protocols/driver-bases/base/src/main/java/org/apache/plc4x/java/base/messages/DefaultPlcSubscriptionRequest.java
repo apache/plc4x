@@ -23,8 +23,9 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
-public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest {
+public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionRequest {
 
     @Override
     public int getNumberOfFields() {
@@ -38,6 +39,11 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest {
 
     @Override
     public PlcField getField(String name) {
+        return null;
+    }
+
+    @Override
+    public LinkedList<PlcField> getFields() {
         return null;
     }
 

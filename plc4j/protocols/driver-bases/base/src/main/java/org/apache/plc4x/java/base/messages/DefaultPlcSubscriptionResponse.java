@@ -18,17 +18,14 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcMessageBuilder;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 
-public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse {
+public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionResponse {
 
     @Override
     public PlcSubscriptionHandle getSubscriptionHandle(String name) {

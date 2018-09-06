@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -16,33 +16,14 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.base.messages;
+package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
+import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
 
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
 
-public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest {
+public interface PlcProprietarySender {
 
-    @Override
-    public int getNumberOfFields() {
-        return 0;
-    }
-
-    @Override
-    public LinkedHashSet<String> getFieldNames() {
-        return null;
-    }
-
-    @Override
-    public PlcField getField(String name) {
-        return null;
-    }
-
-    @Override
-    public LinkedList<PlcField> getFields() {
-        return null;
-    }
-
+    <PROP_REQUEST, PROP_RESPONSE> CompletableFuture<PlcProprietaryResponse<PROP_REQUEST, PROP_RESPONSE>> send(PlcProprietaryRequest<PROP_REQUEST> proprietaryRequest);
 }

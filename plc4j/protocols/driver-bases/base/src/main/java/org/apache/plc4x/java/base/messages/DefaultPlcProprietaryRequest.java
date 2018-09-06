@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -18,32 +18,18 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
 
-import java.util.Collection;
+public class DefaultPlcProprietaryRequest<REQUEST> implements PlcProprietaryRequest<REQUEST> {
 
-public class DefaultPlcUnsubscriptionResponse implements InternalPlcUnsubscriptionResponse {
+    private REQUEST proprietaryRequest;
 
-    @Override
-    public Collection<String> getFieldNames() {
-        return null;
+    public DefaultPlcProprietaryRequest(REQUEST proprietaryRequest) {
+        this.proprietaryRequest = proprietaryRequest;
     }
 
     @Override
-    public PlcField getField(String name) {
-        return null;
+    public REQUEST getProprietaryRequest() {
+        return proprietaryRequest;
     }
-
-    @Override
-    public PlcResponseCode getResponseCode(String name) {
-        return null;
-    }
-
-    @Override
-    public PlcUnsubscriptionRequest getRequest() {
-        return null;
-    }
-
 }

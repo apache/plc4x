@@ -28,11 +28,8 @@ import com.digitalpetri.enip.commands.*;
 import com.digitalpetri.enip.cpf.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.events.ConnectEvent;
@@ -43,7 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -129,7 +128,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     }
 
     private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) {
-        if(!supportsCipEncapsulation) {
+        if (!supportsCipEncapsulation) {
             LOGGER.warn("CIP Encapsulation not supported by remote, payload encapsulation must be handled by target and originator");
         }
 
@@ -171,7 +170,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     }
 
     private void encodeReadRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) {
-        if(!supportsCipEncapsulation) {
+        if (!supportsCipEncapsulation) {
             LOGGER.warn("CIP Encapsulation not supported by remote, payload encapsulation must be handled by target and originator");
         }
 
@@ -264,7 +263,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
                 break;
         }
 
-        if(packet != null) {
+        if (packet != null) {
             ctx.channel().writeAndFlush(packet);
         }
     }
@@ -278,7 +277,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
      * @param msg the packet received from the server.
      */
     private void handleRegisterSession(ChannelHandlerContext ctx, EnipPacket msg) {
-        if(msg.getStatus() == EnipStatus.EIP_SUCCESS) {
+        if (msg.getStatus() == EnipStatus.EIP_SUCCESS) {
             sessionHandle = msg.getSessionHandle();
 
             LOGGER.info("EtherNet/IP session registered session-handle {}", sessionHandle);
@@ -318,11 +317,11 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
      * @param msg the packet received from the server.
      */
     private void handleListIdentity(ChannelHandlerContext ctx, EnipPacket msg) {
-        if(msg.getStatus() == EnipStatus.EIP_SUCCESS) {
+        if (msg.getStatus() == EnipStatus.EIP_SUCCESS) {
             ListIdentity listIdentityResponse = (ListIdentity) msg.getCommand();
-            if(listIdentityResponse != null) {
+            if (listIdentityResponse != null) {
                 identityItem = listIdentityResponse.getIdentity().orElse(null);
-                if(identityItem != null) {
+                if (identityItem != null) {
                     LOGGER.info("Connected to: \n - product name: {} \n - serial number: {} ",
                         identityItem.getProductName().trim(), identityItem.getSerialNumber());
                 }
@@ -344,13 +343,13 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
      * @param msg the packet received from the server.
      */
     private void handleListInterfaces(ChannelHandlerContext ctx, EnipPacket msg) {
-        if(msg.getStatus() == EnipStatus.EIP_SUCCESS) {
+        if (msg.getStatus() == EnipStatus.EIP_SUCCESS) {
             ListInterfaces listInterfaces = (ListInterfaces) msg.getCommand();
-            if(listInterfaces != null) {
+            if (listInterfaces != null) {
                 // If the device supports non-CIP interfaces, this array is not empty.
                 // In this case build a map so we can access the information when sending
                 // data in RR-Requests (Request-Response).
-                if(listInterfaces.getInterfaces().length > 0) {
+                if (listInterfaces.getInterfaces().length > 0) {
                     nonCipInterfaces = new HashMap<>();
                     for (ListInterfaces.InterfaceInformation interfaceInformation : listInterfaces.getInterfaces()) {
                         String interfaceName = new String(
@@ -381,7 +380,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     private void handleListServices(ChannelHandlerContext ctx, EnipPacket msg) {
         if (msg.getStatus() == EnipStatus.EIP_SUCCESS) {
             ListServices listServices = (ListServices) msg.getCommand();
-            if(listServices != null) {
+            if (listServices != null) {
                 for (ListServices.ServiceInformation service : listServices.getServices()) {
                     // Check if the type code matches the communications service and if bit 5 of the
                     // capability flags is set.
@@ -408,7 +407,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
      * @param msg the packet received from the server.
      */
     private void handleNop(ChannelHandlerContext ctx, EnipPacket msg) {
-        if(msg.getStatus() == EnipStatus.EIP_SUCCESS) {
+        if (msg.getStatus() == EnipStatus.EIP_SUCCESS) {
             Nop nop = (Nop) msg.getCommand();
             // TODO: Reset some sort of timer ...
         } else {
@@ -435,19 +434,19 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
             return;
         }
 
-        if(!(plcRequestContainer.getRequest() instanceof PlcReadRequest)) {
+        if (!(plcRequestContainer.getRequest() instanceof PlcReadRequest)) {
             ctx.fireExceptionCaught(new PlcProtocolException("Expecting a PlcReadRequest here."));
         }
         PlcReadRequest request = (PlcReadRequest) plcRequestContainer.getRequest();
         PlcResponseCode responseCode;
-        if(msg.getStatus() != EnipStatus.EIP_SUCCESS) {
+        if (msg.getStatus() != EnipStatus.EIP_SUCCESS) {
             responseCode = PlcResponseCode.NOT_FOUND;
         } else {
             responseCode = PlcResponseCode.OK;
         }
 
         SendRRData sendRRDataCommand = (SendRRData) msg.getCommand();
-        if(sendRRDataCommand == null) {
+        if (sendRRDataCommand == null) {
             ctx.fireExceptionCaught(new PlcProtocolException("Expecting a SendRRData command here."));
         }
         CpfItem[] items = sendRRDataCommand.getPacket().getItems();
@@ -464,7 +463,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
             MessageRouterResponse cipResponse = MessageRouterResponse.decode(data);
             PlcReadRequestItem requestItem = request.getRequestItem().orElse(null);
             Short value;
-            if(cipResponse.getData().readableBytes() >= 2) {
+            if (cipResponse.getData().readableBytes() >= 2) {
                 value = cipResponse.getData().readShort();
             } else {
                 value = -1;

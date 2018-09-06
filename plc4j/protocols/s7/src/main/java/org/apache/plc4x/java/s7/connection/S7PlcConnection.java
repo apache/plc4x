@@ -34,9 +34,7 @@ import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.isoontcp.netty.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DisconnectRequestTpdu;
@@ -244,12 +242,14 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<PlcReadRequest, PlcReadResponse> container =
-            new PlcRequestContainer<>(readRequest, future);
+    public CompletableFuture<? extends PlcReadResponse> read(PlcReadRequest readRequest) {
+        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
+            new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, future);
         channel.writeAndFlush(container).addListener(f -> {
-            if (!f.isSuccess()) future.completeExceptionally(f.cause());
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
+            }
         });
         return future;
     }
@@ -260,12 +260,14 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<PlcWriteRequest, PlcWriteResponse> container =
-            new PlcRequestContainer<>(writeRequest, future);
+    public CompletableFuture<? extends PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
+            new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, future);
         channel.writeAndFlush(container).addListener(f -> {
-            if (!f.isSuccess()) future.completeExceptionally(f.cause());
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
+            }
         });
         return future;
     }

@@ -19,42 +19,18 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.netty.NettyTestBase;
-import org.apache.plc4x.java.s7.model.S7Field;
-import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
-import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
-import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
-import org.apache.plc4x.java.s7.netty.model.types.MessageType;
-import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
-import org.apache.plc4x.test.FastTests;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.Collections.singletonList;
-import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfPlc4XSupportedDataTypes;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
@@ -226,11 +202,11 @@ public class Plc4XS7ProtocolTest extends NettyTestBase {
         return new VarPayloadItem(DataTransportErrorCode.OK, size, data);
     }
 
-    private <T extends PlcRequest> PlcRequestContainer createMockedContainer(T initialRequest) {
+    private <T extends InternalPlcRequest> PlcRequestContainer createMockedContainer(T initialRequest) {
         return createMockedContainer(initialRequest, null);
     }
 
-    private <T extends PlcRequest> PlcRequestContainer createMockedContainer(T initialRequest, Consumer<T> requestEnricher) {
+    private <T extends InternalPlcRequest> PlcRequestContainer createMockedContainer(T initialRequest, Consumer<T> requestEnricher) {
         Objects.requireNonNull(initialRequest);
         PlcRequestContainer mock = mock(PlcRequestContainer.class, RETURNS_DEEP_STUBS);
         if (requestEnricher != null) {
