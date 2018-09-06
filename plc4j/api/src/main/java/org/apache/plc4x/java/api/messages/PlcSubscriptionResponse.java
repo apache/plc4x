@@ -20,8 +20,12 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
+import java.util.Collection;
+
 public interface PlcSubscriptionResponse extends PlcFieldResponse<PlcSubscriptionRequest> {
 
     PlcSubscriptionHandle getSubscriptionHandle(String name);
+
+    Collection<PlcSubscriptionHandle> getSubscriptionHandles();
 
 }

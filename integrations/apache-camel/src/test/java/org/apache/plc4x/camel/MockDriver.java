@@ -65,15 +65,15 @@ public class MockDriver implements PlcDriver {
     public PlcConnection connect(String url) {
         // Mock a connection.
         PlcConnection plcConnectionMock = mock(PlcConnection.class, RETURNS_DEEP_STUBS);
-        try {
+        /*try {
             when(plcConnectionMock.prepareField(anyString())).thenReturn(mock(PlcField.class));
         } catch (PlcException e) {
             throw new RuntimeException(e);
-        }
+        }*/
         when(plcConnectionMock.getWriter()).thenReturn(Optional.of(mock(PlcWriter.class, RETURNS_DEEP_STUBS)));
 
         // Mock a typical subscriber.
-        PlcSubscriber plcSubscriber = mock(PlcSubscriber.class, RETURNS_DEEP_STUBS);
+        /*PlcSubscriber plcSubscriber = mock(PlcSubscriber.class, RETURNS_DEEP_STUBS);
         when(plcSubscriber.subscribe(any())).thenAnswer(invocation -> {
             LOGGER.info("Received {}", invocation);
             PlcSubscriptionRequest subscriptionRequest = invocation.getArgument(0);
@@ -101,7 +101,8 @@ public class MockDriver implements PlcDriver {
             return responseFuture;
         });
         when(plcConnectionMock.getSubscriber()).thenReturn(Optional.of(plcSubscriber));
-        return plcConnectionMock;
+        return plcConnectionMock;*/
+        return null;
     }
 
     @Override

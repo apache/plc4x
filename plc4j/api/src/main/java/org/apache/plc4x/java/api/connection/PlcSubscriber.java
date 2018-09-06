@@ -19,8 +19,12 @@
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 /**
  * Interface implemented by all PlcConnections that are able to receive notifications from remote resources.
@@ -43,6 +47,23 @@ public interface PlcSubscriber {
      * @return unsubscription response containing a unsubscription response item for each unsubscription request item.
      */
     CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest);
+
+    /**
+     * Convenience method to subscribe a {@link Consumer<PlcSubscriptionEvent>} to all fields of the subscription.
+     *
+     * @param subscriptionRequest subscription request
+     * @param consumer consumer for all {@link PlcSubscriptionEvent}s
+     * @throws ExecutionException something went wrong.
+     * @throws InterruptedException something went wrong.
+     */
+    default void register(PlcSubscriptionRequest subscriptionRequest, Consumer<PlcSubscriptionEvent> consumer) throws ExecutionException, InterruptedException {
+        PlcSubscriptionResponse plcSubscriptionResponse = subscribe(subscriptionRequest).get();
+        register(consumer, plcSubscriptionResponse.getSubscriptionHandles().toArray(new PlcSubscriptionHandle[0]));
+    }
+
+    PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, PlcSubscriptionHandle... handle);
+
+    void unregister(PlcConsumerRegistration registration);
 
     PlcSubscriptionRequest.Builder subscriptionRequestBuilder();
 

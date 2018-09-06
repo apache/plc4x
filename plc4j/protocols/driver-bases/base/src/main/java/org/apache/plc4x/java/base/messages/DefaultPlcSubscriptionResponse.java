@@ -55,4 +55,9 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse {
         return null;
     }
 
+    @Override
+    public Collection<PlcSubscriptionHandle> getSubscriptionHandles() {
+        return null;
+    }
+
 }
