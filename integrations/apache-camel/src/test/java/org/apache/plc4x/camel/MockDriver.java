@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,18 +66,14 @@ public class MockDriver implements PlcDriver {
     public PlcConnection connect(String url) {
         // Mock a connection.
         PlcConnection plcConnectionMock = mock(PlcConnection.class, RETURNS_DEEP_STUBS);
-        /*try {
-            when(plcConnectionMock.prepareField(anyString())).thenReturn(mock(PlcField.class));
-        } catch (PlcException e) {
-            throw new RuntimeException(e);
-        }*/
         when(plcConnectionMock.getWriter()).thenReturn(Optional.of(mock(PlcWriter.class, RETURNS_DEEP_STUBS)));
 
         // Mock a typical subscriber.
-        /*PlcSubscriber plcSubscriber = mock(PlcSubscriber.class, RETURNS_DEEP_STUBS);
+        PlcSubscriber plcSubscriber = mock(PlcSubscriber.class, RETURNS_DEEP_STUBS);
         when(plcSubscriber.subscribe(any())).thenAnswer(invocation -> {
             LOGGER.info("Received {}", invocation);
-            PlcSubscriptionRequest subscriptionRequest = invocation.getArgument(0);
+            // TODO: Translate this so it actually does something ...
+            /*PlcSubscriptionRequest subscriptionRequest = invocation.getArgument(0);
             List<PlcSubscriptionResponse> responseItems =
                 subscriptionRequest.getFieldNames().stream().map(
                     fieldName -> subscriptionRequest.getField(fieldName)).map(field -> {
@@ -95,14 +92,14 @@ public class MockDriver implements PlcDriver {
                     return new SubscriptionResponseItem<>(subscriptionRequestItem,
                         mock(PlcSubscriptionHandle.class, RETURNS_DEEP_STUBS), PlcResponseCode.OK);
                 }).collect(Collectors.toList());
-            PlcSubscriptionResponse response = new PlcSubscriptionResponse(subscriptionRequest, responseItems);
+            PlcSubscriptionResponse response = new PlcSubscriptionResponse(subscriptionRequest, responseItems);*/
+            PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse();
             CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
             responseFuture.complete(response);
             return responseFuture;
         });
         when(plcConnectionMock.getSubscriber()).thenReturn(Optional.of(plcSubscriber));
-        return plcConnectionMock;*/
-        return null;
+        return plcConnectionMock;
     }
 
     @Override

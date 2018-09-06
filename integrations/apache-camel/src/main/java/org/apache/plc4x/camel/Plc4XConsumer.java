@@ -79,14 +79,13 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     }
 
     @Override
-    protected void doStart() throws InterruptedException, ExecutionException, TimeoutException, PlcException {
+    protected void doStart() throws InterruptedException, ExecutionException, PlcException {
         PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(
             () -> new PlcException("Connection doesn't support subscriptions."));
         // TODO: Is it correct to only support one field?
         PlcSubscriptionRequest request = plcSubscriber.subscriptionRequestBuilder()
             .addCyclicField("default", fieldQuery, Duration.of(3, ChronoUnit.SECONDS)).build();
-        CompletableFuture<PlcSubscriptionResponse> subscriptionFuture = getSubscriber().subscribe(request);
-        subscriptionResponse = subscriptionFuture.get(5, TimeUnit.SECONDS);
+        plcSubscriber.register(request, this);
     }
 
     @Override

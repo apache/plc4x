@@ -89,6 +89,12 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-protocol-driver-base</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-ads</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
@@ -159,14 +165,7 @@
             </goals>
             <configuration>
               <failOnWarning>true</failOnWarning>
-              <ignoredDependencies>
-                <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
-                <ignoredDependency>junit:junit</ignoredDependency>
-                <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
-                <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
-                <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
-                <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
-                <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
+              <ignoredDependencies combine.children="append">
                 <ignoredDependency>org.apache.plc4x:plc4j-protocol-ads</ignoredDependency>
               </ignoredDependencies>
             </configuration>
