@@ -30,12 +30,21 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsField implements PlcField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>.+)(\\[(?<numberOfElements>\\d)])?");
 
     private final String symbolicAddress;
 
-    private SymbolicAdsField(String symbolicAddress) {
+    private final AdsDataType adsDataType;
+
+    private final int numberOfElements;
+
+    private SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
+        this.adsDataType = Objects.requireNonNull(adsDataType);
+        this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
+        if (this.numberOfElements <= 0) {
+            throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
+        }
     }
 
     public static SymbolicAdsField of(String address) throws PlcInvalidFieldException {
@@ -45,7 +54,13 @@ public class SymbolicAdsField implements PlcField {
         }
         String symbolicAddress = matcher.group("symbolicAddress");
 
-        return new SymbolicAdsField(symbolicAddress);
+        String adsDataTypeString = matcher.group("adsDataType");
+        AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
+
+        String numberOfElementsString = matcher.group("numberOfElements");
+        Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
+
+        return new SymbolicAdsField(symbolicAddress, adsDataType, numberOfElements);
     }
 
     public static boolean matches(String address) {
@@ -54,6 +69,14 @@ public class SymbolicAdsField implements PlcField {
 
     public String getSymbolicField() {
         return symbolicAddress;
+    }
+
+    public AdsDataType getAdsDataType() {
+        return adsDataType;
+    }
+
+    public int getNumberOfElements() {
+        return numberOfElements;
     }
 
     @Override

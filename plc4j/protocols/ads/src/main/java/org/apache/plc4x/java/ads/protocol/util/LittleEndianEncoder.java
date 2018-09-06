@@ -20,6 +20,7 @@ package org.apache.plc4x.java.ads.protocol.util;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
+import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
@@ -41,33 +42,34 @@ public class LittleEndianEncoder {
     }
 
     // TODO: add bound checking
-    public static byte[] encodeData(Class<?> valueType, Object... values) throws PlcProtocolException {
+    public static byte[] encodeData(AdsDataType adsDataType, Object... values) throws PlcProtocolException {
         if (values.length == 0) {
             return new byte[]{};
         }
+        Class<?> valueType = values[0].getClass();
         Stream<byte[]> result;
         if (valueType == Boolean.class) {
-            result = encodeBoolean(Arrays.stream(values).map(Boolean.class::cast));
+            result = encodeBoolean(adsDataType, Arrays.stream(values).map(Boolean.class::cast));
         } else if (valueType == Byte.class) {
-            result = encodeByte(Arrays.stream(values).map(Byte.class::cast));
+            result = encodeByte(adsDataType, Arrays.stream(values).map(Byte.class::cast));
         } else if (valueType == Short.class) {
-            result = encodeShort(Arrays.stream(values).map(Short.class::cast));
+            result = encodeShort(adsDataType, Arrays.stream(values).map(Short.class::cast));
         } else if (valueType == Integer.class) {
-            result = encodeInteger(Arrays.stream(values).map(Integer.class::cast));
+            result = encodeInteger(adsDataType, Arrays.stream(values).map(Integer.class::cast));
         } else if (valueType == BigInteger.class) {
-            result = encodeBigInteger(Arrays.stream(values).map(BigInteger.class::cast));
+            result = encodeBigInteger(adsDataType, Arrays.stream(values).map(BigInteger.class::cast));
         } else if (valueType == Calendar.class || Calendar.class.isAssignableFrom(valueType)) {
-            result = encodeCalendar(Arrays.stream(values).map(Calendar.class::cast));
+            result = encodeCalendar(adsDataType, Arrays.stream(values).map(Calendar.class::cast));
         } else if (valueType == Float.class) {
-            result = encodeFloat(Arrays.stream(values).map(Float.class::cast));
+            result = encodeFloat(adsDataType, Arrays.stream(values).map(Float.class::cast));
         } else if (valueType == Double.class) {
-            result = encodeDouble(Arrays.stream(values).map(Double.class::cast));
+            result = encodeDouble(adsDataType, Arrays.stream(values).map(Double.class::cast));
         } else if (valueType == String.class) {
-            result = encodeString(Arrays.stream(values).map(String.class::cast));
+            result = encodeString(adsDataType, Arrays.stream(values).map(String.class::cast));
         } else if (valueType == byte[].class) {
-            result = encodeByteArray(Arrays.stream(values).map(byte[].class::cast));
+            result = encodeByteArray(adsDataType, Arrays.stream(values).map(byte[].class::cast));
         } else if (valueType == Byte[].class) {
-            result = encodeBigByteArray(Arrays.stream(values).map(Byte[].class::cast));
+            result = encodeBigByteArray(adsDataType, Arrays.stream(values).map(Byte[].class::cast));
         } else {
             throw new PlcUnsupportedDataTypeException(valueType);
         }
@@ -90,7 +92,8 @@ public class LittleEndianEncoder {
         }
     }
 
-    private static Stream<byte[]> encodeString(Stream<String> stringStream) {
+    private static Stream<byte[]> encodeString(AdsDataType adsDataType, Stream<String> stringStream) {
+        // TODO: add boundchecks and add optional extension
         // TODO: what do we do with utf-8 values with 2 bytes? what is the charset here?
         return stringStream
             .map(s -> s.getBytes(Charset.defaultCharset()))
@@ -98,15 +101,18 @@ public class LittleEndianEncoder {
             .map(bytes -> ArrayUtils.add(bytes, (byte) 0x0));
     }
 
-    private static Stream<byte[]> encodeByteArray(Stream<byte[]> byteArrayStream) {
+    private static Stream<byte[]> encodeByteArray(AdsDataType adsDataType, Stream<byte[]> byteArrayStream) {
+        // TODO: add boundchecks and add optional extension
         return byteArrayStream;
     }
 
-    private static Stream<byte[]> encodeBigByteArray(Stream<Byte[]> byteArrayStream) {
+    private static Stream<byte[]> encodeBigByteArray(AdsDataType adsDataType, Stream<Byte[]> byteArrayStream) {
+        // TODO: add boundchecks and add optional extension
         return byteArrayStream.map(ArrayUtils::toPrimitive);
     }
 
-    private static Stream<byte[]> encodeFloat(Stream<Float> floatStream) {
+    private static Stream<byte[]> encodeFloat(AdsDataType adsDataType, Stream<Float> floatStream) {
+        // TODO: add boundchecks and add optional extension
         return floatStream
             // TODO: check how ads expects this data
             .map(Float::floatToIntBits)
@@ -118,7 +124,8 @@ public class LittleEndianEncoder {
             });
     }
 
-    private static Stream<byte[]> encodeDouble(Stream<Double> doubleStream) {
+    private static Stream<byte[]> encodeDouble(AdsDataType adsDataType, Stream<Double> doubleStream) {
+        // TODO: add boundchecks and add optional extension
         return doubleStream
             // TODO: check how ads expects this data
             .map(Double::doubleToLongBits)
@@ -134,7 +141,8 @@ public class LittleEndianEncoder {
             });
     }
 
-    private static Stream<byte[]> encodeInteger(Stream<Integer> integerStream) {
+    private static Stream<byte[]> encodeInteger(AdsDataType adsDataType, Stream<Integer> integerStream) {
+        // TODO: add boundchecks and add optional extension
         return integerStream
             .map(intValue -> new byte[]{
                 (byte) (intValue & 0x000000ff),
@@ -144,7 +152,8 @@ public class LittleEndianEncoder {
             });
     }
 
-    private static Stream<byte[]> encodeBigInteger(Stream<BigInteger> bigIntegerStream) {
+    private static Stream<byte[]> encodeBigInteger(AdsDataType adsDataType, Stream<BigInteger> bigIntegerStream) {
+        // TODO: add boundchecks and add optional extension
         return bigIntegerStream
             .map(bigIntValue -> {
                 byte[] bytes = bigIntValue.toByteArray();
@@ -159,7 +168,8 @@ public class LittleEndianEncoder {
             });
     }
 
-    private static Stream<byte[]> encodeCalendar(Stream<Calendar> calendarStream) {
+    private static Stream<byte[]> encodeCalendar(AdsDataType adsDataType, Stream<Calendar> calendarStream) {
+        // TODO: add boundchecks and add optional extension
         return calendarStream
             .map(Calendar.class::cast)
             .map(Calendar::getTime)
@@ -181,7 +191,8 @@ public class LittleEndianEncoder {
     }
 
 
-    private static Stream<byte[]> encodeShort(Stream<Short> shortStream) {
+    private static Stream<byte[]> encodeShort(AdsDataType adsDataType, Stream<Short> shortStream) {
+        // TODO: add boundchecks and add optional extension
         return shortStream
             .map(shortValue -> new byte[]{
                 (byte) (shortValue & 0x00ff),
@@ -189,12 +200,14 @@ public class LittleEndianEncoder {
             });
     }
 
-    private static Stream<byte[]> encodeByte(Stream<Byte> byteStream) {
+    private static Stream<byte[]> encodeByte(AdsDataType adsDataType, Stream<Byte> byteStream) {
+        // TODO: add boundchecks and add optional extension
         return byteStream
             .map(aByte -> new byte[]{aByte});
     }
 
-    private static Stream<byte[]> encodeBoolean(Stream<Boolean> booleanStream) {
+    private static Stream<byte[]> encodeBoolean(AdsDataType adsDataType, Stream<Boolean> booleanStream) {
+        // TODO: add boundchecks and add optional extension
         return booleanStream
             .map(booleanValue -> new byte[]{booleanValue ? (byte) 0x01 : (byte) 0x00});
     }

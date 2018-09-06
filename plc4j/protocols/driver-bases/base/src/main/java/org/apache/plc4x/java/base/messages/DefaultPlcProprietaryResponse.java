@@ -18,16 +18,13 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
-import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
+public class DefaultPlcProprietaryResponse<REQUEST, RESPONSE> implements InternalPlcProprietaryResponse<REQUEST, RESPONSE> {
 
-public class DefaultPlcProprietaryResponse<REQUEST, RESPONSE> implements PlcProprietaryResponse<REQUEST, RESPONSE> {
-
-    private final PlcProprietaryRequest<REQUEST> plcProprietaryRequest;
+    private final InternalPlcProprietaryRequest<REQUEST> plcProprietaryRequest;
 
     private final RESPONSE proprietaryResponse;
 
-    public DefaultPlcProprietaryResponse(PlcProprietaryRequest<REQUEST> plcProprietaryRequest, RESPONSE proprietaryResponse) {
+    public DefaultPlcProprietaryResponse(InternalPlcProprietaryRequest<REQUEST> plcProprietaryRequest, RESPONSE proprietaryResponse) {
         this.plcProprietaryRequest = plcProprietaryRequest;
         this.proprietaryResponse = proprietaryResponse;
     }
@@ -38,7 +35,7 @@ public class DefaultPlcProprietaryResponse<REQUEST, RESPONSE> implements PlcProp
     }
 
     @Override
-    public PlcProprietaryRequest<REQUEST> getRequest() {
+    public InternalPlcProprietaryRequest getRequest() {
         return plcProprietaryRequest;
     }
 }

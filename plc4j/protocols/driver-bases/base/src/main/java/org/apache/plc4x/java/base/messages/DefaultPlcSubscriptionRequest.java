@@ -18,10 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcMessageBuilder;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 
+import java.time.Duration;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
@@ -48,8 +48,28 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
     }
 
     @Override
-    public PlcMessageBuilder<PlcSubscriptionRequest> builder() {
-        return null;
+    public Builder builder() {
+        return new Builder() {
+            @Override
+            public Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval) {
+                return null;
+            }
+
+            @Override
+            public Builder addChangeOfStateField(String name, String fieldQuery) {
+                return null;
+            }
+
+            @Override
+            public Builder addEventField(String name, String fieldQuery) {
+                return null;
+            }
+
+            @Override
+            public PlcSubscriptionRequest build() {
+                return null;
+            }
+        };
     }
 
 }

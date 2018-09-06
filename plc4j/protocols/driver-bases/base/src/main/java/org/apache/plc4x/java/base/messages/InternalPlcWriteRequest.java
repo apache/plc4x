@@ -19,7 +19,13 @@
 package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
+
+import java.util.LinkedList;
 
 public interface InternalPlcWriteRequest extends PlcWriteRequest, InternalPlcRequest {
 
+    FieldItem getFieldItem(String name);
+
+    LinkedList<FieldItem> getFieldItems();
 }

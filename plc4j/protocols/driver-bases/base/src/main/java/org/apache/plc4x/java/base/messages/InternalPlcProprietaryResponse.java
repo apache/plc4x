@@ -16,8 +16,9 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.base.messages;
 
-public interface PlcProprietaryResponse<REQUEST extends PlcProprietaryRequest, RESPONSE> extends PlcResponse<REQUEST> {
-    RESPONSE getResponse();
+import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
+
+public interface InternalPlcProprietaryResponse<REQUEST, RESPONSE> extends PlcProprietaryResponse<InternalPlcProprietaryRequest<REQUEST>, RESPONSE>, InternalPlcResponse<InternalPlcProprietaryRequest<REQUEST>> {
 }

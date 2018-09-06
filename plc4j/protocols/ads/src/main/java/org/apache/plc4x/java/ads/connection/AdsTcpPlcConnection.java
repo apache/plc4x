@@ -27,6 +27,7 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.ads.model.AdsField;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
@@ -39,14 +40,10 @@ import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
-import org.apache.plc4x.java.api.messages.items.SubscriptionRequestItem;
-import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
-import org.apache.plc4x.java.api.messages.items.UnsubscriptionRequestItem;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +57,9 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+
+import static org.apache.plc4x.java.api.types.PlcSubscriptionType.CHANGE_OF_STATE;
+import static org.apache.plc4x.java.api.types.PlcSubscriptionType.CYCLIC;
 
 public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements PlcSubscriber {
 
@@ -142,18 +142,12 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             throw new PlcNotImplementedException("Multirequest on subscribe not implemented yet");
         }
 
-        PlcField plcField = subscriptionRequest.getFields().get(0);
-        SubscriptionRequestItem<?> subscriptionRequestItem = subscriptionRequest.getRequestItem().orElseThrow(NullPointerException::new);
-
-        Objects.requireNonNull(subscriptionRequestItem.getConsumer());
-        Objects.requireNonNull(subscriptionRequestItem.getField());
-        Objects.requireNonNull(subscriptionRequestItem.getDatatype());
-
-        PlcField field = subscriptionRequestItem.getField();
-        Class<?> datatype = subscriptionRequestItem.getDatatype();
+        PlcField field = subscriptionRequest.getFields().get(0);
 
         IndexGroup indexGroup;
         IndexOffset indexOffset;
+        AdsDataType adsDataType;
+        int numberOfElements;
         // If this is a symbolic field, it has to be resolved first.
         // TODO: This is blocking, should be changed to be async.
         if (field instanceof SymbolicAdsField) {
@@ -164,6 +158,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             }
             indexGroup = IndexGroup.of(adsField.getIndexGroup());
             indexOffset = IndexOffset.of(adsField.getIndexOffset());
+            adsDataType = adsField.getAdsDataType();
+            numberOfElements = adsField.getNumberOfElements();
         }
         // If it's no symbolic field, we can continue immediately
         // without having to do any resolving.
@@ -171,6 +167,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             AdsField adsField = (AdsField) field;
             indexGroup = IndexGroup.of(adsField.getIndexGroup());
             indexOffset = IndexOffset.of(adsField.getIndexOffset());
+            adsDataType = adsField.getAdsDataType();
+            numberOfElements = adsField.getNumberOfElements();
         } else {
             throw new IllegalArgumentException("Unsupported field type " + field.getClass());
         }
@@ -196,8 +194,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             Invoke.NONE,
             indexGroup,
             indexOffset,
-            // TODO: length determination doesn't work here really as this is only known within the plc or by the developer
-            Length.of(LittleEndianDecoder.getLengthFor(datatype, 1)),
+            Length.of(adsDataType.getTagetByteSize() * numberOfElements),
             transmissionMode,
             MaxDelay.of(0),
             CycleTime.of(4000000)
@@ -205,9 +202,9 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
         // Send the request to the plc and wait for a response
         // TODO: This is blocking, should be changed to be async.
-        CompletableFuture<PlcProprietaryResponse<AdsAddDeviceNotificationResponse>> addDeviceFuture = new CompletableFuture<>();
-        channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(adsAddDeviceNotificationRequest), addDeviceFuture));
-        PlcProprietaryResponse<AdsAddDeviceNotificationResponse> addDeviceResponse = getFromFuture(addDeviceFuture, ADD_DEVICE_TIMEOUT);
+        CompletableFuture<InternalPlcProprietaryResponse<InternalPlcProprietaryRequest<AdsAddDeviceNotificationRequest>, AdsAddDeviceNotificationResponse>> addDeviceFuture = new CompletableFuture<>();
+        channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsAddDeviceNotificationRequest), addDeviceFuture));
+        InternalPlcProprietaryResponse<InternalPlcProprietaryRequest<AdsAddDeviceNotificationRequest>, AdsAddDeviceNotificationResponse> addDeviceResponse = getFromFuture(addDeviceFuture, ADD_DEVICE_TIMEOUT);
         AdsAddDeviceNotificationResponse response = addDeviceResponse.getResponse();
 
         // Abort if we got anything but a successful response.
@@ -215,7 +212,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             throw new PlcRuntimeException("Error code received " + response.getResult());
         }
         AdsSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(response.getNotificationHandle());
-        future.complete(new PlcSubscriptionResponse(subscriptionRequest, Collections.singletonList(
+        future.complete(new DefaultPlcSubscriptionResponse(subscriptionRequest, Collections.singletonList(
             new SubscriptionResponseItem<>(subscriptionRequestItem, adsSubscriptionHandle, PlcResponseCode.OK))));
 
         Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer =
@@ -228,7 +225,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         Data data = adsNotificationSample.getData();
                         try {
                             @SuppressWarnings("unchecked")
-                            List<?> decodeData = LittleEndianDecoder.decodeData(datatype, data.getBytes());
+                            List<?> decodeData = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
                             SubscriptionEventItem subscriptionEventItem =
                                 new SubscriptionEventItem(subscriptionRequestItem, timeStamp, decodeData);
                             subscriptionRequestItem.getConsumer().accept(subscriptionEventItem);

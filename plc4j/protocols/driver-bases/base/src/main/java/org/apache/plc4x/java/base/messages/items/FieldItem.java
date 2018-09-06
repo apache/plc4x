@@ -111,7 +111,7 @@ public abstract class FieldItem<T> {
         return null;
     }
 
-    protected T[] getValues() {
+    public T[] getValues() {
         return values;
     }
 

@@ -20,38 +20,43 @@ package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AmsPacket;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
+import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.ads.model.AdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.ads.protocol.exception.AdsException;
-import org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.InternalPlcRequest;
-import org.apache.plc4x.java.base.messages.InternalPlcResponse;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder.decodeData;
+import static org.apache.plc4x.java.ads.protocol.util.LittleEndianEncoder.encodeData;
 
 public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> {
 
@@ -128,7 +133,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     }
 
     private void encodeWriteRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcException {
-        PlcWriteRequest writeRequest = (PlcWriteRequest) msg.getRequest();
+        InternalPlcWriteRequest writeRequest = (InternalPlcWriteRequest) msg.getRequest();
         if (writeRequest.getFields().size() != 1) {
             throw new PlcProtocolException("Only one item supported");
         }
@@ -145,7 +150,11 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsField.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsField.getIndexOffset());
-        byte[] bytes = encodeData(adsField.getAdsDataType(), writeRequestItem.getValues().toArray());
+
+        FieldItem fieldItem = writeRequest.getFieldItems().get(0);
+        Object[] values = fieldItem.getValues();
+
+        byte[] bytes = encodeData(adsField.getAdsDataType(), values);
         Data data = Data.of(bytes);
         AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
         LOGGER.debug("encoded write request {}", amsPacket);
@@ -175,19 +184,17 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
         IndexGroup indexGroup = IndexGroup.of(adsField.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(adsField.getIndexOffset());
-        // TODO: length determination doesn't work here really as this is only known within the plc or by the developer
-        Length length = Length.of(calculateLength(readRequestItem.getDatatype(), readRequestItem.getSize()));
+        AdsDataType adsDataType = adsField.getAdsDataType();
+        int numberOfElements = adsField.getNumberOfElements();
+        int readLength = adsDataType.getTagetByteSize() * numberOfElements;
+        Length length = Length.of(readLength);
         AmsPacket amsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         LOGGER.debug("encoded read request {}", amsPacket);
         out.add(amsPacket);
         requests.put(invokeId.getAsLong(), msg);
     }
 
-    private long calculateLength(Class<?> dataType, int size) {
-        return LittleEndianDecoder.getLengthFor(dataType, 16) * size;
-    }
-
-    private void encodeProprietaryRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcProtocolException {
+    private void encodeProprietaryRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcProtocolException {
         PlcProprietaryRequest plcProprietaryRequest = (PlcProprietaryRequest) msg.getRequest();
         if (!(plcProprietaryRequest.getProprietaryRequest() instanceof AmsPacket)) {
             throw new PlcProtocolException("Unsupported proprietary type for this driver " + plcProprietaryRequest.getProprietaryRequest().getClass());
@@ -206,13 +213,13 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             handleAdsDeviceNotificationRequest((AdsDeviceNotificationRequest) amsPacket);
             return;
         }
-        PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requests.remove(amsPacket.getAmsHeader().getInvokeId().getAsLong());
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> plcRequestContainer = requests.remove(amsPacket.getAmsHeader().getInvokeId().getAsLong());
         if (plcRequestContainer == null) {
             LOGGER.info("Unmapped packet received {}", amsPacket);
             return;
         }
         PlcRequest request = plcRequestContainer.getRequest();
-        PlcResponse response = null;
+        final InternalPlcResponse response;
 
         // Handle the response to a read request.
         if (request instanceof PlcReadRequest) {
@@ -229,6 +236,8 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             }
         } else if (request instanceof PlcProprietaryRequest) {
             response = decodeProprietaryResponse(amsPacket, plcRequestContainer);
+        } else {
+            response = null;
         }
         LOGGER.debug("Plc4x response {}", response);
 
@@ -258,37 +267,46 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
 
     @SuppressWarnings("unchecked")
-    private PlcResponse decodeWriteResponse(AdsWriteResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) {
-        PlcWriteRequest plcWriteRequest = (PlcWriteRequest) requestContainer.getRequest();
-        PlcWriteRequestItem requestItem = plcWriteRequest.getRequestItems().get(0);
-
+    private InternalPlcResponse decodeWriteResponse(AdsWriteResponse responseMessage, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> requestContainer) {
+        InternalPlcWriteRequest plcWriteRequest = (InternalPlcWriteRequest) requestContainer.getRequest();
         PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
 
-        if (plcWriteRequest instanceof TypeSafePlcWriteRequest) {
-            return new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) plcWriteRequest, Collections.singletonList(new PlcWriteResponseItem<>(requestItem, responseCode)));
-        } else {
-            return new PlcWriteResponse(plcWriteRequest, Collections.singletonList(new PlcWriteResponseItem<>(requestItem, responseCode)));
-        }
+        // TODO: does every item has the same ads response or is this whole aggregation broken?
+        Map<String, PlcResponseCode> responseItems = plcWriteRequest.getFieldNames()
+            .stream()
+            .collect(Collectors.toMap(
+                fieldName -> fieldName,
+                __ -> responseCode
+            ));
+        return new DefaultPlcWriteResponse(plcWriteRequest, responseItems);
     }
 
     @SuppressWarnings("unchecked")
-    private PlcResponse decodeReadResponse(AdsReadResponse responseMessage, PlcRequestContainer<PlcRequest, PlcResponse> requestContainer) throws PlcProtocolException {
-        PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
-        PlcReadRequestItem requestItem = plcReadRequest.getRequestItems().get(0);
+    private InternalPlcResponse decodeReadResponse(AdsReadResponse responseMessage, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> requestContainer) throws PlcProtocolException {
+        InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
+
+        // TODO: only single requests supported for now
+        AdsField field = (AdsField) plcReadRequest.getFields().get(0);
+
 
         PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
         byte[] bytes = responseMessage.getData().getBytes();
-        List decoded = decodeData(requestItem.getDatatype(), bytes);
+        FieldItem<?> fieldItem = decodeData(field.getAdsDataType(), bytes);
 
-        if (plcReadRequest instanceof TypeSafePlcReadRequest) {
-            return new TypeSafePlcReadResponse((TypeSafePlcReadRequest) plcReadRequest, Collections.singletonList(new PlcReadResponseItem<>(requestItem, responseCode, decoded)));
-        } else {
-            return new PlcReadResponse(plcReadRequest, Collections.singletonList(new PlcReadResponseItem<>(requestItem, responseCode, decoded)));
-        }
+        // TODO: does every item has the same ads response or is this whole aggregation broken?
+        Map<String, Pair<PlcResponseCode, FieldItem>> responseItems = plcReadRequest.getFieldNames()
+            .stream()
+            .collect(Collectors.toMap(
+                fieldName -> fieldName,
+                __ -> Pair.of(responseCode, fieldItem)
+            ));
+
+        return new DefaultPlcReadResponse(plcReadRequest, responseItems);
     }
 
-    private PlcResponse decodeProprietaryResponse(AmsPacket amsPacket, PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer) {
-        return new PlcProprietaryResponse<>((PlcProprietaryRequest) plcRequestContainer.getRequest(), amsPacket);
+    @SuppressWarnings("unchecked")
+    private InternalPlcResponse decodeProprietaryResponse(AmsPacket amsPacket, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> plcRequestContainer) {
+        return new DefaultPlcProprietaryResponse<>((InternalPlcProprietaryRequest) plcRequestContainer.getRequest(), amsPacket);
     }
 
     private PlcResponseCode decodeResponseCode(Result result) {

@@ -19,19 +19,50 @@
 package org.apache.plc4x.java.ads.model;
 
 public enum AdsDataType {
-    BIT,
-    BIT8,
-    BITARR8,
-    BITARR16,
-    BITARR32,
-    INT8,
-    INT16,
-    INT32,
-    INT64,
-    UINT8,
-    UINT16,
-    UINT32,
-    UINT64,
-    FLOAT,
-    DOUBLE
+    // https://infosys.beckhoff.com/english.php?content=../content/1033/tcsystemmanager/basics/TcSysMgr_DatatypeComparison.htm&id=
+    BIT(1),
+    BIT8(1),
+    BITARR8(1),
+    BITARR16(2),
+    BITARR32(4),
+    INT8(1),
+    INT16(2),
+    INT32(4),
+    INT64(8),
+    UINT8(1),
+    UINT16(2),
+    UINT32(4),
+    UINT64(8),
+    FLOAT(4),
+    DOUBLE(8),
+    // https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
+    BOOL(0),
+    BYTE(0),
+    WORD(0),
+    DWORD(0),
+    SINT(0),
+    USINT(0),
+    INT(0),
+    UINT(0),
+    DINT(0),
+    UDINT(0),
+    LINT(0),
+    ULINT(0),
+    REAL(0),
+    LREAL(0),
+    STRING(0),
+    TIME(0),
+    TIME_OF_DAY(0),
+    DATE(0),
+    DATE_AND_TIME(0);
+
+    private final int tagetByteSize;
+
+    AdsDataType(int tagetByteSize) {
+        this.tagetByteSize = tagetByteSize;
+    }
+
+    public int getTagetByteSize() {
+        return tagetByteSize;
+    }
 }

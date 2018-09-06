@@ -18,10 +18,16 @@
  */
 package org.apache.plc4x.java.ads.protocol.util;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
+import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
+import org.apache.plc4x.java.base.messages.items.BooleanFieldItem;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.IntegerFieldItem;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -56,7 +62,135 @@ public class LittleEndianDecoder {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> List<T> decodeData(Class<T> dataType, byte[] adsData) throws PlcProtocolException {
+    public static FieldItem<?> decodeData(AdsDataType adsDataType, byte[] adsData) {
+        ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(adsData);
+        switch (adsDataType) {
+            case BIT: {
+                LinkedList<Boolean> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    short aByte = wrappedBuffer.readUnsignedByte();
+                    values.offer(aByte != 0);
+                }
+                return new BooleanFieldItem(values.toArray(new Boolean[0]));
+            }
+            case BIT8: {
+                LinkedList<Boolean> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    short aByte = wrappedBuffer.readUnsignedByte();
+                    values.offer(aByte != 0);
+                }
+                return new BooleanFieldItem(values.toArray(new Boolean[0]));
+            }
+            case BITARR8: {
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    short aByte = wrappedBuffer.readUnsignedByte();
+                    values.offer((long) aByte);
+                }
+                return new IntegerFieldItem(values.toArray(new Long[0]));
+            }
+            case BITARR16: {
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aLong = wrappedBuffer.readUnsignedIntLE();
+                    values.offer(aLong);
+                }
+                return new IntegerFieldItem(values.toArray(new Long[0]));
+            }
+            case BITARR32: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case INT8: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case INT16: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case INT32: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case INT64: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case UINT8: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case UINT16: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case UINT32: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case UINT64: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case FLOAT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case DOUBLE: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case BOOL: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case BYTE: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case WORD: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case DWORD: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case SINT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case USINT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case INT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case UINT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case DINT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case UDINT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case LINT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case ULINT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case REAL: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case LREAL: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case STRING: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case TIME: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case TIME_OF_DAY: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case DATE: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case DATE_AND_TIME: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            default:
+                throw new IllegalArgumentException("Unsupported adsDataType " + adsDataType);
+        }
+        /*
         if (dataType == byte[].class) {
             return (List<T>) Collections.singletonList(adsData);
         }
@@ -122,6 +256,7 @@ public class LittleEndianDecoder {
             }
         }
         return (List<T>) result;
+        */
     }
 
     private static int decodeString(byte[] adsData, int i, int length, List<Object> result) throws PlcProtocolException {

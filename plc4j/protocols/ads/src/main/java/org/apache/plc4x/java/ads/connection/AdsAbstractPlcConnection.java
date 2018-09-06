@@ -39,10 +39,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.messages.DefaultPlcProprietaryRequest;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,10 +92,10 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+    public CompletableFuture<InternalPlcReadResponse> read(PlcReadRequest readRequest) {
         mapFields(readRequest);
-        CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
-        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(readRequest, readFuture));
+        CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, readFuture));
         channelFuture.addListener(future -> {
             if (!future.isSuccess()) {
                 readFuture.completeExceptionally(future.cause());
@@ -113,10 +110,10 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<InternalPlcWriteResponse> write(PlcWriteRequest writeRequest) {
         mapFields(writeRequest);
-        CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
-        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(writeRequest, writeFuture));
+        CompletableFuture<InternalPlcWriteResponse> writeFuture = new CompletableFuture<>();
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, writeFuture));
         channelFuture.addListener(future -> {
             if (!future.isSuccess()) {
                 writeFuture.completeExceptionally(future.cause());
@@ -131,9 +128,9 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public <REQUEST, RESPONSE> CompletableFuture<PlcProprietaryResponse<REQUEST, RESPONSE>> send(PlcProprietaryRequest<REQUEST> proprietaryRequest) {
-        CompletableFuture<PlcProprietaryResponse<REQUEST, RESPONSE>> sendFuture = new CompletableFuture<>();
-        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(proprietaryRequest, sendFuture));
+    public <PROP_REQUEST, PROP_RESPONSE> CompletableFuture<? extends PlcProprietaryResponse<? extends PlcProprietaryRequest<PROP_REQUEST>, PROP_RESPONSE>> send(PlcProprietaryRequest<PROP_REQUEST> proprietaryRequest) {
+        CompletableFuture<InternalPlcProprietaryResponse<PROP_REQUEST, PROP_RESPONSE>> sendFuture = new CompletableFuture<>();
+        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcProprietaryRequest<PROP_REQUEST>) proprietaryRequest, sendFuture));
         channelFuture.addListener(future -> {
             if (!future.isSuccess()) {
                 sendFuture.completeExceptionally(future.cause());
@@ -168,9 +165,9 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             );
 
             // TODO: This is blocking, should be changed to be async.
-            CompletableFuture<PlcProprietaryResponse<AdsReadWriteRequest, AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
+            CompletableFuture<InternalPlcProprietaryResponse<InternalPlcProprietaryRequest<AdsWriteRequest>, AdsReadWriteResponse>> getHandelFuture = new CompletableFuture<>();
             channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsReadWriteRequest), getHandelFuture));
-            PlcProprietaryResponse<AdsReadWriteRequest, AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
+            InternalPlcProprietaryResponse<InternalPlcProprietaryRequest<AdsWriteRequest>, AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
             AdsReadWriteResponse response = getHandleResponse.getResponse();
 
             if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
@@ -178,7 +175,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             }
 
             IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
-            return AdsField.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong());
+            return AdsField.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong(), symbolicAdsFieldInternal.getAdsDataType(), symbolicAdsFieldInternal.getNumberOfElements());
         });
     }
 

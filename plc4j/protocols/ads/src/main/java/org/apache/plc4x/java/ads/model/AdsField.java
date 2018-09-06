@@ -47,7 +47,7 @@ public class AdsField implements PlcField {
         this.indexGroup = indexGroup;
         ByteValue.checkUnsignedBounds(indexOffset, 4);
         this.indexOffset = indexOffset;
-        this.adsDataType = adsDataType;
+        this.adsDataType = Objects.requireNonNull(adsDataType);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
@@ -87,11 +87,8 @@ public class AdsField implements PlcField {
         String adsDataTypeString = matcher.group("adsDataType");
         AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
 
-        Integer numberOfElements = null;
         String numberOfElementsString = matcher.group("numberOfElements");
-        if (numberOfElementsString != null) {
-            numberOfElements = Integer.valueOf(numberOfElementsString);
-        }
+        Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
 
         return new AdsField(indexGroup, indexOffset, adsDataType, numberOfElements);
     }

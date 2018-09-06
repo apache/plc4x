@@ -22,14 +22,14 @@ import java.time.Duration;
 
 public interface PlcSubscriptionRequest extends PlcFieldRequest {
 
-    PlcMessageBuilder<PlcSubscriptionRequest> builder();
+    PlcSubscriptionRequest.Builder builder();
 
     interface Builder extends PlcMessageBuilder<PlcSubscriptionRequest> {
         /**
          * Adds a new field to the to be constructed request which should be polled cyclically.
          *
-         * @param name alias of the field.
-         * @param fieldQuery field query string for accessing the field.
+         * @param name            alias of the field.
+         * @param fieldQuery      field query string for accessing the field.
          * @param pollingInterval interval, in which the field should be polled.
          * @return
          */
@@ -39,7 +39,7 @@ public interface PlcSubscriptionRequest extends PlcFieldRequest {
          * Adds a new field to the to be constructed request which should be updated as soon as
          * a value changes in the PLC.
          *
-         * @param name alias of the field.
+         * @param name       alias of the field.
          * @param fieldQuery field query string for accessing the field.
          * @return
          */
@@ -48,10 +48,10 @@ public interface PlcSubscriptionRequest extends PlcFieldRequest {
         /**
          * Adds a new subscription to the to be constructed request which should be updated
          * as soon as an event occurs.
-         *
+         * <p>
          * REMARK: We will have to see if this signature is correct as soon as we start using this type of subscription.
          *
-         * @param name alias of the field.
+         * @param name       alias of the field.
          * @param fieldQuery field query string for accessing the field.
          * @return
          */

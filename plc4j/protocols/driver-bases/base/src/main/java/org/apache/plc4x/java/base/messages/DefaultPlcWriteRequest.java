@@ -59,11 +59,16 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
 
     @Override
     public LinkedList<PlcField> getFields() {
-        return new LinkedList<>(fields.values().stream().map(Pair::getKey).collect(Collectors.toList()));
+        return fields.values().stream().map(Pair::getKey).collect(Collectors.toCollection(LinkedList::new));
     }
 
     public FieldItem getFieldItem(String name) {
         return fields.get(name).getValue();
+    }
+
+    @Override
+    public LinkedList<FieldItem> getFieldItems() {
+        return fields.values().stream().map(Pair::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
