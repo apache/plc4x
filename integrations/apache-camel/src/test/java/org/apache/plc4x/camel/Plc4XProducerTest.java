@@ -51,7 +51,7 @@ public class Plc4XProducerTest {
         when(endpointMock.getPlcDriverManager()).thenReturn(plcDriverManagerMock);
         SUT = new Plc4XProducer(endpointMock);
         testExchange = mock(Exchange.class, RETURNS_DEEP_STUBS);
-        when(testExchange.getIn().getHeader(eq(Constants.ADDRESS_HEADER), eq(PlcField.class)))
+        when(testExchange.getIn().getHeader(eq(Constants.FIELD_QUERY_HEADER), eq(PlcField.class)))
             .thenReturn(mock(PlcField.class));
     }
 

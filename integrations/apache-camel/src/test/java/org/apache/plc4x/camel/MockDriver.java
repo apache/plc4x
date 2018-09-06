@@ -26,8 +26,6 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.messages.items.SubscriptionEventItem;
-import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -79,8 +77,9 @@ public class MockDriver implements PlcDriver {
         when(plcSubscriber.subscribe(any())).thenAnswer(invocation -> {
             LOGGER.info("Received {}", invocation);
             PlcSubscriptionRequest subscriptionRequest = invocation.getArgument(0);
-            List<SubscriptionResponseItem<?>> responseItems =
-                subscriptionRequest.getRequestItems().stream().map(subscriptionRequestItem -> {
+            List<PlcSubscriptionResponse> responseItems =
+                subscriptionRequest.getFieldNames().stream().map(
+                    fieldName -> subscriptionRequest.getField(fieldName)).map(field -> {
                     Consumer consumer = subscriptionRequestItem.getConsumer();
                     executorService.submit(() -> {
                         while (!Thread.currentThread().isInterrupted()) {

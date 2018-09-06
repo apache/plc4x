@@ -24,7 +24,7 @@ import java.util.LinkedHashSet;
 
 public interface PlcFieldRequest extends PlcRequest {
 
-    int getNumFields();
+    int getNumberOfFields();
 
     LinkedHashSet<String> getFieldNames();
 

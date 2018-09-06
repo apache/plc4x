@@ -55,10 +55,10 @@ public class Plc4XProducer extends DefaultAsyncProducer {
         if (body instanceof List) {
             List<?> bodyList = in.getBody(List.class);
             Object[] values = bodyList.toArray();
-            builder.addItem(fieldName, fieldQuery, values);
+//            builder.addItem(fieldName, fieldQuery, values);
         } else {
             Object value = in.getBody(Object.class);
-            builder.addItem(fieldName, fieldQuery, value);
+//            builder.addItem(fieldName, fieldQuery, value);
         }
         PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
         CompletableFuture<? extends PlcWriteResponse> completableFuture = plcWriter.write(builder.build());

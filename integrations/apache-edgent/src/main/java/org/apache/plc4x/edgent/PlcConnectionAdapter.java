@@ -160,9 +160,6 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 PlcReadResponse readResponse = reader.read(readRequest).get();
                 Object value = null;
                 switch (clientDatatype) {
-                    case OBJECT:
-                        value = readResponse.getObject(FIELD_NAME);
-                        break;
                     case BYTE:
                         value = readResponse.getByte(FIELD_NAME);
                         break;
@@ -237,14 +234,6 @@ public class PlcConnectionAdapter implements AutoCloseable {
         private void addItem(PlcWriteRequest.Builder builder,
                                PlcClientDatatype clientDatatype, String fieldQuery, Object fieldValue) {
             switch (clientDatatype) {
-                case RAW:
-                    if (fieldValue instanceof byte[]) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (byte[]) fieldValue);
-                    }
-                    break;
-                case OBJECT:
-                    builder.addItem(FIELD_NAME, fieldQuery, fieldValue);
-                    break;
                 case BYTE:
                     if (fieldValue instanceof Byte) {
                         builder.addItem(FIELD_NAME, fieldQuery, (Byte) fieldValue);

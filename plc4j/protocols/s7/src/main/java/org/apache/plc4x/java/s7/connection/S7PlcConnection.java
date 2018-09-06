@@ -240,7 +240,7 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.DefaultPlcReadRequestBuilder(new S7PlcFieldHandler());
+        return new DefaultPlcReadRequest.Builder(new S7PlcFieldHandler());
     }
 
     @Override

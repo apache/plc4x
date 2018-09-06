@@ -46,13 +46,13 @@ public class Plc4XComponentTest extends CamelTestSupport {
         return new RouteBuilder() {
             public void configure() {
                 from("direct:plc4x")
-                    .setHeader(Constants.ADDRESS_HEADER, constant(new PlcField() {
+                    .setHeader(Constants.FIELD_QUERY_HEADER, constant(new PlcField() {
                     }))
                     .setBody(constant((byte) 0x0))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
                 from("direct:plc4x2")
-                    .setHeader(Constants.ADDRESS_HEADER, constant(new PlcField() {
+                    .setHeader(Constants.FIELD_QUERY_HEADER, constant(new PlcField() {
                     }))
                     .setBody(constant(Arrays.asList((byte) 0x0, (byte) 0x1, (byte) 0x2, (byte) 0x3)))
                     .to("plc4x:mock:10.10.10.1/1/1")

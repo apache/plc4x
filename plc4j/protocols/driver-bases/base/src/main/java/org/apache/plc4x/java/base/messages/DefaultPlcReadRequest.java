@@ -34,7 +34,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest {
     }
 
     @Override
-    public int getNumFields() {
+    public int getNumberOfFields() {
         return fields.size();
     }
 
@@ -49,18 +49,18 @@ public class DefaultPlcReadRequest implements PlcReadRequest {
         return fields.get(name);
     }
 
-    public static class DefaultPlcReadRequestBuilder implements PlcReadRequest.Builder {
+    public static class Builder implements PlcReadRequest.Builder {
 
         private final PlcFieldHandler fieldHandler;
         private final Map<String, String> fields;
 
-        public DefaultPlcReadRequestBuilder(PlcFieldHandler fieldHandler) {
+        public Builder(PlcFieldHandler fieldHandler) {
             this.fieldHandler = fieldHandler;
             fields = new TreeMap<>();
         }
 
         @Override
-        public Builder addItem(String name, String fieldQuery) {
+        public PlcReadRequest.Builder addItem(String name, String fieldQuery) {
             if(fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }

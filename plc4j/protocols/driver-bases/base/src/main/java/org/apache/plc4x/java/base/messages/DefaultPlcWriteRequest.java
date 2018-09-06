@@ -41,7 +41,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest {
     }
 
     @Override
-    public int getNumFields() {
+    public int getNumberOfFields() {
         return fields.size();
     }
 

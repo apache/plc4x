@@ -33,6 +33,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
@@ -68,7 +69,7 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return null;
+        return new DefaultPlcReadRequest.Builder(new MockFieldHandler());
     }
 
     @Override
@@ -91,7 +92,7 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return null;
+        return new DefaultPlcWriteRequest.Builder(new MockFieldHandler());
     }
 
     @SuppressWarnings("unchecked")

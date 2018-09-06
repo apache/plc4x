@@ -216,6 +216,16 @@
         <version>${junit.jupiter.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit.jupiter.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>${junit.jupiter.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-core</artifactId>
         <version>${hamcrest.version}</version>
@@ -1011,6 +1021,16 @@
           <artifactId>junit-jupiter-params</artifactId>
           <scope>test</scope>
         </dependency>
+        <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter-engine</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+          <scope>test</scope>
+        </dependency>
 
         <dependency>
           <groupId>org.hamcrest</groupId>
@@ -1058,6 +1078,10 @@
                   <ignoredDependencies>
                     <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
                     <ignoredDependency>junit:junit</ignoredDependency>
+                    <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
+                    <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
+                    <ignoredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredDependency>
+                    <ignoredDependency>org.junit.vintage:junit-vintage-engine</ignoredDependency>
                     <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
                     <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
                     <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
@@ -1163,14 +1187,6 @@
               -->
               <argLine>-Xmx256m @{surefireArgLine}</argLine>
             </configuration>
-            <dependencies>
-              <!-- let surefire run JUnit 4 but also JUnit 5 tests -->
-              <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-surefire-provider</artifactId>
-                <version>${junit.platform.version}</version>
-              </dependency>
-            </dependencies>
           </plugin>
 
           <!--

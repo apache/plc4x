@@ -16,36 +16,34 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.edgent.mock;
+package org.apache.plc4x.java.base.messages;
 
+import org.apache.plc4x.java.api.messages.PlcMessageBuilder;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 
-public class MockField implements PlcField {
+import java.util.LinkedHashSet;
 
-    private final String address;
+public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest {
 
-    public MockField(String address) {
-        this.address = address;
-    }
-
-    public String getAddress() {
-        return address;
+    @Override
+    public int getNumberOfFields() {
+        return 0;
     }
 
     @Override
-    public String toString() {
-        return "mock field: " + address;
+    public LinkedHashSet<String> getFieldNames() {
+        return null;
     }
 
     @Override
-    public boolean equals(Object o) {
-        return o instanceof MockField
-            && ((MockField) o).address.equals(this.address);
+    public PlcField getField(String name) {
+        return null;
     }
 
     @Override
-    public int hashCode() {
-        return address.hashCode();
+    public PlcMessageBuilder<PlcSubscriptionRequest> builder() {
+        return null;
     }
 
 }

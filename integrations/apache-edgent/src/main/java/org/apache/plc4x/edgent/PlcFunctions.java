@@ -92,13 +92,13 @@ public class PlcFunctions {
      * // TODO: No need to import the Topology module for just this comment ... I think
      * //see org.apache.edgent.topology.Topology#poll(Supplier, long, java.util.concurrent.TimeUnit)
      */
-    public static Supplier<byte[]> rawSupplier(PlcConnectionAdapter adapter, String addressStr) {
+    /*public static Supplier<byte[]> rawSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(byte[].class, PlcClientDatatype.RAW, addressStr);
     }
 
     public static Supplier<Object> objectSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(Object.class, PlcClientDatatype.OBJECT, addressStr);
-    }
+    }*/
 
     public static Supplier<Boolean> booleanSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(Boolean.class, PlcClientDatatype.BOOLEAN, addressStr);
@@ -163,13 +163,13 @@ public class PlcFunctions {
      * // TODO: No need to import the Topology module for just this comment ... I think
      * //see org.apache.edgent.topology.TStream#sink(Consumer)
      */
-    public static Consumer<byte[]> rawConsumer(PlcConnectionAdapter adapter, String addressStr) {
+    /*public static Consumer<byte[]> rawConsumer(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newJsonConsumer(byte[].class, PlcClientDatatype.RAW, addressStr);
     }
 
     public static Consumer<Object> objectConsumer(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newJsonConsumer(Object.class, PlcClientDatatype.OBJECT, addressStr);
-    }
+    }*/
 
     public static Consumer<Boolean> booleanConsumer(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newJsonConsumer(Boolean.class, PlcClientDatatype.BOOLEAN, addressStr);

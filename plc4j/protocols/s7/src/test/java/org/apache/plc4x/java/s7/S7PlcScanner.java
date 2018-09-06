@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,12 @@ import java.util.Optional;
 public class S7PlcScanner {
 
     private static final Logger logger = LoggerFactory.getLogger(S7PlcScanner.class);
+
+    @Test
+    public void hurz() {
+
+    }
+
 
     /**
      * Example code do demonstrate using the S7 Plc Driver.

@@ -26,7 +26,7 @@ public abstract class FieldItem<T> {
 
     private T[] values;
 
-    FieldItem(T[] values) {
+    protected FieldItem(T[] values) {
         this.values = values;
     }
 
