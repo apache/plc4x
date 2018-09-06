@@ -72,11 +72,11 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
         curReadCnt++;
         if (readExceptionTriggerCount > 0 && curReadCnt == readExceptionTriggerCount) {
             curReadCnt = 0;
-            CompletableFuture<PlcReadResponse> cf = new CompletableFuture<>();
+            CompletableFuture<PlcReadResponse<?>> cf = new CompletableFuture<>();
             cf.completeExceptionally(new PlcIoException(readExceptionMsg));
             return cf;
         }
@@ -96,12 +96,12 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
 
     @SuppressWarnings("unchecked")
     @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
         DefaultPlcWriteRequest defaultPlcWriteRequest = (DefaultPlcWriteRequest) writeRequest;
         curWriteCnt++;
         if (writeExceptionTriggerCount > 0 && curWriteCnt == writeExceptionTriggerCount) {
             curWriteCnt = 0;
-            CompletableFuture<PlcWriteResponse> cf = new CompletableFuture<>();
+            CompletableFuture<PlcWriteResponse<?>> cf = new CompletableFuture<>();
             cf.completeExceptionally(new PlcIoException(writeExceptionMsg));
             return cf;
         }

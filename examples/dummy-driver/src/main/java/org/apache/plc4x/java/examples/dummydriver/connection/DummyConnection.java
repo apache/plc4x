@@ -64,12 +64,13 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public CompletableFuture<? extends PlcReadResponse> read(PlcReadRequest readRequest) {
+    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
         CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
             new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, readFuture);
         channel.writeAndFlush(container);
-        return readFuture;
+        return readFuture
+            .thenApply(PlcReadResponse.class::cast);
     }
 
     @Override
@@ -79,12 +80,13 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public CompletableFuture<? extends PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
         CompletableFuture<InternalPlcWriteResponse> writeFuture = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
-            new PlcRequestContainer<>((InternalPlcWriteRequest)writeRequest, writeFuture);
+            new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, writeFuture);
         channel.writeAndFlush(container);
-        return writeFuture;
+        return writeFuture
+            .thenApply(PlcWriteResponse.class::cast);
     }
 
 }

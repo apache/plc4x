@@ -40,7 +40,7 @@ public class HelloPlc4x {
      */
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
-        if(args.length < 2) {
+        if (args.length < 2) {
             System.out.println("Usage: HelloPlc4x {connection-string} {address-string}+");
             System.out.println("Example: HelloPlc4x s7://10.10.64.30/1/1 %I0.0:BOOLEAN %DB1.DBX38:BYTE");
             return;
@@ -58,7 +58,7 @@ public class HelloPlc4x {
                 // Create a new read request:
                 // - Give the single item requested the alias name "value"
                 PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
-                for(int i = 1; i < args.length; i++) {
+                for (int i = 1; i < args.length; i++) {
                     builder.addItem("value-" + i, args[i]);
                 }
                 PlcReadRequest plcReadRequest = builder.build();
@@ -67,7 +67,7 @@ public class HelloPlc4x {
                 // Read synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
-                PlcReadResponse syncResponse = plcReader.read(plcReadRequest).get();
+                PlcReadResponse<?> syncResponse = plcReader.read(plcReadRequest).get();
                 // Simply iterating over the field names returned in the response.
                 for (String fieldName : syncResponse.getFieldNames()) {
                     System.out.println("Value[" + fieldName + "]: " + syncResponse.getObject(fieldName));
@@ -76,11 +76,11 @@ public class HelloPlc4x {
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...
                 // Register a callback executed as soon as a response arives.
-                CompletableFuture<PlcReadResponse> asyncResponse = plcReader.read(plcReadRequest);
+                CompletableFuture<PlcReadResponse<?>> asyncResponse = plcReader.read(plcReadRequest);
                 asyncResponse.whenComplete((readResponse, throwable) -> {
-                    if(readResponse != null) {
+                    if (readResponse != null) {
                         // Directly asking for fields by name.
-                        for(int i = 1; i < args.length; i++) {
+                        for (int i = 1; i < args.length; i++) {
                             System.out.println("Value[value-" + i + "]: " + syncResponse.getObject("value-" + i));
                         }
                     } else {

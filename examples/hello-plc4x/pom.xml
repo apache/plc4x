@@ -39,6 +39,17 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>apache-edgent</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
@@ -100,10 +111,18 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <usedDependencies>
+          <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-protocol-s7</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
+          <ignoredDependencies combine.children="append">
+            <ignoredDependency>org.apache.edgent:edgent-providers-direct:jar</ignoredDependency>
+            <ignoredDependency>org.elasticsearch:elasticsearch:jar</ignoredDependency>
+            <ignoredDependency>org.apache.edgent:edgent-api-function:jar</ignoredDependency>
+            <ignoredDependency>org.elasticsearch.plugin:transport-netty4-client:jar</ignoredDependency>
+            <ignoredDependency>org.apache.plc4x:apache-edgent:jar:0.0.1-SNAPSHOT</ignoredDependency>
+            <ignoredDependency>org.apache.edgent:edgent-api-topology:jar</ignoredDependency>
+          </ignoredDependencies>
         </configuration>
       </plugin>
     </plugins>

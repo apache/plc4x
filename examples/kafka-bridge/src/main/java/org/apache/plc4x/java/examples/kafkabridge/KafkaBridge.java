@@ -18,11 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.examples.kafkabridge;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.JsonArray;
@@ -38,11 +33,17 @@ import org.apache.plc4x.edgent.PlcFunctions;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.examples.kafkabridge.model.PlcFieldConfig;
 import org.apache.plc4x.java.examples.kafkabridge.model.Configuration;
+import org.apache.plc4x.java.examples.kafkabridge.model.PlcFieldConfig;
 import org.apache.plc4x.java.examples.kafkabridge.model.PlcMemoryBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class KafkaBridge {
 
@@ -85,10 +86,10 @@ public class KafkaBridge {
         PlcReadRequest readRequest = builder.build();
 
         // Create a supplier that is able to read the batch we just created.
-        Supplier<PlcReadResponse> plcSupplier = PlcFunctions.batchSupplier(plcAdapter, readRequest);
+        Supplier<PlcReadResponse<?>> plcSupplier = PlcFunctions.batchSupplier(plcAdapter, readRequest);
 
         // Start polling our plc source in the given interval.
-        TStream<PlcReadResponse> source = top.poll(plcSupplier, config.getPollingInterval(), TimeUnit.MILLISECONDS);
+        TStream<PlcReadResponse<?>> source = top.poll(plcSupplier, config.getPollingInterval(), TimeUnit.MILLISECONDS);
 
         // Convert the byte into a string.
         TStream<String> jsonSource = source.map(value -> {

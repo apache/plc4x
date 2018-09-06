@@ -108,8 +108,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
             () -> new PlcException("This connection doesn't support reading")).readRequestBuilder();
     }
 
-    Supplier<PlcReadResponse> newSupplier(PlcReadRequest readRequest) {
-        return new Supplier<PlcReadResponse>() {
+    Supplier<PlcReadResponse<?>> newSupplier(PlcReadRequest readRequest) {
+        return new Supplier<PlcReadResponse<?>>() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -232,7 +232,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
         }
 
         private void addItem(PlcWriteRequest.Builder builder,
-                               PlcClientDatatype clientDatatype, String fieldQuery, Object fieldValue) {
+                             PlcClientDatatype clientDatatype, String fieldQuery, Object fieldValue) {
             switch (clientDatatype) {
                 case BYTE:
                     if (fieldValue instanceof Byte) {
@@ -288,7 +288,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
         }
     }
 
-    private class ObjectConsumer<T> extends  BaseConsumer<T> {
+    private class ObjectConsumer<T> extends BaseConsumer<T> {
         private static final long serialVersionUID = 1L;
 
         private PlcClientDatatype clientDatatype;
