@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class EtherNetIpField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^#(?<class>.*?)#(?<instance>\\d{1,4})(?:#(?<attribute>\\d))?");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^#(?<class>.*?)#(?<instance>\\d{1,4})(?:#(?<attribute>\\d))?");
 
     public static boolean matches(String addressString) {
         return ADDRESS_PATTERN.matcher(addressString).matches();

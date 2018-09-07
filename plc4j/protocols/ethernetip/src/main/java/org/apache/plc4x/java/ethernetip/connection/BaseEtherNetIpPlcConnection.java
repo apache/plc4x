@@ -21,15 +21,11 @@ package org.apache.plc4x.java.ethernetip.connection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.base.messages.InternalPlcReadResponse;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
+import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.ethernetip.netty.util.EnipPlcFieldHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +35,7 @@ public abstract class BaseEtherNetIpPlcConnection extends AbstractPlcConnection 
 
     private static final Logger logger = LoggerFactory.getLogger(BaseEtherNetIpPlcConnection.class);
 
-    protected BaseEtherNetIpPlcConnection(ChannelFactory channelFactory, String params) {
+    BaseEtherNetIpPlcConnection(ChannelFactory channelFactory, String params) {
         super(channelFactory, true);
 
         if (!StringUtils.isEmpty(params)) {
@@ -60,29 +56,41 @@ public abstract class BaseEtherNetIpPlcConnection extends AbstractPlcConnection 
     }
 
     @Override
-    public PlcField prepareField(String fieldString) throws PlcInvalidFieldException {
-        if(EtherNetIpField.matches(fieldString)) {
-            return EtherNetIpField.of(fieldString);
-        }
-        throw new PlcInvalidFieldException(fieldString);
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(new EnipPlcFieldHandler());
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
+    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
+        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
-            new PlcRequestContainer<>(readRequest, readFuture);
-        channel.writeAndFlush(container);
-        return readFuture;
+            new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, future);
+        channel.writeAndFlush(container).addListener(f -> {
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
+            }
+        });
+        return future
+            .thenApply(PlcReadResponse.class::cast);
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
-        PlcRequestContainer<PlcWriteRequest, PlcWriteResponse> container =
-            new PlcRequestContainer<>(writeRequest, writeFuture);
-        channel.writeAndFlush(container);
-        return writeFuture;
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(new EnipPlcFieldHandler());
+    }
+
+    @Override
+    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
+        CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
+            new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, future);
+        channel.writeAndFlush(container).addListener(f -> {
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
+            }
+        });
+        return future
+            .thenApply(PlcWriteResponse.class::cast);
     }
 
 }

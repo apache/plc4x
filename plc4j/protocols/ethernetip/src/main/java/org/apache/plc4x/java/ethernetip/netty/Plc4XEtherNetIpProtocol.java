@@ -28,13 +28,18 @@ import com.digitalpetri.enip.commands.*;
 import com.digitalpetri.enip.cpf.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +51,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, PlcRequestContainer<PlcRequest, PlcResponse>> {
+public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XEtherNetIpProtocol.class);
 
@@ -71,7 +76,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     // for quire some time. Hereby freeing resources on both client and server.
     private Map<PlcField, Long> fieldConnectionMap = new ConcurrentHashMap<>();
 
-    private final Map<Long, PlcRequestContainer<PlcRequest, PlcResponse>> requestsMap = new ConcurrentHashMap<>();
+    private final Map<Long, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> requestsMap = new ConcurrentHashMap<>();
 
     public Plc4XEtherNetIpProtocol() {
     }
@@ -111,7 +116,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) {
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
         // Reset transactionId on overflow
         messageId.compareAndSet(Short.MAX_VALUE + 1, 0);
@@ -127,7 +132,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
         }*/
     }
 
-    private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) {
+    private void encodeWriteRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) {
         if (!supportsCipEncapsulation) {
             LOGGER.warn("CIP Encapsulation not supported by remote, payload encapsulation must be handled by target and originator");
         }
@@ -169,34 +174,33 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
 
     }
 
-    private void encodeReadRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) {
+    private void encodeReadRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) {
         if (!supportsCipEncapsulation) {
             LOGGER.warn("CIP Encapsulation not supported by remote, payload encapsulation must be handled by target and originator");
         }
 
-        PlcReadRequest request = (PlcReadRequest) msg.getRequest();
+        InternalPlcReadRequest request = (InternalPlcReadRequest) msg.getRequest();
+        for (String fieldName : request.getFieldNames()) {
+            PlcField field = request.getField(fieldName);
 
-        // Here we assume it's only one request item.
-        PlcReadRequestItem<?> requestItem = request.getRequestItem()
-            .orElseThrow(() -> new RuntimeException("Only single item requests allowed"));
+            // CIP Part
+            EtherNetIpField enipField = (EtherNetIpField) field;
+            EPath.PaddedEPath path = new EPath.PaddedEPath(new LogicalSegment.ClassId(enipField.getObjectNumber()),
+                new LogicalSegment.InstanceId(enipField.getInstanceNumber()),
+                new LogicalSegment.AttributeId(enipField.getAttributeNumber()));
+            GetAttributeSingleService service = new GetAttributeSingleService(path);
 
-        // CIP Part
-        EtherNetIpField enipField = (EtherNetIpField) requestItem.getField();
-        EPath.PaddedEPath path = new EPath.PaddedEPath(new LogicalSegment.ClassId(enipField.getObjectNumber()),
-            new LogicalSegment.InstanceId(enipField.getInstanceNumber()),
-            new LogicalSegment.AttributeId(enipField.getAttributeNumber()));
-        GetAttributeSingleService service = new GetAttributeSingleService(path);
+            // ENIP Part
+            EnipPacket packet = new EnipPacket(CommandCode.SendRRData, sessionHandle, EnipStatus.EIP_SUCCESS,
+                messageId.getAndIncrement(), new SendRRData(new CpfPacket(
+                new NullAddressItem(),
+                new UnconnectedDataItemRequest(service::encodeRequest)
+            )));
 
-        // ENIP Part
-        EnipPacket packet = new EnipPacket(CommandCode.SendRRData, sessionHandle, EnipStatus.EIP_SUCCESS,
-            messageId.getAndIncrement(), new SendRRData(new CpfPacket(
-            new NullAddressItem(),
-            new UnconnectedDataItemRequest(service::encodeRequest)
-        )));
+            requestsMap.put(packet.getSenderContext(), msg);
 
-        requestsMap.put(packet.getSenderContext(), msg);
-
-        out.add(packet);
+            out.add(packet);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,7 +431,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     private void handleSendRRDataResponse(ChannelHandlerContext ctx, EnipPacket msg) {
         // This is where the typical request/response stuff is handled.
         long senderContext = msg.getSenderContext();
-        PlcRequestContainer<PlcRequest, PlcResponse> plcRequestContainer = requestsMap.get(senderContext);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> plcRequestContainer = requestsMap.get(senderContext);
         if (plcRequestContainer == null) {
             ctx.channel().pipeline().fireExceptionCaught(
                 new PlcProtocolException("Unrelated payload received for message " + msg));
@@ -436,8 +440,9 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
 
         if (!(plcRequestContainer.getRequest() instanceof PlcReadRequest)) {
             ctx.fireExceptionCaught(new PlcProtocolException("Expecting a PlcReadRequest here."));
+            return;
         }
-        PlcReadRequest request = (PlcReadRequest) plcRequestContainer.getRequest();
+        InternalPlcReadRequest request = (InternalPlcReadRequest) plcRequestContainer.getRequest();
         PlcResponseCode responseCode;
         if (msg.getStatus() != EnipStatus.EIP_SUCCESS) {
             responseCode = PlcResponseCode.NOT_FOUND;
@@ -448,30 +453,36 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
         SendRRData sendRRDataCommand = (SendRRData) msg.getCommand();
         if (sendRRDataCommand == null) {
             ctx.fireExceptionCaught(new PlcProtocolException("Expecting a SendRRData command here."));
+            return;
         }
         CpfItem[] items = sendRRDataCommand.getPacket().getItems();
         if (items.length != 2) {
             ctx.fireExceptionCaught(new PlcProtocolException("Expecting 2 items here."));
+            return;
         }
         CpfItem payload = items[1];
         if (!(payload instanceof UnconnectedDataItemResponse)) {
             ctx.fireExceptionCaught(new PlcProtocolException("Item[1] should be of type UnconnectedDataItemResponse"));
+            return;
         }
         UnconnectedDataItemResponse enipResponse = (UnconnectedDataItemResponse) payload;
         ByteBuf data = enipResponse.getData();
         if (data.readableBytes() > 0) {
-            MessageRouterResponse cipResponse = MessageRouterResponse.decode(data);
-            PlcReadRequestItem requestItem = request.getRequestItem().orElse(null);
-            Short value;
-            if (cipResponse.getData().readableBytes() >= 2) {
-                value = cipResponse.getData().readShort();
-            } else {
-                value = -1;
+            Map<String, Pair<PlcResponseCode, FieldItem>> values = new HashMap<>();
+            // TODO: This is not quite correct as this will probalby not work when requesting more than one item.
+            for (String fieldName : request.getFieldNames()) {
+                MessageRouterResponse cipResponse = MessageRouterResponse.decode(data);
+                short value;
+                // TODO: This is not quite correct as we assume everything is an integer.
+                if (cipResponse.getData().readableBytes() >= 2) {
+                    value = cipResponse.getData().readShort();
+                } else {
+                    value = -1;
+                }
+                DefaultIntegerFieldItem fieldItem = new DefaultIntegerFieldItem((long) value);
+                values.put(fieldName, new ImmutablePair<>(responseCode, fieldItem));
             }
-            // TODO: This is not quite correct as we assume everything is an integer.
-            PlcReadResponseItem<Integer> responseItem = new PlcReadResponseItem<Integer>(requestItem, responseCode, value.intValue());
-            PlcReadResponse response = new PlcReadResponse(request, responseItem);
-
+            InternalPlcReadResponse response = new DefaultPlcReadResponse(request, values);
             plcRequestContainer.getResponseFuture().complete(response);
         }
     }

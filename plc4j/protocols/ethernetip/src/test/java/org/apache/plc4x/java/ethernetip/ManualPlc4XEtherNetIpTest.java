@@ -23,9 +23,6 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.PlcReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
-import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -40,25 +37,23 @@ public class ManualPlc4XEtherNetIpTest {
             // Get a reader instance.
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            // Parse the address.
-            PlcField field = plcConnection.prepareField("#4#105#3");
-
-            // Create a new read request.
-            PlcReadRequest readRequest = new PlcReadRequest(new PlcReadRequestItem<>(Integer.class, field));
+            PlcReadRequest readRequest = reader.readRequestBuilder()
+                .addItem("field", "#4#105#3").build();
 
             // Execute the read operation.
-            CompletableFuture<? extends PlcReadResponse> response = reader.read(readRequest);
-            PlcReadResponse readResponse = response.get();
+            CompletableFuture<PlcReadResponse<?>> response = reader.read(readRequest);
+            PlcReadResponse<?> readResponse = response.get();
 
             // Output the response.
-            PlcReadResponseItem responseItem = readResponse.getResponseItem()
-                .orElseThrow(() -> new RuntimeException("No Item found"));
-            System.out.println("ResponseItem " + responseItem);
-            responseItem.getValues().stream().map(value -> "Value: " + value.toString()).forEach(System.out::println);
+            for (String fieldName : readResponse.getFieldNames()) {
+                readResponse.getAllLongs(fieldName).stream().map(
+                    value -> "Value: " + value.toString()).forEach(System.out::println);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
         System.exit(0);
     }
+
 }
