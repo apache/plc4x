@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,11 +39,10 @@ public class HelloPlc4x {
      *
      * @param args ignored.
      */
-    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         if (args.length < 2) {
             System.out.println("Usage: HelloPlc4x {connection-string} {address-string}+");
-            System.out.println("Example: HelloPlc4x s7://10.10.64.30/1/1 %I0.0:BOOLEAN %DB1.DBX38:BYTE");
+            System.out.println("Example: HelloPlc4x s7://10.10.64.20/1/1 %Q0.0:BOOL %Q0:BYTE");
             return;
         }
 
@@ -67,21 +67,43 @@ public class HelloPlc4x {
                 // Read synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
+                System.out.println("\nSynchronous request ...");
                 PlcReadResponse<?> syncResponse = plcReader.read(plcReadRequest).get();
                 // Simply iterating over the field names returned in the response.
                 for (String fieldName : syncResponse.getFieldNames()) {
-                    System.out.println("Value[" + fieldName + "]: " + syncResponse.getObject(fieldName));
+                    if(syncResponse.getResponseCode(fieldName) == PlcResponseCode.OK) {
+                        int numValues = syncResponse.getNumberOfValues(fieldName);
+                        // If it's just one element, output just one single line.
+                        if(numValues == 1) {
+                            System.out.println("Value[" + fieldName + "]: " + syncResponse.getObject(fieldName));
+                        }
+                        // If it's more than one element, output each in a single row.
+                        else {
+                            System.out.println("Value[" + fieldName + "]:");
+                            for(int i = 0; i < numValues; i++) {
+                                System.out.println(" - " + syncResponse.getObject(fieldName, i));
+                            }
+                        }
+                    }
+                    // Something went wrong, to output an error message instead.
+                    else {
+                        System.out.println("Error[" + fieldName + "]: " + syncResponse.getResponseCode(fieldName).name());
+                    }
                 }
 
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...
                 // Register a callback executed as soon as a response arives.
+                System.out.println("\n\nAsynchronous request ...");
                 CompletableFuture<PlcReadResponse<?>> asyncResponse = plcReader.read(plcReadRequest);
                 asyncResponse.whenComplete((readResponse, throwable) -> {
                     if (readResponse != null) {
-                        // Directly asking for fields by name.
-                        for (int i = 1; i < args.length; i++) {
-                            System.out.println("Value[value-" + i + "]: " + syncResponse.getObject("value-" + i));
+                        for (String fieldName : syncResponse.getFieldNames()) {
+                            if (syncResponse.getResponseCode(fieldName) == PlcResponseCode.OK) {
+                                System.out.println("Value[" + fieldName + "]: " + syncResponse.getObject(fieldName));
+                            } else {
+                                System.out.println("Error[" + fieldName + "]: " + syncResponse.getResponseCode(fieldName).name());
+                            }
                         }
                     } else {
                         logger.error("An error occurred", throwable);

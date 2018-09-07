@@ -16,20 +16,28 @@
  specific language governing permissions and limitations
  under the License.
  */
+package org.apache.plc4x.java.s7.messages.items;
 
-package org.apache.plc4x.java.test;
+import org.apache.plc4x.java.base.messages.items.BigIntegerFieldItem;
+import org.apache.plc4x.java.s7.types.S7DataType;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import java.math.BigInteger;
 
-public class TestFieldItem<T> extends FieldItem<T> {
+public class S7BigIntegerFieldItem extends BigIntegerFieldItem {
 
-    public TestFieldItem(T[] values) {
+    private final S7DataType naturalDataType;
+
+    public S7BigIntegerFieldItem(S7DataType naturalDataType, BigInteger... values) {
         super(values);
+        this.naturalDataType = naturalDataType;
     }
 
     @Override
     public Object getObject(int index) {
-        return getValue(index);
+        switch (naturalDataType) {
+        }
+        return getLong(index);
     }
 
 }
+

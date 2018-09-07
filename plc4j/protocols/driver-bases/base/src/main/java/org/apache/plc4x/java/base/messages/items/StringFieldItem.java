@@ -25,6 +25,11 @@ public class StringFieldItem extends FieldItem<String> {
     }
 
     @Override
+    public Object getObject(int index) {
+        return getString(index);
+    }
+
+    @Override
     public boolean isValidString(int index) {
         return (getValue(index) != null);
     }

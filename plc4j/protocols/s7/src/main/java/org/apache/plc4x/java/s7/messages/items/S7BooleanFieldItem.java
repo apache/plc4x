@@ -16,20 +16,37 @@
  specific language governing permissions and limitations
  under the License.
  */
+package org.apache.plc4x.java.s7.messages.items;
 
-package org.apache.plc4x.java.test;
+import org.apache.plc4x.java.base.messages.items.BooleanFieldItem;
+import org.apache.plc4x.java.s7.types.S7DataType;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+public class S7BooleanFieldItem extends BooleanFieldItem {
 
-public class TestFieldItem<T> extends FieldItem<T> {
+    private final S7DataType naturalDataType;
 
-    public TestFieldItem(T[] values) {
+    public S7BooleanFieldItem(S7DataType naturalDataType, Boolean... values) {
         super(values);
-    }
+        this.naturalDataType = naturalDataType;
+   }
 
     @Override
     public Object getObject(int index) {
-        return getValue(index);
+        switch (naturalDataType) {
+            case BOOL:
+                return getBoolean(index);
+            case BYTE:
+                return getBoolean(index);
+            case WORD:
+                return getBoolean(index);
+            case DWORD:
+                return getBoolean(index);
+            case LWORD:
+                return getBoolean(index);
+            default:
+                return null;
+        }
     }
 
 }
+

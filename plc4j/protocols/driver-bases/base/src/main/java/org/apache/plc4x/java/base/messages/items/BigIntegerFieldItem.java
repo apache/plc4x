@@ -28,6 +28,11 @@ public class BigIntegerFieldItem extends FieldItem<BigInteger> {
     }
 
     @Override
+    public Object getObject(int index) {
+        return getLong(index);
+    }
+
+    @Override
     public boolean isValidBoolean(int index) {
         return (getValue(index) != null);
     }

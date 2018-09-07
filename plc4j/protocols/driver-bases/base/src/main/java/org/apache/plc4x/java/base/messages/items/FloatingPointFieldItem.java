@@ -25,6 +25,11 @@ public class FloatingPointFieldItem extends FieldItem<Double> {
     }
 
     @Override
+    public Object getObject(int index) {
+        return getDouble(index);
+    }
+
+    @Override
     public boolean isValidBoolean(int index) {
         return (getValue(index) != null);
     }

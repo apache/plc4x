@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.*;
+import org.apache.plc4x.java.s7.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.types.S7DataType;
 
@@ -197,7 +198,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
                         " is not assignable to " + s7Field.getDataType().name() + " fields.");
             }
         }
-        return new BooleanFieldItem(booleanValues.toArray(new Boolean[0]));
+        return new S7BooleanFieldItem(s7Field.getDataType(), booleanValues.toArray(new Boolean[0]));
     }
 
     private FieldItem internalEncodeInteger(PlcField field, Object[] values) {
@@ -292,7 +293,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
                 }
                 longValues[i] = value.longValue();
             }
-            return new IntegerFieldItem(longValues);
+            return new S7IntegerFieldItem(s7Field.getDataType(), longValues);
         } else {
             BigInteger[] bigIntegerValues = new BigInteger[values.length];
             for (int i = 0; i < values.length; i++) {
@@ -319,7 +320,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
                 }
                 bigIntegerValues[i] = value;
             }
-            return new BigIntegerFieldItem(bigIntegerValues);
+            return new S7BigIntegerFieldItem(s7Field.getDataType(), bigIntegerValues);
         }
     }
 
@@ -364,7 +365,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
                         + s7Field.getDataType().name() + " (max " + maxValue.toString() + ")");
             }
         }
-        return new FloatingPointFieldItem(floatingPointValues);
+        return new S7FloatingPointFieldItem(s7Field.getDataType(), floatingPointValues);
     }
 
     private FieldItem internalEncodeString(PlcField field, Object[] values) {
@@ -392,7 +393,6 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
                 throw new IllegalArgumentException(
                     "Cannot assign string values to " + s7Field.getDataType().name() + " fields.");
         }
-
         List<String> stringValues = new LinkedList<>();
         for (Object value : values) {
             if(value instanceof String) {
@@ -461,7 +461,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
                         " is not assignable to " + s7Field.getDataType().name() + " fields.");
             }
         }
-        return new StringFieldItem(stringValues.toArray(new String[0]));
+        return new S7StringFieldItem(s7Field.getDataType(), stringValues.toArray(new String[0]));
     }
 
     private FieldItem internalEncodeTemporal(PlcField field, Object[] values) {

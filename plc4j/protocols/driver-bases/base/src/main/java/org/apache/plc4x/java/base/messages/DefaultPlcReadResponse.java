@@ -74,24 +74,16 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     }
 
     @Override
-    public boolean isValidObject(String name) {
-        return isValidObject(name, 0);
-    }
-
-    @Override
-    public boolean isValidObject(String name, int index) {
-        // TODO: Implement this ...
-        return false;
-    }
-
-    @Override
     public Object getObject(String name) {
         return getObject(name, 0);
     }
 
     @Override
     public Object getObject(String name, int index) {
-        // TODO: Implement this ...
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.getObject(index);
+        }
         return null;
     }
 

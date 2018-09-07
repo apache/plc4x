@@ -16,20 +16,32 @@
  specific language governing permissions and limitations
  under the License.
  */
+package org.apache.plc4x.java.s7.messages.items;
 
-package org.apache.plc4x.java.test;
+import org.apache.plc4x.java.base.messages.items.FloatingPointFieldItem;
+import org.apache.plc4x.java.s7.types.S7DataType;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+public class S7FloatingPointFieldItem extends FloatingPointFieldItem {
 
-public class TestFieldItem<T> extends FieldItem<T> {
+    private final S7DataType naturalDataType;
 
-    public TestFieldItem(T[] values) {
+    public S7FloatingPointFieldItem(S7DataType naturalDataType, Double... values) {
         super(values);
+        this.naturalDataType = naturalDataType;
     }
 
     @Override
     public Object getObject(int index) {
-        return getValue(index);
+        switch (naturalDataType) {
+            case REAL:
+                return getFloat(index);
+            case LREAL:
+                return getDouble(index);
+            default:
+                return null;
+        }
     }
 
 }
+
+

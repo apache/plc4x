@@ -29,6 +29,11 @@ public class TimeFieldItem extends FieldItem<LocalDateTime> {
     }
 
     @Override
+    public Object getObject(int index) {
+        return getDateTime(index);
+    }
+
+    @Override
     public boolean isValidTime(int index) {
         return (getValue(index) != null);
     }

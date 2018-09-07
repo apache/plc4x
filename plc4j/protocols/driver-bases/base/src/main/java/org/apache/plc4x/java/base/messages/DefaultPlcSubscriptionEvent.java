@@ -36,16 +36,6 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
     }
 
     @Override
-    public boolean isValidObject(String name) {
-        return false;
-    }
-
-    @Override
-    public boolean isValidObject(String name, int index) {
-        return false;
-    }
-
-    @Override
     public Object getObject(String name) {
         return null;
     }

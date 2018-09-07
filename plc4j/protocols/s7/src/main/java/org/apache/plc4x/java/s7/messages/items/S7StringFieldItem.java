@@ -16,20 +16,32 @@
  specific language governing permissions and limitations
  under the License.
  */
+package org.apache.plc4x.java.s7.messages.items;
 
-package org.apache.plc4x.java.test;
+import org.apache.plc4x.java.base.messages.items.StringFieldItem;
+import org.apache.plc4x.java.s7.types.S7DataType;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+public class S7StringFieldItem extends StringFieldItem {
 
-public class TestFieldItem<T> extends FieldItem<T> {
+    private final S7DataType naturalDataType;
 
-    public TestFieldItem(T[] values) {
+    public S7StringFieldItem(S7DataType naturalDataType, String... values) {
         super(values);
+        this.naturalDataType = naturalDataType;
     }
 
     @Override
     public Object getObject(int index) {
-        return getValue(index);
+        switch (naturalDataType) {
+            case CHAR:
+            case WCHAR:
+            case STRING:
+            case WSTRING:
+                return getString(index);
+            default:
+                return null;
+        }
     }
 
 }
+

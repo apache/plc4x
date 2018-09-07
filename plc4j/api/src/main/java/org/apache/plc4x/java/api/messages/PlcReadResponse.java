@@ -30,10 +30,6 @@ public interface PlcReadResponse<T extends PlcReadRequest> extends PlcFieldRespo
 
     int getNumberOfValues(String name);
 
-    boolean isValidObject(String name);
-
-    boolean isValidObject(String name, int index);
-
     Object getObject(String name);
 
     Object getObject(String name, int index);

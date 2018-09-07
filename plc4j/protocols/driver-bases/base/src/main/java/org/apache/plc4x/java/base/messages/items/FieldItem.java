@@ -34,6 +34,8 @@ public abstract class FieldItem<T> {
         return values.length;
     }
 
+    public abstract Object getObject(int index);
+
     public boolean isValidBoolean(int index) {
         return false;
     }

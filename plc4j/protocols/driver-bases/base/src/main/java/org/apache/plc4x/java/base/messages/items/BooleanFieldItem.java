@@ -25,6 +25,11 @@ public class BooleanFieldItem extends FieldItem<Boolean> {
     }
 
     @Override
+    public Object getObject(int index) {
+        return getBoolean(index);
+    }
+
+    @Override
     public boolean isValidBoolean(int index) {
         return (getValue(index) != null);
     }

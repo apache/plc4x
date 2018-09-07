@@ -16,20 +16,34 @@
  specific language governing permissions and limitations
  under the License.
  */
+package org.apache.plc4x.java.s7.messages.items;
 
-package org.apache.plc4x.java.test;
+import org.apache.plc4x.java.base.messages.items.TimeFieldItem;
+import org.apache.plc4x.java.s7.types.S7DataType;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import java.time.LocalDateTime;
 
-public class TestFieldItem<T> extends FieldItem<T> {
+public class S7TimeFieldItem extends TimeFieldItem {
 
-    public TestFieldItem(T[] values) {
+    private final S7DataType naturalDataType;
+
+    public S7TimeFieldItem(S7DataType naturalDataType, LocalDateTime... values) {
         super(values);
+        this.naturalDataType = naturalDataType;
     }
 
     @Override
     public Object getObject(int index) {
-        return getValue(index);
+        switch (naturalDataType) {
+            case TIME:
+            case TIME_OF_DAY:
+            case DATE:
+            case DATE_AND_TIME:
+                return getTime(index);
+            default:
+                return null;
+        }
     }
 
 }
+
