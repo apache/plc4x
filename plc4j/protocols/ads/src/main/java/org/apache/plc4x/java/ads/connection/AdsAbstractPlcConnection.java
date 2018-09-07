@@ -92,7 +92,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
         mapFields(readRequest);
         CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, readFuture));
@@ -111,7 +111,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
         mapFields(writeRequest);
         CompletableFuture<InternalPlcWriteResponse> writeFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, writeFuture));

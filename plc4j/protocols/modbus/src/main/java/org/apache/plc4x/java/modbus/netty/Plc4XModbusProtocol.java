@@ -33,6 +33,8 @@ import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.InternalPlcRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcResponse;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
@@ -47,16 +49,16 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload, PlcRequestContainer<PlcRequest, PlcResponse>> {
+public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XModbusProtocol.class);
 
     public final AtomicInteger transactionId = new AtomicInteger();
 
-    private final ConcurrentMap<Short, PlcRequestContainer<PlcRequest, PlcResponse>> requestsMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Short, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> requestsMap = new ConcurrentHashMap<>();
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws Exception {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
         // Reset transactionId on overflow
         transactionId.compareAndSet(Short.MAX_VALUE + 1, 0);
@@ -68,7 +70,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
     }
 
-    private void encodeWriteRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
+    private void encodeWriteRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcException {
         PlcWriteRequest request = (PlcWriteRequest) msg.getRequest();
 
         // TODO: support multiple requests
@@ -154,7 +156,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         out.add(new ModbusTcpPayload(transactionId, unitId, modbusRequest));
     }
 
-    private void encodeReadRequest(PlcRequestContainer<PlcRequest, PlcResponse> msg, List<Object> out) throws PlcException {
+    private void encodeReadRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcException {
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
         // TODO: support multiple requests
         if(request.getFieldNames().size() != 1) {

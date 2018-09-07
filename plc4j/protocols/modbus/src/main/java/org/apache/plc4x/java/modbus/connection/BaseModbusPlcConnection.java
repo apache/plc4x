@@ -18,34 +18,27 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.connection;
 
-import io.netty.channel.ChannelFuture;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.types.PlcClientDatatype;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.base.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.modbus.model.*;
+import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.modbus.util.ModbusPlcFieldHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class BaseModbusPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcFieldHandler {
+public abstract class BaseModbusPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseModbusPlcConnection.class);
 
-    protected BaseModbusPlcConnection(ChannelFactory channelFactory, String params) {
+    BaseModbusPlcConnection(ChannelFactory channelFactory, String params) {
         super(channelFactory);
 
         if (!StringUtils.isEmpty(params)) {
@@ -67,62 +60,40 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.DefaultPlcReadRequestBuilder(this);
+        return new DefaultPlcReadRequest.Builder(new ModbusPlcFieldHandler());
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        CompletableFuture<PlcReadResponse> readFuture = new CompletableFuture<>();
-        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(readRequest, readFuture));
-        channelFuture.addListener(future -> {
-            if (!future.isSuccess()) {
-                readFuture.completeExceptionally(future.cause());
+    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
+        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
+            new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, future);
+        channel.writeAndFlush(container).addListener(f -> {
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
             }
         });
-        return readFuture;
+        return future
+            .thenApply(PlcReadResponse.class::cast);
     }
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this);
+        return new DefaultPlcWriteRequest.Builder(new ModbusPlcFieldHandler());
     }
+
     @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        CompletableFuture<PlcWriteResponse> writeFuture = new CompletableFuture<>();
-        ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>(writeRequest, writeFuture));
-        channelFuture.addListener(future -> {
-            if (!future.isSuccess()) {
-                writeFuture.completeExceptionally(future.cause());
+    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
+        CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
+            new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, future);
+        channel.writeAndFlush(container).addListener(f -> {
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
             }
         });
-        return writeFuture;
+        return future
+            .thenApply(PlcWriteResponse.class::cast);
     }
 
-    @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-        if (MaskWriteRegisterModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return MaskWriteRegisterModbusField.of(fieldQuery);
-        } else if (ReadDiscreteInputsModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return ReadDiscreteInputsModbusField.of(fieldQuery);
-        } else if (ReadHoldingRegistersModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return ReadHoldingRegistersModbusField.of(fieldQuery);
-        } else if (ReadInputRegistersModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return ReadInputRegistersModbusField.of(fieldQuery);
-        } else if (CoilModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return CoilModbusField.of(fieldQuery);
-        } else if (RegisterModbusField.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return RegisterModbusField.of(fieldQuery);
-        }
-        throw new PlcInvalidFieldException(fieldQuery);
-    }
-
-    @Override
-    public byte[][] encode(PlcField field, PlcClientDatatype clientDatatype, Object[] values) {
-        return new byte[0][];
-    }
-
-    @Override
-    public Object[] decode(PlcField field, PlcClientDatatype clientDatatype, byte[][] rawData) {
-        return new Object[0];
-    }
 }

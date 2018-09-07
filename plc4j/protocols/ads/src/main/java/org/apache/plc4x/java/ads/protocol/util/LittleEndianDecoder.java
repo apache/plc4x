@@ -25,9 +25,9 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.base.messages.items.BooleanFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
-import org.apache.plc4x.java.base.messages.items.IntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -71,7 +71,7 @@ public class LittleEndianDecoder {
                     short aByte = wrappedBuffer.readUnsignedByte();
                     values.offer(aByte != 0);
                 }
-                return new BooleanFieldItem(values.toArray(new Boolean[0]));
+                return new DefaultBooleanFieldItem(values.toArray(new Boolean[0]));
             }
             case BIT8: {
                 LinkedList<Boolean> values = new LinkedList<>();
@@ -79,7 +79,7 @@ public class LittleEndianDecoder {
                     short aByte = wrappedBuffer.readUnsignedByte();
                     values.offer(aByte != 0);
                 }
-                return new BooleanFieldItem(values.toArray(new Boolean[0]));
+                return new DefaultBooleanFieldItem(values.toArray(new Boolean[0]));
             }
             case BITARR8: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -87,7 +87,7 @@ public class LittleEndianDecoder {
                     short aByte = wrappedBuffer.readUnsignedByte();
                     values.offer((long) aByte);
                 }
-                return new IntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case BITARR16: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -95,7 +95,7 @@ public class LittleEndianDecoder {
                     long aLong = wrappedBuffer.readUnsignedIntLE();
                     values.offer(aLong);
                 }
-                return new IntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case BITARR32: {
                 throw new NotImplementedException("not implemented yet " + adsDataType);
