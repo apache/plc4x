@@ -52,6 +52,7 @@ import org.apache.plc4x.java.s7.netty.model.types.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -187,6 +188,10 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 throw new PlcException("The field should have been of type S7Field");
             }
             S7Field s7Field = (S7Field) field;
+            if(!(writeRequest instanceof DefaultPlcWriteRequest)) {
+                throw new PlcException("The writeRequest should have been of type DefaultPlcWriteRequest");
+            }
+            FieldItem fieldItem = ((DefaultPlcWriteRequest) writeRequest).getFieldItem(fieldName);
 
             // The number of elements provided in the request must match the number defined in the field, or
             // bad things are going to happen.
@@ -202,142 +207,144 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             DataTransportSize dataTransportSize = s7Field.getDataType().getDataTransportSize();
 
             // TODO: Checkout if the payload items are sort of a flatMap of all request items.
-            /*byte[] byteData;
+            byte[] byteData = null;
             switch(s7Field.getDataType()) {
                 // -----------------------------------------
                 // Bit
                 // -----------------------------------------
                 case BOOL: {
-                    byte byteValue = data.readByte();
-                    fieldItem = new BooleanFieldItem(byteValue != 0x00);
+                    int numBytes = fieldItem.getNumValues() >> 3 / 8;
+                    byteData = new byte[numBytes];
+                    BitSet bitSet = new BitSet();
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        bitSet.set(i, fieldItem.getBoolean(i));
+                    }
+                    System.arraycopy(bitSet.toByteArray(), 0, byteData, 0, numBytes);
                     break;
                 }
                 // -----------------------------------------
-                // Bit-strings
+                // Signed integer values
                 // -----------------------------------------
-                case BYTE: { // 1 byte
-                    Long longValue = (long) data.readByte();
-                    // TODO: Implement this ...
+                case BYTE:
+                case SINT:
+                case CHAR: { // 1 byte
+                    int numBytes = fieldItem.getNumValues();
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.put(fieldItem.getByte(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
-                case WORD: { // 2 byte (16 bit)
-                    Long longValue = (long) data.readShort();
-                    // TODO: Implement this ...
+                case WORD:
+                case INT:
+                case WCHAR: { // 2 byte (16 bit)
+                    int numBytes = fieldItem.getNumValues() * 2;
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.putShort(fieldItem.getShort(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
-                case DWORD: { // 4 byte (32 bit)
-                    Long longValue = (long) data.readInt();
-                    // TODO: Implement this ...
+                case DWORD:
+                case DINT: { // 4 byte (32 bit)
+                    int numBytes = fieldItem.getNumValues() * 4;
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.putInt(fieldItem.getInteger(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
-                case LWORD: { // 8 byte (64 bit)
-                    Long longValue = data.readLong();
-                    // TODO: Implement this ...
+                case LWORD:
+                case LINT: { // 8 byte (64 bit)
+                    int numBytes = fieldItem.getNumValues() * 8;
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.putLong(fieldItem.getLong(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
                 // -----------------------------------------
-                // Integers
+                // Unsigned integer values
                 // -----------------------------------------
                 // 8 bit:
-                case SINT: {
-                    Long longValue = (long) data.readShort();
-                    fieldItem = new IntegerFieldItem(longValue);
-                    break;
-                }
                 case USINT: {
-                    Long longValue = (long) data.readUnsignedShort();
-                    fieldItem = new IntegerFieldItem(longValue);
+                    int numBytes = fieldItem.getNumValues();
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.put((byte) (short) fieldItem.getShort(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
                 // 16 bit:
-                case INT: {
-                    Long longValue = (long) data.readInt();
-                    fieldItem = new IntegerFieldItem(longValue);
-                    break;
-                }
                 case UINT: {
-                    Long longValue = data.readUnsignedInt();
-                    fieldItem = new IntegerFieldItem(longValue);
+                    int numBytes = fieldItem.getNumValues() * 2;
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.putShort((short) (int) fieldItem.getInteger(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
                 // 32 bit:
-                case DINT: {
-                    Long longValue = data.readLong();
-                    fieldItem = new IntegerFieldItem(longValue);
-                    break;
-                }
-
                 case UDINT: {
-                    BigInteger bigIntegerValue = readUnsignedLong(data);
-                    fieldItem = new BigIntegerFieldItem(bigIntegerValue);
+                    int numBytes = fieldItem.getNumValues() * 4;
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.putInt((int) (double) fieldItem.getDouble(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
                 // 64 bit:
-                case LINT: {
-                    BigInteger bigIntegerValue = readSigned64BitInteger(data);
-                    fieldItem = new BigIntegerFieldItem(bigIntegerValue);
-                    break;
-                }
                 case ULINT: {
-                    BigInteger bigIntegerValue = readUnsigned64BitInteger(data);
-                    fieldItem = new BigIntegerFieldItem(bigIntegerValue);
+                    // TODO: Implement this ...
                     break;
                 }
                 // -----------------------------------------
                 // Floating point values
                 // -----------------------------------------
                 case REAL: {
-                    double doubleValue = data.readFloat();
-                    fieldItem = new FloatingPointFieldItem(doubleValue);
+                    int numBytes = fieldItem.getNumValues() * 4;
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.putFloat(fieldItem.getFloat(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
                 case LREAL: {
-                    double doubleValue = data.readDouble();
-                    fieldItem = new FloatingPointFieldItem(doubleValue);
+                    int numBytes = fieldItem.getNumValues() * 8;
+                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                        buffer.putDouble(fieldItem.getDouble(i));
+                    }
+                    byteData = buffer.array();
                     break;
                 }
                 // -----------------------------------------
                 // Characters & Strings
                 // -----------------------------------------
-                case CHAR: { // 1 byte (8 bit)
-                    // TODO: Double check, if this is ok?
-                    String stringValue = data.readCharSequence(1, Charset.forName("UTF-8")).toString();
-                    fieldItem = new StringFieldItem(stringValue);
-                    break;
-                }
-                case WCHAR: { // 2 byte
-                    // TODO: Double check, if this is ok?
-                    String stringValue = data.readCharSequence(2, Charset.forName("UTF-16")).toString();
-                    fieldItem = new StringFieldItem(stringValue);
-                    break;
-                }
                 case STRING: {
-                    // Max length ... ignored.
-                    data.readByte();
-                    byte actualLength = data.readByte();
-                    // TODO: Double check, if this is ok?
-                    String stringValue = data.readCharSequence(actualLength, Charset.forName("UTF-8")).toString();
-                    fieldItem = new StringFieldItem(stringValue);
+                    // TODO: Implement this ...
                     break;
                 }
                 case WSTRING: {
-                    // Max length ... ignored.
-                    data.readByte();
-                    byte actualLength = data.readByte();
-                    // TODO: Double check, if this is ok?
-                    String stringValue = data.readCharSequence(
-                        actualLength * 2, Charset.forName("UTF-16")).toString();
-                    fieldItem = new StringFieldItem(stringValue);
+                    // TODO: Implement this ...
                     break;
                 }
                 default:
-                    throw new PlcProtocolException("Unsupported type " + field.getDataType());
+                    throw new PlcProtocolException("Unsupported type " + s7Field.getDataType());
             }
 
             VarPayloadItem varPayloadItem = new VarPayloadItem(
-                DataTransportErrorCode.RESERVED, dataTransportSize, writeRequest.getValues(fieldName)[0]);
+                DataTransportErrorCode.RESERVED, dataTransportSize, byteData);
 
-            payloadItems.add(varPayloadItem);*/
+            payloadItems.add(varPayloadItem);
         }
         VarParameter writeVarParameter = new VarParameter(ParameterType.WRITE_VAR, parameterItems);
         VarPayload writeVarPayload = new VarPayload(ParameterType.WRITE_VAR, payloadItems);
