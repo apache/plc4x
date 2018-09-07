@@ -38,6 +38,7 @@
   <modules>
     <module>azure</module>
     <module>dummy-driver</module>
+    <module>google</module>
     <module>hello-plc4x</module>
     <module>iot-factory</module>
     <module>iotree</module>

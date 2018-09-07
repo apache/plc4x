@@ -17,29 +17,24 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
 
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
+  <!--<logger level="OFF" name="io.netty.util" additivity="false">-->
+    <!--<appender-ref ref="STDOUT" />-->
+  <!--</logger>-->
 
-  <artifactId>integrations</artifactId>
-  <packaging>pom</packaging>
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+  </root>
 
-  <name>Integrations</name>
-  <description>Parent of all product specific integration modules.</description>
-
-  <modules>
-    <module>apache-brooklyn</module>
-    <module>apache-camel</module>
-    <module>apache-edgent</module>
-    <module>apache-kafka</module>
-    <module>apache-mynewt</module>
-  </modules>
-
-</project>
+</configuration>
