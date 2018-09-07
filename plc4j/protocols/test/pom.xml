@@ -24,22 +24,20 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4j-protocols</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>integrations</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4j-protocol-test</artifactId>
+  <name>PLC4J: Protocol: TEST</name>
+  <description>Test implementation of a PLC4X driver.</description>
 
-  <name>Integrations</name>
-  <description>Parent of all product specific integration modules.</description>
-
-  <modules>
-    <module>apache-brooklyn</module>
-    <module>apache-camel</module>
-    <module>apache-edgent</module>
-    <module>apache-kafka</module>
-    <module>apache-mynewt</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
 </project>
