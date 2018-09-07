@@ -21,10 +21,8 @@ package org.apache.plc4x.java.examples.google.iotcore;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 // [START iot_mqtt_includes]
 import io.jsonwebtoken.JwtBuilder;
@@ -243,13 +241,11 @@ public class S7PlcToGoogleIoTCoreSample {
 
             PlcReader plcReader = plcConnection.getReader().orElseThrow(IllegalAccessError::new);
 
-            Address outputs = plcConnection.parseAddress("OUTPUTS/0");
+            PlcReadRequest readRequest = plcReader.readRequestBuilder().addItem("outputs", "OUTPUTS/0").build();
 
             while (!Thread.currentThread().isInterrupted()) {
 
-                TypeSafePlcReadResponse<Byte> plcReadResponse = plcReader.read(
-                    new TypeSafePlcReadRequest<>(Byte.class, outputs)).get();
-                logger.info(plcReadResponse.getResponseItem().get().getValues().get(0).toString());
+                PlcReadResponse<?> plcReadResponse = plcReader.read(readRequest).get();
 
                 // Refresh the connection credentials before the JWT expires.
                 // [START iot_mqtt_jwt_refresh]
@@ -265,8 +261,8 @@ public class S7PlcToGoogleIoTCoreSample {
                 // [END iot_mqtt_jwt_refresh]
 
                 // Send data to cloud
-                for (ReadResponseItem<Byte> responseItem : plcReadResponse.getResponseItems()) {
-                    Long l = responseItem.getValues().get(0).longValue();
+                for (String fieldName : plcReadResponse.getFieldNames()) {
+                    Long l = plcReadResponse.getLong(fieldName);
                     byte[] array = ByteBuffer.allocate(8).putLong(l).array();
                     String result = Long.toBinaryString(l);
                     System.out.println("Outputs: " + result);

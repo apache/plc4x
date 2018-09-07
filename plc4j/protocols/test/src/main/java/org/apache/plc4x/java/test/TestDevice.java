@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.test;
 
+import org.apache.plc4x.java.base.messages.items.FieldItem;
+
 import java.util.*;
 
 /**
@@ -25,30 +27,40 @@ import java.util.*;
  * Values are stored in a HashMap.
  */
 class TestDevice {
+
     private final Random random = new Random();
     private final String name;
-    private final Map<TestAddress, Object> state = new HashMap<>();
+    private final Map<TestField, FieldItem> state = new HashMap<>();
 
     TestDevice(String name) {
         this.name = name;
     }
 
-    @SuppressWarnings("unchecked")
-    <T> Optional<T> get(Class<? extends T> type, TestAddress address) {
-        Objects.requireNonNull(address);
-        if (address.equals(TestAddress.RANDOM)) {
-            return Optional.of(randomValue(type));
-        } else {
-            return Optional.ofNullable((T) state.get(address));
+    Optional<FieldItem> get(TestField field) {
+        Objects.requireNonNull(field);
+        switch(field.getType()) {
+            case STATE:
+                return Optional.ofNullable(state.get(field));
+            case RANDOM:
+                return Optional.of(randomValue(field.getDataType()));
         }
+        throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
 
-    public void set(TestAddress address, Object value) {
-        state.put(address, value);
+    void set(TestField field, FieldItem value) {
+        Objects.requireNonNull(field);
+        switch(field.getType()) {
+            case STATE:
+                state.put(field, value);
+            case RANDOM:
+                // Just ignore this ...
+                return;
+        }
+        throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T randomValue(Class<T> type) {
+    private FieldItem randomValue(Class<?> type) {
         Object result = null;
 
         // TODO: implement for further data types
@@ -66,11 +78,12 @@ class TestDevice {
             result = random.nextInt(1 << 16);
         }
 
-        return (T) result;
+        return new TestFieldItem(new Object[]{result});
     }
 
     @Override
     public String toString() {
         return name;
     }
+
 }

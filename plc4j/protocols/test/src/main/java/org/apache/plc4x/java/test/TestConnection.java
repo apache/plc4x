@@ -18,27 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.test;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.connection.*;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -69,20 +57,6 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
     }
 
     @Override
-    public Address parseAddress(String addressString) throws PlcInvalidAddressException {
-        if (!TestAddress.isValid(addressString)) {
-            throw new PlcInvalidAddressException("Address must contain a single word.");
-        }
-
-        return TestAddress.of(addressString);
-    }
-
-    @Override
-    public Optional<PlcLister> getLister() {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<PlcReader> getReader() {
         return Optional.of(this);
     }
@@ -98,47 +72,51 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public CompletableFuture<? extends PlcReadResponse> read(PlcReadRequest readRequest) {
-        List<ReadResponseItem<?>> responseItems = new LinkedList<>();
-        for (ReadRequestItem<?> requestItem : readRequest.getRequestItems()) {
-            TestAddress address = (TestAddress) requestItem.getAddress();
-            Optional<?> value = device.get(requestItem.getDatatype(), address);
-            ReadResponseItem<?> responseItem;
-            if (value.isPresent()) {
-                responseItem = new ReadResponseItem(requestItem, ResponseCode.OK, Collections.singletonList(value.get()));
-            } else {
-                responseItem = new ReadResponseItem(requestItem, ResponseCode.NOT_FOUND, Collections.emptyList());
-            }
-            responseItems.add(responseItem);
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(new TestFieldHandler());
+    }
+
+    @Override
+    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
+        if(!(readRequest instanceof InternalPlcReadRequest)) {
+            throw new IllegalArgumentException("Read request doesn't implement InternalPlcReadRequest");
         }
-        PlcReadResponse response = new PlcReadResponse(readRequest, responseItems);
+        InternalPlcReadRequest request = (InternalPlcReadRequest) readRequest;
+        Map<String, Pair<PlcResponseCode, FieldItem>> fields = new HashMap<>();
+        for (String fieldName : request.getFieldNames()) {
+            TestField field = (TestField) request.getField(fieldName);
+            Optional<FieldItem> fieldItemOptional = device.get(field);
+            ImmutablePair<PlcResponseCode, FieldItem> fieldPair;
+            boolean present = fieldItemOptional.isPresent();
+            fieldPair = present
+                ? new ImmutablePair<>(PlcResponseCode.OK, fieldItemOptional.get())
+                : new ImmutablePair<>(PlcResponseCode.NOT_FOUND, null);
+            fields.put(fieldName, fieldPair);
+        }
+        PlcReadResponse<?> response = new DefaultPlcReadResponse(request, fields);
         return CompletableFuture.completedFuture(response);
     }
 
     @Override
-    public <T> CompletableFuture<TypeSafePlcReadResponse<T>> read(TypeSafePlcReadRequest<T> readRequest) {
-        return null; // TODO: implement this
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(new TestFieldHandler());
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public CompletableFuture<? extends PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        List<WriteResponseItem<?>> responseItems = new LinkedList<>();
-        for (WriteRequestItem<?> requestItem : writeRequest.getRequestItems()) {
-            TestAddress address = (TestAddress) requestItem.getAddress();
-            Object value = requestItem.getValues().get(0);
-            device.set(address, value);
-            WriteResponseItem<?> responseItem = new WriteResponseItem(requestItem, ResponseCode.OK);
-            responseItems.add(responseItem);
+    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
+        if(!(writeRequest instanceof InternalPlcWriteRequest)) {
+            throw new IllegalArgumentException("Read request doesn't implement InternalPlcWriteRequest");
         }
-        PlcWriteResponse response = new PlcWriteResponse(writeRequest, responseItems);
+        InternalPlcWriteRequest request = (InternalPlcWriteRequest) writeRequest;
+        Map<String, PlcResponseCode> fields = new HashMap<>();
+        for (String fieldName : request.getFieldNames()) {
+            TestField field = (TestField) request.getField(fieldName);
+            FieldItem fieldItem = request.getFieldItem(fieldName);
+            device.set(field, fieldItem);
+            fields.put(fieldName, PlcResponseCode.OK);
+        }
+        PlcWriteResponse<?> response = new DefaultPlcWriteResponse(request, fields);
         return CompletableFuture.completedFuture(response);
-    }
-
-    @Override
-    public <T> CompletableFuture<TypeSafePlcWriteResponse<T>> write(TypeSafePlcWriteRequest<T> writeRequest) {
-        return null; // TODO: implement this
     }
 
     @Override

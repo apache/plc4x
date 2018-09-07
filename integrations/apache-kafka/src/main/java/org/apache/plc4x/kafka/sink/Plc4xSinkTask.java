@@ -26,13 +26,9 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.items.WriteRequestItem;
-import org.apache.plc4x.java.api.messages.items.WriteResponseItem;
-import org.apache.plc4x.java.api.model.Address;
-import org.apache.plc4x.java.api.types.ResponseCode;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +89,7 @@ public class Plc4xSinkTask extends SinkTask {
     public void put(Collection<SinkRecord> records) {
         if((plcConnection != null) && plcConnection.isConnected() && (writer != null)) {
             // Prepare the write request.
-            List<WriteRequestItem<?>> writeRequestItems = new ArrayList<>(records.size());
+            PlcWriteRequest.Builder builder = writer.writeRequestBuilder();
             for (SinkRecord record : records) {
                 // TODO: Somehow get the payload from the kafka SinkRecord and create a writeRequestItem from that ...
                 // TODO: Replace this dummy with something real ...
@@ -101,21 +97,15 @@ public class Plc4xSinkTask extends SinkTask {
                 String addressString = (String) value.get("address");
                 List<Byte> values = (List<Byte>) value.get("values");
 
-                try {
-                    Address address = plcConnection.parseAddress(addressString);
-                    writeRequestItems.add(new WriteRequestItem<>(Byte.class, address, values.toArray(new Byte[0])));
-                } catch (PlcException e) {
-                    // TODO: Do Something if the address string wasn't parsable by the current driver ...
-                    log.error("Error parsing address string " + addressString, e);
-                }
+                builder.addItem(addressString, addressString, values.toArray(new Byte[0]));
             }
-            PlcWriteRequest writeRequest = new PlcWriteRequest(writeRequestItems);
+            PlcWriteRequest writeRequest = builder.build();
 
             // Send the write request to the PLC.
             try {
-                PlcWriteResponse plcWriteResponse = writer.write(writeRequest).get();
-                for (WriteResponseItem<?> responseItem : plcWriteResponse.getResponseItems()) {
-                    if(responseItem.getResponseCode() != ResponseCode.OK) {
+                PlcWriteResponse<?> plcWriteResponse = writer.write(writeRequest).get();
+                for (String fieldName : plcWriteResponse.getFieldNames()) {
+                    if(plcWriteResponse.getResponseCode(fieldName) != PlcResponseCode.OK) {
                         // TODO: Do Something if writing this particular item wasn't successful ...
                         log.error("Error writing a value to PLC");
                     }

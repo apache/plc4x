@@ -18,55 +18,70 @@ under the License.
 */
 package org.apache.plc4x.java.test;
 
-import org.apache.plc4x.java.api.model.Address;
+import org.apache.commons.text.WordUtils;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Test address for accessing values in virtual devices.
- *
  */
-class TestAddress implements Address {
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^\\w+$");
+class TestField implements PlcField {
 
-    private final String value;
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>.+)(\\[(?<numElements>\\d)])?$");
 
-    public static final TestAddress RANDOM = new TestAddress("random");
-
-    private TestAddress(String value) {
-        this.value = value;
+    static boolean matches(String fieldString) {
+        return ADDRESS_PATTERN.matcher(fieldString).matches();
     }
 
-    public static boolean isValid(String addressString) {
-        Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
-        return matcher.matches();
+    public static TestField of(String fieldString) throws PlcInvalidFieldException {
+        Matcher matcher = ADDRESS_PATTERN.matcher(fieldString);
+        if (matcher.matches()) {
+            TestType type = TestType.valueOf(matcher.group("type"));
+            String name = matcher.group("name");
+            String dataTypeName = WordUtils.capitalizeFully(matcher.group("dataType"));
+            int numElements = 1;
+            if (matcher.group("numElements") != null) {
+                numElements = Integer.parseInt(matcher.group("numElements"));
+            }
+            try {
+                Class<?> dataType = Class.forName("java.lang." + dataTypeName);
+                return new TestField(type, name, dataType, numElements);
+            } catch (ClassNotFoundException e) {
+                throw new PlcInvalidFieldException("Unsupported type: " + dataTypeName);
+            }
+        }
+        throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
 
-    public static TestAddress of(String addressString) {
-        return new TestAddress(addressString);
+    private final TestType type;
+    private final String name;
+    private final Class<?> dataType;
+    private final int numElements;
+
+    private TestField(TestType type, String name, Class<?> dataType, int numElements) {
+        this.type = type;
+        this.name = name;
+        this.dataType = dataType;
+        this.numElements = numElements;
     }
 
-    @Override
-    public int hashCode() {
-        return value.hashCode();
+    public TestType getType() {
+        return type;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-
-        if (!(o instanceof TestAddress))
-            return false;
-
-        TestAddress that = (TestAddress) o;
-
-        return this.value.equals(that.value);
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public String toString() {
-        return value;
+    public Class<?> getDataType() {
+        return dataType;
     }
+
+    public int getNumElements() {
+        return numElements;
+    }
+
 }

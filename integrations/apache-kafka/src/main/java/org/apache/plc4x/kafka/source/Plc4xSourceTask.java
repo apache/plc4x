@@ -27,11 +27,8 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
-import org.apache.plc4x.java.api.model.Address;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,15 +75,12 @@ public class Plc4xSourceTask extends SourceTask {
             reader = readerOptional.get();
             Class<?> dataType = config.getClass(Plc4xSourceConfig.PLC_DATATYPE_CONFIG);
             String addressString = config.getString(Plc4xSourceConfig.PLC_ADDRESS);
-            Address address = plcConnection.parseAddress(addressString);
-            readRequest = new PlcReadRequest(dataType, address);
+            readRequest = reader.readRequestBuilder().addItem("value", addressString).build();
             topic = config.getString(Plc4xSourceConfig.PLC_TOPIC);
             valueSchema = typeSchemas.get(dataType);
             running.set(true);
         } catch (PlcConnectionException e) {
             throw new ConnectException("Caught exception while connecting to PLC", e);
-        } catch (PlcInvalidAddressException e) {
-            throw new ConnectException("Invalid PLC address", e);
         }
     }
 
@@ -116,14 +110,13 @@ public class Plc4xSourceTask extends SourceTask {
             final List<SourceRecord> results = new LinkedList<>();
 
             try {
-                PlcReadResponse plcReadResponse = reader.read(readRequest).get();
-
-                for (ReadResponseItem<?> responseItem : plcReadResponse.getResponseItems()) {
-                    Address address = responseItem.getRequestItem().getAddress();
-                    for (Object value : responseItem.getValues()) {
-                        Map<String, String> sourcePartition = Collections.singletonMap("address", address.toString());
+                PlcReadResponse<?> plcReadResponse = reader.read(readRequest).get();
+                for (String fieldName : plcReadResponse.getFieldNames()) {
+                    for (int i = 0; i < plcReadResponse.getNumberOfValues(fieldName); i++) {
+                        Object value = plcReadResponse.getObject(fieldName, i);
+                        Map<String, String> sourcePartition = Collections.singletonMap("field-name", fieldName);
                         Map<String, Long> sourceOffset = Collections.singletonMap("offset", offset);
-                        SourceRecord record = new SourceRecord(sourcePartition, sourceOffset, topic, keySchema, address.toString(), valueSchema, value);
+                        SourceRecord record = new SourceRecord(sourcePartition, sourceOffset, topic, keySchema, fieldName, valueSchema, value);
                         results.add(record);
                         offset++; // TODO: figure out how to track offsets
                     }

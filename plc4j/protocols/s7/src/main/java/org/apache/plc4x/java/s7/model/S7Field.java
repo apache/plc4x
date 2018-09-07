@@ -74,7 +74,7 @@ public class S7Field implements PlcField {
                 } else if(dataType == S7DataType.BOOL) {
                     throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
                 }
-                int numElements = 0;
+                int numElements = 1;
                 if(matcher.group("numElements") != null) {
                     numElements = Integer.parseInt(matcher.group("numElements"));
                 }
