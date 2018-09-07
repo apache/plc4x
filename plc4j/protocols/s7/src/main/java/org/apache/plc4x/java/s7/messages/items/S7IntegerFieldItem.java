@@ -18,10 +18,10 @@
  */
 package org.apache.plc4x.java.s7.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.IntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
 import org.apache.plc4x.java.s7.types.S7DataType;
 
-public class S7IntegerFieldItem extends IntegerFieldItem {
+public class S7IntegerFieldItem extends DefaultIntegerFieldItem {
 
     private final S7DataType naturalDataType;
 

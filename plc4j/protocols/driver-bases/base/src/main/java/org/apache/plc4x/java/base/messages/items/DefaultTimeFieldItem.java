@@ -22,9 +22,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class TimeFieldItem extends FieldItem<LocalDateTime> {
+public class DefaultTimeFieldItem extends FieldItem<LocalDateTime> {
 
-    public TimeFieldItem(LocalDateTime... values) {
+    public DefaultTimeFieldItem(LocalDateTime... values) {
         super(values);
     }
 

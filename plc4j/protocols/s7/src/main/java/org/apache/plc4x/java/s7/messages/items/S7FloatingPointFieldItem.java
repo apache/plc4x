@@ -18,10 +18,10 @@
  */
 package org.apache.plc4x.java.s7.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.FloatingPointFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultFloatingPointFieldItem;
 import org.apache.plc4x.java.s7.types.S7DataType;
 
-public class S7FloatingPointFieldItem extends FloatingPointFieldItem {
+public class S7FloatingPointFieldItem extends DefaultFloatingPointFieldItem {
 
     private final S7DataType naturalDataType;
 

@@ -18,15 +18,18 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-public class FloatingPointFieldItem extends FieldItem<Double> {
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
-    public FloatingPointFieldItem(Double... values) {
+public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
+
+    public DefaultBigIntegerFieldItem(BigInteger... values) {
         super(values);
     }
 
     @Override
     public Object getObject(int index) {
-        return getDouble(index);
+        return getLong(index);
     }
 
     @Override
@@ -37,20 +40,21 @@ public class FloatingPointFieldItem extends FieldItem<Double> {
     @Override
     public Boolean getBoolean(int index) {
         if (isValidBoolean(index)) {
-            return getValue(index) != 0L;
+            return getValue(index).compareTo(BigInteger.ZERO) == 0;
         }
         return null;
     }
 
     @Override
     public boolean isValidByte(int index) {
-        Double value = getValue(index);
-        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
+        BigInteger value = getValue(index);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Byte.MAX_VALUE)) < 0) &&
+            (value.compareTo(BigInteger.valueOf(Byte.MIN_VALUE)) > 0);
     }
 
     @Override
     public Byte getByte(int index) {
-        if (isValidByte(index)) {
+        if(isValidByte(index)) {
             return getValue(index).byteValue();
         }
         return null;
@@ -58,13 +62,14 @@ public class FloatingPointFieldItem extends FieldItem<Double> {
 
     @Override
     public boolean isValidShort(int index) {
-        Double value = getValue(index);
-        return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
+        BigInteger value = getValue(index);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Short.MAX_VALUE)) < 0) &&
+            (value.compareTo(BigInteger.valueOf(Short.MIN_VALUE)) > 0);
     }
 
     @Override
     public Short getShort(int index) {
-        if (isValidShort(index)) {
+        if(isValidShort(index)) {
             return getValue(index).shortValue();
         }
         return null;
@@ -72,41 +77,50 @@ public class FloatingPointFieldItem extends FieldItem<Double> {
 
     @Override
     public boolean isValidInteger(int index) {
-        Double value = getValue(index);
-        return (value != null) && (value <= Integer.MAX_VALUE) && (value >= Integer.MIN_VALUE);
+        BigInteger value = getValue(index);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) < 0) &&
+            (value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) > 0);
     }
 
     @Override
     public Integer getInteger(int index) {
-        if (isValidInteger(index)) {
-            return getValue(index).intValue();
+        if(isValidInteger(index)) {
+            BigInteger value = getValue(index);
+            return value.intValue();
         }
         return null;
     }
 
     @Override
     public boolean isValidLong(int index) {
-        Double value = getValue(index);
-        return (value != null) && (value <= Long.MAX_VALUE) && (value >= Long.MIN_VALUE);
+        BigInteger value = getValue(index);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) < 0) &&
+            (value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) > 0);
     }
 
     @Override
     public Long getLong(int index) {
-        if (isValidLong(index)) {
-            return getValue(index).longValue();
+        if(isValidLong(index)) {
+            BigInteger value = getValue(index);
+            return value.longValue();
         }
         return null;
     }
 
     @Override
     public boolean isValidFloat(int index) {
-        Double value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= Float.MIN_VALUE);
+        BigInteger value = getValue(index);
+        if (value == null) {
+            return false;
+        }
+        BigDecimal decimalValue = new BigDecimal(value);
+        return (decimalValue.compareTo(BigDecimal.valueOf(Float.MAX_VALUE)) < 0) &&
+            (decimalValue.compareTo(BigDecimal.valueOf(Float.MIN_VALUE)) > 0);
     }
 
     @Override
     public Float getFloat(int index) {
-        if (isValidFloat(index)) {
+        if(isValidFloat(index)) {
             return getValue(index).floatValue();
         }
         return null;
@@ -114,17 +128,22 @@ public class FloatingPointFieldItem extends FieldItem<Double> {
 
     @Override
     public boolean isValidDouble(int index) {
-        return (getValue(index) != null);
+        BigInteger value = getValue(index);
+        if (value == null) {
+            return false;
+        }
+        BigDecimal decimalValue = new BigDecimal(value);
+        return (decimalValue.compareTo(BigDecimal.valueOf(Double.MAX_VALUE)) < 0) &&
+            (decimalValue.compareTo(BigDecimal.valueOf(Double.MIN_VALUE)) > 0);
     }
 
     @Override
     public Double getDouble(int index) {
-        if (isValidDouble(index)) {
-            return getValue(index);
+        if(isValidDouble(index)) {
+            return getValue(index).doubleValue();
         }
         return null;
     }
 
 }
-
 

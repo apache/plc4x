@@ -18,10 +18,10 @@
  */
 package org.apache.plc4x.java.s7.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.BooleanFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
 import org.apache.plc4x.java.s7.types.S7DataType;
 
-public class S7BooleanFieldItem extends BooleanFieldItem {
+public class S7BooleanFieldItem extends DefaultBooleanFieldItem {
 
     private final S7DataType naturalDataType;
 

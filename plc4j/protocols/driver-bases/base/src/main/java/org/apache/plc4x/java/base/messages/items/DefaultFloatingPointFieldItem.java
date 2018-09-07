@@ -18,18 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+public class DefaultFloatingPointFieldItem extends FieldItem<Double> {
 
-public class BigIntegerFieldItem extends FieldItem<BigInteger> {
-
-    public BigIntegerFieldItem(BigInteger... values) {
+    public DefaultFloatingPointFieldItem(Double... values) {
         super(values);
     }
 
     @Override
     public Object getObject(int index) {
-        return getLong(index);
+        return getDouble(index);
     }
 
     @Override
@@ -40,21 +37,20 @@ public class BigIntegerFieldItem extends FieldItem<BigInteger> {
     @Override
     public Boolean getBoolean(int index) {
         if (isValidBoolean(index)) {
-            return getValue(index).compareTo(BigInteger.ZERO) == 0;
+            return getValue(index) != 0L;
         }
         return null;
     }
 
     @Override
     public boolean isValidByte(int index) {
-        BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Byte.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Byte.MIN_VALUE)) > 0);
+        Double value = getValue(index);
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
     }
 
     @Override
     public Byte getByte(int index) {
-        if(isValidByte(index)) {
+        if (isValidByte(index)) {
             return getValue(index).byteValue();
         }
         return null;
@@ -62,14 +58,13 @@ public class BigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public boolean isValidShort(int index) {
-        BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Short.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Short.MIN_VALUE)) > 0);
+        Double value = getValue(index);
+        return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
     }
 
     @Override
     public Short getShort(int index) {
-        if(isValidShort(index)) {
+        if (isValidShort(index)) {
             return getValue(index).shortValue();
         }
         return null;
@@ -77,50 +72,41 @@ public class BigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public boolean isValidInteger(int index) {
-        BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) > 0);
+        Double value = getValue(index);
+        return (value != null) && (value <= Integer.MAX_VALUE) && (value >= Integer.MIN_VALUE);
     }
 
     @Override
     public Integer getInteger(int index) {
-        if(isValidInteger(index)) {
-            BigInteger value = getValue(index);
-            return value.intValue();
+        if (isValidInteger(index)) {
+            return getValue(index).intValue();
         }
         return null;
     }
 
     @Override
     public boolean isValidLong(int index) {
-        BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) > 0);
+        Double value = getValue(index);
+        return (value != null) && (value <= Long.MAX_VALUE) && (value >= Long.MIN_VALUE);
     }
 
     @Override
     public Long getLong(int index) {
-        if(isValidLong(index)) {
-            BigInteger value = getValue(index);
-            return value.longValue();
+        if (isValidLong(index)) {
+            return getValue(index).longValue();
         }
         return null;
     }
 
     @Override
     public boolean isValidFloat(int index) {
-        BigInteger value = getValue(index);
-        if (value == null) {
-            return false;
-        }
-        BigDecimal decimalValue = new BigDecimal(value);
-        return (decimalValue.compareTo(BigDecimal.valueOf(Float.MAX_VALUE)) < 0) &&
-            (decimalValue.compareTo(BigDecimal.valueOf(Float.MIN_VALUE)) > 0);
+        Double value = getValue(index);
+        return (value != null) && (value <= Float.MAX_VALUE) && (value >= Float.MIN_VALUE);
     }
 
     @Override
     public Float getFloat(int index) {
-        if(isValidFloat(index)) {
+        if (isValidFloat(index)) {
             return getValue(index).floatValue();
         }
         return null;
@@ -128,22 +114,17 @@ public class BigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public boolean isValidDouble(int index) {
-        BigInteger value = getValue(index);
-        if (value == null) {
-            return false;
-        }
-        BigDecimal decimalValue = new BigDecimal(value);
-        return (decimalValue.compareTo(BigDecimal.valueOf(Double.MAX_VALUE)) < 0) &&
-            (decimalValue.compareTo(BigDecimal.valueOf(Double.MIN_VALUE)) > 0);
+        return (getValue(index) != null);
     }
 
     @Override
     public Double getDouble(int index) {
-        if(isValidDouble(index)) {
-            return getValue(index).doubleValue();
+        if (isValidDouble(index)) {
+            return getValue(index);
         }
         return null;
     }
 
 }
+
 

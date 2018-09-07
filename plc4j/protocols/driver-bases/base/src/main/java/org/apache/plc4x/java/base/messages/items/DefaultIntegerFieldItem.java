@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-public class IntegerFieldItem extends FieldItem<Long> {
+public class DefaultIntegerFieldItem extends FieldItem<Long> {
 
-    public IntegerFieldItem(Long... values) {
+    public DefaultIntegerFieldItem(Long... values) {
         super(values);
     }
 

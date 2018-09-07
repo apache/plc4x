@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-public class BooleanFieldItem extends FieldItem<Boolean> {
+public class DefaultBooleanFieldItem extends FieldItem<Boolean> {
 
-    public BooleanFieldItem(Boolean... values) {
+    public DefaultBooleanFieldItem(Boolean... values) {
         super(values);
     }
 

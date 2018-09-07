@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.java.s7.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.BigIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultBigIntegerFieldItem;
 import org.apache.plc4x.java.s7.types.S7DataType;
 
 import java.math.BigInteger;
 
-public class S7BigIntegerFieldItem extends BigIntegerFieldItem {
+public class S7BigIntegerFieldItem extends DefaultBigIntegerFieldItem {
 
     private final S7DataType naturalDataType;
 

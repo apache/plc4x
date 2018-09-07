@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.java.s7.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.TimeFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultTimeFieldItem;
 import org.apache.plc4x.java.s7.types.S7DataType;
 
 import java.time.LocalDateTime;
 
-public class S7TimeFieldItem extends TimeFieldItem {
+public class S7TimeFieldItem extends DefaultTimeFieldItem {
 
     private final S7DataType naturalDataType;
 

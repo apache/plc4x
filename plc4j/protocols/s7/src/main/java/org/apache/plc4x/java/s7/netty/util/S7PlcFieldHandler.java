@@ -210,68 +210,68 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
             case BYTE:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case WORD:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case DWORD:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case LWORD:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case SINT:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case USINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE * 2);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case INT:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case UINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Short.MAX_VALUE) * 2);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case DINT:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case UDINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Integer.MAX_VALUE) * 2);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case LINT:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-                fieldType = IntegerFieldItem.class;
+                fieldType = S7IntegerFieldItem.class;
                 break;
             case ULINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf((long) 2));
-                fieldType = BigIntegerFieldItem.class;
+                fieldType = S7BigIntegerFieldItem.class;
                 break;
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign integer values to " + s7Field.getDataType().name() + " fields.");
         }
-        if(fieldType == IntegerFieldItem.class) {
+        if(fieldType == DefaultIntegerFieldItem.class) {
             Long[] longValues = new Long[values.length];
             for (int i = 0; i < values.length; i++) {
                 if(!((values[i] instanceof Byte) || (values[i] instanceof Short) ||
@@ -470,7 +470,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
             case TIME:
             case DATE:
             case DATE_AND_TIME:
-                return new TimeFieldItem();
+                return new DefaultTimeFieldItem();
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + s7Field.getDataType().name() + " fields.");
