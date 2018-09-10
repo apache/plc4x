@@ -180,8 +180,17 @@ public class Plc4xSourceTask extends SourceTask {
     }
 
     private Schema getSchema(Class<?> type) {
+        if (type.equals(Byte.class))
+            return Schema.INT8_SCHEMA;
+
+        if (type.equals(Short.class))
+            return Schema.INT16_SCHEMA;
+
         if (type.equals(Integer.class))
             return Schema.INT32_SCHEMA;
+
+        if (type.equals(Long.class))
+            return Schema.INT64_SCHEMA;
 
         return Schema.STRING_SCHEMA; // default case; invoke .toString on value
     }
