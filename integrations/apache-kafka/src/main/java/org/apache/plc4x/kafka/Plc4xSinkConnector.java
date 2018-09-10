@@ -32,10 +32,15 @@ public class Plc4xSinkConnector extends SinkConnector {
     static final String URL_CONFIG = "url";
     private static final String URL_DOC = "Connection string used by PLC4X to connect to the PLC";
 
+    static final String QUERY_CONFIG = "query";
+    private static final String QUERY_DOC = "Field query to be sent to the PLC";
+
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC);
+        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC)
+        .define(QUERY_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, QUERY_DOC);
 
     private String url;
+    private String query;
 
     @Override
     public Class<? extends Task> taskClass() {
@@ -46,6 +51,7 @@ public class Plc4xSinkConnector extends SinkConnector {
     public List<Map<String, String>> taskConfigs(int maxTasks) {
         Map<String, String> taskConfig = new HashMap<>();
         taskConfig.put(URL_CONFIG, url);
+        taskConfig.put(QUERY_CONFIG, query);
 
         // Only one task will be created; ignoring maxTasks for now
         return Collections.singletonList(taskConfig);
@@ -54,6 +60,7 @@ public class Plc4xSinkConnector extends SinkConnector {
     @Override
     public void start(Map<String, String> props) {
         url = props.get(URL_CONFIG);
+        query = props.get(QUERY_CONFIG);
     }
 
     @Override

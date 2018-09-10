@@ -36,6 +36,7 @@ public class Plc4xSinkTask extends SinkTask {
     private final static String FIELD_KEY = "key"; // TODO: is this really necessary?
 
     private String url;
+    private String query;
 
     private PlcConnection plcConnection;
     private PlcWriter plcWriter;
@@ -48,6 +49,7 @@ public class Plc4xSinkTask extends SinkTask {
     @Override
     public void start(Map<String, String> props) {
         url = props.get(Plc4xSinkConnector.URL_CONFIG);
+        query = props.get(Plc4xSinkConnector.QUERY_CONFIG);
 
         openConnection();
 
@@ -63,7 +65,6 @@ public class Plc4xSinkTask extends SinkTask {
     @Override
     public void put(Collection<SinkRecord> records) {
         for (SinkRecord record: records) {
-            String query = record.key().toString();
             String value = record.value().toString(); // TODO: implement other data types
             PlcWriteRequest plcRequest = plcWriter.writeRequestBuilder().addItem(FIELD_KEY, query, value).build();
             doWrite(plcRequest);
