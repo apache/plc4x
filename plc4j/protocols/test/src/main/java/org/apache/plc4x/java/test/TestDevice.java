@@ -43,6 +43,8 @@ class TestDevice {
                 return Optional.ofNullable(state.get(field));
             case RANDOM:
                 return Optional.of(randomValue(field.getDataType()));
+            case STDOUT:
+                return Optional.empty();
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
@@ -52,9 +54,12 @@ class TestDevice {
         switch(field.getType()) {
             case STATE:
                 state.put(field, value);
+                return;
+            case STDOUT:
+                System.out.printf("TEST PLC: %s%n", value.getObject(0).toString());
+                return;
             case RANDOM:
                 // Just ignore this ...
-                return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
