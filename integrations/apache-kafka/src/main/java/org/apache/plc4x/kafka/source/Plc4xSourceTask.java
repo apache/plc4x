@@ -33,25 +33,31 @@ import org.apache.plc4x.kafka.Plc4xSourceConnector;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
+/**
+ * Source Connector Task polling the data source at a given rate.
+ * A timer thread is scheduled which sets the fetch flag to true every rate milliseconds.
+ * When poll() is invoked, the calling thread waits until the fetch flag is set for WAIT_LIMIT_MILLIS.
+ * If the flag does not become true, the method returns null, otherwise a fetch is performed.
+ */
 public class Plc4xSourceTask extends SourceTask {
-    private final static String FIELD_KEY = "key";
+    private final static long WAIT_LIMIT_MILLIS = 100;
+    private final static long TIMEOUT_LIMIT_MILLIS = 5000;
+    private final static String FIELD_KEY = "key"; // TODO: is this really necessary?
 
     private String topic;
     private String url;
     private String query;
-    private Integer rate;
 
-    private volatile boolean running = false;
     private PlcConnection plcConnection;
     private PlcReader plcReader;
     private PlcReadRequest plcRequest;
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    // TODO: should we use shared (static) thread pool for this?
+    private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> timer;
     private boolean fetch = true;
 
@@ -65,94 +71,121 @@ public class Plc4xSourceTask extends SourceTask {
         topic = props.get(Plc4xSourceConnector.TOPIC_CONFIG);
         url = props.get(Plc4xSourceConnector.URL_CONFIG);
         query = props.get(Plc4xSourceConnector.QUERY_CONFIG);
-        rate = Integer.valueOf(props.get(Plc4xSourceConnector.RATE_CONFIG));
 
-        try {
-            plcConnection = new PlcDriverManager().getConnection(url);
-            plcConnection.connect();
-        } catch (PlcConnectionException e) {
-            throw new ConnectException("Could not establish a PLC connection", e);
-        }
+        openConnection();
 
         plcReader = plcConnection.getReader()
             .orElseThrow(() -> new ConnectException("PlcReader not available for this type of connection"));
 
         plcRequest = plcReader.readRequestBuilder().addItem(FIELD_KEY, query).build();
 
-        timer = scheduler.scheduleAtFixedRate(() -> {
-            synchronized (Plc4xSourceTask.this) {
-                Plc4xSourceTask.this.fetch = true;
-                notify();
-            }
-        }, 0, rate, TimeUnit.MILLISECONDS);
-
-        running = true;
+        int rate = Integer.valueOf(props.get(Plc4xSourceConnector.RATE_CONFIG));
+        scheduler = Executors.newScheduledThreadPool(1);
+        timer = scheduler.scheduleAtFixedRate(Plc4xSourceTask.this::scheduleFetch, rate, rate, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void stop() {
-        running = false;
         timer.cancel(true);
+        scheduler.shutdown();
+        closeConnection();
+    }
+
+    @Override
+    public List<SourceRecord> poll() throws InterruptedException {
+        return awaitFetch(WAIT_LIMIT_MILLIS) ? doFetch() : null;
+    }
+
+    private void openConnection() {
+        try {
+            plcConnection = new PlcDriverManager().getConnection(url);
+            plcConnection.connect();
+        } catch (PlcConnectionException e) {
+            throw new ConnectException("Could not establish a PLC connection", e);
+        }
+    }
+
+    private void closeConnection() {
         if (plcConnection != null) {
             try {
                 plcConnection.close();
             } catch (Exception e) {
                 throw new RuntimeException("Caught exception while closing connection to PLC", e);
+            } finally {
+                plcConnection = null;
             }
         }
     }
 
-    @Override
-    public List<SourceRecord> poll() {
-        if (!running)
-            return null;
+    /**
+     * Schedule next fetch operation.
+     */
+    private synchronized void scheduleFetch() {
+        fetch = true;
+        notify();
+    }
 
-        synchronized (this) {
-            while (!fetch) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    // continue
-                }
-            }
-            List<SourceRecord> result = new LinkedList<>();
-            try {
-                PlcReadResponse<?> response = plcReader.read(plcRequest).get();
-                if (response.getResponseCode(FIELD_KEY).equals(PlcResponseCode.OK)) {
-                    Object rawValue = response.getObject(FIELD_KEY);
-                    Schema valueSchema = getSchema(rawValue.getClass());
-                    Object value = valueSchema.equals(Schema.STRING_SCHEMA) ? rawValue.toString() : rawValue;
-                    Long timestamp = System.currentTimeMillis();
-                    Map<String, String> sourcePartition = Collections.singletonMap("url", url);
-                    Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
-
-                    SourceRecord record =
-                        new SourceRecord(
-                            sourcePartition,
-                            sourceOffset,
-                            topic,
-                            Schema.STRING_SCHEMA,
-                            query,
-                            valueSchema,
-                            value
-                        );
-
-                    result.add(record);
-                }
-                return result;
-            } catch (InterruptedException | ExecutionException e) {
-                return null;
-            } finally {
-                fetch = false;
-            }
+    /**
+     * Wait for next scheduled fetch operation.
+     * @param milliseconds maximum time to wait
+     * @throws InterruptedException if the thread is interrupted
+     * @return true if a fetch should be performed, false otherwise
+     */
+    private synchronized boolean awaitFetch(long milliseconds) throws InterruptedException {
+        if (!fetch) {
+            wait(milliseconds);
         }
+        try {
+            return fetch;
+        } finally {
+            fetch = false;
+        }
+    }
+
+    private List<SourceRecord> doFetch() throws InterruptedException {
+        final CompletableFuture<PlcReadResponse<?>> response = plcReader.read(plcRequest);
+        try {
+            final PlcReadResponse<?> received = response.get(TIMEOUT_LIMIT_MILLIS, TimeUnit.MILLISECONDS);
+            return extractValues(received);
+        } catch (ExecutionException e) {
+            throw new ConnectException("Could not fetch data from source", e);
+        } catch (TimeoutException e) {
+            throw new ConnectException("Timed out waiting for data from source", e);
+        }
+    }
+
+    private List<SourceRecord> extractValues(PlcReadResponse<?> response) {
+        final PlcResponseCode rc = response.getResponseCode(FIELD_KEY);
+
+        if (!rc.equals(PlcResponseCode.OK))
+            return null; // TODO: should we really ignore this?
+
+        Object rawValue = response.getObject(FIELD_KEY);
+        Schema valueSchema = getSchema(rawValue.getClass());
+        Object value = valueSchema.equals(Schema.STRING_SCHEMA) ? rawValue.toString() : rawValue;
+        Long timestamp = System.currentTimeMillis();
+        Map<String, String> sourcePartition = Collections.singletonMap("url", url);
+        Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
+
+        SourceRecord record =
+            new SourceRecord(
+                sourcePartition,
+                sourceOffset,
+                topic,
+                Schema.STRING_SCHEMA,
+                query,
+                valueSchema,
+                value
+            );
+
+        return Collections.singletonList(record); // TODO: what if there are multiple values?
     }
 
     private Schema getSchema(Class<?> type) {
         if (type.equals(Integer.class))
             return Schema.INT32_SCHEMA;
 
-        return Schema.STRING_SCHEMA; // default schema
+        return Schema.STRING_SCHEMA; // default case; invoke .toString on value
     }
 
 }
