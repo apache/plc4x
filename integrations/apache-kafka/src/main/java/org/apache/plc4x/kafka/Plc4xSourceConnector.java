@@ -21,20 +21,32 @@ package org.apache.plc4x.kafka;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
-import org.apache.plc4x.kafka.source.Plc4xSourceConfig;
 import org.apache.plc4x.kafka.source.Plc4xSourceTask;
 import org.apache.plc4x.kafka.util.VersionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Plc4xSourceConnector extends SourceConnector {
-    private static Logger log = LoggerFactory.getLogger(Plc4xSourceConnector.class);
+    public static final String TOPIC_CONFIG = "topic";
+    private static final String TOPIC_DOC = "Kafka topic to publish to";
 
-    private Map<String, String> configProperties;
+    public static final String URL_CONFIG = "url";
+    private static final String URL_DOC = "Connection string used by PLC4X to connect to the PLC";
+
+    public static final String QUERY_CONFIG = "query";
+    private static final String QUERY_DOC = "Field query to be sent to the PLC";
+
+    private static final ConfigDef CONFIG_DEF = new ConfigDef()
+        .define(TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
+        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC)
+        .define(QUERY_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, QUERY_DOC);
+
+    private String topic;
+    private String url;
+    private String query;
 
     @Override
     public Class<? extends Task> taskClass() {
@@ -43,27 +55,28 @@ public class Plc4xSourceConnector extends SourceConnector {
 
     @Override
     public List<Map<String, String>> taskConfigs(int maxTasks) {
-        log.info("Setting task configurations for {} workers.", maxTasks);
+        Map<String, String> taskConfig = new HashMap<>();
+        taskConfig.put(TOPIC_CONFIG, topic);
+        taskConfig.put(URL_CONFIG, url);
+        taskConfig.put(QUERY_CONFIG, query);
 
         // Only one task will be created; ignoring maxTasks for now
-        final List<Map<String, String>> configs = Collections.singletonList(configProperties);
-
-        return configs;
+        return Collections.singletonList(taskConfig);
     }
 
     @Override
     public void start(Map<String, String> props) {
-        configProperties = props;
+        topic = props.get(TOPIC_CONFIG);
+        url = props.get(URL_CONFIG);
+        query = props.get(QUERY_CONFIG);
     }
 
     @Override
-    public void stop() {
-        // Nothing to do here ...
-    }
+    public void stop() {}
 
     @Override
     public ConfigDef config() {
-        return Plc4xSourceConfig.CONFIG_DEF;
+        return CONFIG_DEF;
     }
 
     @Override

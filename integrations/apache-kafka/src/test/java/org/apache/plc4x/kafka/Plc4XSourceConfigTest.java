@@ -18,14 +18,13 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
-import org.apache.plc4x.kafka.source.Plc4xSourceConfig;
 import org.junit.Test;
 
 public class Plc4XSourceConfigTest {
 
-    @Test
-    public void doc() {
-        System.out.println(Plc4xSourceConfig.CONFIG_DEF.toRst());
-    }
+    //@Test
+    //public void doc() {
+    //    System.out.println(Plc4xSourceConfig.CONFIG_DEF.toRst());
+    //}
 
 }
