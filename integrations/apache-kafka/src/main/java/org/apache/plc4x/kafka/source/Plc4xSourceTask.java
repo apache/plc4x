@@ -111,8 +111,6 @@ public class Plc4xSourceTask extends SourceTask {
                 plcConnection.close();
             } catch (Exception e) {
                 throw new RuntimeException("Caught exception while closing connection to PLC", e);
-            } finally {
-                plcConnection = null;
             }
         }
     }
