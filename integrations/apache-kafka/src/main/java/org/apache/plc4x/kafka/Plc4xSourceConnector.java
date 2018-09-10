@@ -21,7 +21,6 @@ package org.apache.plc4x.kafka;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
-import org.apache.plc4x.kafka.source.Plc4xSourceTask;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
 import java.util.Collections;
@@ -30,16 +29,16 @@ import java.util.List;
 import java.util.Map;
 
 public class Plc4xSourceConnector extends SourceConnector {
-    public static final String TOPIC_CONFIG = "topic";
+    static final String TOPIC_CONFIG = "topic";
     private static final String TOPIC_DOC = "Kafka topic to publish to";
 
-    public static final String URL_CONFIG = "url";
+    static final String URL_CONFIG = "url";
     private static final String URL_DOC = "Connection string used by PLC4X to connect to the PLC";
 
-    public static final String QUERY_CONFIG = "query";
+    static final String QUERY_CONFIG = "query";
     private static final String QUERY_DOC = "Field query to be sent to the PLC";
 
-    public static final String RATE_CONFIG = "rate";
+    static final String RATE_CONFIG = "rate";
     private static final Integer RATE_DEFAULT = 1000;
     private static final String RATE_DOC = "Polling rate";
 
