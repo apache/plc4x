@@ -25,7 +25,7 @@ public class VersionUtil {
     public static String getVersion() {
         try {
             return VersionUtil.class.getPackage().getImplementationVersion();
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
             return "0.0.0.0";
         }
     }

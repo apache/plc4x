@@ -22,6 +22,7 @@ package org.apache.plc4x.java.test;
 public enum TestType {
 
     RANDOM,
-    STATE
+    STATE,
+    STDOUT
 
 }
