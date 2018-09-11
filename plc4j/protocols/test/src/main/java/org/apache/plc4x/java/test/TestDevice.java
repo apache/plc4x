@@ -51,15 +51,16 @@ class TestDevice {
 
     void set(TestField field, FieldItem value) {
         Objects.requireNonNull(field);
-        switch(field.getType()) {
+        switch (field.getType()) {
             case STATE:
                 state.put(field, value);
                 return;
             case STDOUT:
-                System.out.printf("TEST PLC: %s%n", value.getObject(0).toString());
+                System.out.printf("TEST PLC STDOUT [%s]: %s%n", field.getName(), Objects.toString(value.getValues()[0]));
                 return;
             case RANDOM:
-                // Just ignore this ...
+                System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), Objects.toString(value.getValues()[0]));
+                return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }

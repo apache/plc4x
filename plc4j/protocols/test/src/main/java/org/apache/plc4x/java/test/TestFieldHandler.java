@@ -28,6 +28,7 @@ import org.apache.plc4x.java.base.messages.items.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 public class TestFieldHandler implements PlcFieldHandler {
 
@@ -52,7 +53,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeByte(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if(testField.getDataType() == Byte.class) {
-            return new DefaultIntegerFieldItem((Long[]) values);
+            return new DefaultIntegerFieldItem(Arrays.stream(values).map(x -> new Long((Byte) x)).toArray(Long[]::new));
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
@@ -61,7 +62,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeShort(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if(testField.getDataType() == Short.class) {
-            return new DefaultIntegerFieldItem((Long[]) values);
+            return new DefaultIntegerFieldItem(Arrays.stream(values).map(x -> new Long((Short) x)).toArray(Long[]::new));
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
@@ -70,7 +71,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeInteger(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if(testField.getDataType() == Integer.class) {
-            return new DefaultIntegerFieldItem((Long[]) values);
+            return new DefaultIntegerFieldItem(Arrays.stream(values).map(x -> new Long((Integer) x)).toArray(Long[]::new));
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }

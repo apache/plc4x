@@ -35,7 +35,6 @@ import java.util.concurrent.ExecutionException;
 
 public class Plc4xSinkTask extends SinkTask {
     private String url;
-    private String query;
 
     private PlcConnection plcConnection;
     private PlcWriter plcWriter;
@@ -49,7 +48,6 @@ public class Plc4xSinkTask extends SinkTask {
     public void start(Map<String, String> props) {
         AbstractConfig config = new AbstractConfig(Plc4xSinkConnector.CONFIG_DEF, props);
         url = config.getString(Plc4xSinkConnector.URL_CONFIG);
-        query = config.getString(Plc4xSinkConnector.QUERY_CONFIG);
 
         openConnection();
 
@@ -65,10 +63,27 @@ public class Plc4xSinkTask extends SinkTask {
     @Override
     public void put(Collection<SinkRecord> records) {
         for (SinkRecord record: records) {
-            String value = record.value().toString(); // TODO: implement other data types
-            PlcWriteRequest plcRequest = plcWriter.writeRequestBuilder().addItem(query, query, value).build();
+            String query = record.key().toString();
+            Object value = record.value();
+            PlcWriteRequest.Builder builder = plcWriter.writeRequestBuilder();
+            PlcWriteRequest plcRequest = addToBuilder(builder, query, value).build();
             doWrite(plcRequest);
         }
+    }
+
+    // TODO: fix this
+    private PlcWriteRequest.Builder addToBuilder(PlcWriteRequest.Builder builder, String query, Object obj) {
+        Class<?> type = obj.getClass();
+
+        if (type.equals(Integer.class)) {
+            int value = (int) obj;
+            builder.addItem(query, query, value);
+        } else if (type.equals(String.class)) {
+            String value = (String) obj;
+            builder.addItem(query, query, value);
+        }
+
+        return builder;
     }
 
     private void openConnection() {
