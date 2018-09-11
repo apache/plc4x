@@ -30,6 +30,11 @@ import java.util.regex.Pattern;
  */
 class TestField implements PlcField {
 
+    /**
+     * Examples:
+     *  - {@code RANDOM/foo:INTEGER}
+     *  - {@code STDOUT/foo:STRING}
+     */
     private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>.+)(\\[(?<numElements>\\d)])?$");
 
     static boolean matches(String fieldString) {

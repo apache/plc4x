@@ -148,7 +148,7 @@ public class IotElasticsearchFactory {
 
             // Define the event stream.
             // 1) PLC4X source generating a stream of bytes.
-            Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, "OUTPUTS/0");
+            Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, "%Q0:BYTE");
             // 2) Use polling to get an item from the byte-stream in regular intervals.
             TStream<Byte> plcOutputStates = top.poll(plcSupplier, 100, TimeUnit.MILLISECONDS);
 
