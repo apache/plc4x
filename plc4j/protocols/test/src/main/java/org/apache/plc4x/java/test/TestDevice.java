@@ -20,6 +20,7 @@ package org.apache.plc4x.java.test;
 
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -69,22 +70,45 @@ class TestDevice {
     private FieldItem randomValue(Class<?> type) {
         Object result = null;
 
-        // TODO: implement for further data types
+        if (type.equals(Byte.class))
+            result = (byte) random.nextInt(1 << 8);
 
-        if (type == Integer.class)
+        if (type.equals(Short.class))
+            result = (short) random.nextInt(1 << 16);
+
+        if (type.equals(Integer.class))
             result = random.nextInt();
 
-        if (type == Byte.class) {
-            byte[] bytes = new byte[1];
+        if (type.equals(Long.class))
+            result = random.nextLong();
+
+        if (type.equals(Float.class))
+            result = random.nextFloat();
+
+        if (type.equals(Double.class))
+            result = random.nextDouble();
+
+        if (type.equals(Boolean.class))
+            result = random.nextBoolean();
+
+        if (type.equals(String.class)) {
+            int length = random.nextInt(100);
+            StringBuilder sb = new StringBuilder(length);
+            for (int i = 0; i < length; i++) {
+                char c = (char)('a' + random.nextInt(26));
+                sb.append(c);
+            }
+            result = sb.toString();
+        }
+
+        if (type.equals(byte[].class)) {
+            int length = random.nextInt(100);
+            byte[] bytes = new byte[length];
             random.nextBytes(bytes);
-            result = bytes[0];
+            result = bytes;
         }
 
-        if (type == Short.class) {
-            result = random.nextInt(1 << 16);
-        }
-
-        return new TestFieldItem(new Object[]{result});
+        return new TestFieldItem(new Object[] { result });
     }
 
     @Override

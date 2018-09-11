@@ -20,6 +20,8 @@ package org.apache.plc4x.kafka;
 
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.connect.data.Schema;
+import org.apache.kafka.connect.data.SchemaBuilder;
+import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
@@ -32,10 +34,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -48,6 +47,15 @@ public class Plc4xSourceTask extends SourceTask {
     private final static long WAIT_LIMIT_MILLIS = 100;
     private final static long TIMEOUT_LIMIT_MILLIS = 5000;
 
+    private final static String URL_FIELD = "url";
+    private final static String QUERY_FIELD = "query";
+
+    private final static Schema KEY_SCHEMA =
+        new SchemaBuilder(Schema.Type.STRUCT)
+            .field(URL_FIELD, Schema.STRING_SCHEMA)
+            .field(QUERY_FIELD, Schema.STRING_SCHEMA)
+            .build();
+
     private String topic;
     private String url;
     private List<String> queries;
@@ -55,6 +63,8 @@ public class Plc4xSourceTask extends SourceTask {
     private PlcConnection plcConnection;
     private PlcReader plcReader;
     private PlcReadRequest plcRequest;
+
+
 
     // TODO: should we use shared (static) thread pool for this?
     private ScheduledExecutorService scheduler;
@@ -166,11 +176,16 @@ public class Plc4xSourceTask extends SourceTask {
                 continue;
             }
 
-            Object rawValue = response.getObject(query);
-            Schema valueSchema = getSchema(rawValue.getClass());
-            Object value = valueSchema.equals(Schema.STRING_SCHEMA) ? rawValue.toString() : rawValue;
+            Struct key = new Struct(KEY_SCHEMA)
+                .put(URL_FIELD, url)
+                .put(QUERY_FIELD, query);
+
+            Object value = response.getObject(query);
+            Schema valueSchema = getSchema(value);
             Long timestamp = System.currentTimeMillis();
-            Map<String, String> sourcePartition = Collections.singletonMap("url", url);
+            Map<String, String> sourcePartition = new HashMap<>();
+            sourcePartition.put("url", url);
+            sourcePartition.put("query", query);
             Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
 
             SourceRecord record =
@@ -178,8 +193,8 @@ public class Plc4xSourceTask extends SourceTask {
                     sourcePartition,
                     sourceOffset,
                     topic,
-                    Schema.STRING_SCHEMA,
-                    query,
+                    KEY_SCHEMA,
+                    key,
                     valueSchema,
                     value
                 );
@@ -190,20 +205,38 @@ public class Plc4xSourceTask extends SourceTask {
         return result;
     }
 
-    private Schema getSchema(Class<?> type) {
-        if (type.equals(Byte.class))
+    private Schema getSchema(Object value) {
+        Objects.requireNonNull(value);
+
+        if (value instanceof Byte)
             return Schema.INT8_SCHEMA;
 
-        if (type.equals(Short.class))
+        if (value instanceof Short)
             return Schema.INT16_SCHEMA;
 
-        if (type.equals(Integer.class))
+        if (value instanceof Integer)
             return Schema.INT32_SCHEMA;
 
-        if (type.equals(Long.class))
+        if (value instanceof Long)
             return Schema.INT64_SCHEMA;
 
-        return Schema.STRING_SCHEMA; // default case; invoke .toString on value
+        if (value instanceof Float)
+            return Schema.FLOAT32_SCHEMA;
+
+        if (value instanceof Double)
+            return Schema.FLOAT64_SCHEMA;
+
+        if (value instanceof Boolean)
+            return Schema.BOOLEAN_SCHEMA;
+
+        if (value instanceof String)
+            return Schema.STRING_SCHEMA;
+
+        if (value instanceof byte[])
+            return Schema.BYTES_SCHEMA;
+
+        // TODO: add support for collective and complex types
+        throw new ConnectException(String.format("Unsupported data type %s", value.getClass().getName()));
     }
 
 }
