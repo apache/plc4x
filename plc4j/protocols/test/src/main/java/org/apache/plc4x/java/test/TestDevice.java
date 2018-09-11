@@ -20,7 +20,6 @@ package org.apache.plc4x.java.test;
 
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
