@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
+import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
@@ -32,6 +33,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -45,11 +47,10 @@ import java.util.concurrent.*;
 public class Plc4xSourceTask extends SourceTask {
     private final static long WAIT_LIMIT_MILLIS = 100;
     private final static long TIMEOUT_LIMIT_MILLIS = 5000;
-    private final static String FIELD_KEY = "key"; // TODO: is this really necessary?
 
     private String topic;
     private String url;
-    private String query;
+    private List<String> queries;
 
     private PlcConnection plcConnection;
     private PlcReader plcReader;
@@ -67,16 +68,22 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public void start(Map<String, String> props) {
-        topic = props.get(Plc4xSourceConnector.TOPIC_CONFIG);
-        url = props.get(Plc4xSourceConnector.URL_CONFIG);
-        query = props.get(Plc4xSourceConnector.QUERY_CONFIG);
+        AbstractConfig config = new AbstractConfig(Plc4xSourceConnector.CONFIG_DEF, props);
+        topic = config.getString(Plc4xSourceConnector.TOPIC_CONFIG);
+        url = config.getString(Plc4xSourceConnector.URL_CONFIG);
+        queries = config.getList(Plc4xSourceConnector.QUERIES_CONFIG);
 
         openConnection();
 
         plcReader = plcConnection.getReader()
             .orElseThrow(() -> new ConnectException("PlcReader not available for this type of connection"));
 
-        plcRequest = plcReader.readRequestBuilder().addItem(FIELD_KEY, query).build();
+
+        PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
+        for (String query : queries) {
+            builder.addItem(query, query);
+        }
+        plcRequest = builder.build();
 
         int rate = Integer.valueOf(props.get(Plc4xSourceConnector.RATE_CONFIG));
         scheduler = Executors.newScheduledThreadPool(1);
@@ -152,30 +159,35 @@ public class Plc4xSourceTask extends SourceTask {
     }
 
     private List<SourceRecord> extractValues(PlcReadResponse<?> response) {
-        final PlcResponseCode rc = response.getResponseCode(FIELD_KEY);
+        final List<SourceRecord> result = new LinkedList<>();
+        for (String query : queries) {
+            final PlcResponseCode rc = response.getResponseCode(query);
+            if (!rc.equals(PlcResponseCode.OK))  {
+                continue;
+            }
 
-        if (!rc.equals(PlcResponseCode.OK))
-            return null; // TODO: should we really ignore this?
+            Object rawValue = response.getObject(query);
+            Schema valueSchema = getSchema(rawValue.getClass());
+            Object value = valueSchema.equals(Schema.STRING_SCHEMA) ? rawValue.toString() : rawValue;
+            Long timestamp = System.currentTimeMillis();
+            Map<String, String> sourcePartition = Collections.singletonMap("url", url);
+            Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
 
-        Object rawValue = response.getObject(FIELD_KEY);
-        Schema valueSchema = getSchema(rawValue.getClass());
-        Object value = valueSchema.equals(Schema.STRING_SCHEMA) ? rawValue.toString() : rawValue;
-        Long timestamp = System.currentTimeMillis();
-        Map<String, String> sourcePartition = Collections.singletonMap("url", url);
-        Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
+            SourceRecord record =
+                new SourceRecord(
+                    sourcePartition,
+                    sourceOffset,
+                    topic,
+                    Schema.STRING_SCHEMA,
+                    query,
+                    valueSchema,
+                    value
+                );
 
-        SourceRecord record =
-            new SourceRecord(
-                sourcePartition,
-                sourceOffset,
-                topic,
-                Schema.STRING_SCHEMA,
-                query,
-                valueSchema,
-                value
-            );
+            result.add(record);
+        }
 
-        return Collections.singletonList(record); // TODO: what if there are multiple values?
+        return result;
     }
 
     private Schema getSchema(Class<?> type) {
