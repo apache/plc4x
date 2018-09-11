@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
+import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
@@ -33,8 +34,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class Plc4xSinkTask extends SinkTask {
-    private final static String FIELD_KEY = "key"; // TODO: is this really necessary?
-
     private String url;
     private String query;
 
@@ -48,8 +47,9 @@ public class Plc4xSinkTask extends SinkTask {
 
     @Override
     public void start(Map<String, String> props) {
-        url = props.get(Plc4xSinkConnector.URL_CONFIG);
-        query = props.get(Plc4xSinkConnector.QUERY_CONFIG);
+        AbstractConfig config = new AbstractConfig(Plc4xSinkConnector.CONFIG_DEF, props);
+        url = config.getString(Plc4xSinkConnector.URL_CONFIG);
+        query = config.getString(Plc4xSinkConnector.QUERY_CONFIG);
 
         openConnection();
 
@@ -66,7 +66,7 @@ public class Plc4xSinkTask extends SinkTask {
     public void put(Collection<SinkRecord> records) {
         for (SinkRecord record: records) {
             String value = record.value().toString(); // TODO: implement other data types
-            PlcWriteRequest plcRequest = plcWriter.writeRequestBuilder().addItem(FIELD_KEY, query, value).build();
+            PlcWriteRequest plcRequest = plcWriter.writeRequestBuilder().addItem(query, query, value).build();
             doWrite(plcRequest);
         }
     }
