@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import java.util.BitSet;
+
 public class DefaultBooleanFieldItem extends FieldItem<Boolean> {
 
     public DefaultBooleanFieldItem(Boolean... values) {
@@ -40,6 +42,27 @@ public class DefaultBooleanFieldItem extends FieldItem<Boolean> {
             return getValue(index);
         }
         return null;
+    }
+
+    @Override
+    public boolean isValidByte(int index) {
+        int byteAddress = index >> 3;
+        return (getValue(byteAddress) != null);
+    }
+
+    @Override
+    public Byte getByte(int index) {
+        BitSet bitSet = new BitSet();
+        int i = 0;
+        for (Boolean value : getValues()) {
+            bitSet.set(i, value);
+            i++;
+        }
+        byte[] bytes = bitSet.toByteArray();
+        if(bytes.length < index) {
+            return null;
+        }
+        return bytes[index];
     }
 
 }

@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
+import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
@@ -35,7 +36,7 @@ public class Plc4xSinkConnector extends SinkConnector {
     static final String QUERY_CONFIG = "query";
     private static final String QUERY_DOC = "Field query to be sent to the PLC";
 
-    private static final ConfigDef CONFIG_DEF = new ConfigDef()
+    static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC)
         .define(QUERY_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, QUERY_DOC);
 
@@ -59,8 +60,9 @@ public class Plc4xSinkConnector extends SinkConnector {
 
     @Override
     public void start(Map<String, String> props) {
-        url = props.get(URL_CONFIG);
-        query = props.get(QUERY_CONFIG);
+        AbstractConfig config = new AbstractConfig(Plc4xSinkConnector.CONFIG_DEF, props);
+        url = config.getString(URL_CONFIG);
+        query = config.getString(QUERY_CONFIG);
     }
 
     @Override
