@@ -16,37 +16,15 @@
   limitations under the License.
 
 -->
-Welcome to your new Kafka Connect connector!
 
-# Running in development
+# Kafka Connect PLC4X Connector
 
+The PLC4X Connector streams data from and to any device accessible through the PLC4X interface.
 
-The [docker-compose.yml](docker-compose.yml) that is included in this repository is based on the Confluent Platform Docker
-images. Take a look at the [quickstart](http://docs.confluent.io/3.0.1/cp-docker-images/docs/quickstart.html#getting-started-with-docker-client)
-for the Docker images. 
+## Source Connector
 
-The hostname `confluent` must be resolvable by your host. You will need to determine the ip address of your docker-machine using `docker-machine ip confluent` 
-and add this to your `/etc/hosts` file. For example if `docker-machine ip confluent` returns `192.168.99.100` add this:
+See `config/source.properties` for example configuration.
 
-```
-192.168.99.100  confluent
-```
+## Sink Connector
 
-
-```
-docker-compose up -d
-```
-
-
-Start the connector with debugging enabled.
- 
-```
-./bin/debug.sh
-```
-
-Start the connector with debugging enabled. This will wait for a debugger to attach.
-
-```
-export SUSPEND='y'
-./bin/debug.sh
-```
+See `config/sink.properties` for example configuration.
