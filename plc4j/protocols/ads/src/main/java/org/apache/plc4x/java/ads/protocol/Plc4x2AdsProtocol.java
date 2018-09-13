@@ -34,6 +34,7 @@ import org.apache.plc4x.java.ads.protocol.exception.AdsException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
 import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
@@ -155,6 +156,11 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         Object[] values = fieldItem.getValues();
 
         byte[] bytes = encodeData(directAdsField.getAdsDataType(), values);
+        int bytesToBeWritten = bytes.length;
+        int maxTheoreticalSize = directAdsField.getAdsDataType().getTargetByteSize() * directAdsField.getNumberOfElements();
+        if (bytesToBeWritten > maxTheoreticalSize) {
+            throw new PlcProtocolPayloadTooBigException("Ads", maxTheoreticalSize, bytesToBeWritten, values);
+        }
         Data data = Data.of(bytes);
         AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
         LOGGER.debug("encoded write request {}", amsPacket);
