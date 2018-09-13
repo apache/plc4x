@@ -161,4 +161,11 @@ public abstract class FieldItem<T> {
     public int hashCode() {
         return Arrays.hashCode(values);
     }
+
+    @Override
+    public String toString() {
+        return "FieldItem{" +
+            "values=" + Arrays.toString(values) +
+            '}';
+    }
 }

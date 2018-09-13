@@ -60,6 +60,12 @@ public class EnipPlcFieldHandler implements PlcFieldHandler {
     }
 
     @Override
+    public FieldItem encodeBigInteger(PlcField field, Object[] values) {
+        EtherNetIpField enipField = (EtherNetIpField) field;
+        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
+    }
+
+    @Override
     public FieldItem encodeLong(PlcField field, Object[] values) {
         EtherNetIpField enipField = (EtherNetIpField) field;
         throw new PlcRuntimeException("Invalid encoder for type " + enipField);
