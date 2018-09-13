@@ -26,7 +26,10 @@ import org.apache.camel.util.AsyncProcessorConverterHelper;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,13 +95,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     protected void doStop() throws InterruptedException, ExecutionException, TimeoutException, PlcException {
         PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(
             () -> new PlcException("Connection doesn't support subscriptions."));
-        PlcUnsubscriptionRequest.Builder builder = plcSubscriber.unsubscriptionRequestBuilder();
-        // For every field we subscribed for, now unsubscribe.
-        subscriptionResponse.getFieldNames().forEach(fieldName -> {
-            builder.addField(fieldName, subscriptionResponse.getSubscriptionHandle(fieldName));
-        });
-        PlcUnsubscriptionRequest request = builder.build();
-        CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionFuture = plcSubscriber.unsubscribe(request);
+        CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionFuture = plcSubscriber.unsubscribe(builder -> builder.addHandles(subscriptionResponse.getSubscriptionHandles()));
         PlcUnsubscriptionResponse unsubscriptionResponse = unsubscriptionFuture.get(5, TimeUnit.SECONDS);
         // TODO: Handle the response ...
         try {

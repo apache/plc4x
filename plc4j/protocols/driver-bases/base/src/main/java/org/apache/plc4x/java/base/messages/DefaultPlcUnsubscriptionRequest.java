@@ -18,83 +18,78 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest {
 
+    private final Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles;
+
+    public DefaultPlcUnsubscriptionRequest(Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+        this.internalPlcSubscriptionHandles = internalPlcSubscriptionHandles;
+    }
+
     @Override
     public int getNumberOfFields() {
-        return 0;
+        throw new IllegalStateException("not available");
     }
 
     @Override
     public LinkedHashSet<String> getFieldNames() {
-        return null;
+        throw new IllegalStateException("not available");
     }
 
     @Override
     public PlcField getField(String name) {
-        return null;
+        throw new IllegalStateException("not available");
     }
 
     @Override
     public LinkedList<PlcField> getFields() {
-        return null;
+        throw new IllegalStateException("not available");
     }
 
     @Override
     public Collection<? extends InternalPlcSubscriptionHandle> getInternalPlcSubscriptionHandles() {
-        return null;
+        return internalPlcSubscriptionHandles;
     }
 
     public static class Builder implements PlcUnsubscriptionRequest.Builder {
 
-        private final PlcFieldHandler fieldHandler;
-        private final Map<String, BuilderItem<Object>> fields;
+        private List<InternalPlcSubscriptionHandle> plcSubscriptionHandles;
 
-        public Builder(PlcFieldHandler fieldHandler) {
-            this.fieldHandler = fieldHandler;
-            fields = new TreeMap<>();
+        public Builder() {
+            plcSubscriptionHandles = new ArrayList<>();
+        }
+
+        public PlcUnsubscriptionRequest.Builder addHandle(PlcSubscriptionHandle plcSubscriptionHandle) {
+            plcSubscriptionHandles.add((InternalPlcSubscriptionHandle) plcSubscriptionHandle);
+            return this;
         }
 
         @Override
-        public PlcUnsubscriptionRequest.Builder addField(String name, PlcSubscriptionHandle handle) {
+        public PlcUnsubscriptionRequest.Builder addHandle(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
+            this.plcSubscriptionHandles.add((InternalPlcSubscriptionHandle) plcSubscriptionHandle1);
+            this.plcSubscriptionHandles.addAll(Arrays.stream(plcSubscriptionHandles).map(InternalPlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
+            return null;
+        }
+
+        @Override
+        public PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandles) {
+            this.plcSubscriptionHandles.addAll(plcSubscriptionHandles.stream().map(InternalPlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
             return null;
         }
 
         @Override
         public PlcUnsubscriptionRequest build() {
-            LinkedHashMap<String, Pair<PlcField, FieldItem>> parsedFields = new LinkedHashMap<>();
-            fields.forEach((name, builderItem) -> {
-                // Compile the query string.
-                PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
-                // Encode the payload.
-                // TODO: Depending on the field type, handle the FieldItem creation differently.
-                FieldItem fieldItem = builderItem.encoder.apply(parsedField, null);
-                parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
-            });
-            return new DefaultPlcUnsubscriptionRequest();
+            return new DefaultPlcUnsubscriptionRequest(plcSubscriptionHandles);
         }
 
-        private static class BuilderItem<T> {
-            private final String fieldQuery;
-            private final BiFunction<PlcField, T[], FieldItem> encoder;
-
-            private BuilderItem(String fieldQuery, BiFunction<PlcField, T[], FieldItem> encoder) {
-                this.fieldQuery = fieldQuery;
-                this.encoder = encoder;
-            }
-        }
 
     }
 

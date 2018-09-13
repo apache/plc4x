@@ -23,26 +23,18 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.base.messages.InternalPlcSubscriptionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 
@@ -70,7 +62,7 @@ public class MockDriver implements PlcDriver {
 
         // Mock a typical subscriber.
         PlcSubscriber plcSubscriber = mock(PlcSubscriber.class, RETURNS_DEEP_STUBS);
-        when(plcSubscriber.subscribe(any())).thenAnswer(invocation -> {
+        when(plcSubscriber.subscribe(any(PlcSubscriptionRequest.class))).thenAnswer(invocation -> {
             LOGGER.info("Received {}", invocation);
             // TODO: Translate this so it actually does something ...
             /*PlcSubscriptionRequest subscriptionRequest = invocation.getArgument(0);
@@ -93,7 +85,7 @@ public class MockDriver implements PlcDriver {
                         mock(PlcSubscriptionHandle.class, RETURNS_DEEP_STUBS), PlcResponseCode.OK);
                 }).collect(Collectors.toList());
             PlcSubscriptionResponse response = new PlcSubscriptionResponse(subscriptionRequest, responseItems);*/
-            PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse();
+            PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(mock(InternalPlcSubscriptionRequest.class), new HashMap<>());
             CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
             responseFuture.complete(response);
             return responseFuture;

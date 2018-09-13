@@ -20,17 +20,22 @@ package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
+import java.util.Collection;
+
 public interface PlcUnsubscriptionRequest extends PlcFieldRequest {
 
     interface Builder extends PlcMessageBuilder<PlcUnsubscriptionRequest> {
         /**
-         * Adds a new field to the to be constructed request which should be polled cyclically.
+         * TODO document me:
          *
-         * @param name alias of the field.
-         * @param handle subscription handle containing information about the subscription.
-         * @return builder.
+         * @param plcSubscriptionHandle
+         * @return
          */
-        PlcUnsubscriptionRequest.Builder addField(String name, PlcSubscriptionHandle handle);
+        PlcUnsubscriptionRequest.Builder addHandle(PlcSubscriptionHandle plcSubscriptionHandle);
+
+        PlcUnsubscriptionRequest.Builder addHandle(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles);
+
+        PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandle);
     }
 
 }

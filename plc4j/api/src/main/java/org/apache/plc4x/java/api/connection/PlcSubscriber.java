@@ -22,6 +22,8 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -78,16 +80,45 @@ public interface PlcSubscriber {
      *
      * @param subscriptionRequest subscription request
      * @param consumer            consumer for all {@link PlcSubscriptionEvent}s
+     * @return TODO: document me
      * @throws ExecutionException   something went wrong.
      * @throws InterruptedException something went wrong.
      */
-    default void register(PlcSubscriptionRequest subscriptionRequest, Consumer<PlcSubscriptionEvent> consumer) throws ExecutionException, InterruptedException {
+    default PlcConsumerRegistration register(PlcSubscriptionRequest subscriptionRequest, Consumer<PlcSubscriptionEvent> consumer) throws ExecutionException, InterruptedException {
         PlcSubscriptionResponse plcSubscriptionResponse = subscribe(subscriptionRequest).get();
-        register(consumer, plcSubscriptionResponse.getSubscriptionHandles().toArray(new PlcSubscriptionHandle[0]));
+        // TODO: we need to return the plcSubscriptionResponse here too as we need this to unsubscribe...
+        return register(consumer, plcSubscriptionResponse.getSubscriptionHandles().toArray(new PlcSubscriptionHandle[0]));
     }
 
-    PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, PlcSubscriptionHandle... handles);
+    /**
+     * Convenience method to subscribe a {@link Consumer} to all fields of the subscription.
+     *
+     * @param subscriptionRequestBuilderConsumer consumer for building subscription request.
+     * @param consumer                           consumer for all {@link PlcSubscriptionEvent}s
+     * @return TODO: document me
+     * @throws ExecutionException   something went wrong.
+     * @throws InterruptedException something went wrong.
+     */
+    default PlcConsumerRegistration register(Consumer<PlcSubscriptionRequest.Builder> subscriptionRequestBuilderConsumer, Consumer<PlcSubscriptionEvent> consumer) throws ExecutionException, InterruptedException {
+        PlcSubscriptionRequest.Builder builder = subscriptionRequestBuilder();
+        subscriptionRequestBuilderConsumer.accept(builder);
+        return register(builder.build(), consumer);
+    }
 
+    /**
+     * @param consumer
+     * @param handles
+     * @return TODO: document me
+     */
+    PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles);
+
+    default PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, PlcSubscriptionHandle... handles) {
+        return register(consumer, Arrays.asList(handles));
+    }
+
+    /**
+     * // TODO: document me.
+     */
     void unregister(PlcConsumerRegistration registration);
 
     PlcSubscriptionRequest.Builder subscriptionRequestBuilder();
