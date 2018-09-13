@@ -24,40 +24,44 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class AdsFieldTest {
+public class DirectAdsFieldTest {
 
     @Test
     public void of() {
-        AdsField field = AdsField.of("1/10");
+        DirectAdsField field = DirectAdsField.of("1/10:BYTE[2]");
         assertThat(field.getIndexGroup(), is(1L));
         assertThat(field.getIndexOffset(), is(10L));
+        assertThat(field.getAdsDataType(), is(AdsDataType.BYTE));
+        assertThat(field.getNumberOfElements(), is(2));
     }
 
     @Test
     public void ofHex() {
-        AdsField field = AdsField.of("0x1/0xff");
+        DirectAdsField field = DirectAdsField.of("0x1/0xff:BYTE[2]");
         assertThat(field.getIndexGroup(), is(1L));
         assertThat(field.getIndexOffset(), is(255L));
+        assertThat(field.getAdsDataType(), is(AdsDataType.BYTE));
+        assertThat(field.getNumberOfElements(), is(2));
     }
 
     @Test(expected = PlcInvalidFieldException.class)
     public void stringInField() {
-        AdsField field = AdsField.of("group/offset");
+        DirectAdsField field = DirectAdsField.of("group/offset");
     }
 
     @Test(expected = PlcInvalidFieldException.class)
     public void singleNumberField() {
-        AdsField field = AdsField.of("10");
+        DirectAdsField field = DirectAdsField.of("10");
     }
 
     @Test(expected = PlcInvalidFieldException.class)
     public void wrongSeperator() {
-        AdsField field = AdsField.of("1:10");
+        DirectAdsField field = DirectAdsField.of("1:10");
     }
 
     @Test
     public void getGroupAndOffset() {
-        AdsField field = AdsField.of(2L, 20L, AdsDataType.BYTE, 1);
+        DirectAdsField field = DirectAdsField.of(2L, 20L, AdsDataType.BYTE, 1);
         assertThat(field.getIndexGroup(), is(2L));
         assertThat(field.getIndexOffset(), is(20L));
         assertThat(field.getAdsDataType(), is(AdsDataType.BYTE));

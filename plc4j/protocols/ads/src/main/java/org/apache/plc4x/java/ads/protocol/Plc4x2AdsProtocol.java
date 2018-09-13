@@ -28,7 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsDataType;
-import org.apache.plc4x.java.ads.model.AdsField;
+import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.ads.protocol.exception.AdsException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -66,7 +66,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
     private final ConcurrentMap<Long, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> requests;
 
-    private final ConcurrentMap<SymbolicAdsField, AdsField> fieldMapping;
+    private final ConcurrentMap<SymbolicAdsField, DirectAdsField> fieldMapping;
 
     private List<Consumer<AdsDeviceNotificationRequest>> deviceNotificationListeners;
 
@@ -75,7 +75,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     private final AmsNetId sourceAmsNetId;
     private final AmsPort sourceAmsPort;
 
-    public Plc4x2AdsProtocol(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, ConcurrentMap<SymbolicAdsField, AdsField> fieldMapping) {
+    public Plc4x2AdsProtocol(AmsNetId targetAmsNetId, AmsPort targetAmsPort, AmsNetId sourceAmsNetId, AmsPort sourceAmsPort, ConcurrentMap<SymbolicAdsField, DirectAdsField> fieldMapping) {
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
@@ -139,22 +139,22 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         }
         PlcField field = writeRequest.getFields().get(0);
         if (field instanceof SymbolicAdsField) {
-            AdsField mappedField = fieldMapping.get(field);
+            DirectAdsField mappedField = fieldMapping.get(field);
             LOGGER.debug("Replacing {} with {}", field, mappedField);
             field = mappedField;
         }
-        if (!(field instanceof AdsField)) {
-            throw new PlcProtocolException("PlcField not of type AdsField: " + field.getClass());
+        if (!(field instanceof DirectAdsField)) {
+            throw new PlcProtocolException("PlcField not of type DirectAdsField: " + field.getClass());
         }
-        AdsField adsField = (AdsField) field;
+        DirectAdsField directAdsField = (DirectAdsField) field;
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
-        IndexGroup indexGroup = IndexGroup.of(adsField.getIndexGroup());
-        IndexOffset indexOffset = IndexOffset.of(adsField.getIndexOffset());
+        IndexGroup indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
+        IndexOffset indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
 
         FieldItem fieldItem = writeRequest.getFieldItems().get(0);
         Object[] values = fieldItem.getValues();
 
-        byte[] bytes = encodeData(adsField.getAdsDataType(), values);
+        byte[] bytes = encodeData(directAdsField.getAdsDataType(), values);
         Data data = Data.of(bytes);
         AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
         LOGGER.debug("encoded write request {}", amsPacket);
@@ -170,23 +170,23 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         }
         PlcField field = readRequest.getFields().get(0);
         if (field instanceof SymbolicAdsField) {
-            AdsField mappedField = fieldMapping.get(field);
+            DirectAdsField mappedField = fieldMapping.get(field);
             if (mappedField == null) {
                 throw new PlcProtocolException("No field mapping for " + field);
             }
             LOGGER.debug("Replacing {} with {}", field, mappedField);
             field = mappedField;
         }
-        if (!(field instanceof AdsField)) {
-            throw new PlcProtocolException("PlcField not of type AdsField: " + field.getClass());
+        if (!(field instanceof DirectAdsField)) {
+            throw new PlcProtocolException("PlcField not of type DirectAdsField: " + field.getClass());
         }
-        AdsField adsField = (AdsField) field;
+        DirectAdsField directAdsField = (DirectAdsField) field;
         Invoke invokeId = Invoke.of(correlationBuilder.incrementAndGet());
-        IndexGroup indexGroup = IndexGroup.of(adsField.getIndexGroup());
-        IndexOffset indexOffset = IndexOffset.of(adsField.getIndexOffset());
-        AdsDataType adsDataType = adsField.getAdsDataType();
-        int numberOfElements = adsField.getNumberOfElements();
-        int readLength = adsDataType.getTagetByteSize() * numberOfElements;
+        IndexGroup indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
+        IndexOffset indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+        AdsDataType adsDataType = directAdsField.getAdsDataType();
+        int numberOfElements = directAdsField.getNumberOfElements();
+        int readLength = adsDataType.getTargetByteSize() * numberOfElements;
         Length length = Length.of(readLength);
         AmsPacket amsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
         LOGGER.debug("encoded read request {}", amsPacket);
@@ -282,11 +282,11 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     }
 
     @SuppressWarnings("unchecked")
-    private InternalPlcResponse decodeReadResponse(AdsReadResponse responseMessage, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> requestContainer) throws PlcProtocolException {
+    private InternalPlcResponse decodeReadResponse(AdsReadResponse responseMessage, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> requestContainer) {
         InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
 
         // TODO: only single requests supported for now
-        AdsField field = (AdsField) plcReadRequest.getFields().get(0);
+        DirectAdsField field = (DirectAdsField) plcReadRequest.getFields().get(0);
 
 
         PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());

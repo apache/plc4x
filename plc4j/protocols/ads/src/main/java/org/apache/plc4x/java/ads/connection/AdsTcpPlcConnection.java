@@ -152,23 +152,23 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         // TODO: This is blocking, should be changed to be async.
         if (field instanceof SymbolicAdsField) {
             mapFields((SymbolicAdsField) field);
-            AdsField adsField = fieldMapping.get(field);
-            if (adsField == null) {
+            DirectAdsField directAdsField = fieldMapping.get(field);
+            if (directAdsField == null) {
                 throw new PlcRuntimeException("Unresolvable field " + field);
             }
-            indexGroup = IndexGroup.of(adsField.getIndexGroup());
-            indexOffset = IndexOffset.of(adsField.getIndexOffset());
-            adsDataType = adsField.getAdsDataType();
-            numberOfElements = adsField.getNumberOfElements();
+            indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
+            indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+            adsDataType = directAdsField.getAdsDataType();
+            numberOfElements = directAdsField.getNumberOfElements();
         }
         // If it's no symbolic field, we can continue immediately
         // without having to do any resolving.
-        else if (field instanceof AdsField) {
-            AdsField adsField = (AdsField) field;
-            indexGroup = IndexGroup.of(adsField.getIndexGroup());
-            indexOffset = IndexOffset.of(adsField.getIndexOffset());
-            adsDataType = adsField.getAdsDataType();
-            numberOfElements = adsField.getNumberOfElements();
+        else if (field instanceof DirectAdsField) {
+            DirectAdsField directAdsField = (DirectAdsField) field;
+            indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
+            indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+            adsDataType = directAdsField.getAdsDataType();
+            numberOfElements = directAdsField.getNumberOfElements();
         } else {
             throw new IllegalArgumentException("Unsupported field type " + field.getClass());
         }
@@ -194,7 +194,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             Invoke.NONE,
             indexGroup,
             indexOffset,
-            Length.of(adsDataType.getTagetByteSize() * numberOfElements),
+            Length.of(adsDataType.getTargetByteSize() * numberOfElements),
             transmissionMode,
             MaxDelay.of(0),
             CycleTime.of(4000000)

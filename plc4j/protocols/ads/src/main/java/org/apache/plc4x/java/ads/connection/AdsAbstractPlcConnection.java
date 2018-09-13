@@ -28,8 +28,8 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.model.AdsField;
 import org.apache.plc4x.java.ads.model.AdsPlcFieldHandler;
+import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.connection.PlcProprietarySender;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -60,7 +60,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
 
     protected final AmsPort sourceAmsPort;
 
-    protected final ConcurrentMap<SymbolicAdsField, AdsField> fieldMapping;
+    protected final ConcurrentMap<SymbolicAdsField, DirectAdsField> fieldMapping;
 
     protected AdsAbstractPlcConnection(ChannelFactory channelFactory, AmsNetId targetAmsNetId, AmsPort targetAmsPort) {
         this(channelFactory, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
@@ -178,7 +178,7 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
             }
 
             IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
-            return AdsField.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong(), symbolicAdsFieldInternal.getAdsDataType(), symbolicAdsFieldInternal.getNumberOfElements());
+            return DirectAdsField.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong(), symbolicAdsFieldInternal.getAdsDataType(), symbolicAdsFieldInternal.getNumberOfElements());
         });
     }
 

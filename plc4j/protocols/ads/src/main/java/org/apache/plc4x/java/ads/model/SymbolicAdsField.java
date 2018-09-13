@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.model;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -28,9 +27,9 @@ import java.util.regex.Pattern;
 /**
  * ADS address witch is defined by symbolic name (e.g. {@code Main.items[0]}).
  */
-public class SymbolicAdsField implements PlcField {
+public class SymbolicAdsField implements AdsField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>.+)(\\[(?<numberOfElements>\\d)])?");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d)])?");
 
     private final String symbolicAddress;
 

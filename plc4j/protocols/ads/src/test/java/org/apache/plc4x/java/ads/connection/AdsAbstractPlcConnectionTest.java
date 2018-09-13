@@ -29,12 +29,15 @@ import org.apache.plc4x.java.ads.api.commands.types.Data;
 import org.apache.plc4x.java.ads.api.commands.types.Result;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
-import org.apache.plc4x.java.ads.model.AdsField;
+import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcFieldRequest;
+import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -119,26 +122,26 @@ public class AdsAbstractPlcConnectionTest {
 
     @Test
     public void read() {
-        CompletableFuture<PlcReadResponse<?>> read = SUT.read(mock(PlcReadRequest.class));
+        CompletableFuture<PlcReadResponse<?>> read = SUT.read(mock(InternalPlcReadRequest.class));
         assertNotNull(read);
 
-        simulatePipelineError(() -> SUT.read(mock(PlcReadRequest.class)));
+        simulatePipelineError(() -> SUT.read(mock(InternalPlcReadRequest.class)));
     }
 
     @Test
     public void write() {
-        CompletableFuture<PlcWriteResponse<?>> write = SUT.write(mock(PlcWriteRequest.class));
+        CompletableFuture<PlcWriteResponse<?>> write = SUT.write(mock(InternalPlcWriteRequest.class));
         assertNotNull(write);
 
-        simulatePipelineError(() -> SUT.write(mock(PlcWriteRequest.class)));
+        simulatePipelineError(() -> SUT.write(mock(InternalPlcWriteRequest.class)));
     }
 
     @Test
     public void send() {
-        CompletableFuture send = SUT.send(mock(PlcProprietaryRequest.class));
+        CompletableFuture send = SUT.send(mock(InternalPlcProprietaryRequest.class));
         assertNotNull(send);
 
-        simulatePipelineError(() -> SUT.send(mock(PlcProprietaryRequest.class)));
+        simulatePipelineError(() -> SUT.send(mock(InternalPlcProprietaryRequest.class)));
     }
 
     public void simulatePipelineError(FutureProducingTestRunnable futureProducingTestRunnable) {
@@ -178,7 +181,7 @@ public class AdsAbstractPlcConnectionTest {
         {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
                 PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
-                PlcProprietaryResponse plcProprietaryResponse = mock(PlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
+                PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
                 AdsReadWriteResponse adsReadWriteResponse = mock(AdsReadWriteResponse.class, RETURNS_DEEP_STUBS);
                 when(adsReadWriteResponse.getResult()).thenReturn(Result.of(0));
                 when(adsReadWriteResponse.getData()).thenReturn(Data.of(new byte[]{1, 2, 3, 4}));
@@ -187,8 +190,8 @@ public class AdsAbstractPlcConnectionTest {
                 return mock(ChannelFuture.class);
             });
 
-            SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]"));
-            SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]"));
+            SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]:BYTE"));
+            SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]:BYTE"));
             verify(channel, times(1)).writeAndFlush(any(PlcRequestContainer.class));
             SUT.clearMapping();
             reset(channel);
@@ -197,7 +200,7 @@ public class AdsAbstractPlcConnectionTest {
         {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
                 PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
-                PlcProprietaryResponse plcProprietaryResponse = mock(PlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
+                PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
                 AdsReadWriteResponse adsReadWriteResponse = mock(AdsReadWriteResponse.class, RETURNS_DEEP_STUBS);
                 when(adsReadWriteResponse.getResult()).thenReturn(Result.of(1));
                 when(plcProprietaryResponse.getResponse()).thenReturn(adsReadWriteResponse);
@@ -227,7 +230,7 @@ public class AdsAbstractPlcConnectionTest {
     @Test
     public void close() throws Exception {
         Map fieldMapping = (Map) FieldUtils.getDeclaredField(AdsAbstractPlcConnection.class, "fieldMapping", true).get(SUT);
-        fieldMapping.put(mock(SymbolicAdsField.class), mock(AdsField.class));
+        fieldMapping.put(mock(SymbolicAdsField.class), mock(DirectAdsField.class));
         SUT.close();
     }
 

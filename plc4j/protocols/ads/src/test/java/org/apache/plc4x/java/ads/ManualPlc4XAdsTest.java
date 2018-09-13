@@ -58,7 +58,7 @@ public class ManualPlc4XAdsTest {
             CompletableFuture<PlcSubscriptionResponse> subscribeResponse = plcSubscriber.subscribe(builder -> builder.addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE"));
             PlcSubscriptionResponse plcSubscriptionResponse = subscribeResponse.get();
 
-            PlcConsumerRegistration plcConsumerRegistration = plcSubscriber.register(plcSubscriptionEvent -> System.out.println(plcSubscriptionEvent), plcSubscriptionResponse.getSubscriptionHandles());
+            PlcConsumerRegistration plcConsumerRegistration = plcSubscriber.register(System.out::println, plcSubscriptionResponse.getSubscriptionHandles());
 
             TimeUnit.SECONDS.sleep(5);
 
