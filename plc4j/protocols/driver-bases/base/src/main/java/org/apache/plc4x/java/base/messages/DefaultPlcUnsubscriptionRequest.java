@@ -18,10 +18,17 @@
  */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.base.connection.PlcFieldHandler;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.function.BiFunction;
 
 public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest {
 
@@ -43,6 +50,52 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
     @Override
     public LinkedList<PlcField> getFields() {
         return null;
+    }
+
+    @Override
+    public Collection<? extends InternalPlcSubscriptionHandle> getInternalPlcSubscriptionHandles() {
+        return null;
+    }
+
+    public static class Builder implements PlcUnsubscriptionRequest.Builder {
+
+        private final PlcFieldHandler fieldHandler;
+        private final Map<String, BuilderItem<Object>> fields;
+
+        public Builder(PlcFieldHandler fieldHandler) {
+            this.fieldHandler = fieldHandler;
+            fields = new TreeMap<>();
+        }
+
+        @Override
+        public PlcUnsubscriptionRequest.Builder addField(String name, PlcSubscriptionHandle handle) {
+            return null;
+        }
+
+        @Override
+        public PlcUnsubscriptionRequest build() {
+            LinkedHashMap<String, Pair<PlcField, FieldItem>> parsedFields = new LinkedHashMap<>();
+            fields.forEach((name, builderItem) -> {
+                // Compile the query string.
+                PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
+                // Encode the payload.
+                // TODO: Depending on the field type, handle the FieldItem creation differently.
+                FieldItem fieldItem = builderItem.encoder.apply(parsedField, null);
+                parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
+            });
+            return new DefaultPlcUnsubscriptionRequest();
+        }
+
+        private static class BuilderItem<T> {
+            private final String fieldQuery;
+            private final BiFunction<PlcField, T[], FieldItem> encoder;
+
+            private BuilderItem(String fieldQuery, BiFunction<PlcField, T[], FieldItem> encoder) {
+                this.fieldQuery = fieldQuery;
+                this.encoder = encoder;
+            }
+        }
+
     }
 
 }

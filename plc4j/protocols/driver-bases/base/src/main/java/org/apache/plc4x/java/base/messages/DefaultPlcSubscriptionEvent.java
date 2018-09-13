@@ -26,9 +26,15 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Collection;
 
 public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent {
+
+
+    public DefaultPlcSubscriptionEvent(Calendar timeStamp, byte[] bytes) {
+        // TODO: move to instant
+    }
 
     @Override
     public int getNumberOfValues(String name) {

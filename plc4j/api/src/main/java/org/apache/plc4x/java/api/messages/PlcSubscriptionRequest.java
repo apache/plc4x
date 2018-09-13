@@ -22,8 +22,6 @@ import java.time.Duration;
 
 public interface PlcSubscriptionRequest extends PlcFieldRequest {
 
-    PlcSubscriptionRequest.Builder builder();
-
     interface Builder extends PlcMessageBuilder<PlcSubscriptionRequest> {
         /**
          * Adds a new field to the to be constructed request which should be polled cyclically.

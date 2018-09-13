@@ -23,7 +23,7 @@ package org.apache.plc4x.java.api.model;
  * different data is used to identify a subscription. This interface is
  * to be implemented in the individual Driver implementations to contain
  * all information needed to pull or unsubscribe any form of subscription.
- *
+ * <p>
  * For every subscribed item, a separate {@link PlcSubscriptionHandle} object is
  * returned in order to allow fine granular unsubscriptions.
  */

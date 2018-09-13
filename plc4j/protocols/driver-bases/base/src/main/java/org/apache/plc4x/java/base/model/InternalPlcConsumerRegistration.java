@@ -16,14 +16,14 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.base.messages;
+package org.apache.plc4x.java.base.model;
 
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 
 import java.util.Collection;
 
-public interface InternalPlcUnsubscriptionRequest extends PlcUnsubscriptionRequest {
+public interface InternalPlcConsumerRegistration extends PlcConsumerRegistration {
+    int getConsumerHash();
 
-    Collection<? extends InternalPlcSubscriptionHandle> getInternalPlcSubscriptionHandles();
+    Collection<? extends InternalPlcSubscriptionHandle> getAssociatedHandles();
 }
