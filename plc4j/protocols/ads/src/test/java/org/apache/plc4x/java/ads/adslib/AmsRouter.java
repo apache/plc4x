@@ -29,6 +29,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.connection.AdsTcpPlcConnection;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
+import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
 
 import java.io.IOException;
 import java.net.*;
@@ -196,13 +198,13 @@ public class AmsRouter {
     <T extends AmsPacket, R extends AmsPacket> AmsError AdsRequest(AmsRequest<T, R> request) {
         PlcProprietaryRequest<T> plcProprietaryRequest = request.getRequest();
 
-        AdsTcpPlcConnection ads = GetConnection(plcProprietaryRequest.getRequest().getAmsHeader().getTargetAmsNetId());
+        AdsTcpPlcConnection ads = GetConnection(plcProprietaryRequest.getProprietaryRequest().getAmsHeader().getTargetAmsNetId());
         if (ads == null) {
             return AmsError.of(AdsReturnCode.ADS_CODE_7);
         }
-        CompletableFuture<PlcProprietaryResponse<R>> completableFuture = ads.send(plcProprietaryRequest);
+        CompletableFuture<PlcProprietaryResponse<PlcProprietaryRequest<T>, R>> completableFuture = ads.send(plcProprietaryRequest);
         try {
-            PlcProprietaryResponse<R> response = completableFuture.get(3, TimeUnit.SECONDS);
+            PlcProprietaryResponse<PlcProprietaryRequest<T>, R> response = completableFuture.get(3, TimeUnit.SECONDS);
             request.getResponseFuture().complete(response.getResponse());
             return response.getResponse().getAmsHeader().getCode();
         } catch (ExecutionException | TimeoutException e) {
@@ -221,15 +223,15 @@ public class AmsRouter {
         //    request.bytesRead = 0;
         //}
 
-        AdsTcpPlcConnection ads = GetConnection(plcProprietaryRequest.getRequest().getAmsHeader().getTargetAmsNetId());
+        AdsTcpPlcConnection ads = GetConnection(plcProprietaryRequest.getProprietaryRequest().getAmsHeader().getTargetAmsNetId());
         if (ads == null) {
             return AmsError.of(AdsReturnCode.ADS_CODE_7);
         }
 
-        AdsLibPort port = ports.get(plcProprietaryRequest.getRequest().getAmsHeader().getSourceAmsPort().getAsInt());
-        CompletableFuture<PlcProprietaryResponse<AdsAddDeviceNotificationResponse>> send = ads.send(plcProprietaryRequest);
+        AdsLibPort port = ports.get(plcProprietaryRequest.getProprietaryRequest().getAmsHeader().getSourceAmsPort().getAsInt());
+        CompletableFuture<PlcProprietaryResponse<PlcProprietaryRequest<AdsAddDeviceNotificationRequest>, AdsAddDeviceNotificationResponse>> send = ads.send(plcProprietaryRequest);
         try {
-            PlcProprietaryResponse<AdsAddDeviceNotificationResponse> response = send.get(3, TimeUnit.SECONDS);
+            PlcProprietaryResponse<PlcProprietaryRequest<AdsAddDeviceNotificationRequest>, AdsAddDeviceNotificationResponse> response = send.get(3, TimeUnit.SECONDS);
             if (response.getResponse().getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
                 return AmsError.of(response.getResponse().getResult().getAsLong());
             }
@@ -250,23 +252,23 @@ public class AmsRouter {
     AmsError DelNotification(int port, ImmutablePair<AmsNetId, AmsPort> pAddr, AmsRequest<AdsDeleteDeviceNotificationRequest, AdsDeleteDeviceNotificationResponse> request) {
         PlcProprietaryRequest<AdsDeleteDeviceNotificationRequest> plcProprietaryRequest = request.getRequest();
 
-        AdsTcpPlcConnection ads = GetConnection(plcProprietaryRequest.getRequest().getAmsHeader().getTargetAmsNetId());
+        AdsTcpPlcConnection ads = GetConnection(plcProprietaryRequest.getProprietaryRequest().getAmsHeader().getTargetAmsNetId());
         if (ads == null) {
             return AmsError.of(AdsReturnCode.ADS_CODE_7);
         }
 
         AdsLibPort adsLibPort = ports.get(port);
-        CompletableFuture<PlcProprietaryResponse<AdsDeleteDeviceNotificationResponse>> send = ads.send(plcProprietaryRequest);
+        CompletableFuture<PlcProprietaryResponse<PlcProprietaryRequest<AdsDeleteDeviceNotificationRequest>, AdsDeleteDeviceNotificationResponse>> send = ads.send(plcProprietaryRequest);
         try {
-            PlcProprietaryResponse<AdsDeleteDeviceNotificationResponse> response = send.get(3, TimeUnit.SECONDS);
+            PlcProprietaryResponse<PlcProprietaryRequest<AdsDeleteDeviceNotificationRequest>, AdsDeleteDeviceNotificationResponse> response = send.get(3, TimeUnit.SECONDS);
 
-            adsLibPort.DelNotification(pAddr, plcProprietaryRequest.getRequest().getNotificationHandle());
+            adsLibPort.DelNotification(pAddr, plcProprietaryRequest.getProprietaryRequest().getNotificationHandle());
             request.getResponseFuture().complete(response.getResponse());
             return response.getResponse().getAmsHeader().getCode();
         } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
             return AmsError.of(AdsReturnCode.ADS_CODE_1);
-        }catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
             return AmsError.of(AdsReturnCode.ADS_CODE_1);

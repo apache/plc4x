@@ -22,44 +22,41 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.ads.api.commands.*;
 import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
-import org.apache.plc4x.java.ads.model.AdsDataType;
-import org.apache.plc4x.java.ads.model.AdsField;
-import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
-import org.apache.plc4x.java.ads.model.SymbolicAdsField;
+import org.apache.plc4x.java.ads.model.*;
 import org.apache.plc4x.java.ads.protocol.Ads2PayloadProtocol;
 import org.apache.plc4x.java.ads.protocol.Payload2TcpProtocol;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
-import org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.base.model.InternalPlcConsumerRegistration;
+import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-
-import static org.apache.plc4x.java.api.types.PlcSubscriptionType.CHANGE_OF_STATE;
-import static org.apache.plc4x.java.api.types.PlcSubscriptionType.CYCLIC;
+import java.util.stream.Collectors;
 
 public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements PlcSubscriber {
 
@@ -71,6 +68,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     private static final long DEL_DEVICE_TIMEOUT = CONF.getLong("plc4x.adsconnection.del.device,timeout", 3000);
 
     private static AtomicInteger localPorts = new AtomicInteger(30000);
+
+    private Map<InternalPlcConsumerRegistration, Consumer<AdsDeviceNotificationRequest>> consumerRegistrations = new HashMap<>();
 
     private AdsTcpPlcConnection(InetAddress address, AmsNetId targetAmsNetId, AmsPort targetAmsPort) {
         this(address, targetAmsNetId, targetAmsPort, generateAMSNetId(), generateAMSPort());
@@ -135,14 +134,15 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     @Override
-    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest plcSubscriptionRequest) {
+        InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = checkInternal(plcSubscriptionRequest, InternalPlcSubscriptionRequest.class);
         // TODO: Make this multi-value
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
-        if (subscriptionRequest.getNumberOfFields() != 1) {
+        if (internalPlcSubscriptionRequest.getNumberOfFields() != 1) {
             throw new PlcNotImplementedException("Multirequest on subscribe not implemented yet");
         }
 
-        PlcField field = subscriptionRequest.getFields().get(0);
+        PlcField field = internalPlcSubscriptionRequest.getFields().get(0);
 
         IndexGroup indexGroup;
         IndexOffset indexOffset;
@@ -174,7 +174,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         }
 
         final TransmissionMode transmissionMode;
-        switch (subscriptionRequestItem.getSubscriptionType()) {
+        switch (internalPlcSubscriptionRequest.getPlcSubscriptionType()) {
             case CYCLIC:
                 transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE;
                 break;
@@ -182,7 +182,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERONCHA;
                 break;
             default:
-                throw new PlcRuntimeException("Unmapped type " + subscriptionRequestItem.getSubscriptionType());
+                throw new PlcRuntimeException("Unmapped type " + internalPlcSubscriptionRequest.getPlcSubscriptionType());
         }
 
         // Prepare the subscription request itself.
@@ -212,8 +212,65 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             throw new PlcRuntimeException("Error code received " + response.getResult());
         }
         AdsSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(response.getNotificationHandle());
-        future.complete(new DefaultPlcSubscriptionResponse(subscriptionRequest, Collections.singletonList(
-            new SubscriptionResponseItem<>(subscriptionRequestItem, adsSubscriptionHandle, PlcResponseCode.OK))));
+
+        Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getFieldNames()
+            .stream()
+            .collect(Collectors.toMap(
+                fieldName -> fieldName,
+                __ -> Pair.of(PlcResponseCode.OK, adsSubscriptionHandle)
+            ));
+
+        future.complete(new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, responseItems));
+        return future;
+    }
+
+    @Override
+    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest plcUnsubscriptionRequest) {
+        InternalPlcUnsubscriptionRequest internalPlcUnsubscriptionRequest = checkInternal(plcUnsubscriptionRequest, InternalPlcUnsubscriptionRequest.class);
+        for (InternalPlcSubscriptionHandle internalPlcSubscriptionHandle : internalPlcUnsubscriptionRequest.getInternalPlcSubscriptionHandles()) {
+            if (internalPlcSubscriptionHandle instanceof AdsSubscriptionHandle) {
+                AdsSubscriptionHandle adsSubscriptionHandle = (AdsSubscriptionHandle) internalPlcSubscriptionHandle;
+                AdsDeleteDeviceNotificationRequest adsDeleteDeviceNotificationRequest =
+                    AdsDeleteDeviceNotificationRequest.of(
+                        targetAmsNetId,
+                        targetAmsPort,
+                        sourceAmsNetId,
+                        sourceAmsPort,
+                        Invoke.NONE,
+                        adsSubscriptionHandle.getNotificationHandle()
+                    );
+                CompletableFuture<InternalPlcProprietaryResponse<DefaultPlcProprietaryRequest<AdsDeleteDeviceNotificationRequest>, AdsDeleteDeviceNotificationResponse>> deleteDeviceFuture =
+                    new CompletableFuture<>();
+                channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsDeleteDeviceNotificationRequest), deleteDeviceFuture));
+
+                InternalPlcProprietaryResponse<DefaultPlcProprietaryRequest<AdsDeleteDeviceNotificationRequest>, AdsDeleteDeviceNotificationResponse> deleteDeviceResponse =
+                    getFromFuture(deleteDeviceFuture, DEL_DEVICE_TIMEOUT);
+                AdsDeleteDeviceNotificationResponse response = deleteDeviceResponse.getResponse();
+                if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
+                    throw new PlcRuntimeException("Non error code received " + response.getResult());
+                }
+            }
+        }
+        CompletableFuture<PlcUnsubscriptionResponse> future = new CompletableFuture<>();
+        future.complete(new DefaultPlcUnsubscriptionResponse());
+        return future;
+    }
+
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+        return register(consumer, handles.toArray(new PlcSubscriptionHandle[0]));
+    }
+
+    @Override
+    public InternalPlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, PlcSubscriptionHandle... handles) {
+        Objects.requireNonNull(consumer);
+        Objects.requireNonNull(handles);
+        InternalPlcSubscriptionHandle[] internalPlcSubscriptionHandles = new InternalPlcSubscriptionHandle[handles.length];
+        for (int i = 0; i < handles.length; i++) {
+            internalPlcSubscriptionHandles[i] = checkInternal(handles[i], InternalPlcSubscriptionHandle.class);
+        }
+
+        InternalPlcConsumerRegistration internalPlcConsumerRegistration = new DefaultPlcConsumerRegistration(consumer, internalPlcSubscriptionHandles);
 
         Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer =
             adsDeviceNotificationRequest -> adsDeviceNotificationRequest.getAdsStampHeaders().forEach(adsStampHeader -> {
@@ -224,52 +281,45 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                     .forEach(adsNotificationSample -> {
                         Data data = adsNotificationSample.getData();
                         try {
-                            @SuppressWarnings("unchecked")
-                            List<?> decodeData = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
-                            SubscriptionEventItem subscriptionEventItem =
-                                new SubscriptionEventItem(subscriptionRequestItem, timeStamp, decodeData);
-                            subscriptionRequestItem.getConsumer().accept(subscriptionEventItem);
-                        } catch (PlcProtocolException | RuntimeException e) {
+                            PlcSubscriptionEvent subscriptionEventItem = new DefaultPlcSubscriptionEvent(timeStamp, data.getBytes());
+                            consumer.accept(subscriptionEventItem);
+                        } catch (RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }
                     });
             });
-        // TODO: What's this for? Is this still needed if we use the consumers in the subscriptions?
+
+        // Store the reference for so it can be uses for later
+        consumerRegistrations.put(internalPlcConsumerRegistration, adsDeviceNotificationRequestConsumer);
+        // register the actual consumer.
         getChannel().pipeline().get(Plc4x2AdsProtocol.class).addConsumer(adsDeviceNotificationRequestConsumer);
-        return future;
+
+        return internalPlcConsumerRegistration;
     }
 
     @Override
-    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
-        for (UnsubscriptionRequestItem unsubscriptionRequestItem : unsubscriptionRequest.getRequestItems()) {
-            Objects.requireNonNull(unsubscriptionRequestItem);
-            if (unsubscriptionRequestItem.getSubscriptionHandle() instanceof AdsSubscriptionHandle) {
-                AdsSubscriptionHandle adsSubscriptionHandle =
-                    (AdsSubscriptionHandle) unsubscriptionRequestItem.getSubscriptionHandle();
-                AdsDeleteDeviceNotificationRequest adsDeleteDeviceNotificationRequest =
-                    AdsDeleteDeviceNotificationRequest.of(
-                        targetAmsNetId,
-                        targetAmsPort,
-                        sourceAmsNetId,
-                        sourceAmsPort,
-                        Invoke.NONE,
-                        adsSubscriptionHandle.getNotificationHandle()
-                    );
-                CompletableFuture<PlcProprietaryResponse<AdsDeleteDeviceNotificationResponse>> deleteDeviceFuture =
-                    new CompletableFuture<>();
-                channel.writeAndFlush(new PlcRequestContainer<>(new PlcProprietaryRequest<>(
-                    adsDeleteDeviceNotificationRequest), deleteDeviceFuture));
-
-                PlcProprietaryResponse<AdsDeleteDeviceNotificationResponse> deleteDeviceResponse =
-                    getFromFuture(deleteDeviceFuture, DEL_DEVICE_TIMEOUT);
-                AdsDeleteDeviceNotificationResponse response = deleteDeviceResponse.getResponse();
-                if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
-                    throw new PlcRuntimeException("Non error code received " + response.getResult());
-                }
-            }
+    public void unregister(PlcConsumerRegistration plcConsumerRegistration) {
+        InternalPlcConsumerRegistration internalPlcConsumerRegistration = checkInternal(plcConsumerRegistration, InternalPlcConsumerRegistration.class);
+        Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer = consumerRegistrations.remove(internalPlcConsumerRegistration);
+        if (adsDeviceNotificationRequestConsumer == null) {
+            return;
         }
-        CompletableFuture<PlcUnsubscriptionResponse> future = new CompletableFuture<>();
-        future.complete(new PlcUnsubscriptionResponse());
-        return future;
+        getChannel().pipeline().get(Plc4x2AdsProtocol.class).removeConsumer(adsDeviceNotificationRequestConsumer);
+    }
+
+    @Override
+    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+        return new DefaultPlcSubscriptionRequest.Builder(new AdsPlcFieldHandler());
+    }
+
+    @Override
+    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
+        return new DefaultPlcUnsubscriptionRequest.Builder();
+    }
+
+    @Override
+    public void close() throws PlcConnectionException {
+        // TODO: unregister all consumers.
+        super.close();
     }
 }

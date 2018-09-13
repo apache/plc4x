@@ -28,14 +28,9 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
-import org.apache.plc4x.java.ads.model.AdsField;
-import org.apache.plc4x.java.ads.model.SymbolicAdsField;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +43,8 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -75,40 +71,11 @@ public class AdsSerialPlcConnectionTest {
         assertEquals(SUT.getTargetAmsPort().toString(), "13");
     }
 
-    @Test
-    public void emptyPrepareField() {
-        try {
-            SUT.prepareField("");
-        } catch (PlcInvalidFieldException exception) {
-            assertThat(exception.getMessage(), Matchers.startsWith(" invalid"));
-        }
-    }
-
-    @Test
-    public void prepareField() throws Exception {
-        try {
-            AdsField field = (AdsField) SUT.prepareField("0/1");
-            assertEquals(field.getIndexGroup(), 0);
-            assertEquals(field.getIndexOffset(), 1);
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block field");
-        }
-    }
-
-    @Test
-    public void prepareSymbolicField() throws Exception {
-        try {
-            SymbolicAdsField field = (SymbolicAdsField) SUT.prepareField("Main.variable");
-            assertEquals(field.getSymbolicField(), "Main.variable");
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block field");
-        }
-    }
 
     @Test
     public void testRead() throws Exception {
         prepareSerialSimulator();
-        CompletableFuture<PlcReadResponse> read = SUT.read(new PlcReadRequest(String.class, SUT.prepareField("0/0")));
+        CompletableFuture<PlcReadResponse<?>> read = SUT.read(builder -> builder.addItem("test", "0/0:BYTE"));
         PlcReadResponse plcReadResponse = read.get(30, TimeUnit.SECONDS);
         assertNotNull(plcReadResponse);
     }

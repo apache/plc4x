@@ -27,39 +27,41 @@ import static org.junit.Assert.assertThat;
 public class AdsFieldTest {
 
     @Test
-    public void of() throws Exception {
+    public void of() {
         AdsField field = AdsField.of("1/10");
         assertThat(field.getIndexGroup(), is(1L));
         assertThat(field.getIndexOffset(), is(10L));
     }
 
     @Test
-    public void ofHex() throws Exception {
+    public void ofHex() {
         AdsField field = AdsField.of("0x1/0xff");
         assertThat(field.getIndexGroup(), is(1L));
         assertThat(field.getIndexOffset(), is(255L));
     }
 
     @Test(expected = PlcInvalidFieldException.class)
-    public void stringInField() throws Exception {
+    public void stringInField() {
         AdsField field = AdsField.of("group/offset");
     }
 
     @Test(expected = PlcInvalidFieldException.class)
-    public void singleNumberField() throws Exception {
+    public void singleNumberField() {
         AdsField field = AdsField.of("10");
     }
 
     @Test(expected = PlcInvalidFieldException.class)
-    public void wrongSeperator() throws Exception {
+    public void wrongSeperator() {
         AdsField field = AdsField.of("1:10");
     }
 
     @Test
     public void getGroupAndOffset() {
-        AdsField field = AdsField.of(2L, 20L);
+        AdsField field = AdsField.of(2L, 20L, AdsDataType.BYTE, 1);
         assertThat(field.getIndexGroup(), is(2L));
         assertThat(field.getIndexOffset(), is(20L));
+        assertThat(field.getAdsDataType(), is(AdsDataType.BYTE));
+        assertThat(field.getNumberOfElements(), is(1));
     }
 
 }

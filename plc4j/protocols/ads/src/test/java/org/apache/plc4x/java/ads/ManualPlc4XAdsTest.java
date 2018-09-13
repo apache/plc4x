@@ -22,15 +22,12 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
-import org.apache.plc4x.java.api.messages.items.SubscriptionResponseItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -50,32 +47,25 @@ public class ManualPlc4XAdsTest {
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            PlcField field = plcConnection.prepareField("Allgemein_S2.Station");
-            CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
-                .read(new TypeSafePlcReadRequest<>(Integer.class, field));
-            TypeSafePlcReadResponse<Integer> readResponse = response.get();
+            CompletableFuture<PlcReadResponse<?>> response = reader.read(builder -> builder.addItem("station", "Allgemein_S2.Station:BYTE"));
+            PlcReadResponse<?> readResponse = response.get();
             System.out.println("Response " + readResponse);
-            PlcReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
-            System.out.println("ResponseItem " + responseItem);
-            responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
+            Collection<Integer> stations = readResponse.getAllIntegers("station");
+            stations.forEach(System.out::println);
 
             PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("Subscribe not available"));
 
-            PlcSubscriptionRequest subscriptionRequest = PlcSubscriptionRequest.builder()
-                .addChangeOfStateItem(Integer.class, field, plcNotification -> System.out.println("Received notification " + plcNotification))
-                .build();
+            CompletableFuture<PlcSubscriptionResponse> subscribeResponse = plcSubscriber.subscribe(builder -> builder.addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE"));
+            PlcSubscriptionResponse plcSubscriptionResponse = subscribeResponse.get();
 
-            SubscriptionResponseItem subscriptionResponseItem = plcSubscriber.subscribe(subscriptionRequest)
-                .get(5, TimeUnit.SECONDS)
-                .getResponseItem().orElseThrow(() -> new RuntimeException("response not available"));
+            PlcConsumerRegistration plcConsumerRegistration = plcSubscriber.register(plcSubscriptionEvent -> System.out.println(plcSubscriptionEvent), plcSubscriptionResponse.getSubscriptionHandles());
 
             TimeUnit.SECONDS.sleep(5);
 
-            PlcUnsubscriptionRequest unsubscriptionRequest = PlcUnsubscriptionRequest.builder()
-                .addHandle(subscriptionResponseItem)
-                .build();
+            plcSubscriber.unregister(plcConsumerRegistration);
+            CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionResponse = plcSubscriber.unsubscribe(builder -> builder.addHandles(plcSubscriptionResponse.getSubscriptionHandles()));
 
-            PlcUnsubscriptionResponse unsubscriptionResponse = plcSubscriber.unsubscribe(unsubscriptionRequest)
+            unsubscriptionResponse
                 .get(5, TimeUnit.SECONDS);
             System.out.println(unsubscriptionResponse);
         }

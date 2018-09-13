@@ -26,39 +26,20 @@ import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 
 import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 // TODO: we might user ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).putInt(port).asArray() etc
 public class LittleEndianDecoder {
 
-    private static final Map<Class<?>, Long> LENGTH_MAP;
-
-    static {
-        Map<Class<?>, Long> lengthMap = new ConcurrentHashMap<>();
-        lengthMap.put(Boolean.class, 1L);
-        lengthMap.put(Byte.class, 1L);
-        lengthMap.put(Short.class, 2L);
-        lengthMap.put(Integer.class, 4L);
-        lengthMap.put(Float.class, 4L);
-        lengthMap.put(Double.class, 8L);
-        lengthMap.put(Calendar.class, 8L);
-        LENGTH_MAP = Collections.unmodifiableMap(lengthMap);
-    }
-
     private LittleEndianDecoder() {
         // Utility class
-    }
-
-    public static long getLengthFor(Class<?> clazz, long defaultValue) {
-        if (Calendar.class.isAssignableFrom(clazz)) {
-            return 8;
-        }
-        return LENGTH_MAP.getOrDefault(clazz, defaultValue);
     }
 
     @SuppressWarnings("unchecked")

@@ -33,11 +33,6 @@ import org.apache.plc4x.java.ads.model.AdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.junit.Before;
@@ -123,33 +118,19 @@ public class AdsAbstractPlcConnectionTest {
     }
 
     @Test
-    public void prepareField() throws Exception {
-        PlcField field = SUT.prepareField("0/0");
-        assertNotNull(field);
-        PlcField symbolicField = SUT.prepareField("Main.byByte[0]");
-        assertNotNull(symbolicField);
-    }
-
-    @Test
     public void read() {
-        CompletableFuture<PlcReadResponse> read = SUT.read(mock(PlcReadRequest.class));
+        CompletableFuture<PlcReadResponse<?>> read = SUT.read(mock(PlcReadRequest.class));
         assertNotNull(read);
-        CompletableFuture<TypeSafePlcReadResponse<Object>> typeSafeRead = SUT.read(mock(TypeSafePlcReadRequest.class));
-        assertNotNull(typeSafeRead);
 
         simulatePipelineError(() -> SUT.read(mock(PlcReadRequest.class)));
-        simulatePipelineError(() -> SUT.read(mock(TypeSafePlcReadRequest.class)));
     }
 
     @Test
     public void write() {
-        CompletableFuture<PlcWriteResponse> write = SUT.write(mock(PlcWriteRequest.class));
+        CompletableFuture<PlcWriteResponse<?>> write = SUT.write(mock(PlcWriteRequest.class));
         assertNotNull(write);
-        CompletableFuture<TypeSafePlcWriteResponse<Object>> typeSafeWrite = SUT.write(mock(TypeSafePlcWriteRequest.class));
-        assertNotNull(typeSafeWrite);
 
         simulatePipelineError(() -> SUT.write(mock(PlcWriteRequest.class)));
-        simulatePipelineError(() -> SUT.write(mock(TypeSafePlcWriteRequest.class)));
     }
 
     @Test
@@ -188,11 +169,11 @@ public class AdsAbstractPlcConnectionTest {
 
     @Test
     public void mapFields() {
-        SUT.mapFields(mock(PlcRequest.class));
+        SUT.mapFields(mock(PlcFieldRequest.class));
     }
 
     @Test
-    public void mapField() throws Exception {
+    public void mapField() {
         // positive
         {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {

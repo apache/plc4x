@@ -19,11 +19,11 @@ under the License.
 package org.apache.plc4x.java.ads.model;
 
 import org.apache.plc4x.java.ads.api.commands.types.NotificationHandle;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 
 import java.util.Objects;
 
-public class AdsSubscriptionHandle implements PlcSubscriptionHandle {
+public class AdsSubscriptionHandle implements InternalPlcSubscriptionHandle {
 
     private NotificationHandle notificationHandle;
 
