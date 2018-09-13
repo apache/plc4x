@@ -52,6 +52,11 @@ public class MockFieldHandler implements PlcFieldHandler {
     }
 
     @Override
+    public FieldItem encodeBigInteger(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
     public FieldItem encodeLong(PlcField field, Object[] values) {
         return new MockFieldItem(values);
     }

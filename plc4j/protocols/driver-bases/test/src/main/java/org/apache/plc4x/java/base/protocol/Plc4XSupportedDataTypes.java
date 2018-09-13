@@ -182,7 +182,7 @@ public class Plc4XSupportedDataTypes {
     public static class DataTypePair<T extends Serializable> {
         private final Pair<T, byte[]> dataTypePair;
 
-        private DataTypePair(Pair<T, byte[]> dataTypePair) {
+        public DataTypePair(Pair<T, byte[]> dataTypePair) {
             this.dataTypePair = dataTypePair;
         }
 
@@ -209,6 +209,13 @@ public class Plc4XSupportedDataTypes {
          */
         public byte[] getByteRepresentation() {
             return ArrayUtils.clone(dataTypePair.getRight());
+        }
+
+        /**
+         * @return the internal pair.
+         */
+        public Pair<T, byte[]> getDataTypePair() {
+            return dataTypePair;
         }
 
         @Override

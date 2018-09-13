@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -90,6 +91,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
             handlerMap.put(Byte.class, fieldHandler::encodeByte);
             handlerMap.put(Short.class, fieldHandler::encodeShort);
             handlerMap.put(Integer.class, fieldHandler::encodeInteger);
+            handlerMap.put(BigInteger.class, fieldHandler::encodeBigInteger);
             handlerMap.put(Long.class, fieldHandler::encodeLong);
             handlerMap.put(Float.class, fieldHandler::encodeFloat);
             handlerMap.put(Double.class, fieldHandler::encodeDouble);
@@ -117,6 +119,11 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
         @Override
         public Builder addItem(String name, String fieldQuery, Integer... values) {
             return addItem(name, fieldQuery, values, fieldHandler::encodeInteger);
+        }
+
+        @Override
+        public PlcWriteRequest.Builder addItem(String name, String fieldQuery, BigInteger... values) {
+            return addItem(name, fieldQuery, values, fieldHandler::encodeBigInteger);
         }
 
         @Override

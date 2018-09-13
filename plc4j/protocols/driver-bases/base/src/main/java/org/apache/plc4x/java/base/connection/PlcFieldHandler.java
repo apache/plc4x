@@ -34,6 +34,8 @@ public interface PlcFieldHandler {
 
     FieldItem encodeInteger(PlcField field, Object[] values);
 
+    FieldItem encodeBigInteger(PlcField field, Object[] values);
+
     FieldItem encodeLong(PlcField field, Object[] values);
 
     FieldItem encodeFloat(PlcField field, Object[] values);
