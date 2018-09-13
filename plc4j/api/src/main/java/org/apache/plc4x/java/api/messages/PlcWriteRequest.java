@@ -49,6 +49,8 @@ public interface PlcWriteRequest extends PlcFieldRequest {
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDate... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDateTime... values);
+
+        <T> PlcWriteRequest.Builder addItem(String name, String fieldQuery, T... values);
     }
 
 }

@@ -80,10 +80,23 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
 
         private final PlcFieldHandler fieldHandler;
         private final Map<String, BuilderItem<Object>> fields;
+        private final Map<Class<?>, BiFunction<PlcField, Object[], FieldItem>> handlerMap;
 
         public Builder(PlcFieldHandler fieldHandler) {
             this.fieldHandler = fieldHandler;
             fields = new TreeMap<>();
+            handlerMap = new HashMap<>();
+            handlerMap.put(Boolean.class, fieldHandler::encodeBoolean);
+            handlerMap.put(Byte.class, fieldHandler::encodeByte);
+            handlerMap.put(Short.class, fieldHandler::encodeShort);
+            handlerMap.put(Integer.class, fieldHandler::encodeInteger);
+            handlerMap.put(Long.class, fieldHandler::encodeLong);
+            handlerMap.put(Float.class, fieldHandler::encodeFloat);
+            handlerMap.put(Double.class, fieldHandler::encodeDouble);
+            handlerMap.put(String.class, fieldHandler::encodeString);
+            handlerMap.put(LocalTime.class, fieldHandler::encodeTime);
+            handlerMap.put(LocalDate.class, fieldHandler::encodeDate);
+            handlerMap.put(LocalDateTime.class, fieldHandler::encodeDateTime);
         }
 
         @Override
@@ -139,6 +152,25 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
         @Override
         public Builder addItem(String name, String fieldQuery, LocalDateTime... values) {
             return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
+        }
+
+        @Override
+        public <T> Builder addItem(String name, String fieldQuery, T... values) {
+            Objects.requireNonNull(values);
+            Class<?> checkedClazz = null;
+            for (T value : values) {
+                if (checkedClazz == null) {
+                    checkedClazz = value.getClass();
+                }
+                if (value.getClass() != checkedClazz) {
+                    throw new IllegalArgumentException("Invalid class found " + value.getClass() + ". should all be " + checkedClazz);
+                }
+            }
+            BiFunction<PlcField, Object[], FieldItem> plcFieldFieldItemBiFunction = handlerMap.get(checkedClazz);
+            if (plcFieldFieldItemBiFunction == null) {
+                throw new IllegalArgumentException("no field handler for " + checkedClazz + " found");
+            }
+            return addItem(name, fieldQuery, values, plcFieldFieldItemBiFunction);
         }
 
         @Override
