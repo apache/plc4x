@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * Interface implemented by all PlcConnections that are able to read from remote resources.
@@ -35,6 +36,18 @@ public interface PlcReader {
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
     CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest);
+
+    /**
+     * Reads a requested value from a PLC.
+     *
+     * @param readRequestBuilderConsumer consumer which can be used to build requests.
+     * @return a {@link CompletableFuture} giving async access to the returned value.
+     */
+    default CompletableFuture<PlcReadResponse<?>> read(Consumer<PlcReadRequest.Builder> readRequestBuilderConsumer) {
+        PlcReadRequest.Builder requestBuilder = readRequestBuilder();
+        readRequestBuilderConsumer.accept(requestBuilder);
+        return read(requestBuilder.build());
+    }
 
     PlcReadRequest.Builder readRequestBuilder();
 

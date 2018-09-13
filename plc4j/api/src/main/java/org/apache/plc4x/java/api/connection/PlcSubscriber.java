@@ -40,6 +40,18 @@ public interface PlcSubscriber {
     CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest);
 
     /**
+     * Subscribes to fields on the PLC.
+     *
+     * @param plcSubscriptionRequestBuilderConsumer consumer which can be used to build requests.
+     * @return subscription response containing a subscription response item for each subscription request item.
+     */
+    default CompletableFuture<PlcSubscriptionResponse> subscribe(Consumer<PlcSubscriptionRequest.Builder> plcSubscriptionRequestBuilderConsumer) {
+        PlcSubscriptionRequest.Builder builder = subscriptionRequestBuilder();
+        plcSubscriptionRequestBuilderConsumer.accept(builder);
+        return subscribe(builder.build());
+    }
+
+    /**
      * Unsubscribes from fields on the PLC. For unsubscribing the unsubscription request uses the subscription
      * handle returned as part of the subscription response item.
      *
@@ -49,11 +61,24 @@ public interface PlcSubscriber {
     CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest);
 
     /**
+     * Unsubscribes from fields on the PLC. For unsubscribing the unsubscription request uses the subscription
+     * handle returned as part of the subscription response item.
+     *
+     * @param plcSubscriptionRequestBuilderConsumer consumer which can be used to build requests.
+     * @return unsubscription response containing a unsubscription response item for each unsubscription request item.
+     */
+    default CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(Consumer<PlcUnsubscriptionRequest.Builder> plcSubscriptionRequestBuilderConsumer) {
+        PlcUnsubscriptionRequest.Builder builder = unsubscriptionRequestBuilder();
+        plcSubscriptionRequestBuilderConsumer.accept(builder);
+        return unsubscribe(builder.build());
+    }
+
+    /**
      * Convenience method to subscribe a {@link Consumer} to all fields of the subscription.
      *
      * @param subscriptionRequest subscription request
-     * @param consumer consumer for all {@link PlcSubscriptionEvent}s
-     * @throws ExecutionException something went wrong.
+     * @param consumer            consumer for all {@link PlcSubscriptionEvent}s
+     * @throws ExecutionException   something went wrong.
      * @throws InterruptedException something went wrong.
      */
     default void register(PlcSubscriptionRequest subscriptionRequest, Consumer<PlcSubscriptionEvent> consumer) throws ExecutionException, InterruptedException {
@@ -61,7 +86,7 @@ public interface PlcSubscriber {
         register(consumer, plcSubscriptionResponse.getSubscriptionHandles().toArray(new PlcSubscriptionHandle[0]));
     }
 
-    PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, PlcSubscriptionHandle... handle);
+    PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, PlcSubscriptionHandle... handles);
 
     void unregister(PlcConsumerRegistration registration);
 

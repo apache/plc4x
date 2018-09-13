@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * Interface implemented by all PlcConnections that are able to write to remote resources.
@@ -35,6 +36,18 @@ public interface PlcWriter {
      * @return a {@link CompletableFuture} giving async access to the response of the write operation.
      */
     CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest);
+
+    /**
+     * Writes a given value to a PLC.
+     *
+     * @param writeRequestBuilderConsumer consumer which can be used to build requests.
+     * @return a {@link CompletableFuture} giving async access to the response of the write operation.
+     */
+    default CompletableFuture<PlcWriteResponse<?>> write(Consumer<PlcWriteRequest.Builder> writeRequestBuilderConsumer) {
+        PlcWriteRequest.Builder requestBuilder = writeRequestBuilder();
+        writeRequestBuilderConsumer.accept(requestBuilder);
+        return write(requestBuilder.build());
+    }
 
     PlcWriteRequest.Builder writeRequestBuilder();
 
