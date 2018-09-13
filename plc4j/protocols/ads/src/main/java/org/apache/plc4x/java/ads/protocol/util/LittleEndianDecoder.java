@@ -22,18 +22,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.ads.model.AdsDataType;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.*;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.LinkedList;
-import java.util.List;
 
 // TODO: we might user ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).putInt(port).asArray() etc
 public class LittleEndianDecoder {
@@ -73,266 +70,296 @@ public class LittleEndianDecoder {
             case BITARR16: {
                 LinkedList<Long> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aLong = wrappedBuffer.readUnsignedIntLE();
+                    long aLong = wrappedBuffer.readUnsignedShortLE();
                     values.offer(aLong);
                 }
                 return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case BITARR32: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aLong = wrappedBuffer.readUnsignedIntLE();
+                    values.offer(aLong);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case INT8: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aLong = wrappedBuffer.readByte();
+                    values.offer(aLong);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case INT16: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aLong = wrappedBuffer.readShortLE();
+                    values.offer(aLong);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case INT32: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aLong = wrappedBuffer.readInt();
+                    values.offer(aLong);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case INT64: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    byte[] bytes = new byte[8];
+                    wrappedBuffer.readBytes(bytes);
+                    BigInteger bigInteger = new BigInteger(bytes);
+                    // TODO: potential dataloss here.
+                    values.offer(bigInteger.longValue());
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case UINT8: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aLong = wrappedBuffer.readUnsignedByte();
+                    values.offer(aLong);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case UINT16: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aLong = wrappedBuffer.readUnsignedShortLE();
+                    values.offer(aLong);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case UINT32: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aLong = wrappedBuffer.readUnsignedIntLE();
+                    values.offer(aLong);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case UINT64: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    byte[] bytes = new byte[64];
+                    wrappedBuffer.readBytes(bytes);
+                    BigInteger bigInteger = new BigInteger(ArrayUtils.add(bytes, (byte) 0x0));
+                    // TODO: potential dataloss here.
+                    values.offer(bigInteger.longValue());
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case FLOAT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Double> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    double aLong = wrappedBuffer.readFloatLE();
+                    values.offer(aLong);
+                }
+                return new DefaultFloatingPointFieldItem(values.toArray(new Double[0]));
             }
             case DOUBLE: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Double> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    double aLong = wrappedBuffer.readDoubleLE();
+                    values.offer(aLong);
+                }
+                return new DefaultFloatingPointFieldItem(values.toArray(new Double[0]));
             }
             case BOOL: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Boolean> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    short aByte = wrappedBuffer.readUnsignedByte();
+                    values.offer(aByte != 0);
+                }
+                return new DefaultBooleanFieldItem(values.toArray(new Boolean[0]));
             }
             case BYTE: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedByte();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case WORD: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedShortLE();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case DWORD: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedIntLE();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case SINT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readByte();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case USINT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedByte();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case INT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readShortLE();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case UINT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedShortLE();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case DINT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readIntLE();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case UDINT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedIntLE();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case LINT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readLongLE();
+                    values.offer(aByte);
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case ULINT: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Long> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    byte[] bytes = new byte[64];
+                    wrappedBuffer.readBytes(bytes);
+                    BigInteger bigInteger = new BigInteger(ArrayUtils.add(bytes, (byte) 0x0));
+                    // TODO: potential dataloss here.
+                    values.offer(bigInteger.longValue());
+                }
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case REAL: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Double> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    double aByte = wrappedBuffer.readFloatLE();
+                    values.offer(aByte);
+                }
+                return new DefaultFloatingPointFieldItem(values.toArray(new Double[0]));
             }
             case LREAL: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<Double> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    double aByte = wrappedBuffer.readDoubleLE();
+                    values.offer(aByte);
+                }
+                return new DefaultFloatingPointFieldItem(values.toArray(new Double[0]));
             }
             case STRING: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<String> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    Byte aByte;
+                    while ((aByte = wrappedBuffer.readByte()) != 0x0) {
+                        os.write(aByte);
+                    }
+                    values.offer(new String(os.toByteArray()));
+                }
+                return new DefaultStringFieldItem(values.toArray(new String[0]));
             }
             case TIME: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<LocalDateTime> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedIntLE();
+                    // TODO: we can't map time to LocalDateTime. Implmentation broken currently
+                    Instant instant = Instant.ofEpochMilli(aByte);
+                    values.offer(LocalDateTime.ofInstant(instant, ZoneId.of("ECT")));
+                }
+                return new DefaultTimeFieldItem(values.toArray(new LocalDateTime[0]));
             }
             case TIME_OF_DAY: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<LocalDateTime> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedIntLE();
+                    // TODO: we can't map time to LocalDateTime. Implmentation broken currently
+                    Instant instant = Instant.ofEpochMilli(aByte);
+                    values.offer(LocalDateTime.ofInstant(instant, ZoneId.of("ECT")));
+                }
+                return new DefaultTimeFieldItem(values.toArray(new LocalDateTime[0]));
             }
             case DATE: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
+                LinkedList<LocalDateTime> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedIntLE();
+                    // TODO: we can't map time to LocalDateTime. Implmentation broken currently
+                    Instant instant = Instant.ofEpochMilli(aByte);
+                    values.offer(LocalDateTime.ofInstant(instant, ZoneId.of("ECT")));
+                }
+                return new DefaultTimeFieldItem(values.toArray(new LocalDateTime[0]));
             }
             case DATE_AND_TIME: {
+                LinkedList<LocalDateTime> values = new LinkedList<>();
+                while (wrappedBuffer.isReadable()) {
+                    long aByte = wrappedBuffer.readUnsignedIntLE();
+                    // TODO: we can't map time to LocalDateTime. Implmentation broken currently
+                    Instant instant = Instant.ofEpochMilli(aByte);
+                    values.offer(LocalDateTime.ofInstant(instant, ZoneId.of("ECT")));
+                }
+                return new DefaultTimeFieldItem(values.toArray(new LocalDateTime[0]));
+            }
+            case ARRAY: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case POINTER: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case ENUM: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case STRUCT: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case ALIAS: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case SUB_RANGE_DATA_TYPE: {
+                throw new NotImplementedException("not implemented yet " + adsDataType);
+            }
+            case UNKNOWN: {
                 throw new NotImplementedException("not implemented yet " + adsDataType);
             }
             default:
                 throw new IllegalArgumentException("Unsupported adsDataType " + adsDataType);
         }
-        /*
-        if (dataType == byte[].class) {
-            return (List<T>) Collections.singletonList(adsData);
-        }
-        if (dataType == Byte[].class) {
-            return (List<T>) Collections.singletonList(ArrayUtils.toObject(adsData));
-        }
-        List<Object> result = new LinkedList<>();
-        int i = 0;
-        final int length = adsData.length;
-
-        // Expand arrays to avoid IndexOutOfBoundsException
-        final byte[] safeLengthAdsData;
-        if (dataType == Short.class && length < 2) {
-            safeLengthAdsData = new byte[2];
-            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if (dataType == Integer.class && length < 4) {
-            safeLengthAdsData = new byte[4];
-            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if (dataType == Float.class && length < 4) {
-            safeLengthAdsData = new byte[4];
-            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if (dataType == Double.class && length < 8) {
-            safeLengthAdsData = new byte[8];
-            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else if ((dataType == Calendar.class || Calendar.class.isAssignableFrom(dataType)) && length < 8) {
-            safeLengthAdsData = new byte[8];
-            System.arraycopy(adsData, 0, safeLengthAdsData, 0, length);
-        } else {
-            safeLengthAdsData = adsData;
-        }
-
-        while (i < length) {
-            byte byteOne = safeLengthAdsData[i];
-            if (dataType == String.class) {
-                i = decodeString(safeLengthAdsData, i, length, result);
-            } else if (dataType == Boolean.class) {
-                result.add((byteOne & 0x01) == 0x01);
-                i += 1;
-            } else if (dataType == Byte.class) {
-                result.add(byteOne);
-                i += 1;
-            } else if (dataType == Short.class) {
-                decodeShort(safeLengthAdsData, i, result);
-                i += 2;
-            } else if (dataType == Integer.class) {
-                decodeInteger(safeLengthAdsData, i, result);
-                i += 4;
-            } else if (dataType == BigInteger.class) {
-                decodeBigInteger(safeLengthAdsData, result);
-                // A big integer can consume the whole stream
-                i = length;
-            } else if (dataType == Float.class) {
-                decodeFloat(safeLengthAdsData, i, result);
-                i += 4;
-            } else if (dataType == Double.class) {
-                decodeDouble(safeLengthAdsData, i, result);
-                i += 8;
-            } else if (dataType == Calendar.class || Calendar.class.isAssignableFrom(dataType)) {
-                extractCalendar(safeLengthAdsData, i, result);
-                i += 8;
-            } else {
-                throw new PlcUnsupportedDataTypeException(dataType);
-            }
-        }
-        return (List<T>) result;
-        */
     }
 
-    private static int decodeString(byte[] adsData, int i, int length, List<Object> result) throws PlcProtocolException {
-        if (length < 2) {
-            throw new PlcProtocolException("String must be a null terminated byte array");
-        }
-        int pos = i;
-        StringBuilder builder = new StringBuilder();
-        // TODO: check if we have at least a 0x0 space
-        while (pos < length && adsData[pos] != (byte) 0x0) {
-            builder.append((char) adsData[pos]);
-            pos++;
-        }
-        pos++; // skip terminating character
-        result.add(builder.toString());
-        return pos;
-    }
-
-    private static void decodeShort(byte[] adsData, int i, List<Object> result) {
-        byte byteOne = adsData[i];
-        byte byteTwo = adsData[i + 1];
-        result.add((short) ((byteOne & 0xff) | ((byteTwo & 0xff) << 8)));
-    }
-
-    private static void decodeInteger(byte[] adsData, int i, List<Object> result) {
-        byte byteOne = adsData[i];
-        byte byteTwo = adsData[i + 1];
-        byte byteThree = adsData[i + 2];
-        byte byteFour = adsData[i + 3];
-        result.add((byteOne & 0xff) | ((byteTwo & 0xff) << 8) | ((byteThree & 0xff) << 16) | (byteFour & 0xff) << 24);
-    }
-
-    private static void decodeBigInteger(byte[] adsData, List<Object> result) {
-        byte[] clone = ArrayUtils.clone(adsData);
-        // In ADS data is transferred Little Endian
-        ArrayUtils.reverse(clone);
-        // Adding a 0 ensures that this is interpreted as a positive
-        // number as the most significant bit is guaranteed to be 0.
-        byte[] bigIntegerByteArray = ArrayUtils.insert(0, clone, (byte) 0x0);
-        result.add(new BigInteger(bigIntegerByteArray));
-    }
-
-    private static void decodeFloat(byte[] adsData, int i, List<Object> result) {
-        byte byteOne = adsData[i];
-        byte byteTwo = adsData[i + 1];
-        byte byteThree = adsData[i + 2];
-        byte byteFour = adsData[i + 3];
-        // TODO: check how ads expects this data
-        // Description of the Real number format:
-        // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
-        // https://de.wikipedia.org/wiki/IEEE_754
-        int intValue = (byteOne & 0xff) | ((byteTwo & 0xff) << 8) | ((byteThree & 0xff) << 16) | ((byteFour & 0xff) << 24);
-        result.add(Float.intBitsToFloat(intValue));
-    }
-
-    private static void decodeDouble(byte[] adsData, int i, List<Object> result) {
-        byte byteOne = adsData[i];
-        byte byteTwo = adsData[i + 1];
-        byte byteThree = adsData[i + 2];
-        byte byteFour = adsData[i + 3];
-        byte byteFive = adsData[i + 4];
-        byte byteSix = adsData[i + 5];
-        byte byteSeven = adsData[i + 6];
-        byte byteEigth = adsData[i + 7];
-        // TODO: check how ads expects this data
-        // Description of the Real number format:
-        // https://www.sps-lehrgang.de/zahlenformate-step7/#c144
-        // https://de.wikipedia.org/wiki/IEEE_754
-        long longValue = (long) (byteOne & 0xff) | ((long) (byteTwo & 0xff) << 8) | ((long) (byteThree & 0xff) << 16) | ((long) (byteFour & 0xff) << 24)
-            | (long) (byteFive & 0xff) << 32 | ((long) (byteSix & 0xff) << 40) | ((long) (byteSeven & 0xff) << 48) | ((long) (byteEigth & 0xff) << 56);
-        result.add(Double.longBitsToDouble(longValue));
-    }
-
-    private static void extractCalendar(byte[] adsData, int i, List<Object> result) {
-        byte byteOne = adsData[i];
-        byte byteTwo = adsData[i + 1];
-        byte byteThree = adsData[i + 2];
-        byte byteFour = adsData[i + 3];
-        byte byteFive = adsData[i + 4];
-        byte byteSix = adsData[i + 5];
-        byte byteSeven = adsData[i + 6];
-        byte byteEight = adsData[i + 7];
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date(TimeStamp.winTimeToJava(
-            new BigInteger(new byte[]{
-                // LE
-                byteEight,
-                byteSeven,
-                byteSix,
-                byteFive,
-                byteFour,
-                byteThree,
-                byteTwo,
-                byteOne,
-            })).longValue()));
-        result.add(calendar);
-    }
 }

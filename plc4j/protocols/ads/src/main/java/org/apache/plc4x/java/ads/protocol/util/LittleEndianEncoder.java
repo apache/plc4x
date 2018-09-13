@@ -56,6 +56,8 @@ public class LittleEndianEncoder {
             result = encodeShort(adsDataType, Arrays.stream(values).map(Short.class::cast));
         } else if (valueType == Integer.class) {
             result = encodeInteger(adsDataType, Arrays.stream(values).map(Integer.class::cast));
+        } else if (valueType == Long.class) {
+            result = encodeLong(adsDataType, Arrays.stream(values).map(Long.class::cast));
         } else if (valueType == BigInteger.class) {
             result = encodeBigInteger(adsDataType, Arrays.stream(values).map(BigInteger.class::cast));
         } else if (valueType == Calendar.class || Calendar.class.isAssignableFrom(valueType)) {
@@ -149,6 +151,21 @@ public class LittleEndianEncoder {
                 (byte) ((intValue & 0x0000ff00) >> 8),
                 (byte) ((intValue & 0x00ff0000) >> 16),
                 (byte) ((intValue & 0xff000000) >> 24),
+            });
+    }
+
+    private static Stream<byte[]> encodeLong(AdsDataType adsDataType, Stream<Long> integerStream) {
+        // TODO: add boundchecks and add optional extension
+        return integerStream
+            .map(longValue -> new byte[]{
+                (byte) (longValue & 0x00000000_000000ffL),
+                (byte) ((longValue & 0x00000000_0000ff00L) >> 8),
+                (byte) ((longValue & 0x00000000_00ff0000L) >> 16),
+                (byte) ((longValue & 0x00000000_ff000000L) >> 24),
+                (byte) ((longValue & 0x000000ff_00000000L) >> 32),
+                (byte) ((longValue & 0x0000ff00_00000000L) >> 40),
+                (byte) ((longValue & 0x00ff0000_00000000L) >> 48),
+                (byte) ((longValue & 0xff000000_00000000L) >> 56),
             });
     }
 
