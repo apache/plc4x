@@ -18,9 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 public abstract class FieldItem<T> {
 
@@ -39,6 +41,7 @@ public abstract class FieldItem<T> {
     public boolean isValidBoolean(int index) {
         return false;
     }
+
     public Boolean getBoolean(int index) {
         return null;
     }
@@ -46,6 +49,7 @@ public abstract class FieldItem<T> {
     public boolean isValidByte(int index) {
         return false;
     }
+
     public Byte getByte(int index) {
         return null;
     }
@@ -53,6 +57,7 @@ public abstract class FieldItem<T> {
     public boolean isValidShort(int index) {
         return false;
     }
+
     public Short getShort(int index) {
         return null;
     }
@@ -60,13 +65,23 @@ public abstract class FieldItem<T> {
     public boolean isValidInteger(int index) {
         return false;
     }
+
     public Integer getInteger(int index) {
+        return null;
+    }
+
+    public boolean isValidBigInteger(int index) {
+        return false;
+    }
+
+    public BigInteger getBigInteger(int index) {
         return null;
     }
 
     public boolean isValidLong(int index) {
         return false;
     }
+
     public Long getLong(int index) {
         return null;
     }
@@ -74,6 +89,7 @@ public abstract class FieldItem<T> {
     public boolean isValidFloat(int index) {
         return false;
     }
+
     public Float getFloat(int index) {
         return null;
     }
@@ -81,6 +97,7 @@ public abstract class FieldItem<T> {
     public boolean isValidDouble(int index) {
         return false;
     }
+
     public Double getDouble(int index) {
         return null;
     }
@@ -88,6 +105,7 @@ public abstract class FieldItem<T> {
     public boolean isValidString(int index) {
         return false;
     }
+
     public String getString(int index) {
         return null;
     }
@@ -95,6 +113,7 @@ public abstract class FieldItem<T> {
     public boolean isValidTime(int index) {
         return false;
     }
+
     public LocalTime getTime(int index) {
         return null;
     }
@@ -102,6 +121,7 @@ public abstract class FieldItem<T> {
     public boolean isValidDate(int index) {
         return false;
     }
+
     public LocalDate getDate(int index) {
         return null;
     }
@@ -109,6 +129,7 @@ public abstract class FieldItem<T> {
     public boolean isValidDateTime(int index) {
         return false;
     }
+
     public LocalDateTime getDateTime(int index) {
         return null;
     }
@@ -124,4 +145,20 @@ public abstract class FieldItem<T> {
         return values[index];
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FieldItem)) {
+            return false;
+        }
+        FieldItem<?> fieldItem = (FieldItem<?>) o;
+        return Arrays.equals(values, fieldItem.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(values);
+    }
 }

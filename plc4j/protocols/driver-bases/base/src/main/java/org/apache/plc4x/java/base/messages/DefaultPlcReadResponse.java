@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -269,6 +270,48 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
             List<Integer> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getInteger(i));
+            }
+            return values;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isValidBigInteger(String name) {
+        return isValidBigInteger(name, 0);
+    }
+
+    @Override
+    public boolean isValidBigInteger(String name, int index) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.isValidInteger(index);
+        }
+        return false;
+    }
+
+    @Override
+    public BigInteger getBigInteger(String name) {
+        return getBigInteger(name, 0);
+    }
+
+    @Override
+    public BigInteger getBigInteger(String name, int index) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.getBigInteger(index);
+        }
+        return null;
+    }
+
+    @Override
+    public Collection<BigInteger> getAllBigIntegers(String name) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            int num = fieldInternal.getNumValues();
+            List<BigInteger> values = new ArrayList<>(num);
+            for (int i = 0; i < num; i++) {
+                values.add(fieldInternal.getBigInteger(i));
             }
             return values;
         }

@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import java.math.BigInteger;
+
 public class DefaultFloatingPointFieldItem extends FieldItem<Double> {
 
     public DefaultFloatingPointFieldItem(Double... values) {
@@ -80,6 +82,18 @@ public class DefaultFloatingPointFieldItem extends FieldItem<Double> {
     public Integer getInteger(int index) {
         if (isValidInteger(index)) {
             return getValue(index).intValue();
+        }
+        return null;
+    }
+
+    public boolean isValidBigInteger(int index) {
+        Double value = getValue(index);
+        return value != null;
+    }
+
+    public BigInteger getBigInteger(int index) {
+        if (isValidBigInteger(index)) {
+            return BigInteger.valueOf(getValue(index).longValue());
         }
         return null;
     }

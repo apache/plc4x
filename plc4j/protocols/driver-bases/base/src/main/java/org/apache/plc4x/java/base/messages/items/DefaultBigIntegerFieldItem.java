@@ -54,7 +54,7 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Byte getByte(int index) {
-        if(isValidByte(index)) {
+        if (isValidByte(index)) {
             return getValue(index).byteValue();
         }
         return null;
@@ -69,7 +69,7 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Short getShort(int index) {
-        if(isValidShort(index)) {
+        if (isValidShort(index)) {
             return getValue(index).shortValue();
         }
         return null;
@@ -84,9 +84,21 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Integer getInteger(int index) {
-        if(isValidInteger(index)) {
+        if (isValidInteger(index)) {
             BigInteger value = getValue(index);
             return value.intValue();
+        }
+        return null;
+    }
+
+    public boolean isValidBigInteger(int index) {
+        BigInteger value = getValue(index);
+        return value != null;
+    }
+
+    public BigInteger getBigInteger(int index) {
+        if (isValidBigInteger(index)) {
+            return getValue(index);
         }
         return null;
     }
@@ -100,7 +112,7 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Long getLong(int index) {
-        if(isValidLong(index)) {
+        if (isValidLong(index)) {
             BigInteger value = getValue(index);
             return value.longValue();
         }
@@ -120,7 +132,7 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Float getFloat(int index) {
-        if(isValidFloat(index)) {
+        if (isValidFloat(index)) {
             return getValue(index).floatValue();
         }
         return null;
@@ -139,7 +151,7 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Double getDouble(int index) {
-        if(isValidDouble(index)) {
+        if (isValidDouble(index)) {
             return getValue(index).doubleValue();
         }
         return null;

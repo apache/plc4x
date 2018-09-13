@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -158,6 +159,31 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Collection<Integer> getAllIntegers(String name) {
+        return null;
+    }
+
+    @Override
+    public boolean isValidBigInteger(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isValidBigInteger(String name, int index) {
+        return false;
+    }
+
+    @Override
+    public BigInteger getBigInteger(String name) {
+        return null;
+    }
+
+    @Override
+    public BigInteger getBigInteger(String name, int index) {
+        return null;
+    }
+
+    @Override
+    public Collection<BigInteger> getAllBigIntegers(String name) {
         return null;
     }
 

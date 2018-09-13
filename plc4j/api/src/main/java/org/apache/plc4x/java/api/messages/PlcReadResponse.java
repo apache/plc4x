@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -77,6 +78,16 @@ public interface PlcReadResponse<T extends PlcReadRequest> extends PlcFieldRespo
     Integer getInteger(String name, int index);
 
     Collection<Integer> getAllIntegers(String name);
+
+    boolean isValidBigInteger(String name);
+
+    boolean isValidBigInteger(String name, int index);
+
+    BigInteger getBigInteger(String name);
+
+    BigInteger getBigInteger(String name, int index);
+
+    Collection<BigInteger> getAllBigIntegers(String name);
 
     boolean isValidLong(String name);
 

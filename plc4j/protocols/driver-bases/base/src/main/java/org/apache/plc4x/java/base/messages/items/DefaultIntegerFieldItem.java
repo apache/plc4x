@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import java.math.BigInteger;
+
 public class DefaultIntegerFieldItem extends FieldItem<Long> {
 
     public DefaultIntegerFieldItem(Long... values) {
@@ -50,7 +52,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Long> {
 
     @Override
     public Byte getByte(int index) {
-        if(isValidByte(index)) {
+        if (isValidByte(index)) {
             return getValue(index).byteValue();
         }
         return null;
@@ -64,7 +66,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Long> {
 
     @Override
     public Short getShort(int index) {
-        if(isValidShort(index)) {
+        if (isValidShort(index)) {
             return getValue(index).shortValue();
         }
         return null;
@@ -78,8 +80,20 @@ public class DefaultIntegerFieldItem extends FieldItem<Long> {
 
     @Override
     public Integer getInteger(int index) {
-        if(isValidInteger(index)) {
+        if (isValidInteger(index)) {
             return getValue(index).intValue();
+        }
+        return null;
+    }
+
+    public boolean isValidBigInteger(int index) {
+        Long value = getValue(index);
+        return value != null;
+    }
+
+    public BigInteger getBigInteger(int index) {
+        if (isValidBigInteger(index)) {
+            return BigInteger.valueOf(getValue(index));
         }
         return null;
     }
@@ -91,7 +105,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Long> {
 
     @Override
     public Long getLong(int index) {
-        if(isValidFloat(index)) {
+        if (isValidFloat(index)) {
             return getValue(index);
         }
         return null;
@@ -105,7 +119,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Long> {
 
     @Override
     public Float getFloat(int index) {
-        if(isValidFloat(index)) {
+        if (isValidFloat(index)) {
             return getValue(index).floatValue();
         }
         return null;
@@ -119,7 +133,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Long> {
 
     @Override
     public Double getDouble(int index) {
-        if(isValidDouble(index)) {
+        if (isValidDouble(index)) {
             return getValue(index).doubleValue();
         }
         return null;
