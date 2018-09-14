@@ -23,8 +23,8 @@ import java.time.Duration;
 /**
  * Documentation can be found here:
  *
- * @link https://infosys.beckhoff.com/english.php?content=../content/1033/tcsystemmanager/basics/TcSysMgr_DatatypeComparison.htm&id=
- * @link https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
+ * https://infosys.beckhoff.com/english.php?content=../content/1033/tcsystemmanager/basics/TcSysMgr_DatatypeComparison.htm&id=
+ * https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
  */
 public enum AdsDataType {
     // TODO: maybe this are just types for the plc ide and can be removed

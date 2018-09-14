@@ -27,20 +27,22 @@ import java.util.Map;
  * TODO: Double chcek the sizeInBits values ... looks fishy to me ...
  */
 public enum DataTransportSize {
-    NULL((byte) 0x00, false),
-    BIT((byte) 0x03, true),
-    BYTE_WORD_DWORD((byte) 0x04, true),
-    INTEGER((byte) 0x05, true),
-    DINTEGER((byte) 0x06, false),
-    REAL((byte) 0x07, false),
-    OCTET_STRING((byte) 0x09, false);
+    NULL((byte) 0x00, false, false),
+    BIT((byte) 0x03, true, true),
+    BYTE_WORD_DWORD((byte) 0x04, true, true),
+    INTEGER((byte) 0x05, true, false),
+    DINTEGER((byte) 0x06, false, false),
+    REAL((byte) 0x07, false, false),
+    OCTET_STRING((byte) 0x09, false, true);
 
     private final byte code;
     private final boolean sizeInBits;
+    private final boolean hasBlankByte;
 
-    DataTransportSize(byte code, boolean sizeInBits) {
+    DataTransportSize(byte code, boolean sizeInBits, boolean hasBlankByte) {
         this.code = code;
         this.sizeInBits = sizeInBits;
+        this.hasBlankByte = hasBlankByte;
     }
 
     public byte getCode() {
@@ -49,6 +51,10 @@ public enum DataTransportSize {
 
     public boolean isSizeInBits() {
         return sizeInBits;
+    }
+
+    public boolean isHasBlankByte() {
+        return hasBlankByte;
     }
 
     private final static Map<Byte, DataTransportSize> map;

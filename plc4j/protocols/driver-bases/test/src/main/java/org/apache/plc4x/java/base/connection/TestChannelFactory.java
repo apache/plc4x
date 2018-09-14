@@ -24,9 +24,16 @@ import io.netty.channel.embedded.EmbeddedChannel;
 
 public class TestChannelFactory implements ChannelFactory {
 
+    private EmbeddedChannel channel;
+
     @Override
     public Channel createChannel(ChannelHandler channelHandler) {
-        return new EmbeddedChannel(channelHandler);
+        channel = new EmbeddedChannel(channelHandler);
+        return channel;
+    }
+
+    public EmbeddedChannel getChannel() {
+        return channel;
     }
 
 }

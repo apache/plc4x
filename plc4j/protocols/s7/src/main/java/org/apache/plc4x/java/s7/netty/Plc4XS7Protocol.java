@@ -474,35 +474,35 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // -----------------------------------------
                     // 8 bit:
                     case SINT: {
-                        Long longValue = (long) data.readShort();
+                        Long longValue = (long) data.readByte();
                         fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     case USINT: {
-                        Long longValue = (long) data.readUnsignedShort();
+                        Long longValue = (long) data.readUnsignedByte();
                         fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     // 16 bit:
                     case INT: {
-                        Long longValue = (long) data.readInt();
+                        Long longValue = (long) data.readShort();
                         fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     case UINT: {
-                        Long longValue = data.readUnsignedInt();
+                        Long longValue = (long) data.readUnsignedShort();
                         fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     // 32 bit:
                     case DINT: {
-                        Long longValue = data.readLong();
+                        Long longValue = (long) data.readInt();
                         fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     case UDINT: {
-                        BigInteger bigIntegerValue = readUnsignedLong(data);
-                        fieldItem = new S7BigIntegerFieldItem(field.getDataType(), bigIntegerValue);
+                        Long longValue = data.readUnsignedInt();
+                        fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     // 64 bit:
@@ -618,6 +618,8 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 return PlcResponseCode.NOT_FOUND;
             case INVALID_ADDRESS:
                 return PlcResponseCode.INVALID_ADDRESS;
+            case DATA_TYPE_NOT_SUPPORTED:
+                return PlcResponseCode.INVALID_DATATYPE;
             default:
                 return PlcResponseCode.INTERNAL_ERROR;
         }
