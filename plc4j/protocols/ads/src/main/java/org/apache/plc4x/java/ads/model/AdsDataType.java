@@ -35,15 +35,17 @@ public enum AdsDataType {
     BITARR16(16),
     BITARR32(32),
     INT8(8),
-    INT16(16),
-    INT32(32),
-    INT64(64),
-    UINT8(8),
-    UINT16(16),
-    UINT32(32),
-    UINT64(64),
-    FLOAT(32),
-    DOUBLE(64),
+    INT16(Short.MIN_VALUE, Short.MAX_VALUE, 16),
+    INT32(Integer.MIN_VALUE, Integer.MAX_VALUE, 32),
+    INT64(Long.MIN_VALUE, Long.MAX_VALUE, 64),
+    UINT8(0, Short.MAX_VALUE, 8),
+    UINT16(0, Integer.MAX_VALUE, 16),
+    // TODO: max might be off here
+    UINT32(0, Double.MAX_VALUE, 32),
+    // TODO: max might be off here
+    UINT64(0, Double.MAX_VALUE, 64),
+    FLOAT(Float.MIN_VALUE, Float.MAX_VALUE, 32),
+    DOUBLE(Double.MIN_VALUE, Double.MAX_VALUE, 64),
     // https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
     // Standard Data Types
     /**
@@ -148,7 +150,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * REAL	~ -3.402823 x 1038	~ 3.402823 x 1038	32 Bit
      */
-    REAL(Float.MAX_VALUE, Float.MAX_VALUE, 32),
+    REAL(Float.MIN_VALUE, Float.MAX_VALUE, 32),
     /**
      * LREAL
      * 64 Bit floating point data type. It is required to represent rational numbers.
@@ -495,8 +497,9 @@ public enum AdsDataType {
 
     private final int targetByteSize;
 
+    // TODO: BYTE.MAX default might not be the best....
     AdsDataType(int memoryUse) {
-        this(-1, -1, memoryUse);
+        this(0, Byte.MAX_VALUE, memoryUse);
     }
 
     AdsDataType(double lowerBound, double upperBound, int memoryUse) {

@@ -837,12 +837,12 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
                         " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
             }
 
-            if (minValue.compareTo(new BigDecimal(floatingPointValues[i])) < 0) {
+            if (minValue.compareTo(new BigDecimal(floatingPointValues[i])) > 0) {
                 throw new IllegalArgumentException(
                     "Value of " + floatingPointValues[i] + " exceeds allowed minimum for type "
                         + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
             }
-            if (maxValue.compareTo(new BigDecimal(floatingPointValues[i])) > 0) {
+            if (maxValue.compareTo(new BigDecimal(floatingPointValues[i])) < 0) {
                 throw new IllegalArgumentException(
                     "Value of " + floatingPointValues[i] + " exceeds allowed maximum for type "
                         + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
