@@ -39,43 +39,51 @@ public enum S7DataType {
     WORD(0x04, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     DWORD(0x06, "D", 4, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Only got a basic TIA license (S7-1500 needed to find this out)
+    // TODO: Find the code
     LWORD(0x00, "X", 8, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
 
     // -----------------------------------------
     // Integers
     // -----------------------------------------
+    // Signed Int
     INT(0x05, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    // Unsigned Int
+    UINT(0x05, "W", 2, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    // (Signed) Small Int
+    SINT(0x02, "B", 1, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    // Unsigned Small Int
+    USINT(0x02, "B", 1, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Double Precision Int
     DINT(0x07, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
-    // Unsigned Small Int
-    USINT(0x00, "B", 1, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
-    // (Signed) Small Int
-    SINT(0x00, "B", 1, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
-    // Unsigned Int
-    UINT(0x00, "W", 2, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Unsigned Double Precision Int
-    UDINT(0x00, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    UDINT(0x07, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
+    // TODO: Find the code
     LINT(0x00, "X", 8, INT, null, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
+    // TODO: Find the code
     ULINT(0x00, "X", 16, INT, null, S7ControllerType.S7_1500),
 
     // -----------------------------------------
     // Reals
     // -----------------------------------------
     REAL(0x08, "D", 4, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
-    LREAL(0x00, "X", 8, REAL, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    // TODO: Find the code
+    LREAL(0x00, "X", 8, REAL, null, S7ControllerType.S7_1200, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
 
     // -----------------------------------------
     // Durations
     // -----------------------------------------
     // IEC time
     TIME(0x0B, "X", 4, null, null, S7ControllerType.S7_ANY),
+    // TODO: Find the code
+    LTIME(0x00, "X", 8, TIME, null, S7ControllerType.S7_1500),
 
     // -----------------------------------------
     // Date
     // -----------------------------------------
     // IEC date (yyyy-m-d)
+    // TODO: Find the code
     DATE(0x00, "X", 2, null, null, S7ControllerType.S7_ANY),
 
     // -----------------------------------------
@@ -95,13 +103,23 @@ public enum S7DataType {
     // Single-byte character
     CHAR(0x03, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
     // Double-byte character
-    WCHAR(0x00, "X", 2, null, null, S7ControllerType.S7_ANY),
+    WCHAR(0x13, "X", 2, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Variable-length single-byte character string
+    // TODO: Find the code (Eventually 0x03)
     STRING(0x00, "X", -1, null, null, S7ControllerType.S7_ANY),
     // Variable-length double-byte character string
-    WSTRING(0x00, "X", -1, null, null, S7ControllerType.S7_ANY);
+    // TODO: Find the code (Eventually 0x13)
+    WSTRING(0x00, "X", -1, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500);
 
     /* TO BE CONTINUED */
+
+    // Codes and their types:
+    // 0x1C: Counter
+    // 0x1D: Timer
+    // 0x1E: IEC Timer
+    // 0x1F: IEC Counter
+    // 0x20: HS Counter
+    //
 
     private final byte typeCode;
     private final String sizeCode;

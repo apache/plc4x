@@ -41,7 +41,7 @@ public class PLC4X47Test {
         PlcReadRequest.Builder builder = connection.readRequestBuilder();
         for (int i = 1; i <= 30; i++) {
             // just the first byte of each db
-            builder.addItem("field-" + i, "%DB3.DB" + i + ":INT");
+            builder.addItem("field-" + i, "%DB3.DB" + i + ":SINT");
         }
         PlcReadRequest readRequest = builder.build();
         PlcReadResponse<?> readResponse = connection.read(readRequest).get();

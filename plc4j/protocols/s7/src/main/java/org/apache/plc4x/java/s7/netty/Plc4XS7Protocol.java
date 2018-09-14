@@ -539,7 +539,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         break;
                     }
                     case WCHAR: { // 2 byte
-                        // TODO: Double check, if this is ok?
+                        // TODO: Double check, if this is ok? Alternatives: BMP, UCS2
                         String stringValue = data.readCharSequence(2, Charset.forName("UTF-16")).toString();
                         fieldItem = new S7StringFieldItem(field.getDataType(), stringValue);
                         break;
