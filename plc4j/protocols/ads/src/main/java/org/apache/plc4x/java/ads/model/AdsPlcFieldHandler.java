@@ -24,8 +24,10 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.*;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -661,51 +663,6 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
     private FieldItem internalEncodeBoolean(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
-            case BIT:
-            case BIT8:
-            case BITARR8:
-            case BITARR16:
-            case BITARR32:
-            case INT8:
-            case INT16:
-            case INT32:
-            case INT64:
-            case UINT8:
-            case UINT16:
-            case UINT32:
-            case UINT64:
-            case FLOAT:
-            case DOUBLE:
-            case BOOL:
-            case BYTE:
-            case WORD:
-            case DWORD:
-            case SINT:
-            case USINT:
-            case INT:
-            case UINT:
-            case DINT:
-            case UDINT:
-            case LINT:
-            case ULINT:
-            case REAL:
-            case LREAL:
-            case STRING:
-            case TIME:
-            case TIME_OF_DAY:
-            case DATE:
-            case DATE_AND_TIME:
-            case ARRAY:
-            case POINTER:
-            case ENUM:
-            case STRUCT:
-            case ALIAS:
-            case SUB_RANGE_DATA_TYPE:
-            case UNKNOWN:
-            default:
-                //throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
-        }
-        switch (adsField.getAdsDataType()) {
             case BOOL:
             case BYTE:
             case WORD:
@@ -755,118 +712,47 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
 
     private FieldItem internalEncodeInteger(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
-        switch (adsField.getAdsDataType()) {
-            case BIT:
-            case BIT8:
-            case BITARR8:
-            case BITARR16:
-            case BITARR32:
-            case INT8:
-            case INT16:
-            case INT32:
-            case INT64:
-            case UINT8:
-            case UINT16:
-            case UINT32:
-            case UINT64:
-            case FLOAT:
-            case DOUBLE:
-            case BOOL:
-            case BYTE:
-            case WORD:
-            case DWORD:
-            case SINT:
-            case USINT:
-            case INT:
-            case UINT:
-            case DINT:
-            case UDINT:
-            case LINT:
-            case ULINT:
-            case REAL:
-            case LREAL:
-            case STRING:
-            case TIME:
-            case TIME_OF_DAY:
-            case DATE:
-            case DATE_AND_TIME:
-            case ARRAY:
-            case POINTER:
-            case ENUM:
-            case STRUCT:
-            case ALIAS:
-            case SUB_RANGE_DATA_TYPE:
-            case UNKNOWN:
-            default:
-                //throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
-        }
-        BigInteger minValue;
-        BigInteger maxValue;
+        BigDecimal minValue = BigDecimal.valueOf(adsField.getAdsDataType().getLowerBound());
+        BigDecimal maxValue = BigDecimal.valueOf(adsField.getAdsDataType().getUpperBound());
         Class<? extends FieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case BYTE:
-                minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
-                maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case WORD:
-                minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
-                maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case DWORD:
-                minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
-                maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case SINT:
-                minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
-                maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case USINT:
-                minValue = BigInteger.valueOf((long) 0);
-                maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE * 2);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case INT:
-                minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
-                maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case UINT:
-                minValue = BigInteger.valueOf((long) 0);
-                maxValue = BigInteger.valueOf(((long) Short.MAX_VALUE) * 2);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case DINT:
-                minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
-                maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case UDINT:
-                minValue = BigInteger.valueOf((long) 0);
-                maxValue = BigInteger.valueOf(((long) Integer.MAX_VALUE) * 2);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case LINT:
-                minValue = BigInteger.valueOf(Long.MIN_VALUE);
-                maxValue = BigInteger.valueOf(Long.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case ULINT:
-                minValue = BigInteger.valueOf((long) 0);
-                maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf((long) 2));
                 fieldType = DefaultBigIntegerFieldItem.class;
                 break;
             case INT32:
-                minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
-                maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             case INT64:
-                minValue = BigInteger.valueOf(Long.MIN_VALUE);
-                maxValue = BigInteger.valueOf(Long.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 break;
             default:
@@ -882,7 +768,7 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
                         "Value of type " + values[i].getClass().getName() +
                             " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
                 }
-                BigInteger value = BigInteger.valueOf(((Number) values[i]).longValue());
+                BigDecimal value = BigDecimal.valueOf(((Number) values[i]).longValue());
                 if (minValue.compareTo(value) > 0) {
                     throw new IllegalArgumentException(
                         "Value of " + value.toString() + " exceeds allowed minimum for type "
@@ -899,12 +785,12 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
         } else {
             BigInteger[] bigIntegerValues = new BigInteger[values.length];
             for (int i = 0; i < values.length; i++) {
-                BigInteger value;
+                BigDecimal value;
                 if (values[i] instanceof BigInteger) {
-                    value = (BigInteger) values[i];
+                    value = new BigDecimal((BigInteger) values[i]);
                 } else if (((values[i] instanceof Byte) || (values[i] instanceof Short) ||
                     (values[i] instanceof Integer) || (values[i] instanceof Long))) {
-                    value = BigInteger.valueOf(((Number) values[i]).longValue());
+                    value = new BigDecimal(((Number) values[i]).longValue());
                 } else {
                     throw new IllegalArgumentException(
                         "Value of type " + values[i].getClass().getName() +
@@ -920,7 +806,7 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
                         "Value of " + value.toString() + " exceeds allowed maximum for type "
                             + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
                 }
-                bigIntegerValues[i] = value;
+                bigIntegerValues[i] = value.toBigInteger();
             }
             return new DefaultBigIntegerFieldItem(bigIntegerValues);
         }
@@ -928,63 +814,12 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
 
     private FieldItem internalEncodeFloatingPoint(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
-        switch (adsField.getAdsDataType()) {
-            case BIT:
-            case BIT8:
-            case BITARR8:
-            case BITARR16:
-            case BITARR32:
-            case INT8:
-            case INT16:
-            case INT32:
-            case INT64:
-            case UINT8:
-            case UINT16:
-            case UINT32:
-            case UINT64:
-            case FLOAT:
-            case DOUBLE:
-            case BOOL:
-            case BYTE:
-            case WORD:
-            case DWORD:
-            case SINT:
-            case USINT:
-            case INT:
-            case UINT:
-            case DINT:
-            case UDINT:
-            case LINT:
-            case ULINT:
-            case REAL:
-            case LREAL:
-            case STRING:
-            case TIME:
-            case TIME_OF_DAY:
-            case DATE:
-            case DATE_AND_TIME:
-            case ARRAY:
-            case POINTER:
-            case ENUM:
-            case STRUCT:
-            case ALIAS:
-            case SUB_RANGE_DATA_TYPE:
-            case UNKNOWN:
-            default:
-                //throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
-        }
-        Double minValue;
-        Double maxValue;
+        BigDecimal minValue = BigDecimal.valueOf(adsField.getAdsDataType().getLowerBound());
+        BigDecimal maxValue = BigDecimal.valueOf(adsField.getAdsDataType().getUpperBound());
         switch (adsField.getAdsDataType()) {
             case REAL:
-                // Yes this is actually correct, if I set min to Float.MIN_VALUE (0.0 < Float.MIN_VALUE = true)
-                minValue = (double) -Float.MAX_VALUE;
-                maxValue = (double) Float.MAX_VALUE;
                 break;
             case LREAL:
-                // Yes this is actually correct, if I set min to Double.MIN_VALUE (0.0 < Double.MIN_VALUE = true)
-                minValue = -Double.MAX_VALUE;
-                maxValue = Double.MAX_VALUE;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -1001,12 +836,13 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
                     "Value of type " + values[i].getClass().getName() +
                         " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
             }
-            if (floatingPointValues[i] < minValue) {
+
+            if (minValue.compareTo(new BigDecimal(floatingPointValues[i])) < 0) {
                 throw new IllegalArgumentException(
                     "Value of " + floatingPointValues[i] + " exceeds allowed minimum for type "
                         + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
             }
-            if (floatingPointValues[i] > maxValue) {
+            if (maxValue.compareTo(new BigDecimal(floatingPointValues[i])) > 0) {
                 throw new IllegalArgumentException(
                     "Value of " + floatingPointValues[i] + " exceeds allowed maximum for type "
                         + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
@@ -1017,56 +853,10 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
 
     private FieldItem internalEncodeString(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
-        switch (adsField.getAdsDataType()) {
-            case BIT:
-            case BIT8:
-            case BITARR8:
-            case BITARR16:
-            case BITARR32:
-            case INT8:
-            case INT16:
-            case INT32:
-            case INT64:
-            case UINT8:
-            case UINT16:
-            case UINT32:
-            case UINT64:
-            case FLOAT:
-            case DOUBLE:
-            case BOOL:
-            case BYTE:
-            case WORD:
-            case DWORD:
-            case SINT:
-            case USINT:
-            case INT:
-            case UINT:
-            case DINT:
-            case UDINT:
-            case LINT:
-            case ULINT:
-            case REAL:
-            case LREAL:
-            case STRING:
-            case TIME:
-            case TIME_OF_DAY:
-            case DATE:
-            case DATE_AND_TIME:
-            case ARRAY:
-            case POINTER:
-            case ENUM:
-            case STRUCT:
-            case ALIAS:
-            case SUB_RANGE_DATA_TYPE:
-            case UNKNOWN:
-            default:
-                //throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
-        }
-        int maxLength;
+        double maxLength = adsField.getAdsDataType().getUpperBound();
         boolean encoding16Bit;
         switch (adsField.getAdsDataType()) {
             case STRING:
-                maxLength = 254;
                 encoding16Bit = false;
                 break;
             default:
@@ -1143,55 +933,10 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
     private FieldItem internalEncodeTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
-            case BIT:
-            case BIT8:
-            case BITARR8:
-            case BITARR16:
-            case BITARR32:
-            case INT8:
-            case INT16:
-            case INT32:
-            case INT64:
-            case UINT8:
-            case UINT16:
-            case UINT32:
-            case UINT64:
-            case FLOAT:
-            case DOUBLE:
-            case BOOL:
-            case BYTE:
-            case WORD:
-            case DWORD:
-            case SINT:
-            case USINT:
-            case INT:
-            case UINT:
-            case DINT:
-            case UDINT:
-            case LINT:
-            case ULINT:
-            case REAL:
-            case LREAL:
-            case STRING:
-            case TIME:
-            case TIME_OF_DAY:
-            case DATE:
-            case DATE_AND_TIME:
-            case ARRAY:
-            case POINTER:
-            case ENUM:
-            case STRUCT:
-            case ALIAS:
-            case SUB_RANGE_DATA_TYPE:
-            case UNKNOWN:
-            default:
-                //throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
-        }
-        switch (adsField.getAdsDataType()) {
             case TIME:
             case DATE:
             case DATE_AND_TIME:
-                return new DefaultTimeFieldItem();
+                return new DefaultTimeFieldItem((LocalDateTime[]) values);
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");
