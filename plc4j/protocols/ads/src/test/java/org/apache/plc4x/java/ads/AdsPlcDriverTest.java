@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.ads;
 
 
+import io.netty.channel.ConnectTimeoutException;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.ads.connection.AdsConnectionFactory;
 import org.apache.plc4x.java.ads.connection.AdsTcpPlcConnection;
@@ -30,6 +31,7 @@ import org.apache.plc4x.java.base.connection.tcp.TcpHexDumper;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.net.ConnectException;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -105,9 +107,19 @@ public class AdsPlcDriverTest {
             new PlcUsernamePasswordAuthentication("admin", "admin"));
     }
 
-    @Test(expected = PlcConnectionException.class)
-    public void getConnectionUnknownHost() throws Exception {
-        new PlcDriverManager().getConnection("ads:tcp://nowhere:8080/0.0.0.0.0.0:13");
+    @Test
+    public void getConnectionUnknownHost() {
+        try {
+            new PlcDriverManager().getConnection("ads:tcp://nowhere:8080/0.0.0.0.0.0:13");
+            fail();
+        } catch (Exception e) {
+            assert((e instanceof PlcConnectionException) ||
+                // When running this test on systems with an internet provider that redirects
+                // all unknown hosts to a default host (For showing adds), one of these will
+                // be thrown instead.
+                (e instanceof ConnectTimeoutException) ||
+                (e.getCause() instanceof ConnectException));
+        }
     }
 
     @Test(expected = PlcConnectionException.class)
