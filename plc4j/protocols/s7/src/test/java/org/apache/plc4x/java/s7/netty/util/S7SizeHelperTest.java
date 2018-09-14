@@ -29,7 +29,7 @@ import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class S7SizeHelperTest {
             new SetupCommunicationParameter((short) 8, (short)8, (short)250),
             new VarParameter(ParameterType.READ_VAR, Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0))))), is((short) 22));
+                    TransportSize.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0))))), is((short) 22));
     }
 
     @Test
@@ -70,28 +70,28 @@ public class S7SizeHelperTest {
         assertThat(S7SizeHelper.getParameterLength(
             new VarParameter(ParameterType.READ_VAR, Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0)))), is((short) 14));
+                    TransportSize.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0)))), is((short) 14));
         assertThat(S7SizeHelper.getParameterLength(
             new VarParameter(ParameterType.WRITE_VAR, Collections.emptyList())), is((short) 2));
         assertThat(S7SizeHelper.getParameterLength(
             new VarParameter(ParameterType.WRITE_VAR, Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0)))), is((short) 14));
+                    TransportSize.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0)))), is((short) 14));
     }
 
     @Test
     public void getPayloadLengthFromParameterTest() {
         // One bit is transferred inside one byte (4 byte header and one payload)
         assertThat(S7SizeHelper.getPayloadLength(new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-            S7DataType.BOOL, (short) 1, (short) 0, (short) 0, (byte) 0)), is((short) 5));
+            TransportSize.BOOL, (short) 1, (short) 0, (short) 0, (byte) 0)), is((short) 5));
         assertThat(S7SizeHelper.getPayloadLength(new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-            S7DataType.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0)), is((short) 5));
+            TransportSize.BYTE, (short) 1, (short) 0, (short) 0, (byte) 0)), is((short) 5));
         assertThat(S7SizeHelper.getPayloadLength(new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-            S7DataType.BYTE, (short) 42, (short) 0, (short) 0, (byte) 0)), is((short) 46));
+            TransportSize.BYTE, (short) 42, (short) 0, (short) 0, (byte) 0)), is((short) 46));
         assertThat(S7SizeHelper.getPayloadLength(new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-            S7DataType.DWORD, (short) 1, (short) 0, (short) 0, (byte) 0)), is((short) 8));
+            TransportSize.DWORD, (short) 1, (short) 0, (short) 0, (byte) 0)), is((short) 8));
         assertThat(S7SizeHelper.getPayloadLength(new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-            S7DataType.DWORD, (short) 42, (short) 0, (short) 0, (byte) 0)), is((short) 172));
+            TransportSize.DWORD, (short) 42, (short) 0, (short) 0, (byte) 0)), is((short) 172));
     }
 
     @Test

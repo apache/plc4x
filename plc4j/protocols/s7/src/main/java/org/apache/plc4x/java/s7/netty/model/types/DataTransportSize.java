@@ -70,34 +70,4 @@ public enum DataTransportSize {
         return map.get(code);
     }
 
-    public static DataTransportSize getForTransportSize(TransportSize transportSize) {
-        switch (transportSize) {
-            case BIT:
-                return BIT;
-            case INT:
-                return INTEGER;
-            case DINT:
-                return DINTEGER;
-            case BYTE:
-            case WORD:
-            case DWORD:
-                return BYTE_WORD_DWORD;
-            case CHAR:
-                return OCTET_STRING;
-            case REAL:
-                return REAL;
-            case TIME:
-            case TOD:
-            case TIMER:
-            case S5TIME:
-            case COUNTER:
-            case IEC_TIMER:
-            case HS_COUNTER:
-            case IEC_COUNTER:
-            case DATE_AND_TIME:
-            default:
-                return null;
-        }
-    }
-
 }

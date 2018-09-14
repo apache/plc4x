@@ -120,7 +120,7 @@ public class S7TypeTests {
         TransportSize transportSize = TransportSize.TIME;
 
         assertThat("0x0B incorrectly mapped", TransportSize.valueOf((byte) 0x0B), equalTo(TransportSize.TIME));
-        assertThat("code is not 0x0B", transportSize.getCode(), equalTo((byte) 0x0B));
+        assertThat("code is not 0x0B", transportSize.getTypeCode(), equalTo((byte) 0x0B));
     }
 
     @Test

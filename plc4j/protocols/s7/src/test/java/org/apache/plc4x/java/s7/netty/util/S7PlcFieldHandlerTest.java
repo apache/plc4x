@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -257,11 +257,11 @@ class S7PlcFieldHandlerTest {
 
     private static Stream<Arguments> createInputArrays() {
         // Generate valid fields for each s7 type.
-        Map<S7DataType, PlcField> fields = new HashMap<>();
-        for (S7DataType s7Type : S7DataType.values()) {
+        Map<TransportSize, PlcField> fields = new HashMap<>();
+        for (TransportSize s7Type : TransportSize.values()) {
             String sizeCode = (s7Type.getSizeCode() != null) ? s7Type.getSizeCode() : "X";
             String fieldQuery = "%DB1.DB" + sizeCode + "1";
-            if(s7Type == S7DataType.BOOL) {
+            if(s7Type == TransportSize.BOOL) {
                 fieldQuery += ".0";
             }
             fieldQuery += ":" + s7Type.name();
@@ -269,7 +269,7 @@ class S7PlcFieldHandlerTest {
         }
         // Generate output for each combination of S7 and Java type.
         Stream<Arguments> values = null;
-        for (S7DataType s7Type : S7DataType.values()) {
+        for (TransportSize s7Type : TransportSize.values()) {
             PlcField field = fields.get(s7Type);
             for (JavaTypes javaType : JavaTypes.values()) {
                 Object[] testValues = javaType.values;

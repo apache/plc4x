@@ -19,13 +19,13 @@
 package org.apache.plc4x.java.s7.messages.items;
 
 import org.apache.plc4x.java.base.messages.items.DefaultFloatingPointFieldItem;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 public class S7FloatingPointFieldItem extends DefaultFloatingPointFieldItem {
 
-    private final S7DataType naturalDataType;
+    private final TransportSize naturalDataType;
 
-    public S7FloatingPointFieldItem(S7DataType naturalDataType, Double... values) {
+    public S7FloatingPointFieldItem(TransportSize naturalDataType, Double... values) {
         super(values);
         this.naturalDataType = naturalDataType;
     }

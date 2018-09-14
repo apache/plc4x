@@ -19,13 +19,13 @@
 package org.apache.plc4x.java.s7.messages.items;
 
 import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 public class S7StringFieldItem extends DefaultStringFieldItem {
 
-    private final S7DataType naturalDataType;
+    private final TransportSize naturalDataType;
 
-    public S7StringFieldItem(S7DataType naturalDataType, String... values) {
+    public S7StringFieldItem(TransportSize naturalDataType, String... values) {
         super(values);
         this.naturalDataType = naturalDataType;
     }

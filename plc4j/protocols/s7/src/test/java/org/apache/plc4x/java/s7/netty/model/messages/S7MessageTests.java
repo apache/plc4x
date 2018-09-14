@@ -28,7 +28,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -106,7 +106,7 @@ public class S7MessageTests {
         List<VarParameterItem> parameterItems = new ArrayList<>();
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        S7DataType dataType = S7DataType.INT;
+        TransportSize dataType = TransportSize.INT;
         short numElements = 1;
         byte dataBlock = (byte) 0x1;
         byte byteOffset = (byte) 0x10;
@@ -170,7 +170,7 @@ public class S7MessageTests {
         List<VarParameterItem> parameterItems = new ArrayList<>();
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        S7DataType dataType = S7DataType.INT;
+        TransportSize dataType = TransportSize.INT;
         int numElements = 1;
         byte dataBlock = (byte) 0x1;
         byte byteOffset = (byte) 0x10;

@@ -47,7 +47,7 @@ import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.strategies.S7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -713,7 +713,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             }
             VariableAddressingMode variableAddressingMode = VariableAddressingMode.valueOf(in.readByte());
             if (variableAddressingMode == VariableAddressingMode.S7ANY) {
-                S7DataType dataType = S7DataType.valueOf(in.readByte());
+                TransportSize dataType = TransportSize.valueOf(in.readByte());
                 short length = in.readShort();
                 short dbNumber = in.readShort();
                 MemoryArea memoryArea = MemoryArea.valueOf(in.readByte());

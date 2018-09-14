@@ -27,7 +27,7 @@ import org.apache.plc4x.java.base.messages.items.DefaultTimeFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.s7.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -49,9 +49,9 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     public FieldItem encodeBoolean(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         // All of these types are declared as Bit or Bit-String types.
-        if ((s7Field.getDataType() == S7DataType.BOOL) || (s7Field.getDataType() == S7DataType.BYTE) ||
-            (s7Field.getDataType() == S7DataType.WORD) || (s7Field.getDataType() == S7DataType.DWORD) ||
-            (s7Field.getDataType() == S7DataType.LWORD)) {
+        if ((s7Field.getDataType() == TransportSize.BOOL) || (s7Field.getDataType() == TransportSize.BYTE) ||
+            (s7Field.getDataType() == TransportSize.WORD) || (s7Field.getDataType() == TransportSize.DWORD) ||
+            (s7Field.getDataType() == TransportSize.LWORD)) {
             return internalEncodeBoolean(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -60,8 +60,8 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeByte(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == S7DataType.BYTE) || (s7Field.getDataType() == S7DataType.SINT) ||
-            (s7Field.getDataType() == S7DataType.USINT) || (s7Field.getDataType() == S7DataType.CHAR)) {
+        if ((s7Field.getDataType() == TransportSize.BYTE) || (s7Field.getDataType() == TransportSize.SINT) ||
+            (s7Field.getDataType() == TransportSize.USINT) || (s7Field.getDataType() == TransportSize.CHAR)) {
             return internalEncodeInteger(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -70,8 +70,8 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeShort(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == S7DataType.WORD) || (s7Field.getDataType() == S7DataType.INT) ||
-            (s7Field.getDataType() == S7DataType.UINT)) {
+        if ((s7Field.getDataType() == TransportSize.WORD) || (s7Field.getDataType() == TransportSize.INT) ||
+            (s7Field.getDataType() == TransportSize.UINT)) {
             return internalEncodeInteger(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -80,8 +80,8 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == S7DataType.DWORD) || (s7Field.getDataType() == S7DataType.DINT) ||
-            (s7Field.getDataType() == S7DataType.UDINT)) {
+        if ((s7Field.getDataType() == TransportSize.DWORD) || (s7Field.getDataType() == TransportSize.DINT) ||
+            (s7Field.getDataType() == TransportSize.UDINT)) {
             return internalEncodeInteger(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -90,8 +90,8 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeBigInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == S7DataType.DWORD) || (s7Field.getDataType() == S7DataType.DINT) ||
-            (s7Field.getDataType() == S7DataType.UDINT)) {
+        if ((s7Field.getDataType() == TransportSize.DWORD) || (s7Field.getDataType() == TransportSize.DINT) ||
+            (s7Field.getDataType() == TransportSize.UDINT)) {
             return internalEncodeInteger(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -100,8 +100,8 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeLong(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == S7DataType.LWORD) || (s7Field.getDataType() == S7DataType.LINT) ||
-            (s7Field.getDataType() == S7DataType.ULINT)) {
+        if ((s7Field.getDataType() == TransportSize.LWORD) || (s7Field.getDataType() == TransportSize.LINT) ||
+            (s7Field.getDataType() == TransportSize.ULINT)) {
             return internalEncodeInteger(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -110,7 +110,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeFloat(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == S7DataType.REAL) {
+        if (s7Field.getDataType() == TransportSize.REAL) {
             return internalEncodeFloatingPoint(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -119,7 +119,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeDouble(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == S7DataType.LREAL) {
+        if (s7Field.getDataType() == TransportSize.LREAL) {
             return internalEncodeFloatingPoint(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -128,8 +128,8 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeString(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == S7DataType.CHAR) || (s7Field.getDataType() == S7DataType.WCHAR) ||
-            (s7Field.getDataType() == S7DataType.STRING) || (s7Field.getDataType() == S7DataType.WSTRING)) {
+        if ((s7Field.getDataType() == TransportSize.CHAR) || (s7Field.getDataType() == TransportSize.WCHAR) ||
+            (s7Field.getDataType() == TransportSize.STRING) || (s7Field.getDataType() == TransportSize.WSTRING)) {
             return internalEncodeString(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -138,7 +138,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == S7DataType.TIME) {
+        if (s7Field.getDataType() == TransportSize.TIME) {
             return internalEncodeTemporal(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -147,7 +147,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeDate(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == S7DataType.DATE) {
+        if (s7Field.getDataType() == TransportSize.DATE) {
             return internalEncodeTemporal(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -156,7 +156,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     @Override
     public FieldItem encodeDateTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == S7DataType.DATE_AND_TIME) {
+        if (s7Field.getDataType() == TransportSize.DATE_AND_TIME) {
             return internalEncodeTemporal(field, values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());

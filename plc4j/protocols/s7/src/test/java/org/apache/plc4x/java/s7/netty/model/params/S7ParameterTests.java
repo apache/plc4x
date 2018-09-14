@@ -22,7 +22,7 @@ package org.apache.plc4x.java.s7.netty.model.params;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +42,7 @@ public class S7ParameterTests {
         ArrayList<VarParameterItem> parameterItems = new ArrayList<>();
         SpecificationType specificationType = SpecificationType.VARIABLE_SPECIFICATION;
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-        S7DataType dataType = S7DataType.INT;
+        TransportSize dataType = TransportSize.INT;
         short numElements = 1;
         byte dataBlock = (byte) 0x1;
         byte byteOffset = (byte) 0x10;

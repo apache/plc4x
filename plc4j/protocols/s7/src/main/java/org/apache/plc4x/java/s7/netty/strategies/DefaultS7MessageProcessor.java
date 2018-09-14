@@ -35,7 +35,7 @@ import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 import org.apache.plc4x.java.s7.netty.util.S7RequestSizeCalculator;
 import org.apache.plc4x.java.s7.netty.util.S7ResponseSizeEstimator;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -168,7 +168,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                     if (varParameterItem instanceof S7AnyVarParameterItem) {
                         S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameterItem;
                         short byteOffset = s7AnyVarParameterItem.getByteOffset();
-                        if (s7AnyVarParameterItem.getDataType() == S7DataType.BOOL) {
+                        if (s7AnyVarParameterItem.getDataType() == TransportSize.BOOL) {
                             byte bitOffset = 0;
                             for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
                                 // Create a new message with only one single value item in the var parameter.

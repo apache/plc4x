@@ -27,7 +27,7 @@ import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createReadMessage(
             Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0)));
+                    TransportSize.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0)));
         Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
@@ -84,9 +84,9 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createReadMessage(
             Arrays.asList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 2, (short) 0, (byte) 0)));
+                    TransportSize.BYTE, (short) 1, (short) 2, (short) 0, (byte) 0)));
         Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
@@ -109,43 +109,43 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createReadMessage(
             Arrays.asList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 2, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 2, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 3, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 3, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 4, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 4, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 5, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 5, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 6, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 6, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 7, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 7, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 8, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 8, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 9, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 9, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 10, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 10, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 11, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 11, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 12, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 12, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 13, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 13, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 14, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 14, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 15, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 15, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 16, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 16, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 17, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 17, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 18, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 18, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 19, (short) 0, (byte) 0)));
+                    TransportSize.BYTE, (short) 1, (short) 19, (short) 0, (byte) 0)));
         Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
@@ -169,45 +169,45 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createReadMessage(
             Arrays.asList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 2, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 2, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 3, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 3, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 4, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 4, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 5, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 5, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 6, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 6, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 7, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 7, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 8, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 8, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 9, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 9, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 10, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 10, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 11, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 11, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 12, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 12, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 13, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 13, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 14, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 14, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 15, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 15, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 16, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 16, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 17, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 17, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 18, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 18, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 19, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 19, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 20, (short) 0, (byte) 0)));
+                    TransportSize.BYTE, (short) 1, (short) 20, (short) 0, (byte) 0)));
         Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
@@ -240,9 +240,9 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createReadMessage(
             Arrays.asList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 200, (short) 1, (short) 0, (byte) 0),
+                    TransportSize.BYTE, (short) 200, (short) 1, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 200, (short) 2, (short) 0, (byte) 0)));
+                    TransportSize.BYTE, (short) 200, (short) 2, (short) 0, (byte) 0)));
         Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 256);
 
         assertThat(processedRequests, notNullValue());
@@ -266,7 +266,7 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createWriteMessage(
             Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0)),
+                    TransportSize.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0)),
             Collections.singletonList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {0x00}))
             );
@@ -301,7 +301,7 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createWriteMessage(
             Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BOOL, (short) 10, (short) 1, (short) 0, (byte) 0)),
+                    TransportSize.BOOL, (short) 10, (short) 1, (short) 0, (byte) 0)),
             Collections.singletonList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BIT, new byte[] {
                     (byte) 0xAA, (byte) 0x02}))
@@ -333,7 +333,7 @@ public class DefaultS7MessageProcessorTest {
             assertThat(parameterItem.getAddressingMode(), is(VariableAddressingMode.S7ANY));
             S7AnyVarParameterItem s7AnyParameterItem = (S7AnyVarParameterItem) parameterItem;
             assertThat(s7AnyParameterItem.getMemoryArea(), is(MemoryArea.DATA_BLOCKS));
-            assertThat(s7AnyParameterItem.getDataType(), is(S7DataType.BOOL));
+            assertThat(s7AnyParameterItem.getDataType(), is(TransportSize.BOOL));
             assertThat(s7AnyParameterItem.getNumElements(), is(1));
             String fieldString = Short.toString(
                 s7AnyParameterItem.getByteOffset()) + "/" + Byte.toString(s7AnyParameterItem.getBitOffset());
@@ -365,7 +365,7 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createWriteMessage(
             Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 10, (short) 1, (short) 0, (byte) 0)),
+                    TransportSize.BYTE, (short) 10, (short) 1, (short) 0, (byte) 0)),
             Collections.singletonList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A}))
@@ -397,7 +397,7 @@ public class DefaultS7MessageProcessorTest {
             assertThat(parameterItem.getAddressingMode(), is(VariableAddressingMode.S7ANY));
             S7AnyVarParameterItem s7AnyParameterItem = (S7AnyVarParameterItem) parameterItem;
             assertThat(s7AnyParameterItem.getMemoryArea(), is(MemoryArea.DATA_BLOCKS));
-            assertThat(s7AnyParameterItem.getDataType(), is(S7DataType.BYTE));
+            assertThat(s7AnyParameterItem.getDataType(), is(TransportSize.BYTE));
             assertThat(s7AnyParameterItem.getNumElements(), is(1));
             // Check the field is in the expected range and hasn't been used yet.
             assertThat(expectedFields.contains(s7AnyParameterItem.getByteOffset()), is(true));
@@ -428,7 +428,7 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createWriteMessage(
             Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.DWORD, (short) 10, (short) 1, (short) 0, (byte) 0)),
+                    TransportSize.DWORD, (short) 10, (short) 1, (short) 0, (byte) 0)),
             Collections.singletonList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {
                     0x00, 0x00, 0x00, 0x01,
@@ -468,7 +468,7 @@ public class DefaultS7MessageProcessorTest {
             assertThat(parameterItem.getAddressingMode(), is(VariableAddressingMode.S7ANY));
             S7AnyVarParameterItem s7AnyParameterItem = (S7AnyVarParameterItem) parameterItem;
             assertThat(s7AnyParameterItem.getMemoryArea(), is(MemoryArea.DATA_BLOCKS));
-            assertThat(s7AnyParameterItem.getDataType(), is(S7DataType.DWORD));
+            assertThat(s7AnyParameterItem.getDataType(), is(TransportSize.DWORD));
             assertThat(s7AnyParameterItem.getNumElements(), is(1));
             // Check the field is in the expected range and hasn't been used yet.
             assertThat(expectedFields.contains(s7AnyParameterItem.getByteOffset()), is(true));
@@ -499,15 +499,15 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createWriteMessage(
             Arrays.asList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BOOL, (short) 1, (short) 1, (short) 0, (byte) 0),
+                    TransportSize.BOOL, (short) 1, (short) 1, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 1, (short) 1, (short) 1, (byte) 0),
+                    TransportSize.BYTE, (short) 1, (short) 1, (short) 1, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.DWORD, (short) 1, (short) 1, (short) 2, (byte) 0),
+                    TransportSize.DWORD, (short) 1, (short) 1, (short) 2, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.REAL, (short) 1, (short) 1, (short) 5, (byte) 0),
+                    TransportSize.REAL, (short) 1, (short) 1, (short) 5, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.INT, (short) 1, (short) 1, (short) 9, (byte) 0)),
+                    TransportSize.INT, (short) 1, (short) 1, (short) 9, (byte) 0)),
             Arrays.asList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BIT, new byte[] {0x01}),
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {0x02}),
@@ -547,9 +547,9 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createWriteMessage(
             Arrays.asList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.BYTE, (short) 2, (short) 1, (short) 1, (byte) 0),
+                    TransportSize.BYTE, (short) 2, (short) 1, (short) 1, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    S7DataType.DWORD, (short) 2, (short) 1, (short) 2, (byte) 0)),
+                    TransportSize.DWORD, (short) 2, (short) 1, (short) 2, (byte) 0)),
             Arrays.asList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {
                     0x01, 0x02}),
@@ -618,7 +618,7 @@ public class DefaultS7MessageProcessorTest {
             Collections.singletonList(
                 new VarParameter(ParameterType.READ_VAR, new LinkedList<>(Collections.singletonList(
                     new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                        S7DataType.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0))))),
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0))))),
             Collections.singletonList(
                 new VarPayload(ParameterType.READ_VAR, new LinkedList<>(Collections.singletonList(
                     new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x42}))))),
@@ -633,7 +633,7 @@ public class DefaultS7MessageProcessorTest {
             Collections.singletonList(
                 new VarParameter(ParameterType.READ_VAR, new LinkedList<>(Collections.singletonList(
                     new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                        S7DataType.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))))),
+                        TransportSize.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))))),
             Collections.singletonList(
                 new VarPayload(ParameterType.READ_VAR, new LinkedList<>(Collections.singletonList(
                     new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x23}))))),
@@ -682,7 +682,7 @@ public class DefaultS7MessageProcessorTest {
             Collections.singletonList(
                 new VarParameter(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
                     new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                        S7DataType.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0))))),
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0))))),
             Collections.singletonList(
                 new VarPayload(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
                     new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x42}))))),
@@ -697,7 +697,7 @@ public class DefaultS7MessageProcessorTest {
             Collections.singletonList(
                 new VarParameter(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
                     new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                        S7DataType.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))))),
+                        TransportSize.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))))),
             Collections.singletonList(
                 new VarPayload(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
                     new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x23}))))),

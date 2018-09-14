@@ -21,7 +21,7 @@ package org.apache.plc4x.java.s7.model;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
-import org.apache.plc4x.java.s7.types.S7DataType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +41,7 @@ public class S7Field implements PlcField {
     public static S7Field of(String fieldString) throws PlcInvalidFieldException {
         Matcher matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString);
         if(matcher.matches()) {
-            S7DataType dataType = S7DataType.valueOf(matcher.group("dataType"));
+            TransportSize dataType = TransportSize.valueOf(matcher.group("dataType"));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             String transferSizeCode = matcher.group("transferSizeCode");
             short blockNumber = Short.parseShort(matcher.group("blockNumber"));
@@ -49,7 +49,7 @@ public class S7Field implements PlcField {
             short bitOffset = 0;
             if(matcher.group("bitOffset") != null) {
                 bitOffset = Short.parseShort(matcher.group("bitOffset"));
-            } else if(dataType == S7DataType.BOOL) {
+            } else if(dataType == TransportSize.BOOL) {
                 throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
             int numElements = 1;
@@ -64,14 +64,14 @@ public class S7Field implements PlcField {
         } else {
             matcher = ADDRESS_PATTERN.matcher(fieldString);
             if (matcher.matches()) {
-                S7DataType dataType = S7DataType.valueOf(matcher.group("dataType"));
+                TransportSize dataType = TransportSize.valueOf(matcher.group("dataType"));
                 MemoryArea memoryArea = MemoryArea.valueOfShortName(matcher.group("memoryArea"));
                 String transferSizeCode = matcher.group("transferSizeCode");
                 short byteOffset = Short.parseShort(matcher.group("byteOffset"));
                 short bitOffset = 0;
                 if(matcher.group("bitOffset") != null) {
                     bitOffset = Short.parseShort(matcher.group("bitOffset"));
-                } else if(dataType == S7DataType.BOOL) {
+                } else if(dataType == TransportSize.BOOL) {
                     throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
                 }
                 int numElements = 1;
@@ -88,14 +88,14 @@ public class S7Field implements PlcField {
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
 
-    private final S7DataType dataType;
+    private final TransportSize dataType;
     private final MemoryArea memoryArea;
     private final short blockNumber;
     private final short byteOffset;
     private final short bitOffset;
     private final int numElements;
 
-    private S7Field(S7DataType dataType, MemoryArea memoryArea, short blockNumber, short byteOffset, short bitOffset, int numElements) {
+    private S7Field(TransportSize dataType, MemoryArea memoryArea, short blockNumber, short byteOffset, short bitOffset, int numElements) {
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
@@ -104,7 +104,7 @@ public class S7Field implements PlcField {
         this.numElements = numElements;
     }
 
-    public S7DataType getDataType() {
+    public TransportSize getDataType() {
         return dataType;
     }
 
