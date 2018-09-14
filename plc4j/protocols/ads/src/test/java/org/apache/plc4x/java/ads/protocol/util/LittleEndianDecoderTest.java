@@ -18,19 +18,21 @@
  */
 package org.apache.plc4x.java.ads.protocol.util;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
@@ -41,10 +43,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Disabled("needs finishing")
 public class LittleEndianDecoderTest {
 
+    private static Logger LOG = LoggerFactory.getLogger(LittleEndianDecoderTest.class);
+
     @ParameterizedTest
     @MethodSource("createAdsDataTypePears")
-    public void decodeData(AdsDataType adsDataType, Collection expectedTypes, Class<?> clazz, byte[] adsData) {
-        assertEquals(expectedTypes, Arrays.asList(LittleEndianDecoder.decodeData(adsDataType, adsData).getValues()));
+    public void decodeData(AdsDataType adsDataType, Collection expectedTypes, Class<?> clazz, byte[] adsData) throws Exception {
+        FieldItem<?> fieldItem = LittleEndianDecoder.decodeData(adsDataType, adsData);
+
+        Method getterMethod = MethodUtils.getAccessibleMethod(FieldItem.class, "get" + clazz.getSimpleName(), int.class);
+        LOG.info("Using {} to map", getterMethod);
+
+        List<? super Object> actualTypes = new LinkedList<>();
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            actualTypes.add(getterMethod.invoke(fieldItem, i));
+        }
+        assertEquals(expectedTypes, actualTypes);
     }
 
     @Test
