@@ -23,8 +23,8 @@ import java.time.Duration;
 /**
  * Documentation can be found here:
  *
- * https://infosys.beckhoff.com/english.php?content=../content/1033/tcsystemmanager/basics/TcSysMgr_DatatypeComparison.htm&id=
- * https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
+ * @see <a href="https://infosys.beckhoff.com/english.php?content=../content/1033/tcsystemmanager/basics/TcSysMgr_DatatypeComparison.htm&id=">TwinCAT System Manager - I/O Variables</a>
+ * @see <a href="https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id">TwinCAT PLC Control: Data Types</a>
  */
 public enum AdsDataType {
     // TODO: maybe this are just types for the plc ide and can be removed
@@ -216,8 +216,8 @@ public enum AdsDataType {
      * One-, two-, and three-dimensional fields (arrays) are supported as elementary data types. Arrays can be defined both in the declaration part of a POU and in the global variable lists.
      * <p>
      * Syntax:
-     *
-     * <Field_Name>:ARRAY [<LowLim1>..<UpLim1>, <LowLim2>..<UpLim2>] OF <elem. Type>
+     * <p>
+     * &lt;Field_Name&gt;:ARRAY [&lt;LowLim1&gt;..&lt;UpLim1&gt;, &lt;LowLim2&gt;..&lt;UpLim2&gt;] OF &lt;elem. Type&gt;
      * <p>
      * LowLim1, LowLim2 identify the lower limit of the field range; UpLim1 and UpLim2 identify the upper limit. The range values must be integers.
      * <p>
@@ -257,8 +257,8 @@ public enum AdsDataType {
      * <p>
      * <p>
      * Array components are accessed in a two-dimensional array using the following syntax:
-     *
-     * <Field_Name>[Index1,Index2]
+     * <p>
+     * &lt;Field_Name&gt;[Index1,Index2]
      * <p>
      * Example:
      * <p>
@@ -274,8 +274,8 @@ public enum AdsDataType {
     /**
      * Pointer
      * Variable or function block addresses are saved in pointers while a program is running. Pointer declarations have the following syntax:
-     *
-     * <Identifier>: POINTER TO <Datatype/Functionblock>;
+     * <p>
+     * &lt;Identifier&gt;: POINTER TO &lt;Datatype/Functionblock&gt;;
      * A pointer can point to any data type or function block even to user-defined types. The function of the Address Operator ADR is to assign the address of a variable or function block to the pointer.
      * A pointer can be dereferenced by adding the content operator "^" after the pointer identifier. With the help of the SIZEOF Operator, e.g. a pointer increment can be done.
      * <p>
@@ -320,9 +320,9 @@ public enum AdsDataType {
      * <p>
      * Syntax:
      * <p>
-     * TYPE <Identifier>:(<Enum_0> ,<Enum_1>, ...,<Enum_n>);END_TYPE
+     * TYPE &lt;Identifier&gt;:(&lt;Enum_0&gt; ,&lt;Enum_1&gt;, ...,&lt;Enum_n&gt;);END_TYPE
      * <p>
-     * The <Identifier> can take on one of the enumeration values and will be initialized with the first one. These values are compatible with whole numbers which means that you can perform operations with them just as you would with INT. You can assign a number x to the <Identifier>. If the enumeration values are not initialized, counting will begin with 0. When initializing, make certain the initial values are increasing. The validity of the number will be reviewed at the time it is run.
+     * The &lt;Identifier&gt; can take on one of the enumeration values and will be initialized with the first one. These values are compatible with whole numbers which means that you can perform operations with them just as you would with INT. You can assign a number x to the &lt;Identifier&gt;. If the enumeration values are not initialized, counting will begin with 0. When initializing, make certain the initial values are increasing. The validity of the number will be reviewed at the time it is run.
      * <p>
      * Example:
      * <p>
@@ -346,16 +346,16 @@ public enum AdsDataType {
      * Structures (STRUCT)
      * Structures are created as objects in the Object Organizer under the register card Data types. They begin with the keyword TYPE and end with END_TYPE.The syntax for structure declarations is as follows:
      * <p>
-     * TYPE <Structurename>:
+     * TYPE &lt;Structurename&gt;:
      * STRUCT
-     * <Declaration of Variables 1>
+     * &lt;Declaration of Variables 1&gt;
      * .
      * .
-     * <Declaration of Variables n>
+     * &lt;Declaration of Variables n&gt;
      * END_STRUCT
      * END_TYPE
-     *
-     * <Structurename> is a type that is recognized throughout the project and can be used like a standard data type. Interlocking structures are allowed. The only restriction is that variables may not be placed at addresses (the AT declaration is not allowed!).
+     * <p>
+     * &lt;Structurename&gt; is a type that is recognized throughout the project and can be used like a standard data type. Interlocking structures are allowed. The only restriction is that variables may not be placed at addresses (the AT declaration is not allowed!).
      * <p>
      * Example for a structure definition named Polygonline:
      * <p>
@@ -371,8 +371,8 @@ public enum AdsDataType {
      * END_TYPE
      * <p>
      * You can gain access to structure components using the following syntax:
-     *
-     * <Structure_Name>.<Componentname>
+     * <p>
+     * &lt;Structure_Name&gt;.&lt;Componentname&gt;
      * <p>
      * For example, if you have a structure named "Week" that contains a component named "Monday", you can get to it by doing the following: Week.Monday
      * <p>
@@ -446,7 +446,7 @@ public enum AdsDataType {
      * <p>
      * Syntax:
      * <p>
-     * TYPE <Identifier>: <Assignment term>;
+     * TYPE &lt;Identifier&gt;: &lt;Assignment term&gt;;
      * END_TYPE
      * <p>
      * Example:
@@ -460,12 +460,12 @@ public enum AdsDataType {
      * A sub-range data type is a type whose range of values is only a subset of that of the basic type. The declaration can be carried out in the data types register, but a variable can also be directly declared with a subrange type:
      * Syntax for the declaration in the 'Data types' register:
      * <p>
-     * TYPE <Name> : <Inttype> (<ug>..<og>) END_TYPE;
+     * TYPE &lt;Name&gt; : &lt;Inttype&gt; (&lt;ug&gt;..&lt;og&gt;) END_TYPE;
      * Type	Description
-     * <Name>	must be a valid IEC identifier
-     * <Inttype>	is one of the data types SINT, USINT, INT, UINT, DINT, UDINT, BYTE, WORD, DWORD (LINT, ULINT, LWORD).
-     * <ug>	Is a constant which must be compatible with the basic type and which sets the lower boundary of the range types. The lower boundary itself is included in this range.
-     * <og>	Is a constant that must be compatible with the basic type, and sets the upper boundary of the range types. The upper boundary itself is included in this basic type.
+     * &lt;Name&gt;	must be a valid IEC identifier
+     * &lt;Inttype&gt;	is one of the data types SINT, USINT, INT, UINT, DINT, UDINT, BYTE, WORD, DWORD (LINT, ULINT, LWORD).
+     * &lt;ug&gt;	Is a constant which must be compatible with the basic type and which sets the lower boundary of the range types. The lower boundary itself is included in this range.
+     * &lt;og&gt;	Is a constant that must be compatible with the basic type, and sets the upper boundary of the range types. The upper boundary itself is included in this basic type.
      * Example:
      * <p>
      * TYPE
