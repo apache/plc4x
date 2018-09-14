@@ -102,7 +102,7 @@ public class LittleEndianDecoder {
             case INT32: {
                 LinkedList<Long> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aLong = wrappedBuffer.readInt();
+                    long aLong = wrappedBuffer.readIntLE();
                     values.offer(aLong);
                 }
                 return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
