@@ -32,7 +32,7 @@ public abstract class FieldItem<T> {
         this.values = values;
     }
 
-    public int getNumValues() {
+    public int getNumberOfValues() {
         return values.length;
     }
 

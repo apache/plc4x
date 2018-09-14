@@ -36,7 +36,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.*;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.s7.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
@@ -213,10 +213,10 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 // Bit
                 // -----------------------------------------
                 case BOOL: {
-                    int numBytes = fieldItem.getNumValues() >> 3 / 8;
+                    int numBytes = fieldItem.getNumberOfValues() >> 3 / 8;
                     byteData = new byte[numBytes];
                     BitSet bitSet = new BitSet();
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         bitSet.set(i, fieldItem.getBoolean(i));
                     }
                     System.arraycopy(bitSet.toByteArray(), 0, byteData, 0, numBytes);
@@ -228,9 +228,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 case BYTE:
                 case SINT:
                 case CHAR: { // 1 byte
-                    int numBytes = fieldItem.getNumValues();
+                    int numBytes = fieldItem.getNumberOfValues();
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.put(fieldItem.getByte(i));
                     }
                     byteData = buffer.array();
@@ -239,9 +239,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 case WORD:
                 case INT:
                 case WCHAR: { // 2 byte (16 bit)
-                    int numBytes = fieldItem.getNumValues() * 2;
+                    int numBytes = fieldItem.getNumberOfValues() * 2;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.putShort(fieldItem.getShort(i));
                     }
                     byteData = buffer.array();
@@ -249,9 +249,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 }
                 case DWORD:
                 case DINT: { // 4 byte (32 bit)
-                    int numBytes = fieldItem.getNumValues() * 4;
+                    int numBytes = fieldItem.getNumberOfValues() * 4;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.putInt(fieldItem.getInteger(i));
                     }
                     byteData = buffer.array();
@@ -259,9 +259,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 }
                 case LWORD:
                 case LINT: { // 8 byte (64 bit)
-                    int numBytes = fieldItem.getNumValues() * 8;
+                    int numBytes = fieldItem.getNumberOfValues() * 8;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.putLong(fieldItem.getLong(i));
                     }
                     byteData = buffer.array();
@@ -272,9 +272,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 // -----------------------------------------
                 // 8 bit:
                 case USINT: {
-                    int numBytes = fieldItem.getNumValues();
+                    int numBytes = fieldItem.getNumberOfValues();
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.put((byte) (short) fieldItem.getShort(i));
                     }
                     byteData = buffer.array();
@@ -282,9 +282,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 }
                 // 16 bit:
                 case UINT: {
-                    int numBytes = fieldItem.getNumValues() * 2;
+                    int numBytes = fieldItem.getNumberOfValues() * 2;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.putShort((short) (int) fieldItem.getInteger(i));
                     }
                     byteData = buffer.array();
@@ -292,9 +292,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 }
                 // 32 bit:
                 case UDINT: {
-                    int numBytes = fieldItem.getNumValues() * 4;
+                    int numBytes = fieldItem.getNumberOfValues() * 4;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.putInt((int) (double) fieldItem.getDouble(i));
                     }
                     byteData = buffer.array();
@@ -309,18 +309,18 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 // Floating point values
                 // -----------------------------------------
                 case REAL: {
-                    int numBytes = fieldItem.getNumValues() * 4;
+                    int numBytes = fieldItem.getNumberOfValues() * 4;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.putFloat(fieldItem.getFloat(i));
                     }
                     byteData = buffer.array();
                     break;
                 }
                 case LREAL: {
-                    int numBytes = fieldItem.getNumValues() * 8;
+                    int numBytes = fieldItem.getNumberOfValues() * 8;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for(int i = 0; i < fieldItem.getNumValues(); i++) {
+                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
                         buffer.putDouble(fieldItem.getDouble(i));
                     }
                     byteData = buffer.array();

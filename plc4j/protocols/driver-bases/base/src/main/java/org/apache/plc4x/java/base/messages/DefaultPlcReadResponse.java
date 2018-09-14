@@ -51,7 +51,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public int getNumberOfValues(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            return fieldInternal.getNumValues();
+            return fieldInternal.getNumberOfValues();
         }
         return 0;
     }
@@ -126,7 +126,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<Boolean> getAllBooleans(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<Boolean> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getBoolean(i));
@@ -168,7 +168,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<Byte> getAllBytes(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<Byte> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getByte(i));
@@ -182,7 +182,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public byte[] getByteArray(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             byte[] values = new byte[num];
             for (int i = 0; i < num; i++) {
                 values[i] = fieldInternal.getByte(i);
@@ -224,7 +224,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<Short> getAllShorts(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<Short> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getShort(i));
@@ -266,7 +266,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<Integer> getAllIntegers(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<Integer> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getInteger(i));
@@ -308,7 +308,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<BigInteger> getAllBigIntegers(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<BigInteger> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getBigInteger(i));
@@ -350,7 +350,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<Long> getAllLongs(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<Long> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getLong(i));
@@ -392,7 +392,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<Float> getAllFloats(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<Float> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getFloat(i));
@@ -434,7 +434,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<Double> getAllDoubles(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<Double> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getDouble(i));
@@ -476,7 +476,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<String> getAllStrings(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<String> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getString(i));
@@ -518,7 +518,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<LocalTime> getAllTimes(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<LocalTime> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getTime(i));
@@ -560,7 +560,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<LocalDate> getAllDates(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<LocalDate> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getDate(i));
@@ -602,7 +602,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<LocalDateTime> getAllDateTimes(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
-            int num = fieldInternal.getNumValues();
+            int num = fieldInternal.getNumberOfValues();
             List<LocalDateTime> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getDateTime(i));

@@ -74,7 +74,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
 
     @Override
     public int getNumberOfValues(String name) {
-        return fields.get(name).getValue().getNumValues();
+        return fields.get(name).getValue().getNumberOfValues();
     }
 
     public static class Builder implements PlcWriteRequest.Builder {
