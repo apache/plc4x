@@ -34,6 +34,7 @@
   <description>A collection of utilities used in multiple modules.</description>
 
   <modules>
+    <module>opm</module>
     <module>raw-sockets</module>
     <module>test-utils</module>
     <module>wireshark-utils</module>
