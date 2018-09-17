@@ -1,5 +1,10 @@
 package org.apache.plc4x.java.opm;
 
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.This;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -9,9 +14,13 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
 
 /**
  * Manages Entities.
@@ -28,7 +37,7 @@ public class PlcEntityManager {
         this.driverManager = driverManager;
     }
 
-    public <T> T find(Class<T> clazz) throws OPMException {
+    public <T> T read(Class<T> clazz) throws OPMException {
         PlcEntity annotation = clazz.getAnnotation(PlcEntity.class);
         if (annotation == null) {
             throw new IllegalArgumentException("Given Class is no Plc Entity, i.e., not annotated with @PlcEntity");
@@ -117,6 +126,56 @@ public class PlcEntityManager {
         } catch (Exception e) {
             throw new OPMException("Unable to fetch PlcEntity " + clazz.getName(), e);
         }
+    }
+
+    /**
+     * Returns a connected proxy.
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     * @throws OPMException
+     */
+    public <T> T connect(Class<T> clazz) throws OPMException {
+        if (!clazz.isInterface()) {
+            throw new OPMException("Only interfaces can be connected!");
+        }
+        PlcEntity annotation = clazz.getAnnotation(PlcEntity.class);
+        if (annotation == null) {
+            throw new OPMException("Need to be a PLC Entity, please add Annotation.");
+        }
+        try {
+            return new ByteBuddy()
+                .subclass(clazz)
+                .method(isAnnotatedWith(PlcField.class)).intercept(MethodDelegation.to(this))
+                .make()
+                .load(Thread.currentThread().getContextClassLoader())
+                .getLoaded()
+                .newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new OPMException("Unable to instantiate Proxy", e);
+        }
+    }
+
+    @RuntimeType
+    public Object intercept(@Origin Method m, @This Object o) throws OPMException {
+        PlcField annotation = m.getAnnotation(PlcField.class);
+        System.out.println("You wanted field: " + annotation.value());
+        PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
+        System.out.println("For source: " + plcEntity.value());
+        System.out.println("Using the DriverManager: " + driverManager);
+
+        Optional<PlcReader> reader;
+        try {
+            reader = driverManager.getConnection(plcEntity.value()).getReader();
+        } catch (PlcConnectionException e) {
+            throw new OPMException("Unable to aquire connection", e);
+        }
+
+        // Assume to do the query here...
+
+        // Finished
+        return 1L;
     }
 
 }
