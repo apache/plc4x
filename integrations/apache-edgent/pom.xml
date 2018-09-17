@@ -33,7 +33,7 @@
   <description>Integration module for integrating PLC4X into Apache Edgent.</description>
 
   <properties>
-    <edgent.version>1.3.0-SNAPSHOT</edgent.version>
+    <edgent.version>1.2.0</edgent.version>
   </properties>
 
   <dependencies>
