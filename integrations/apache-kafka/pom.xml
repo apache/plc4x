@@ -48,9 +48,30 @@
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>${kafka.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
       <artifactId>connect-api</artifactId>
       <version>${kafka.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoredDependencies combine.children="append">
+            <ignoredDependency>org.apache.kafka:connect-api</ignoredDependency>
+          </ignoredDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
