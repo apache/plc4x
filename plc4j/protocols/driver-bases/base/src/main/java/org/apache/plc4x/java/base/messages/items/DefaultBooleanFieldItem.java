@@ -38,7 +38,7 @@ public class DefaultBooleanFieldItem extends FieldItem<Boolean> {
 
     @Override
     public Boolean getBoolean(int index) {
-        if(isValidBoolean(index)) {
+        if (isValidBoolean(index)) {
             return getValue(index);
         }
         return null;
@@ -59,11 +59,12 @@ public class DefaultBooleanFieldItem extends FieldItem<Boolean> {
             i++;
         }
         byte[] bytes = bitSet.toByteArray();
-        if(bytes.length < index) {
+        if (bytes.length < index) {
             return null;
         }
         return bytes[index];
     }
 
+    // TODO: implement other methods according to getByte
 }
 

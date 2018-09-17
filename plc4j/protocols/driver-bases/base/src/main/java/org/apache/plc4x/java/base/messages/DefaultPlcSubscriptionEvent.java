@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -259,6 +260,31 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Collection<Double> getAllDoubles(String name) {
+        return null;
+    }
+
+    @Override
+    public boolean isValidBigDecimal(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isValidBigDecimal(String name, int index) {
+        return false;
+    }
+
+    @Override
+    public BigDecimal getBigDecimal(String name) {
+        return null;
+    }
+
+    @Override
+    public BigDecimal getBigDecimal(String name, int index) {
+        return null;
+    }
+
+    @Override
+    public Collection<BigDecimal> getAllBigDecimals(String name) {
         return null;
     }
 

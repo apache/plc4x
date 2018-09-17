@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.test;
 
 import org.apache.plc4x.java.base.messages.items.FieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -48,7 +48,7 @@ public class TestDeviceTest {
         Optional<FieldItem> value = device.get(field);
         assertFalse(value.isPresent());
 
-        device.set(field, new DefaultIntegerFieldItem((long) 42));
+        device.set(field, new DefaultLongFieldItem((long) 42));
         value = device.get(field);
         assertTrue(value.isPresent());
         FieldItem fieldItem = value.get();

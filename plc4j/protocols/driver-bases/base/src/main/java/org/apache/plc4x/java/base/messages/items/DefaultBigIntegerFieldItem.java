@@ -157,5 +157,13 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
         return null;
     }
 
+    public boolean isValidBigDecimal(int index) {
+        return getValue(index) != null;
+    }
+
+    public BigDecimal getBigDecimal(int index) {
+        return new BigDecimal(getValue(index));
+    }
+
 }
 

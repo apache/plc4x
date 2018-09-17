@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultLocalDateTimeFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.s7.messages.items.*;
@@ -222,57 +222,57 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
             case BYTE:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case WORD:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case DWORD:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case LWORD:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case SINT:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case USINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE * 2);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case INT:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case UINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Short.MAX_VALUE) * 2);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case DINT:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case UDINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Integer.MAX_VALUE) * 2);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case LINT:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-                fieldType = S7IntegerFieldItem.class;
+                fieldType = S7LongFieldItem.class;
                 break;
             case ULINT:
                 minValue = BigInteger.valueOf((long) 0);
@@ -283,7 +283,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
                 throw new IllegalArgumentException(
                     "Cannot assign integer values to " + s7Field.getDataType().name() + " fields.");
         }
-        if (fieldType == DefaultIntegerFieldItem.class) {
+        if (fieldType == DefaultLongFieldItem.class) {
             Long[] longValues = new Long[values.length];
             for (int i = 0; i < values.length; i++) {
                 if (!((values[i] instanceof Byte) || (values[i] instanceof Short) ||
@@ -305,7 +305,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
                 }
                 longValues[i] = value.longValue();
             }
-            return new S7IntegerFieldItem(s7Field.getDataType(), longValues);
+            return new S7LongFieldItem(s7Field.getDataType(), longValues);
         } else {
             BigInteger[] bigIntegerValues = new BigInteger[values.length];
             for (int i = 0; i < values.length; i++) {

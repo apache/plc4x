@@ -18,10 +18,10 @@
  */
 package org.apache.plc4x.java.s7.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.DefaultFloatingPointFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultDoubleFieldItem;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
-public class S7FloatingPointFieldItem extends DefaultFloatingPointFieldItem {
+public class S7FloatingPointFieldItem extends DefaultDoubleFieldItem {
 
     private final TransportSize naturalDataType;
 

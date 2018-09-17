@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -99,6 +100,14 @@ public abstract class FieldItem<T> {
     }
 
     public Double getDouble(int index) {
+        return null;
+    }
+
+    public boolean isValidBigDecimal(int index) {
+        return false;
+    }
+
+    public BigDecimal getBigDecimal(int index) {
         return null;
     }
 

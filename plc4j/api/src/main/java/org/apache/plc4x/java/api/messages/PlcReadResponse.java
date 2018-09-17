@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -118,6 +119,16 @@ public interface PlcReadResponse<T extends PlcReadRequest> extends PlcFieldRespo
     Double getDouble(String name, int index);
 
     Collection<Double> getAllDoubles(String name);
+
+    boolean isValidBigDecimal(String name);
+
+    boolean isValidBigDecimal(String name, int index);
+
+    BigDecimal getBigDecimal(String name);
+
+    BigDecimal getBigDecimal(String name, int index);
+
+    Collection<BigDecimal> getAllBigDecimals(String name);
 
     boolean isValidString(String name);
 

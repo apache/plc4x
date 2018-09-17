@@ -529,4 +529,8 @@ public enum AdsDataType {
     public int getTargetByteSize() {
         return targetByteSize;
     }
+
+    public boolean withinBounds(double other) {
+        return other >= lowerBound && other <= upperBound;
+    }
 }

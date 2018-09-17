@@ -31,7 +31,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
 import org.apache.plc4x.test.FastTests;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Test;
@@ -88,7 +88,7 @@ public class PlcConnectionAdapterTest {
         // will help identify problems in the adapter/supplier/consumer
         PlcField plcField = request.getFields().get(0);
         // TODO: smart value conversion
-        connection.setFieldItem(plcField, new DefaultIntegerFieldItem(0L));
+        connection.setFieldItem(plcField, new DefaultLongFieldItem(0L));
 
         CompletableFuture<PlcReadResponse<?>> cf = connection.read(request);
 
@@ -103,7 +103,7 @@ public class PlcConnectionAdapterTest {
         // this is really a tests of our mock tooling but knowing it's behaving as expected
         // will help identify problems in the adapter/supplier/consumer
         PlcField plcField = request.getFields().get(0);
-        connection.setFieldItem(plcField, new DefaultIntegerFieldItem(0L));
+        connection.setFieldItem(plcField, new DefaultLongFieldItem(0L));
 
         CompletableFuture<PlcWriteResponse<?>> cf = connection.write(request);
 

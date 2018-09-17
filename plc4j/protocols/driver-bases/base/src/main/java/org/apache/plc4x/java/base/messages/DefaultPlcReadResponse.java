@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -438,6 +439,48 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
             List<Double> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getDouble(i));
+            }
+            return values;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isValidBigDecimal(String name) {
+        return isValidBigDecimal(name, 0);
+    }
+
+    @Override
+    public boolean isValidBigDecimal(String name, int index) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.isValidBigDecimal(index);
+        }
+        return false;
+    }
+
+    @Override
+    public BigDecimal getBigDecimal(String name) {
+        return getBigDecimal(name, 0);
+    }
+
+    @Override
+    public BigDecimal getBigDecimal(String name, int index) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.getBigDecimal(index);
+        }
+        return null;
+    }
+
+    @Override
+    public Collection<BigDecimal> getAllBigDecimals(String name) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            int num = fieldInternal.getNumberOfValues();
+            List<BigDecimal> values = new ArrayList<>(num);
+            for (int i = 0; i < num; i++) {
+                values.add(fieldInternal.getBigDecimal(i));
             }
             return values;
         }

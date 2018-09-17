@@ -41,7 +41,6 @@ public class LittleEndianEncoder {
         // Utility class
     }
 
-    // TODO: add bound checking
     public static byte[] encodeData(AdsDataType adsDataType, Object... values) throws PlcProtocolException {
         if (values.length == 0) {
             return new byte[]{};
@@ -114,8 +113,8 @@ public class LittleEndianEncoder {
     }
 
     private static Stream<byte[]> encodeFloat(AdsDataType adsDataType, Stream<Float> floatStream) {
-        // TODO: add boundchecks and add optional extension
         return floatStream
+            .peek(value -> checkBound(adsDataType, value))
             // TODO: check how ads expects this data
             .map(Float::floatToIntBits)
             .map(intValue -> new byte[]{
@@ -127,8 +126,8 @@ public class LittleEndianEncoder {
     }
 
     private static Stream<byte[]> encodeDouble(AdsDataType adsDataType, Stream<Double> doubleStream) {
-        // TODO: add boundchecks and add optional extension
         return doubleStream
+            .peek(value -> checkBound(adsDataType, value))
             // TODO: check how ads expects this data
             .map(Double::doubleToLongBits)
             .map(longValue -> new byte[]{
@@ -144,8 +143,8 @@ public class LittleEndianEncoder {
     }
 
     private static Stream<byte[]> encodeInteger(AdsDataType adsDataType, Stream<Integer> integerStream) {
-        // TODO: add boundchecks and add optional extension
         return integerStream
+            .peek(value -> checkBound(adsDataType, value))
             .map(intValue -> new byte[]{
                 (byte) (intValue & 0x000000ff),
                 (byte) ((intValue & 0x0000ff00) >> 8),
@@ -155,8 +154,8 @@ public class LittleEndianEncoder {
     }
 
     private static Stream<byte[]> encodeLong(AdsDataType adsDataType, Stream<Long> integerStream) {
-        // TODO: add boundchecks and add optional extension
         return integerStream
+            .peek(value -> checkBound(adsDataType, value))
             .map(longValue -> new byte[]{
                 (byte) (longValue & 0x00000000_000000ffL),
                 (byte) ((longValue & 0x00000000_0000ff00L) >> 8),
@@ -186,7 +185,6 @@ public class LittleEndianEncoder {
     }
 
     private static Stream<byte[]> encodeCalendar(AdsDataType adsDataType, Stream<Calendar> calendarStream) {
-        // TODO: add boundchecks and add optional extension
         return calendarStream
             .map(Calendar.class::cast)
             .map(Calendar::getTime)
@@ -194,6 +192,7 @@ public class LittleEndianEncoder {
             .map(BigInteger::valueOf)
             .map(TimeStamp::javaToWinTime)
             .map(BigInteger::longValue)
+            .peek(value -> checkBound(adsDataType, value))
             .map(time -> new byte[]{
                 (byte) (time & 0x00000000_000000ffL),
                 (byte) ((time & 0x00000000_0000ff00L) >> 8),
@@ -209,8 +208,8 @@ public class LittleEndianEncoder {
 
 
     private static Stream<byte[]> encodeShort(AdsDataType adsDataType, Stream<Short> shortStream) {
-        // TODO: add boundchecks and add optional extension
         return shortStream
+            .peek(value -> checkBound(adsDataType, value))
             .map(shortValue -> new byte[]{
                 (byte) (shortValue & 0x00ff),
                 (byte) ((shortValue & 0xff00) >> 8),
@@ -218,8 +217,8 @@ public class LittleEndianEncoder {
     }
 
     private static Stream<byte[]> encodeByte(AdsDataType adsDataType, Stream<Byte> byteStream) {
-        // TODO: add boundchecks and add optional extension
         return byteStream
+            .peek(value -> checkBound(adsDataType, value))
             .map(aByte -> new byte[]{aByte});
     }
 
@@ -227,5 +226,11 @@ public class LittleEndianEncoder {
         // TODO: add boundchecks and add optional extension
         return booleanStream
             .map(booleanValue -> new byte[]{booleanValue ? (byte) 0x01 : (byte) 0x00});
+    }
+
+    private static void checkBound(AdsDataType adsDataType, double other) {
+        if (!adsDataType.withinBounds(other)) {
+            throw new PlcRuntimeException(other + " not within bounds of " + adsDataType);
+        }
     }
 }

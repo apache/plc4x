@@ -475,34 +475,34 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // 8 bit:
                     case SINT: {
                         Long longValue = (long) data.readByte();
-                        fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     case USINT: {
                         Long longValue = (long) data.readUnsignedByte();
-                        fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     // 16 bit:
                     case INT: {
                         Long longValue = (long) data.readShort();
-                        fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     case UINT: {
                         Long longValue = (long) data.readUnsignedShort();
-                        fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     // 32 bit:
                     case DINT: {
                         Long longValue = (long) data.readInt();
-                        fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     case UDINT: {
                         Long longValue = data.readUnsignedInt();
-                        fieldItem = new S7IntegerFieldItem(field.getDataType(), longValue);
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
                         break;
                     }
                     // 64 bit:

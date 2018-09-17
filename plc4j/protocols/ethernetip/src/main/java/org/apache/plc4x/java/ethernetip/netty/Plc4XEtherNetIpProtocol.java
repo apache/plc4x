@@ -38,7 +38,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 import org.slf4j.Logger;
@@ -479,7 +479,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
                 } else {
                     value = -1;
                 }
-                DefaultIntegerFieldItem fieldItem = new DefaultIntegerFieldItem((long) value);
+                DefaultLongFieldItem fieldItem = new DefaultLongFieldItem((long) value);
                 values.put(fieldName, new ImmutablePair<>(responseCode, fieldItem));
             }
             InternalPlcReadResponse response = new DefaultPlcReadResponse(request, values);

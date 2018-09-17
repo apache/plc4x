@@ -54,7 +54,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeByte(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Byte.class) {
-            return new DefaultIntegerFieldItem(Arrays.stream(values).map(x -> new Long((Byte) x)).toArray(Long[]::new));
+            return new DefaultLongFieldItem(Arrays.stream(values).map(x -> new Long((Byte) x)).toArray(Long[]::new));
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
@@ -63,7 +63,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeShort(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Short.class) {
-            return new DefaultIntegerFieldItem(Arrays.stream(values).map(x -> new Long((Short) x)).toArray(Long[]::new));
+            return new DefaultLongFieldItem(Arrays.stream(values).map(x -> new Long((Short) x)).toArray(Long[]::new));
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
@@ -72,7 +72,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeInteger(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Integer.class) {
-            return new DefaultIntegerFieldItem(Arrays.stream(values).map(x -> new Long((Integer) x)).toArray(Long[]::new));
+            return new DefaultLongFieldItem(Arrays.stream(values).map(x -> new Long((Integer) x)).toArray(Long[]::new));
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
@@ -81,7 +81,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeBigInteger(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == BigInteger.class) {
-            return new DefaultIntegerFieldItem(Arrays.stream(values).map(x -> ((BigInteger) x).longValue()).toArray(Long[]::new));
+            return new DefaultLongFieldItem(Arrays.stream(values).map(x -> ((BigInteger) x).longValue()).toArray(Long[]::new));
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
@@ -90,7 +90,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeLong(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Long.class) {
-            return new DefaultIntegerFieldItem((Long[]) values);
+            return new DefaultLongFieldItem((Long[]) values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
@@ -99,7 +99,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeFloat(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Float.class) {
-            return new DefaultFloatingPointFieldItem((Double[]) values);
+            return new DefaultDoubleFieldItem((Double[]) values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
@@ -108,7 +108,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeDouble(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Double.class) {
-            return new DefaultFloatingPointFieldItem((Double[]) values);
+            return new DefaultDoubleFieldItem((Double[]) values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }

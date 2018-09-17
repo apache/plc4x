@@ -62,20 +62,20 @@ public class LittleEndianDecoder {
                 return new DefaultBooleanFieldItem(values.toArray(new Boolean[0]));
             }
             case BITARR8: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Short> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     short aByte = wrappedBuffer.readUnsignedByte();
-                    values.offer((long) aByte);
+                    values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultShortFieldItem(values.toArray(new Short[0]));
             }
             case BITARR16: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Integer> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aLong = wrappedBuffer.readUnsignedShortLE();
+                    int aLong = wrappedBuffer.readUnsignedShortLE();
                     values.offer(aLong);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Integer[0]));
             }
             case BITARR32: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -83,31 +83,31 @@ public class LittleEndianDecoder {
                     long aLong = wrappedBuffer.readUnsignedIntLE();
                     values.offer(aLong);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultLongFieldItem(values.toArray(new Long[0]));
             }
             case INT8: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Byte> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aLong = wrappedBuffer.readByte();
+                    byte aLong = wrappedBuffer.readByte();
                     values.offer(aLong);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultByteFieldItem(values.toArray(new Byte[0]));
             }
             case INT16: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Short> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aLong = wrappedBuffer.readShortLE();
+                    short aLong = wrappedBuffer.readShortLE();
                     values.offer(aLong);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultShortFieldItem(values.toArray(new Short[0]));
             }
             case INT32: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Integer> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aLong = wrappedBuffer.readIntLE();
+                    int aLong = wrappedBuffer.readIntLE();
                     values.offer(aLong);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Integer[0]));
             }
             case INT64: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -118,23 +118,23 @@ public class LittleEndianDecoder {
                     // TODO: potential dataloss here.
                     values.offer(bigInteger.longValue());
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultLongFieldItem(values.toArray(new Long[0]));
             }
             case UINT8: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Short> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aLong = wrappedBuffer.readUnsignedByte();
+                    short aLong = wrappedBuffer.readUnsignedByte();
                     values.offer(aLong);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultShortFieldItem(values.toArray(new Short[0]));
             }
             case UINT16: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Integer> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aLong = wrappedBuffer.readUnsignedShortLE();
+                    int aLong = wrappedBuffer.readUnsignedShortLE();
                     values.offer(aLong);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Integer[0]));
             }
             case UINT32: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -142,7 +142,7 @@ public class LittleEndianDecoder {
                     long aLong = wrappedBuffer.readUnsignedIntLE();
                     values.offer(aLong);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultLongFieldItem(values.toArray(new Long[0]));
             }
             case UINT64: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -153,15 +153,15 @@ public class LittleEndianDecoder {
                     // TODO: potential dataloss here.
                     values.offer(bigInteger.longValue());
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultLongFieldItem(values.toArray(new Long[0]));
             }
             case FLOAT: {
-                LinkedList<Double> values = new LinkedList<>();
+                LinkedList<Float> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    double aLong = wrappedBuffer.readFloatLE();
+                    float aLong = wrappedBuffer.readFloatLE();
                     values.offer(aLong);
                 }
-                return new DefaultFloatingPointFieldItem(values.toArray(new Double[0]));
+                return new DefaultFloatFieldItem(values.toArray(new Float[0]));
             }
             case DOUBLE: {
                 LinkedList<Double> values = new LinkedList<>();
@@ -169,7 +169,7 @@ public class LittleEndianDecoder {
                     double aLong = wrappedBuffer.readDoubleLE();
                     values.offer(aLong);
                 }
-                return new DefaultFloatingPointFieldItem(values.toArray(new Double[0]));
+                return new DefaultDoubleFieldItem(values.toArray(new Double[0]));
             }
             case BOOL: {
                 LinkedList<Boolean> values = new LinkedList<>();
@@ -180,20 +180,20 @@ public class LittleEndianDecoder {
                 return new DefaultBooleanFieldItem(values.toArray(new Boolean[0]));
             }
             case BYTE: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Short> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aByte = wrappedBuffer.readUnsignedByte();
+                    short aByte = wrappedBuffer.readUnsignedByte();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultShortFieldItem(values.toArray(new Short[0]));
             }
             case WORD: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Integer> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aByte = wrappedBuffer.readUnsignedShortLE();
+                    int aByte = wrappedBuffer.readUnsignedShortLE();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Integer[0]));
             }
             case DWORD: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -201,47 +201,47 @@ public class LittleEndianDecoder {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultLongFieldItem(values.toArray(new Long[0]));
             }
             case SINT: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Byte> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aByte = wrappedBuffer.readByte();
+                    byte aByte = wrappedBuffer.readByte();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultByteFieldItem(values.toArray(new Byte[0]));
             }
             case USINT: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Short> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aByte = wrappedBuffer.readUnsignedByte();
+                    short aByte = wrappedBuffer.readUnsignedByte();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultShortFieldItem(values.toArray(new Short[0]));
             }
             case INT: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Short> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aByte = wrappedBuffer.readShortLE();
+                    short aByte = wrappedBuffer.readShortLE();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultShortFieldItem(values.toArray(new Short[0]));
             }
             case UINT: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Integer> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aByte = wrappedBuffer.readUnsignedShortLE();
+                    int aByte = wrappedBuffer.readUnsignedShortLE();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Integer[0]));
             }
             case DINT: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<Integer> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    long aByte = wrappedBuffer.readIntLE();
+                    int aByte = wrappedBuffer.readIntLE();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Integer[0]));
             }
             case UDINT: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -249,7 +249,7 @@ public class LittleEndianDecoder {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultLongFieldItem(values.toArray(new Long[0]));
             }
             case LINT: {
                 LinkedList<Long> values = new LinkedList<>();
@@ -257,7 +257,7 @@ public class LittleEndianDecoder {
                     long aByte = wrappedBuffer.readLongLE();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultLongFieldItem(values.toArray(new Long[0]));
             }
             case ULINT: {
                 LinkedList<BigInteger> values = new LinkedList<>();
@@ -270,12 +270,12 @@ public class LittleEndianDecoder {
                 return new DefaultBigIntegerFieldItem(values.toArray(new BigInteger[0]));
             }
             case REAL: {
-                LinkedList<Double> values = new LinkedList<>();
+                LinkedList<Float> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    double aByte = wrappedBuffer.readFloatLE();
+                    float aByte = wrappedBuffer.readFloatLE();
                     values.offer(aByte);
                 }
-                return new DefaultFloatingPointFieldItem(values.toArray(new Double[0]));
+                return new DefaultFloatFieldItem(values.toArray(new Float[0]));
             }
             case LREAL: {
                 LinkedList<Double> values = new LinkedList<>();
@@ -283,13 +283,13 @@ public class LittleEndianDecoder {
                     double aByte = wrappedBuffer.readDoubleLE();
                     values.offer(aByte);
                 }
-                return new DefaultFloatingPointFieldItem(values.toArray(new Double[0]));
+                return new DefaultDoubleFieldItem(values.toArray(new Double[0]));
             }
             case STRING: {
                 LinkedList<String> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     ByteArrayOutputStream os = new ByteArrayOutputStream();
-                    Byte aByte;
+                    byte aByte;
                     while ((aByte = wrappedBuffer.readByte()) != 0x0) {
                         os.write(aByte);
                     }
@@ -303,7 +303,7 @@ public class LittleEndianDecoder {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
                     values.offer(aByte);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultLongFieldItem(values.toArray(new Long[0]));
             }
             case TIME_OF_DAY: {
                 LinkedList<LocalTime> values = new LinkedList<>();

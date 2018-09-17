@@ -21,9 +21,9 @@ package org.apache.plc4x.java.base.messages.items;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DefaultIntegerFieldItem extends FieldItem<Integer> {
+public class DefaultLongFieldItem extends FieldItem<Long> {
 
-    public DefaultIntegerFieldItem(Integer... values) {
+    public DefaultLongFieldItem(Long... values) {
         super(values);
     }
 
@@ -47,7 +47,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Integer> {
 
     @Override
     public boolean isValidByte(int index) {
-        Integer value = getValue(index);
+        Long value = getValue(index);
         return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
     }
 
@@ -61,7 +61,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Integer> {
 
     @Override
     public boolean isValidShort(int index) {
-        Integer value = getValue(index);
+        Long value = getValue(index);
         return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
     }
 
@@ -75,20 +75,20 @@ public class DefaultIntegerFieldItem extends FieldItem<Integer> {
 
     @Override
     public boolean isValidInteger(int index) {
-        Integer value = getValue(index);
-        return (value != null);
+        Long value = getValue(index);
+        return (value != null) && (value <= Integer.MAX_VALUE) && (value >= Integer.MIN_VALUE);
     }
 
     @Override
     public Integer getInteger(int index) {
         if (isValidInteger(index)) {
-            return getValue(index);
+            return getValue(index).intValue();
         }
         return null;
     }
 
     public boolean isValidBigInteger(int index) {
-        Integer value = getValue(index);
+        Long value = getValue(index);
         return value != null;
     }
 
@@ -107,14 +107,14 @@ public class DefaultIntegerFieldItem extends FieldItem<Integer> {
     @Override
     public Long getLong(int index) {
         if (isValidFloat(index)) {
-            return getValue(index).longValue();
+            return getValue(index);
         }
         return null;
     }
 
     @Override
     public boolean isValidFloat(int index) {
-        Integer value = getValue(index);
+        Long value = getValue(index);
         return (value != null) && (value <= Float.MAX_VALUE) && (value >= Float.MIN_VALUE);
     }
 
@@ -128,7 +128,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Integer> {
 
     @Override
     public boolean isValidDouble(int index) {
-        Integer value = getValue(index);
+        Long value = getValue(index);
         return (value != null) && (value <= Double.MAX_VALUE) && (value >= Double.MIN_VALUE);
     }
 

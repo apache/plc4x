@@ -717,49 +717,49 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
         Class<? extends FieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case BYTE:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case WORD:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case DWORD:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case SINT:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case USINT:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case INT:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case UINT:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case DINT:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case UDINT:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case LINT:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case ULINT:
                 fieldType = DefaultBigIntegerFieldItem.class;
                 break;
             case INT32:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             case INT64:
-                fieldType = DefaultIntegerFieldItem.class;
+                fieldType = DefaultLongFieldItem.class;
                 break;
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign integer values to " + adsField.getAdsDataType().name() + " fields.");
         }
-        if (fieldType == DefaultIntegerFieldItem.class) {
+        if (fieldType == DefaultLongFieldItem.class) {
             Long[] longValues = new Long[values.length];
             for (int i = 0; i < values.length; i++) {
                 if (!((values[i] instanceof Byte) || (values[i] instanceof Short) ||
@@ -781,7 +781,7 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
                 }
                 longValues[i] = value.longValue();
             }
-            return new DefaultIntegerFieldItem(longValues);
+            return new DefaultLongFieldItem(longValues);
         } else {
             BigInteger[] bigIntegerValues = new BigInteger[values.length];
             for (int i = 0; i < values.length; i++) {
@@ -848,7 +848,7 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
                         + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
             }
         }
-        return new DefaultFloatingPointFieldItem(floatingPointValues);
+        return new DefaultDoubleFieldItem(floatingPointValues);
     }
 
     private FieldItem internalEncodeString(PlcField field, Object[] values) {
