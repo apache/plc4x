@@ -34,7 +34,7 @@
   </description>
 
   <properties>
-    <ethernetip-driver.version>1.2.0-SNAPSHOT</ethernetip-driver.version>
+    <ethernetip-driver.version>1.2.0</ethernetip-driver.version>
   </properties>
 
   <dependencies>
@@ -139,13 +139,23 @@
 
   <repositories>
     <repository>
-      <id>ossrh</id>
+      <id>ossrh-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
       <releases>
         <enabled>false</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>ossrh-release</id>
+      <url>https://oss.sonatype.org/content/repositories/releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
       </releases>
     </repository>
   </repositories>
