@@ -145,6 +145,8 @@ public class PlcEntityManager {
             throw new OPMException("Need to be a PLC Entity, please add Annotation.");
         }
         try {
+            // Use Byte Buddy to generate a subclassed proxy that delegates all PlcField Methods
+            // to the intercept method
             return new ByteBuddy()
                 .subclass(clazz)
                 .method(isAnnotatedWith(PlcField.class)).intercept(MethodDelegation.to(this))
@@ -169,13 +171,38 @@ public class PlcEntityManager {
         try {
             reader = driverManager.getConnection(plcEntity.value()).getReader();
         } catch (PlcConnectionException e) {
-            throw new OPMException("Unable to aquire connection", e);
+            throw new OPMException("Unable to acquire connection", e);
         }
 
-        // Assume to do the query here...
+        if (reader.isPresent() == false) {
+            throw new OPMException("Unable to generate Reader");
+        }
 
-        // Finished
-        return 1L;
+        PlcReader plcReader = reader.get();
+
+        // Assume to do the query here...
+        PlcReadRequest request = plcReader.readRequestBuilder()
+            .addItem(m.getName(), annotation.value())
+            .build();
+
+        PlcReadResponse<?> response;
+        try {
+            response = plcReader.read(request).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new OPMException("Exception during execution", e);
+        } catch (ExecutionException e) {
+            throw new OPMException("Exception during execution", e);
+        }
+
+        Object responseObject = response.getObject(m.getName());
+
+        if (responseObject.getClass().isAssignableFrom(m.getReturnType())) {
+            return responseObject;
+        } else {
+                throw new OPMException("Unable to cast the PLC Object '" + responseObject +
+                    "' to the expected method return type '" + m.getReturnType() + "'");
+        }
     }
 
 }
