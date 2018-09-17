@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.api.connection;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -47,7 +48,7 @@ public interface PlcSubscriber {
      * @param plcSubscriptionRequestBuilderConsumer consumer which can be used to build requests.
      * @return subscription response containing a subscription response item for each subscription request item.
      */
-    default CompletableFuture<PlcSubscriptionResponse> subscribe(Consumer<PlcSubscriptionRequest.Builder> plcSubscriptionRequestBuilderConsumer) {
+    default CompletableFuture<PlcSubscriptionResponse> subscribe(Consumer<PlcSubscriptionRequest.Builder> plcSubscriptionRequestBuilderConsumer) throws PlcInvalidFieldException {
         PlcSubscriptionRequest.Builder builder = subscriptionRequestBuilder();
         plcSubscriptionRequestBuilderConsumer.accept(builder);
         return subscribe(builder.build());
@@ -69,7 +70,7 @@ public interface PlcSubscriber {
      * @param plcSubscriptionRequestBuilderConsumer consumer which can be used to build requests.
      * @return unsubscription response containing a unsubscription response item for each unsubscription request item.
      */
-    default CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(Consumer<PlcUnsubscriptionRequest.Builder> plcSubscriptionRequestBuilderConsumer) {
+    default CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(Consumer<PlcUnsubscriptionRequest.Builder> plcSubscriptionRequestBuilderConsumer) throws PlcInvalidFieldException {
         PlcUnsubscriptionRequest.Builder builder = unsubscriptionRequestBuilder();
         plcSubscriptionRequestBuilderConsumer.accept(builder);
         return unsubscribe(builder.build());
@@ -99,7 +100,7 @@ public interface PlcSubscriber {
      * @throws ExecutionException   something went wrong.
      * @throws InterruptedException something went wrong.
      */
-    default PlcConsumerRegistration register(Consumer<PlcSubscriptionRequest.Builder> subscriptionRequestBuilderConsumer, Consumer<PlcSubscriptionEvent> consumer) throws ExecutionException, InterruptedException {
+    default PlcConsumerRegistration register(Consumer<PlcSubscriptionRequest.Builder> subscriptionRequestBuilderConsumer, Consumer<PlcSubscriptionEvent> consumer) throws ExecutionException, InterruptedException, PlcInvalidFieldException {
         PlcSubscriptionRequest.Builder builder = subscriptionRequestBuilder();
         subscriptionRequestBuilderConsumer.accept(builder);
         return register(builder.build(), consumer);

@@ -31,6 +31,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
@@ -178,7 +179,7 @@ public class AdsAbstractPlcConnectionTest {
 
     @Ignore("Currently broken // TODO // FIXME")
     @Test
-    public void mapField() {
+    public void mapField() throws PlcInvalidFieldException {
         // positive
         {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {

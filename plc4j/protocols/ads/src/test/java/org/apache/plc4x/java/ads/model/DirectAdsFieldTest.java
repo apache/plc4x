@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThat;
 public class DirectAdsFieldTest {
 
     @Test
-    public void of() {
+    public void of() throws PlcInvalidFieldException {
         DirectAdsField field = DirectAdsField.of("1/10:BYTE[2]");
         assertThat(field.getIndexGroup(), is(1L));
         assertThat(field.getIndexOffset(), is(10L));
@@ -36,7 +36,7 @@ public class DirectAdsFieldTest {
     }
 
     @Test
-    public void ofHex() {
+    public void ofHex() throws PlcInvalidFieldException {
         DirectAdsField field = DirectAdsField.of("0x1/0xff:BYTE[2]");
         assertThat(field.getIndexGroup(), is(1L));
         assertThat(field.getIndexOffset(), is(255L));
@@ -45,17 +45,17 @@ public class DirectAdsFieldTest {
     }
 
     @Test(expected = PlcInvalidFieldException.class)
-    public void stringInField() {
+    public void stringInField() throws PlcInvalidFieldException {
         DirectAdsField field = DirectAdsField.of("group/offset");
     }
 
     @Test(expected = PlcInvalidFieldException.class)
-    public void singleNumberField() {
+    public void singleNumberField() throws PlcInvalidFieldException {
         DirectAdsField field = DirectAdsField.of("10");
     }
 
     @Test(expected = PlcInvalidFieldException.class)
-    public void wrongSeperator() {
+    public void wrongSeperator() throws PlcInvalidFieldException {
         DirectAdsField field = DirectAdsField.of("1:10");
     }
 

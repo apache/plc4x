@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * Indicates an invalid field address.
  */
-public class PlcInvalidFieldException extends PlcRuntimeException {
+public class PlcInvalidFieldException extends PlcException {
 
     private static final long serialVersionUID = 1L;
 

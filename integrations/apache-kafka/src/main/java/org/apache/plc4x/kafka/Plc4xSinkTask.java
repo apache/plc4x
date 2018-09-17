@@ -26,6 +26,8 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.UncheckedPlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
@@ -66,7 +68,13 @@ public class Plc4xSinkTask extends SinkTask {
             String query = record.key().toString();
             Object value = record.value();
             PlcWriteRequest.Builder builder = plcWriter.writeRequestBuilder();
-            PlcWriteRequest plcRequest = addToBuilder(builder, query, value).build();
+            PlcWriteRequest plcRequest = null;
+            try {
+                plcRequest = addToBuilder(builder, query, value).build();
+            } catch (PlcInvalidFieldException e) {
+                // TODO How should this be handled?
+                throw new UncheckedPlcInvalidFieldException(e);
+            }
             doWrite(plcRequest);
         }
     }
