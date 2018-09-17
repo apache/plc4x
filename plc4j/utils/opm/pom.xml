@@ -22,6 +22,11 @@
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.8.15</version>
+    </dependency>
     <!--Testing-->
     <dependency>
       <groupId>junit</groupId>
