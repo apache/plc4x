@@ -20,7 +20,9 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.UncheckedPlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
@@ -181,16 +183,25 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
         }
 
         @Override
-        public PlcWriteRequest build() {
+        public PlcWriteRequest build() throws PlcInvalidFieldException {
             LinkedHashMap<String, Pair<PlcField, FieldItem>> parsedFields = new LinkedHashMap<>();
-            fields.forEach((name, builderItem) -> {
-                // Compile the query string.
-                PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
-                // Encode the payload.
-                // TODO: Depending on the field type, handle the FieldItem creation differently.
-                FieldItem fieldItem = builderItem.encoder.apply(parsedField, builderItem.values);
-                parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
-            });
+            try {
+                fields.forEach((name, builderItem) -> {
+                    // Compile the query string.
+                    PlcField parsedField = null;
+                    try {
+                        parsedField = fieldHandler.createField(builderItem.fieldQuery);
+                    } catch (PlcInvalidFieldException e) {
+                        throw new UncheckedPlcInvalidFieldException(e);
+                    }
+                    // Encode the payload.
+                    // TODO: Depending on the field type, handle the FieldItem creation differently.
+                    FieldItem fieldItem = builderItem.encoder.apply(parsedField, builderItem.values);
+                    parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
+                });
+            } catch (UncheckedPlcInvalidFieldException e) {
+                throw e.getWrappedException();
+            }
             return new DefaultPlcWriteRequest(parsedFields);
         }
 

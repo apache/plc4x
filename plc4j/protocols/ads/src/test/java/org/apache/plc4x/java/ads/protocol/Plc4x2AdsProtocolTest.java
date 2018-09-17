@@ -33,6 +33,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.ads.model.AdsPlcFieldHandler;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.UncheckedPlcInvalidFieldException;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes;
 import org.junit.Before;
@@ -103,22 +105,28 @@ public class Plc4x2AdsProtocolTest {
             .filter(o -> o.getDataTypeClass() != Byte[].class)
             .filter(o -> o.getDataTypeClass() != byte[].class)
             .map(Plc4x2AdsProtocolTest::mapToAdsDataType)
-            .map(pair -> Stream.of(
-                ImmutablePair.of(
-                    new PlcRequestContainer<>(
-                        (InternalPlcRequest) new DefaultPlcWriteRequest.Builder(new AdsPlcFieldHandler())
-                            .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType, pair.getValue())
-                            .build(), new CompletableFuture<>()),
-                    AdsWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
-                ),
-                ImmutablePair.of(
-                    new PlcRequestContainer<>(
-                        (InternalPlcRequest) new DefaultPlcReadRequest.Builder(new AdsPlcFieldHandler())
-                            .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType)
-                            .build(), new CompletableFuture<>()),
-                    AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.getByteRepresentation()))
-                )
-            ))
+            .map(pair -> {
+                try {
+                    return Stream.of(
+                        ImmutablePair.of(
+                            new PlcRequestContainer<>(
+                                (InternalPlcRequest) new DefaultPlcWriteRequest.Builder(new AdsPlcFieldHandler())
+                                    .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType, pair.getValue())
+                                    .build(), new CompletableFuture<>()),
+                            AdsWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
+                        ),
+                        ImmutablePair.of(
+                            new PlcRequestContainer<>(
+                                (InternalPlcRequest) new DefaultPlcReadRequest.Builder(new AdsPlcFieldHandler())
+                                    .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType)
+                                    .build(), new CompletableFuture<>()),
+                            AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.getByteRepresentation()))
+                        )
+                    );
+                } catch (PlcInvalidFieldException e) {
+                    throw new UncheckedPlcInvalidFieldException(e);
+                }
+            })
             .flatMap(stream -> stream)
             // TODO: request doesn't know its type anymore... fixme
             .map(pair -> new Object[]{Object.class.getSimpleName(), pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getClass().getSimpleName()}).collect(Collectors.toList());

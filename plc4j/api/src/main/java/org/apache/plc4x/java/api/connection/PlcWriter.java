@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.api.connection;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 
@@ -43,7 +44,7 @@ public interface PlcWriter {
      * @param writeRequestBuilderConsumer consumer which can be used to build requests.
      * @return a {@link CompletableFuture} giving async access to the response of the write operation.
      */
-    default CompletableFuture<PlcWriteResponse<?>> write(Consumer<PlcWriteRequest.Builder> writeRequestBuilderConsumer) {
+    default CompletableFuture<PlcWriteResponse<?>> write(Consumer<PlcWriteRequest.Builder> writeRequestBuilderConsumer) throws PlcInvalidFieldException {
         PlcWriteRequest.Builder requestBuilder = writeRequestBuilder();
         writeRequestBuilderConsumer.accept(requestBuilder);
         return write(requestBuilder.build());

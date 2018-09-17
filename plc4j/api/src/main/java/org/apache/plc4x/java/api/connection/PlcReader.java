@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.api.connection;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
@@ -43,7 +44,7 @@ public interface PlcReader {
      * @param readRequestBuilderConsumer consumer which can be used to build requests.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    default CompletableFuture<PlcReadResponse<?>> read(Consumer<PlcReadRequest.Builder> readRequestBuilderConsumer) {
+    default CompletableFuture<PlcReadResponse<?>> read(Consumer<PlcReadRequest.Builder> readRequestBuilderConsumer) throws PlcInvalidFieldException {
         PlcReadRequest.Builder requestBuilder = readRequestBuilder();
         readRequestBuilderConsumer.accept(requestBuilder);
         return read(requestBuilder.build());

@@ -18,7 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.UncheckedPlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
@@ -74,12 +76,21 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest {
         }
 
         @Override
-        public PlcReadRequest build() {
+        public PlcReadRequest build() throws PlcInvalidFieldException {
             LinkedHashMap<String, PlcField> parsedFields = new LinkedHashMap<>();
-            fields.forEach((name, fieldQuery) -> {
-                PlcField parsedField = fieldHandler.createField(fieldQuery);
-                parsedFields.put(name, parsedField);
-            });
+            try {
+                fields.forEach((name, fieldQuery) -> {
+                    PlcField parsedField = null;
+                    try {
+                        parsedField = fieldHandler.createField(fieldQuery);
+                    } catch (PlcInvalidFieldException e) {
+                        throw new RuntimeException(e);
+                    }
+                    parsedFields.put(name, parsedField);
+                });
+            } catch (UncheckedPlcInvalidFieldException e) {
+                throw e.getWrappedException();
+            }
             return new DefaultPlcReadRequest(parsedFields);
         }
 

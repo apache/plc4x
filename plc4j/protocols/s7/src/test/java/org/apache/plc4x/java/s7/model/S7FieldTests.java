@@ -19,6 +19,7 @@ under the License.
 
 package org.apache.plc4x.java.s7.model;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
@@ -63,7 +64,7 @@ class S7FieldTests {
     @Category(FastTests.class)
     @MethodSource("validFieldQueries")
     void testValidFieldQueryParsing(String fieldQuery, TransportSize expectedClientType, MemoryArea expectedMemoryArea,
-                                    int expectedMemoryBlockNumber, int expectedByteOffset, int expectedBitOffset) {
+                                    int expectedMemoryBlockNumber, int expectedByteOffset, int expectedBitOffset) throws PlcInvalidFieldException {
         S7Field field = S7Field.of(fieldQuery);
         assertThat(field, notNullValue());
         assertThat(field.getDataType(), equalTo(expectedClientType));
@@ -80,7 +81,7 @@ class S7FieldTests {
         try {
             S7Field.of(fieldQuery);
             fail("Should have thrown an exception");
-        } catch (PlcRuntimeException e) {
+        } catch (PlcRuntimeException | PlcInvalidFieldException e) {
             // This was expected.
         }
     }

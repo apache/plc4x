@@ -18,9 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.util;
 
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
@@ -39,17 +37,64 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 class S7PlcFieldHandlerTest {
 
     private static S7PlcFieldHandler SUT = new S7PlcFieldHandler();
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-        "%DB1.DBX1.0:BOOL",
-        "%DB1.DBW1.0:WORD"
-    })
-    void createField(String fieldQuery) {
-        SUT.createField(fieldQuery);
+    private static Stream<Arguments> createInputArrays() throws PlcInvalidFieldException {
+        // Generate valid fields for each s7 type.
+        Map<TransportSize, PlcField> fields = new HashMap<>();
+        for (TransportSize s7Type : TransportSize.values()) {
+            String sizeCode = (s7Type.getSizeCode() != null) ? s7Type.getSizeCode() : "X";
+            String fieldQuery = "%DB1.DB" + sizeCode + "1";
+            if (s7Type == TransportSize.BOOL) {
+                fieldQuery += ".0";
+            }
+            fieldQuery += ":" + s7Type.name();
+            fields.put(s7Type, SUT.createField(fieldQuery));
+        }
+        // Generate output for each combination of S7 and Java type.
+        Stream<Arguments> values = null;
+        for (TransportSize s7Type : TransportSize.values()) {
+            PlcField field = fields.get(s7Type);
+            for (JavaTypes javaType : JavaTypes.values()) {
+                Object[] testValues = javaType.values;
+
+                Stream<Arguments> curValues;
+                // Min, Max
+                if (testValues.length == 2) {
+                    curValues = Stream.of(
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MIN", field, new Object[]{testValues[0]}),
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MAX", field, new Object[]{testValues[1]}));
+                }
+                // Value, Min, Max
+                else if (testValues.length == 3) {
+                    curValues = Stream.of(
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MIN", field, new Object[]{testValues[1]}),
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-VAL", field, new Object[]{testValues[0]}),
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MAX", field, new Object[]{testValues[2]}));
+                }
+                // Zero, Value, Min, Max
+                else if (testValues.length == 4) {
+                    curValues = Stream.of(
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MIN", field, new Object[]{testValues[2]}),
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-NIL", field, new Object[]{testValues[0]}),
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-VAL", field, new Object[]{testValues[1]}),
+                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MAX", field, new Object[]{testValues[3]}));
+                } else {
+                    throw new RuntimeException("Expecting 2, 3 or 4 valued test-input");
+                }
+                if (values == null) {
+                    values = curValues;
+                } else {
+                    values = Stream.concat(values, curValues);
+                }
+            }
+        }
+        return values;
     }
 
     @ParameterizedTest
@@ -255,57 +300,13 @@ class S7PlcFieldHandlerTest {
         encode(name, field, values, expectedSuccess, SUT::encodeDateTime);
     }
 
-    private static Stream<Arguments> createInputArrays() {
-        // Generate valid fields for each s7 type.
-        Map<TransportSize, PlcField> fields = new HashMap<>();
-        for (TransportSize s7Type : TransportSize.values()) {
-            String sizeCode = (s7Type.getSizeCode() != null) ? s7Type.getSizeCode() : "X";
-            String fieldQuery = "%DB1.DB" + sizeCode + "1";
-            if(s7Type == TransportSize.BOOL) {
-                fieldQuery += ".0";
-            }
-            fieldQuery += ":" + s7Type.name();
-            fields.put(s7Type, SUT.createField(fieldQuery));
-        }
-        // Generate output for each combination of S7 and Java type.
-        Stream<Arguments> values = null;
-        for (TransportSize s7Type : TransportSize.values()) {
-            PlcField field = fields.get(s7Type);
-            for (JavaTypes javaType : JavaTypes.values()) {
-                Object[] testValues = javaType.values;
-
-                Stream<Arguments> curValues;
-                // Min, Max
-                if(testValues.length == 2) {
-                    curValues = Stream.of(
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MIN", field, new Object[]{testValues[0]}),
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MAX", field, new Object[]{testValues[1]}));
-                }
-                // Value, Min, Max
-                else if(testValues.length == 3) {
-                    curValues = Stream.of(
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MIN", field, new Object[]{testValues[1]}),
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-VAL", field, new Object[]{testValues[0]}),
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MAX", field, new Object[]{testValues[2]}));
-                }
-                // Zero, Value, Min, Max
-                else if(testValues.length == 4) {
-                    curValues = Stream.of(
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MIN", field, new Object[]{testValues[2]}),
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-NIL", field, new Object[]{testValues[0]}),
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-VAL", field, new Object[]{testValues[1]}),
-                        Arguments.of(s7Type.name() + "-" + javaType.name() + "-MAX", field, new Object[]{testValues[3]}));
-                } else {
-                    throw new RuntimeException("Expecting 2, 3 or 4 valued test-input");
-                }
-                if(values == null) {
-                    values = curValues;
-                } else {
-                    values = Stream.concat(values, curValues);
-                }
-            }
-        }
-        return values;
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "%DB1.DBX1.0:BOOL",
+        "%DB1.DBW1.0:WORD"
+    })
+    void createField(String fieldQuery) throws PlcInvalidFieldException {
+        SUT.createField(fieldQuery);
     }
 
     enum JavaTypes {

@@ -18,8 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+
 public interface PlcMessageBuilder<T> {
 
-    T build();
+    T build() throws PlcInvalidFieldException;
 
 }

@@ -29,6 +29,8 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.UncheckedPlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -93,7 +95,12 @@ public class Plc4xSourceTask extends SourceTask {
         for (String query : queries) {
             builder.addItem(query, query);
         }
-        plcRequest = builder.build();
+        try {
+            plcRequest = builder.build();
+        } catch (PlcInvalidFieldException e) {
+            // TODO how should this be handled?
+            throw new UncheckedPlcInvalidFieldException(e);
+        }
 
         int rate = Integer.valueOf(props.get(Plc4xSourceConnector.RATE_CONFIG));
         scheduler = Executors.newScheduledThreadPool(1);

@@ -18,20 +18,19 @@
  */
 package org.apache.plc4x.java.test;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.junit.Test;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TestDeviceTest {
 
     @Test
-    public void random() {
+    public void random() throws PlcInvalidFieldException {
         TestDevice device = new TestDevice("foobar");
         TestField field = TestField.of("RANDOM/foo:INTEGER");
 
@@ -41,7 +40,7 @@ public class TestDeviceTest {
     }
 
     @Test
-    public void read() {
+    public void read() throws PlcInvalidFieldException {
         TestDevice device = new TestDevice("foobar");
         TestField field = TestField.of("STATE/bar:INTEGER");
 
