@@ -64,11 +64,8 @@ public class Plc4xSourceTask extends SourceTask {
     private PlcReader plcReader;
     private PlcReadRequest plcRequest;
 
-
-
     // TODO: should we use shared (static) thread pool for this?
     private ScheduledExecutorService scheduler;
-    private ScheduledFuture<?> timer;
     private boolean fetch = true;
 
     @Override
@@ -97,14 +94,14 @@ public class Plc4xSourceTask extends SourceTask {
 
         int rate = Integer.valueOf(props.get(Plc4xSourceConnector.RATE_CONFIG));
         scheduler = Executors.newScheduledThreadPool(1);
-        timer = scheduler.scheduleAtFixedRate(Plc4xSourceTask.this::scheduleFetch, rate, rate, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(Plc4xSourceTask.this::scheduleFetch, rate, rate, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void stop() {
-        timer.cancel(true);
         scheduler.shutdown();
         closeConnection();
+        notify(); // wake up thread waiting in awaitFetch
     }
 
     @Override
