@@ -4,16 +4,11 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidAddressException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.items.ReadRequestItem;
-import org.apache.plc4x.java.api.messages.items.ReadResponseItem;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -56,8 +51,10 @@ public class PlcEntityManager {
 
             reader = connection.getReader().get();
 
+            PlcReadRequest.Builder requestBuilder = reader.readRequestBuilder();
+
             // Do the necessary queries for all fields
-            HashMap<ReadRequestItem<?>, Field> requestItems = new HashMap<>();
+            // HashMap<ReadRequestItem<?>, Field> requestItems = new HashMap<>();
             for (Field field : clazz.getDeclaredFields()) {
                 PlcField fieldAnnotation = field.getAnnotation(PlcField.class);
                 if (fieldAnnotation == null) {
@@ -77,21 +74,16 @@ public class PlcEntityManager {
                     expectedType = field.getType();
                 }
 
-                ReadRequestItem<?> item;
-                try {
-                    item = new ReadRequestItem<>(expectedType, connection.parseAddress(query));
-                } catch (PlcInvalidAddressException e) {
-                    throw new OPMException("Unable to parse address '" + query + "'");
-                }
-
-                // Store the item
-                requestItems.put(item, field);
+                requestBuilder.addItem(field.getName(), query);
             }
 
             // Build the request
-            PlcReadRequest.Builder builder = new PlcReadRequest.Builder();
-            requestItems.keySet().forEach(item -> builder.addItem(item));
-            PlcReadRequest request = builder.build();
+            PlcReadRequest request;
+            try {
+                request = requestBuilder.build();
+            } catch (PlcInvalidFieldException e) {
+                throw new OPMException("Unable to parse one field request", e);
+            }
 
             // Perform the request
             PlcReadResponse response;
@@ -107,19 +99,17 @@ public class PlcEntityManager {
             T instance = clazz.getConstructor().newInstance();
 
             // Assign values to all fields
-            for (Map.Entry<ReadRequestItem<?>, Field> entry : requestItems.entrySet()) {
-                Optional<? extends ReadResponseItem<?>> responseItem = response.getValue(entry.getKey());
+            for (String field : request.getFieldNames()) {
+                Object value = response.getObject(field);
 
-                if (!responseItem.isPresent()) {
-                    throw new OPMException("Unable to fetch value for field '" + entry.getValue().getName() + "'");
+                if (value == null) {
+                    throw new OPMException("Unable to fetch value for field '" + field + "'");
                 }
 
                 // Fetch first value
-                Object value = responseItem.get().getValues().get(0);
-
-                Field field = entry.getValue();
-                field.setAccessible(true);
-                field.set(instance, value);
+                Field objectField = clazz.getDeclaredField(field);
+                objectField.setAccessible(true);
+                objectField.set(instance, value);
             }
             return instance;
         } catch (PlcConnectionException e) {

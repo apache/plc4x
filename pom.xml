@@ -122,7 +122,6 @@
 
     <!-- Examples -->
     <module>examples</module>
-    <module>utils</module>
   </modules>
 
   <prerequisites>

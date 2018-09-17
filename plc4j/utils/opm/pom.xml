@@ -3,18 +3,19 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>utils</artifactId>
+    <artifactId>plc4j-utils</artifactId>
     <groupId>org.apache.plc4x</groupId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>opm</artifactId>
+  <artifactId>plc4j-opm</artifactId>
   <packaging>jar</packaging>
 
   <name>object-plc-mapping</name>
   <description>Layer on top of Plc4X that enables mapping between Objects and PLCs.</description>
   <dependencies>
+    <!--Internal Dependencies-->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-core</artifactId>
@@ -30,6 +31,18 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-protocol-driver-base</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>apache-edgent</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
