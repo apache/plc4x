@@ -27,10 +27,12 @@ import org.apache.plc4x.java.base.messages.items.*;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 // TODO: we might user ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).putInt(port).asArray() etc
 public class LittleEndianDecoder {
@@ -258,15 +260,14 @@ public class LittleEndianDecoder {
                 return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case ULINT: {
-                LinkedList<Long> values = new LinkedList<>();
+                LinkedList<BigInteger> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     byte[] bytes = new byte[64];
                     wrappedBuffer.readBytes(bytes);
                     BigInteger bigInteger = new BigInteger(ArrayUtils.add(bytes, (byte) 0x0));
-                    // TODO: potential dataloss here.
-                    values.offer(bigInteger.longValue());
+                    values.offer(bigInteger);
                 }
-                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
+                return new DefaultBigIntegerFieldItem(values.toArray(new BigInteger[0]));
             }
             case REAL: {
                 LinkedList<Double> values = new LinkedList<>();
@@ -297,44 +298,36 @@ public class LittleEndianDecoder {
                 return new DefaultStringFieldItem(values.toArray(new String[0]));
             }
             case TIME: {
-                LinkedList<LocalDateTime> values = new LinkedList<>();
+                LinkedList<Long> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
-                    // TODO: we can't map time to LocalDateTime. Implmentation broken currently
-                    Instant instant = Instant.ofEpochMilli(aByte);
-                    values.offer(LocalDateTime.ofInstant(instant, ZoneId.of("ECT")));
+                    values.offer(aByte);
                 }
-                return new DefaultTimeFieldItem(values.toArray(new LocalDateTime[0]));
+                return new DefaultIntegerFieldItem(values.toArray(new Long[0]));
             }
             case TIME_OF_DAY: {
-                LinkedList<LocalDateTime> values = new LinkedList<>();
+                LinkedList<LocalTime> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
-                    // TODO: we can't map time to LocalDateTime. Implmentation broken currently
-                    Instant instant = Instant.ofEpochMilli(aByte);
-                    values.offer(LocalDateTime.ofInstant(instant, ZoneId.of("ECT")));
+                    values.offer(LocalTime.ofNanoOfDay(TimeUnit.MILLISECONDS.toNanos(aByte)));
                 }
-                return new DefaultTimeFieldItem(values.toArray(new LocalDateTime[0]));
+                return new DefaultLocalTimeFieldItem(values.toArray(new LocalTime[0]));
             }
             case DATE: {
-                LinkedList<LocalDateTime> values = new LinkedList<>();
+                LinkedList<LocalDate> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
-                    // TODO: we can't map time to LocalDateTime. Implmentation broken currently
-                    Instant instant = Instant.ofEpochMilli(aByte);
-                    values.offer(LocalDateTime.ofInstant(instant, ZoneId.of("ECT")));
+                    values.offer(LocalDate.ofEpochDay(aByte));
                 }
-                return new DefaultTimeFieldItem(values.toArray(new LocalDateTime[0]));
+                return new DefaultLocalDateFieldItem(values.toArray(new LocalDate[0]));
             }
             case DATE_AND_TIME: {
                 LinkedList<LocalDateTime> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
-                    // TODO: we can't map time to LocalDateTime. Implmentation broken currently
-                    Instant instant = Instant.ofEpochMilli(aByte);
-                    values.offer(LocalDateTime.ofInstant(instant, ZoneId.of("ECT")));
+                    values.offer(LocalDateTime.ofEpochSecond(aByte, 0, ZoneOffset.UTC));
                 }
-                return new DefaultTimeFieldItem(values.toArray(new LocalDateTime[0]));
+                return new DefaultLocalDateTimeFieldItem(values.toArray(new LocalDateTime[0]));
             }
             case ARRAY: {
                 throw new NotImplementedException("not implemented yet " + adsDataType);

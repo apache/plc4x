@@ -936,7 +936,7 @@ public class AdsPlcFieldHandler implements PlcFieldHandler {
             case TIME:
             case DATE:
             case DATE_AND_TIME:
-                return new DefaultTimeFieldItem((LocalDateTime[]) values);
+                return new DefaultLocalDateTimeFieldItem((LocalDateTime[]) values);
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");

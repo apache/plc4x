@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultTimeFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLocalDateTimeFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.s7.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
@@ -478,7 +478,7 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
             case TIME:
             case DATE:
             case DATE_AND_TIME:
-                return new DefaultTimeFieldItem();
+                return new DefaultLocalDateTimeFieldItem();
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + s7Field.getDataType().name() + " fields.");

@@ -18,16 +18,16 @@
  */
 package org.apache.plc4x.java.s7.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.DefaultTimeFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLocalDateTimeFieldItem;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 import java.time.LocalDateTime;
 
-public class S7TimeFieldItem extends DefaultTimeFieldItem {
+public class S7LocalDateTimeFieldItem extends DefaultLocalDateTimeFieldItem {
 
     private final TransportSize naturalDataType;
 
-    public S7TimeFieldItem(TransportSize naturalDataType, LocalDateTime... values) {
+    public S7LocalDateTimeFieldItem(TransportSize naturalDataType, LocalDateTime... values) {
         super(values);
         this.naturalDataType = naturalDataType;
     }

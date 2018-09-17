@@ -19,12 +19,10 @@ under the License.
 package org.apache.plc4x.java.base.messages.items;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
-public class DefaultTimeFieldItem extends FieldItem<LocalDateTime> {
+public class DefaultLocalDateFieldItem extends FieldItem<LocalDate> {
 
-    public DefaultTimeFieldItem(LocalDateTime... values) {
+    public DefaultLocalDateFieldItem(LocalDate... values) {
         super(values);
     }
 
@@ -34,39 +32,13 @@ public class DefaultTimeFieldItem extends FieldItem<LocalDateTime> {
     }
 
     @Override
-    public boolean isValidTime(int index) {
-        return (getValue(index) != null);
-    }
-
-    @Override
-    public LocalTime getTime(int index) {
-        if(isValidTime(index)) {
-            return getValue(index).toLocalTime();
-        }
-        return null;
-    }
-
-    @Override
     public boolean isValidDate(int index) {
         return (getValue(index) != null);
     }
 
     @Override
     public LocalDate getDate(int index) {
-        if(isValidTime(index)) {
-            return getValue(index).toLocalDate();
-        }
-        return null;
-    }
-
-    @Override
-    public boolean isValidDateTime(int index) {
-        return (getValue(index) != null);
-    }
-
-    @Override
-    public LocalDateTime getDateTime(int index) {
-        if(isValidTime(index)) {
+        if (isValidTime(index)) {
             return getValue(index);
         }
         return null;
