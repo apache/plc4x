@@ -34,7 +34,7 @@
   </description>
 
   <properties>
-    <ethernetip-driver.version>1.2.0-SNAPSHOT</ethernetip-driver.version>
+    <ethernetip-driver.version>1.2.0</ethernetip-driver.version>
   </properties>
 
   <dependencies>
