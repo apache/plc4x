@@ -212,7 +212,7 @@ public class PlcEntityManagerTest {
     public interface ConnectedEntity {
 
         @PlcField("%DB1.DW111")
-        public long getValue();
+        public Long getValue();
 
     }
 }
