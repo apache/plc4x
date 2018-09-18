@@ -4,6 +4,7 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import net.bytebuddy.implementation.bind.annotation.This;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
@@ -14,13 +15,15 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
+import static net.bytebuddy.matcher.ElementMatchers.any;
 
 /**
  * Manages Entities.
@@ -137,9 +140,6 @@ public class PlcEntityManager {
      * @throws OPMException
      */
     public <T> T connect(Class<T> clazz) throws OPMException {
-        if (!clazz.isInterface()) {
-            throw new OPMException("Only interfaces can be connected!");
-        }
         PlcEntity annotation = clazz.getAnnotation(PlcEntity.class);
         if (annotation == null) {
             throw new OPMException("Need to be a PLC Entity, please add Annotation.");
@@ -149,18 +149,58 @@ public class PlcEntityManager {
             // to the intercept method
             return new ByteBuddy()
                 .subclass(clazz)
-                .method(isAnnotatedWith(PlcField.class)).intercept(MethodDelegation.to(this))
+                .method(any()).intercept(MethodDelegation.to(this))
                 .make()
                 .load(Thread.currentThread().getContextClassLoader())
                 .getLoaded()
+                .getConstructor()
                 .newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new OPMException("Unable to instantiate Proxy", e);
         }
     }
 
+    /**
+     * Intersect "defined" methods
+     *
+     * @param o
+     * @param m
+     * @param c
+     * @return
+     * @throws OPMException
+     */
     @RuntimeType
-    public Object intercept(@Origin Method m, @This Object o) throws OPMException {
+    public Object intercept(@This Object o, @Origin Method m, @SuperCall Callable<?> c) throws OPMException {
+        System.out.println("Invoked " + m.getName() + " fetch all values...");
+
+        if (m.getName().startsWith("get") || m.getName().startsWith("is")) {
+            return fetchValueInternal(m);
+        }
+
+        try {
+            return c.call();
+        } catch (Exception e) {
+            throw new OPMException("Unbale to forward call", e);
+        }
+    }
+
+    /**
+     * Intersect abstract methods
+     *
+     * @param m
+     * @param o
+     * @return
+     * @throws OPMException
+     */
+    @RuntimeType
+    public Object interceptGetter(@Origin Method m, @This Object o) throws OPMException {
+        fetchValueInternal(m);
+
+        // Finished
+        return 1L;
+    }
+
+    private Object fetchValueInternal(@Origin Method m) throws OPMException {
         PlcField annotation = m.getAnnotation(PlcField.class);
         System.out.println("You wanted field: " + annotation.value());
         PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
