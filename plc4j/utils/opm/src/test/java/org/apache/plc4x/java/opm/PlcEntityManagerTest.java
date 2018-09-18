@@ -17,6 +17,7 @@ import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
@@ -29,6 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PlcEntityManagerTest {
@@ -68,13 +70,35 @@ public class PlcEntityManagerTest {
 
         ConnectedEntity connect = manager.connect(ConnectedEntity.class);
 
-        connect.someMethod();
-
         Assert.assertNotNull(connect);
 
-        long value = connect.getLong();
+        long value = connect.getLongVar();
 
         assertEquals(1, value);
+    }
+
+    @Test
+    public void callRandomMeathod() throws PlcConnectionException, OPMException {
+        driverManager = Mockito.mock(PlcDriverManager.class);
+        PlcDriverManager mock = driverManager;
+        PlcConnection connection = Mockito.mock(PlcConnection.class);
+        when(mock.getConnection(ArgumentMatchers.anyString())).thenReturn(connection);
+        PlcReader reader = Mockito.mock(PlcReader.class);
+        when(connection.getReader()).thenReturn(Optional.of(reader));
+        PlcEntityManager manager = new PlcEntityManager(driverManager);
+
+        ConnectedEntity connect = manager.connect(ConnectedEntity.class);
+
+        try {
+            connect.someMethod();
+        } catch (NullPointerException e) {
+            // ignore
+        }
+
+        ArgumentCaptor<PlcReadRequest> captor = ArgumentCaptor.forClass(PlcReadRequest.class);
+        verify(reader).read(captor.capture());
+
+        System.out.println(captor);
     }
 
     private PlcEntityManager getPlcEntityManager(final Map<String, FieldItem> responses) throws PlcConnectionException {
@@ -219,33 +243,44 @@ public class PlcEntityManagerTest {
     @PlcEntity("s7://localhost:5555/0/0")
     public static class ConnectedEntity {
 
+        @PlcField("%DB1.DW111:BYTE")
+        private byte byteVar;
+        @PlcField("%DB1.DW111:SHORT")
+        private short shortVar;
+        @PlcField("%DB1.DW111:INT")
+        private int intVar;
+        @PlcField("%DB1.DW111:LONG")
+        private long longVar;
+        @PlcField("%DB1.DW111:STRING")
+        private String stringVar;
+
         public ConnectedEntity() {
             // Default
         }
 
-        @PlcField("%DB1.DW111:BYTE")
-        public byte getByte() {
-            return 0;
+
+        public byte getByteVar() {
+            return byteVar;
         }
 
-        @PlcField("%DB1.DW111:SHORT")
-        public short getShort() {
-            return 0;
+
+        public short getShortVar() {
+            return shortVar;
         }
 
-        @PlcField("%DB1.DW111:INT")
-        public int getInt() {
-            return 0;
+
+        public int getIntVar() {
+            return intVar;
         }
 
-        @PlcField("%DB1.DW111:LONG")
-        public long getLong() {
-            return 0;
+
+        public long getLongVar() {
+            return longVar;
         }
 
-        @PlcField("%DB1.DW111:STRING")
-        public String getString() {
-            return null;
+
+        public String getStringVar() {
+            return stringVar;
         }
 
         public void someMethod() {

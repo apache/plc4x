@@ -201,6 +201,7 @@ public class PlcEntityManager {
     }
 
     private Object fetchValueInternal(@Origin Method m) throws OPMException {
+        // TODO Fetch annotation from variable
         PlcField annotation = m.getAnnotation(PlcField.class);
         System.out.println("You wanted field: " + annotation.value());
         PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
