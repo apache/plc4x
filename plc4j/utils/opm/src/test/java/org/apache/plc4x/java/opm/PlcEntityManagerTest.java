@@ -20,6 +20,8 @@ import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -49,7 +51,10 @@ public class PlcEntityManagerTest {
 
     @Test
     public void find() throws OPMException, PlcConnectionException {
-        PlcEntityManager manager = getPlcEntityManager();
+        Map<String, FieldItem> results = new HashMap<>();
+        results.put("counter", new DefaultIntegerFieldItem(1L));
+        results.put("counter2", new DefaultIntegerFieldItem(1L));
+        PlcEntityManager manager = getPlcEntityManager(results);
 
         MyEntity myEntity = manager.read(MyEntity.class);
 
@@ -59,18 +64,20 @@ public class PlcEntityManagerTest {
 
     @Test
     public void connect() throws PlcConnectionException, OPMException {
-        PlcEntityManager manager = getPlcEntityManager();
+        PlcEntityManager manager = getPlcEntityManager(Collections.singletonMap("%DB1.DW111", new DefaultIntegerFieldItem(1L)));
 
         ConnectedEntity connect = manager.connect(ConnectedEntity.class);
 
+        connect.someMethod();
+
         Assert.assertNotNull(connect);
 
-        long value = connect.getValue();
+        long value = connect.getLong();
 
         assertEquals(1, value);
     }
 
-    private PlcEntityManager getPlcEntityManager() throws PlcConnectionException {
+    private PlcEntityManager getPlcEntityManager(final Map<String, FieldItem> responses) throws PlcConnectionException {
         driverManager = Mockito.mock(PlcDriverManager.class);
         PlcDriverManager mock = driverManager;
         PlcConnection connection = Mockito.mock(PlcConnection.class);
@@ -84,7 +91,7 @@ public class PlcEntityManagerTest {
                         new Function<String, Pair<PlcResponseCode, FieldItem>>() {
                             @Override
                             public Pair<PlcResponseCode, FieldItem> apply(String s) {
-                                return Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1L));
+                                return Pair.of(PlcResponseCode.OK, responses.get(s));
                             }
                         }
                     ));
@@ -206,13 +213,44 @@ public class PlcEntityManagerTest {
         public long getCounter2() {
             return counter2;
         }
+
     }
 
     @PlcEntity("s7://localhost:5555/0/0")
-    public interface ConnectedEntity {
+    public static class ConnectedEntity {
 
-        @PlcField("%DB1.DW111")
-        public Long getValue();
+        public ConnectedEntity() {
+            // Default
+        }
+
+        @PlcField("%DB1.DW111:BYTE")
+        public byte getByte() {
+            return 0;
+        }
+
+        @PlcField("%DB1.DW111:SHORT")
+        public short getShort() {
+            return 0;
+        }
+
+        @PlcField("%DB1.DW111:INT")
+        public int getInt() {
+            return 0;
+        }
+
+        @PlcField("%DB1.DW111:LONG")
+        public long getLong() {
+            return 0;
+        }
+
+        @PlcField("%DB1.DW111:STRING")
+        public String getString() {
+            return null;
+        }
+
+        public void someMethod() {
+            System.out.println("I do nothing");
+        }
 
     }
 }
