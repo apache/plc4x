@@ -2,10 +2,7 @@ package org.apache.plc4x.java.opm;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.MethodDelegation;
-import net.bytebuddy.implementation.bind.annotation.Origin;
-import net.bytebuddy.implementation.bind.annotation.RuntimeType;
-import net.bytebuddy.implementation.bind.annotation.SuperCall;
-import net.bytebuddy.implementation.bind.annotation.This;
+import net.bytebuddy.implementation.bind.annotation.*;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -170,11 +167,11 @@ public class PlcEntityManager {
      * @throws OPMException
      */
     @RuntimeType
-    public Object intercept(@This Object o, @Origin Method m, @SuperCall Callable<?> c) throws OPMException {
+    public Object intercept(@This Object o, @Origin Method m, @SuperCall Callable<?> c, @Super Object that) throws OPMException {
         System.out.println("Invoked " + m.getName() + " fetch all values...");
 
         if (m.getName().startsWith("get") || m.getName().startsWith("is")) {
-            return fetchValueInternal(m);
+            return fetchValueInternal(that, m);
         }
 
         try {
@@ -193,15 +190,26 @@ public class PlcEntityManager {
      * @throws OPMException
      */
     @RuntimeType
-    public Object interceptGetter(@Origin Method m, @This Object o) throws OPMException {
-        fetchValueInternal(m);
+    public Object interceptGetter(@Origin Method m, @This Object o, @Super Object that) throws OPMException {
+        fetchValueInternal(that, m);
 
         // Finished
         return 1L;
     }
 
-    private Object fetchValueInternal(@Origin Method m) throws OPMException {
+    private Object fetchValueInternal(Object o, Method m) throws OPMException {
         // TODO Fetch annotation from variable
+        String s = m.getName().substring(3);
+        // First char to lower
+        String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
+        System.out.println("Variable: " + variable);
+        PlcEntity entity = null;
+        try {
+            entity = o.getClass().getField(variable).getAnnotation(PlcEntity.class);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        System.out.println(entity);
         PlcField annotation = m.getAnnotation(PlcField.class);
         System.out.println("You wanted field: " + annotation.value());
         PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
