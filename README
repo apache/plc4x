@@ -1,0 +1,38 @@
+Building the Apache PLC4X from a Source Distribution
+
+Quickstart
+----------
+
+You must have Java 8 installed on your system and connectivity to Maven Central
+(for downloading external third party dependencies). Maven will be automatically
+downloaded and installed by the maven wrapper `mvnw`.
+
+Build PLC4X jars and install them in your local maven repository
+
+$ ./mvnw install  # add -DskipTests to omit running the tests
+
+You can now construct applications that use PLC4X. The PLC4X samples
+are a good place to start and are available inside the `examples`
+directory.
+
+Additional Information
+----------------------
+
+Some parts of PLC4X, especially the raw socket support, require installed versions
+of libpcap/WinPcap. 
+
+You can download the Mac/Linux version from: http://www.tcpdump.org/
+The windows version can be found here: https://www.winpcap.org/install/
+
+Licensing
+---------
+
+Apache PLC4X is released under the Apache License Version 2.0.
+
+Apache PLC4X is an effort undergoing incubation at The Apache Software Foundation (ASF),
+sponsored by the Incubator PMC. Incubation is required of all newly accepted
+projects until a further review indicates that the infrastructure, communications,
+and decision making process have stabilized in a manner consistent with other
+successful ASF projects. While incubation status is not necessarily a reflection
+of the completeness or stability of the code, it does indicate that the project
+has yet to be fully endorsed by the ASF.

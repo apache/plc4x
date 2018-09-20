@@ -1,0 +1,45 @@
+Apache PLC4X (incubating) 0.1.0
+===============================
+
+This is the first official release of Apache PLC4X.
+It contains drivers for the following protocols:
+- Siemens S7comm (0x32)
+- Beckhoff ADS
+- Modbus
+- EtherNet/IP
+
+However the Siemens driver definitely is the most
+mature driver, the rest should be treated experimental.
+
+New Features
+------------
+
+PLC4X-29	[S7] Implement PDU Fragmentation
+PLC4X-39	Extend the Edgent integration with the new Subscription features of PLC4X
+
+Incompatible changes
+--------------------
+
+- NONE -
+
+Miscellaneous changes
+---------------------  
+
+- NONE -
+
+Known Issues
+------------
+
+- NONE -
+
+Most drivers should be treated experimental and are not near production ready.
+The S7 driver is probably the furthest implemented and tested driver and hereby can be 
+considered to be the most mature.
+
+Bug Fixes
+---------
+
+PLC4X-20	Jacoco doesn't seem to be working at all
+PLC4X-21	Code coverage doesn't seem to work
+PLC4X-47	S7 driver silently ignores surplus ReadRequestItems
+PLC4X-48	S7 driver failes to parse response with multiple items
