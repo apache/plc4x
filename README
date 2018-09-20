@@ -1,7 +1,31 @@
-Building the Apache PLC4X from a Source Distribution
+Apache PLC4X
+============
 
-Quickstart
-----------
+Apache PLC4X is an effort to create a set of libraries for communicating with industrial grade programmable logic controllers (PLCs) in a uniform way.
+We are planning on shipping libraries for usage in:
+
+1) Java
+2) Scala
+3) C/C++
+
+As well as provide direct integration into other Apache projects, such as:
+
+1) Apache Camel
+2) Apache Edgent
+3) Apache Kafka-Connect
+
+
+Environment
+-----------
+
+Currently the project is configured to require the following software:
+
+1) Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to point to that.
+2) (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
+
+
+Getting Started
+---------------
 
 You must have Java 8 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). Maven will be automatically
@@ -15,6 +39,7 @@ You can now construct applications that use PLC4X. The PLC4X samples
 are a good place to start and are available inside the `examples`
 directory.
 
+
 Additional Information
 ----------------------
 
@@ -23,6 +48,7 @@ of libpcap/WinPcap.
 
 You can download the Mac/Linux version from: http://www.tcpdump.org/
 The windows version can be found here: https://www.winpcap.org/install/
+
 
 Licensing
 ---------
