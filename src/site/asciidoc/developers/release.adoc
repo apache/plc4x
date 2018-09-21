@@ -1,0 +1,273 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: img/
+:icons: font
+
+== Releasing PLC4X
+
+=== Preparing your system for being able to release
+
+As part of the release process, Maven will upload maven release artifacts to a so-called staging repository.
+
+This can be thought of as an ad-hoc Maven repository that contains only the artifacts for one release.
+This helps reviewers to see what's in the convenience maven package and to release that to the public repos with one click.
+
+But in order to be allowed to upload artifacts, your account has to be enabled for this and you have to tell Maven about your credentials.
+
+In order to do this, you should provide these credentials via `.m2/settings.xml`.
+
+So if you don't already have one, you should create a `.m2` directory in your user home and inside that create a `settings.xml` file with at least this content:
+
+   <?xml version="1.0" encoding="UTF-8"?>
+   <settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+     <servers>
+       <!-- Apache Repo Settings -->
+       <server>
+           <id>apache.snapshots.https</id>
+           <username>{user-id}</username>
+           <password>{user-pass}</password>
+       </server>
+       <server>
+           <id>apache.releases.https</id>
+           <username>{user-id}</username>
+           <password>{user-pass}</password>
+       </server>
+     </servers>
+   </settings>
+
+This tells maven to use above credentials as soon as a repository with the id `apache.snapshots.https` or `apache.releases.https` is being used.
+For a release all you need is the `releases` repo, but it is good to have the other in place as it enables you to also deploy SNAPSHOTs from your system.
+There repos are defined in the `apache` parent pom and is identical for all Apache projects.
+
+Additionally all artifacts are automatically signed by the release build. In order to be able to do this you need to setup GPG.
+
+The key being used to sign the artifacts will have to be linked to your Apache E-Mail ({apache-id}@apache.org) and verified by at least one fellow Apache committer (Ideally more) that have trusted keys themselves.
+Usually for this you have to get in touch - in real life - with any Apache committer with a trusted key.
+Attending an `ApacheCon` is usually a great way to do this as usually every ApacheCon has a `Key Signing event` in it's schedule.
+He can then sign your key and hereby enable you to sign Apache release artifacts.
+
+There's a detailed description https://github.com/apache/incubator-pulsar/wiki/Create-GPG-keys-to-sign-release-artifacts[here].
+
+=== Preparing a release
+
+In order to prepare a release-candidate, the following command will prepare the repository:
+
+   mvn release:prepare -DautoVersionSubmodules=true
+
+The parameter `autoVersionSubmodules` flag will tell the release plugin to release all modules with the same version.
+Otherwise we would have to define the release and development version for each module.
+
+In general the plugin will now ask you 3 questions:
+
+1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
+2. The name of the tag the release commit will be tagged with in the SCM
+3. The next development version (The version present in the pom after the release)
+
+That the plugin does, is:
+
+1. Check we aren't referencing any `SNAPSHOT` dependencies.
+2. Update all pom versions to the release version.
+3. Run a build with all tests
+4. Commit the changes (labeled `[maven-release-plugin] prepare release {tagname}`)
+5. Push the commit
+6. Tag the commit
+7. Update all poms to the next development version.
+8. Commit the changes (labeled `[maven-release-plugin] prepare for next development iteration`)
+9. Push the commit
+
+However this just prepared the repository for the release, we have to perform the release to get the release artifacts.
+
+=== Performing a release
+
+This is done by executing another goal of the `maven-release-plugin`:
+
+   mvn release:perform
+
+This executes automatically as all information it requires is located in the `release.properties` file the `prepare` goal prepared.
+
+The first step is that the `perform` goal checks out the previously tagged revision into the root modules `target/checkout` directory.
+Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
+
+   mvn clean deploy -P apache release
+
+This builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
+
+As this time the build is building with release versions, Maven will automatically choose the release url for deploying artifacts.
+
+The way things are setup in the apache parent pom, is that release artifacts are deployed to a so-called `staging repository`.
+
+You can think of a `staging repository` as a dedicated repository created on the fly as soon as the first artifact comes in.
+
+After the build you will have a nice and clean Maven repository at https://repository.apache.org/ that contains only artifacts from the current build.
+
+After the build it is important to log in to `Nexus` at https://repository.apache.org/, select `Staging Repositories` and find the repository with the name: `orgapacheplc4x-{somenumber}`.
+
+Select that and click on the `Close` button.
+
+Now Nexus will do some checks on the artifacts and check the signatures.
+
+As soon as it's finished, we are done on the Maven side and ready to continue with the rest of the release process.
+
+A release build also produces a so-called `source-assembly` zip.
+
+This contains all sources of the project and will be what's actually the release from an Apache point of view and will be the thing we will be voting on.
+
+This file will also be signed and `MD5` and `SHA512`will be created.
+
+=== Staging a release
+
+Each new release and release-candidate has to be staged in the Apache SVN under:
+
+https://dist.apache.org/repos/dist/dev/incubator/plc4x/
+
+The directory structure of this directory is as follows:
+
+   ./KEYS
+   ./0.1.0-incubating/
+   ./0.1.0-incubating/rc1
+   ./0.1.0-incubating/rc1/README
+   ./0.1.0-incubating/rc1/RELEASE_NOTES
+   ./0.1.0-incubating/rc1/apache-plc4x-incubating-0.1.0-source-release.zip
+   ./0.1.0-incubating/rc1/apache-plc4x-incubating-0.1.0-source-release.zip.asc
+   ./0.1.0-incubating/rc1/apache-plc4x-incubating-0.1.0-source-release.zip.md5
+   ./0.1.0-incubating/rc1/apache-plc4x-incubating-0.1.0-source-release.zip.sha512
+
+The `KEYS` file contains the PGP public key which belongs to the private key used to sign the release artifacts.
+
+If this is your first release be sure to add your key to this file.
+For the format have a look at the file itself.
+It should contain all the information needed.
+
+Be sure to stage exactly the `README` and `RELEASE_NOTES` files contained in the root of your project.
+Ideally you just copy them there from there.
+
+All of the four `*-source-relese.zip*` artifacts should be located in the directory: `target/checkout/target`
+
+So after committing these files to SVN you are ready to start the vote.
+
+== Starting a vote on the mailing list
+
+After staging the release candidate in the Apache SVN, it is time to actually call out the vote.
+
+For this we usually send two emails.
+The following is the one used to do our first release:
+
+```
+   E-Mail Topic:
+   [VOTE] Apache PLC4X (Incubating) 0.1.0 RC1
+
+   Message:
+   Apache PLC4X (Incubating) 0.1.0 has been staged under [2] and it’s time to vote
+   on accepting it for release.  All Maven artifacts are available under [1].
+   If approved we will seek final release approval from the IPMC.
+   Voting will be open for 72hr.
+
+   A minimum of 3 binding +1 votes and more binding +1 than binding -1
+   are required to pass.
+
+   Per [3] "Before voting +1 [P]PMC members are required to download
+   the signed source code package, compile it as provided, and test
+   the resulting executable on their own platform, along with also
+   verifying that the package meets the requirements of the ASF policy
+   on releases."
+
+   You can achieve the above by following [4].
+
+   [ ]  +1 accept (indicate what you validated - e.g. performed the non-RM items in [4])
+   [ ]  -1 reject (explanation required)
+
+
+   [1] https://repository.apache.org/content/repositories/orgapacheplc4x-1000
+   [2] https://dist.apache.org/repos/dist/dev/incubator/plc4x/0.1.0-incubating/rc1
+   [3] https://www.apache.org/dev/release.html#approving-a-release
+   [4] https://cwiki.apache.org/confluence/display/PLC4X/Validating+a+staged+Release
+```
+
+As it is sometimes to do the vote counting, if voting and discussions are going on in the same thread, we send a second email:
+
+
+```
+   E-Mail Topic:
+   [DISCUSS] Apache PLC4X (Incubating) 0.1.0 RC1
+
+   Message:
+   This is the discussion thread for the corresponding VOTE thread.
+
+   Please keep discussions in this thread to simplify the counting of votes.
+
+   If you have to vote -1 please mention a brief description on why and then take the details to this thread.
+```
+
+Now we have to wait 72 hours till we can announce the result of the vote.
+
+This is an Apache policy to make it possible for anyone to participate in the vote, no matter where that person lives and not matter what weekends or public holidays might currently be.
+
+The vote passes, if at least 3 `+1` votes are received and more `+1` are received than `-1`.
+
+== An extra step for incubator podlings
+
+If the vote passes in the project, for a top-level project the formal process would be finished.
+
+Incubator podlings however have to do an extra step and have the Incubator PMC also do a vote.
+
+Now our mentors and any member of the Incubator PMC have the chance to review our release.
+
+Only if this second vote passes, are we allowed to finally announce the release and release the artifacts.
+
+== Releasing after a successful vote
+
+As soon as the votes are finished and the results were in favor of a release, the staged artifacts can be released.
+
+=== Releasing the Maven artifacts
+
+The probably simplest part is releasing the Maven artifacts.
+
+In order to do this, the release manager logs into Nexus at https://repository.apache.org/, selects the stagign repository and clicks on the `Release` button.
+
+This will move all artifacts into the Apache release repository and delete the staging repository after that.
+
+All release artifacts released to the Apache release repo, will automatically be synced to Maven central.
+
+=== Releasing the source bundle
+
+// TODO ... finish this ...
+
+=== Notifying the world
+
+// TODO ... finish this ...
+
+== What if something goes wrong?
+
+If something goes wrong, you can always execute:
+
+   mvn release:rollback
+
+And it will change the versions back and commit and push things.
+
+However it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
+
+== Actually performing the release
+
+Up till now only a version in GIT has been produced. In order to actually release you have to execute:
+
+   mvn release:perform
+
+This will do a clean checkout of the tag we previously created into the roots `target` directory and do a full build with the `apache-release` profile activated.
+This will build and test the project, create the site, JavaDoc, build the source release artifacts (Which we will be voting on) and stage all maven artifacts in a staging repo of Apache's Nexus.
+
+
