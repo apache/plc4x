@@ -1238,7 +1238,7 @@
               </algorithms>
               <fileSets>
                 <fileSet>
-                  <directory>${build.directory}</directory>
+                  <directory>${project.build.directory}</directory>
                   <includes>
                     <include>apache-plc4x-incubating-${project.version}-source-release.zip</include>
                   </includes>
