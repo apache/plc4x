@@ -18,7 +18,9 @@
  */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 
 import java.util.LinkedList;
@@ -28,4 +30,6 @@ public interface InternalPlcWriteRequest extends PlcWriteRequest, InternalPlcReq
     FieldItem getFieldItem(String name);
 
     LinkedList<FieldItem> getFieldItems();
+
+    LinkedList<Triple<String, PlcField, FieldItem>> getNamedFieldTriples();
 }

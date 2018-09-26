@@ -76,6 +76,11 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     }
 
     @Override
+    public Map<String, Pair<PlcResponseCode, FieldItem>> getValues() {
+        return values;
+    }
+
+    @Override
     public Object getObject(String name) {
         return getObject(name, 0);
     }

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -39,7 +40,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
 
     private final LinkedHashMap<String, Pair<PlcField, FieldItem>> fields;
 
-    private DefaultPlcWriteRequest(LinkedHashMap<String, Pair<PlcField, FieldItem>> fields) {
+    protected DefaultPlcWriteRequest(LinkedHashMap<String, Pair<PlcField, FieldItem>> fields) {
         this.fields = fields;
     }
 
@@ -71,6 +72,31 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
     @Override
     public LinkedList<FieldItem> getFieldItems() {
         return fields.values().stream().map(Pair::getValue).collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    @Override
+    public LinkedList<Pair<String, PlcField>> getNamedFields() {
+        return fields.entrySet()
+            .stream()
+            .map(stringPairEntry ->
+                Pair.of(
+                    stringPairEntry.getKey(),
+                    stringPairEntry.getValue().getKey()
+                )
+            ).collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    @Override
+    public LinkedList<Triple<String, PlcField, FieldItem>> getNamedFieldTriples() {
+        return fields.entrySet()
+            .stream()
+            .map(stringPairEntry ->
+                Triple.of(
+                    stringPairEntry.getKey(),
+                    stringPairEntry.getValue().getKey(),
+                    stringPairEntry.getValue().getValue()
+                )
+            ).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override

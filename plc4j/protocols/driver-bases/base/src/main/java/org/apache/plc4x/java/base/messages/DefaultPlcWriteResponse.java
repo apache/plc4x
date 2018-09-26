@@ -35,6 +35,11 @@ public class DefaultPlcWriteResponse implements InternalPlcWriteResponse {
     }
 
     @Override
+    public Map<String, PlcResponseCode> getValues() {
+        return values;
+    }
+
+    @Override
     public InternalPlcWriteRequest getRequest() {
         return request;
     }

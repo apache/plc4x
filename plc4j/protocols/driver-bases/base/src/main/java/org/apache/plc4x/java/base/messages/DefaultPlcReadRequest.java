@@ -18,18 +18,20 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPlcFieldRequest {
 
     private LinkedHashMap<String, PlcField> fields;
 
-    private DefaultPlcReadRequest(LinkedHashMap<String, PlcField> fields) {
+    protected DefaultPlcReadRequest(LinkedHashMap<String, PlcField> fields) {
         this.fields = fields;
     }
 
@@ -52,6 +54,14 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
     @Override
     public LinkedList<PlcField> getFields() {
         return new LinkedList<>(fields.values());
+    }
+
+    @Override
+    public LinkedList<Pair<String, PlcField>> getNamedFields() {
+        return fields.entrySet()
+            .stream()
+            .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     public static class Builder implements PlcReadRequest.Builder {

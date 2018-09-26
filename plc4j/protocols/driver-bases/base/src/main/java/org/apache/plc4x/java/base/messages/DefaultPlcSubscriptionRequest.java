@@ -34,27 +34,32 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
 
     @Override
     public int getNumberOfFields() {
-        return 0;
+        throw new IllegalStateException("not available");
     }
 
     @Override
     public LinkedHashSet<String> getFieldNames() {
-        return null;
+        throw new IllegalStateException("not available");
     }
 
     @Override
     public PlcField getField(String name) {
-        return null;
+        throw new IllegalStateException("not available");
     }
 
     @Override
     public LinkedList<PlcField> getFields() {
-        return null;
+        throw new IllegalStateException("not available");
     }
 
     @Override
     public PlcSubscriptionType getPlcSubscriptionType() {
-        return null;
+        throw new IllegalStateException("not available");
+    }
+
+    @Override
+    public LinkedList<Pair<String, PlcField>> getNamedFields() {
+        throw new IllegalStateException("not available");
     }
 
     public static class Builder implements PlcSubscriptionRequest.Builder {

@@ -20,7 +20,7 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 
-public interface InternalPlcReadRequest extends PlcReadRequest, InternalPlcRequest {
+public interface InternalPlcReadRequest extends PlcReadRequest, InternalPlcFieldRequest, InternalPlcRequest {
 
 }
 

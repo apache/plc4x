@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -57,6 +58,11 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
     @Override
     public Collection<? extends InternalPlcSubscriptionHandle> getInternalPlcSubscriptionHandles() {
         return internalPlcSubscriptionHandles;
+    }
+
+    @Override
+    public LinkedList<Pair<String, PlcField>> getNamedFields() {
+        throw new IllegalStateException("not available");
     }
 
     public static class Builder implements PlcUnsubscriptionRequest.Builder {
