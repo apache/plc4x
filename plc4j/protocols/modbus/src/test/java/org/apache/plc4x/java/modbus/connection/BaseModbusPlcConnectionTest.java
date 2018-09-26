@@ -27,11 +27,9 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcWriteRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,24 +90,18 @@ public class BaseModbusPlcConnectionTest {
 
     @Test
     public void read() {
-        CompletableFuture<PlcReadResponse> read = SUT.read(mock(PlcReadRequest.class));
+        CompletableFuture<PlcReadResponse<?>> read = SUT.read(mock(InternalPlcReadRequest.class));
         assertNotNull(read);
-        CompletableFuture<TypeSafePlcReadResponse<Object>> typeSafeRead = SUT.read(mock(TypeSafePlcReadRequest.class));
-        assertNotNull(typeSafeRead);
 
-        simulatePipelineError(() -> SUT.read(mock(PlcReadRequest.class)));
-        simulatePipelineError(() -> SUT.read(mock(TypeSafePlcReadRequest.class)));
+        simulatePipelineError(() -> SUT.read(mock(InternalPlcReadRequest.class)));
     }
 
     @Test
     public void write() {
-        CompletableFuture<PlcWriteResponse> write = SUT.write(mock(PlcWriteRequest.class));
+        CompletableFuture<PlcWriteResponse<?>> write = SUT.write(mock(InternalPlcWriteRequest.class));
         assertNotNull(write);
-        CompletableFuture<TypeSafePlcWriteResponse<Object>> typeSafeWrite = SUT.write(mock(TypeSafePlcWriteRequest.class));
-        assertNotNull(typeSafeWrite);
 
-        simulatePipelineError(() -> SUT.write(mock(PlcWriteRequest.class)));
-        simulatePipelineError(() -> SUT.write(mock(TypeSafePlcWriteRequest.class)));
+        simulatePipelineError(() -> SUT.write(mock(InternalPlcWriteRequest.class)));
     }
 
     public void simulatePipelineError(FutureProducingTestRunnable futureProducingTestRunnable) {

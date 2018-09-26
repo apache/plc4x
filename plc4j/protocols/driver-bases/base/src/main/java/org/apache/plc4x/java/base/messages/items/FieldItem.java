@@ -143,6 +143,14 @@ public abstract class FieldItem<T> {
         return null;
     }
 
+    public boolean isValidByteArray(int index) {
+        return false;
+    }
+
+    public byte[] getByteArray(int index) {
+        return null;
+    }
+
     public T[] getValues() {
         return values;
     }

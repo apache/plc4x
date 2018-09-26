@@ -19,12 +19,14 @@
 
 package org.apache.plc4x.java.test;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.*;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -105,6 +107,15 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
+    public FieldItem encodeBigDecimal(PlcField field, Object[] values) {
+        TestField testField = (TestField) field;
+        if (testField.getDataType() == BigDecimal.class) {
+            return new DefaultBigDecimalFieldItem((BigDecimal[]) values);
+        }
+        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
+    }
+
+    @Override
     public FieldItem encodeDouble(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Double.class) {
@@ -145,6 +156,18 @@ public class TestFieldHandler implements PlcFieldHandler {
         TestField testField = (TestField) field;
         if (testField.getDataType() == LocalDateTime.class) {
             return new DefaultLocalDateTimeFieldItem((LocalDateTime[]) values);
+        }
+        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
+    }
+
+    @Override
+    public FieldItem encodeByteArray(PlcField field, Object[] values) {
+        TestField testField = (TestField) field;
+        if (testField.getDataType() == byte[].class) {
+            return new DefaultByteArrayFieldItem(ArrayUtils.toPrimitive((Byte[]) values));
+        }
+        if (testField.getDataType() == Byte[].class) {
+            return new DefaultByteArrayFieldItem(ArrayUtils.toPrimitive((Byte[]) values));
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }

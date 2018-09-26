@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,6 +46,8 @@ public interface PlcWriteRequest extends PlcFieldRequest {
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Double... values);
 
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, BigDecimal... values);
+
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, String... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalTime... values);
@@ -52,6 +55,10 @@ public interface PlcWriteRequest extends PlcFieldRequest {
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDate... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDateTime... values);
+
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, byte[]... values);
+
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Byte[]... values);
 
         <T> PlcWriteRequest.Builder addItem(String name, String fieldQuery, T... values);
     }

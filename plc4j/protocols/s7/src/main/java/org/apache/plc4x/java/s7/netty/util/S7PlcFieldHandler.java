@@ -21,9 +21,9 @@ package org.apache.plc4x.java.s7.netty.util;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.DefaultLocalDateTimeFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.s7.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
@@ -35,7 +35,7 @@ import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
 
-public class S7PlcFieldHandler implements PlcFieldHandler {
+public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {

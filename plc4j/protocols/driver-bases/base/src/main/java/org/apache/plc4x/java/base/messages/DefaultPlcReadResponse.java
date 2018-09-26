@@ -180,20 +180,6 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     }
 
     @Override
-    public byte[] getByteArray(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
-        if (fieldInternal != null) {
-            int num = fieldInternal.getNumberOfValues();
-            byte[] values = new byte[num];
-            for (int i = 0; i < num; i++) {
-                values[i] = fieldInternal.getByte(i);
-            }
-            return values;
-        }
-        return null;
-    }
-
-    @Override
     public boolean isValidShort(String name) {
         return isValidShort(name, 0);
     }
@@ -652,6 +638,47 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
             }
             return values;
         }
+        return null;
+    }
+
+    @Override
+    public boolean isValidByteArray(String name) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.isValidByteArray(0);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isValidByteArray(String name, int index) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.isValidDateTime(index);
+        }
+        return false;
+    }
+
+    @Override
+    public byte[] getByteArray(String name) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.getByteArray(0);
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] getByteArray(String name, int index) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            return fieldInternal.getByteArray(index);
+        }
+        return null;
+    }
+
+    @Override
+    public Collection<byte[]> getAllByteArrays(String name) {
         return null;
     }
 

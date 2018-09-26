@@ -22,14 +22,9 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.messages.items.PlcReadResponseItem;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcReadResponse;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteRequest;
-import org.apache.plc4x.java.api.messages.specific.TypeSafePlcWriteResponse;
-import org.apache.plc4x.java.api.model.PlcField;
-
-import java.util.concurrent.CompletableFuture;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.base.util.HexUtil;
 
 public class ManualPlc4XModbusTest {
 
@@ -48,34 +43,29 @@ public class ManualPlc4XModbusTest {
             {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-                PlcField field = plcConnection.prepareField("register:7");
-                CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
-                    .read(new TypeSafePlcReadRequest<>(Integer.class, field));
-                TypeSafePlcReadResponse<Integer> readResponse = response.get();
+                PlcReadResponse<?> readResponse = reader.read(builder -> builder.addItem("randomRegister", "register:7")).get();
                 System.out.println("Response " + readResponse);
-                PlcReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
-                System.out.println("ResponseItem " + responseItem);
-                responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
+                readResponse.getAllByteArrays("randomRegister").stream()
+                    .map(HexUtil::toHex)
+                    .map(hex -> "Value: " + hex)
+                    .forEach(System.out::println);
             }
 
             {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-                PlcField field = plcConnection.prepareField("coil:1");
-                CompletableFuture<TypeSafePlcReadResponse<Integer>> response = reader
-                    .read(new TypeSafePlcReadRequest<>(Integer.class, field));
-                TypeSafePlcReadResponse<Integer> readResponse = response.get();
+                PlcReadResponse<?> readResponse = reader.read(builder -> builder.addItem("randomRegister", "coil:1")).get();
                 System.out.println("Response " + readResponse);
-                PlcReadResponseItem<Integer> responseItem = readResponse.getResponseItem().orElseThrow(() -> new RuntimeException("No Item found"));
-                System.out.println("ResponseItem " + responseItem);
-                responseItem.getValues().stream().map(integer -> "Value: " + integer).forEach(System.out::println);
+                readResponse.getAllByteArrays("randomRegister").stream()
+                    .map(HexUtil::toHex)
+                    .map(hex -> "Value: " + hex)
+                    .forEach(System.out::println);
             }
 
             {
                 PlcWriter writer = plcConnection.getWriter().orElseThrow(() -> new RuntimeException("No Writer found"));
-                PlcField field = plcConnection.prepareField("coil:1");
-                CompletableFuture<TypeSafePlcWriteResponse<Integer>> write = writer.write(new TypeSafePlcWriteRequest<>(Integer.class, field, 1));
-                TypeSafePlcWriteResponse<Integer> writeResponse = write.get();
+
+                PlcWriteResponse<?> writeResponse = writer.write(builder -> builder.addItem("randomCoilField", "coil:1", 1)).get();
                 System.out.println("Response " + writeResponse);
             }
         } catch (Exception e) {

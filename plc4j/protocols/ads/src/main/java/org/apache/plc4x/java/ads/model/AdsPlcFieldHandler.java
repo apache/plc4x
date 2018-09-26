@@ -21,7 +21,7 @@ package org.apache.plc4x.java.ads.model;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.PlcFieldHandler;
+import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.*;
 
 import java.math.BigDecimal;
@@ -35,7 +35,7 @@ import java.util.List;
 // TODO: implement me acording to ads. currently copy pasta from S7
 // Use endian decoders.
 // TODO: replace all ifs with switches
-public class AdsPlcFieldHandler implements PlcFieldHandler {
+public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {

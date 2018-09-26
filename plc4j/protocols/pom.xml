@@ -38,7 +38,7 @@
 
     <module>ads</module>
     <module>ethernetip</module>
-    <!--module>modbus</module-->
+    <module>modbus</module>
     <module>s7</module>
     <module>test</module>
 

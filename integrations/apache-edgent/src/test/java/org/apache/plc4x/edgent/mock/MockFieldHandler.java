@@ -67,6 +67,11 @@ public class MockFieldHandler implements PlcFieldHandler {
     }
 
     @Override
+    public FieldItem encodeBigDecimal(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
     public FieldItem encodeDouble(PlcField field, Object[] values) {
         return new MockFieldItem(values);
     }
@@ -88,6 +93,11 @@ public class MockFieldHandler implements PlcFieldHandler {
 
     @Override
     public FieldItem encodeDateTime(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public FieldItem encodeByteArray(PlcField field, Object[] values) {
         return new MockFieldItem(values);
     }
 

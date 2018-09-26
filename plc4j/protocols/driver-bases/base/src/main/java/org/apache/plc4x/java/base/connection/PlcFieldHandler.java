@@ -40,6 +40,8 @@ public interface PlcFieldHandler {
 
     FieldItem encodeFloat(PlcField field, Object[] values);
 
+    FieldItem encodeBigDecimal(PlcField field, Object[] values);
+
     FieldItem encodeDouble(PlcField field, Object[] values);
 
     FieldItem encodeString(PlcField field, Object[] values);
@@ -49,5 +51,7 @@ public interface PlcFieldHandler {
     FieldItem encodeDate(PlcField field, Object[] values);
 
     FieldItem encodeDateTime(PlcField field, Object[] values);
+
+    FieldItem encodeByteArray(PlcField field, Object[] values);
 
 }

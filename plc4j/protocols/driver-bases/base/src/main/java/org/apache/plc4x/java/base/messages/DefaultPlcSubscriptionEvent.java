@@ -109,11 +109,6 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
     }
 
     @Override
-    public byte[] getByteArray(String name) {
-        return new byte[0];
-    }
-
-    @Override
     public boolean isValidShort(String name) {
         return false;
     }
@@ -385,6 +380,31 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Collection<LocalDateTime> getAllDateTimes(String name) {
+        return null;
+    }
+
+    @Override
+    public boolean isValidByteArray(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isValidByteArray(String name, int index) {
+        return false;
+    }
+
+    @Override
+    public byte[] getByteArray(String name) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] getByteArray(String name, int index) {
+        return new byte[0];
+    }
+
+    @Override
+    public Collection<byte[]> getAllByteArrays(String name) {
         return null;
     }
 

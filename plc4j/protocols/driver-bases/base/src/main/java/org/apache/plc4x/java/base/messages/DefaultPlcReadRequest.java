@@ -25,7 +25,7 @@ import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 
 import java.util.*;
 
-public class DefaultPlcReadRequest implements InternalPlcReadRequest {
+public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPlcFieldRequest {
 
     private LinkedHashMap<String, PlcField> fields;
 

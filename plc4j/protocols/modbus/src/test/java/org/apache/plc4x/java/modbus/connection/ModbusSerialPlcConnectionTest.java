@@ -24,11 +24,9 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
-import org.apache.plc4x.java.modbus.model.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -42,7 +40,7 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -65,78 +63,9 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     @Test
-    public void prepareEmptyField() throws Exception {
-        try {
-            SUT.prepareField("");
-        } catch (IllegalArgumentException exception) {
-            assertTrue("Unexpected exception", exception.getMessage().startsWith("address doesn't match "));
-        }
-    }
-
-    @Test
-    public void prepareField() throws Exception {
-        try {
-            CoilModbusField field = (CoilModbusField) SUT.prepareField("0/1");
-            assertEquals(field.getAddress(), 0);
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
-        }
-    }
-
-    @Test
-    public void prepareMaskWriteRegisterModbusField() throws Exception {
-        try {
-            MaskWriteRegisterModbusField field = (MaskWriteRegisterModbusField) SUT.prepareField("0/1");
-            assertEquals(field.getAddress(), 0);
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
-        }
-    }
-
-    @Test
-    public void prepareReadDiscreteInputsModbusField() throws Exception {
-        try {
-            ReadDiscreteInputsModbusField field = (ReadDiscreteInputsModbusField) SUT.prepareField("0/1");
-            assertEquals(field.getAddress(), 0);
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
-        }
-    }
-
-    @Test
-    public void prepareReadHoldingRegistersModbusField() throws Exception {
-        try {
-            ReadHoldingRegistersModbusField field = (ReadHoldingRegistersModbusField) SUT.prepareField("0/1");
-            assertEquals(field.getAddress(), 0);
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
-        }
-    }
-
-    @Test
-    public void prepareReadInputRegistersModbusField() throws Exception {
-        try {
-            ReadInputRegistersModbusField field = (ReadInputRegistersModbusField) SUT.prepareField("0/1");
-            assertEquals(field.getAddress(), 0);
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
-        }
-    }
-
-    @Test
-    public void prepareRegisterField() throws Exception {
-        try {
-            RegisterModbusField field = (RegisterModbusField) SUT.prepareField("0/1");
-            assertEquals(field.getAddress(), 0);
-        } catch (IllegalArgumentException exception) {
-            fail("valid data block address");
-        }
-    }
-
-    @Test
     public void testRead() throws Exception {
         prepareSerialSimulator();
-        CompletableFuture<PlcReadResponse> read = SUT.read(new PlcReadRequest(String.class, SUT.prepareField("0/0")));
+        CompletableFuture<PlcReadResponse<?>> read = SUT.read(builder -> builder.addItem("randomRead", "0/0"));
         PlcReadResponse plcReadResponse = read.get(30, TimeUnit.SECONDS);
         assertNotNull(plcReadResponse);
     }

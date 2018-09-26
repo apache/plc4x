@@ -58,8 +58,6 @@ public interface PlcReadResponse<T extends PlcReadRequest> extends PlcFieldRespo
 
     Collection<Byte> getAllBytes(String name);
 
-    byte[] getByteArray(String name);
-
     boolean isValidShort(String name);
 
     boolean isValidShort(String name, int index);
@@ -169,5 +167,15 @@ public interface PlcReadResponse<T extends PlcReadRequest> extends PlcFieldRespo
     LocalDateTime getDateTime(String name, int index);
 
     Collection<LocalDateTime> getAllDateTimes(String name);
+
+    boolean isValidByteArray(String name);
+
+    boolean isValidByteArray(String name, int index);
+
+    byte[] getByteArray(String name);
+
+    byte[] getByteArray(String name, int index);
+
+    Collection<byte[]> getAllByteArrays(String name);
 
 }

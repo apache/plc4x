@@ -18,14 +18,20 @@
  */
 package org.apache.plc4x.java.modbus.util;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.PlcFieldHandler;
+import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.modbus.model.*;
 
-public class ModbusPlcFieldHandler implements PlcFieldHandler {
+import java.util.BitSet;
+import java.util.LinkedList;
+import java.util.List;
+
+public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
@@ -47,68 +53,62 @@ public class ModbusPlcFieldHandler implements PlcFieldHandler {
 
     @Override
     public FieldItem encodeBoolean(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
+        ModbusField modbusField = (ModbusField) field;
+        List<Boolean> booleanValues = new LinkedList<>();
+        for (Object value : values) {
+            if (value instanceof Boolean) {
+                Boolean booleanValue = (Boolean) value;
+                booleanValues.add(booleanValue);
+            } else if (value instanceof Byte) {
+                Byte byteValue = (Byte) value;
+                BitSet bitSet = BitSet.valueOf(new byte[]{byteValue});
+                for (int i = 0; i < 8; i++) {
+                    booleanValues.add(bitSet.get(i));
+                }
+            } else if (value instanceof Short) {
+                Short shortValue = (Short) value;
+                BitSet bitSet = BitSet.valueOf(new long[]{shortValue});
+                for (int i = 0; i < 16; i++) {
+                    booleanValues.add(bitSet.get(i));
+                }
+            } else if (value instanceof Integer) {
+                Integer integerValue = (Integer) value;
+                BitSet bitSet = BitSet.valueOf(new long[]{integerValue});
+                for (int i = 0; i < 32; i++) {
+                    booleanValues.add(bitSet.get(i));
+                }
+            } else if (value instanceof Long) {
+                long longValue = (Long) value;
+                BitSet bitSet = BitSet.valueOf(new long[]{longValue});
+                for (int i = 0; i < 64; i++) {
+                    booleanValues.add(bitSet.get(i));
+                }
+            } else {
+                throw new IllegalArgumentException(
+                    "Value of type " + value.getClass().getName() +
+                        " is not assignable to " + modbusField + " fields.");
+            }
+        }
+        return new DefaultBooleanFieldItem(booleanValues.toArray(new Boolean[0]));
     }
 
     @Override
-    public FieldItem encodeByte(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
+    public FieldItem encodeByteArray(PlcField field, Object[] values) {
+        ModbusField modbusField = (ModbusField) field;
+        List<byte[]> byteArrays = new LinkedList<>();
+        for (Object value : values) {
+            if (value instanceof byte[]) {
+                byte[] byteArray = (byte[]) value;
+                byteArrays.add(byteArray);
+            } else if (value instanceof Byte[]) {
+                Byte[] byteArray = (Byte[]) value;
+                byteArrays.add(ArrayUtils.toPrimitive(byteArray));
+            } else {
+                throw new IllegalArgumentException(
+                    "Value of type " + value.getClass().getName() +
+                        " is not assignable to " + modbusField + " fields.");
+            }
+        }
+        return new DefaultByteArrayFieldItem(byteArrays.toArray(new byte[0][0]));
     }
-
-    @Override
-    public FieldItem encodeShort(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
-    @Override
-    public FieldItem encodeInteger(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
-    @Override
-    public FieldItem encodeLong(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
-    @Override
-    public FieldItem encodeFloat(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
-    @Override
-    public FieldItem encodeDouble(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
-    @Override
-    public FieldItem encodeString(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
-    @Override
-    public FieldItem encodeTime(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
-    @Override
-    public FieldItem encodeDate(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
-    @Override
-    public FieldItem encodeDateTime(PlcField field, Object[] values) {
-        ModbusField enipField = (ModbusField) field;
-        throw new PlcRuntimeException("Invalid encoder for type " + enipField);
-    }
-
 }

@@ -21,15 +21,15 @@ package org.apache.plc4x.java.ethernetip.netty.util;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.PlcFieldHandler;
+import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 
-public class EnipPlcFieldHandler implements PlcFieldHandler {
+public class EnipPlcFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-        if(EtherNetIpField.matches(fieldQuery)) {
+        if (EtherNetIpField.matches(fieldQuery)) {
             return EtherNetIpField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);

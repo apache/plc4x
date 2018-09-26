@@ -33,11 +33,13 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
@@ -75,7 +77,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         InternalPlcWriteRequest request = (InternalPlcWriteRequest) msg.getRequest();
 
         // TODO: support multiple requests
-        if(request.getFieldNames().size() != 1) {
+        if (request.getFieldNames().size() != 1) {
             throw new PlcNotImplementedException("Only single message supported for now");
         }
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
@@ -108,7 +110,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         if (field instanceof RegisterModbusField) {
             RegisterModbusField registerModbusField = (RegisterModbusField) field;
             if (quantity > 1) {
-                byte[] bytesToWrite = flattenByteValues(request.getFieldItem(fieldName).getValues());
+                byte[] bytesToWrite = produceRegisterValue(Arrays.asList(request.getFieldItem(fieldName).getValues()));
                 // A register is a 16 bit (2 byte) value ... so every value needs 2 byte.
                 int requiredLength = 2 * quantity;
                 if (bytesToWrite.length != requiredLength) {
@@ -116,7 +118,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 }
                 modbusRequest = new WriteMultipleRegistersRequest(registerModbusField.getAddress(), quantity, bytesToWrite);
             } else {
-                byte[] register = flattenByteValue(request.getFieldItem(fieldName).getValues()[0]);
+                byte[] register = produceRegisterValue(Arrays.asList(request.getFieldItem(fieldName).getValues()));
                 if ((register == null) || (register.length != 2)) {
                     throw new PlcProtocolException("Invalid register values created. Should be 2 bytes. Was " +
                         ((register != null) ? register.length : 0));
@@ -128,7 +130,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         } else if (field instanceof CoilModbusField) {
             CoilModbusField coilModbusField = (CoilModbusField) field;
             if (quantity > 1) {
-                byte[] bytesToWrite = flattenBitValues(request.getFieldItem(fieldName).getValues());
+                byte[] bytesToWrite = produceCoilValues(Arrays.asList(request.getFieldItem(fieldName).getValues()));
                 // As each coil value represents a bit, the number of bytes needed
                 // equals "ceil(quantity/8)" (a 3 bit shift is a division by 8 ... the +1 is the "ceil")
                 int requiredLength = (quantity >> 3) + 1;
@@ -139,7 +141,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 }
                 modbusRequest = new WriteMultipleCoilsRequest(coilModbusField.getAddress(), quantity, bytesToWrite);
             } else {
-                boolean booleanToWrite = produceCoilValue(request.getFieldItem(fieldName).getValues());
+                boolean booleanToWrite = produceCoilValue(Arrays.asList(request.getFieldItem(fieldName).getValues()));
                 modbusRequest = new WriteSingleCoilRequest(coilModbusField.getAddress(), booleanToWrite);
             }
         } else if (field instanceof MaskWriteRegisterModbusField) {
@@ -163,7 +165,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     private void encodeReadRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcException {
         PlcReadRequest request = (PlcReadRequest) msg.getRequest();
         // TODO: support multiple requests
-        if(request.getFieldNames().size() != 1) {
+        if (request.getFieldNames().size() != 1) {
             throw new PlcNotImplementedException("Only single message supported for now");
         }
         // TODO: check if we can map like this. Implication is that we can only work with int, short, byte and boolean
@@ -214,7 +216,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         // TODO: only single Item supported for now
         InternalPlcFieldRequest request = (InternalPlcFieldRequest) plcRequestContainer.getRequest();
         // TODO: support multiple requests (Shouldn't be needed as the request wouldn't have been sent)
-        if(request.getFieldNames().size() != 1) {
+        if (request.getFieldNames().size() != 1) {
             throw new PlcNotImplementedException("Only single message supported for now");
         }
         String fieldName = request.getFieldNames().iterator().next();
@@ -256,18 +258,18 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             ReadCoilsResponse readCoilsResponse = (ReadCoilsResponse) modbusPdu;
             LOGGER.debug("{}: Nothing", readCoilsResponse);
             ByteBuf byteBuf = readCoilsResponse.getCoilStatus();
-            List<?> data = produceCoilValueList(field, byteBuf);
+            DefaultBooleanFieldItem data = produceCoilValueList(byteBuf);
             Map<String, Pair<PlcResponseCode, FieldItem>> responseValues = new HashMap<>();
-            responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, new DefaultBooleanFieldItem((Boolean[]) data.toArray(new Boolean[0]))));
+            responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadDiscreteInputsResponse) {
             // TODO: finish implementation
             ReadDiscreteInputsResponse readDiscreteInputsResponse = (ReadDiscreteInputsResponse) modbusPdu;
             LOGGER.debug("{}: Nothing", readDiscreteInputsResponse);
             ByteBuf byteBuf = readDiscreteInputsResponse.getInputStatus();
-            List<?> data = produceCoilValueList(field, byteBuf);
+            DefaultBooleanFieldItem data = produceCoilValueList(byteBuf);
             Map<String, Pair<PlcResponseCode, FieldItem>> responseValues = new HashMap<>();
-            responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, new DefaultBooleanFieldItem((Boolean[]) data.toArray(new Boolean[0]))));
+            responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadHoldingRegistersResponse) {
             // TODO: finish implementation
@@ -275,9 +277,9 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             LOGGER.debug("{}: Nothing", readHoldingRegistersResponse);
             ByteBuf byteBuf = readHoldingRegistersResponse.getRegisters();
             // TODO: use register method
-            List<?> data = produceRegisterValueList(field, byteBuf);
+            DefaultByteArrayFieldItem data = produceRegisterValueList(byteBuf);
             Map<String, Pair<PlcResponseCode, FieldItem>> responseValues = new HashMap<>();
-            responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, new DefaultBooleanFieldItem((Boolean[]) data.toArray(new Boolean[0]))));
+            responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadInputRegistersResponse) {
             // TODO: finish implementation
@@ -285,9 +287,9 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             LOGGER.debug("{}: Nothing", readInputRegistersResponse);
             ByteBuf byteBuf = readInputRegistersResponse.getRegisters();
             // TODO: use register method
-            List<?> data = produceRegisterValueList(field, byteBuf);
+            DefaultByteArrayFieldItem data = produceRegisterValueList(byteBuf);
             Map<String, Pair<PlcResponseCode, FieldItem>> responseValues = new HashMap<>();
-            responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, new DefaultIntegerFieldItem((Short[]) data.toArray(new Short[0]))));
+            responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof MaskWriteRegisterResponse) {
             // TODO: finish implementation
@@ -314,15 +316,15 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     // Encoding helpers.
     ////////////////////////////////////////////////////////////////////////////////
 
-    private boolean produceCoilValue(Object[] values) throws PlcProtocolException {
-        if (values.length != 1) {
+    private boolean produceCoilValue(List<?> values) throws PlcProtocolException {
+        if (values.size() != 1) {
             throw new PlcProtocolException("Only one value allowed");
         }
         byte multiCoil = produceCoilValues(values)[0];
         return multiCoil != 0;
     }
 
-    private byte[] produceCoilValues(Object[] values) throws PlcProtocolException {
+    private byte[] produceCoilValues(List<?> values) throws PlcProtocolException {
         List<Byte> coils = new LinkedList<>();
         byte actualCoil = 0;
         int i = 7;
@@ -388,29 +390,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             return new byte[]{actualCoil};
         }
         return ArrayUtils.toPrimitive(coils.toArray(new Byte[0]));
-    }
-
-    private byte[] flattenByteValue(Object value) {
-        // TODO: Implement ...
-        return null;
-    }
-
-    private byte[] flattenByteValues(Object[] values) {
-        byte[] rawValues = new byte[values.length * values[0].length];
-        for(int i = 0; i < values.length; i ++) {
-            byte[] value = values[i];
-            System.arraycopy(value, 0, rawValues, i * value.length, value.length);
-        }
-        return rawValues;
-    }
-
-    private byte[] flattenBitValues(Object[] values) {
-        byte[] rawValues = new byte[values.length * values[0].length];
-        for(int i = 0; i < values.length; i ++) {
-            byte[] value = values[i];
-            System.arraycopy(value, 0, rawValues, i * value.length, value.length);
-        }
-        return rawValues;
     }
 
     private byte[] produceRegisterValue(List<?> values) throws PlcProtocolException {
@@ -499,135 +478,42 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     ////////////////////////////////////////////////////////////////////////////////
     // Decoding helpers.
     ////////////////////////////////////////////////////////////////////////////////
-    private <T> List<T> produceCoilValueList(ModbusField field, ByteBuf byteBuf) {
-        PlcReadRequestItem readRequestItem = (PlcReadRequestItem) requestItem;
+    private DefaultBooleanFieldItem produceCoilValueList(ByteBuf byteBuf) {
         byte[] bytes = new byte[byteBuf.readableBytes()];
         if (bytes.length < 1) {
-            return Collections.emptyList();
+            return new DefaultBooleanFieldItem();
         }
         byteBuf.readBytes(bytes);
-        List<T> data = new LinkedList<>();
+        List<Boolean> data = new LinkedList<>();
         int bitIndex = 0;
         int coilIndex = 0;
-        while (data.size() < readRequestItem.getSize()) {
+        while (coilIndex < bytes.length) {
             if (bitIndex > 7) {
                 // Every 8 Coils we need to increase the access
                 coilIndex++;
                 bitIndex = 0;
+                if (coilIndex >= bytes.length) {
+                    break;
+                }
             }
             boolean coilSet = (bytes[coilIndex] & 0xff & (1L << bitIndex)) != 0;
-            byte coilFlag = coilSet ? (byte) 1 : (byte) 0;
-            if (dataType == Boolean.class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Boolean.valueOf(coilSet);
-                data.add(itemToBeAdded);
-            } else if (dataType == Byte.class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Byte.valueOf(coilFlag);
-                data.add(itemToBeAdded);
-            } else if (dataType == byte[].class) {
-                data.add((T) new byte[]{coilFlag});
-            } else if (dataType == Byte[].class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) new Byte[]{coilFlag};
-                data.add(itemToBeAdded);
-            } else if (dataType == Short.class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Short.valueOf(coilFlag);
-                data.add(itemToBeAdded);
-            } else if (dataType == Integer.class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Integer.valueOf(coilFlag);
-                data.add(itemToBeAdded);
-            } else if (dataType == BigInteger.class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) BigInteger.valueOf(coilFlag);
-                data.add(itemToBeAdded);
-            } else if (dataType == Float.class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Float.valueOf(coilFlag);
-                data.add(itemToBeAdded);
-            } else if (dataType == Double.class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Double.valueOf(coilFlag);
-                data.add(itemToBeAdded);
-            } else {
-                throw new PlcUnsupportedDataTypeException(dataType);
-            }
+            data.add(coilSet);
             bitIndex++;
         }
-        return data;
+        return new DefaultBooleanFieldItem(data.toArray(new Boolean[0]));
     }
 
-    private <T> List<T> produceRegisterValueList(ModbusField field, ByteBuf byteBuf) throws PlcProtocolException {
-        PlcReadRequestItem readRequestItem = (PlcReadRequestItem) requestItem;
+    private DefaultByteArrayFieldItem produceRegisterValueList(ByteBuf byteBuf) throws PlcProtocolException {
         int readableBytes = byteBuf.readableBytes();
         if (readableBytes % 2 != 0) {
             throw new PlcProtocolException("Readables bytes should even: " + readableBytes);
         }
-        List<T> data = new LinkedList<>();
-        for (int i = 0; i < readRequestItem.getSize(); i++) {
+        List<byte[]> data = new LinkedList<>();
+        while (byteBuf.readableBytes() > 0) {
             byte[] register = new byte[2];
             byteBuf.readBytes(register);
-            int intValue = register[0] << 8 | register[1] & 0xff;
-            if (dataType == Boolean.class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Boolean.valueOf(intValue == 1);
-                data.add(itemToBeAdded);
-            } else if (dataType == Byte.class) {
-                if (intValue > Byte.MAX_VALUE) {
-                    throw new PlcProtocolException("Value to high to fit into Byte: " + intValue);
-                }
-                @SuppressWarnings("unchecked")
-                T itemToBeADded = (T) Byte.valueOf((byte) intValue);
-                data.add(itemToBeADded);
-            } else if (dataType == byte[].class) {
-                T itemToBeAdded = (T) register;
-                data.add(itemToBeAdded);
-            } else if (dataType == Byte[].class) {
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) ArrayUtils.toObject(register);
-                data.add(itemToBeAdded);
-            } else if (dataType == Short.class) {
-                if (intValue > Short.MAX_VALUE) {
-                    throw new PlcProtocolException("Value to high to fit into Short: " + intValue);
-                }
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Short.valueOf((short) intValue);
-                data.add(itemToBeAdded);
-            } else if (dataType == Integer.class) {
-                if (intValue < 0) {
-                    throw new PlcProtocolException("Integer underflow: " + intValue);
-                }
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) Integer.valueOf(intValue);
-                data.add(itemToBeAdded);
-            } else if (dataType == BigInteger.class) {
-                if (intValue < 0) {
-                    throw new PlcProtocolException("BigInteger underflow: " + intValue);
-                }
-                // TODO: can a big integer span multiple registers?
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) new BigInteger(register);
-                data.add(itemToBeAdded);
-            } else if (dataType == Float.class) {
-                if (intValue < 0) {
-                    throw new PlcProtocolException("BigInteger underflow: " + intValue);
-                }
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) new Float(intValue);
-                data.add(itemToBeAdded);
-            } else if (dataType == Double.class) {
-                if (intValue < 0) {
-                    throw new PlcProtocolException("BigInteger underflow: " + intValue);
-                }
-                @SuppressWarnings("unchecked")
-                T itemToBeAdded = (T) new Double(intValue);
-                data.add(itemToBeAdded);
-            } else {
-                throw new PlcUnsupportedDataTypeException(dataType);
-            }
+            data.add(register);
         }
-        return data;
+        return new DefaultByteArrayFieldItem(data.toArray(new byte[0][0]));
     }
 }

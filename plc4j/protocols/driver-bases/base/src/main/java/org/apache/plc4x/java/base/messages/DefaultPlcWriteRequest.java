@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,7 +35,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
+public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, InternalPlcFieldRequest {
 
     private final LinkedHashMap<String, Pair<PlcField, FieldItem>> fields;
 
@@ -94,11 +95,14 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
             handlerMap.put(BigInteger.class, fieldHandler::encodeBigInteger);
             handlerMap.put(Long.class, fieldHandler::encodeLong);
             handlerMap.put(Float.class, fieldHandler::encodeFloat);
+            handlerMap.put(BigDecimal.class, fieldHandler::encodeBigDecimal);
             handlerMap.put(Double.class, fieldHandler::encodeDouble);
             handlerMap.put(String.class, fieldHandler::encodeString);
             handlerMap.put(LocalTime.class, fieldHandler::encodeTime);
             handlerMap.put(LocalDate.class, fieldHandler::encodeDate);
             handlerMap.put(LocalDateTime.class, fieldHandler::encodeDateTime);
+            handlerMap.put(byte[].class, fieldHandler::encodeByteArray);
+            handlerMap.put(Byte[].class, fieldHandler::encodeByteArray);
         }
 
         @Override
@@ -142,6 +146,11 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
         }
 
         @Override
+        public Builder addItem(String name, String fieldQuery, BigDecimal... values) {
+            return addItem(name, fieldQuery, values, fieldHandler::encodeBigDecimal);
+        }
+
+        @Override
         public Builder addItem(String name, String fieldQuery, String... values) {
             return addItem(name, fieldQuery, values, fieldHandler::encodeString);
         }
@@ -158,6 +167,16 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest {
 
         @Override
         public Builder addItem(String name, String fieldQuery, LocalDateTime... values) {
+            return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
+        }
+
+        @Override
+        public Builder addItem(String name, String fieldQuery, byte[]... values) {
+            return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
+        }
+
+        @Override
+        public Builder addItem(String name, String fieldQuery, Byte[]... values) {
             return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
         }
 
