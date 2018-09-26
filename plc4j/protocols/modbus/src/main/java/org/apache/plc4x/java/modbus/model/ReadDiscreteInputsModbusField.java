@@ -27,8 +27,8 @@ public class ReadDiscreteInputsModbusField extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("readdiscreteinputs:" + ModbusField.ADDRESS_PATTERN);
 
-    protected ReadDiscreteInputsModbusField(int address) {
-        super(address);
+    public ReadDiscreteInputsModbusField(int address, Integer quantity) {
+        super(address, quantity);
     }
 
     public static ReadDiscreteInputsModbusField of(String addressString) throws PlcInvalidFieldException {
@@ -37,6 +37,9 @@ public class ReadDiscreteInputsModbusField extends ModbusField {
             throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
         }
         int address = Integer.parseInt(matcher.group("address"));
-        return new ReadDiscreteInputsModbusField(address);
+
+        String quantityString = matcher.group("quantity");
+        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        return new ReadDiscreteInputsModbusField(address, quantity);
     }
 }

@@ -43,29 +43,28 @@ public class ManualPlc4XModbusTest {
             {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-                PlcReadResponse<?> readResponse = reader.read(builder -> builder.addItem("randomRegister", "register:7")).get();
+                PlcReadResponse<?> readResponse = reader.read(builder -> builder.addItem("randomRegister", "register:7[3]")).get();
                 System.out.println("Response " + readResponse);
                 readResponse.getAllByteArrays("randomRegister").stream()
                     .map(HexUtil::toHex)
-                    .map(hex -> "Value: " + hex)
+                    .map(hex -> "Register Value: " + hex)
                     .forEach(System.out::println);
             }
 
             {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-                PlcReadResponse<?> readResponse = reader.read(builder -> builder.addItem("randomRegister", "coil:1")).get();
+                PlcReadResponse<?> readResponse = reader.read(builder -> builder.addItem("randomCoil", "coil:1[9]")).get();
                 System.out.println("Response " + readResponse);
-                readResponse.getAllByteArrays("randomRegister").stream()
-                    .map(HexUtil::toHex)
-                    .map(hex -> "Value: " + hex)
+                readResponse.getAllBooleans("randomCoil").stream()
+                    .map(hex -> "Coil Value: " + hex)
                     .forEach(System.out::println);
             }
 
             {
                 PlcWriter writer = plcConnection.getWriter().orElseThrow(() -> new RuntimeException("No Writer found"));
 
-                PlcWriteResponse<?> writeResponse = writer.write(builder -> builder.addItem("randomCoilField", "coil:1", 1)).get();
+                PlcWriteResponse<?> writeResponse = writer.write(builder -> builder.addItem("randomCoilField", "coil:1", true)).get();
                 System.out.println("Response " + writeResponse);
             }
         } catch (Exception e) {

@@ -27,8 +27,8 @@ public class ReadInputRegistersModbusField extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("readinputregisters:" + ModbusField.ADDRESS_PATTERN);
 
-    protected ReadInputRegistersModbusField(int address) {
-        super(address);
+    protected ReadInputRegistersModbusField(int address, Integer quantity) {
+        super(address, quantity);
     }
 
     public static ReadInputRegistersModbusField of(String addressString) throws PlcInvalidFieldException {
@@ -37,6 +37,9 @@ public class ReadInputRegistersModbusField extends ModbusField {
             throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
         }
         int address = Integer.parseInt(matcher.group("address"));
-        return new ReadInputRegistersModbusField(address);
+
+        String quantityString = matcher.group("quantity");
+        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        return new ReadInputRegistersModbusField(address, quantity);
     }
 }

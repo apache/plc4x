@@ -28,8 +28,8 @@ public class RegisterModbusField extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("register:" + ModbusField.ADDRESS_PATTERN);
 
-    protected RegisterModbusField(int address) {
-        super(address);
+    protected RegisterModbusField(int address, Integer quantity) {
+        super(address, quantity);
     }
 
     public static RegisterModbusField of(String addressString) throws PlcInvalidFieldException {
@@ -38,6 +38,9 @@ public class RegisterModbusField extends ModbusField {
             throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
         }
         int address = Integer.parseInt(matcher.group("address"));
-        return new RegisterModbusField(address);
+
+        String quantityString = matcher.group("quantity");
+        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        return new RegisterModbusField(address, quantity);
     }
 }

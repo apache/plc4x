@@ -31,8 +31,8 @@ public class MaskWriteRegisterModbusField extends ModbusField {
     private final int andMask;
     private final int orMask;
 
-    protected MaskWriteRegisterModbusField(int address, int andMask, int orMask) {
-        super(address);
+    protected MaskWriteRegisterModbusField(int address, int andMask, int orMask, Integer quantity) {
+        super(address, quantity);
         this.andMask = andMask;
         this.orMask = orMask;
     }
@@ -45,7 +45,10 @@ public class MaskWriteRegisterModbusField extends ModbusField {
         int address = Integer.parseInt(matcher.group("address"));
         int andMask = Integer.parseInt(matcher.group("andMask"));
         int orMask = Integer.parseInt(matcher.group("orMask"));
-        return new MaskWriteRegisterModbusField(address, andMask, orMask);
+
+        String quantityString = matcher.group("quantity");
+        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        return new MaskWriteRegisterModbusField(address, andMask, orMask, quantity);
     }
 
     public int getAndMask() {

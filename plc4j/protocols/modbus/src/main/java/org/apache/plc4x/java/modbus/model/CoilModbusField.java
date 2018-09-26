@@ -27,8 +27,8 @@ public class CoilModbusField extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("coil:" + ModbusField.ADDRESS_PATTERN);
 
-    protected CoilModbusField(int address) {
-        super(address);
+    public CoilModbusField(int address, Integer quantity) {
+        super(address, quantity);
     }
 
     public static CoilModbusField of(String addressString) throws PlcInvalidFieldException {
@@ -37,6 +37,9 @@ public class CoilModbusField extends ModbusField {
             throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
         }
         int address = Integer.parseInt(matcher.group("address"));
-        return new CoilModbusField(address);
+
+        String quantityString = matcher.group("quantity");
+        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        return new CoilModbusField(address, quantity);
     }
 }

@@ -25,16 +25,26 @@ import java.util.regex.Pattern;
 
 public abstract class ModbusField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d)])?");
 
     private final int address;
 
-    protected ModbusField(int address) {
+    private final int quantity;
+
+    protected ModbusField(int address, Integer quantity) {
         this.address = address;
+        this.quantity = quantity != null ? quantity : 1;
+        if (this.quantity <= 0) {
+            throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);
+        }
     }
 
     public int getAddress() {
         return address;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     @Override
@@ -51,7 +61,6 @@ public abstract class ModbusField implements PlcField {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(address);
     }
 
@@ -59,6 +68,7 @@ public abstract class ModbusField implements PlcField {
     public String toString() {
         return "ModbusField{" +
             "address=" + address +
+            "quantity=" + quantity +
             '}';
     }
 }
