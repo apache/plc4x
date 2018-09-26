@@ -29,9 +29,9 @@ import java.util.regex.Pattern;
 public class S7Field implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,4})(.(?<bitOffset>[0-7]))?:(?<dataType>.+)(\\[(?<numElements>\\d)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,4})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-z,A-Z]+)(\\[(?<numElements>\\d+)])?");
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,4}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,4})(.(?<bitOffset>[0-7]))?:(?<dataType>.+)(\\[(?<numElements>\\d)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,4}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,4})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-z,A-Z]+)(\\[(?<numElements>\\d+)])?");
 
     public static boolean matches(String fieldString) {
         return DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString).matches() ||
