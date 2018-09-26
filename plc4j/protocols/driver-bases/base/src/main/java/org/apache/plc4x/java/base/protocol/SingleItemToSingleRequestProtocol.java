@@ -48,7 +48,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     private ConcurrentMap<PlcRequestContainer<?, ?>, Set<Integer>> containerCorrelationIdMap;
 
-    private ConcurrentMap<PlcRequestContainer<?, ?>, List<InternalPlcResponse<?>>> responsesToBeDevliered;
+    private ConcurrentMap<PlcRequestContainer<?, ?>, List<InternalPlcResponse<?>>> responsesToBeDelivered;
 
     private AtomicInteger correlationId;
 
@@ -57,6 +57,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         this.queue = new PendingWriteQueue(ctx);
         this.sentButUnacknowledgedRequestItems = new ConcurrentHashMap<>();
         this.containerCorrelationIdMap = new ConcurrentHashMap<>();
+        this.responsesToBeDelivered = new ConcurrentHashMap<>();
         this.correlationId = new AtomicInteger();
         super.channelRegistered(ctx);
     }
@@ -83,7 +84,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         if (plcRequestContainer == null) {
             throw new PlcRuntimeException("Unrelated package received " + msg);
         }
-        List<InternalPlcResponse<?>> correlatedResponseItems = responsesToBeDevliered.computeIfAbsent(plcRequestContainer, ignore -> new LinkedList<>());
+        List<InternalPlcResponse<?>> correlatedResponseItems = responsesToBeDelivered.computeIfAbsent(plcRequestContainer, ignore -> new LinkedList<>());
         correlatedResponseItems.add(msg);
         Set<Integer> integers = containerCorrelationIdMap.get(plcRequestContainer);
         integers.remove(correlationId);
@@ -113,7 +114,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                 throw new PlcRuntimeException("Unknown type detected " + plcRequestContainer.getRequest());
             }
             plcRequestContainer.getResponseFuture().complete(plcResponse);
-            responsesToBeDevliered.remove(plcRequestContainer);
+            responsesToBeDelivered.remove(plcRequestContainer);
         }
     }
 
@@ -144,7 +145,6 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
                 if (internalPlcFieldRequest instanceof InternalPlcReadRequest) {
                     InternalPlcReadRequest internalPlcReadRequest = (InternalPlcReadRequest) internalPlcFieldRequest;
-                    // TODO: repackage
                     internalPlcReadRequest.getNamedFields().forEach(field -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
 
@@ -167,7 +167,6 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                 }
                 if (internalPlcFieldRequest instanceof InternalPlcWriteRequest) {
                     InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) internalPlcFieldRequest;
-                    // TODO: repackage
                     internalPlcWriteRequest.getNamedFieldTriples().forEach(fieldItemTriple -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
 
