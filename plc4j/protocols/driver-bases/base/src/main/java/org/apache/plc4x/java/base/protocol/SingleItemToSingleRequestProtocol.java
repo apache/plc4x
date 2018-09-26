@@ -85,7 +85,8 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     private void tryFinish(int correlationId, InternalPlcResponse msg) {
         PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> plcRequestContainer = sentButUnacknowledgedRequestItems.remove(correlationId);
         if (plcRequestContainer == null) {
-            throw new PlcRuntimeException("Unrelated package received " + msg);
+            LOGGER.warn("Unrelated package received {}", msg);
+            return;
         }
         List<InternalPlcResponse<?>> correlatedResponseItems = responsesToBeDelivered.computeIfAbsent(plcRequestContainer, ignore -> new LinkedList<>());
         correlatedResponseItems.add(msg);
@@ -124,7 +125,8 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     private void errored(int correlationId, Throwable throwable) {
         PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> plcRequestContainer = sentButUnacknowledgedRequestItems.remove(correlationId);
         if (plcRequestContainer == null) {
-            throw new PlcRuntimeException("Unrelated error received ", throwable);
+            LOGGER.warn("Unrelated error received ", throwable);
+            return;
         }
         plcRequestContainer.getResponseFuture().completeExceptionally(throwable);
     }
