@@ -679,6 +679,15 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<byte[]> getAllByteArrays(String name) {
+        FieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            int num = fieldInternal.getNumberOfValues();
+            List<byte[]> values = new ArrayList<>(num);
+            for (int i = 0; i < num; i++) {
+                values.add(fieldInternal.getByteArray(i));
+            }
+            return values;
+        }
         return null;
     }
 
