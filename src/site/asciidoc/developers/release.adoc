@@ -127,7 +127,7 @@ A release build also produces a so-called `source-assembly` zip.
 
 This contains all sources of the project and will be what's actually the release from an Apache point of view and will be the thing we will be voting on.
 
-This file will also be signed and `MD5` and `SHA512`will be created.
+This file will also be signed and `SHA512` hashes will be created.
 
 === Staging a release
 
@@ -144,7 +144,6 @@ The directory structure of this directory is as follows:
    ./0.1.0-incubating/rc1/RELEASE_NOTES
    ./0.1.0-incubating/rc1/apache-plc4x-incubating-0.1.0-source-release.zip
    ./0.1.0-incubating/rc1/apache-plc4x-incubating-0.1.0-source-release.zip.asc
-   ./0.1.0-incubating/rc1/apache-plc4x-incubating-0.1.0-source-release.zip.md5
    ./0.1.0-incubating/rc1/apache-plc4x-incubating-0.1.0-source-release.zip.sha512
 
 The `KEYS` file contains the PGP public key which belongs to the private key used to sign the release artifacts.
@@ -219,6 +218,21 @@ This is an Apache policy to make it possible for anyone to participate in the vo
 
 The vote passes, if at least 3 `+1` votes are received and more `+1` are received than `-1`.
 
+After the 72 hour minimum wait period is over and we have fulfilled the requirement of at least 3 +1 votes and more +1 than -1, a final reply is sent to the vote thread with a prefix of `[RESULT]` in the title in which the summary of the vote is presented in an aggregated form.
+
+```
+    E-Mail Topic:
+    [RESULT] [DISCUSS] Apache PLC4X (Incubating) 0.1.0 RC1
+
+    Message:
+    So, the vote passes with 3 +1 votes by PPMC members and one +1 vote by a non PPMC member.
+
+    I’ll forward this to the incubator for approval. Also I'll update the GIT tag as suggested.
+
+    Chris
+
+```
+
 == An extra step for incubator podlings
 
 If the vote passes in the project, for a top-level project the formal process would be finished.
@@ -228,6 +242,67 @@ Incubator podlings however have to do an extra step and have the Incubator PMC a
 Now our mentors and any member of the Incubator PMC have the chance to review our release.
 
 Only if this second vote passes, are we allowed to finally announce the release and release the artifacts.
+
+```
+    To:
+general@incubator.apache.org
+
+    E-Mail Topic:
+[VOTE] Release Apache PLC4X (Incubating) 0.1.0 [RC2]
+
+    Message:
+Hello all,
+
+This is a call for vote to release Apache PLC4X (Incubating) version 0.1.0.
+
+The Apache PLC4X community has voted on and approved a proposal to release
+Apache PLC4X (Incubating) version 0.1.0.
+
+We now kindly request the Incubator PMC members review and vote on this
+incubator release.
+
+Apache PLC4X (incubating) is a set of libraries for communicating with
+industrial programmable logic controllers (PLCs) using a variety of
+protocols but with a shared API.
+
+PLC4X community vote and result thread:
+Result: https://lists.apache.org/thread.html/31ca1bd96eb3dddc30ea1f08e968ece0c04b18fef3fa3bf3707c6e8f@%3Cdev.plc4x.apache.org%3E
+Vote: https://lists.apache.org/thread.html/1d4ac299a46934f639987df04d6d19be325572a88decb5c564de89c8@%3Cdev.plc4x.apache.org%3E
+A minor issue also can be found in the above thread, which we will be addressing in the next release.
+Jira Issue for tracking this can be found here:
+https://issues.apache.org/jira/projects/PLC4X/issues/PLC4X-60
+
+The release candidates (RC2):
+https://dist.apache.org/repos/dist/dev/incubator/plc4x/0.1.0
+
+Git tag for the release (RC2):
+https://github.com/apache/incubator-plc4x/tree/rel/0.1.0
+
+Hash for the release tag:
+8c1e0c1b85ce15814f2c08e0eec5d593951d168d
+
+Release Notes:
+https://github.com/apache/incubator-plc4x/blob/rel/0.1.0/RELEASE_NOTES
+
+The artifacts have been signed with Key : 089127C15C60D6B9, which can be
+found in the keys file:
+https://dist.apache.org/repos/dist/dev/incubator/plc4x/KEYS
+
+Look at here for how to verify this release candidate:
+https://cwiki.apache.org/confluence/display/PLC4X/Validating+a+staged+Release
+
+The vote will be open for at least 72 hours or until necessary number of
+votes are reached.
+
+Please vote accordingly:
+[ ] +1 approve
+[ ] +0 no opinion
+[ ] -1 disapprove with the reason
+
+Best regards,
+Chris
+```
+
 
 == Releasing after a successful vote
 
