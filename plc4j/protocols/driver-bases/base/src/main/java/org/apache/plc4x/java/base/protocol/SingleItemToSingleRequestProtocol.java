@@ -118,7 +118,11 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     }
 
     private void errored(int correlationId, Throwable throwable) {
-
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> plcRequestContainer = sentButUnacknowledgedRequestItems.remove(correlationId);
+        if (plcRequestContainer == null) {
+            throw new PlcRuntimeException("Unrelated error received ", throwable);
+        }
+        plcRequestContainer.getResponseFuture().completeExceptionally(throwable);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
