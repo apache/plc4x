@@ -172,10 +172,10 @@ public interface PlcReadResponse<T extends PlcReadRequest> extends PlcFieldRespo
 
     boolean isValidByteArray(String name, int index);
 
-    byte[] getByteArray(String name);
+    Byte[] getByteArray(String name);
 
-    byte[] getByteArray(String name, int index);
+    Byte[] getByteArray(String name, int index);
 
-    Collection<byte[]> getAllByteArrays(String name);
+    Collection<Byte[]> getAllByteArrays(String name);
 
 }

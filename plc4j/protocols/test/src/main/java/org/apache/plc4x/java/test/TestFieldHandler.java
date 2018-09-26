@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.java.test;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -164,10 +163,10 @@ public class TestFieldHandler implements PlcFieldHandler {
     public FieldItem encodeByteArray(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == byte[].class) {
-            return new DefaultByteArrayFieldItem(ArrayUtils.toPrimitive((Byte[]) values));
+            return new DefaultByteArrayFieldItem(Arrays.stream(values).map(Byte.class::cast).toArray(Byte[]::new));
         }
         if (testField.getDataType() == Byte[].class) {
-            return new DefaultByteArrayFieldItem(ArrayUtils.toPrimitive((Byte[]) values));
+            return new DefaultByteArrayFieldItem((Byte[]) values);
         }
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }

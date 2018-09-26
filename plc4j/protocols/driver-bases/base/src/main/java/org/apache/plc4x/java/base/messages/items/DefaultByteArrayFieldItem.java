@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-public class DefaultByteArrayFieldItem extends FieldItem<byte[]> {
+public class DefaultByteArrayFieldItem extends FieldItem<Byte[]> {
 
-    public DefaultByteArrayFieldItem(byte[]... values) {
+    public DefaultByteArrayFieldItem(Byte[]... values) {
         super(values);
     }
 
@@ -30,11 +30,11 @@ public class DefaultByteArrayFieldItem extends FieldItem<byte[]> {
     }
 
     public boolean isValidByteArray(int index) {
-        byte[] value = getValue(index);
+        Byte[] value = getValue(index);
         return value != null;
     }
 
-    public byte[] getByteArray(int index) {
+    public Byte[] getByteArray(int index) {
         return getValue(index);
     }
 

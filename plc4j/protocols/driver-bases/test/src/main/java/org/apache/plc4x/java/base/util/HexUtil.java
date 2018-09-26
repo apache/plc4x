@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.base.util;
 
 import org.apache.commons.io.HexDump;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +33,10 @@ public class HexUtil {
      * @param bytes to be displayed.
      * @return hexed string.
      */
+    public static String toHex(Byte[] bytes) {
+        return toHex(ArrayUtils.toPrimitive(bytes));
+    }
+
     public static String toHex(byte[] bytes) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             HexDump.dump(bytes, 0, byteArrayOutputStream, 0);

@@ -95,20 +95,20 @@ public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
     @Override
     public FieldItem encodeByteArray(PlcField field, Object[] values) {
         ModbusField modbusField = (ModbusField) field;
-        List<byte[]> byteArrays = new LinkedList<>();
+        List<Byte[]> byteArrays = new LinkedList<>();
         for (Object value : values) {
             if (value instanceof byte[]) {
                 byte[] byteArray = (byte[]) value;
-                byteArrays.add(byteArray);
+                byteArrays.add(ArrayUtils.toObject(byteArray));
             } else if (value instanceof Byte[]) {
                 Byte[] byteArray = (Byte[]) value;
-                byteArrays.add(ArrayUtils.toPrimitive(byteArray));
+                byteArrays.add(byteArray);
             } else {
                 throw new IllegalArgumentException(
                     "Value of type " + value.getClass().getName() +
                         " is not assignable to " + modbusField + " fields.");
             }
         }
-        return new DefaultByteArrayFieldItem(byteArrays.toArray(new byte[0][0]));
+        return new DefaultByteArrayFieldItem(byteArrays.toArray(new Byte[0][0]));
     }
 }

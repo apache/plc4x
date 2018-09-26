@@ -394,17 +394,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
     }
 
     @Override
-    public byte[] getByteArray(String name) {
-        return new byte[0];
+    public Byte[] getByteArray(String name) {
+        return new Byte[0];
     }
 
     @Override
-    public byte[] getByteArray(String name, int index) {
-        return new byte[0];
+    public Byte[] getByteArray(String name, int index) {
+        return new Byte[0];
     }
 
     @Override
-    public Collection<byte[]> getAllByteArrays(String name) {
+    public Collection<Byte[]> getAllByteArrays(String name) {
         return null;
     }
 

@@ -515,12 +515,12 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         if (readableBytes % 2 != 0) {
             throw new PlcProtocolException("Readables bytes should even: " + readableBytes);
         }
-        List<byte[]> data = new LinkedList<>();
+        List<Byte[]> data = new LinkedList<>();
         while (byteBuf.readableBytes() > 0) {
             byte[] register = new byte[2];
             byteBuf.readBytes(register);
-            data.add(register);
+            data.add(ArrayUtils.toObject(register));
         }
-        return new DefaultByteArrayFieldItem(data.toArray(new byte[0][0]));
+        return new DefaultByteArrayFieldItem(data.toArray(new Byte[0][0]));
     }
 }

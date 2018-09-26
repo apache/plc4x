@@ -147,7 +147,7 @@ public abstract class FieldItem<T> {
         return false;
     }
 
-    public byte[] getByteArray(int index) {
+    public Byte[] getByteArray(int index) {
         return null;
     }
 

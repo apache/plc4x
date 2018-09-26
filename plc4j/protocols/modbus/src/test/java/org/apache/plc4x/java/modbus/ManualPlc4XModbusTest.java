@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.modbus;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
@@ -25,6 +26,11 @@ import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.util.HexUtil;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class ManualPlc4XModbusTest {
 
@@ -49,6 +55,29 @@ public class ManualPlc4XModbusTest {
                     .map(HexUtil::toHex)
                     .map(hex -> "Register Value: " + hex)
                     .forEach(System.out::println);
+            }
+
+            {
+                // Read an int from 2 registers
+                PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
+
+                // Just dump the actual values
+                PlcReadResponse<?> readResponse = reader.read(builder -> builder.addItem("randomRegister", "register:3[2]")).get();
+                System.out.println("Response " + readResponse);
+                Collection<Byte[]> randomRegisters = readResponse.getAllByteArrays("randomRegister");
+                randomRegisters.stream()
+                    .map(HexUtil::toHex)
+                    .map(hex -> "Register Value: " + hex)
+                    .forEach(System.out::println);
+
+                // Read an actual int
+                Byte[] registerBytes = randomRegisters.stream()
+                    .flatMap(Arrays::stream)
+                    .toArray(Byte[]::new);
+                int readInt = ByteBuffer.wrap(ArrayUtils.toPrimitive(registerBytes))
+                    .order(ByteOrder.BIG_ENDIAN)
+                    .getInt();
+                System.out.println("Read int " + readInt + " from register");
             }
 
             {

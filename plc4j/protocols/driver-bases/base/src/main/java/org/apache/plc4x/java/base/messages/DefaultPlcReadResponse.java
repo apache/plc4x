@@ -660,7 +660,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     }
 
     @Override
-    public byte[] getByteArray(String name) {
+    public Byte[] getByteArray(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getByteArray(0);
@@ -669,7 +669,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     }
 
     @Override
-    public byte[] getByteArray(String name, int index) {
+    public Byte[] getByteArray(String name, int index) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getByteArray(index);
@@ -678,11 +678,11 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     }
 
     @Override
-    public Collection<byte[]> getAllByteArrays(String name) {
+    public Collection<Byte[]> getAllByteArrays(String name) {
         FieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
-            List<byte[]> values = new ArrayList<>(num);
+            List<Byte[]> values = new ArrayList<>(num);
             for (int i = 0; i < num; i++) {
                 values.add(fieldInternal.getByteArray(i));
             }
