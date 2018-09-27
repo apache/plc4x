@@ -36,29 +36,50 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * This layer can be used to split a {@link org.apache.plc4x.java.api.messages.PlcRequest} which addresses multiple {@link PlcField}s into multiple subsequent {@link org.apache.plc4x.java.api.messages.PlcRequest}s.
  */
-// TODO: write test
 public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(SingleItemToSingleRequestProtocol.class);
 
     private PendingWriteQueue queue;
 
-    private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>> sentButUnacknowledgedRequestItems;
+    // Map to track send subcontainers
+    private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>> sentButUnacknowledgedSubContainer;
 
+    // Map to map tdpu to original parent container
+    private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>> correlationToParentContainer;
+
+    // Map to track tdpus per container
     private ConcurrentMap<PlcRequestContainer<?, ?>, Set<Integer>> containerCorrelationIdMap;
 
+    // Map to track a list of responses per parent container
     private ConcurrentMap<PlcRequestContainer<?, ?>, List<InternalPlcResponse<?>>> responsesToBeDelivered;
 
     private AtomicInteger correlationId;
 
+    public SingleItemToSingleRequestProtocol() {
+        this(true);
+    }
+
+    public SingleItemToSingleRequestProtocol(boolean betterImplementationPossible) {
+        if (betterImplementationPossible) {
+            String callStack = Arrays.stream(Thread.currentThread().getStackTrace())
+                .map(StackTraceElement::toString)
+                .collect(Collectors.joining("\n"));
+            LOGGER.warn("Unoptimized Usage of {} detected at:\n{}", this.getClass(), callStack);
+            LOGGER.info("Consider implementing item splitting native to the protocol.");
+        }
+    }
+
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         this.queue = new PendingWriteQueue(ctx);
-        this.sentButUnacknowledgedRequestItems = new ConcurrentHashMap<>();
+        this.sentButUnacknowledgedSubContainer = new ConcurrentHashMap<>();
+        this.correlationToParentContainer = new ConcurrentHashMap<>();
         this.containerCorrelationIdMap = new ConcurrentHashMap<>();
         this.responsesToBeDelivered = new ConcurrentHashMap<>();
         this.correlationId = new AtomicInteger();
@@ -68,6 +89,11 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         this.queue.removeAndWriteAll();
+        this.sentButUnacknowledgedSubContainer.clear();
+        this.correlationToParentContainer.clear();
+        this.containerCorrelationIdMap.clear();
+        this.responsesToBeDelivered.clear();
+        this.correlationId.set(0);
         super.channelUnregistered(ctx);
     }
 
@@ -82,20 +108,22 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     // Decoding
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void tryFinish(int correlationId, InternalPlcResponse msg) {
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> plcRequestContainer = sentButUnacknowledgedRequestItems.remove(correlationId);
-        if (plcRequestContainer == null) {
+    protected void tryFinish(Integer correlationId, InternalPlcResponse msg, CompletableFuture<InternalPlcResponse<?>> originalResponseFuture) {
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(correlationId);
+        LOGGER.info("{} got acknowledged", subPlcRequestContainer);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> originalPlcRequestContainer = correlationToParentContainer.remove(correlationId);
+        if (originalPlcRequestContainer == null) {
             LOGGER.warn("Unrelated package received {}", msg);
             return;
         }
-        List<InternalPlcResponse<?>> correlatedResponseItems = responsesToBeDelivered.computeIfAbsent(plcRequestContainer, ignore -> new LinkedList<>());
+        List<InternalPlcResponse<?>> correlatedResponseItems = responsesToBeDelivered.computeIfAbsent(originalPlcRequestContainer, ignore -> new LinkedList<>());
         correlatedResponseItems.add(msg);
-        Set<Integer> integers = containerCorrelationIdMap.get(plcRequestContainer);
+        Set<Integer> integers = containerCorrelationIdMap.get(originalPlcRequestContainer);
         integers.remove(correlationId);
         if (integers.isEmpty()) {
             InternalPlcResponse<?> plcResponse;
-            if (plcRequestContainer.getRequest() instanceof InternalPlcReadRequest) {
-                InternalPlcReadRequest internalPlcReadRequest = (InternalPlcReadRequest) plcRequestContainer.getRequest();
+            if (originalPlcRequestContainer.getRequest() instanceof InternalPlcReadRequest) {
+                InternalPlcReadRequest internalPlcReadRequest = (InternalPlcReadRequest) originalPlcRequestContainer.getRequest();
                 HashMap<String, Pair<PlcResponseCode, FieldItem>> fields = new HashMap<>();
 
                 correlatedResponseItems.stream()
@@ -104,8 +132,8 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                     .forEach(stringPairMap -> stringPairMap.forEach(fields::put));
 
                 plcResponse = new DefaultPlcReadResponse(internalPlcReadRequest, fields);
-            } else if (plcRequestContainer.getRequest() instanceof InternalPlcWriteRequest) {
-                InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) plcRequestContainer.getRequest();
+            } else if (originalPlcRequestContainer.getRequest() instanceof InternalPlcWriteRequest) {
+                InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) originalPlcRequestContainer.getRequest();
                 HashMap<String, PlcResponseCode> values = new HashMap<>();
 
                 correlatedResponseItems.stream()
@@ -115,20 +143,19 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
                 plcResponse = new DefaultPlcWriteResponse(internalPlcWriteRequest, values);
             } else {
-                throw new PlcRuntimeException("Unknown type detected " + plcRequestContainer.getRequest());
+                throw new PlcRuntimeException("Unknown type detected " + originalPlcRequestContainer.getRequest());
             }
-            plcRequestContainer.getResponseFuture().complete(plcResponse);
-            responsesToBeDelivered.remove(plcRequestContainer);
+            responsesToBeDelivered.remove(originalPlcRequestContainer);
+            containerCorrelationIdMap.remove(originalPlcRequestContainer);
+            originalResponseFuture.complete(plcResponse);
         }
     }
 
-    private void errored(int correlationId, Throwable throwable) {
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> plcRequestContainer = sentButUnacknowledgedRequestItems.remove(correlationId);
-        if (plcRequestContainer == null) {
-            LOGGER.warn("Unrelated error received ", throwable);
-            return;
-        }
-        plcRequestContainer.getResponseFuture().completeExceptionally(throwable);
+    protected void errored(int correlationId, Throwable throwable, CompletableFuture<InternalPlcResponse<?>> originalResponseFuture) {
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> plcRequestContainer = sentButUnacknowledgedSubContainer.remove(correlationId);
+        // TODO: cleanup missing maps as the complete response gets canceled now.
+        LOGGER.warn("PlcRequestContainer {} and correlationId {} failed ", plcRequestContainer, correlationId, throwable);
+        originalResponseFuture.completeExceptionally(throwable);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,17 +180,21 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                     internalPlcReadRequest.getNamedFields().forEach(field -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
 
-                        int tdpu = correlationId.getAndIncrement();
-                        CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>()
+                        Integer tdpu = correlationId.getAndIncrement();
+                        CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>();
+                        // Important: don't chain to above as we want the above to be completed not the result of when complete
+                        correlatedCompletableFuture
                             .thenApply(InternalPlcResponse.class::cast)
                             .whenComplete((internalPlcResponse, throwable) -> {
                                 if (throwable != null) {
-                                    errored(tdpu, throwable);
+                                    errored(tdpu, throwable, in.getResponseFuture());
                                 } else {
-                                    tryFinish(tdpu, internalPlcResponse);
+                                    tryFinish(tdpu, internalPlcResponse, in.getResponseFuture());
                                 }
                             });
-                        queue.add(new PlcRequestContainer<>(CorrelatedPlcReadRequest.of(field, tdpu), correlatedCompletableFuture), subPromise);
+                        PlcRequestContainer<CorrelatedPlcReadRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcReadRequest.of(field, tdpu), correlatedCompletableFuture);
+                        correlationToParentContainer.put(tdpu, in);
+                        queue.add(correlatedPlcRequestContainer, subPromise);
                         if (!tdpus.add(tdpu)) {
                             throw new IllegalStateException("AtomicInteger should not create duplicated ids: " + tdpu);
                         }
@@ -175,17 +206,19 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                     internalPlcWriteRequest.getNamedFieldTriples().forEach(fieldItemTriple -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
 
-                        int tdpu = correlationId.getAndIncrement();
+                        Integer tdpu = correlationId.getAndIncrement();
                         CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>()
                             .thenApply(InternalPlcResponse.class::cast)
                             .whenComplete((internalPlcResponse, throwable) -> {
                                 if (throwable != null) {
-                                    errored(tdpu, throwable);
+                                    errored(tdpu, throwable, in.getResponseFuture());
                                 } else {
-                                    tryFinish(tdpu, internalPlcResponse);
+                                    tryFinish(tdpu, internalPlcResponse, in.getResponseFuture());
                                 }
                             });
-                        queue.add(new PlcRequestContainer<>(CorrelatedPlcWriteRequest.of(fieldItemTriple, tdpu), correlatedCompletableFuture), subPromise);
+                        PlcRequestContainer<CorrelatedPlcWriteRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcWriteRequest.of(fieldItemTriple, tdpu), correlatedCompletableFuture);
+                        correlationToParentContainer.put(tdpu, in);
+                        queue.add(correlatedPlcRequestContainer, subPromise);
                         if (!tdpus.add(tdpu)) {
                             throw new IllegalStateException("AtomicInteger should not create duplicated ids: " + tdpu);
                         }
@@ -232,30 +265,30 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
             if (request instanceof CorrelatedPlcRequest) {
                 CorrelatedPlcRequest correlatedPlcRequest = (CorrelatedPlcRequest) request;
 
-                // Add it to the list of sentButUnacknowledgedRequestItems.
-                sentButUnacknowledgedRequestItems.put(correlatedPlcRequest.getTdpu(), currentItem);
+                // Add it to the list of sentButUnacknowledgedSubContainer.
+                sentButUnacknowledgedSubContainer.put(correlatedPlcRequest.getTdpu(), currentItem);
 
-                LOGGER.debug("Item Message with id {} sent", correlatedPlcRequest.getTdpu());
+                LOGGER.debug("container with id {} sent: ", correlatedPlcRequest.getTdpu(), currentItem);
             }
         }
         ctx.flush();
     }
 
-    interface CorrelatedPlcRequest extends InternalPlcRequest {
+    protected interface CorrelatedPlcRequest extends InternalPlcRequest {
 
         int getTdpu();
     }
 
-    private static class CorrelatedPlcReadRequest extends DefaultPlcReadRequest implements CorrelatedPlcRequest {
+    protected static class CorrelatedPlcReadRequest extends DefaultPlcReadRequest implements CorrelatedPlcRequest {
 
-        private final int tdpu;
+        protected final int tdpu;
 
-        public CorrelatedPlcReadRequest(LinkedHashMap<String, PlcField> fields, int tdpu) {
+        protected CorrelatedPlcReadRequest(LinkedHashMap<String, PlcField> fields, int tdpu) {
             super(fields);
             this.tdpu = tdpu;
         }
 
-        public static CorrelatedPlcReadRequest of(Pair<String, PlcField> stringPlcFieldPair, int tdpu) {
+        protected static CorrelatedPlcReadRequest of(Pair<String, PlcField> stringPlcFieldPair, int tdpu) {
             LinkedHashMap<String, PlcField> fields = new LinkedHashMap<>();
             fields.put(stringPlcFieldPair.getKey(), stringPlcFieldPair.getValue());
             return new CorrelatedPlcReadRequest(fields, tdpu);
@@ -267,7 +300,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         }
     }
 
-    private static class CorrelatedPlcWriteRequest extends DefaultPlcWriteRequest implements CorrelatedPlcRequest {
+    protected static class CorrelatedPlcWriteRequest extends DefaultPlcWriteRequest implements CorrelatedPlcRequest {
 
         private final int tdpu;
 
@@ -286,5 +319,17 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         public int getTdpu() {
             return tdpu;
         }
+    }
+
+    // TODO: maybe export to jmx
+    public Map<String, Integer> getStatistics() {
+        HashMap<String, Integer> statistics = new HashMap<>();
+        statistics.put("queue", queue.size());
+        statistics.put("sentButUnacknowledgedSubContainer", sentButUnacknowledgedSubContainer.size());
+        statistics.put("correlationToParentContainer", correlationToParentContainer.size());
+        statistics.put("containerCorrelationIdMap", containerCorrelationIdMap.size());
+        statistics.put("responsesToBeDelivered", responsesToBeDelivered.size());
+        statistics.put("currentCorrelationId", correlationId.get());
+        return statistics;
     }
 }
