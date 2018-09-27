@@ -26,6 +26,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
 import org.apache.plc4x.java.modbus.netty.Plc4XModbusProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,7 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
             protected void initChannel(Channel channel) {
                 channel.pipeline().addLast(new ModbusTcpCodec(new ModbusRequestEncoder(), new ModbusResponseDecoder()));
                 channel.pipeline().addLast(new Plc4XModbusProtocol());
+                channel.pipeline().addLast(new SingleItemToSingleRequestProtocol());
             }
         };
     }

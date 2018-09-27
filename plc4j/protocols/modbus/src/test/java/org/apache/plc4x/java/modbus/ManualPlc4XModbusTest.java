@@ -31,6 +31,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.IntStream;
 
 public class ManualPlc4XModbusTest {
 
@@ -78,6 +79,37 @@ public class ManualPlc4XModbusTest {
                     .order(ByteOrder.BIG_ENDIAN)
                     .getInt();
                 System.out.println("Read int " + readInt + " from register");
+            }
+
+            {
+                // Read an int from 2 registers and multiple requests
+                PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
+
+                // Just dump the actual values
+                PlcReadResponse<?> readResponse = reader.read(builder -> builder
+                    .addItem("randomRegister1", "register:1[2]")
+                    .addItem("randomRegister2", "register:10[3]")
+                    .addItem("randomRegister3", "register:20[4]")
+                    .addItem("randomRegister4", "register:30[5]")
+                    .addItem("randomRegister5", "register:40[6]")
+                ).get();
+                System.out.println("Response " + readResponse);
+                IntStream.range(1, 6).forEach(i -> {
+                    Collection<Byte[]> randomRegisters = readResponse.getAllByteArrays("randomRegister" + i);
+                    randomRegisters.stream()
+                        .map(HexUtil::toHex)
+                        .map(hex -> "Register " + i + " Value: " + hex)
+                        .forEach(System.out::println);
+
+                    // Read an actual int
+                    Byte[] registerBytes = randomRegisters.stream()
+                        .flatMap(Arrays::stream)
+                        .toArray(Byte[]::new);
+                    int readInt = ByteBuffer.wrap(ArrayUtils.toPrimitive(registerBytes))
+                        .order(ByteOrder.BIG_ENDIAN)
+                        .getInt();
+                    System.out.println("Read int " + i + " " + readInt + " from register");
+                });
             }
 
             {

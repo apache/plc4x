@@ -46,6 +46,7 @@ import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.base.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,6 +114,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 pipeline.addLast(new Payload2TcpProtocol());
                 pipeline.addLast(new Ads2PayloadProtocol());
                 pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
+                pipeline.addLast(new SingleItemToSingleRequestProtocol());
             }
         };
     }
