@@ -121,8 +121,8 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
             handlerMap.put(BigInteger.class, fieldHandler::encodeBigInteger);
             handlerMap.put(Long.class, fieldHandler::encodeLong);
             handlerMap.put(Float.class, fieldHandler::encodeFloat);
-            handlerMap.put(BigDecimal.class, fieldHandler::encodeBigDecimal);
             handlerMap.put(Double.class, fieldHandler::encodeDouble);
+            handlerMap.put(BigDecimal.class, fieldHandler::encodeBigDecimal);
             handlerMap.put(String.class, fieldHandler::encodeString);
             handlerMap.put(LocalTime.class, fieldHandler::encodeTime);
             handlerMap.put(LocalDate.class, fieldHandler::encodeDate);

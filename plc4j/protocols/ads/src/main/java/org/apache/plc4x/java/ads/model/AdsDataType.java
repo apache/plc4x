@@ -19,6 +19,9 @@
 package org.apache.plc4x.java.ads.model;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Documentation can be found here:
@@ -191,15 +194,15 @@ public enum AdsDataType {
      * <p>
      * TOD#00:00	TOD#1193:02:47.295	32 Bit
      *///TODO: strange maximum
-    TIME_OF_DAY(0, Duration.ofHours(23).plusMinutes(59).plusSeconds(59).plusMillis(999).toMillis(), 32),
+    TIME_OF_DAY(0, ChronoUnit.MILLIS.between(LocalTime.of(0, 0), LocalTime.of(23, 59, 59)), 32),
     /**
      * DATE
      * Date. The most significant digit is one second. The data type is handled internally like DWORD.
      * <p>
      * Type	Lower bound	Upper bound	Memory use
      * DATE	D#1970-01-01	D#2106-02-06	32 Bit
-     *///TODO: calculate max
-    DATE(0, -1, 32),
+     */
+    DATE(0, ChronoUnit.SECONDS.between(LocalDateTime.of(1970, 1, 1, 0, 0), LocalDateTime.of(2106, 2, 6, 0, 0)), 32),
     /**
      * DATE_AND_TIME
      * DT

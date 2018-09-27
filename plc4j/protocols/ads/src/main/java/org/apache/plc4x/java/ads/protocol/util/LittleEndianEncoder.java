@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.ads.protocol.util;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.ads.api.commands.types.TimeStamp;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -29,9 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.stream.Stream;
 
 // TODO: we might user ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).putInt(port).asArray() etc
@@ -59,8 +58,12 @@ public class LittleEndianEncoder {
             result = encodeLong(adsDataType, Arrays.stream(values).map(Long.class::cast));
         } else if (valueType == BigInteger.class) {
             result = encodeBigInteger(adsDataType, Arrays.stream(values).map(BigInteger.class::cast));
-        } else if (valueType == Calendar.class || Calendar.class.isAssignableFrom(valueType)) {
-            result = encodeCalendar(adsDataType, Arrays.stream(values).map(Calendar.class::cast));
+        } else if (valueType == LocalTime.class) {
+            result = encodeLocalTime(adsDataType, Arrays.stream(values).map(LocalTime.class::cast));
+        } else if (valueType == LocalDate.class) {
+            result = encodeLocalDate(adsDataType, Arrays.stream(values).map(LocalDate.class::cast));
+        } else if (valueType == LocalDateTime.class) {
+            result = encodeLocalDateTime(adsDataType, Arrays.stream(values).map(LocalDateTime.class::cast));
         } else if (valueType == Float.class) {
             result = encodeFloat(adsDataType, Arrays.stream(values).map(Float.class::cast));
         } else if (valueType == Double.class) {
@@ -184,14 +187,47 @@ public class LittleEndianEncoder {
             });
     }
 
-    private static Stream<byte[]> encodeCalendar(AdsDataType adsDataType, Stream<Calendar> calendarStream) {
-        return calendarStream
-            .map(Calendar.class::cast)
-            .map(Calendar::getTime)
-            .map(Date::getTime)
-            .map(BigInteger::valueOf)
-            .map(TimeStamp::javaToWinTime)
-            .map(BigInteger::longValue)
+    private static Stream<byte[]> encodeLocalTime(AdsDataType adsDataType, Stream<LocalTime> localTimeStream) {
+        return localTimeStream
+            .map(localTime -> ChronoUnit.MILLIS.between(LocalTime.of(0, 0), localTime))
+            .peek(value -> checkBound(adsDataType, value))
+            .map(time -> new byte[]{
+                (byte) (time & 0x00000000_000000ffL),
+                (byte) ((time & 0x00000000_0000ff00L) >> 8),
+                (byte) ((time & 0x00000000_00ff0000L) >> 16),
+                (byte) ((time & 0x00000000_ff000000L) >> 24),
+
+                (byte) ((time & 0x000000ff_00000000L) >> 32),
+                (byte) ((time & 0x0000ff00_00000000L) >> 40),
+                (byte) ((time & 0x00ff0000_00000000L) >> 48),
+                (byte) ((time & 0xff000000_00000000L) >> 56),
+            });
+    }
+
+    private static Stream<byte[]> encodeLocalDate(AdsDataType adsDataType, Stream<LocalDate> localDateStream) {
+        return localDateStream
+            // TODO: fixme: which offset should we use?
+            .map(localDate -> localDate.atTime(0, 0).toInstant(ZoneOffset.UTC))
+            .map(Instant::getEpochSecond)
+            .peek(value -> checkBound(adsDataType, value))
+            .map(time -> new byte[]{
+                (byte) (time & 0x00000000_000000ffL),
+                (byte) ((time & 0x00000000_0000ff00L) >> 8),
+                (byte) ((time & 0x00000000_00ff0000L) >> 16),
+                (byte) ((time & 0x00000000_ff000000L) >> 24),
+
+                (byte) ((time & 0x000000ff_00000000L) >> 32),
+                (byte) ((time & 0x0000ff00_00000000L) >> 40),
+                (byte) ((time & 0x00ff0000_00000000L) >> 48),
+                (byte) ((time & 0xff000000_00000000L) >> 56),
+            });
+    }
+
+    private static Stream<byte[]> encodeLocalDateTime(AdsDataType adsDataType, Stream<LocalDateTime> localDateTimeStream) {
+        return localDateTimeStream
+            // TODO: fixme: which offset should we use?
+            .map(localDateTime -> localDateTime.toInstant(ZoneOffset.UTC))
+            .map(Instant::getEpochSecond)
             .peek(value -> checkBound(adsDataType, value))
             .map(time -> new byte[]{
                 (byte) (time & 0x00000000_000000ffL),

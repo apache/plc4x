@@ -27,10 +27,14 @@ import org.apache.plc4x.java.base.messages.items.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO: implement me acording to ads. currently copy pasta from S7
 // Use endian decoders.
@@ -551,7 +555,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
             case STRUCT:
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
-                return internalEncodeTemporal(field, values);
+                return internalTimeTemporal(field, values);
             case UNKNOWN:
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
@@ -602,7 +606,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
             case STRUCT:
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
-                return internalEncodeTemporal(field, values);
+                return internalDateTemporal(field, values);
             case UNKNOWN:
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
@@ -653,7 +657,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
             case STRUCT:
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
-                return internalEncodeTemporal(field, values);
+                return internalDateTimeTemporal(field, values);
             case UNKNOWN:
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
@@ -930,16 +934,60 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         return new DefaultStringFieldItem(stringValues.toArray(new String[0]));
     }
 
-    private FieldItem internalEncodeTemporal(PlcField field, Object[] values) {
+    private FieldItem internalTimeTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case TIME:
             case DATE:
             case DATE_AND_TIME:
-                return new DefaultLocalDateTimeFieldItem((LocalDateTime[]) values);
+                break;
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");
         }
+        // TODO: support other types
+        List<LocalTime> localTimeValues = Arrays.stream(values)
+            .filter(LocalTime.class::isInstance)
+            .map(LocalTime.class::cast)
+            .collect(Collectors.toList());
+        return new DefaultLocalTimeFieldItem(localTimeValues.toArray(new LocalTime[0]));
+    }
+
+    private FieldItem internalDateTemporal(PlcField field, Object[] values) {
+        AdsField adsField = (AdsField) field;
+        switch (adsField.getAdsDataType()) {
+            case TIME:
+            case DATE:
+            case DATE_AND_TIME:
+                break;
+            default:
+                throw new IllegalArgumentException(
+                    "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");
+        }
+        // TODO: support other types
+        List<LocalDate> localDateValues = Arrays.stream(values)
+            .filter(LocalDate.class::isInstance)
+            .map(LocalDate.class::cast)
+            .collect(Collectors.toList());
+        return new DefaultLocalDateFieldItem(localDateValues.toArray(new LocalDate[0]));
+    }
+
+    private FieldItem internalDateTimeTemporal(PlcField field, Object[] values) {
+        AdsField adsField = (AdsField) field;
+        switch (adsField.getAdsDataType()) {
+            case TIME:
+            case DATE:
+            case DATE_AND_TIME:
+                break;
+            default:
+                throw new IllegalArgumentException(
+                    "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");
+        }
+        // TODO: support other types
+        List<LocalDateTime> localDateTimeValues = Arrays.stream(values)
+            .filter(LocalDateTime.class::isInstance)
+            .map(LocalDateTime.class::cast)
+            .collect(Collectors.toList());
+        return new DefaultLocalDateTimeFieldItem(localDateTimeValues.toArray(new LocalDateTime[0]));
     }
 }

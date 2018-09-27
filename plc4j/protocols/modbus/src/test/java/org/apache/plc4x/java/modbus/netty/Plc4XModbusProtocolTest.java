@@ -65,7 +65,6 @@ public class Plc4XModbusProtocolTest {
     public ExpectedException expectedException = ExpectedException.none();
     // TODO: implement these types
     private List<String> notYetSupportedDataType = Stream.of(
-        GregorianCalendar.class,
         String.class
     ).map(Class::getSimpleName).collect(Collectors.toList());
 

@@ -24,8 +24,15 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -38,19 +45,20 @@ public class Plc4XSupportedDataTypes {
     private final static Map<Class, DataTypePair<?>> bigEndianMap;
 
     static {
-        Calendar calenderInstance = Calendar.getInstance();
-        calenderInstance.setTime(new Date(283686951976960L));
         littleEndianMap = new HashMap<>();
         littleEndianMap.put(Boolean.class, DataTypePair.of(Boolean.TRUE, new byte[]{0x01}));
         littleEndianMap.put(Byte.class, DataTypePair.of(Byte.valueOf("1"), new byte[]{0x1}));
         littleEndianMap.put(Short.class, DataTypePair.of(Short.valueOf("1"), new byte[]{0x1, 0x0}));
-        littleEndianMap.put(Float.class, DataTypePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
         littleEndianMap.put(Integer.class, DataTypePair.of(Integer.valueOf("1"), new byte[]{0x1, 0x0, 0x0, 0x0}));
-        littleEndianMap.put(Double.class, DataTypePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
+        littleEndianMap.put(Long.class, DataTypePair.of(BigInteger.valueOf(1), new byte[]{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}));
         littleEndianMap.put(BigInteger.class, DataTypePair.of(BigInteger.valueOf(1), new byte[]{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}));
-        littleEndianMap.put(Calendar.class, DataTypePair.of(calenderInstance, new byte[]{0x0, (byte) 0x80, 0x3E, 0x15, (byte) 0xAB, 0x47, (byte) 0xFC, 0x28}));
-        littleEndianMap.put(GregorianCalendar.class, littleEndianMap.get(Calendar.class));
+        littleEndianMap.put(Float.class, DataTypePair.of(Float.valueOf("1"), new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
+        littleEndianMap.put(Double.class, DataTypePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
+        littleEndianMap.put(BigDecimal.class, DataTypePair.of(Double.valueOf("1"), new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
         littleEndianMap.put(String.class, DataTypePair.of(String.valueOf("Hello World!"), new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
+        littleEndianMap.put(LocalTime.class, DataTypePair.of(LocalTime.ofSecondOfDay(1), new byte[]{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}));
+        littleEndianMap.put(LocalDate.class, DataTypePair.of(LocalDate.of(1970, 1, 1), new byte[]{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}));
+        littleEndianMap.put(LocalDateTime.class, DataTypePair.of(LocalDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.ofSecondOfDay(1)), new byte[]{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}));
         littleEndianMap.put(byte[].class, DataTypePair.of(new byte[]{0x1, 0x2, 0x3, 0x4}, new byte[]{0x1, 0x2, 0x3, 0x4}));
         littleEndianMap.put(Byte[].class, DataTypePair.of(new Byte[]{0x1, 0x2, 0x3, 0x4}, new byte[]{0x1, 0x2, 0x3, 0x4}));
         bigEndianMap = new HashMap<>();
@@ -77,12 +85,16 @@ public class Plc4XSupportedDataTypes {
             Boolean.class,
             Byte.class,
             Short.class,
-            Float.class,
             Integer.class,
-            Double.class,
+            Long.class,
             BigInteger.class,
-            Calendar.class,
+            Float.class,
+            Double.class,
+            BigDecimal.class,
             String.class,
+            LocalTime.class,
+            LocalDate.class,
+            LocalDateTime.class,
             byte[].class,
             Byte[].class
         );

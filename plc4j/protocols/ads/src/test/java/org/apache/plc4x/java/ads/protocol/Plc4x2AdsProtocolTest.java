@@ -46,7 +46,11 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,7 +103,7 @@ public class Plc4x2AdsProtocolTest {
         Invoke invokeId = Invoke.of(2);
         return streamOfLittleEndianDataTypePairs()
             // TODO: calender doesnt work anymore so we might need to adjust the generator above.
-            .filter(o -> o.getDataTypeClass() != GregorianCalendar.class)
+            .filter(o -> o.getDataTypeClass() != LocalDateTime.class)
             .filter(o -> o.getDataTypeClass() != Byte[].class)
             .filter(o -> o.getDataTypeClass() != byte[].class)
             .map(Plc4x2AdsProtocolTest::mapToAdsDataType)
@@ -121,21 +125,24 @@ public class Plc4x2AdsProtocolTest {
             ))
             .flatMap(stream -> stream)
             // TODO: request doesn't know its type anymore... fixme
-            .map(pair -> new Object[]{Object.class.getSimpleName(), pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getClass().getSimpleName()}).collect(Collectors.toList());
+            .map(pair -> new Object[]{"???", pair.left, pair.left.getResponseFuture(), pair.left.getRequest().getClass().getSimpleName(), pair.right, pair.right.getClass().getSimpleName()}).collect(Collectors.toList());
     }
 
     private static AdsDataTypePair mapToAdsDataType(Plc4XSupportedDataTypes.DataTypePair dataTypePair) {
-        // TODO: check usefull type mapping
         Map<Class<?>, AdsDataType> dataTypeMap = new HashMap<>();
         dataTypeMap.put(Boolean.class, AdsDataType.BOOL);
         dataTypeMap.put(Byte.class, AdsDataType.BYTE);
         dataTypeMap.put(Short.class, AdsDataType.INT);
-        dataTypeMap.put(Float.class, AdsDataType.REAL);
         dataTypeMap.put(Integer.class, AdsDataType.INT32);
-        dataTypeMap.put(Double.class, AdsDataType.LREAL);
+        dataTypeMap.put(Long.class, AdsDataType.INT64);
         dataTypeMap.put(BigInteger.class, AdsDataType.INT64);
-        dataTypeMap.put(Calendar.class, AdsDataType.DATE_AND_TIME);
+        dataTypeMap.put(Float.class, AdsDataType.REAL);
+        dataTypeMap.put(Double.class, AdsDataType.LREAL);
+        dataTypeMap.put(BigDecimal.class, AdsDataType.LREAL);
         dataTypeMap.put(String.class, AdsDataType.STRING);
+        dataTypeMap.put(LocalTime.class, AdsDataType.TIME);
+        dataTypeMap.put(LocalDate.class, AdsDataType.DATE);
+        dataTypeMap.put(LocalDateTime.class, AdsDataType.DATE_AND_TIME);
         dataTypeMap.put(byte[].class, AdsDataType.BYTE);
         dataTypeMap.put(Byte[].class, AdsDataType.BYTE);
         return new AdsDataTypePair(dataTypePair, dataTypeMap.getOrDefault(dataTypePair.getDataTypeClass(), AdsDataType.BYTE));
@@ -148,10 +155,6 @@ public class Plc4x2AdsProtocolTest {
         private AdsDataTypePair(Plc4XSupportedDataTypes.DataTypePair dataTypePair, AdsDataType adsDataType) {
             super(dataTypePair.getDataTypePair());
             this.adsDataType = adsDataType;
-        }
-
-        private AdsDataType getAdsDataType() {
-            return adsDataType;
         }
     }
 
@@ -182,15 +185,29 @@ public class Plc4x2AdsProtocolTest {
                 assertThat(value, equalTo(new byte[]{0x1}));
             } else if (payloadClazzName.equals(Short.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x1, 0x0}));
-            } else if (payloadClazzName.equals(GregorianCalendar.class.getSimpleName())) {
-                assertThat(value, equalTo(new byte[]{0x0, (byte) 0x80, 0x3E, 0x15, (byte) 0xAB, 0X47, (byte) 0xFC, 0x28}));
+            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x1, 0x0, 0x0, 0x0}));
+            } else if (payloadClazzName.equals(Long.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x1, 0x0, 0x0, 0x0}));
+            } else if (payloadClazzName.equals(BigInteger.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x1, 0x0, 0x0, 0x0}));
             } else if (payloadClazzName.equals(Float.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x0, 0x0, (byte) 0x80, 0x3F}));
             } else if (payloadClazzName.equals(Double.class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
-            } else if (payloadClazzName.equals(Integer.class.getSimpleName())) {
-                assertThat(value, equalTo(new byte[]{0x1, 0x0, 0x0, 0x0}));
+            } else if (payloadClazzName.equals(BigDecimal.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte) 0xF0, 0x3F}));
             } else if (payloadClazzName.equals(String.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
+            } else if (payloadClazzName.equals(LocalTime.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
+            } else if (payloadClazzName.equals(LocalDate.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
+            } else if (payloadClazzName.equals(LocalDateTime.class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
+            } else if (payloadClazzName.equals(byte[].class.getSimpleName())) {
+                assertThat(value, equalTo(new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
+            } else if (payloadClazzName.equals(Byte[].class.getSimpleName())) {
                 assertThat(value, equalTo(new byte[]{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00}));
             }
         }

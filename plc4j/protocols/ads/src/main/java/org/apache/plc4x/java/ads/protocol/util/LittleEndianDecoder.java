@@ -317,7 +317,9 @@ public class LittleEndianDecoder {
                 LinkedList<LocalDate> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
-                    values.offer(LocalDate.ofEpochDay(aByte));
+                    // TODO: where to get the zone offset from
+                    LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(aByte, 0, ZoneOffset.UTC);
+                    values.offer(localDateTime.toLocalDate());
                 }
                 return new DefaultLocalDateFieldItem(values.toArray(new LocalDate[0]));
             }
@@ -325,7 +327,9 @@ public class LittleEndianDecoder {
                 LinkedList<LocalDateTime> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
-                    values.offer(LocalDateTime.ofEpochSecond(aByte, 0, ZoneOffset.UTC));
+                    // TODO: where to get the zone offset from
+                    LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(aByte, 0, ZoneOffset.UTC);
+                    values.offer(localDateTime);
                 }
                 return new DefaultLocalDateTimeFieldItem(values.toArray(new LocalDateTime[0]));
             }
