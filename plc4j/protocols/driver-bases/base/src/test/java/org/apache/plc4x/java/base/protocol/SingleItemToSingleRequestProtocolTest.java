@@ -22,6 +22,7 @@ package org.apache.plc4x.java.base.protocol;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.PendingWriteQueue;
+import io.netty.util.HashedWheelTimer;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.*;
 class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
     @InjectMocks
-    SingleItemToSingleRequestProtocol SUT = new SingleItemToSingleRequestProtocol(TimeUnit.SECONDS.toMillis(1), false);
+    SingleItemToSingleRequestProtocol SUT = new SingleItemToSingleRequestProtocol(new HashedWheelTimer(), TimeUnit.SECONDS.toMillis(1), false);
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     ChannelHandlerContext channelHandlerContext;

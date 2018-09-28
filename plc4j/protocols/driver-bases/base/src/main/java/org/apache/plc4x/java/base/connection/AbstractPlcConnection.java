@@ -20,6 +20,8 @@ package org.apache.plc4x.java.base.connection;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timer;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
@@ -34,9 +36,18 @@ import java.util.concurrent.ExecutionException;
 
 public abstract class AbstractPlcConnection implements PlcConnection {
 
+    /**
+     * a {@link HashedWheelTimer} shall be only instantiated once.
+     */
+    // TODO: maybe find a way to make this configurable per jvm
+    protected final static Timer timer = new HashedWheelTimer();
+
     protected final ChannelFactory channelFactory;
+
     protected final boolean awaitSessionSetupComplete;
+
     protected Channel channel;
+
     protected boolean connected;
 
     protected AbstractPlcConnection(ChannelFactory channelFactory) {

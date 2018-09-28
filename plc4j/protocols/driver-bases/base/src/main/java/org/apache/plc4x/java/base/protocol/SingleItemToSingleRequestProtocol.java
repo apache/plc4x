@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.base.protocol;
 
 import io.netty.channel.*;
-import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.Future;
@@ -48,12 +47,12 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(SingleItemToSingleRequestProtocol.class);
 
-    private PendingWriteQueue queue;
-
-    private Timer timer;
+    private final Timer timer;
 
     // TODO: maybe better get from map
     private long defaultReceiveTimeout;
+
+    private PendingWriteQueue queue;
 
     private ConcurrentMap<PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>, Timeout> scheduledTimeouts;
 
@@ -82,15 +81,16 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     private AtomicLong erroredItems;
 
-    public SingleItemToSingleRequestProtocol() {
-        this(true);
+    public SingleItemToSingleRequestProtocol(Timer timer) {
+        this(timer, true);
     }
 
-    public SingleItemToSingleRequestProtocol(boolean betterImplementationPossible) {
-        this(TimeUnit.SECONDS.toMillis(30), betterImplementationPossible);
+    public SingleItemToSingleRequestProtocol(Timer timer, boolean betterImplementationPossible) {
+        this(timer, TimeUnit.SECONDS.toMillis(30), betterImplementationPossible);
     }
 
-    public SingleItemToSingleRequestProtocol(long defaultReceiveTimeout, boolean betterImplementationPossible) {
+    public SingleItemToSingleRequestProtocol(Timer timer, long defaultReceiveTimeout, boolean betterImplementationPossible) {
+        this.timer = timer;
         this.defaultReceiveTimeout = defaultReceiveTimeout;
         if (betterImplementationPossible) {
             String callStack = Arrays.stream(Thread.currentThread().getStackTrace())
@@ -104,13 +104,6 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         this.queue = new PendingWriteQueue(ctx);
-        /*
-         * TODO: this needs to be supplied globally
-         * from {@link HashedWheelTimer}:
-         * One of the common mistakes, that makes
-         * your application unresponsive, is to create a new instance for every connection
-         */
-        this.timer = new HashedWheelTimer();
         this.scheduledTimeouts = new ConcurrentHashMap<>();
         this.sentButUnacknowledgedSubContainer = new ConcurrentHashMap<>();
         this.correlationToParentContainer = new ConcurrentHashMap<>();
@@ -127,7 +120,6 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         this.queue.removeAndWriteAll();
-        this.timer.stop();
         this.scheduledTimeouts.clear();
         this.sentButUnacknowledgedSubContainer.clear();
         this.correlationToParentContainer.clear();
