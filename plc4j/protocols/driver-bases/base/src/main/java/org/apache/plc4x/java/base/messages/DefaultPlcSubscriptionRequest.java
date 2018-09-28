@@ -30,6 +30,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.BiFunction;
 
+// TODO: request broken needs finishing.
 public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionRequest, InternalPlcFieldRequest {
 
     @Override

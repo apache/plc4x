@@ -27,6 +27,7 @@ import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// TODO: request broken needs finishing.
 public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest, InternalPlcFieldRequest {
 
     private final Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles;
