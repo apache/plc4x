@@ -21,7 +21,7 @@ package org.apache.plc4x.java.base.messages;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 
-public interface InternalPlcSubscriptionRequest extends PlcSubscriptionRequest {
+public interface InternalPlcSubscriptionRequest extends PlcSubscriptionRequest, InternalPlcFieldRequest {
 
     PlcSubscriptionType getPlcSubscriptionType();
 
