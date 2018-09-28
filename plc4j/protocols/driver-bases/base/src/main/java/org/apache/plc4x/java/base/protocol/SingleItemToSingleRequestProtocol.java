@@ -36,10 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -64,13 +61,15 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>> sentButUnacknowledgedSubContainer;
 
     // Map to map tdpu to original parent container
+    // TODO: currently this could be supplied via param, only reason to keep would be for statistics.
     private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>> correlationToParentContainer;
 
     // Map to track tdpus per container
+    // TODO: currently this could be supplied via param, only reason to keep would be for statistics.
     private ConcurrentMap<PlcRequestContainer<?, ?>, Set<Integer>> containerCorrelationIdMap;
 
     // Map to track a list of responses per parent container
-    private ConcurrentMap<PlcRequestContainer<?, ?>, List<InternalPlcResponse<?>>> responsesToBeDelivered;
+    private ConcurrentMap<PlcRequestContainer<?, ?>, Queue<InternalPlcResponse<?>>> responsesToBeDelivered;
 
     private AtomicInteger correlationIdGenerator;
 
@@ -158,19 +157,19 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     // Decoding
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void tryFinish(Integer correlationId, InternalPlcResponse msg, CompletableFuture<InternalPlcResponse<?>> originalResponseFuture) {
+    protected void tryFinish(Integer currentTdpu, InternalPlcResponse msg, CompletableFuture<InternalPlcResponse<?>> originalResponseFuture) {
         deliveredItems.incrementAndGet();
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(correlationId);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(currentTdpu);
         LOGGER.info("{} got acknowledged", subPlcRequestContainer);
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> originalPlcRequestContainer = correlationToParentContainer.remove(correlationId);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> originalPlcRequestContainer = correlationToParentContainer.remove(currentTdpu);
         if (originalPlcRequestContainer == null) {
             LOGGER.warn("Unrelated package received {}", msg);
             return;
         }
-        List<InternalPlcResponse<?>> correlatedResponseItems = responsesToBeDelivered.computeIfAbsent(originalPlcRequestContainer, ignore -> new LinkedList<>());
+        Queue<InternalPlcResponse<?>> correlatedResponseItems = responsesToBeDelivered.computeIfAbsent(originalPlcRequestContainer, ignore -> new ConcurrentLinkedQueue<>());
         correlatedResponseItems.add(msg);
         Set<Integer> integers = containerCorrelationIdMap.get(originalPlcRequestContainer);
-        integers.remove(correlationId);
+        integers.remove(currentTdpu);
         if (integers.isEmpty()) {
             deliveredContainers.incrementAndGet();
             Timeout timeout = scheduledTimeouts.remove(originalPlcRequestContainer);
@@ -208,15 +207,15 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         }
     }
 
-    protected void errored(int correlationId, Throwable throwable, CompletableFuture<InternalPlcResponse<?>> originalResponseFuture) {
+    protected void errored(Integer currentTdpu, Throwable throwable, CompletableFuture<InternalPlcResponse<?>> originalResponseFuture) {
         erroredItems.incrementAndGet();
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(correlationId);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(currentTdpu);
         LOGGER.info("{} got errored", subPlcRequestContainer);
 
 
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> originalPlcRequestContainer = correlationToParentContainer.remove(correlationId);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> originalPlcRequestContainer = correlationToParentContainer.remove(currentTdpu);
         if (originalPlcRequestContainer == null) {
-            LOGGER.warn("Unrelated error received correlationId:{}", correlationId, throwable);
+            LOGGER.warn("Unrelated error received tdpu:{}", currentTdpu, throwable);
         } else {
             erroredContainers.incrementAndGet();
             Timeout timeout = scheduledTimeouts.remove(originalPlcRequestContainer);
@@ -224,8 +223,18 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                 timeout.cancel();
             }
             responsesToBeDelivered.remove(originalPlcRequestContainer);
-            containerCorrelationIdMap.remove(originalPlcRequestContainer);
-            LOGGER.warn("PlcRequestContainer {} and correlationId {} failed ", correlationToParentContainer, correlationId, throwable);
+
+            Set<Integer> tdpus = containerCorrelationIdMap.remove(originalPlcRequestContainer);
+            if (tdpus != null) {
+                tdpus.forEach(tdpu -> {
+                    // TODO: technically the other items didn't error so do we increment?
+                    //erroredItems.incrementAndGet();
+                    sentButUnacknowledgedSubContainer.remove(tdpu);
+                    correlationToParentContainer.remove(tdpu);
+                });
+            }
+
+            LOGGER.warn("PlcRequestContainer {} and correlationId {} failed ", correlationToParentContainer, currentTdpu, throwable);
             originalResponseFuture.completeExceptionally(throwable);
         }
     }
@@ -239,7 +248,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         if (msg instanceof PlcRequestContainer) {
             @SuppressWarnings("unchecked")
             PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> in = (PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>) msg;
-            Set<Integer> tdpus = containerCorrelationIdMap.computeIfAbsent(in, plcRequestContainer -> new HashSet<>());
+            Set<Integer> tdpus = containerCorrelationIdMap.computeIfAbsent(in, plcRequestContainer -> ConcurrentHashMap.newKeySet());
 
             Timeout timeout = timer.newTimeout(timeout_ -> handleTimeout(timeout_, in, tdpus, System.nanoTime()), defaultReceiveTimeout, TimeUnit.MILLISECONDS);
             scheduledTimeouts.put(in, timeout);

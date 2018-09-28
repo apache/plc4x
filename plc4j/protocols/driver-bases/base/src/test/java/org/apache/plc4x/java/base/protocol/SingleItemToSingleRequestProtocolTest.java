@@ -21,6 +21,8 @@ package org.apache.plc4x.java.base.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.channel.PendingWriteQueue;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -43,6 +45,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -197,6 +200,45 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         }
 
         @Test
+        void partialReadOneErrored() throws Exception {
+            // Given
+            // we have a simple read
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            // When
+            // we write this
+            SUT.write(channelHandlerContext, msg, channelPromise);
+            // And
+            // and we simulate that some one responded
+            verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
+            List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
+            capturedDownstreamContainers.stream()
+                .findFirst()
+                .map(plcRequestContainer ->
+                    plcRequestContainer
+                        .getResponseFuture()
+                        .completeExceptionally(new RuntimeException("ErrorOccurred"))
+                );
+            // Then
+            // We create SUT with 1 seconds timeout
+            TimeUnit.SECONDS.sleep(2);
+            // our complete container should complete normally
+            verify(responseCompletableFuture).completeExceptionally(any());
+            // And we should have no memory leak
+            assertThat(SUT.getStatistics()).containsOnly(
+                entry("queue", 0),
+                entry("sentButUnacknowledgedSubContainer", 0),
+                entry("correlationToParentContainer", 0),
+                entry("containerCorrelationIdMap", 0),
+                entry("responsesToBeDelivered", 0),
+                entry("correlationIdGenerator", 5),
+                entry("deliveredItems", 0L),
+                entry("erroredItems", 1L),
+                entry("deliveredContainers", 0L),
+                entry("erroredContainers", 1L)
+            );
+        }
+
+        @Test
         void noRead() throws Exception {
             // Given
             // we have a simple read
@@ -334,8 +376,12 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
         @Test
         void trySendingMessages() throws Exception {
+            PendingWriteQueue queue = (PendingWriteQueue) FieldUtils.getField(SUT.getClass(), "queue", true).get(SUT);
+            assertThat(queue.size()).isLessThanOrEqualTo(0);
+            queue.add(mock(PlcRequestContainer.class), channelPromise);
+            assertThat(queue.size()).isGreaterThan(0);
             SUT.trySendingMessages(channelHandlerContext);
-            // TODO: add assertions
+            assertThat(queue.size()).isLessThanOrEqualTo(0);
         }
     }
 
@@ -347,11 +393,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
         private static TestDefaultPlcReadRequest build() {
             LinkedHashMap<String, PlcField> fields = new LinkedHashMap<>();
-            fields.put("readField1", mock(PlcField.class));
-            fields.put("readField2", mock(PlcField.class));
-            fields.put("readField3", mock(PlcField.class));
-            fields.put("readField4", mock(PlcField.class));
-            fields.put("readField5", mock(PlcField.class));
+            IntStream.rangeClosed(1, 5).forEach(i -> fields.put("readField" + i, mock(PlcField.class)));
             return new TestDefaultPlcReadRequest(fields);
         }
     }
@@ -364,11 +406,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
         private static TestDefaultPlcWriteRequest build() {
             LinkedHashMap<String, Pair<PlcField, FieldItem>> fields = new LinkedHashMap<>();
-            fields.put("writeField1", Pair.of(mock(PlcField.class), mock(FieldItem.class)));
-            fields.put("writeField2", Pair.of(mock(PlcField.class), mock(FieldItem.class)));
-            fields.put("writeField3", Pair.of(mock(PlcField.class), mock(FieldItem.class)));
-            fields.put("writeField4", Pair.of(mock(PlcField.class), mock(FieldItem.class)));
-            fields.put("writeField5", Pair.of(mock(PlcField.class), mock(FieldItem.class)));
+            IntStream.rangeClosed(1, 5).forEach(i -> fields.put("writeField" + i, Pair.of(mock(PlcField.class), mock(FieldItem.class))));
             return new TestDefaultPlcWriteRequest(fields);
         }
     }
