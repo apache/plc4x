@@ -136,7 +136,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         void simpleRead() throws Exception {
             // Given
             // we have a simple read
-            PlcRequestContainer<TestDefaultPlcReadRequest, InternalPlcResponse> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
             // When
             // we write this
             SUT.write(channelHandlerContext, msg, channelPromise);
@@ -167,7 +167,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         void partialRead() throws Exception {
             // Given
             // we have a simple read
-            PlcRequestContainer<TestDefaultPlcReadRequest, InternalPlcResponse> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
             // When
             // we write this
             SUT.write(channelHandlerContext, msg, channelPromise);
@@ -191,6 +191,37 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
                 entry("correlationIdGenerator", 5),
                 entry("deliveredItems", 1L),
                 entry("erroredItems", 4L),
+                entry("deliveredContainers", 0L),
+                entry("erroredContainers", 1L)
+            );
+        }
+
+        @Test
+        void noRead() throws Exception {
+            // Given
+            // we have a simple read
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            // When
+            // we write this
+            SUT.write(channelHandlerContext, msg, channelPromise);
+            // And
+            // and we simulate that some one responded
+            verify(channelHandlerContext, times(5)).write(any(), any());
+            // Then
+            // We create SUT with 1 seconds timeout
+            TimeUnit.SECONDS.sleep(2);
+            // our complete container should complete normally
+            verify(responseCompletableFuture).completeExceptionally(any());
+            // And we should have no memory leak
+            assertThat(SUT.getStatistics()).containsOnly(
+                entry("queue", 0),
+                entry("sentButUnacknowledgedSubContainer", 0),
+                entry("correlationToParentContainer", 0),
+                entry("containerCorrelationIdMap", 0),
+                entry("responsesToBeDelivered", 0),
+                entry("correlationIdGenerator", 5),
+                entry("deliveredItems", 0L),
+                entry("erroredItems", 5L),
                 entry("deliveredContainers", 0L),
                 entry("erroredContainers", 1L)
             );
@@ -242,7 +273,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         @Test
         void read() throws Exception {
             // Given
-            PlcRequestContainer<TestDefaultPlcReadRequest, InternalPlcResponse> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
             // When
             SUT.write(channelHandlerContext, msg, channelPromise);
             // Then
@@ -273,7 +304,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         @Test
         void write() throws Exception {
             // Given
-            PlcRequestContainer<TestDefaultPlcWriteRequest, InternalPlcResponse> msg = new PlcRequestContainer<>(TestDefaultPlcWriteRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcWriteRequest.build(), responseCompletableFuture);
             // When
             SUT.write(channelHandlerContext, msg, channelPromise);
             // Then
