@@ -104,6 +104,12 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         this.queue = new PendingWriteQueue(ctx);
+        /*
+         * TODO: this needs to be supplied globally
+         * from {@link HashedWheelTimer}:
+         * One of the common mistakes, that makes
+         * your application unresponsive, is to create a new instance for every connection
+         */
         this.timer = new HashedWheelTimer();
         this.scheduledTimeouts = new ConcurrentHashMap<>();
         this.sentButUnacknowledgedSubContainer = new ConcurrentHashMap<>();
