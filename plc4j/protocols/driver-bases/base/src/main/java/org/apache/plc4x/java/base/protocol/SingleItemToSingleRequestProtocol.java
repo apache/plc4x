@@ -26,7 +26,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.PromiseCombiner;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcTimeoutException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -199,7 +199,8 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
                 plcResponse = new DefaultPlcWriteResponse(internalPlcWriteRequest, values);
             } else {
-                throw new PlcRuntimeException("Unknown type detected " + originalPlcRequestContainer.getRequest());
+                errored(currentTdpu, new PlcProtocolException("Unknown type detected " + originalPlcRequestContainer.getRequest().getClass()), originalResponseFuture);
+                return;
             }
             responsesToBeDelivered.remove(originalPlcRequestContainer);
             containerCorrelationIdMap.remove(originalPlcRequestContainer);
@@ -284,8 +285,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
-                }
-                if (internalPlcFieldRequest instanceof InternalPlcWriteRequest) {
+                } else if (internalPlcFieldRequest instanceof InternalPlcWriteRequest) {
                     InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) internalPlcFieldRequest;
                     internalPlcWriteRequest.getNamedFieldTriples().forEach(fieldItemTriple -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
@@ -308,6 +308,9 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
+                    // TODO: add sub/unsub
+                } else {
+                    throw new PlcProtocolException("Unmapped request type " + request.getClass());
                 }
             } else {
                 ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());

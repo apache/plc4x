@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,10 +39,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -375,6 +373,16 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         }
 
         @Test
+        void subscribe() throws Exception {
+            // TODO: implement once available
+        }
+
+        @Test
+        void unsubcribe() throws Exception {
+            // TODO: implement once available
+        }
+
+        @Test
         void trySendingMessages() throws Exception {
             PendingWriteQueue queue = (PendingWriteQueue) FieldUtils.getField(SUT.getClass(), "queue", true).get(SUT);
             assertThat(queue.size()).isLessThanOrEqualTo(0);
@@ -408,6 +416,26 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
             LinkedHashMap<String, Pair<PlcField, FieldItem>> fields = new LinkedHashMap<>();
             IntStream.rangeClosed(1, 5).forEach(i -> fields.put("writeField" + i, Pair.of(mock(PlcField.class), mock(FieldItem.class))));
             return new TestDefaultPlcWriteRequest(fields);
+        }
+    }
+
+    private static class TestDefaultPlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
+
+        private static TestDefaultPlcSubscriptionRequest build() {
+            // TODO: implement me once available
+            return new TestDefaultPlcSubscriptionRequest();
+        }
+    }
+
+    private static class TestDefaultPlcUnsubscriptionRequest extends DefaultPlcUnsubscriptionRequest {
+
+        private TestDefaultPlcUnsubscriptionRequest(Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+            super(internalPlcSubscriptionHandles);
+        }
+
+        private static TestDefaultPlcUnsubscriptionRequest build() {
+            // TODO: implement me once available
+            return new TestDefaultPlcUnsubscriptionRequest(Collections.emptyList());
         }
     }
 }
