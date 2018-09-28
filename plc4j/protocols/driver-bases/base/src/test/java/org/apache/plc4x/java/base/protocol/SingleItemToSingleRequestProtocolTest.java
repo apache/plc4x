@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +51,7 @@ import static org.mockito.Mockito.*;
 class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
     @InjectMocks
-    SingleItemToSingleRequestProtocol SUT;
+    SingleItemToSingleRequestProtocol SUT = new SingleItemToSingleRequestProtocol(TimeUnit.SECONDS.toMillis(1), false);
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     ChannelHandlerContext channelHandlerContext;
@@ -83,7 +84,11 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
                 entry("correlationToParentContainer", 0),
                 entry("containerCorrelationIdMap", 0),
                 entry("responsesToBeDelivered", 0),
-                entry("currentCorrelationId", 0)
+                entry("correlationIdGenerator", 0),
+                entry("deliveredItems", 0L),
+                entry("erroredItems", 0L),
+                entry("erroredContainers", 0L),
+                entry("deliveredContainers", 0L)
             );
         }
 
@@ -96,7 +101,11 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
                 entry("correlationToParentContainer", 0),
                 entry("containerCorrelationIdMap", 0),
                 entry("responsesToBeDelivered", 0),
-                entry("currentCorrelationId", 0)
+                entry("correlationIdGenerator", 0),
+                entry("deliveredItems", 0L),
+                entry("erroredItems", 0L),
+                entry("deliveredContainers", 0L),
+                entry("erroredContainers", 0L)
             );
         }
 
@@ -109,7 +118,11 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
                 entry("correlationToParentContainer", 0),
                 entry("containerCorrelationIdMap", 0),
                 entry("responsesToBeDelivered", 0),
-                entry("currentCorrelationId", 0)
+                entry("correlationIdGenerator", 0),
+                entry("deliveredItems", 0L),
+                entry("erroredItems", 0L),
+                entry("deliveredContainers", 0L),
+                entry("erroredContainers", 0L)
             );
         }
     }
@@ -131,14 +144,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
             // and we simulate that all get responded
             verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
             List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
-            capturedDownstreamContainers.forEach(plcRequestContainer -> {
-                InternalPlcReadRequest request = (InternalPlcReadRequest) plcRequestContainer.getRequest();
-                String fieldName = request.getFieldNames().iterator().next();
-                CompletableFuture responseFuture = plcRequestContainer.getResponseFuture();
-                HashMap<String, Pair<PlcResponseCode, FieldItem>> responseFields = new HashMap<>();
-                responseFields.put(fieldName, Pair.of(PlcResponseCode.OK, mock(FieldItem.class)));
-                responseFuture.complete(new DefaultPlcReadResponse(request, responseFields));
-            });
+            capturedDownstreamContainers.forEach(this::produceReadResponse);
             // Then
             // our complete container should complete normally
             verify(responseCompletableFuture).complete(any());
@@ -149,8 +155,56 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
                 entry("correlationToParentContainer", 0),
                 entry("containerCorrelationIdMap", 0),
                 entry("responsesToBeDelivered", 0),
-                entry("currentCorrelationId", 5)
+                entry("correlationIdGenerator", 5),
+                entry("erroredItems", 0L),
+                entry("deliveredItems", 5L),
+                entry("deliveredContainers", 1L),
+                entry("erroredContainers", 0L)
             );
+        }
+
+        @Test
+        void partialRead() throws Exception {
+            // Given
+            // we have a simple read
+            PlcRequestContainer<TestDefaultPlcReadRequest, InternalPlcResponse> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            // When
+            // we write this
+            SUT.write(channelHandlerContext, msg, channelPromise);
+            // And
+            // and we simulate that some one responded
+            verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
+            List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
+            capturedDownstreamContainers.stream().findFirst().map(this::produceReadResponse);
+            // Then
+            // We create SUT with 1 seconds timeout
+            TimeUnit.SECONDS.sleep(2);
+            // our complete container should complete normally
+            verify(responseCompletableFuture).completeExceptionally(any());
+            // And we should have no memory leak
+            assertThat(SUT.getStatistics()).containsOnly(
+                entry("queue", 0),
+                entry("sentButUnacknowledgedSubContainer", 0),
+                entry("correlationToParentContainer", 0),
+                entry("containerCorrelationIdMap", 0),
+                entry("responsesToBeDelivered", 0),
+                entry("correlationIdGenerator", 5),
+                entry("deliveredItems", 1L),
+                entry("erroredItems", 4L),
+                entry("deliveredContainers", 0L),
+                entry("erroredContainers", 1L)
+            );
+        }
+
+        @SuppressWarnings("unchecked")
+        private Void produceReadResponse(PlcRequestContainer plcRequestContainer) {
+            InternalPlcReadRequest request = (InternalPlcReadRequest) plcRequestContainer.getRequest();
+            String fieldName = request.getFieldNames().iterator().next();
+            CompletableFuture responseFuture = plcRequestContainer.getResponseFuture();
+            HashMap<String, Pair<PlcResponseCode, FieldItem>> responseFields = new HashMap<>();
+            responseFields.put(fieldName, Pair.of(PlcResponseCode.OK, mock(FieldItem.class)));
+            responseFuture.complete(new DefaultPlcReadResponse(request, responseFields));
+            return null;
         }
     }
 
