@@ -24,6 +24,7 @@ import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.test.FastTests;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,6 +33,7 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -85,5 +87,10 @@ class S7FieldTests {
         }
     }
 
+    @Test
+    void checkGreedyNumFieldsParsing() {
+        S7Field field = S7Field.of("%DB56.DBB100:SINT[25]");
 
+        assertEquals(25, field.getNumElements());
+    }
 }
