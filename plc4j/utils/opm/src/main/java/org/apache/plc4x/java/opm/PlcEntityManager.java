@@ -11,6 +11,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,9 +26,18 @@ import java.util.concurrent.TimeoutException;
 import static net.bytebuddy.matcher.ElementMatchers.any;
 
 /**
- * Manages Entities.
+ * Plc4x equivalent of Jpas EntityManager for implementing Object-Plc-Mapping.
+ * This means that calls to a plc can be done by using plain POJOs with Annotations.
+ *
+ * First, the necessary annotations are {@link PlcEntity} and {@link PlcField}.
+ * For a class to be useable as PlcEntity it needs
+ * <ul>
+ *     <li>be non-final (as proxiing has to be used in case of {@link #connect(Class)}</li>
+ * </ul>
  */
 public class PlcEntityManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(PlcEntityManager.class);
 
     private final PlcDriverManager driverManager;
 
@@ -174,7 +185,7 @@ public class PlcEntityManager {
      */
     @RuntimeType
     public Object intercept(@This Object o, @Origin Method m, @SuperCall Callable<?> c, @Super Object that) throws OPMException {
-        System.out.println("Invoked " + m.getName() + " fetch all values...");
+        logger.trace("Invoked " + m.getName() + " fetch all values...");
 
         Field field = that.getClass().getDeclaredFields()[0];
         field.setAccessible(true);
@@ -224,8 +235,8 @@ public class PlcEntityManager {
             throw new OPMException("...", e);
         }
         PlcEntity plcEntity = baseClass.getAnnotation(PlcEntity.class);
-        System.out.println("For source: " + plcEntity.value());
-        System.out.println("Using the DriverManager: " + driverManager);
+        logger.trace("For source: " + plcEntity.value());
+        logger.trace("Using the DriverManager: " + driverManager);
 
         Optional<PlcReader> reader;
         try {
@@ -246,27 +257,19 @@ public class PlcEntityManager {
             // Check if the field has an annotation
             PlcField plcField = field.getDeclaredAnnotation(PlcField.class);
             if (plcField != null) {
-                System.out.println("Adding field " + field.getName() + " to request as " + plcField.value());
+                logger.trace("Adding field " + field.getName() + " to request as " + plcField.value());
                 builder.addItem(field.getName(), plcField.value());
             }
 
         }
         PlcReadRequest request = builder.build();
 
-        PlcReadResponse<?> response;
-        try {
-            response = plcReader.read(request).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new OPMException("Exception during execution", e);
-        } catch (ExecutionException e) {
-            throw new OPMException("Exception during execution", e);
-        }
+        PlcReadResponse<?> response = getPlcReadResponse(plcReader, request);
 
         // Fill all requested fields
         for (String fieldName : response.getFieldNames()) {
-            System.out.println("Value for field " + fieldName + " is " + response.getObject(fieldName));
-            System.out.println("Setting test value");
+            logger.trace("Value for field " + fieldName + " is " + response.getObject(fieldName));
+            logger.trace("Setting test value");
             try {
                 Field field = baseClass.getDeclaredField(fieldName);
                 field.setAccessible(true);
@@ -284,7 +287,7 @@ public class PlcEntityManager {
                 } else if (field.getType().isAssignableFrom(response.getObject(fieldName).getClass())){
                     field.set(o, response.getObject(fieldName));
                 } else {
-                    System.out.println("Unassignable!!!");
+                    logger.trace("Unable to assign return value {} to field {} with type {}", response.getObject(fieldName), fieldName, field.getType());
                 }
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
@@ -293,23 +296,20 @@ public class PlcEntityManager {
     }
 
     private Object fetchValueInternal(Object o, Method m) throws OPMException {
-        // TODO Fetch annotation from variable
         String s = m.getName().substring(3);
         // First char to lower
         String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
-        System.out.println("Variable: " + variable);
+        logger.trace("Variable: " + variable);
         PlcField annotation = null;
         try {
             annotation = m.getDeclaringClass().getDeclaredField(variable).getDeclaredAnnotation(PlcField.class);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-        System.out.println(annotation);
-        // PlcField annotation = m.getAnnotation(PlcField.class);
-        System.out.println("You wanted field: " + annotation.value());
+        logger.trace("You wanted field: " + annotation.value());
         PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
-        System.out.println("For source: " + plcEntity.value());
-        System.out.println("Using the DriverManager: " + driverManager);
+        logger.trace("For source: " + plcEntity.value());
+        logger.trace("Using the DriverManager: " + driverManager);
 
         Optional<PlcReader> reader;
         try {
@@ -325,24 +325,12 @@ public class PlcEntityManager {
         PlcReader plcReader = reader.get();
 
         // Assume to do the query here...
-        PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
-        for (Field field : m.getDeclaringClass().getDeclaredFields()) {
-            // Check if the field has an annotation
-
-        }
-        PlcReadRequest request = builder
+        PlcReadRequest request = reader.get().readRequestBuilder()
             .addItem(m.getName(), annotation.value())
             .build();
 
         PlcReadResponse<?> response;
-        try {
-            response = plcReader.read(request).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new OPMException("Exception during execution", e);
-        } catch (ExecutionException e) {
-            throw new OPMException("Exception during execution", e);
-        }
+        response = getPlcReadResponse(plcReader, request);
 
         Object responseObject = response.getObject(m.getName());
 
@@ -352,6 +340,26 @@ public class PlcEntityManager {
                 throw new OPMException("Unable to cast the PLC Object '" + responseObject +
                     "' to the expected method return type '" + m.getReturnType() + "'");
         }
+    }
+
+    /**
+     * Fetch the request and do appropriate error handling
+     * @param plcReader
+     * @param request
+     * @return
+     * @throws OPMException
+     */
+    private PlcReadResponse<?> getPlcReadResponse(PlcReader plcReader, PlcReadRequest request) throws OPMException {
+        PlcReadResponse<?> response;
+        try {
+            response = plcReader.read(request).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new OPMException("Exception during execution", e);
+        } catch (ExecutionException e) {
+            throw new OPMException("Exception during execution", e);
+        }
+        return response;
     }
 
 }
