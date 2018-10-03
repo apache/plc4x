@@ -1,6 +1,7 @@
 package org.apache.plc4x.java.opm;
 
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.*;
 import org.apache.plc4x.java.PlcDriverManager;
@@ -144,15 +145,20 @@ public class PlcEntityManager {
         try {
             // Use Byte Buddy to generate a subclassed proxy that delegates all PlcField Methods
             // to the intercept method
-            return new ByteBuddy()
+            T instance = new ByteBuddy()
                 .subclass(clazz)
+                .defineField("parent", Class.class, Visibility.PUBLIC)
                 .method(any()).intercept(MethodDelegation.to(this))
                 .make()
                 .load(Thread.currentThread().getContextClassLoader())
                 .getLoaded()
                 .getConstructor()
                 .newInstance();
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+
+            Field parent = instance.getClass().getDeclaredField("parent");
+            parent.set(instance, clazz);
+            return instance;
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchFieldException e) {
             throw new OPMException("Unable to instantiate Proxy", e);
         }
     }
@@ -170,11 +176,23 @@ public class PlcEntityManager {
     public Object intercept(@This Object o, @Origin Method m, @SuperCall Callable<?> c, @Super Object that) throws OPMException {
         System.out.println("Invoked " + m.getName() + " fetch all values...");
 
+        Field field = that.getClass().getDeclaredFields()[0];
+        field.setAccessible(true);
+        Object base;
+        try {
+            base = field.get(that);
+        } catch (IllegalAccessException e) {
+            throw new OPMException("...", e);
+        }
+
         if (m.getName().startsWith("get") || m.getName().startsWith("is")) {
+            // Fetch single value
             return fetchValueInternal(that, m);
         }
 
+        // Fetch all values, than invoke method
         try {
+            fetchAllValues(base, m);
             return c.call();
         } catch (Exception e) {
             throw new OPMException("Unbale to forward call", e);
@@ -197,20 +215,97 @@ public class PlcEntityManager {
         return 1L;
     }
 
+    private void fetchAllValues(Object o, Method m) throws OPMException {
+        Class<?> baseClass;
+        try {
+            baseClass = (Class<?>) o.getClass().getDeclaredField("parent").get(o);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+            throw new OPMException("...", e);
+        }
+        PlcEntity plcEntity = baseClass.getAnnotation(PlcEntity.class);
+        System.out.println("For source: " + plcEntity.value());
+        System.out.println("Using the DriverManager: " + driverManager);
+
+        Optional<PlcReader> reader;
+        try {
+            reader = driverManager.getConnection(plcEntity.value()).getReader();
+        } catch (PlcConnectionException e) {
+            throw new OPMException("Unable to acquire connection", e);
+        }
+
+        if (reader.isPresent() == false) {
+            throw new OPMException("Unable to generate Reader");
+        }
+
+        PlcReader plcReader = reader.get();
+
+        // Assume to do the query here...
+        PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
+        for (Field field : baseClass.getDeclaredFields()) {
+            // Check if the field has an annotation
+            PlcField plcField = field.getDeclaredAnnotation(PlcField.class);
+            if (plcField != null) {
+                System.out.println("Adding field " + field.getName() + " to request as " + plcField.value());
+                builder.addItem(field.getName(), plcField.value());
+            }
+
+        }
+        PlcReadRequest request = builder.build();
+
+        PlcReadResponse<?> response;
+        try {
+            response = plcReader.read(request).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new OPMException("Exception during execution", e);
+        } catch (ExecutionException e) {
+            throw new OPMException("Exception during execution", e);
+        }
+
+        // Fill all requested fields
+        for (String fieldName : response.getFieldNames()) {
+            System.out.println("Value for field " + fieldName + " is " + response.getObject(fieldName));
+            System.out.println("Setting test value");
+            try {
+                Field field = baseClass.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                if (field.getType().isPrimitive()) {
+                    if (field.getType() == byte.class) {
+                        field.set(o, (byte) response.getByte(fieldName));
+                    } else if (field.getType() == int.class) {
+                        field.set(o, (int) response.getInteger(fieldName));
+                    } else if (field.getType() == long.class) {
+                        field.set(o, (long) response.getLong(fieldName));
+                    } else if (field.getType() == short.class) {
+                        field.set(o, (short) response.getShort(fieldName));
+                    }
+                    // TODO this should fail on Short, Integer, ... because it always gets a Long
+                } else if (field.getType().isAssignableFrom(response.getObject(fieldName).getClass())){
+                    field.set(o, response.getObject(fieldName));
+                } else {
+                    System.out.println("Unassignable!!!");
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private Object fetchValueInternal(Object o, Method m) throws OPMException {
         // TODO Fetch annotation from variable
         String s = m.getName().substring(3);
         // First char to lower
         String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
         System.out.println("Variable: " + variable);
-        PlcEntity entity = null;
+        PlcField annotation = null;
         try {
-            entity = o.getClass().getField(variable).getAnnotation(PlcEntity.class);
+            annotation = m.getDeclaringClass().getDeclaredField(variable).getDeclaredAnnotation(PlcField.class);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-        System.out.println(entity);
-        PlcField annotation = m.getAnnotation(PlcField.class);
+        System.out.println(annotation);
+        // PlcField annotation = m.getAnnotation(PlcField.class);
         System.out.println("You wanted field: " + annotation.value());
         PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
         System.out.println("For source: " + plcEntity.value());
@@ -230,7 +325,12 @@ public class PlcEntityManager {
         PlcReader plcReader = reader.get();
 
         // Assume to do the query here...
-        PlcReadRequest request = plcReader.readRequestBuilder()
+        PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
+        for (Field field : m.getDeclaringClass().getDeclaredFields()) {
+            // Check if the field has an annotation
+
+        }
+        PlcReadRequest request = builder
             .addItem(m.getName(), annotation.value())
             .build();
 
