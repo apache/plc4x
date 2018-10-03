@@ -14,6 +14,7 @@ import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -75,6 +76,26 @@ public class PlcEntityManagerTest {
         long value = connect.getLongVar();
 
         assertEquals(1, value);
+    }
+
+    @Test
+    public void connec_callComplexMethodt() throws PlcConnectionException, OPMException {
+        Map<String, FieldItem> map = new HashMap<>();
+        map.put("byteVar", new DefaultIntegerFieldItem(1L));
+        map.put("shortVar", new DefaultIntegerFieldItem(1L));
+        map.put("intVar", new DefaultIntegerFieldItem(1L));
+        map.put("longVar", new DefaultIntegerFieldItem(1L));
+        map.put("boxedLongVar", new DefaultIntegerFieldItem(1L));
+        map.put("stringVar", new DefaultStringFieldItem("Hallo"));
+        PlcEntityManager manager = getPlcEntityManager(map);
+
+        ConnectedEntity connect = manager.connect(ConnectedEntity.class);
+
+        Assert.assertNotNull(connect);
+
+        String s = connect.toString();
+
+        assertEquals("ConnectedEntity{byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
     }
 
     @Test
@@ -252,6 +273,8 @@ public class PlcEntityManagerTest {
         @PlcField("%DB1.DW111:LONG")
         private long longVar;
         @PlcField("%DB1.DW111:STRING")
+        private Long boxedLongVar;
+        @PlcField("%DB1.DW111:STRING")
         private String stringVar;
 
         public ConnectedEntity() {
@@ -287,5 +310,16 @@ public class PlcEntityManagerTest {
             System.out.println("I do nothing");
         }
 
+        @Override
+        public String toString() {
+            return "ConnectedEntity{" +
+                "byteVar=" + byteVar +
+                ", shortVar=" + shortVar +
+                ", intVar=" + intVar +
+                ", longVar=" + longVar +
+                ", boxedLongVar=" + boxedLongVar +
+                ", stringVar='" + stringVar + '\'' +
+                '}';
+        }
     }
 }
