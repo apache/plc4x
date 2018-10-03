@@ -1,7 +1,6 @@
 package org.apache.plc4x.java.opm;
 
 import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.*;
 import org.apache.plc4x.java.PlcDriverManager;
@@ -33,7 +32,30 @@ import static net.bytebuddy.matcher.ElementMatchers.any;
  * For a class to be useable as PlcEntity it needs
  * <ul>
  *     <li>be non-final (as proxiing has to be used in case of {@link #connect(Class)}</li>
+ *     <li>a public no args constructor for instanciation</li>
+ *     <li>Needs to be annotated with {@link PlcEntity} and has a valid value which is the connection string</li>
  * </ul>
+ *
+ * Basically, the {@link PlcEntityManager} has to operation "modes" represented by the methods {@link #read(Class)} and
+ * {@link #connect(Class)}.
+ *
+ * For a field to get Values from the Plc Injected it needs to be annotated with the {@link PlcField} annotation.
+ * The value has to be the plc fields string (which is inserted in the {@link PlcReadRequest}).
+ * The connection string is taken from the value of the {@link PlcEntity} annotation on the class.
+ *
+ * The {@link #read(Class)} method has no direkt equivalent in JPA (as far as I know) as it only returns a "detached"
+ * entity. This means it fetches all values from the plc that are annotated wiht the {@link PlcField} annotations.
+ *
+ * The {@link #connect(Class)} method is more JPA-like as it returns a "connected" entity. This means, that each
+ * time one of the getters on the returned entity is called a call is made to the plc (and the field value is changed
+ * for this specific field).
+ * Furthermore, if a method which is no getter is called, then all {@link PlcField}s are refreshed before doing the call.
+ * Thus, all operations on fields that are annotated with {@link PlcField} are always done against the "live" values
+ * from the PLC.
+ *
+ * // TODO Add detach method
+ *
+ * @author julian
  */
 public class PlcEntityManager {
 
@@ -156,20 +178,15 @@ public class PlcEntityManager {
         try {
             // Use Byte Buddy to generate a subclassed proxy that delegates all PlcField Methods
             // to the intercept method
-            T instance = new ByteBuddy()
+            return new ByteBuddy()
                 .subclass(clazz)
-                .defineField("parent", Class.class, Visibility.PUBLIC)
                 .method(any()).intercept(MethodDelegation.to(this))
                 .make()
                 .load(Thread.currentThread().getContextClassLoader())
                 .getLoaded()
                 .getConstructor()
                 .newInstance();
-
-            Field parent = instance.getClass().getDeclaredField("parent");
-            parent.set(instance, clazz);
-            return instance;
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchFieldException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new OPMException("Unable to instantiate Proxy", e);
         }
     }
