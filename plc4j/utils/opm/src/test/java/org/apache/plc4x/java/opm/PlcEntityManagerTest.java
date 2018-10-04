@@ -18,11 +18,9 @@ import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,7 +29,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PlcEntityManagerTest {
@@ -53,7 +50,7 @@ public class PlcEntityManagerTest {
     }
 
     @Test
-    public void find() throws OPMException, PlcConnectionException {
+    public void read() throws OPMException, PlcConnectionException {
         Map<String, FieldItem> results = new HashMap<>();
         results.put("counter", new DefaultIntegerFieldItem(1L));
         results.put("counter2", new DefaultIntegerFieldItem(1L));
@@ -66,16 +63,24 @@ public class PlcEntityManagerTest {
     }
 
     @Test
-    public void connect() throws PlcConnectionException, OPMException {
-        PlcEntityManager manager = getPlcEntityManager(Collections.singletonMap("%DB1.DW111", new DefaultIntegerFieldItem(1L)));
+    public void readComplexObject() throws PlcConnectionException, OPMException {
+        Map<String, FieldItem> map = new HashMap<>();
+        map.put("byteVar", new DefaultIntegerFieldItem(1L));
+        map.put("shortVar", new DefaultIntegerFieldItem(1L));
+        map.put("intVar", new DefaultIntegerFieldItem(1L));
+        map.put("longVar", new DefaultIntegerFieldItem(1L));
+        map.put("boxedLongVar", new DefaultIntegerFieldItem(1L));
+        map.put("stringVar", new DefaultStringFieldItem("Hallo"));
+        PlcEntityManager manager = getPlcEntityManager(map);
 
-        ConnectedEntity connect = manager.connect(ConnectedEntity.class);
+        ConnectedEntity connect = manager.read(ConnectedEntity.class);
 
         Assert.assertNotNull(connect);
 
-        long value = connect.getLongVar();
+        // Call different mehtod
+        String s = connect.toString();
 
-        assertEquals(1, value);
+        assertEquals("ConnectedEntity{byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
     }
 
     @Test
@@ -93,33 +98,26 @@ public class PlcEntityManagerTest {
 
         Assert.assertNotNull(connect);
 
+        // Call different mehtod
         String s = connect.toString();
 
         assertEquals("ConnectedEntity{byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
     }
 
     @Test
-    public void callRandomMeathod() throws PlcConnectionException, OPMException {
-        driverManager = Mockito.mock(PlcDriverManager.class);
-        PlcDriverManager mock = driverManager;
-        PlcConnection connection = Mockito.mock(PlcConnection.class);
-        when(mock.getConnection(ArgumentMatchers.anyString())).thenReturn(connection);
-        PlcReader reader = Mockito.mock(PlcReader.class);
-        when(connection.getReader()).thenReturn(Optional.of(reader));
-        PlcEntityManager manager = new PlcEntityManager(driverManager);
+    public void connect_callGetter() throws PlcConnectionException, OPMException {
+        Map<String, FieldItem> map = new HashMap<>();
+        map.put("getIntVar", new DefaultIntegerFieldItem(1L));
+        map.put("getStringVar", new DefaultStringFieldItem("Hello"));
+        PlcEntityManager manager = getPlcEntityManager(map);
 
         ConnectedEntity connect = manager.connect(ConnectedEntity.class);
 
-        try {
-            connect.someMethod();
-        } catch (NullPointerException e) {
-            // ignore
-        }
+        Assert.assertNotNull(connect);
 
-        ArgumentCaptor<PlcReadRequest> captor = ArgumentCaptor.forClass(PlcReadRequest.class);
-        verify(reader).read(captor.capture());
-
-        System.out.println(captor);
+        // Call getter
+        assertEquals(1, connect.getIntVar());
+        assertEquals("Hello", connect.getStringVar());
     }
 
     private PlcEntityManager getPlcEntityManager(final Map<String, FieldItem> responses) throws PlcConnectionException {
