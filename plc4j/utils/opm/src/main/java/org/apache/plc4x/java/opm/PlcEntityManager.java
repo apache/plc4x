@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -72,16 +71,7 @@ public class PlcEntityManager {
     }
 
     public <T> T read(Class<T> clazz) throws OPMException {
-        PlcEntity annotation = clazz.getAnnotation(PlcEntity.class);
-        if (annotation == null) {
-            throw new IllegalArgumentException("Given Class is no Plc Entity, i.e., not annotated with @PlcEntity");
-        }
-        // Check if default constructor exists
-        try {
-            clazz.getConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Cannot use PlcEntity without default constructor");
-        }
+        PlcEntity annotation = getPlcEntityAndCheckPreconditions(clazz);
         String source = annotation.value();
 
         PlcReader reader;
@@ -106,17 +96,6 @@ public class PlcEntityManager {
                 }
                 // Create the suitable Request
                 String query = fieldAnnotation.value();
-                Class<?> expectedType;
-                if (field.getType().isPrimitive()) {
-                    if (field.getType() == long.class) {
-                        expectedType = Long.class;
-                    } else {
-                        throw new OPMException("Unable to work on fields with type " + field.getType());
-                    }
-                } else {
-                    expectedType = field.getType();
-                }
-
                 requestBuilder.addItem(field.getName(), query);
             }
 
@@ -129,7 +108,7 @@ public class PlcEntityManager {
             }
 
             // Perform the request
-            PlcReadResponse response;
+            PlcReadResponse<?> response;
             try {
                 response = reader.read(request).get(1_000, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException e) {
@@ -141,18 +120,9 @@ public class PlcEntityManager {
             // Construct the Object
             T instance = clazz.getConstructor().newInstance();
 
-            // Assign values to all fields
-            for (String field : request.getFieldNames()) {
-                Object value = response.getObject(field);
-
-                if (value == null) {
-                    throw new OPMException("Unable to fetch value for field '" + field + "'");
-                }
-
-                // Fetch first value
-                Field objectField = clazz.getDeclaredField(field);
-                objectField.setAccessible(true);
-                objectField.set(instance, value);
+            // Fill all requested fields
+            for (String fieldName : response.getFieldNames()) {
+                setField(clazz, instance, response, fieldName);
             }
             return instance;
         } catch (PlcConnectionException e) {
@@ -171,10 +141,7 @@ public class PlcEntityManager {
      * @throws OPMException
      */
     public <T> T connect(Class<T> clazz) throws OPMException {
-        PlcEntity annotation = clazz.getAnnotation(PlcEntity.class);
-        if (annotation == null) {
-            throw new OPMException("Need to be a PLC Entity, please add Annotation.");
-        }
+        PlcEntity annotation = getPlcEntityAndCheckPreconditions(clazz);
         try {
             // Use Byte Buddy to generate a subclassed proxy that delegates all PlcField Methods
             // to the intercept method
@@ -191,172 +158,179 @@ public class PlcEntityManager {
         }
     }
 
+    private <T> PlcEntity getPlcEntityAndCheckPreconditions(Class<T> clazz) {
+        PlcEntity annotation = clazz.getAnnotation(PlcEntity.class);
+        if (annotation == null) {
+            throw new IllegalArgumentException("Given Class is no Plc Entity, i.e., not annotated with @PlcEntity");
+        }
+        // Check if default constructor exists
+        try {
+            clazz.getConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Cannot use PlcEntity without default constructor");
+        }
+        return annotation;
+    }
+
+    //------------------------------------------------------------------------------------------------
+    //
+    //  Methods for interception for the proxy object
+    //
+    //------------------------------------------------------------------------------------------------
+
     /**
-     * Intersect "defined" methods
+     * Basic Intersector for all methods on the proxy object.
+     * It checks if the invoked method is a getter and if so, only retrieves the requested field, forwarding to
+     * the {@link #fetchValueForGetter(Object, Method)} method.
      *
-     * @param o
-     * @param m
-     * @param c
-     * @return
-     * @throws OPMException
+     * If the field is no getter, then all fields are refreshed by calling {@link #refetchAllFields(Object)}
+     * and then, the method is invoked.
+     *
+     * @param m Method that was intercepted
+     * @param c Callable to call the method after fetching the values
+     * @param that Reference to the proxy object
+     * @return possible result of the original methods invocation
+     * @throws OPMException Problems with plc / proxying
      */
     @RuntimeType
     public Object intercept(@This Object o, @Origin Method m, @SuperCall Callable<?> c, @Super Object that) throws OPMException {
-        logger.trace("Invoked " + m.getName() + " fetch all values...");
+        logger.trace("Invoked method {} on connected PlcEntity {}", m.getName(), that);
 
-        Field field = that.getClass().getDeclaredFields()[0];
-        field.setAccessible(true);
-        Object base;
-        try {
-            base = field.get(that);
-        } catch (IllegalAccessException e) {
-            throw new OPMException("...", e);
-        }
-
-        if (m.getName().startsWith("get") || m.getName().startsWith("is")) {
+        // TODO enable getters starting with "is"
+        if (m.getName().startsWith("get")) {
             // Fetch single value
-            return fetchValueInternal(that, m);
+            logger.trace("Invoked method {} is getter, trying to find annotated field and return requested value",
+                m.getName());
+            return fetchValueForGetter(that, m);
         }
 
         // Fetch all values, than invoke method
         try {
-            fetchAllValues(base, m);
+            logger.trace("Invoked method is no getter, refetch all fields and invoke method {} then", m.getName());
+            refetchAllFields(o);
             return c.call();
         } catch (Exception e) {
-            throw new OPMException("Unbale to forward call", e);
+            throw new OPMException("Unbale to forward invokation " + m.getName() + " on connected PlcEntity", e);
         }
     }
 
     /**
-     * Intersect abstract methods
      *
-     * @param m
-     * @param o
-     * @return
+     * Renews all values of all Fields that are annotated with {@link PlcEntity}.
+     *
+     * @param o Object to refresh he fields on.
      * @throws OPMException
      */
-    @RuntimeType
-    public Object interceptGetter(@Origin Method m, @This Object o, @Super Object that) throws OPMException {
-        fetchValueInternal(that, m);
+    private void refetchAllFields(Object o) throws OPMException {
+        Class<?> superclass = o.getClass().getSuperclass();
+        PlcEntity plcEntity = superclass.getAnnotation(PlcEntity.class);
 
-        // Finished
-        return 1L;
-    }
+        try (PlcConnection connection = driverManager.getConnection(plcEntity.value())) {
+            // Catch the exception, if no reader present (see below)
+            PlcReader plcReader = connection.getReader().get();
 
-    private void fetchAllValues(Object o, Method m) throws OPMException {
-        Class<?> baseClass;
-        try {
-            baseClass = (Class<?>) o.getClass().getDeclaredField("parent").get(o);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-            throw new OPMException("...", e);
-        }
-        PlcEntity plcEntity = baseClass.getAnnotation(PlcEntity.class);
-        logger.trace("For source: " + plcEntity.value());
-        logger.trace("Using the DriverManager: " + driverManager);
-
-        Optional<PlcReader> reader;
-        try {
-            reader = driverManager.getConnection(plcEntity.value()).getReader();
-        } catch (PlcConnectionException e) {
-            throw new OPMException("Unable to acquire connection", e);
-        }
-
-        if (reader.isPresent() == false) {
-            throw new OPMException("Unable to generate Reader");
-        }
-
-        PlcReader plcReader = reader.get();
-
-        // Assume to do the query here...
-        PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
-        for (Field field : baseClass.getDeclaredFields()) {
-            // Check if the field has an annotation
-            PlcField plcField = field.getDeclaredAnnotation(PlcField.class);
-            if (plcField != null) {
-                logger.trace("Adding field " + field.getName() + " to request as " + plcField.value());
-                builder.addItem(field.getName(), plcField.value());
-            }
-
-        }
-        PlcReadRequest request = builder.build();
-
-        PlcReadResponse<?> response = getPlcReadResponse(plcReader, request);
-
-        // Fill all requested fields
-        for (String fieldName : response.getFieldNames()) {
-            logger.trace("Value for field " + fieldName + " is " + response.getObject(fieldName));
-            logger.trace("Setting test value");
-            try {
-                Field field = baseClass.getDeclaredField(fieldName);
-                field.setAccessible(true);
-                if (field.getType().isPrimitive()) {
-                    if (field.getType() == byte.class) {
-                        field.set(o, (byte) response.getByte(fieldName));
-                    } else if (field.getType() == int.class) {
-                        field.set(o, (int) response.getInteger(fieldName));
-                    } else if (field.getType() == long.class) {
-                        field.set(o, (long) response.getLong(fieldName));
-                    } else if (field.getType() == short.class) {
-                        field.set(o, (short) response.getShort(fieldName));
-                    }
-                    // TODO this should fail on Short, Integer, ... because it always gets a Long
-                } else if (field.getType().isAssignableFrom(response.getObject(fieldName).getClass())){
-                    field.set(o, response.getObject(fieldName));
-                } else {
-                    logger.trace("Unable to assign return value {} to field {} with type {}", response.getObject(fieldName), fieldName, field.getType());
+            // Build the query
+            PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
+            for (Field field : superclass.getDeclaredFields()) {
+                // Check if the field has an annotation
+                PlcField plcField = field.getDeclaredAnnotation(PlcField.class);
+                if (plcField != null) {
+                    logger.trace("Adding field " + field.getName() + " to request as " + plcField.value());
+                    builder.addItem(field.getName(), plcField.value());
                 }
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
+
             }
+            PlcReadRequest request = builder.build();
+
+            PlcReadResponse<?> response = getPlcReadResponse(plcReader, request);
+
+            // Fill all requested fields
+            for (String fieldName : response.getFieldNames()) {
+                logger.trace("Value for field " + fieldName + " is " + response.getObject(fieldName));
+                try {
+                    setField(o.getClass().getSuperclass(), o, response, fieldName);
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            throw new OPMException("Problem during processing", e);
         }
     }
 
-    private Object fetchValueInternal(Object o, Method m) throws OPMException {
+    private Object fetchValueForGetter(Object o, Method m) throws OPMException {
         String s = m.getName().substring(3);
         // First char to lower
         String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
-        logger.trace("Variable: " + variable);
+        logger.trace("Looking for field with name {} after invokation of getter {}", variable, m.getName());
         PlcField annotation = null;
         try {
             annotation = m.getDeclaringClass().getDeclaredField(variable).getDeclaredAnnotation(PlcField.class);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            throw new OPMException("Unable to identify field annotated field for call to " + m.getName(), e);
         }
-        logger.trace("You wanted field: " + annotation.value());
         PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
-        logger.trace("For source: " + plcEntity.value());
-        logger.trace("Using the DriverManager: " + driverManager);
+        try (PlcConnection connection = driverManager.getConnection(plcEntity.value())){
+            // Catch the exception, if no reader present (see below)
+            PlcReader plcReader = connection.getReader().get();
 
-        Optional<PlcReader> reader;
+            // Assume to do the query here...
+            PlcReadRequest request = plcReader.readRequestBuilder()
+                .addItem(m.getName(), annotation.value())
+                .build();
+
+            PlcReadResponse<?> response;
+            response = getPlcReadResponse(plcReader, request);
+
+            try {
+                return getTyped(m.getReturnType(), response, m.getName());
+            } catch (ClassCastException e) {
+                throw new OPMException("Unable to return response as suitable type", e);
+            }
+        } catch (Exception e) {
+            throw new OPMException("Problem during processing", e);
+        }
+    }
+
+    /**
+     * Tries to set a response Item to a field in the given object.
+     * This is one by looking for a field in the class and a response item
+     * which is equal to the given fieldName parameter.
+     *
+     * @param o Object to set the value on
+     * @param response Response to fetch the response from
+     * @param fieldName Name of the field in the object and the response
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     */
+    private void setField(Class<?> clazz, Object o, PlcReadResponse<?> response, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
         try {
-            reader = driverManager.getConnection(plcEntity.value()).getReader();
-        } catch (PlcConnectionException e) {
-            throw new OPMException("Unable to acquire connection", e);
+            field.set(o, getTyped(field.getType(), response, fieldName));
+        } catch (ClassCastException e) {
+            // TODO should we simply fail here?
+            logger.warn("Unable to assign return value {} to field {} with type {}", response.getObject(fieldName), fieldName, field.getType());
         }
-
-        if (reader.isPresent() == false) {
-            throw new OPMException("Unable to generate Reader");
+    }
+    
+    private Object getTyped(Class<?> clazz, PlcReadResponse<?> response, String fieldName) {
+        if (clazz.isPrimitive()) {
+            if (clazz == byte.class) {
+                return response.getByte(fieldName);
+            } else if (clazz == int.class) {
+                return response.getInteger(fieldName);
+            } else if (clazz == long.class) {
+                return response.getLong(fieldName);
+            } else if (clazz == short.class) {
+                return response.getShort(fieldName);
+            }
+            // TODO this should fail on Short, Integer, ... because it always gets a Long
+        } else if (clazz.isAssignableFrom(response.getObject(fieldName).getClass())){
+            return response.getObject(fieldName);
         }
-
-        PlcReader plcReader = reader.get();
-
-        // Assume to do the query here...
-        PlcReadRequest request = reader.get().readRequestBuilder()
-            .addItem(m.getName(), annotation.value())
-            .build();
-
-        PlcReadResponse<?> response;
-        response = getPlcReadResponse(plcReader, request);
-
-        Object responseObject = response.getObject(m.getName());
-
-        if (responseObject.getClass().isAssignableFrom(m.getReturnType())) {
-            return responseObject;
-        } else {
-                throw new OPMException("Unable to cast the PLC Object '" + responseObject +
-                    "' to the expected method return type '" + m.getReturnType() + "'");
-        }
+        // If nothing matched, throw
+        throw new ClassCastException("Unable to return response item " + response.getObject(fieldName) + " as instance of " + clazz);
     }
 
     /**
