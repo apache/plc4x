@@ -52,8 +52,8 @@ public class PlcEntityManagerTest {
     @Test
     public void read() throws OPMException, PlcConnectionException {
         Map<String, FieldItem> results = new HashMap<>();
-        results.put("counter", new DefaultIntegerFieldItem(1L));
-        results.put("counter2", new DefaultIntegerFieldItem(1L));
+        results.put("counter", new DefaultIntegerFieldItem(1));
+        results.put("counter2", new DefaultIntegerFieldItem(1));
         PlcEntityManager manager = getPlcEntityManager(results);
 
         MyEntity myEntity = manager.read(MyEntity.class);
@@ -65,11 +65,11 @@ public class PlcEntityManagerTest {
     @Test
     public void readComplexObject() throws PlcConnectionException, OPMException {
         Map<String, FieldItem> map = new HashMap<>();
-        map.put("byteVar", new DefaultIntegerFieldItem(1L));
-        map.put("shortVar", new DefaultIntegerFieldItem(1L));
-        map.put("intVar", new DefaultIntegerFieldItem(1L));
-        map.put("longVar", new DefaultIntegerFieldItem(1L));
-        map.put("boxedLongVar", new DefaultIntegerFieldItem(1L));
+        map.put("byteVar", new DefaultIntegerFieldItem(1));
+        map.put("shortVar", new DefaultIntegerFieldItem(1));
+        map.put("intVar", new DefaultIntegerFieldItem(1));
+        map.put("longVar", new DefaultIntegerFieldItem(1));
+        map.put("boxedLongVar", new DefaultIntegerFieldItem(1));
         map.put("stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
@@ -86,11 +86,11 @@ public class PlcEntityManagerTest {
     @Test
     public void connec_callComplexMethodt() throws PlcConnectionException, OPMException {
         Map<String, FieldItem> map = new HashMap<>();
-        map.put("byteVar", new DefaultIntegerFieldItem(1L));
-        map.put("shortVar", new DefaultIntegerFieldItem(1L));
-        map.put("intVar", new DefaultIntegerFieldItem(1L));
-        map.put("longVar", new DefaultIntegerFieldItem(1L));
-        map.put("boxedLongVar", new DefaultIntegerFieldItem(1L));
+        map.put("byteVar", new DefaultIntegerFieldItem(1));
+        map.put("shortVar", new DefaultIntegerFieldItem(1));
+        map.put("intVar", new DefaultIntegerFieldItem(1));
+        map.put("longVar", new DefaultIntegerFieldItem(1));
+        map.put("boxedLongVar", new DefaultIntegerFieldItem(1));
         map.put("stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
@@ -107,7 +107,7 @@ public class PlcEntityManagerTest {
     @Test
     public void connect_callGetter() throws PlcConnectionException, OPMException {
         Map<String, FieldItem> map = new HashMap<>();
-        map.put("getIntVar", new DefaultIntegerFieldItem(1L));
+        map.put("getIntVar", new DefaultIntegerFieldItem(1));
         map.put("getStringVar", new DefaultStringFieldItem("Hello"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
