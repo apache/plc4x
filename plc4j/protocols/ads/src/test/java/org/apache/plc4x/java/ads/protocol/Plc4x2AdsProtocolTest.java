@@ -110,14 +110,14 @@ public class Plc4x2AdsProtocolTest {
             .map(pair -> Stream.of(
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
-                        (InternalPlcRequest) new DefaultPlcWriteRequest.Builder(new AdsPlcFieldHandler())
+                        (InternalPlcRequest) new DefaultPlcWriteRequest.Builder(null, new AdsPlcFieldHandler()) // TODO: remove null
                             .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType, pair.getValue())
                             .build(), new CompletableFuture<>()),
                     AdsWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
-                        (InternalPlcRequest) new DefaultPlcReadRequest.Builder(new AdsPlcFieldHandler())
+                        (InternalPlcRequest) new DefaultPlcReadRequest.Builder(null, new AdsPlcFieldHandler()) // TODO: remove null
                             .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType)
                             .build(), new CompletableFuture<>()),
                     AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.getByteRepresentation()))

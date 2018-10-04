@@ -114,7 +114,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 pipeline.addLast(new Payload2TcpProtocol());
                 pipeline.addLast(new Ads2PayloadProtocol());
                 pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
-                pipeline.addLast(new SingleItemToSingleRequestProtocol(timer));
+                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, timer)); // TODO: remove nulls; implement correctly
             }
         };
     }
@@ -204,9 +204,9 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
         // Send the request to the plc and wait for a response
         // TODO: This is blocking, should be changed to be async.
-        CompletableFuture<InternalPlcProprietaryResponse<InternalPlcProprietaryRequest<AdsAddDeviceNotificationRequest>, AdsAddDeviceNotificationResponse>> addDeviceFuture = new CompletableFuture<>();
+        CompletableFuture<InternalPlcProprietaryResponse<AdsAddDeviceNotificationResponse>> addDeviceFuture = new CompletableFuture<>();
         channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsAddDeviceNotificationRequest), addDeviceFuture));
-        InternalPlcProprietaryResponse<InternalPlcProprietaryRequest<AdsAddDeviceNotificationRequest>, AdsAddDeviceNotificationResponse> addDeviceResponse = getFromFuture(addDeviceFuture, ADD_DEVICE_TIMEOUT);
+        InternalPlcProprietaryResponse<AdsAddDeviceNotificationResponse> addDeviceResponse = getFromFuture(addDeviceFuture, ADD_DEVICE_TIMEOUT);
         AdsAddDeviceNotificationResponse response = addDeviceResponse.getResponse();
 
         // Abort if we got anything but a successful response.
@@ -241,11 +241,11 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         Invoke.NONE,
                         adsSubscriptionHandle.getNotificationHandle()
                     );
-                CompletableFuture<InternalPlcProprietaryResponse<DefaultPlcProprietaryRequest<AdsDeleteDeviceNotificationRequest>, AdsDeleteDeviceNotificationResponse>> deleteDeviceFuture =
+                CompletableFuture<InternalPlcProprietaryResponse<AdsDeleteDeviceNotificationResponse>> deleteDeviceFuture =
                     new CompletableFuture<>();
                 channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsDeleteDeviceNotificationRequest), deleteDeviceFuture));
 
-                InternalPlcProprietaryResponse<DefaultPlcProprietaryRequest<AdsDeleteDeviceNotificationRequest>, AdsDeleteDeviceNotificationResponse> deleteDeviceResponse =
+                InternalPlcProprietaryResponse<AdsDeleteDeviceNotificationResponse> deleteDeviceResponse =
                     getFromFuture(deleteDeviceFuture, DEL_DEVICE_TIMEOUT);
                 AdsDeleteDeviceNotificationResponse response = deleteDeviceResponse.getResponse();
                 if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
@@ -311,12 +311,12 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(new AdsPlcFieldHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, new AdsPlcFieldHandler());
     }
 
     @Override
     public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-        return new DefaultPlcUnsubscriptionRequest.Builder();
+        return new DefaultPlcUnsubscriptionRequest.Builder(this);
     }
 
     @Override

@@ -47,8 +47,8 @@ public class ManualPlc4XAdsTest {
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            CompletableFuture<PlcReadResponse<?>> response = reader.read(builder -> builder.addItem("station", "Allgemein_S2.Station:BYTE"));
-            PlcReadResponse<?> readResponse = response.get();
+            CompletableFuture<PlcReadResponse> response = reader.read(builder -> builder.addItem("station", "Allgemein_S2.Station:BYTE"));
+            PlcReadResponse readResponse = response.get();
             System.out.println("Response " + readResponse);
             Collection<Integer> stations = readResponse.getAllIntegers("station");
             stations.forEach(System.out::println);
