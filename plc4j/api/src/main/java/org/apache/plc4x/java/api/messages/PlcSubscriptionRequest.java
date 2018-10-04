@@ -19,8 +19,12 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 public interface PlcSubscriptionRequest extends PlcFieldRequest {
+
+    @Override
+    CompletableFuture<? extends PlcSubscriptionResponse> execute();
 
     interface Builder extends PlcMessageBuilder<PlcSubscriptionRequest> {
         /**

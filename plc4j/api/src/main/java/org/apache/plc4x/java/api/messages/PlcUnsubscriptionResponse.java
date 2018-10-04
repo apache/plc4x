@@ -18,7 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-public interface PlcUnsubscriptionResponse extends PlcFieldResponse<PlcUnsubscriptionRequest> {
+public interface PlcUnsubscriptionResponse extends PlcFieldResponse {
+
+    @Override
+    PlcUnsubscriptionRequest getRequest();
 
     interface Builder extends PlcMessageBuilder<PlcUnsubscriptionResponse> {
         /**

@@ -28,7 +28,10 @@ import java.util.Collection;
 /**
  * Response to a {@link PlcReadRequest}.
  */
-public interface PlcReadResponse<T extends PlcReadRequest> extends PlcFieldResponse<T> {
+public interface PlcReadResponse extends PlcFieldResponse {
+
+    @Override
+    PlcReadRequest getRequest();
 
     int getNumberOfValues(String name);
 

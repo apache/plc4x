@@ -18,6 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-public interface PlcProprietaryResponse<REQUEST extends PlcProprietaryRequest, RESPONSE> extends PlcResponse<REQUEST> {
+public interface PlcProprietaryResponse<RESPONSE> extends PlcResponse {
     RESPONSE getResponse();
 }

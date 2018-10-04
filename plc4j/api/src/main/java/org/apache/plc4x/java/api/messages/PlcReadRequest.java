@@ -18,10 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Request to read one or more values from a plc.
  */
 public interface PlcReadRequest extends PlcFieldRequest {
+
+    @Override
+    CompletableFuture<? extends PlcReadResponse> execute();
 
     interface Builder extends PlcMessageBuilder<PlcReadRequest> {
         Builder addItem(String name, String fieldQuery);
