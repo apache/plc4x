@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.spi;
+package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
 import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
