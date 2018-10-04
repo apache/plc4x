@@ -37,18 +37,6 @@ public interface PlcWriter {
      */
     CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest);
 
-    /**
-     * Writes a given value to a PLC.
-     *
-     * @param writeRequestBuilderConsumer consumer which can be used to build requests.
-     * @return a {@link CompletableFuture} giving async access to the response of the write operation.
-     */
-    default CompletableFuture<PlcWriteResponse> write(Consumer<PlcWriteRequest.Builder> writeRequestBuilderConsumer) {
-        PlcWriteRequest.Builder requestBuilder = writeRequestBuilder();
-        writeRequestBuilderConsumer.accept(requestBuilder);
-        return write(requestBuilder.build());
-    }
-
     PlcWriteRequest.Builder writeRequestBuilder();
 
 }

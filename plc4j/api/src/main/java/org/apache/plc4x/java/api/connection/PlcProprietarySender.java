@@ -25,5 +25,5 @@ import java.util.concurrent.CompletableFuture;
 
 public interface PlcProprietarySender {
 
-    <PROP_RESPONSE> CompletableFuture<PlcProprietaryResponse<PROP_RESPONSE>> send(PlcProprietaryRequest proprietaryRequest);
+    <T> CompletableFuture<PlcProprietaryResponse<T>> send(PlcProprietaryRequest proprietaryRequest);
 }

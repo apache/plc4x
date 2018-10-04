@@ -26,10 +26,8 @@ import org.apache.camel.util.AsyncProcessorConverterHelper;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,14 +86,17 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
         // TODO: Is it correct to only support one field?
         PlcSubscriptionRequest request = plcSubscriber.subscriptionRequestBuilder()
             .addCyclicField("default", fieldQuery, Duration.of(3, ChronoUnit.SECONDS)).build();
-        plcSubscriber.register(request, this);
+        PlcSubscriptionResponse plcSubscriptionResponse = plcSubscriber.subscribe(request).get();
+        // TODO: we need to return the plcSubscriptionResponse here too as we need this to unsubscribe...
+        plcSubscriber.register(this, plcSubscriptionResponse.getSubscriptionHandles());
     }
 
     @Override
     protected void doStop() throws InterruptedException, ExecutionException, TimeoutException, PlcException {
         PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(
             () -> new PlcException("Connection doesn't support subscriptions."));
-        CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionFuture = plcSubscriber.unsubscribe(builder -> builder.addHandles(subscriptionResponse.getSubscriptionHandles()));
+        PlcUnsubscriptionRequest request = plcSubscriber.unsubscriptionRequestBuilder().addHandles(subscriptionResponse.getSubscriptionHandles()).build();
+        CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionFuture = plcSubscriber.unsubscribe(request);
         PlcUnsubscriptionResponse unsubscriptionResponse = unsubscriptionFuture.get(5, TimeUnit.SECONDS);
         // TODO: Handle the response ...
         try {

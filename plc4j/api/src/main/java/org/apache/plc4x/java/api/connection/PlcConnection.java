@@ -19,6 +19,10 @@ under the License.
 package org.apache.plc4x.java.api.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 
 import java.util.Optional;
 
@@ -52,6 +56,14 @@ public interface PlcConnection extends AutoCloseable {
      */
     @Override
     void close() throws Exception;
+
+    /*Optional<PlcReadRequest.Builder> readRequestBuilder();
+
+    Optional<PlcWriteRequest.Builder> writeRequestBuilder();
+
+    Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder();
+
+    Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder();*/
 
     Optional<PlcReader> getReader();
 

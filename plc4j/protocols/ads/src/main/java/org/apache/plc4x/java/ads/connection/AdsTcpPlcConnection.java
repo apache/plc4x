@@ -260,10 +260,11 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        return register(consumer, handles.toArray(new PlcSubscriptionHandle[0]));
+        return register(consumer, handles);
     }
 
-    @Override
+    // TODO: figure out what this is
+    /*@Override
     public InternalPlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, PlcSubscriptionHandle... handles) {
         Objects.requireNonNull(consumer);
         Objects.requireNonNull(handles);
@@ -297,7 +298,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         getChannel().pipeline().get(Plc4x2AdsProtocol.class).addConsumer(adsDeviceNotificationRequestConsumer);
 
         return internalPlcConsumerRegistration;
-    }
+    }*/
 
     @Override
     public void unregister(PlcConsumerRegistration plcConsumerRegistration) {

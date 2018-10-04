@@ -23,7 +23,9 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.util.HexUtil;
 
@@ -50,7 +52,8 @@ public class ManualPlc4XModbusTest {
             {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-                PlcReadResponse readResponse = reader.read(builder -> builder.addItem("randomRegister", "register:7[3]")).get();
+                PlcReadRequest readRequest = reader.readRequestBuilder().addItem("randomRegister", "register:7[3]").build();
+                PlcReadResponse readResponse = reader.read(readRequest).get();
                 System.out.println("Response " + readResponse);
                 readResponse.getAllByteArrays("randomRegister").stream()
                     .map(HexUtil::toHex)
@@ -63,7 +66,8 @@ public class ManualPlc4XModbusTest {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
                 // Just dump the actual values
-                PlcReadResponse readResponse = reader.read(builder -> builder.addItem("randomRegister", "register:3[2]")).get();
+                PlcReadRequest readRequest = reader.readRequestBuilder().addItem("randomRegister", "register:3[2]").build();
+                PlcReadResponse readResponse = reader.read(readRequest).get();
                 System.out.println("Response " + readResponse);
                 Collection<Byte[]> randomRegisters = readResponse.getAllByteArrays("randomRegister");
                 randomRegisters.stream()
@@ -86,13 +90,14 @@ public class ManualPlc4XModbusTest {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
                 // Just dump the actual values
-                PlcReadResponse readResponse = reader.read(builder -> builder
+                PlcReadRequest readRequest = reader.readRequestBuilder()
                     .addItem("randomRegister1", "register:1[2]")
                     .addItem("randomRegister2", "register:10[3]")
                     .addItem("randomRegister3", "register:20[4]")
                     .addItem("randomRegister4", "register:30[5]")
                     .addItem("randomRegister5", "register:40[6]")
-                ).get();
+                    .build();
+                PlcReadResponse readResponse = reader.read(readRequest).get();
                 System.out.println("Response " + readResponse);
                 IntStream.range(1, 6).forEach(i -> {
                     Collection<Byte[]> randomRegisters = readResponse.getAllByteArrays("randomRegister" + i);
@@ -115,7 +120,8 @@ public class ManualPlc4XModbusTest {
             {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-                PlcReadResponse readResponse = reader.read(builder -> builder.addItem("randomCoil", "coil:1[9]")).get();
+                PlcReadRequest readRequest = reader.readRequestBuilder().addItem("randomCoil", "coil:1[9]").build();
+                PlcReadResponse readResponse = reader.read(readRequest).get();
                 System.out.println("Response " + readResponse);
                 readResponse.getAllBooleans("randomCoil").stream()
                     .map(hex -> "Coil Value: " + hex)
@@ -125,7 +131,8 @@ public class ManualPlc4XModbusTest {
             {
                 PlcWriter writer = plcConnection.getWriter().orElseThrow(() -> new RuntimeException("No Writer found"));
 
-                PlcWriteResponse writeResponse = writer.write(builder -> builder.addItem("randomCoilField", "coil:1", true)).get();
+                PlcWriteRequest writeRequest = writer.writeRequestBuilder().addItem("randomCoilField", "coil:1", true).build();
+                PlcWriteResponse writeResponse = writer.write(writeRequest).get();
                 System.out.println("Response " + writeResponse);
             }
         } catch (Exception e) {

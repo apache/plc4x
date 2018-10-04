@@ -37,18 +37,6 @@ public interface PlcReader {
      */
     CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
 
-    /**
-     * Reads a requested value from a PLC.
-     *
-     * @param readRequestBuilderConsumer consumer which can be used to build requests.
-     * @return a {@link CompletableFuture} giving async access to the returned value.
-     */
-    default CompletableFuture<PlcReadResponse> read(Consumer<PlcReadRequest.Builder> readRequestBuilderConsumer) {
-        PlcReadRequest.Builder requestBuilder = readRequestBuilder();
-        readRequestBuilderConsumer.accept(requestBuilder);
-        return read(requestBuilder.build());
-    }
-
     PlcReadRequest.Builder readRequestBuilder();
 
 }

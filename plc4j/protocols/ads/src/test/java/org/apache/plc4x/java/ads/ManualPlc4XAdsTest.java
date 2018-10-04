@@ -22,9 +22,7 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.connection.PlcSubscriber;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 
 import java.util.Collection;
@@ -47,7 +45,8 @@ public class ManualPlc4XAdsTest {
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            CompletableFuture<PlcReadResponse> response = reader.read(builder -> builder.addItem("station", "Allgemein_S2.Station:BYTE"));
+            PlcReadRequest readRequest = reader.readRequestBuilder().addItem("station", "Allgemein_S2.Station:BYTE").build();
+            CompletableFuture<PlcReadResponse> response = reader.read(readRequest);
             PlcReadResponse readResponse = response.get();
             System.out.println("Response " + readResponse);
             Collection<Integer> stations = readResponse.getAllIntegers("station");
@@ -55,7 +54,8 @@ public class ManualPlc4XAdsTest {
 
             PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("Subscribe not available"));
 
-            CompletableFuture<PlcSubscriptionResponse> subscribeResponse = plcSubscriber.subscribe(builder -> builder.addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE"));
+            PlcSubscriptionRequest subscriptionRequest = plcSubscriber.subscriptionRequestBuilder().addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE").build();
+            CompletableFuture<PlcSubscriptionResponse> subscribeResponse = plcSubscriber.subscribe(subscriptionRequest);
             PlcSubscriptionResponse plcSubscriptionResponse = subscribeResponse.get();
 
             PlcConsumerRegistration plcConsumerRegistration = plcSubscriber.register(System.out::println, plcSubscriptionResponse.getSubscriptionHandles());
@@ -63,7 +63,8 @@ public class ManualPlc4XAdsTest {
             TimeUnit.SECONDS.sleep(5);
 
             plcSubscriber.unregister(plcConsumerRegistration);
-            CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionResponse = plcSubscriber.unsubscribe(builder -> builder.addHandles(plcSubscriptionResponse.getSubscriptionHandles()));
+            PlcUnsubscriptionRequest unsubscriptionRequest = plcSubscriber.unsubscriptionRequestBuilder().addHandles(plcSubscriptionResponse.getSubscriptionHandles()).build();
+            CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionResponse = plcSubscriber.unsubscribe(unsubscriptionRequest);
 
             unsubscriptionResponse
                 .get(5, TimeUnit.SECONDS);
