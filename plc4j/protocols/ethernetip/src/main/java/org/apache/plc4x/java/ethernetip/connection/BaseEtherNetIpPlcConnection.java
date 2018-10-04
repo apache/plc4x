@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.ethernetip.connection;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.spi.PlcReader;
+import org.apache.plc4x.java.spi.PlcWriter;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;

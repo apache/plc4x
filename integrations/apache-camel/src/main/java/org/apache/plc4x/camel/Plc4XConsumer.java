@@ -23,7 +23,7 @@ import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
 import org.apache.camel.support.ServiceSupport;
 import org.apache.camel.util.AsyncProcessorConverterHelper;
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.slf4j.Logger;

@@ -20,7 +20,7 @@ package org.apache.plc4x.java.modbus;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;

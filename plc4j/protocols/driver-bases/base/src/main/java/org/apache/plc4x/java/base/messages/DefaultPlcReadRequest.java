@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.base.messages;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.spi.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;

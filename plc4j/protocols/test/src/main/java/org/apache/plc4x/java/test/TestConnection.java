@@ -20,9 +20,9 @@ package org.apache.plc4x.java.test;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.spi.PlcReader;
+import org.apache.plc4x.java.spi.PlcWriter;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;

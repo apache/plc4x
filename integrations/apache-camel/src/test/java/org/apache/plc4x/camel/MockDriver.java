@@ -18,10 +18,10 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
-import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.spi.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcSubscriber;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.spi.PlcSubscriber;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcSubscriptionRequest;

@@ -19,15 +19,11 @@
 package org.apache.plc4x.java.ads;
 
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcSubscriber;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public class ManualPlc4XAdsTest {
 

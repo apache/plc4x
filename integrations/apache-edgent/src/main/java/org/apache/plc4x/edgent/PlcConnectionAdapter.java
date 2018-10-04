@@ -23,7 +23,7 @@ import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;

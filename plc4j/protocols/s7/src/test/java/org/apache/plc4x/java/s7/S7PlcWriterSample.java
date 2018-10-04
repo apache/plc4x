@@ -18,14 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.s7;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 public class S7PlcWriterSample {
 
