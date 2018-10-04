@@ -28,7 +28,7 @@ public interface PlcReadRequest extends PlcFieldRequest {
     @Override
     CompletableFuture<? extends PlcReadResponse> execute();
 
-    interface Builder extends PlcMessageBuilder<PlcReadRequest> {
+    interface Builder extends PlcRequestBuilder<PlcReadRequest> {
         Builder addItem(String name, String fieldQuery);
     }
 

@@ -23,15 +23,4 @@ public interface PlcUnsubscriptionResponse extends PlcFieldResponse {
     @Override
     PlcUnsubscriptionRequest getRequest();
 
-    interface Builder extends PlcMessageBuilder<PlcUnsubscriptionResponse> {
-        /**
-         * Adds a new field to the to be constructed request which should cancel a previously
-         * created subscription.
-         *
-         * @param name alias of the field.
-         * @return builder.
-         */
-        PlcReadRequest.Builder addField(String name);
-    }
-
 }
