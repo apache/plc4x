@@ -44,7 +44,7 @@ public class PLC4X47Test {
             builder.addItem("field-" + i, "%DB3.DB" + i + ":SINT");
         }
         PlcReadRequest readRequest = builder.build();
-        PlcReadResponse<?> readResponse = connection.read(readRequest).get();
+        PlcReadResponse readResponse = connection.read(readRequest).get();
         System.out.println(readResponse.getFieldNames().size());
     }
 

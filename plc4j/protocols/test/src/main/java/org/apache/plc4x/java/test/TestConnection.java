@@ -73,11 +73,11 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(new TestFieldHandler());
+        return new DefaultPlcReadRequest.Builder(this, new TestFieldHandler());
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         if(!(readRequest instanceof InternalPlcReadRequest)) {
             throw new IllegalArgumentException("Read request doesn't implement InternalPlcReadRequest");
         }
@@ -93,17 +93,17 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
                 : new ImmutablePair<>(PlcResponseCode.NOT_FOUND, null);
             fields.put(fieldName, fieldPair);
         }
-        PlcReadResponse<?> response = new DefaultPlcReadResponse(request, fields);
+        PlcReadResponse response = new DefaultPlcReadResponse(request, fields);
         return CompletableFuture.completedFuture(response);
     }
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(new TestFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new TestFieldHandler());
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         if(!(writeRequest instanceof InternalPlcWriteRequest)) {
             throw new IllegalArgumentException("Read request doesn't implement InternalPlcWriteRequest");
         }
@@ -115,7 +115,7 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
             device.set(field, fieldItem);
             fields.put(fieldName, PlcResponseCode.OK);
         }
-        PlcWriteResponse<?> response = new DefaultPlcWriteResponse(request, fields);
+        PlcWriteResponse response = new DefaultPlcWriteResponse(request, fields);
         return CompletableFuture.completedFuture(response);
     }
 

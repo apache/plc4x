@@ -238,11 +238,11 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(new S7PlcFieldHandler());
+        return new DefaultPlcReadRequest.Builder(this, new S7PlcFieldHandler());
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
             new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, future);
@@ -257,11 +257,11 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(new S7PlcFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new S7PlcFieldHandler());
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
             new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, future);
