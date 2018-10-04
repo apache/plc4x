@@ -24,7 +24,6 @@ import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.kafka.util.VersionUtil;
@@ -37,7 +36,6 @@ public class Plc4xSinkTask extends SinkTask {
     private String url;
 
     private PlcConnection plcConnection;
-    private PlcWriter plcWriter;
 
     @Override
     public String version() {
@@ -51,8 +49,9 @@ public class Plc4xSinkTask extends SinkTask {
 
         openConnection();
 
-        plcWriter = plcConnection.getWriter()
-            .orElseThrow(() -> new ConnectException("PlcReader not available for this type of connection"));
+        if (!plcConnection.writeRequestBuilder().isPresent()) {
+            throw new ConnectException("Writing not supported on this connection");
+        }
     }
 
     @Override
@@ -107,7 +106,7 @@ public class Plc4xSinkTask extends SinkTask {
 
     private void doWrite(PlcWriteRequest request) {
         try {
-            plcWriter.write(request).get();
+            request.execute().get();
         } catch (ExecutionException | InterruptedException e) {
             throw new ConnectException("Caught exception during write", e);
         }

@@ -24,8 +24,6 @@ import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -117,9 +115,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 PlcConnection connection = null;
                 try {
                     connection = getConnection();
-                    PlcReader reader = connection.getReader()
-                        .orElseThrow(() -> new PlcException("This connection doesn't support reading"));
-                    return reader.read(readRequest).get();
+                    return readRequest.execute().get();
                 } catch (Exception e) {
                     logger.error("reading from plc device {} {} failed", connection, readRequest, e);
                     return null;
@@ -154,10 +150,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
             PlcField field = null;
             try {
                 connection = getConnection();
-                PlcReader reader = connection.getReader()
-                    .orElseThrow(() -> new PlcException("This connection doesn't support reading"));
                 PlcReadRequest readRequest = connection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading")).addItem(FIELD_NAME, fieldQuery).build();
-                PlcReadResponse readResponse = reader.read(readRequest).get();
+                PlcReadResponse readResponse = readRequest.execute().get();
                 Object value = null;
                 switch (clientDatatype) {
                     case BYTE:
@@ -219,12 +213,10 @@ public class PlcConnectionAdapter implements AutoCloseable {
             PlcConnection connection = null;
             try {
                 connection = getConnection();
-                PlcWriter writer = connection.getWriter()
-                    .orElseThrow(() -> new PlcException("This connection doesn't support writing"));
                 PlcWriteRequest.Builder builder = connection.writeRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support writing"));
                 PlcWriteRequest writeRequest = builder.build();
                 addItem(builder, clientDatatype, fieldQuery, fieldValue);
-                writer.write(writeRequest).get();
+                writeRequest.execute().get();
             } catch (Exception e) {
                 logger.error("writing to plc device {} {} failed", connection, fieldQuery, e);
             }

@@ -23,7 +23,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.eclipse.paho.client.mqttv3.*;
@@ -233,13 +232,11 @@ public class S7PlcToGoogleIoTCoreSample {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://10.10.64.20/1/1")) {
             logger.info("Connected");
 
-            PlcReader plcReader = plcConnection.getReader().orElseThrow(IllegalAccessError::new);
-
             PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("outputs", "OUTPUTS/0").build();
 
             while (!Thread.currentThread().isInterrupted()) {
 
-                PlcReadResponse plcReadResponse = plcReader.read(readRequest).get();
+                PlcReadResponse plcReadResponse = readRequest.execute().get();
 
                 // Refresh the connection credentials before the JWT expires.
                 // [START iot_mqtt_jwt_refresh]

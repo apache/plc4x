@@ -22,7 +22,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -59,21 +58,6 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
     @Override
     public void close() {
         connected = false;
-    }
-
-    @Override
-    public Optional<PlcReader> getReader() {
-        return Optional.of(this);
-    }
-
-    @Override
-    public Optional<PlcWriter> getWriter() {
-        return Optional.of(this);
-    }
-
-    @Override
-    public Optional<PlcSubscriber> getSubscriber() {
-        return Optional.empty(); // TODO: implement this
     }
 
     @Override

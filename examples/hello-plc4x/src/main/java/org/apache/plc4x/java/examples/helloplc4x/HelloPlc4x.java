@@ -20,14 +20,12 @@ package org.apache.plc4x.java.examples.helloplc4x;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class HelloPlc4x {
@@ -49,34 +47,36 @@ public class HelloPlc4x {
         // Establish a connection to the plc using the url provided as first argument
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(args[0])) {
 
-            Optional<PlcReader> reader = plcConnection.getReader();
-
             // Check if this connection support reading of data.
-            if (reader.isPresent()) {
-                PlcReader plcReader = reader.get();
+            if (plcConnection.readRequestBuilder().isPresent()) {
 
                 // Create a new read request:
                 // - Give the single item requested the alias name "value"
-                PlcReadRequest.Builder builder = plcConnection.readRequestBuilder().get();
+                PlcReadRequest.Builder syncBuilder = plcConnection.readRequestBuilder().get();
                 for (int i = 1; i < args.length; i++) {
-                    builder.addItem("value-" + i, args[i]);
+                    syncBuilder.addItem("value-" + i, args[i]);
                 }
-                PlcReadRequest plcReadRequest = builder.build();
+                PlcReadRequest syncPlcReadRequest = syncBuilder.build();
 
                 //////////////////////////////////////////////////////////
                 // Read synchronously ...
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
                 System.out.println("\nSynchronous request ...");
-                PlcReadResponse syncResponse = plcReader.read(plcReadRequest).get();
+                PlcReadResponse syncResponse = syncPlcReadRequest.execute().get();
                 // Simply iterating over the field names returned in the response.
                 printResponse(syncResponse);
 
                 //////////////////////////////////////////////////////////
                 // Read asynchronously ...
                 // Register a callback executed as soon as a response arives.
+                PlcReadRequest.Builder asyncBuilder = plcConnection.readRequestBuilder().get();
+                for (int i = 1; i < args.length; i++) {
+                    asyncBuilder.addItem("value-" + i, args[i]);
+                }
+                PlcReadRequest asyncPlcReadRequest = asyncBuilder.build();
                 System.out.println("\n\nAsynchronous request ...");
-                CompletableFuture<PlcReadResponse> asyncResponse = plcReader.read(plcReadRequest);
+                CompletableFuture<? extends PlcReadResponse> asyncResponse = asyncPlcReadRequest.execute();
                 asyncResponse.whenComplete((readResponse, throwable) -> {
                     if (readResponse != null) {
                         printResponse(syncResponse);

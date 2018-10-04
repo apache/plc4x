@@ -23,7 +23,6 @@ import com.microsoft.azure.sdk.iot.device.IotHubClientProtocol;
 import com.microsoft.azure.sdk.iot.device.Message;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
@@ -62,15 +61,13 @@ public class S7PlcToAzureIoTHubSample {
             DeviceClient client = new DeviceClient(iotConnectionString, IotHubClientProtocol.MQTT);
             client.open();
 
-            // Get a reader instance.
-            PlcReader plcReader = plcConnection.getReader().orElseThrow(IllegalStateException::new);
 
             // Prepare a read request.
             PlcReadRequest request = plcConnection.readRequestBuilder().get().addItem(FIELD_NAME, addressString).build();
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
-                PlcReadResponse response = plcReader.read(request).get();
+                PlcReadResponse response = request.execute().get();
                 response.getAllLongs(FIELD_NAME)
                     .forEach(longValue -> {
                             String result = Long.toBinaryString(longValue);

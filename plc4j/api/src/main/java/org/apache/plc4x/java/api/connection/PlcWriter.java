@@ -37,6 +37,4 @@ public interface PlcWriter {
      */
     CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest);
 
-    //PlcWriteRequest.Builder writeRequestBuilder();
-
 }

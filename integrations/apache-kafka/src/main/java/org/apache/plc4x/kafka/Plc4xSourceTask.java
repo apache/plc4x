@@ -27,7 +27,6 @@ import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -61,8 +60,6 @@ public class Plc4xSourceTask extends SourceTask {
     private List<String> queries;
 
     private PlcConnection plcConnection;
-    private PlcReader plcReader;
-    private PlcReadRequest plcRequest;
 
     // TODO: should we use shared (static) thread pool for this?
     private ScheduledExecutorService scheduler;
@@ -82,15 +79,9 @@ public class Plc4xSourceTask extends SourceTask {
 
         openConnection();
 
-        plcReader = plcConnection.getReader()
-            .orElseThrow(() -> new ConnectException("PlcReader not available for this type of connection"));
-
-
-        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder().get();
-        for (String query : queries) {
-            builder.addItem(query, query);
+        if (!plcConnection.readRequestBuilder().isPresent()) {
+            throw new ConnectException("Reading not supported on this connection");
         }
-        plcRequest = builder.build();
 
         int rate = Integer.valueOf(props.get(Plc4xSourceConnector.RATE_CONFIG));
         scheduler = Executors.newScheduledThreadPool(1);
@@ -154,7 +145,7 @@ public class Plc4xSourceTask extends SourceTask {
     }
 
     private List<SourceRecord> doFetch() throws InterruptedException {
-        final CompletableFuture<PlcReadResponse> response = plcReader.read(plcRequest);
+        final CompletableFuture<? extends PlcReadResponse> response = createReadRequest().execute();
         try {
             final PlcReadResponse received = response.get(TIMEOUT_LIMIT_MILLIS, TimeUnit.MILLISECONDS);
             return extractValues(received);
@@ -163,6 +154,14 @@ public class Plc4xSourceTask extends SourceTask {
         } catch (TimeoutException e) {
             throw new ConnectException("Timed out waiting for data from source", e);
         }
+    }
+
+    private PlcReadRequest createReadRequest() {
+        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder().get();
+        for (String query : queries) {
+            builder.addItem(query, query);
+        }
+        return builder.build();
     }
 
     private List<SourceRecord> extractValues(PlcReadResponse response) {

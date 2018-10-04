@@ -29,7 +29,6 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 
@@ -53,8 +52,9 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
         // Get an instance of a component able to write to a PLC.
         PlcConnection connection = getConnection();
-        PlcWriter writer = connection.getWriter().orElseThrow(
-            () -> new ProcessException("Writing not supported by connection"));
+        if (!connection.writeRequestBuilder().isPresent()) {
+            throw new ProcessException("Writing not supported by connection");
+        }
 
         // Prepare the request.
         PlcWriteRequest.Builder builder = connection.writeRequestBuilder().get();
@@ -67,7 +67,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         PlcWriteRequest writeRequest = builder.build();
 
         // Send the request to the PLC.
-        CompletableFuture<PlcWriteResponse> future = writer.write(writeRequest);
+        CompletableFuture<? extends PlcWriteResponse> future = writeRequest.execute();
         future.whenComplete((response, throwable) -> {
             if (throwable != null) {
                 session.transfer(session.create(), FAILURE);

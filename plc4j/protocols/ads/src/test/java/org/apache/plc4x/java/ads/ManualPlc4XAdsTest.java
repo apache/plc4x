@@ -43,22 +43,19 @@ public class ManualPlc4XAdsTest {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
-            PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
-
             PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("station", "Allgemein_S2.Station:BYTE").build();
-            CompletableFuture<PlcReadResponse> response = reader.read(readRequest);
+            CompletableFuture<? extends PlcReadResponse> response = readRequest.execute();
             PlcReadResponse readResponse = response.get();
             System.out.println("Response " + readResponse);
             Collection<Integer> stations = readResponse.getAllIntegers("station");
             stations.forEach(System.out::println);
 
-            PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("Subscribe not available"));
-
             PlcSubscriptionRequest subscriptionRequest = plcConnection.subscriptionRequestBuilder().get().addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE").build();
-            CompletableFuture<PlcSubscriptionResponse> subscribeResponse = plcSubscriber.subscribe(subscriptionRequest);
+            CompletableFuture<? extends PlcSubscriptionResponse> subscribeResponse = subscriptionRequest.execute();
             PlcSubscriptionResponse plcSubscriptionResponse = subscribeResponse.get();
 
-            PlcConsumerRegistration plcConsumerRegistration = plcSubscriber.register(System.out::println, plcSubscriptionResponse.getSubscriptionHandles());
+            // TODO: figure out what to do with this
+            /*PlcConsumerRegistration plcConsumerRegistration = plcSubscriber.register(System.out::println, plcSubscriptionResponse.getSubscriptionHandles());
 
             TimeUnit.SECONDS.sleep(5);
 
@@ -68,7 +65,7 @@ public class ManualPlc4XAdsTest {
 
             unsubscriptionResponse
                 .get(5, TimeUnit.SECONDS);
-            System.out.println(unsubscriptionResponse);
+            System.out.println(unsubscriptionResponse);*/
         }
         System.exit(0);
     }

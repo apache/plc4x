@@ -65,12 +65,4 @@ public interface PlcConnection extends AutoCloseable {
 
     Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder();
 
-    // the following methods should be moved to the SPI
-
-    Optional<PlcReader> getReader();
-
-    Optional<PlcWriter> getWriter();
-
-    Optional<PlcSubscriber> getSubscriber();
-
 }

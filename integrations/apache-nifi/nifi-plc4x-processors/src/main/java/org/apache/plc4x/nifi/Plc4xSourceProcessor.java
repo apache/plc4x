@@ -28,7 +28,6 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.json.simple.JSONObject;
@@ -47,23 +46,24 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         // Get an instance of a component able to read from a PLC.
         PlcConnection connection = getConnection();
-        PlcReader reader = connection.getReader().orElseThrow(
-            () -> new ProcessException("Writing not supported by connection"));
 
         // Prepare the request.
-        PlcReadRequest.Builder builder = connection.readRequestBuilder().get();
-        getFields().forEach(field -> {
-            String address = getAddress(field);
-            if(address != null) {
-                builder.addItem(field, address);
-            }
-        });
-        PlcReadRequest readRequest = builder.build();
+        if (!connection.readRequestBuilder().isPresent()) {
+            throw new ProcessException("Writing not supported by connection");
+        }
 
         FlowFile flowFile = session.create();
         session.append(flowFile, out -> {
             try {
-                PlcReadResponse response = reader.read(readRequest).get();
+                PlcReadRequest.Builder builder = connection.readRequestBuilder().get();
+                getFields().forEach(field -> {
+                    String address = getAddress(field);
+                    if(address != null) {
+                        builder.addItem(field, address);
+                    }
+                });
+                PlcReadRequest readRequest = builder.build();
+                PlcReadResponse response = readRequest.execute().get();
                 JSONObject obj = new JSONObject();
                 for (String fieldName : response.getFieldNames()) {
                     for(int i = 0; i < response.getNumberOfValues(fieldName); i++) {

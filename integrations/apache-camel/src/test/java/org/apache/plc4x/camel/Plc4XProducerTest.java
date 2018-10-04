@@ -48,9 +48,6 @@ public class Plc4XProducerTest {
         when(endpointMock.getEndpointUri()).thenReturn("plc4x:mock:10.10.10.1/1/1");
         PlcDriverManager plcDriverManagerMock = mock(PlcDriverManager.class, RETURNS_DEEP_STUBS);
 
-        when(plcDriverManagerMock.getConnection(anyString()).getWriter())
-            .thenReturn(Optional.of(mock(PlcWriter.class, RETURNS_DEEP_STUBS)));
-
         when(plcDriverManagerMock.getConnection(anyString()).writeRequestBuilder())
             .thenReturn(Optional.of(mock(PlcWriteRequest.Builder.class, RETURNS_DEEP_STUBS)));
 
