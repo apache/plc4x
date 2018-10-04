@@ -24,6 +24,5 @@ import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
 import java.util.concurrent.CompletableFuture;
 
 public interface PlcProprietarySender {
-
     <T> CompletableFuture<PlcProprietaryResponse<T>> send(PlcProprietaryRequest proprietaryRequest);
 }

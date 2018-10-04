@@ -43,6 +43,7 @@ import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.*;
 
 public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
@@ -106,8 +107,23 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new AdsPlcFieldHandler());
+    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
+        return Optional.of(new DefaultPlcReadRequest.Builder(this, new AdsPlcFieldHandler()));
+    }
+
+    @Override
+    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
+        return Optional.of(new DefaultPlcWriteRequest.Builder(this, new AdsPlcFieldHandler()));
+    }
+
+    @Override
+    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
+        return Optional.empty();
     }
 
     @Override
@@ -125,13 +141,8 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new AdsPlcFieldHandler());
-    }
-
-    @Override
-    public <PROP_RESPONSE> CompletableFuture<PlcProprietaryResponse<PROP_RESPONSE>> send(PlcProprietaryRequest proprietaryRequest) {
-        CompletableFuture<InternalPlcProprietaryResponse<PROP_RESPONSE>> sendFuture = new CompletableFuture<>();
+    public <T> CompletableFuture<PlcProprietaryResponse<T>> send(PlcProprietaryRequest proprietaryRequest) {
+        CompletableFuture<InternalPlcProprietaryResponse<T>> sendFuture = new CompletableFuture<>();
         ChannelFuture channelFuture = channel.writeAndFlush(new PlcRequestContainer<>((InternalPlcProprietaryRequest) proprietaryRequest, sendFuture));
         channelFuture.addListener(future -> {
             if (!future.isSuccess()) {

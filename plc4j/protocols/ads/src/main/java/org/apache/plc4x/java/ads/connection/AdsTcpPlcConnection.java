@@ -43,7 +43,6 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.base.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
@@ -53,7 +52,10 @@ import org.slf4j.LoggerFactory;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -311,13 +313,13 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     @Override
-    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(this, new AdsPlcFieldHandler());
+    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
+        return Optional.of(new DefaultPlcSubscriptionRequest.Builder(this, new AdsPlcFieldHandler()));
     }
 
     @Override
-    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-        return new DefaultPlcUnsubscriptionRequest.Builder(this);
+    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
+        return Optional.of(new DefaultPlcUnsubscriptionRequest.Builder(this));
     }
 
     @Override

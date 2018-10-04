@@ -65,7 +65,7 @@ public class Plc4xSinkTask extends SinkTask {
         for (SinkRecord record: records) {
             String query = record.key().toString();
             Object value = record.value();
-            PlcWriteRequest.Builder builder = plcWriter.writeRequestBuilder();
+            PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder().get();
             PlcWriteRequest plcRequest = addToBuilder(builder, query, value).build();
             doWrite(plcRequest);
         }

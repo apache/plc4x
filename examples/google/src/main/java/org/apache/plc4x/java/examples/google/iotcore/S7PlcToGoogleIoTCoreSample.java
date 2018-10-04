@@ -235,7 +235,7 @@ public class S7PlcToGoogleIoTCoreSample {
 
             PlcReader plcReader = plcConnection.getReader().orElseThrow(IllegalAccessError::new);
 
-            PlcReadRequest readRequest = plcReader.readRequestBuilder().addItem("outputs", "OUTPUTS/0").build();
+            PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("outputs", "OUTPUTS/0").build();
 
             while (!Thread.currentThread().isInterrupted()) {
 

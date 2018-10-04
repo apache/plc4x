@@ -37,6 +37,7 @@ public class Plc4XEndpointTest {
         SUT = new Plc4XEndpoint("plc4x:mock:10.10.10.1/1/1", mock(Component.class));
     }
 
+    // TODO: figure out what this is
     @Test
     public void createProducer() throws Exception {
         assertThat(SUT.createProducer(), notNullValue());

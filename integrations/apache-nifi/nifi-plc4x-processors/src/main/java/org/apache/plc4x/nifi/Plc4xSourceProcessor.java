@@ -27,6 +27,7 @@ import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
+import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcReader;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -45,11 +46,12 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         // Get an instance of a component able to read from a PLC.
-        PlcReader reader = getConnection().getReader().orElseThrow(
+        PlcConnection connection = getConnection();
+        PlcReader reader = connection.getReader().orElseThrow(
             () -> new ProcessException("Writing not supported by connection"));
 
         // Prepare the request.
-        PlcReadRequest.Builder builder = reader.readRequestBuilder();
+        PlcReadRequest.Builder builder = connection.readRequestBuilder().get();
         getFields().forEach(field -> {
             String address = getAddress(field);
             if(address != null) {

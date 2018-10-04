@@ -45,7 +45,7 @@ public class ManualPlc4XAdsTest {
 
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            PlcReadRequest readRequest = reader.readRequestBuilder().addItem("station", "Allgemein_S2.Station:BYTE").build();
+            PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("station", "Allgemein_S2.Station:BYTE").build();
             CompletableFuture<PlcReadResponse> response = reader.read(readRequest);
             PlcReadResponse readResponse = response.get();
             System.out.println("Response " + readResponse);
@@ -54,7 +54,7 @@ public class ManualPlc4XAdsTest {
 
             PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("Subscribe not available"));
 
-            PlcSubscriptionRequest subscriptionRequest = plcSubscriber.subscriptionRequestBuilder().addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE").build();
+            PlcSubscriptionRequest subscriptionRequest = plcConnection.subscriptionRequestBuilder().get().addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE").build();
             CompletableFuture<PlcSubscriptionResponse> subscribeResponse = plcSubscriber.subscribe(subscriptionRequest);
             PlcSubscriptionResponse plcSubscriptionResponse = subscribeResponse.get();
 
@@ -63,7 +63,7 @@ public class ManualPlc4XAdsTest {
             TimeUnit.SECONDS.sleep(5);
 
             plcSubscriber.unregister(plcConsumerRegistration);
-            PlcUnsubscriptionRequest unsubscriptionRequest = plcSubscriber.unsubscriptionRequestBuilder().addHandles(plcSubscriptionResponse.getSubscriptionHandles()).build();
+            PlcUnsubscriptionRequest unsubscriptionRequest = plcConnection.unsubscriptionRequestBuilder().get().addHandles(plcSubscriptionResponse.getSubscriptionHandles()).build();
             CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionResponse = plcSubscriber.unsubscribe(unsubscriptionRequest);
 
             unsubscriptionResponse

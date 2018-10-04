@@ -104,8 +104,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
     }
 
     public PlcReadRequest.Builder readRequestBuilder() throws PlcException {
-        return getConnection().getReader().orElseThrow(
-            () -> new PlcException("This connection doesn't support reading")).readRequestBuilder();
+        return getConnection().readRequestBuilder().orElseThrow(
+            () -> new PlcException("This connection doesn't support reading"));
     }
 
     Supplier<PlcReadResponse> newSupplier(PlcReadRequest readRequest) {
@@ -156,7 +156,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 connection = getConnection();
                 PlcReader reader = connection.getReader()
                     .orElseThrow(() -> new PlcException("This connection doesn't support reading"));
-                PlcReadRequest readRequest = reader.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadRequest readRequest = connection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading")).addItem(FIELD_NAME, fieldQuery).build();
                 PlcReadResponse readResponse = reader.read(readRequest).get();
                 Object value = null;
                 switch (clientDatatype) {
@@ -221,7 +221,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 connection = getConnection();
                 PlcWriter writer = connection.getWriter()
                     .orElseThrow(() -> new PlcException("This connection doesn't support writing"));
-                PlcWriteRequest.Builder builder = writer.writeRequestBuilder();
+                PlcWriteRequest.Builder builder = connection.writeRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support writing"));
                 PlcWriteRequest writeRequest = builder.build();
                 addItem(builder, clientDatatype, fieldQuery, fieldValue);
                 writer.write(writeRequest).get();

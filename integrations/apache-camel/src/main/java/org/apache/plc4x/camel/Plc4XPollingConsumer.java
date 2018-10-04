@@ -55,7 +55,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
         this.plcReader = plcConnection.getReader().orElseThrow(() -> new PlcException("This connection doesn't support reading."));
-        readRequest = plcReader.readRequestBuilder().addItem("default", endpoint.getAddress()).build();
+        readRequest = plcConnection.readRequestBuilder().get().addItem("default", endpoint.getAddress()).build();
     }
 
     @Override

@@ -57,13 +57,15 @@ public interface PlcConnection extends AutoCloseable {
     @Override
     void close() throws Exception;
 
-    /*Optional<PlcReadRequest.Builder> readRequestBuilder();
+    Optional<PlcReadRequest.Builder> readRequestBuilder();
 
     Optional<PlcWriteRequest.Builder> writeRequestBuilder();
 
     Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder();
 
-    Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder();*/
+    Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder();
+
+    // the following methods should be moved to the SPI
 
     Optional<PlcReader> getReader();
 

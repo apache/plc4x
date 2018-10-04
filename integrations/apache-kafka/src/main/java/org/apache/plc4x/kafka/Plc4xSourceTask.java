@@ -86,7 +86,7 @@ public class Plc4xSourceTask extends SourceTask {
             .orElseThrow(() -> new ConnectException("PlcReader not available for this type of connection"));
 
 
-        PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
+        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder().get();
         for (String query : queries) {
             builder.addItem(query, query);
         }

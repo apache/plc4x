@@ -76,7 +76,7 @@ public class AdsSerialPlcConnectionTest {
     @Test
     public void testRead() throws Exception {
         prepareSerialSimulator();
-        PlcReadRequest request = SUT.readRequestBuilder().addItem("test", "0/0:BYTE").build();
+        PlcReadRequest request = SUT.readRequestBuilder().get().addItem("test", "0/0:BYTE").build();
         CompletableFuture<PlcReadResponse> read = SUT.read(request);
         PlcReadResponse plcReadResponse = read.get(30, TimeUnit.SECONDS);
         assertNotNull(plcReadResponse);

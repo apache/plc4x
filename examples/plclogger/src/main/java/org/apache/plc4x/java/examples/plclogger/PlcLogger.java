@@ -18,14 +18,14 @@ under the License.
 */
 package org.apache.plc4x.java.examples.plclogger;
 
-import java.util.concurrent.TimeUnit;
-
 import org.apache.edgent.function.Supplier;
 import org.apache.edgent.providers.direct.DirectProvider;
 import org.apache.edgent.topology.TStream;
 import org.apache.edgent.topology.Topology;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
+
+import java.util.concurrent.TimeUnit;
 
 public class PlcLogger {
 

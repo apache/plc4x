@@ -62,8 +62,8 @@ public interface PlcSubscriber {
      */
     void unregister(PlcConsumerRegistration registration);
 
-    PlcSubscriptionRequest.Builder subscriptionRequestBuilder();
+    //PlcSubscriptionRequest.Builder subscriptionRequestBuilder();
 
-    PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder();
+    //PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder();
 
 }

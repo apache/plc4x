@@ -52,7 +52,7 @@ public class ManualPlc4XModbusTest {
             {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-                PlcReadRequest readRequest = reader.readRequestBuilder().addItem("randomRegister", "register:7[3]").build();
+                PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("randomRegister", "register:7[3]").build();
                 PlcReadResponse readResponse = reader.read(readRequest).get();
                 System.out.println("Response " + readResponse);
                 readResponse.getAllByteArrays("randomRegister").stream()
@@ -66,7 +66,7 @@ public class ManualPlc4XModbusTest {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
                 // Just dump the actual values
-                PlcReadRequest readRequest = reader.readRequestBuilder().addItem("randomRegister", "register:3[2]").build();
+                PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("randomRegister", "register:3[2]").build();
                 PlcReadResponse readResponse = reader.read(readRequest).get();
                 System.out.println("Response " + readResponse);
                 Collection<Byte[]> randomRegisters = readResponse.getAllByteArrays("randomRegister");
@@ -90,7 +90,7 @@ public class ManualPlc4XModbusTest {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
                 // Just dump the actual values
-                PlcReadRequest readRequest = reader.readRequestBuilder()
+                PlcReadRequest readRequest = plcConnection.readRequestBuilder().get()
                     .addItem("randomRegister1", "register:1[2]")
                     .addItem("randomRegister2", "register:10[3]")
                     .addItem("randomRegister3", "register:20[4]")
@@ -120,7 +120,7 @@ public class ManualPlc4XModbusTest {
             {
                 PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-                PlcReadRequest readRequest = reader.readRequestBuilder().addItem("randomCoil", "coil:1[9]").build();
+                PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("randomCoil", "coil:1[9]").build();
                 PlcReadResponse readResponse = reader.read(readRequest).get();
                 System.out.println("Response " + readResponse);
                 readResponse.getAllBooleans("randomCoil").stream()
@@ -131,7 +131,7 @@ public class ManualPlc4XModbusTest {
             {
                 PlcWriter writer = plcConnection.getWriter().orElseThrow(() -> new RuntimeException("No Writer found"));
 
-                PlcWriteRequest writeRequest = writer.writeRequestBuilder().addItem("randomCoilField", "coil:1", true).build();
+                PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().get().addItem("randomCoilField", "coil:1", true).build();
                 PlcWriteResponse writeResponse = writer.write(writeRequest).get();
                 System.out.println("Response " + writeResponse);
             }

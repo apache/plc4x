@@ -37,7 +37,7 @@ public class ManualPlc4XEtherNetIpTest {
             // Get a reader instance.
             PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
 
-            PlcReadRequest readRequest = reader.readRequestBuilder()
+            PlcReadRequest readRequest = plcConnection.readRequestBuilder().get()
                 .addItem("field", "#4#105#3").build();
 
             // Execute the read operation.

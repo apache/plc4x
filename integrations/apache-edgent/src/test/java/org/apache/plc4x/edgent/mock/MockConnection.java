@@ -36,6 +36,7 @@ import org.apache.plc4x.java.base.messages.items.FieldItem;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class MockConnection extends org.apache.plc4x.java.base.connection.MockConnection implements PlcReader, PlcWriter {
@@ -67,8 +68,8 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
     }
 
     @Override
-    public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new MockFieldHandler());
+    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
+        return Optional.of(new DefaultPlcReadRequest.Builder(this, new MockFieldHandler()));
     }
 
     @Override
@@ -90,8 +91,8 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
     }
 
     @Override
-    public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new MockFieldHandler());
+    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
+        return Optional.of(new DefaultPlcWriteRequest.Builder(this, new MockFieldHandler()));
     }
 
     @SuppressWarnings("unchecked")

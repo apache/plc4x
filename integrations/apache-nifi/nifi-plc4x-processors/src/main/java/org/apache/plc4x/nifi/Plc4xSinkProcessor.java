@@ -28,6 +28,7 @@ import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
+import org.apache.plc4x.java.api.connection.PlcConnection;
 import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
@@ -51,11 +52,12 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         }
 
         // Get an instance of a component able to write to a PLC.
-        PlcWriter writer = getConnection().getWriter().orElseThrow(
+        PlcConnection connection = getConnection();
+        PlcWriter writer = connection.getWriter().orElseThrow(
             () -> new ProcessException("Writing not supported by connection"));
 
         // Prepare the request.
-        PlcWriteRequest.Builder builder = writer.writeRequestBuilder();
+        PlcWriteRequest.Builder builder = connection.writeRequestBuilder().get();
         flowFile.getAttributes().forEach((field, value) -> {
             String address = getAddress(field);
             if(address != null) {

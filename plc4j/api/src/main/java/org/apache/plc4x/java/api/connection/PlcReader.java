@@ -37,6 +37,6 @@ public interface PlcReader {
      */
     CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
 
-    PlcReadRequest.Builder readRequestBuilder();
+    //PlcReadRequest.Builder readRequestBuilder();
 
 }

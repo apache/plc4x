@@ -20,13 +20,18 @@ package org.apache.plc4x.java.test;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.connection.*;
+import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.connection.PlcSubscriber;
+import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -72,8 +77,23 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
     }
 
     @Override
-    public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new TestFieldHandler());
+    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
+        return Optional.of(new DefaultPlcReadRequest.Builder(this, new TestFieldHandler()));
+    }
+
+    @Override
+    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
+        return Optional.of(new DefaultPlcWriteRequest.Builder(this, new TestFieldHandler()));
+    }
+
+    @Override
+    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
+        return Optional.empty();
     }
 
     @Override
@@ -95,11 +115,6 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
         }
         PlcReadResponse response = new DefaultPlcReadResponse(request, fields);
         return CompletableFuture.completedFuture(response);
-    }
-
-    @Override
-    public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new TestFieldHandler());
     }
 
     @Override
