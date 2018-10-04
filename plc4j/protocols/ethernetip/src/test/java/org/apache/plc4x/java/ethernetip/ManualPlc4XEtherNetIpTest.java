@@ -41,8 +41,8 @@ public class ManualPlc4XEtherNetIpTest {
                 .addItem("field", "#4#105#3").build();
 
             // Execute the read operation.
-            CompletableFuture<PlcReadResponse<?>> response = reader.read(readRequest);
-            PlcReadResponse<?> readResponse = response.get();
+            CompletableFuture<PlcReadResponse> response = reader.read(readRequest);
+            PlcReadResponse readResponse = response.get();
 
             // Output the response.
             for (String fieldName : readResponse.getFieldNames()) {
