@@ -239,7 +239,7 @@ public class S7PlcToGoogleIoTCoreSample {
 
             while (!Thread.currentThread().isInterrupted()) {
 
-                PlcReadResponse<?> plcReadResponse = plcReader.read(readRequest).get();
+                PlcReadResponse plcReadResponse = plcReader.read(readRequest).get();
 
                 // Refresh the connection credentials before the JWT expires.
                 // [START iot_mqtt_jwt_refresh]

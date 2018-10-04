@@ -64,7 +64,7 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
             new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, readFuture);
@@ -80,7 +80,7 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<InternalPlcWriteResponse> writeFuture = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
             new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, writeFuture);

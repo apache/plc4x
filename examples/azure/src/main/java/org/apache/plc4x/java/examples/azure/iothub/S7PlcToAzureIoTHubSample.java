@@ -70,7 +70,7 @@ public class S7PlcToAzureIoTHubSample {
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
-                PlcReadResponse<?> response = plcReader.read(request).get();
+                PlcReadResponse response = plcReader.read(request).get();
                 response.getAllLongs(FIELD_NAME)
                     .forEach(longValue -> {
                             String result = Long.toBinaryString(longValue);

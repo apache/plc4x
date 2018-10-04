@@ -68,7 +68,7 @@ public class HelloPlc4x {
                 // NOTICE: the ".get()" immediately lets this thread pause till
                 // the response is processed and available.
                 System.out.println("\nSynchronous request ...");
-                PlcReadResponse<?> syncResponse = plcReader.read(plcReadRequest).get();
+                PlcReadResponse syncResponse = plcReader.read(plcReadRequest).get();
                 // Simply iterating over the field names returned in the response.
                 printResponse(syncResponse);
 
@@ -76,7 +76,7 @@ public class HelloPlc4x {
                 // Read asynchronously ...
                 // Register a callback executed as soon as a response arives.
                 System.out.println("\n\nAsynchronous request ...");
-                CompletableFuture<PlcReadResponse<?>> asyncResponse = plcReader.read(plcReadRequest);
+                CompletableFuture<PlcReadResponse> asyncResponse = plcReader.read(plcReadRequest);
                 asyncResponse.whenComplete((readResponse, throwable) -> {
                     if (readResponse != null) {
                         printResponse(syncResponse);
@@ -94,7 +94,7 @@ public class HelloPlc4x {
         }
     }
 
-    private static void printResponse(PlcReadResponse<?> syncResponse) {
+    private static void printResponse(PlcReadResponse syncResponse) {
         for (String fieldName : syncResponse.getFieldNames()) {
             if(syncResponse.getResponseCode(fieldName) == PlcResponseCode.OK) {
                 int numValues = syncResponse.getNumberOfValues(fieldName);
