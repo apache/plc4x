@@ -20,7 +20,9 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
@@ -28,10 +30,22 @@ import org.apache.plc4x.java.base.messages.items.FieldItem;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
 // TODO: request broken needs finishing.
 public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionRequest, InternalPlcFieldRequest {
+
+    private final PlcSubscriber subscriber;
+
+    public DefaultPlcSubscriptionRequest(PlcSubscriber subscriber) {
+        this.subscriber = subscriber;
+    }
+
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> execute() {
+        return subscriber.subscribe(this);
+    }
 
     @Override
     public int getNumberOfFields() {
@@ -65,10 +79,12 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
 
     public static class Builder implements PlcSubscriptionRequest.Builder {
 
+        private final PlcSubscriber subscriber;
         private final PlcFieldHandler fieldHandler;
         private final Map<String, BuilderItem<Object>> fields;
 
-        public Builder(PlcFieldHandler fieldHandler) {
+        public Builder(PlcSubscriber subscriber, PlcFieldHandler fieldHandler) {
+            this.subscriber = subscriber;
             this.fieldHandler = fieldHandler;
             fields = new TreeMap<>();
         }
@@ -99,7 +115,7 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
                 FieldItem fieldItem = builderItem.encoder.apply(parsedField, null);
                 parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
             });
-            return new DefaultPlcSubscriptionRequest();
+            return new DefaultPlcSubscriptionRequest(subscriber);
         }
 
         private static class BuilderItem<T> {

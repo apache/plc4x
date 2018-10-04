@@ -21,8 +21,10 @@ package org.apache.plc4x.java.base.messages;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
@@ -33,15 +35,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, InternalPlcFieldRequest {
 
+    private final PlcWriter writer;
     private final LinkedHashMap<String, Pair<PlcField, FieldItem>> fields;
 
-    protected DefaultPlcWriteRequest(LinkedHashMap<String, Pair<PlcField, FieldItem>> fields) {
+    protected DefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, FieldItem>> fields) {
+        this.writer = writer;
         this.fields = fields;
+    }
+
+    @Override
+    public CompletableFuture<PlcWriteResponse> execute() {
+        return writer.write(this);
     }
 
     @Override
@@ -106,11 +116,13 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
 
     public static class Builder implements PlcWriteRequest.Builder {
 
+        private final PlcWriter writer;
         private final PlcFieldHandler fieldHandler;
         private final Map<String, BuilderItem<Object>> fields;
         private final Map<Class<?>, BiFunction<PlcField, Object[], FieldItem>> handlerMap;
 
-        public Builder(PlcFieldHandler fieldHandler) {
+        public Builder(PlcWriter writer, PlcFieldHandler fieldHandler) {
+            this.writer = writer;
             this.fieldHandler = fieldHandler;
             fields = new TreeMap<>();
             handlerMap = new HashMap<>();
@@ -236,7 +248,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
                 FieldItem fieldItem = builderItem.encoder.apply(parsedField, builderItem.values);
                 parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
             });
-            return new DefaultPlcWriteRequest(parsedFields);
+            return new DefaultPlcWriteRequest(writer, parsedFields);
         }
 
         private Builder addItem(String name, String fieldQuery, Object[] values, BiFunction<PlcField, Object[], FieldItem> encoder) {

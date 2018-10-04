@@ -19,21 +19,32 @@
 package org.apache.plc4x.java.base.messages;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.connection.PlcSubscriber;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 // TODO: request broken needs finishing.
 public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest, InternalPlcFieldRequest {
 
+    private final PlcSubscriber subscriber;
+
     private final Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles;
 
-    public DefaultPlcUnsubscriptionRequest(Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+    public DefaultPlcUnsubscriptionRequest(PlcSubscriber subscriber, Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+        this.subscriber = subscriber;
         this.internalPlcSubscriptionHandles = internalPlcSubscriptionHandles;
+    }
+
+    @Override
+    public CompletableFuture<PlcUnsubscriptionResponse> execute() {
+        return subscriber.unsubscribe(this);
     }
 
     @Override
@@ -68,9 +79,11 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
 
     public static class Builder implements PlcUnsubscriptionRequest.Builder {
 
+        private final PlcSubscriber subscriber;
         private List<InternalPlcSubscriptionHandle> plcSubscriptionHandles;
 
-        public Builder() {
+        public Builder(PlcSubscriber subscriber) {
+            this.subscriber = subscriber;
             plcSubscriptionHandles = new ArrayList<>();
         }
 
@@ -94,7 +107,7 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
 
         @Override
         public PlcUnsubscriptionRequest build() {
-            return new DefaultPlcUnsubscriptionRequest(plcSubscriptionHandles);
+            return new DefaultPlcUnsubscriptionRequest(subscriber, plcSubscriptionHandles);
         }
 
 

@@ -25,6 +25,8 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.PromiseCombiner;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcTimeoutException;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -49,26 +51,29 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     private final Timer timer;
 
+    private final PlcReader reader;
+    private final PlcWriter writer;
+
     // TODO: maybe better get from map
     private long defaultReceiveTimeout;
 
     private PendingWriteQueue queue;
 
-    private ConcurrentMap<PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>, Timeout> scheduledTimeouts;
+    private ConcurrentMap<PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>, Timeout> scheduledTimeouts;
 
     // Map to track send subcontainers
-    private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>> sentButUnacknowledgedSubContainer;
+    private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> sentButUnacknowledgedSubContainer;
 
     // Map to map tdpu to original parent container
     // TODO: currently this could be supplied via param, only reason to keep would be for statistics.
-    private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>> correlationToParentContainer;
+    private ConcurrentMap<Integer, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> correlationToParentContainer;
 
     // Map to track tdpus per container
     // TODO: currently this could be supplied via param, only reason to keep would be for statistics.
     private ConcurrentMap<PlcRequestContainer<?, ?>, Set<Integer>> containerCorrelationIdMap;
 
     // Map to track a list of responses per parent container
-    private ConcurrentMap<PlcRequestContainer<?, ?>, Queue<InternalPlcResponse<?>>> responsesToBeDelivered;
+    private ConcurrentMap<PlcRequestContainer<?, ?>, Queue<InternalPlcResponse>> responsesToBeDelivered;
 
     private AtomicInteger correlationIdGenerator;
 
@@ -81,15 +86,17 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     private AtomicLong erroredItems;
 
-    public SingleItemToSingleRequestProtocol(Timer timer) {
-        this(timer, true);
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, Timer timer) {
+        this(reader, writer, timer, true);
     }
 
-    public SingleItemToSingleRequestProtocol(Timer timer, boolean betterImplementationPossible) {
-        this(timer, TimeUnit.SECONDS.toMillis(30), betterImplementationPossible);
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, Timer timer, boolean betterImplementationPossible) {
+        this(reader, writer, timer, TimeUnit.SECONDS.toMillis(30), betterImplementationPossible);
     }
 
-    public SingleItemToSingleRequestProtocol(Timer timer, long defaultReceiveTimeout, boolean betterImplementationPossible) {
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, Timer timer, long defaultReceiveTimeout, boolean betterImplementationPossible) {
+        this.reader = reader;
+        this.writer = writer;
         this.timer = timer;
         this.defaultReceiveTimeout = defaultReceiveTimeout;
         if (betterImplementationPossible) {
@@ -155,16 +162,16 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     // Decoding
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected void tryFinish(Integer currentTdpu, InternalPlcResponse msg, CompletableFuture<InternalPlcResponse<?>> originalResponseFuture) {
+    protected void tryFinish(Integer currentTdpu, InternalPlcResponse msg, CompletableFuture<InternalPlcResponse> originalResponseFuture) {
         deliveredItems.incrementAndGet();
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(currentTdpu);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(currentTdpu);
         LOGGER.info("{} got acknowledged", subPlcRequestContainer);
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> originalPlcRequestContainer = correlationToParentContainer.remove(currentTdpu);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> originalPlcRequestContainer = correlationToParentContainer.remove(currentTdpu);
         if (originalPlcRequestContainer == null) {
             LOGGER.warn("Unrelated package received {}", msg);
             return;
         }
-        Queue<InternalPlcResponse<?>> correlatedResponseItems = responsesToBeDelivered.computeIfAbsent(originalPlcRequestContainer, ignore -> new ConcurrentLinkedQueue<>());
+        Queue<InternalPlcResponse> correlatedResponseItems = responsesToBeDelivered.computeIfAbsent(originalPlcRequestContainer, ignore -> new ConcurrentLinkedQueue<>());
         correlatedResponseItems.add(msg);
         Set<Integer> integers = containerCorrelationIdMap.get(originalPlcRequestContainer);
         integers.remove(currentTdpu);
@@ -175,7 +182,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                 timeout.cancel();
             }
 
-            InternalPlcResponse<?> plcResponse;
+            InternalPlcResponse plcResponse;
             if (originalPlcRequestContainer.getRequest() instanceof InternalPlcReadRequest) {
                 InternalPlcReadRequest internalPlcReadRequest = (InternalPlcReadRequest) originalPlcRequestContainer.getRequest();
                 HashMap<String, Pair<PlcResponseCode, FieldItem>> fields = new HashMap<>();
@@ -206,13 +213,13 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         }
     }
 
-    protected void errored(Integer currentTdpu, Throwable throwable, CompletableFuture<InternalPlcResponse<?>> originalResponseFuture) {
+    protected void errored(Integer currentTdpu, Throwable throwable, CompletableFuture<InternalPlcResponse> originalResponseFuture) {
         erroredItems.incrementAndGet();
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(currentTdpu);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(currentTdpu);
         LOGGER.info("{} got errored", subPlcRequestContainer);
 
 
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> originalPlcRequestContainer = correlationToParentContainer.remove(currentTdpu);
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> originalPlcRequestContainer = correlationToParentContainer.remove(currentTdpu);
         if (originalPlcRequestContainer == null) {
             LOGGER.warn("Unrelated error received tdpu:{}", currentTdpu, throwable);
         } else {
@@ -246,7 +253,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof PlcRequestContainer) {
             @SuppressWarnings("unchecked")
-            PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> in = (PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>>) msg;
+            PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> in = (PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>) msg;
             Set<Integer> tdpus = containerCorrelationIdMap.computeIfAbsent(in, plcRequestContainer -> ConcurrentHashMap.newKeySet());
 
             Timeout timeout = timer.newTimeout(timeout_ -> handleTimeout(timeout_, in, tdpus, System.nanoTime()), defaultReceiveTimeout, TimeUnit.MILLISECONDS);
@@ -275,7 +282,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                                     tryFinish(tdpu, internalPlcResponse, in.getResponseFuture());
                                 }
                             });
-                        PlcRequestContainer<CorrelatedPlcReadRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcReadRequest.of(field, tdpu), correlatedCompletableFuture);
+                        PlcRequestContainer<CorrelatedPlcReadRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcReadRequest.of(reader, field, tdpu), correlatedCompletableFuture);
                         correlationToParentContainer.put(tdpu, in);
                         queue.add(correlatedPlcRequestContainer, subPromise);
                         if (!tdpus.add(tdpu)) {
@@ -298,7 +305,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                                     tryFinish(tdpu, internalPlcResponse, in.getResponseFuture());
                                 }
                             });
-                        PlcRequestContainer<CorrelatedPlcWriteRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcWriteRequest.of(fieldItemTriple, tdpu), correlatedCompletableFuture);
+                        PlcRequestContainer<CorrelatedPlcWriteRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcWriteRequest.of(writer, fieldItemTriple, tdpu), correlatedCompletableFuture);
                         correlationToParentContainer.put(tdpu, in);
                         queue.add(correlatedPlcRequestContainer, subPromise);
                         if (!tdpus.add(tdpu)) {
@@ -360,7 +367,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         ctx.flush();
     }
 
-    private void handleTimeout(Timeout timeout, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse<?>> in, Set<Integer> tdpus, long scheduledAt) {
+    private void handleTimeout(Timeout timeout, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> in, Set<Integer> tdpus, long scheduledAt) {
         if (timeout.isCancelled()) {
             LOGGER.debug("container {} with timeout {} got canceled", in, timeout);
             return;
@@ -386,15 +393,15 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
         protected final int tdpu;
 
-        protected CorrelatedPlcReadRequest(LinkedHashMap<String, PlcField> fields, int tdpu) {
-            super(fields);
+        protected CorrelatedPlcReadRequest(PlcReader reader, LinkedHashMap<String, PlcField> fields, int tdpu) {
+            super(reader, fields);
             this.tdpu = tdpu;
         }
 
-        protected static CorrelatedPlcReadRequest of(Pair<String, PlcField> stringPlcFieldPair, int tdpu) {
+        protected static CorrelatedPlcReadRequest of(PlcReader reader, Pair<String, PlcField> stringPlcFieldPair, int tdpu) {
             LinkedHashMap<String, PlcField> fields = new LinkedHashMap<>();
             fields.put(stringPlcFieldPair.getKey(), stringPlcFieldPair.getValue());
-            return new CorrelatedPlcReadRequest(fields, tdpu);
+            return new CorrelatedPlcReadRequest(reader, fields, tdpu);
         }
 
         @Override
@@ -407,15 +414,15 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
         private final int tdpu;
 
-        public CorrelatedPlcWriteRequest(LinkedHashMap<String, Pair<PlcField, FieldItem>> fields, int tdpu) {
-            super(fields);
+        public CorrelatedPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, FieldItem>> fields, int tdpu) {
+            super(writer, fields);
             this.tdpu = tdpu;
         }
 
-        public static CorrelatedPlcWriteRequest of(Triple<String, PlcField, FieldItem> fieldItemTriple, int tdpu) {
+        public static CorrelatedPlcWriteRequest of(PlcWriter writer, Triple<String, PlcField, FieldItem> fieldItemTriple, int tdpu) {
             LinkedHashMap<String, Pair<PlcField, FieldItem>> fields = new LinkedHashMap<>();
             fields.put(fieldItemTriple.getLeft(), Pair.of(fieldItemTriple.getMiddle(), fieldItemTriple.getRight()));
-            return new CorrelatedPlcWriteRequest(fields, tdpu);
+            return new CorrelatedPlcWriteRequest(writer, fields, tdpu);
         }
 
         @Override

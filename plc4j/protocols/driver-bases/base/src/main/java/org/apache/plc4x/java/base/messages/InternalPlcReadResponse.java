@@ -25,7 +25,7 @@ import org.apache.plc4x.java.base.messages.items.FieldItem;
 
 import java.util.Map;
 
-public interface InternalPlcReadResponse extends PlcReadResponse<InternalPlcReadRequest>, InternalPlcResponse<InternalPlcReadRequest> {
+public interface InternalPlcReadResponse extends PlcReadResponse, InternalPlcResponse {
 
     Map<String, Pair<PlcResponseCode, FieldItem>> getValues();
 }

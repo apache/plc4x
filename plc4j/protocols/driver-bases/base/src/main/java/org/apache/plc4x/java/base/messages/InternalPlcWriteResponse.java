@@ -23,6 +23,6 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Map;
 
-public interface InternalPlcWriteResponse extends PlcWriteResponse<InternalPlcWriteRequest>, InternalPlcResponse<InternalPlcWriteRequest> {
+public interface InternalPlcWriteResponse extends PlcWriteResponse, InternalPlcResponse {
     Map<String, PlcResponseCode> getValues();
 }

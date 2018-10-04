@@ -25,6 +25,9 @@ import io.netty.channel.PendingWriteQueue;
 import io.netty.util.HashedWheelTimer;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.connection.PlcSubscriber;
+import org.apache.plc4x.java.api.connection.PlcWriter;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -52,8 +55,18 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
+    PlcReader mockReader = null;
+    PlcWriter mockWriter = null;
+    PlcSubscriber mockSubscriber = null;
+
     @InjectMocks
-    SingleItemToSingleRequestProtocol SUT = new SingleItemToSingleRequestProtocol(new HashedWheelTimer(), TimeUnit.SECONDS.toMillis(1), false);
+    SingleItemToSingleRequestProtocol SUT = new SingleItemToSingleRequestProtocol(
+        mockReader,
+        mockWriter,
+        new HashedWheelTimer(),
+        TimeUnit.SECONDS.toMillis(1),
+        false
+    );
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     ChannelHandlerContext channelHandlerContext;
@@ -138,7 +151,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         void simpleRead() throws Exception {
             // Given
             // we have a simple read
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
             // When
             // we write this
             SUT.write(channelHandlerContext, msg, channelPromise);
@@ -169,7 +182,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         void partialRead() throws Exception {
             // Given
             // we have a simple read
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
             // When
             // we write this
             SUT.write(channelHandlerContext, msg, channelPromise);
@@ -202,7 +215,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         void partialReadOneErrored() throws Exception {
             // Given
             // we have a simple read
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
             // When
             // we write this
             SUT.write(channelHandlerContext, msg, channelPromise);
@@ -241,7 +254,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         void noRead() throws Exception {
             // Given
             // we have a simple read
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
             // When
             // we write this
             SUT.write(channelHandlerContext, msg, channelPromise);
@@ -314,7 +327,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         @Test
         void read() throws Exception {
             // Given
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
             // When
             SUT.write(channelHandlerContext, msg, channelPromise);
             // Then
@@ -345,7 +358,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         @Test
         void write() throws Exception {
             // Given
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcWriteRequest.build(), responseCompletableFuture);
+            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcWriteRequest.build(mockWriter), responseCompletableFuture);
             // When
             SUT.write(channelHandlerContext, msg, channelPromise);
             // Then
@@ -395,48 +408,51 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
     }
 
     private static class TestDefaultPlcReadRequest extends DefaultPlcReadRequest {
-
-        private TestDefaultPlcReadRequest(LinkedHashMap<String, PlcField> fields) {
-            super(fields);
+        private TestDefaultPlcReadRequest(PlcReader reader, LinkedHashMap<String, PlcField> fields) {
+            super(reader, fields);
         }
 
-        private static TestDefaultPlcReadRequest build() {
+        private static TestDefaultPlcReadRequest build(PlcReader reader) {
             LinkedHashMap<String, PlcField> fields = new LinkedHashMap<>();
             IntStream.rangeClosed(1, 5).forEach(i -> fields.put("readField" + i, mock(PlcField.class)));
-            return new TestDefaultPlcReadRequest(fields);
+            return new TestDefaultPlcReadRequest(reader, fields);
         }
     }
 
     private static class TestDefaultPlcWriteRequest extends DefaultPlcWriteRequest {
 
-        private TestDefaultPlcWriteRequest(LinkedHashMap<String, Pair<PlcField, FieldItem>> fields) {
-            super(fields);
+        private TestDefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, FieldItem>> fields) {
+            super(writer, fields);
         }
 
-        private static TestDefaultPlcWriteRequest build() {
+        private static TestDefaultPlcWriteRequest build(PlcWriter writer) {
             LinkedHashMap<String, Pair<PlcField, FieldItem>> fields = new LinkedHashMap<>();
             IntStream.rangeClosed(1, 5).forEach(i -> fields.put("writeField" + i, Pair.of(mock(PlcField.class), mock(FieldItem.class))));
-            return new TestDefaultPlcWriteRequest(fields);
+            return new TestDefaultPlcWriteRequest(writer, fields);
         }
     }
 
     private static class TestDefaultPlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
 
-        private static TestDefaultPlcSubscriptionRequest build() {
+        private TestDefaultPlcSubscriptionRequest(PlcSubscriber subscriber) {
+            super(subscriber);
+        }
+
+        private static TestDefaultPlcSubscriptionRequest build(PlcSubscriber subscriber) {
             // TODO: implement me once available
-            return new TestDefaultPlcSubscriptionRequest();
+            return new TestDefaultPlcSubscriptionRequest(subscriber);
         }
     }
 
     private static class TestDefaultPlcUnsubscriptionRequest extends DefaultPlcUnsubscriptionRequest {
 
-        private TestDefaultPlcUnsubscriptionRequest(Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
-            super(internalPlcSubscriptionHandles);
+        private TestDefaultPlcUnsubscriptionRequest(PlcSubscriber subscriber, Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+            super(subscriber, internalPlcSubscriptionHandles);
         }
 
-        private static TestDefaultPlcUnsubscriptionRequest build() {
+        private static TestDefaultPlcUnsubscriptionRequest build(PlcSubscriber subscriber) {
             // TODO: implement me once available
-            return new TestDefaultPlcUnsubscriptionRequest(Collections.emptyList());
+            return new TestDefaultPlcUnsubscriptionRequest(subscriber, Collections.emptyList());
         }
     }
 }
