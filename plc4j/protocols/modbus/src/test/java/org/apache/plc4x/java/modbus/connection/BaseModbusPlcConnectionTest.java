@@ -90,7 +90,7 @@ public class BaseModbusPlcConnectionTest {
 
     @Test
     public void read() {
-        CompletableFuture<PlcReadResponse<?>> read = SUT.read(mock(InternalPlcReadRequest.class));
+        CompletableFuture<PlcReadResponse> read = SUT.read(mock(InternalPlcReadRequest.class));
         assertNotNull(read);
 
         simulatePipelineError(() -> SUT.read(mock(InternalPlcReadRequest.class)));
@@ -98,7 +98,7 @@ public class BaseModbusPlcConnectionTest {
 
     @Test
     public void write() {
-        CompletableFuture<PlcWriteResponse<?>> write = SUT.write(mock(InternalPlcWriteRequest.class));
+        CompletableFuture<PlcWriteResponse> write = SUT.write(mock(InternalPlcWriteRequest.class));
         assertNotNull(write);
 
         simulatePipelineError(() -> SUT.write(mock(InternalPlcWriteRequest.class)));

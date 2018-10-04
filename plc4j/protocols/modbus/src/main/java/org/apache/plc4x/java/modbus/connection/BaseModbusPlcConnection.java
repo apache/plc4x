@@ -60,11 +60,11 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(new ModbusPlcFieldHandler());
+        return new DefaultPlcReadRequest.Builder(this, new ModbusPlcFieldHandler());
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
             new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, future);
@@ -79,11 +79,11 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(new ModbusPlcFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new ModbusPlcFieldHandler());
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
             new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, future);
