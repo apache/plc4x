@@ -108,8 +108,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
             () -> new PlcException("This connection doesn't support reading")).readRequestBuilder();
     }
 
-    Supplier<PlcReadResponse<?>> newSupplier(PlcReadRequest readRequest) {
-        return new Supplier<PlcReadResponse<?>>() {
+    Supplier<PlcReadResponse> newSupplier(PlcReadRequest readRequest) {
+        return new Supplier<PlcReadResponse>() {
             private static final long serialVersionUID = 1L;
 
             @Override

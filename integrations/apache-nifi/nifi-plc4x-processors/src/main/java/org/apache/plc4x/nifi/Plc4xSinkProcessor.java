@@ -65,7 +65,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         PlcWriteRequest writeRequest = builder.build();
 
         // Send the request to the PLC.
-        CompletableFuture<PlcWriteResponse<?>> future = writer.write(writeRequest);
+        CompletableFuture<PlcWriteResponse> future = writer.write(writeRequest);
         future.whenComplete((response, throwable) -> {
             if (throwable != null) {
                 session.transfer(session.create(), FAILURE);

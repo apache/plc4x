@@ -154,9 +154,9 @@ public class Plc4xSourceTask extends SourceTask {
     }
 
     private List<SourceRecord> doFetch() throws InterruptedException {
-        final CompletableFuture<PlcReadResponse<?>> response = plcReader.read(plcRequest);
+        final CompletableFuture<PlcReadResponse> response = plcReader.read(plcRequest);
         try {
-            final PlcReadResponse<?> received = response.get(TIMEOUT_LIMIT_MILLIS, TimeUnit.MILLISECONDS);
+            final PlcReadResponse received = response.get(TIMEOUT_LIMIT_MILLIS, TimeUnit.MILLISECONDS);
             return extractValues(received);
         } catch (ExecutionException e) {
             throw new ConnectException("Could not fetch data from source", e);
@@ -165,7 +165,7 @@ public class Plc4xSourceTask extends SourceTask {
         }
     }
 
-    private List<SourceRecord> extractValues(PlcReadResponse<?> response) {
+    private List<SourceRecord> extractValues(PlcReadResponse response) {
         final List<SourceRecord> result = new LinkedList<>();
         for (String query : queries) {
             final PlcResponseCode rc = response.getResponseCode(query);

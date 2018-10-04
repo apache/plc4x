@@ -61,7 +61,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
         FlowFile flowFile = session.create();
         session.append(flowFile, out -> {
             try {
-                PlcReadResponse<?> response = reader.read(readRequest).get();
+                PlcReadResponse response = reader.read(readRequest).get();
                 JSONObject obj = new JSONObject();
                 for (String fieldName : response.getFieldNames()) {
                     for(int i = 0; i < response.getNumberOfValues(fieldName); i++) {

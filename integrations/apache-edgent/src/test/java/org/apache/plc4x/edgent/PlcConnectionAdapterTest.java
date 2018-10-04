@@ -90,7 +90,7 @@ public class PlcConnectionAdapterTest {
         // TODO: smart value conversion
         connection.setFieldItem(plcField, new DefaultLongFieldItem(0L));
 
-        CompletableFuture<PlcReadResponse<?>> cf = connection.read(request);
+        CompletableFuture<PlcReadResponse> cf = connection.read(request);
 
         assertThat(cf.isDone(), is(true));
         PlcReadResponse response = cf.get();
@@ -105,7 +105,7 @@ public class PlcConnectionAdapterTest {
         PlcField plcField = request.getFields().get(0);
         connection.setFieldItem(plcField, new DefaultLongFieldItem(0L));
 
-        CompletableFuture<PlcWriteResponse<?>> cf = connection.write(request);
+        CompletableFuture<PlcWriteResponse> cf = connection.write(request);
 
         assertThat(cf.isDone(), is(true));
         PlcWriteResponse response = cf.get();

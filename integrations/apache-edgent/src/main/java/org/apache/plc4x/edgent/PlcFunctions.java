@@ -144,7 +144,7 @@ public class PlcFunctions {
         return adapter.newSupplier(LocalDateTime.class, PlcClientDatatype.DATE_TIME, addressStr);
     }
 
-    public static Supplier<PlcReadResponse<?>> batchSupplier(PlcConnectionAdapter adapter, PlcReadRequest readRequest) {
+    public static Supplier<PlcReadResponse> batchSupplier(PlcConnectionAdapter adapter, PlcReadRequest readRequest) {
         return adapter.newSupplier(readRequest);
     }
 
