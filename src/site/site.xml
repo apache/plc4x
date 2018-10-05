@@ -22,7 +22,7 @@
   <skin>
     <groupId>io.github.devacfr.maven.skins</groupId>
     <artifactId>reflow-maven-skin</artifactId>
-    <version>1.3.10</version>
+    <version>1.4.0</version>
   </skin>
 
   <!-- Hide the publish date as this will cause changes on every generated page every day -->
