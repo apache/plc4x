@@ -29,14 +29,20 @@ public class DefaultByteArrayFieldItem extends FieldItem<Byte[]> {
         return getValue(index);
     }
 
+    @Override
     public boolean isValidByteArray(int index) {
         Byte[] value = getValue(index);
         return value != null;
     }
 
+    @Override
     public Byte[] getByteArray(int index) {
         return getValue(index);
     }
+
+    //ToDo: extend conversion methods similar to @see {@link org.apache.plc4x.java.modbus.messages.items.DefaultModbusByteArrayFieldItem}
+
+    //ToDo: implement endianness for correct handling of Byte Arrays at conversion
 
 }
 
