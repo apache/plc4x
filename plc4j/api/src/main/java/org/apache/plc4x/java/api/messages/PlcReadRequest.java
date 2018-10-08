@@ -28,8 +28,13 @@ public interface PlcReadRequest extends PlcFieldRequest {
     @Override
     CompletableFuture<? extends PlcReadResponse> execute();
 
-    interface Builder extends PlcRequestBuilder<PlcReadRequest> {
+    interface Builder extends PlcRequestBuilder {
+
+        @Override
+        PlcReadRequest build();
+
         Builder addItem(String name, String fieldQuery);
+
     }
 
 }

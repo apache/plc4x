@@ -32,7 +32,10 @@ public interface PlcWriteRequest extends PlcFieldRequest {
 
     int getNumberOfValues(String name);
 
-    interface Builder extends PlcRequestBuilder<PlcWriteRequest> {
+    interface Builder extends PlcRequestBuilder {
+
+        @Override
+        PlcWriteRequest build();
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Boolean... values);
 

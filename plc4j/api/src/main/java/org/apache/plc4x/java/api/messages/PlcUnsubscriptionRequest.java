@@ -28,7 +28,11 @@ public interface PlcUnsubscriptionRequest extends PlcFieldRequest {
     @Override
     CompletableFuture<? extends PlcUnsubscriptionResponse> execute();
 
-    interface Builder extends PlcRequestBuilder<PlcUnsubscriptionRequest> {
+    interface Builder extends PlcRequestBuilder {
+
+        @Override
+        PlcUnsubscriptionRequest build();
+
         /**
          * TODO document me:
          *

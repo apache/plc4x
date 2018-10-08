@@ -26,7 +26,11 @@ public interface PlcSubscriptionRequest extends PlcFieldRequest {
     @Override
     CompletableFuture<? extends PlcSubscriptionResponse> execute();
 
-    interface Builder extends PlcRequestBuilder<PlcSubscriptionRequest> {
+    interface Builder extends PlcRequestBuilder {
+
+        @Override
+        PlcSubscriptionRequest build();
+
         /**
          * Adds a new field to the to be constructed request which should be polled cyclically.
          *
