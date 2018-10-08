@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.messages;
 
-import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
+import org.apache.plc4x.java.base.messages.PlcProtocolMessage;
 import org.apache.plc4x.java.s7.netty.model.params.SetupCommunicationParameter;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 

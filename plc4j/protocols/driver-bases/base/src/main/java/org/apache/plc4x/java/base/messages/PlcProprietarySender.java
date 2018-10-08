@@ -18,9 +18,6 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
-import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
-
 import java.util.concurrent.CompletableFuture;
 
 public interface PlcProprietarySender {

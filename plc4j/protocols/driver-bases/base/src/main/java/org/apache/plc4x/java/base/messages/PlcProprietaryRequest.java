@@ -16,7 +16,9 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.base.messages;
+
+import org.apache.plc4x.java.api.messages.PlcRequest;
 
 public interface PlcProprietaryRequest<REQUEST> extends PlcRequest {
     REQUEST getProprietaryRequest();

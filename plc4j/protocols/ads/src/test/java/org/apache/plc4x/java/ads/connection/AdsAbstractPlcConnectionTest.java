@@ -33,7 +33,7 @@ import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
-import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
+import org.apache.plc4x.java.base.messages.PlcProprietaryResponse;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.connection.ChannelFactory;

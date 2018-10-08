@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
-
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
