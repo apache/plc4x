@@ -374,6 +374,9 @@
             <exclude>**/.idea/**</exclude>
             <exclude>**/*.iml</exclude>
 
+            <!-- Wireshark Captures -->
+            <exclude>**/*.pcapng</exclude>
+
             <!-- Asciidoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>
 
