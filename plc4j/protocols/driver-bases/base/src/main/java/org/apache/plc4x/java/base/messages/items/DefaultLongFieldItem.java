@@ -106,7 +106,7 @@ public class DefaultLongFieldItem extends FieldItem<Long> {
 
     @Override
     public Long getLong(int index) {
-        if (isValidFloat(index)) {
+        if (isValidLong(index)) {
             return getValue(index);
         }
         return null;
