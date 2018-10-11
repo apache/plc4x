@@ -56,6 +56,21 @@
       <artifactId>commons-codec</artifactId>
       <version>1.11</version>
     </dependency>
+
+    <!-- Elasticsearch dependencies -->
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>6.2.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.elasticsearch.plugin</groupId>
+      <artifactId>transport-netty4-client</artifactId>
+      <version>6.2.4</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

@@ -16,33 +16,54 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
+
 package org.apache.plc4x.java.deltav;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.codec.binary.Hex;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.node.InternalSettingsPreparer;
+import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeValidationException;
+import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.transport.Netty4Plugin;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.UdpPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class PoC {
 
-    private static final Logger valueLogger = LoggerFactory.getLogger(PoC.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoC.class);
 
     private static final int SNAPLEN = 65536;
     private static final int READ_TIMEOUT = 10;
 
     private PcapHandle receiveHandle;
+    private Client esClient;
+
+    private List<String> missingNames = new LinkedList<>();
+    private Map<String, String> testpointNames = new HashMap<>();
+    private Map<String, Map<Short, String>> testpointFieldNames = new HashMap<>();
+    private Map<String, Map<Short, Object>> testpointFieldValues = new HashMap<>();
 
     private PoC(String inputPath) throws Exception {
         if(inputPath == null) {
@@ -73,9 +94,6 @@ public class PoC {
         // Set the filter.
         String filterString = "udp port 18507";
         receiveHandle.setFilter(filterString, BpfProgram.BpfCompileMode.OPTIMIZE);
-
-        Map<String, String> names = new HashMap<>();
-        Map<String, Object> values = new HashMap<>();
 
         byte[] timeBytes = ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
         System.out.println("Current Time: " + Hex.encodeHexString(timeBytes));
@@ -283,20 +301,260 @@ public class PoC {
                             break;
                         }
                         case 0x1B02:
-                            System.out.println("Hurz");
+                            // 1b 02 00 00 00 00 00 07 03 ac 01 d6 00 04 00 00
+                            // 00 06 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+                            // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                            // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                            // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                            // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                            // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                            // 00 00 00 00 00 00 00 00 01 00 00 00 00 00 32 01
+                            // 39 04 90 17 b9. 02 00 13 47 00 4b 00 22 00 49 00
+                            // 6e 00 69 00 74 00 69 00 61 00 6c 00 69 00 73 00
+                            // 69 00 65 00 72 00 75 00 6e 00 67 00 20 00 2e 00
+                            // 2e 00 2e 00 2e 00 2e 00 20 00 62 00 69 00 74 00
+                            // 74 00 65 00 20 00 77 00 61 00 72 00 74 00 65 00
+                            // 6e 00 00. 03 00 14 00 00 00 1f. 02 00 15 03 00 00.
+                            // 02 00 16 47 00 1d 00 0b 00 57 00 41 00 52 00 54
+                            //---------^
+                            //Last block started: 1 bytes before error and had a size of: 9
+                            //Unexpected code: 47
+                            //
+                            //
+                            // 00 45 00 4e 00 20 00 2e 00 2e 00 2e 00 20 00 00
+                            // 01
                         case 0x0403: {
-                            System.out.println("----------------------------------------------------------------------------------------");
-                            //                        System.out.println(Hex.encodeHexString(udpPacket.getPayload().getRawData()).replaceAll("(.{2})", "$1 ").replaceAll("(.{48})", "$1\n"));
-                            //                        System.out.println("----------------------");
                             // Skip the rest of the header.
                             if(payloadType == 0x1B02) {
-                                buf.skipBytes(123);
+                                buf.skipBytes(118); // 0x76
+
+                                // Opening some detail dialog.
+                                // 1b 02 00 00 00 00 00 07 03 ac 01 d6 00 04 00 00
+                                // 00 06 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00
+                                // - 01 00 00 00 00 00 32 01 39 04 90 17 b9
+                                // 02 00 13 47 00 4b 00 22 00 49 00 6e 00 69 00 74 00 69 00 61 00 6c 00 69 00 73 00 69 00 65 00 72 00 75 00 6e 00 67 00 20 00 2e 00 2e 00 2e 00 2e 00 2e 00 20 00 62 00 69 00 74 00 74 00 65 00 20 00 77 00 61 00 72 00 74 00 65 00 6e 00 00
+                                // 03 00 14 00 00 00 1f
+                                // 02 00 15 03 00 00
+                                // 02 00 16 47 00 1d 00 0b 00 57 00 41 00 52 00 54 00 45 00 4e 00 20 00 2e 00 2e 00 2e 00 20 00 00
+                                // - 01
+                                //
+                                // 1b 02 00 00 00 00 00 07 03 ad 01 d7 00 04 00 00
+                                // 00 06 00 01 00 06 00 94 00 06 01 37 00 06 02 00
+                                // 00 06 02 f5 00 06 03 98 00 06 04 4d 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00
+                                // - 07 00 00 00 00 00 3f 01 46 04 9d 17 c6
+                                // 02 00 00 76 00 66 05 01 01 00 00 00 06 00 46 00 45 00 48 00 4c 00 45 00 52 00 00 00 3b 00 3b 01 0d 00 00 2a f2 70 c7 be 79 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 01 63 00 7c 0d a6 a2
+                                // 02 00 02 01 00
+                                // 02 00 03 05 01
+                                // 02 00 04 01 01
+                                // 02 00 05 01 00
+                                // - 01 00 00 00 00 00 40 01 47 04 9e 17 c7
+                                // 02 00 00 08 42 48 d5 53
+                                // 02 00 01 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // 02 00 02 01 00
+                                // 02 00 03 76 00 58 05 01 01 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 04 47 00 0b 00 02 00 54 00 49 00 00
+                                // 02 00 05 05 01
+                                // 02 00 06 01 00
+                                // 02 00 07 01 00
+                                // - 01 00 00 00 00 00 41 01 48 04 9f 17 c8
+                                // 02 00 00 01 00
+                                // 02 00 01 01 01
+                                // 02 00 02 08 00 00 00 00
+                                // 02 00 03 24 00 0e 41 a0 00 00 00 00 00 00 05 45 01
+                                // 02 00 04 76 00 7e 05 01 01 00 00 00 07 00 4d 00 49 00 4e 00 5f 00 41 00 4c 00 4d 00 00 00 32 00 32 01 0d 00 00 2a f2 70 c7 21 f3 00 0a 00 4d 00 49 00 4e 00 5f 00 53 00 43 00 48 00 41 00 4c 00 54 00 00 00 36 00 36 00 03 00 00 2a f2 70 c7 21 f6 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 05 01 00
+                                // 02 00 06 47 00 0b 00 02 00 46 00 49 00 00
+                                // 02 00 07 05 01
+                                // - 01 00 00 00 00 00 42 01 49 04 a0 17 c9
+                                // 02 00 00 76 00 58 05 01 01 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 01 08 42 c8 00 00
+                                // 02 00 02 63 00 00 19 c9 9c
+                                // 02 00 03 48 80 01
+                                // 02 00 04 01 00
+                                // 02 00 05 21 80 42 49 1c 72
+                                // 02 00 06 01 00
+                                // 02 00 07 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // 02 00 08 47 00 0d 00 03 00 54 00 49 00 43 00 00
+                                // 02 00 09 08 00 00 00 00
+                                // 02 00 0a 01 00
+                                // 02 00 0b 08 42 49 1c 72
+                                // 02 00 0c 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // 02 00 0d 21 c3 42 17 aa ab
+                                // 02 00 0e 63 00 00 19 9c 7b
+                                // 02 00 0f 01 00
+                                // 02 00 10 05 01
+                                // - 01 00 00 00 00 00 43 01 4a 04 a1 17 ca
+                                // 02 00 00 05 01
+                                // 02 00 01 76 00 58 05 01 01 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 02 01 00
+                                // 02 00 03 01 00
+                                // 02 00 04 08 42 49 1c 72
+                                // 02 00 05 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // 02 00 06 01 00
+                                // 02 00 07 47 00 0b 00 02 00 54 00 49 00 00
+                                // - 01 00 00 00 00 00 44 01 4b 04 a2 17 cb
+                                // 02 00 00 76 00 7e 05 01 01 00 00 00 0a 00 4d 00 41 00 58 00 5f 00 53 00 43 00 48 00 41 00 4c 00 54 00 00 00 2e 00 2e 00 03 00 00 2a f2 71 9b 0f 2c 00 07 00 4d 00 41 00 58 00 5f 00 41 00 4c 00 4d 00 00 00 29 00 29 00 03 00 00 2a f2 71 9b 0f 2b ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 01 01 00
+                                // 02 00 02 21 80 3c ce e0 00
+                                // 02 00 03 01 00
+                                // 02 00 04 05 01
+                                // 02 00 05 01 01
+                                // 02 00 06 01 01
+                                // 02 00 07 01 00
+                                // - 01 00 00 00 00 00 45 01 4c 04 a3 17 cc
+                                // 02 00 00 01 00
+                                // 02 00 01 01 00
+                                // 02 00 02 05 01
+                                // - 01
+                                //
+                                // 1b 02 00 00 00 00 00 07 03 ae 01 d8 00 04 00 00
+                                // 00 06 00 01 00 06 00 be 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 <!-- No testpoint id?!?
+                                // 02 00 00 00 00 00 4b 01 52 04 a9 17 d2 02 00 00 01 00
+                                // 02 00 01 76 00 86 05 01 01 00 00 00 0a 00 56 00 45 00 52 00 52 00 49 00 45 00 47 00 45 00 4c 00 54 00 00 00 54 00 54 00 04 00 00 2a f2 71 97 40 42 00 0b 00 4d 00 49 00 4e 00 5f 00 41 00 5f 00 41 00 4c 00 4d 00 5f 00 59 00 00 00 35 00 35 00 03 00 00 2a f2 71 96 46 47 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 02 01 00
+                                // 02 00 03 01 00
+                                // 02 00 04 21 80 00 00 00 00
+                                // 02 00 05 05 01
+                                // 02 00 06 01 00
+                                // 02 00 07 01 01
+                                // - 01 00 00 00 00 00 4c 01 53 04 aa 17 d3
+                                // 02 00 00 07 00 00 00 00
+                                // 02 00 01 05 01
+                                // 02 00 02 76 00 58 05 01 01 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 03 01 01
+                                // 02 00 04 01 01
+                                // 02 00 05 01 00
+                                // 02 00 06 01 00
+                                // 01 b2
+                                // 29
+                                //
+                                // 1b 02 00 00 00 00 00 07 03 af 01 d9 00 04 00 00
+                                // 00 06 00 01 00 06 00 af 00 06 01 42 00 06 02 3d
+                                // 00 06 02 d0 00 06 03 63 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00
+                                // - 06 00 00 00 00 00 45 01 4c 04 a3 17 cc
+                                // 02 00 03 76 00 86 05 01 01 00 00 00 0a 00 56 00 45 00 52 00 52 00 49 00 45 00 47 00 45 00 4c 00 54 00 00 00 54 00 54 00 04 00 00 2a f2 70 d0 7b d3 00 0b 00 4d 00 49 00 4e 00 5f 00 41 00 5f 00 41 00 4c 00 4d 00 5f 00 59 00 00 00 35 00 35 00 03 00 00 2a f1 c7 5e 3e a7 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 04 01 00
+                                // 02 00 05 01 01
+                                // 02 00 06 21 80 00 00 00 00
+                                // 02 00 07 01 00
+                                // - 01 00 00 00 00 00 46 01 4d 04 a4 17 cd
+                                // 02 00 00 63 01 7c 0d a6 d7
+                                // 02 00 01 01 00
+                                // 02 00 02 05 01
+                                // 02 00 03 76 00 66 05 01 01 00 00 00 06 00 46 00 45 00 48 00 4c 00 45 00 52 00 00 00 52 00 52 01 0d 00 00 2a f1 c7 f0 48 88 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 04 01 01
+                                // 02 00 05 01 00
+                                // - 01 00 00 00 00 00 47 01 4e 04 a5 17 ce
+                                // 02 00 00 01 00
+                                // 02 00 01 47 00 0d 00 03 00 54 00 49 00 43 00 00
+                                // 02 00 02 76 00 58 05 01 01 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 03 01 00
+                                // 02 00 04 63 01 00 19 c9 9c
+                                // 02 00 05 08 42 4c 00 00
+                                // 02 00 06 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // 02 00 07 21 c0 42 95 fe c7
+                                // 02 00 08 08 42 48 00 00
+                                // 02 00 09 01 00
+                                // 02 00 0a 05 01
+                                // 02 00 0b 48 80 01
+                                // 02 00 0c 63 01 00 19 9c 7b
+                                // 02 00 0d 01 00
+                                // 02 00 0e 21 80 42 49 1c 72
+                                // 02 00 0f 01 00
+                                // 02 00 10 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // 02 00 11 21 80 42 95 fe c7
+                                // - 01 00 00 00 00 00 48 01 4f 04 a6 17 cf
+                                // 02 00 00 01 00
+                                // 02 00 01 05 01
+                                // 02 00 02 76 00 66 05 01 01 00 00 00 06 00 46 00 45 00 48 00 4c 00 45 00 52 00 00 00 52 00 52 01 0d 00 00 2a f2 70 c7 30 06 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 03 01 00
+                                // 02 00 04 01 00
+                                // 02 00 05 63 00 7c 0d a6 d7
+                                // - 01 00 00 00 00 00 49 01 50 04 a7 17 d0
+                                // 02 00 00 01 00
+                                // 02 00 01 76 00 66 05 01 01 00 00 00 06 00 46 00 45 00 48 00 4c 00 45 00 52 00 00 00 52 00 52 01 0d 00 00 2a f1 c8 bc f6 68 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 02 01 00
+                                // 02 00 03 01 00
+                                // 02 00 04 05 01
+                                // 02 00 05 63 00 7c 0d a6 d7
+                                // - 01 00 00 00 00 00 4a 01 51 04 a8 17 d1
+                                // 02 00 00 01 00
+                                // 02 00 01 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // 02 00 02 47 00 0b 00 02 00 54 00 49 00 00
+                                // 02 00 03 05 01
+                                // 02 00 04 76 00 58 05 01 01 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                // 02 00 05 07 00 00 00 00
+                                // 02 00 06 01 00
+                                // 02 00 07 21 80 42 48 00 00
+                                // - 01
+                                //
+                                // 1b 02 00 00 00 00 00 07 01 ed 00 16 00 04 00 00
+                                // 00 06 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00
+                                // - 01 00 00 00 00 00 40 01 47 04 9e 17 c7
+                                // 03 00 08 00 00 00 1f
+                                // - 01
+                                //
+                                // 1b 02 00 00 00 00 00 07 01 ee 00 17 00 04 00 00
+                                // 00 06 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00
+                                // - 01 00 00 00 00 00 40 01 47 04 9e 17 c7
+                                // 02 00 09 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // - 01
+                                //
+                                // 1b 02 00 00 00 00 00 07 01 ef 00 18 00 04 00 00
+                                // 00 06 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                // 00 00 00 00 00 00 00 00
+                                // - 01 00 00 00 00 00 40 01 47 04 9e 17 c7
+                                // 02 00 0a 24 00 0e 43 48 00 00 c2 20 00 00 03 e9 01
+                                // - 01
                             } else {
-                                buf.skipBytes(31);
+                                buf.skipBytes(0x1A);
+//                                outputPacket(buf);
                             }
-                            byte[] blockId = new byte[4];
-                            buf.readBytes(blockId);
-                            buf.skipBytes(4);
+                            buf.skipBytes(5);
+                            byte[] testpointId = new byte[8];
+                            buf.readBytes(testpointId, 4, 4);
+                            buf.readBytes(testpointId, 0, 4);
+                            String testpoint = Hex.encodeHexString(testpointId);
 
                             int endOfLastBlock = buf.readerIndex();
                             int lastBlockSize = 0;
@@ -304,22 +562,25 @@ public class PoC {
                                 // First check the code of the next block ...
                                 switch (code) {
                                     case (byte) 0x01: {
+                                        // First make sure the current testpoints state is flushed to the db.
+                                        flushTestpointValues(testpoint);
+                                        // 0x01 blocks for 0x1B02 messages contain 4 bytes more.
                                         if(payloadType == 0x1B02) {
                                             buf.skipBytes(4);
                                         }
-                                        buf.readBytes(blockId);
-                                        buf.skipBytes(4);
-                                        outputDetectedBlock("-- Switch Context (" +  Hex.encodeHexString(blockId) + ")", buf, endOfLastBlock);
+                                        if(buf.readableBytes() < 8) {
+                                            return;
+                                        }
+                                        // Now switch to the next testpoint.
+                                        buf.readBytes(testpointId, 4, 4);
+                                        buf.readBytes(testpointId, 0, 4);
+                                        testpoint = Hex.encodeHexString(testpointId);
                                         break;
                                     }
                                     case (byte) 0x02: {
                                         short fieldId = buf.readShort();
                                         byte type = buf.readByte();
-                                        String id = Hex.encodeHexString(blockId) + "-" + fieldId;
-                                        String name = names.getOrDefault(id, id);
-                                        if(!names.containsKey(id)) {
-                                            System.out.println("Missing variable");
-                                        }
+
                                         // Now inspect the block content ...
                                         switch (type) {
                                             case (byte) 0x01: {
@@ -336,20 +597,28 @@ public class PoC {
                                                     default:
                                                         System.out.println("Unknown second byte for boolean value 0x" + Hex.encodeHexString(new byte[]{booleanByteValue}));
                                                 }
-                                                outputDetectedBlock(name + " (BOOL)", booleanValue, null, buf, endOfLastBlock);
-                                                if (!values.containsKey(id)) {
-                                                    valueLogger.info(String.format("Variable with id: %s set to: %b", id, booleanValue));
-                                                    values.put(id, booleanValue);
-                                                } else if (!values.get(id).equals(booleanValue)) {
-                                                    boolean oldValue = (boolean) values.get(id);
-                                                    valueLogger.info(String.format("Variable with id: %s changed from: %b to: %b", id, oldValue, booleanValue));
-                                                    values.put(id, booleanValue);
-                                                }
+                                                updateValue(testpoint, fieldId, booleanValue);
                                                 break;
                                             }
                                             case (byte) 0x03: {
-                                                buf.skipBytes(5);
-                                                outputDetectedBlock(name + " (Unknown)", buf, endOfLastBlock);
+                                                // Note:
+                                                // - Name suggests a time-related field "A/ALA_T9002_Y/RESTZEIT"
+                                                //
+                                                // Found Blocks:
+                                                // 02 00 15 03 00 00
+                                                buf.skipBytes(2);
+//                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown)", buf, endOfLastBlock);
+                                                break;
+                                            }
+                                            case (byte) 0x04: {
+                                                // Notes:
+                                                // - Refers to variable "C/MERROR_MOD"
+                                                // - seems to be a 4 byte integer value.
+                                                // Found Blocks:
+                                                // 02 00 19 04 00 00 01 08
+                                                // 02 00 19 04 00 00 00 00
+                                                buf.skipBytes(4);
+//                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown)", buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0x05: {
@@ -358,37 +627,27 @@ public class PoC {
                                                 //
                                                 // Found Block:
                                                 // 02 00 0c 05: 00
-                                                // 02 00 0c 05: 00
-                                                // 02 00 0c 05: 00
                                                 buf.skipBytes(1);
-                                                outputDetectedBlock(name + " (Unknown (BA))", buf, endOfLastBlock);
+//                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown (BA))", buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0x06: {
                                                 // Possibly Parse 16 bit int?
                                                 short shortValue = buf.readShort();
-                                                outputDetectedBlock(name + " ((U)INT)", shortValue, null, buf, endOfLastBlock);
+                                                updateValue(testpoint, fieldId, shortValue);
                                                 break;
                                             }
                                             case (byte) 0x07: {
                                                 // Possibly Parse 32 bit int?
                                                 int intValue = buf.readInt();
-                                                outputDetectedBlock(name + " ((U)DINT)", intValue, null, buf, endOfLastBlock);
+                                                updateValue(testpoint, fieldId, intValue);
                                                 break;
                                             }
                                             case (byte) 0x08: {
                                                 // Parse float
                                                 float floatValue = buf.readFloat();
-                                                floatValue = Math.round(floatValue * 100.0f) / 100.0f;
-                                                outputDetectedBlock(name + " (REAL)", floatValue, null, buf, endOfLastBlock);
-                                                if (!values.containsKey(id)) {
-                                                    valueLogger.info(String.format("Variable with id: %s set to: %f", id, floatValue));
-                                                    values.put(id, floatValue);
-                                                } else if (!values.get(id).equals(floatValue)) {
-                                                    float oldValue = (float) values.get(id);
-                                                    valueLogger.info(String.format("Variable with id: %s changed from: %f to: %f", id, oldValue, floatValue));
-                                                    values.put(id, floatValue);
-                                                }
+                                                //floatValue = Math.round(floatValue * 100.0f) / 100.0f;
+                                                updateValue(testpoint, fieldId, floatValue);
                                                 break;
                                             }
                                             case (byte) 0x21: {
@@ -396,16 +655,8 @@ public class PoC {
                                                 byte param = buf.readByte();
                                                 decodeParam(param);
                                                 float floatValue = buf.readFloat();
-                                                floatValue = Math.round(floatValue * 100.0f) / 100.0f;
-                                                outputDetectedBlock(name + " (REAL(P))", floatValue, param, buf, endOfLastBlock);
-                                                if (!values.containsKey(id)) {
-                                                    valueLogger.info(String.format("Variable with id: %s set to: %f with params %s", id, floatValue, Hex.encodeHexString(new byte[]{param})));
-                                                    values.put(id, floatValue);
-                                                } else if (!values.get(id).equals(floatValue)) {
-                                                    float oldValue = (float) values.get(id);
-                                                    valueLogger.info(String.format("Variable with id: %s changed from: %f to: %f with params %s", id, oldValue, floatValue, Hex.encodeHexString(new byte[]{param})));
-                                                    values.put(id, floatValue);
-                                                }
+                                                //floatValue = Math.round(floatValue * 100.0f) / 100.0f;
+                                                updateValue(testpoint, fieldId, floatValue);
                                                 break;
                                             }
                                             case (byte) 0x22: {
@@ -424,15 +675,7 @@ public class PoC {
                                                     default:
                                                         System.out.println("Unknown second byte for boolean value 0x" + Hex.encodeHexString(new byte[]{booleanByteValue}));
                                                 }
-                                                outputDetectedBlock(name + " (BOOL(P))", booleanValue, param, buf, endOfLastBlock);
-                                                if (!values.containsKey(id)) {
-                                                    valueLogger.info(String.format("Variable with id: %s set to: %b with params %s", id, booleanValue, Hex.encodeHexString(new byte[]{param})));
-                                                    values.put(id, booleanValue);
-                                                } else if (!values.get(id).equals(booleanValue)) {
-                                                    boolean oldValue = (boolean) values.get(id);
-                                                    valueLogger.info(String.format("Variable with id: %s changed from: %b to: %b with params %s", id, oldValue, booleanValue, Hex.encodeHexString(new byte[]{param})));
-                                                    values.put(id, booleanValue);
-                                                }
+                                                updateValue(testpoint, fieldId, booleanValue);
                                                 break;
                                             }
                                             case (byte) 0x24: {
@@ -456,17 +699,18 @@ public class PoC {
                                                 long val2 = buf.readUnsignedInt();
                                                 long val3 = buf.readUnsignedInt();
                                                 byte flag = buf.readByte();
-                                                outputDetectedBlock(name + " (Trend Scaling) - " + val1 + ", " + val2 + ", " + val3 + ", " + flag, buf, endOfLastBlock);
+//                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Trend Scaling) - " + val1 + ", " + val2 + ", " + val3 + ", " + flag, buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0x25: {
                                                 buf.skipBytes(6);
-                                                outputDetectedBlock(name + " (Unknown)", buf, endOfLastBlock);
+                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown)", buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0x47: {
                                                 // NOTE:
                                                 // - Name of the variable "A/ALA_T9002_Y/SCHRITTTEXT_ALT", "A/ALA_T9002_Y/SCHRITTTEXT"
+                                                // - Seems the most important variable name however is "GF_NAME" which seems to give the testpoint it's name
                                                 // - Seems to be a text-value
                                                 // - The longer UTF-16 Text seems to start at byte 4 and ends at 0x0000
                                                 // - The shorter Text seems to come after some bytes after the longer text and again end with 0x0000
@@ -478,9 +722,10 @@ public class PoC {
                                                 // 00 6c 00 69 00 73 00 69 00 65 00 72 00 75 00 6e
                                                 // 00 67 00 20 00 2e 00 2e 00 2e 00 2e 00 2e 00 20
                                                 // 00 62 00 69 00 74 00 74 00 65 00 20 00 77 00 61
-                                                // 00 72 00 74 00 65 00 6e 00 00 02 00 67 47 00 1d
-                                                // 00 0b 00 57 00 41 00 52 00 54 00 45 00 4e 00 20
-                                                // 00 2e 00 2e 00 2e 00 20 00 00
+                                                // 00 72 00 74 00 65 00 6e 00 00
+                                                //
+                                                // 02 00 67 47 00 1d 00 0b 00 57 00 41 00 52 00 54
+                                                // 00 45 00 4e 00 20 00 2e 00 2e 00 2e 00 20 00 00
                                                 // Decoded:
                                                 // K"Initialisierung ..... bitte warten Ȁ杇WARTEN ...
                                                 //
@@ -490,11 +735,28 @@ public class PoC {
                                                 // Name: DYN_BESCH1
                                                 // 02 00 02 47 00 0b 00 02 00 56 00 4c 00 00
                                                 //
-                                                short val = buf.readShort();
-                                                while (val != 0x0000) {
-                                                    val = buf.readShort();
+                                                // Name: DYN_BESCH1
+                                                // 02 00 04 47 00 07 00 00 00 00
+                                                //
+                                                // It seems the parameter provides the complete length of the block in bytes
+                                                // (including the final 0x0000 and the type and size indicator.
+                                                short numBytes = (short) (buf.readShort() - 7);
+                                                // This seems to be some sort of flag ...
+                                                short flag = buf.readShort();
+                                                byte[] bytes = new byte[numBytes];
+                                                buf.readBytes(bytes);
+                                                // Should be the trailing 0x0000
+                                                buf.skipBytes(2);
+                                                String text = new String(bytes, StandardCharsets.UTF_16);
+                                                if(flag == (short) 9) {
+                                                    if(!testpointNames.containsKey(testpoint)) {
+                                                        testpointNames.put(testpoint, text);
+                                                    }
+                                                    if(!testpointNames.get(testpoint).equals(text)) {
+                                                        System.out.println("Guess I was wrong");
+                                                    }
                                                 }
-                                                outputDetectedBlock(name + " (Unknown)", buf, endOfLastBlock);
+//                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Typed Text)", text, null, buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0x48: {
@@ -508,7 +770,7 @@ public class PoC {
                                                 // 02 00 10 48: 80 00
                                                 byte[] tmp = new byte[2];
                                                 buf.readBytes(tmp);
-                                                outputDetectedBlock(name + " (Unknown)", buf, endOfLastBlock);
+                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown)", buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0x49: {
@@ -520,29 +782,24 @@ public class PoC {
                                                 byte param = buf.readByte();
                                                 decodeParam(param);
                                                 int intValue = buf.readInt();
-                                                if (!values.containsKey(id)) {
-                                                    valueLogger.info(String.format("Variable with id: %s set to: %d with params %s", id, intValue, Hex.encodeHexString(new byte[]{param})));
-                                                    values.put(id, intValue);
-                                                } else if (!values.get(id).equals(intValue)) {
-                                                    int oldValue = (int) values.get(id);
-                                                    valueLogger.info(String.format("Variable with id: %s changed from: %d to: %d with params %s", id, oldValue, intValue, Hex.encodeHexString(new byte[]{param})));
-                                                    values.put(id, intValue);
-                                                }
-                                                outputDetectedBlock(name + " ((U)DINT(P))", intValue, param, buf, endOfLastBlock);
+                                                updateValue(testpoint, fieldId, intValue);
                                                 break;
                                             }
                                             case (byte) 0x5B: {
                                                 // No idea what this type is.
                                                 buf.readShort();
-                                                outputDetectedBlock(name + " (Unknown)", buf, endOfLastBlock);
+                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown)", buf, endOfLastBlock);
+                                                break;
                                             }
                                             case (byte) 0x63: {
                                                 // NOTE:
                                                 // - Name of the variable "IST_FW_KURZ"
+                                                // - Looks like a 4-byte value followed by a (P)aram byte
+                                                // Found blocks:
+                                                // 02 00 06 63: 64 00 19 b9 88
                                                 byte[] tmp = new byte[5];
                                                 buf.readBytes(tmp);
-                                                //                                            System.out.println(String.format("Got 0x63 type for id %s with content: %s", blockId, Hex.encodeHexString(tmp)));
-                                                outputDetectedBlock(name + " (Unknown)", buf, endOfLastBlock);
+//                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown)", buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0x75: {
@@ -551,11 +808,17 @@ public class PoC {
                                                 // - Exactly 3 blocks of this type with extremely similar content is being sent every 60 seconds for the ids: 17, 16 and 34
                                                 //                            001600280d0100000000280015f360000000000100
                                                 //                            001600280d0100000000280015f360000000000100
+                                                // Found blocks:
+                                                // BIN_ALM
+                                                // 02 00 3a 75 00 16 00 18 0d 01 00 00 18 00 18 00 15 f3 60 00 15 e4 10 00 01
+                                                //
+                                                // STOERUNG
+                                                // 02 00 3b 75 00 16 00 39 0f 01 00 00 39 00 39 00 15 f3 60 00 00 00 00 01 00
+
                                                 int size = "001600280d0100000000280015f360000000000100".length() / 2; //21
                                                 byte[] tmp = new byte[size];
                                                 buf.readBytes(tmp);
-                                                //                                            System.out.println(String.format("Got 0x75 type for id %s with content: %s", blockId, Hex.encodeHexString(tmp)));
-                                                outputDetectedBlock(name + " (Unknown)", buf, endOfLastBlock);
+//                                                 outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown)", buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0x76: {
@@ -564,19 +827,58 @@ public class PoC {
                                                 // - Possibly a data-structure is returned which contains all information about a modules alarms
                                                 //   The last 4 bytes (maybe more) seem to be an always increasing value
                                                 //   (Maybe some sort of timestamp)
-                                                short length = (short) (buf.readShort() - 3);
-                                                byte[] tmp = new byte[length];
-                                                buf.readBytes(tmp);
-                                                String hexBlock = Hex.encodeHexString(tmp).replaceAll("(.{32})", "$1\n");
-                                                //                                            System.out.println(String.format("Got 0x76 type for id %s with content: \n%s", blockId, hexBlock));
-                                                outputDetectedBlock(name + " (Unknown (Alarms))", buf, endOfLastBlock);
+                                                // Found blocks:
+                                                // 02 00 04 76 00 7a 05 01 01 00 00 00 08 00 53 00
+                                                // 54 00 4f 00 45 00 52 00 55 00 4e 00 47 00 00 00
+                                                // 39 00 39 01 0f 00 00 2a f4 8e c7 c6 36 00 07 00
+                                                // 42 00 49 00 4e 00 5f 00 41 00 4c 00 4d 00 00 00
+                                                // 18 00 18 00 03 00 00 2a f4 8e c3 e5 2e ff ff 00
+                                                // 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00
+                                                // 00 00 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00
+                                                // 00 00 00 00 ff 00 00 00 00 00 00 00 00
+                                                //
+                                                // 02 00 04 76 00 58 05 01 01 00 00 ff ff 00 00 00
+                                                // 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00
+                                                // 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00
+                                                // 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00
+                                                // 00 00 ff 00 00 00 00 00 00 00 00 ff ff 00 00 00
+                                                // 00 00 ff 00 00 00 00 00 00 00 00
+
+                                                short blockLength = (short) (buf.readShort() - 3);
+                                                buf.skipBytes(blockLength);
+                                                /*int start = buf.readerIndex();
+                                                buf.skipBytes(5);
+                                                short textLength = buf.readShort();
+                                                if(textLength != (short) 0xFFFF) {
+                                                    byte[] tmp = new byte[textLength * 2];
+                                                    buf.readBytes(tmp);
+                                                    String text1 = new String(tmp, StandardCharsets.UTF_16);
+                                                } else {
+                                                    outputPacket(buf);
+                                                }
+                                                buf.skipBytes(2);
+                                                buf.skipBytes(14);
+                                                textLength = buf.readShort();
+                                                if(textLength != (short) 0xFFFF) {
+                                                    byte[] tmp = new byte[textLength * 2];
+                                                    buf.readBytes(tmp);
+                                                    buf.skipBytes(2);
+                                                    String text2 = new String(tmp, StandardCharsets.UTF_16);
+                                                } else {
+                                                    outputPacket(buf);
+                                                }
+
+                                                int curPos = buf.readerIndex();
+                                                buf.skipBytes(blockLength - (curPos - start));
+                                                */
+//                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown (Alarms))", buf, endOfLastBlock);
                                                 break;
                                             }
                                             case (byte) 0xF6: {
                                                 // TODO: Potentially obsolete ...
                                                 // Only seen in 0x0102 blocks
                                                 buf.skipBytes(4);
-                                                outputDetectedBlock(name + " (Unknown)", buf, endOfLastBlock);
+                                                outputDetectedBlock(getTestpointName(testpoint, fieldId) + " (Unknown)", buf, endOfLastBlock);
                                                 break;
                                             }
                                             default: {
@@ -865,37 +1167,29 @@ public class PoC {
                             // ff ff
                             // 04
 
-
-
                             // Skip the header part.
-                            buf.skipBytes(118);
-                            for (byte code = buf.readByte(); buf.readableBytes() > 2; code = buf.readByte()) {
-                                switch (code) {
-                                    case (byte) 0x04: {
-                                        // Skip the 0x04 block and continue reading the variables.
-                                        buf.skipBytes(3);
-                                        byte[] blockId = new byte[4];
-                                        buf.readBytes(blockId);
-                                        buf.skipBytes(4);
-                                        // The first block is part of the id of an address.
-                                        for (short fieldId = buf.readShort(); fieldId != (short) 0xFFFF; fieldId = buf.readShort()) {
-                                            // This is followed by a short value providing the length of the following
-                                            // string.
-                                            short length = buf.readShort();
-                                            // Then comes the string, each character encoded as two bytes.
-                                            byte[] bytes = new byte[length * 2];
-                                            buf.readBytes(bytes);
-                                            buf.skipBytes(2);
-                                            String address = new String(bytes, StandardCharsets.UTF_16);
+                            buf.skipBytes(0x76);
+                            while(buf.readableBytes() > 12) {
+                                byte[] testpointId = new byte[8];
+                                buf.readBytes(testpointId);
+                                buf.skipBytes(4);
 
-                                            // Save the name for later.
-                                            names.put(Hex.encodeHexString(blockId) + "-" + fieldId, address);
-                                        }
-                                        break;
+                                // The first block is part of the id of an address.
+                                for (short fieldId = buf.readShort(); fieldId != (short) 0xFFFF; fieldId = buf.readShort()) {
+                                    // This is followed by a short value providing the length of the following
+                                    // string.
+                                    short length = buf.readShort();
+                                    // Then comes the string, each character encoded as two bytes.
+                                    byte[] bytes = new byte[length * 2];
+                                    buf.readBytes(bytes);
+                                    buf.skipBytes(2);
+                                    String address = new String(bytes, StandardCharsets.UTF_16);
+
+                                    String tespoint = Hex.encodeHexString(testpointId);
+                                    if(!testpointFieldNames.containsKey(tespoint)) {
+                                        testpointFieldNames.put(tespoint, new HashMap<>());
                                     }
-                                    default: {
-                                        System.out.println("Error");
-                                    }
+                                    testpointFieldNames.get(tespoint).put(fieldId, address);
                                 }
                             }
                             break;
@@ -1105,8 +1399,25 @@ public class PoC {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            if((inputPath != null) && !testpointFieldNames.isEmpty()) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         };
 
+        // Start an Elasticsearch node.
+        Node esNode = startElasticsearchNode();
+        esClient = esNode.client();
+        System.out.println("Started Elasticsearch node on port 9200");
+
+        // Make sure the indexes exist prior to writing to them.
+        prepareIndexes(esClient);
+
+        // Start the packet capturing.
         ExecutorService pool = Executors.newScheduledThreadPool(2);
         pool.execute(() -> {
             try {
@@ -1115,6 +1426,117 @@ public class PoC {
                 e.printStackTrace();
             }
         });
+    }
+
+    private static class MyNode extends Node {
+        private MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
+            super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+        }
+    }
+
+    private Node startElasticsearchNode() {
+        try {
+            Node node = new MyNode(Settings.builder()
+                .put("transport.type", "netty4")
+                .put("http.type", "netty4")
+                .put("http.enabled", "true")
+                .put("path.home", "elasticsearch-data")
+                .build(), Collections.singletonList(Netty4Plugin.class));
+            node.start();
+            return node;
+        } catch (NodeValidationException e) {
+            throw new RuntimeException("Could not start Elasticsearch node.", e);
+        }
+    }
+
+    private void prepareIndexes(Client esClient) {
+        IndicesAdminClient indicesAdminClient = esClient.admin().indices();
+
+        // Check if the factory-data index exists and create it, if it doesn't.
+        IndicesExistsRequest factoryDataIndexExistsRequest =
+            indicesAdminClient.prepareExists("delta-v-testpoints").request();
+        if(!indicesAdminClient.exists(factoryDataIndexExistsRequest).actionGet().isExists()) {
+            CreateIndexRequest createIndexRequest = new CreateIndexRequest("delta-v-testpoints");
+            createIndexRequest.mapping("Testpoint",
+                "{\n" +
+                    "            \"properties\": {\n" +
+                    "                \"time\": {\n" +
+                    "                    \"type\": \"date\"\n" +
+                    "                },\n" +
+                    "                \"testpoint\": {\n" +
+                    "                    \"type\": \"keyword\"\n" +
+                    "                }\n" +
+                    "            }\n" +
+                    "        }", XContentType.JSON);
+            CreateIndexResponse createIndexResponse = indicesAdminClient.create(createIndexRequest).actionGet();
+            if(!createIndexResponse.isAcknowledged()) {
+                throw new RuntimeException("Could not create index 'delta-v-messstellen'");
+            }
+        }
+    }
+
+    private String getTestpointName(String testpointId, Short fieldId) {
+        if(testpointFieldNames.containsKey(testpointId)) {
+            return testpointFieldNames.get(testpointId).get(fieldId);
+        }
+        return "-unknown-";
+    }
+
+    private Object getTestpointValue(String testpointId, Short fieldId) {
+        if(testpointFieldValues.containsKey(testpointId)) {
+            return testpointFieldValues.get(testpointId).get(fieldId);
+        }
+        return null;
+    }
+
+    /**
+     * Updates a single field value for a given testpoint.
+     *
+     * @param testpointId id of the testpoint the field belongs to.
+     * @param fieldId id of the field.
+     * @param newValue value the field is set to.
+     */
+    private void updateValue(String testpointId, Short fieldId, Object newValue) {
+        if(!testpointFieldValues.containsKey(testpointId)) {
+            testpointFieldValues.put(testpointId, new HashMap<>());
+        }
+        testpointFieldValues.get(testpointId).put(fieldId, newValue);
+    }
+
+    /**
+     * Writes all current values for a fiven testpoint to the database.
+     *
+     * @param testpointId id of the testpoint.
+     */
+    private void flushTestpointValues(String testpointId) {
+        // If we don't have any values yet, no need to flush
+        if(!testpointFieldValues.containsKey(testpointId)) {
+            return;
+        }
+        // If we don't have a name for the testpoint, we shouldn't flush
+        if(!testpointNames.containsKey(testpointId)) {
+            missingNames.add(testpointId);
+            return;
+        }
+
+        String testpointName = testpointNames.get(testpointId);
+        try {
+            // Prepare the JSON for of the data.
+            XContentBuilder testpointJson = XContentFactory.jsonBuilder()
+                .startObject()
+                .field("time", Calendar.getInstance().getTimeInMillis())
+                .field("testpoint", testpointName);
+            Map<Short, Object> values = testpointFieldValues.get(testpointId);
+            for (Map.Entry<Short, Object> fieldValues : values.entrySet()) {
+                testpointJson.field(getTestpointName(testpointId, fieldValues.getKey()), fieldValues.getValue());
+            }
+            testpointJson.endObject();
+
+            // Store it in Elastic
+            esClient.prepareIndex("delta-v-testpoints", "Testpoint").setSource(testpointJson).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void outputDetectedBlock(String name, ByteBuf byteBuf, int endOfLastBlock) {
@@ -1166,6 +1588,7 @@ public class PoC {
     private void decodeParam(byte param) {
         switch (param) {
             case (byte) 0x00: // 00000000
+            case (byte) 0x08: // 00001000
             case (byte) 0x88: // 10001000
             case (byte) 0x84: // 10000100
             case (byte) 0xC3: // 11000011
