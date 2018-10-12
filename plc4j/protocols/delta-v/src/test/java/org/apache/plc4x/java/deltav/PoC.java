@@ -73,6 +73,10 @@ public class PoC {
                     nif = dev;
                     break;
                 }
+                else if("eth0".equals(dev.getName())) {
+                    nif = dev;
+                    break;
+                }
             }
 
             if(nif == null) {
