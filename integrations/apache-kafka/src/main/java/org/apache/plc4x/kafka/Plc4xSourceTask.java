@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.kafka;
 
 import org.apache.kafka.common.config.AbstractConfig;
+import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaBuilder;
 import org.apache.kafka.connect.data.Struct;
@@ -43,6 +44,25 @@ import java.util.concurrent.*;
  * If the flag does not become true, the method returns null, otherwise a fetch is performed.
  */
 public class Plc4xSourceTask extends SourceTask {
+    static final String TOPIC_CONFIG = "topic";
+    private static final String TOPIC_DOC = "Kafka topic to publish to";
+
+    static final String URL_CONFIG = "url";
+    private static final String URL_DOC = "PLC URL";
+
+    static final String QUERIES_CONFIG = "queries";
+    private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
+
+    static final String RATE_CONFIG = "rate";
+    private static final Integer RATE_DEFAULT = 1000;
+    private static final String RATE_DOC = "Polling rate";
+
+    private static final ConfigDef CONFIG_DEF = new ConfigDef()
+        .define(TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
+        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC)
+        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC)
+        .define(RATE_CONFIG, ConfigDef.Type.INT, RATE_DEFAULT, ConfigDef.Importance.MEDIUM, RATE_DOC);
+
     private final static long WAIT_LIMIT_MILLIS = 100;
     private final static long TIMEOUT_LIMIT_MILLIS = 5000;
 
@@ -72,10 +92,10 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public void start(Map<String, String> props) {
-        AbstractConfig config = new AbstractConfig(Plc4xSourceConnector.CONFIG_DEF, props);
-        topic = config.getString(Plc4xSourceConnector.TOPIC_CONFIG);
-        url = config.getString(Plc4xSourceConnector.URL_CONFIG);
-        queries = config.getList(Plc4xSourceConnector.QUERIES_CONFIG);
+        AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
+        topic = config.getString(TOPIC_CONFIG);
+        url = config.getString(URL_CONFIG);
+        queries = config.getList(QUERIES_CONFIG);
 
         openConnection();
 
@@ -83,7 +103,7 @@ public class Plc4xSourceTask extends SourceTask {
             throw new ConnectException("Reading not supported on this connection");
         }
 
-        int rate = Integer.valueOf(props.get(Plc4xSourceConnector.RATE_CONFIG));
+        int rate = Integer.valueOf(props.get(RATE_CONFIG));
         scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(Plc4xSourceTask.this::scheduleFetch, rate, rate, TimeUnit.MILLISECONDS);
     }

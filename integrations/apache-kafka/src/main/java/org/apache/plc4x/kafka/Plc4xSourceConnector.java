@@ -22,36 +22,28 @@ import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
-import org.apache.kafka.connect.util.ConnectorUtils;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Plc4xSourceConnector extends SourceConnector {
-    static final String TOPIC_CONFIG = "topic";
+    private static final String TOPIC_CONFIG = "topic";
     private static final String TOPIC_DOC = "Kafka topic to publish to";
 
-    static final String URL_CONFIG = "url";
-    private static final String URL_DOC = "Connection string used by PLC4X to connect to the PLC";
-
-    static final String QUERIES_CONFIG = "queries";
+    private static final String QUERIES_CONFIG = "queries";
     private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
 
-    static final String RATE_CONFIG = "rate";
+    private static final String RATE_CONFIG = "rate";
     private static final Integer RATE_DEFAULT = 1000;
     private static final String RATE_DOC = "Polling rate";
 
-    static final ConfigDef CONFIG_DEF = new ConfigDef()
+    private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
-        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC)
         .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC)
         .define(RATE_CONFIG, ConfigDef.Type.INT, RATE_DEFAULT, ConfigDef.Importance.MEDIUM, RATE_DOC);
 
     private String topic;
-    private String url;
     private List<String> queries;
     private Integer rate;
 
@@ -63,23 +55,30 @@ public class Plc4xSourceConnector extends SourceConnector {
     @Override
     public List<Map<String, String>> taskConfigs(int maxTasks) {
         List<Map<String, String>> configs = new LinkedList<>();
-        List<List<String>> queryGroups = ConnectorUtils.groupPartitions(queries, maxTasks);
-        for (List<String> queryGroup: queryGroups) {
-            Map<String, String> taskConfig = new HashMap<>();
-            taskConfig.put(TOPIC_CONFIG, topic);
-            taskConfig.put(URL_CONFIG, url);
-            taskConfig.put(QUERIES_CONFIG, String.join(",", queryGroup));
-            taskConfig.put(RATE_CONFIG, rate.toString());
-            configs.add(taskConfig);
+        Map<String, List<String>> groupedByHost = new HashMap<>();
+        queries.stream().map(query -> query.split("#", 2)).collect(Collectors.groupingBy(parts -> parts[0])).forEach((host, queries) -> {
+            groupedByHost.put(host, queries.stream().map(parts -> parts[1]).collect(Collectors.toList()));
+        });
+        if (groupedByHost.size() > maxTasks) {
+            // Not enough tasks
+            // TODO: throw exception?
+            return Collections.emptyList();
         }
+        groupedByHost.forEach((host, qs) -> {
+            Map<String, String> taskConfig = new HashMap<>();
+            taskConfig.put(Plc4xSourceTask.TOPIC_CONFIG, topic);
+            taskConfig.put(Plc4xSourceTask.URL_CONFIG, host);
+            taskConfig.put(Plc4xSourceTask.QUERIES_CONFIG, String.join(",", qs));
+            taskConfig.put(Plc4xSourceTask.RATE_CONFIG, rate.toString());
+            configs.add(taskConfig);
+        });
         return configs;
     }
 
     @Override
     public void start(Map<String, String> props) {
-        AbstractConfig config = new AbstractConfig(Plc4xSourceConnector.CONFIG_DEF, props);
+        AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
         topic = config.getString(TOPIC_CONFIG);
-        url = config.getString(URL_CONFIG);
         queries = config.getList(QUERIES_CONFIG);
         rate = config.getInt(RATE_CONFIG);
     }
