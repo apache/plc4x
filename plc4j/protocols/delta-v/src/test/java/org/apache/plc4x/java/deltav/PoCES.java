@@ -50,9 +50,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class PoC {
+public class PoCES {
 
-    private static final Logger logger = LoggerFactory.getLogger(PoC.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoCES.class);
 
     private static final int SNAPLEN = 65536;
     private static final int READ_TIMEOUT = 10;
@@ -65,7 +65,7 @@ public class PoC {
     private Map<String, Map<Short, String>> testpointFieldNames = new HashMap<>();
     private Map<String, Map<Short, Object>> testpointFieldValues = new HashMap<>();
 
-    private PoC(String inputPath) throws Exception {
+    private PoCES(String inputPath) throws Exception {
         if(inputPath == null) {
             PcapNetworkInterface nif = null;
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
@@ -1608,9 +1608,9 @@ public class PoC {
 
     public static void main(String[] args) throws Exception {
         if(args.length == 0) {
-            new PoC(null);
+            new PoCES(null);
         } else {
-            new PoC(args[0]);
+            new PoCES(args[0]);
         }
     }
 

@@ -57,6 +57,13 @@
       <version>1.11</version>
     </dependency>
 
+    <!-- InfluxDB dependencies -->
+    <dependency>
+      <groupId>org.influxdb</groupId>
+      <artifactId>influxdb-java</artifactId>
+      <version>2.14</version>
+    </dependency>
+
     <!-- Elasticsearch dependencies -->
     <dependency>
       <groupId>org.elasticsearch</groupId>
@@ -86,7 +93,7 @@
         <version>1.6.0</version>
         <configuration>
           <classpathScope>test</classpathScope>
-          <mainClass>org.apache.plc4x.java.deltav.PoC</mainClass>
+          <mainClass>org.apache.plc4x.java.deltav.PoCInflux</mainClass>
         </configuration>
       </plugin>
     </plugins>
