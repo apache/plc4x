@@ -76,6 +76,8 @@ public class PoCInflux {
             // Setup receiving of packets and redirecting them to the corresponding listeners.
             // Filter packets to contain only the ip protocol number of the current protocol.
             receiveHandle = nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
+
+            System.out.println("Running in Network-Mode with device: " + nif.getName());
         } else {
             File input = new File(inputPath);
             if(!input.exists() || !input.isFile()) {
@@ -83,6 +85,8 @@ public class PoCInflux {
             }
 
             receiveHandle = Pcaps.openOffline(input.getAbsolutePath(), PcapHandle.TimestampPrecision.NANO);
+
+            System.out.println("Running in Simulated-Mode using PCAPNG file: " + inputPath);
         }
 
         // Set the filter.
@@ -115,6 +119,10 @@ public class PoCInflux {
                 // We're only interested in type 2 messages.
                 if(messageType == 0x0002) {
                     short payloadType = buf.readShort();
+
+                    System.out.println("Got DeltaV packet : " +
+                        Hex.encodeHexString(new byte[]{(byte)(payloadType >> 8), (byte)(payloadType & 0xFF)}));
+
                     switch(payloadType) {
                         case 0x0201: {
                             // Notes:
