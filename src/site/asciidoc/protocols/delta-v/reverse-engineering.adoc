@@ -176,6 +176,13 @@ When connecting to a remote system, checking the version compatibility is surely
 
 When just starting the system and not changing anything, we did notice those previously mentioned `0x0006` type messages we think are responsible for keeping the connections in sync.
 
+What is also noticeable when just starting a System and not logging in to Windows yet, is that the DeltaV Operator System seems to connect before a user logs in to Windows.
+After the connection is established, the Controller almost immediately starts sending alarm telegrams (0x03XX types), but no value telegrams (0x04xx).
+
+It also appears that there is some upper bound for the size of packets.
+As when seeing a lot of alarms being sent in 0x0304 messages, sometimes these are split up into multiple messages sent in very short intervals.
+The last of these usually being smaller than the rest.
+
 ==== Changing values
 
 So now we started changing values.
