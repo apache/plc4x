@@ -297,7 +297,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     int numBytes = fieldItem.getNumberOfValues() * 4;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
                     for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putInt((int) (double) fieldItem.getDouble(i));
+                        buffer.putInt((int) (long) fieldItem.getLong(i));
                     }
                     byteData = buffer.array();
                     break;
