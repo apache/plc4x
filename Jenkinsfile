@@ -135,7 +135,7 @@ pipeline {
                 echo 'Deploying'
                 // Unstash the previously stashed build results.
                 unstash name: 'plc4x-build'
-                sh 'mvn -P${JENKINS_PROFILE} ${MVN_LOCAL_REPO_OPT} -Drat.skip=true -Djqassistant.skip=true -Dmaven.resources.skip=true -Dmaven.test.skip=true -Dmaven.install.skip=true deploy'
+                sh 'mvn -P${JENKINS_PROFILE} ${MVN_LOCAL_REPO_OPT} -Drat.skip=true -Djqassistant.skip=true -Dmaven.resources.skip=true -Dmaven.test.skip=true deploy'
             }
         }
 
