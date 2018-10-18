@@ -185,4 +185,6 @@ public abstract class FieldItem<T> {
             "values=" + Arrays.toString(values) +
             '}';
     }
+
+    //ToDo Replace returning of null by Exceptions
 }
