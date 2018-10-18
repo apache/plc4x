@@ -65,8 +65,7 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     @Override
     public boolean isValidShort(int index) {
-        return this.completeByteArray.length >= shortIndexToByteIndex(index) + SHORT_BYTES &&
-            validateByteValues(shortIndexToByteIndex(index), SHORT_BYTES);
+        return this.completeByteArray.length >= shortIndexToByteIndex(index) + SHORT_BYTES;
     }
 
     @Override
@@ -104,8 +103,7 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     @Override
     public boolean isValidInteger(int index) {
-        return this.completeByteArray.length >= intIndexToByteIndex(index) + INTEGER_BYTES &&
-            validateByteValues(intIndexToByteIndex(index), INTEGER_BYTES);
+        return this.completeByteArray.length >= intIndexToByteIndex(index) + INTEGER_BYTES;
     }
 
     @Override
@@ -143,8 +141,7 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     @Override
     public boolean isValidLong(int index) {
-        return this.completeByteArray.length >= longIndexToByteIndex(index) + LONG_BYTES &&
-            validateByteValues(longIndexToByteIndex(index), LONG_BYTES);
+        return this.completeByteArray.length >= longIndexToByteIndex(index) + LONG_BYTES;
     }
 
     @Override
@@ -178,22 +175,6 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
      */
     private static int longIndexToByteIndex(int longIndex) {
         return longIndex * LONG_BYTES;
-    }
-
-    /**
-     * validates if requested bytes contain only non-null values
-     *
-     * @param startIndex index of the first byte requested
-     * @param length     amount of subsequent bytes
-     * @return true if requested values are not-null, false otherwise
-     */
-    private boolean validateByteValues(int startIndex, int length) {
-        for (int byteIndex = startIndex; byteIndex < startIndex + length; byteIndex++) {
-            if (this.completeByteArray[byteIndex] == null) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**

@@ -18,10 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import java.util.Objects;
+
 public class DefaultByteArrayFieldItem extends FieldItem<Byte[]> {
 
     public DefaultByteArrayFieldItem(Byte[]... values) {
         super(values);
+        for (Byte[] value : values) {
+            Objects.requireNonNull(value);
+        }
     }
 
     @Override
