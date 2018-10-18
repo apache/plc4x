@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+
 public class DefaultStringFieldItem extends FieldItem<String> {
 
     public DefaultStringFieldItem(String... values) {
@@ -36,10 +38,10 @@ public class DefaultStringFieldItem extends FieldItem<String> {
 
     @Override
     public String getString(int index) {
-        if(isValidString(index)) {
-            return getValue(index);
+        if (!isValidString(index)) {
+            throw new PlcIncompatibleDatatypeException(String.class, index);
         }
-        return null;
+        return getValue(index);
     }
 
 }

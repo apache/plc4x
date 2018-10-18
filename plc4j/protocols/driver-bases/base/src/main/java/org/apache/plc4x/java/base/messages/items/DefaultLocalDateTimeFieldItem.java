@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -40,10 +42,10 @@ public class DefaultLocalDateTimeFieldItem extends FieldItem<LocalDateTime> {
 
     @Override
     public LocalTime getTime(int index) {
-        if(isValidTime(index)) {
-            return getValue(index).toLocalTime();
+        if (!isValidTime(index)) {
+            throw new PlcIncompatibleDatatypeException(LocalTime.class, index);
         }
-        return null;
+        return getValue(index).toLocalTime();
     }
 
     @Override
@@ -53,10 +55,10 @@ public class DefaultLocalDateTimeFieldItem extends FieldItem<LocalDateTime> {
 
     @Override
     public LocalDate getDate(int index) {
-        if(isValidTime(index)) {
-            return getValue(index).toLocalDate();
+        if (!isValidTime(index)) {
+            throw new PlcIncompatibleDatatypeException(LocalDate.class, index);
         }
-        return null;
+        return getValue(index).toLocalDate();
     }
 
     @Override
@@ -66,10 +68,10 @@ public class DefaultLocalDateTimeFieldItem extends FieldItem<LocalDateTime> {
 
     @Override
     public LocalDateTime getDateTime(int index) {
-        if(isValidTime(index)) {
-            return getValue(index);
+        if (!isValidTime(index)) {
+            throw new PlcIncompatibleDatatypeException(LocalDateTime.class, index);
         }
-        return null;
+        return getValue(index);
     }
 
 }

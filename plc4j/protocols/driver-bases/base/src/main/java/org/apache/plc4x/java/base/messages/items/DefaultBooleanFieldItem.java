@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+
 import java.util.BitSet;
 
 public class DefaultBooleanFieldItem extends FieldItem<Boolean> {
@@ -38,10 +40,10 @@ public class DefaultBooleanFieldItem extends FieldItem<Boolean> {
 
     @Override
     public Boolean getBoolean(int index) {
-        if (isValidBoolean(index)) {
-            return getValue(index);
+        if (!isValidBoolean(index)) {
+            throw new PlcIncompatibleDatatypeException(Boolean.class, index);
         }
-        return null;
+        return getValue(index);
     }
 
     @Override

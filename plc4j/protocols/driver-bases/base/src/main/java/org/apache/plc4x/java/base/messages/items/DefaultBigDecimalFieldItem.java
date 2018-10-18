@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -39,10 +41,10 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Boolean getBoolean(int index) {
-        if (isValidBoolean(index)) {
-            return getValue(index).compareTo(BigDecimal.ZERO) != 0;
+        if (!isValidBoolean(index)) {
+            throw new PlcIncompatibleDatatypeException(Boolean.class, index);
         }
-        return null;
+        return getValue(index).compareTo(BigDecimal.ZERO) != 0;
     }
 
     @Override
@@ -55,10 +57,10 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Byte getByte(int index) {
-        if (isValidByte(index)) {
-            return getValue(index).byteValue();
+        if (!isValidByte(index)) {
+            throw new PlcIncompatibleDatatypeException(Byte.class, index);
         }
-        return null;
+        return getValue(index).byteValue();
     }
 
     @Override
@@ -71,10 +73,10 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Short getShort(int index) {
-        if (isValidShort(index)) {
-            return getValue(index).shortValue();
+        if (!isValidShort(index)) {
+            throw new PlcIncompatibleDatatypeException(Short.class, index);
         }
-        return null;
+        return getValue(index).shortValue();
     }
 
     @Override
@@ -87,22 +89,10 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Integer getInteger(int index) {
-        if (isValidInteger(index)) {
-            return getValue(index).intValue();
+        if (!isValidInteger(index)) {
+            throw new PlcIncompatibleDatatypeException(Integer.class, index);
         }
-        return null;
-    }
-
-    public boolean isValidBigInteger(int index) {
-        BigDecimal value = getValue(index);
-        return value != null;
-    }
-
-    public BigInteger getBigInteger(int index) {
-        if (isValidBigInteger(index)) {
-            return getValue(index).toBigInteger();
-        }
-        return null;
+        return getValue(index).intValue();
     }
 
     @Override
@@ -115,10 +105,22 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Long getLong(int index) {
-        if (isValidLong(index)) {
-            return getValue(index).longValue();
+        if (!isValidLong(index)) {
+            throw new PlcIncompatibleDatatypeException(Long.class, index);
         }
-        return null;
+        return getValue(index).longValue();
+    }
+
+    public boolean isValidBigInteger(int index) {
+        BigDecimal value = getValue(index);
+        return value != null;
+    }
+
+    public BigInteger getBigInteger(int index) {
+        if (!isValidBigInteger(index)) {
+            throw new PlcIncompatibleDatatypeException(BigInteger.class, index);
+        }
+        return getValue(index).toBigInteger();
     }
 
     @Override
@@ -131,10 +133,10 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Float getFloat(int index) {
-        if (isValidFloat(index)) {
-            return getValue(index).floatValue();
+        if (!isValidFloat(index)) {
+            throw new PlcIncompatibleDatatypeException(Float.class, index);
         }
-        return null;
+        return getValue(index).floatValue();
     }
 
     @Override
@@ -147,10 +149,10 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Double getDouble(int index) {
-        if (isValidDouble(index)) {
-            return getValue(index).doubleValue();
+        if (!isValidDouble(index)) {
+            throw new PlcIncompatibleDatatypeException(Double.class, index);
         }
-        return null;
+        return getValue(index).doubleValue();
     }
 
     public boolean isValidBigDecimal(int index) {
@@ -158,6 +160,9 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
     }
 
     public BigDecimal getBigDecimal(int index) {
+        if(!isValidBigDecimal(index)) {
+            throw new PlcIncompatibleDatatypeException(BigDecimal.class, index);
+        }
         return getValue(index);
     }
 
