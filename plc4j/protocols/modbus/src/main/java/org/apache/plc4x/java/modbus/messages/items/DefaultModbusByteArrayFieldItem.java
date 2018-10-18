@@ -23,9 +23,8 @@ import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * default implementation for DefaultByteArrayFieldItem for Usage within Modbus module
@@ -45,7 +44,7 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
     public DefaultModbusByteArrayFieldItem(Byte[]... values) {
         super(values);
         this.byteOrder = DEFAULT_ENDIANNESS;
-        this.completeByteArray = getCompleteByteArray();
+        this.completeByteArray = Arrays.stream(getValues()).flatMap(Stream::of).toArray(Byte[]::new);
     }
 
     @Override
@@ -66,127 +65,131 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     @Override
     public boolean isValidShort(int index) {
-        return  this.completeByteArray.length>=shortIndexToByteIndex(index)+SHORT_BYTES &&
-                validateByteValues(shortIndexToByteIndex(index),SHORT_BYTES);
+        return this.completeByteArray.length >= shortIndexToByteIndex(index) + SHORT_BYTES &&
+            validateByteValues(shortIndexToByteIndex(index), SHORT_BYTES);
     }
 
     @Override
     public Short getShort(int index) {
-        if(isValidShort(index)){
-            return ByteBuffer
-                .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(shortIndexToByteIndex(index))))
-                .order(this.byteOrder)
-                .getShort();
-        }
-        return null;
+        return getShort(index, this.byteOrder);
     }
 
     /**
      * returns the short result for the given index with explicit chose of ByteOrder
-     * @param index index in relation to the requested data-type (here Short), see comment of regarding index-transformation
+     *
+     * @param index     index in relation to the requested data-type (here Short), see comment of regarding index-transformation
      * @param byteOrder byte-order used for decoding of byte-array
      * @return resulting short value if valid data is given, null otherwise
      */
-    public Short getShort(int index, ByteOrder byteOrder){
-        this.byteOrder = byteOrder;
-        return getShort(index);
+    public Short getShort(int index, ByteOrder byteOrder) {
+        if (!isValidShort(index)) {
+            return null;
+        }
+        return ByteBuffer
+            .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(shortIndexToByteIndex(index))))
+            .order(byteOrder)
+            .getShort();
     }
 
     /**
      * converts the starting index of a short array to source type Byte
      * e.g. user wants to request the 2nd long value --&gt; index=1 --&gt; byteIndex=2
+     *
      * @param shortIndex index from users view
      * @return resulting byteArrayIndex
      */
-    private static int shortIndexToByteIndex(int shortIndex){
-        return shortIndex*SHORT_BYTES;
+    private static int shortIndexToByteIndex(int shortIndex) {
+        return shortIndex * SHORT_BYTES;
     }
 
     @Override
     public boolean isValidInteger(int index) {
-        return  this.completeByteArray.length>=intIndexToByteIndex(index)+INTEGER_BYTES &&
-                validateByteValues(intIndexToByteIndex(index),INTEGER_BYTES);
+        return this.completeByteArray.length >= intIndexToByteIndex(index) + INTEGER_BYTES &&
+            validateByteValues(intIndexToByteIndex(index), INTEGER_BYTES);
     }
 
     @Override
     public Integer getInteger(int index) {
-        if(isValidInteger(index)){
-            return ByteBuffer
-                .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(intIndexToByteIndex(index))))
-                .order(this.byteOrder)
-                .getInt();
-        }
-        return null;
+        return getInteger(index, this.byteOrder);
     }
 
     /**
      * returns the int result for the given index with explicit chose of ByteOrder
-     * @param index index in relation to the requested data-type (here Integer), see comment of regarding index-transformation
+     *
+     * @param index     index in relation to the requested data-type (here Integer), see comment of regarding index-transformation
      * @param byteOrder byte-order used for decoding of byte-array
      * @return resulting short value if valid data is given, null otherwise
      */
-    public Integer getInteger(int index, ByteOrder byteOrder){
-        this.byteOrder = byteOrder;
-        return getInteger(index);
+    public Integer getInteger(int index, ByteOrder byteOrder) {
+        if (!isValidInteger(index)) {
+            return null;
+        }
+        return ByteBuffer
+            .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(intIndexToByteIndex(index))))
+            .order(byteOrder)
+            .getInt();
     }
 
     /**
      * converts the starting index of an int array to source type Byte
      * e.g. user wants to request the 4th integer value --&gt; index=3 --&gt; byteIndex=12
+     *
      * @param intIndex index from users view
      * @return resulting byteArrayIndex
      */
-    private static int intIndexToByteIndex(int intIndex){
-        return intIndex*INTEGER_BYTES;
+    private static int intIndexToByteIndex(int intIndex) {
+        return intIndex * INTEGER_BYTES;
     }
 
     @Override
     public boolean isValidLong(int index) {
-        return  this.completeByteArray.length>=longIndexToByteIndex(index)+LONG_BYTES &&
-                validateByteValues(longIndexToByteIndex(index),LONG_BYTES);
+        return this.completeByteArray.length >= longIndexToByteIndex(index) + LONG_BYTES &&
+            validateByteValues(longIndexToByteIndex(index), LONG_BYTES);
     }
 
     @Override
     public Long getLong(int index) {
-        if(isValidLong(index)){
-            return ByteBuffer
-                .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(longIndexToByteIndex(index))))
-                .order(this.byteOrder)
-                .getLong();
-        }
-        return null;
+        return getLong(index, this.byteOrder);
     }
 
     /**
      * returns the long result for the given index with explicit chose of ByteOrder
-     * @param index index in relation to the requested data-type (here Long), see comment of regarding index-transformation
+     *
+     * @param index     index in relation to the requested data-type (here Long), see comment of regarding index-transformation
      * @param byteOrder byte-order used for decoding of byte-array
      * @return resulting short value if valid data is given, null otherwise
      */
-    public Long getLong(int index,ByteOrder byteOrder) {
-        this.byteOrder = byteOrder;
-        return getLong(index);
+    public Long getLong(int index, ByteOrder byteOrder) {
+        if (!isValidLong(index)) {
+            return null;
+        }
+        return ByteBuffer
+            .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(longIndexToByteIndex(index))))
+            .order(byteOrder)
+            .getLong();
     }
 
     /**
      * converts the starting index of a long array to source type Byte
      * e.g. user wants to request the 3rd long value --&gt; index=2 --&gt; byteIndex=16
+     *
      * @param longIndex index from users view
      * @return resulting byteArrayIndex
      */
-    private static int longIndexToByteIndex(int longIndex){
-        return longIndex*LONG_BYTES;
+    private static int longIndexToByteIndex(int longIndex) {
+        return longIndex * LONG_BYTES;
     }
 
     /**
      * validates if requested bytes contain only non-null values
-     * @param startIndex    index of the first byte requested
-     * @param length        amount of subsequent bytes
-     * @return  true if requested values are not-null, false otherwise
+     *
+     * @param startIndex index of the first byte requested
+     * @param length     amount of subsequent bytes
+     * @return true if requested values are not-null, false otherwise
      */
-    private boolean validateByteValues(int startIndex, int length){
-        for(int byteIndex=startIndex; byteIndex<startIndex+length;byteIndex++){
-            if(this.completeByteArray[byteIndex]==null){
+    private boolean validateByteValues(int startIndex, int length) {
+        for (int byteIndex = startIndex; byteIndex < startIndex + length; byteIndex++) {
+            if (this.completeByteArray[byteIndex] == null) {
                 return false;
             }
         }
@@ -194,34 +197,29 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
     }
 
     /**
-     * derives an ordered byte array from the given values to simplify handling
-     * @return the ordered byte array
-     */
-    private Byte[] getCompleteByteArray(){
-        List<Byte> byteList = new ArrayList<>();
-        for(int valuesIndex=0;valuesIndex<getNumberOfValues();valuesIndex++){
-            byteList.addAll(Arrays.asList(getValue(valuesIndex)));
-        }
-        return byteList.toArray(new Byte[0]);
-    }
-
-    /**
      * returns a subarray with the wanted index first
+     *
      * @param index start-index of wanted value
      * @return the sub-array
      */
-    private Byte[] getByteArrayFromIndex(int index){
-        if(index>this.completeByteArray.length){
+    private Byte[] getByteArrayFromIndex(int index) {
+        if (index > this.completeByteArray.length) {
             return new Byte[0];
         }
-        return Arrays.copyOfRange(this.completeByteArray,index,this.completeByteArray.length);
+        return Arrays.copyOfRange(this.completeByteArray, index, this.completeByteArray.length);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         DefaultModbusByteArrayFieldItem that = (DefaultModbusByteArrayFieldItem) o;
         return Arrays.equals(completeByteArray, that.completeByteArray);
     }
