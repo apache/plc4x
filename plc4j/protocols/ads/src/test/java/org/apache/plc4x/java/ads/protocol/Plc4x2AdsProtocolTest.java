@@ -111,14 +111,14 @@ public class Plc4x2AdsProtocolTest {
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
                         (InternalPlcRequest) new DefaultPlcWriteRequest.Builder(null, new AdsPlcFieldHandler()) // TODO: remove null
-                            .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType, pair.getValue())
+                            .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType.name(), pair.getValue())
                             .build(), new CompletableFuture<>()),
                     AdsWriteResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0))
                 ),
                 ImmutablePair.of(
                     new PlcRequestContainer<>(
                         (InternalPlcRequest) new DefaultPlcReadRequest.Builder(null, new AdsPlcFieldHandler()) // TODO: remove null
-                            .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType)
+                            .addItem(RandomStringUtils.randomAscii(10), "1/1:" + pair.adsDataType.name())
                             .build(), new CompletableFuture<>()),
                     AdsReadResponse.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, Result.of(0), Data.of(pair.getByteRepresentation()))
                 )
@@ -145,7 +145,7 @@ public class Plc4x2AdsProtocolTest {
         dataTypeMap.put(LocalDateTime.class, AdsDataType.DATE_AND_TIME);
         dataTypeMap.put(byte[].class, AdsDataType.BYTE);
         dataTypeMap.put(Byte[].class, AdsDataType.BYTE);
-        return new AdsDataTypePair(dataTypePair, dataTypeMap.getOrDefault(dataTypePair.getDataTypeClass(), AdsDataType.BYTE));
+        return new AdsDataTypePair(dataTypePair, dataTypeMap.get(dataTypePair.getDataTypeClass()));
     }
 
     private static class AdsDataTypePair extends Plc4XSupportedDataTypes.DataTypePair {
@@ -154,7 +154,7 @@ public class Plc4x2AdsProtocolTest {
 
         private AdsDataTypePair(Plc4XSupportedDataTypes.DataTypePair dataTypePair, AdsDataType adsDataType) {
             super(dataTypePair.getDataTypePair());
-            this.adsDataType = adsDataType;
+            this.adsDataType = Objects.requireNonNull(adsDataType);
         }
     }
 

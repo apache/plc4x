@@ -174,7 +174,7 @@ public enum AdsDataType {
      * If no size specification is given, the default size of 80 characters will be used: Memory use [Bytes] =  80 + 1 Byte for string terminated Null character;
      * If string size specification is given: Memory use [Bytes] = String Size + 1 Byte for string terminated Null character);
      */
-    STRING(81),
+    STRING(81 * 8),
     /**
      * TIME
      * Duration time. The most siginificant digit is one millisecond. The data type is handled internally like DWORD.
@@ -510,7 +510,7 @@ public enum AdsDataType {
         this.upperBound = upperBound;
         this.typeName = name();
         this.memoryUse = memoryUse;
-        this.targetByteSize = this.memoryUse * 8;
+        this.targetByteSize = this.memoryUse / 8;
     }
 
     public String getTypeName() {
@@ -535,5 +535,16 @@ public enum AdsDataType {
 
     public boolean withinBounds(double other) {
         return other >= lowerBound && other <= upperBound;
+    }
+
+    @Override
+    public String toString() {
+        return "AdsDataType{" +
+            "typeName='" + typeName + '\'' +
+            ", lowerBound=" + lowerBound +
+            ", upperBound=" + upperBound +
+            ", memoryUse=" + memoryUse +
+            ", targetByteSize=" + targetByteSize +
+            "} " + super.toString();
     }
 }

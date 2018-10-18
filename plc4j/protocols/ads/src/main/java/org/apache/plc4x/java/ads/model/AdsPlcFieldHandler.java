@@ -721,28 +721,28 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         Class<? extends FieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case BYTE:
-                fieldType = DefaultLongFieldItem.class;
+                fieldType = DefaultByteFieldItem.class;
                 break;
             case WORD:
-                fieldType = DefaultLongFieldItem.class;
+                fieldType = DefaultByteArrayFieldItem.class;
                 break;
             case DWORD:
-                fieldType = DefaultLongFieldItem.class;
+                fieldType = DefaultByteArrayFieldItem.class;
                 break;
             case SINT:
-                fieldType = DefaultLongFieldItem.class;
+                fieldType = DefaultIntegerFieldItem.class;
                 break;
             case USINT:
                 fieldType = DefaultLongFieldItem.class;
                 break;
             case INT:
-                fieldType = DefaultLongFieldItem.class;
+                fieldType = DefaultShortFieldItem.class;
                 break;
             case UINT:
-                fieldType = DefaultLongFieldItem.class;
+                fieldType = DefaultIntegerFieldItem.class;
                 break;
             case DINT:
-                fieldType = DefaultLongFieldItem.class;
+                fieldType = DefaultIntegerFieldItem.class;
                 break;
             case UDINT:
                 fieldType = DefaultLongFieldItem.class;
@@ -754,7 +754,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 fieldType = DefaultBigIntegerFieldItem.class;
                 break;
             case INT32:
-                fieldType = DefaultLongFieldItem.class;
+                fieldType = DefaultIntegerFieldItem.class;
                 break;
             case INT64:
                 fieldType = DefaultLongFieldItem.class;
@@ -820,39 +820,67 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         AdsField adsField = (AdsField) field;
         BigDecimal minValue = BigDecimal.valueOf(adsField.getAdsDataType().getLowerBound());
         BigDecimal maxValue = BigDecimal.valueOf(adsField.getAdsDataType().getUpperBound());
+        Class<? extends FieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case REAL:
+                fieldType = DefaultFloatFieldItem.class;
                 break;
             case LREAL:
+                fieldType = DefaultDoubleFieldItem.class;
                 break;
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign floating point values to " + adsField.getAdsDataType().name() + " fields.");
         }
-        Double[] floatingPointValues = new Double[values.length];
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] instanceof Float) {
-                floatingPointValues[i] = ((Float) values[i]).doubleValue();
-            } else if (values[i] instanceof Double) {
-                floatingPointValues[i] = (Double) values[i];
-            } else {
-                throw new IllegalArgumentException(
-                    "Value of type " + values[i].getClass().getName() +
-                        " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
-            }
+        if (fieldType == DefaultDoubleFieldItem.class) {
+            Double[] floatingPointValues = new Double[values.length];
+            for (int i = 0; i < values.length; i++) {
+                if (values[i] instanceof Float) {
+                    floatingPointValues[i] = ((Float) values[i]).doubleValue();
+                } else if (values[i] instanceof Double) {
+                    floatingPointValues[i] = (Double) values[i];
+                } else {
+                    throw new IllegalArgumentException(
+                        "Value of type " + values[i].getClass().getName() +
+                            " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
+                }
 
-            if (minValue.compareTo(new BigDecimal(floatingPointValues[i])) > 0) {
-                throw new IllegalArgumentException(
-                    "Value of " + floatingPointValues[i] + " exceeds allowed minimum for type "
-                        + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
+                if (minValue.compareTo(new BigDecimal(floatingPointValues[i])) > 0) {
+                    throw new IllegalArgumentException(
+                        "Value of " + floatingPointValues[i] + " exceeds allowed minimum for type "
+                            + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
+                }
+                if (maxValue.compareTo(new BigDecimal(floatingPointValues[i])) < 0) {
+                    throw new IllegalArgumentException(
+                        "Value of " + floatingPointValues[i] + " exceeds allowed maximum for type "
+                            + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
+                }
             }
-            if (maxValue.compareTo(new BigDecimal(floatingPointValues[i])) < 0) {
-                throw new IllegalArgumentException(
-                    "Value of " + floatingPointValues[i] + " exceeds allowed maximum for type "
-                        + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
+            return new DefaultDoubleFieldItem(floatingPointValues);
+        } else {
+            Float[] floatingPointValues = new Float[values.length];
+            for (int i = 0; i < values.length; i++) {
+                if (values[i] instanceof Float) {
+                    floatingPointValues[i] = (Float) values[i];
+                } else {
+                    throw new IllegalArgumentException(
+                        "Value of type " + values[i].getClass().getName() +
+                            " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
+                }
+
+                if (minValue.compareTo(new BigDecimal(floatingPointValues[i])) > 0) {
+                    throw new IllegalArgumentException(
+                        "Value of " + floatingPointValues[i] + " exceeds allowed minimum for type "
+                            + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
+                }
+                if (maxValue.compareTo(new BigDecimal(floatingPointValues[i])) < 0) {
+                    throw new IllegalArgumentException(
+                        "Value of " + floatingPointValues[i] + " exceeds allowed maximum for type "
+                            + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
+                }
             }
+            return new DefaultFloatFieldItem(floatingPointValues);
         }
-        return new DefaultDoubleFieldItem(floatingPointValues);
     }
 
     private FieldItem internalEncodeString(PlcField field, Object[] values) {

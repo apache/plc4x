@@ -159,7 +159,8 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         int bytesToBeWritten = bytes.length;
         int maxTheoreticalSize = directAdsField.getAdsDataType().getTargetByteSize() * directAdsField.getNumberOfElements();
         if (bytesToBeWritten > maxTheoreticalSize) {
-            throw new PlcProtocolPayloadTooBigException("Ads", maxTheoreticalSize, bytesToBeWritten, values);
+            LOGGER.debug("Requested AdsDatatype {} is exceeded by number of bytes {}. Limit {}.", directAdsField.getAdsDataType(), bytesToBeWritten, maxTheoreticalSize);
+            throw new PlcProtocolPayloadTooBigException("ADS", maxTheoreticalSize, bytesToBeWritten, values);
         }
         Data data = Data.of(bytes);
         AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
