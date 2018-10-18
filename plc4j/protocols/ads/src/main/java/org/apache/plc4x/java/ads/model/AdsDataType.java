@@ -18,10 +18,15 @@
  */
 package org.apache.plc4x.java.ads.model;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.stream.IntStream;
 
 /**
  * Documentation can be found here:
@@ -43,10 +48,8 @@ public enum AdsDataType {
     INT64(Long.MIN_VALUE, Long.MAX_VALUE, 64),
     UINT8(0, Short.MAX_VALUE, 8),
     UINT16(0, Integer.MAX_VALUE, 16),
-    // TODO: max might be off here
-    UINT32(0, Double.MAX_VALUE, 32),
-    // TODO: max might be off here
-    UINT64(0, Double.MAX_VALUE, 64),
+    UINT32(0, produceUnsignedMaxValue(32), 32),
+    UINT64(0, produceUnsignedMaxValue(64), 64),
     FLOAT(Float.MIN_VALUE, Float.MAX_VALUE, 32),
     DOUBLE(Double.MIN_VALUE, Double.MAX_VALUE, 64),
     // https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
@@ -546,5 +549,21 @@ public enum AdsDataType {
             ", memoryUse=" + memoryUse +
             ", targetByteSize=" + targetByteSize +
             "} " + super.toString();
+    }
+
+    private static double produceUnsignedMaxValue(int numberOfBytes) {
+        return new BigInteger(
+            ArrayUtils.insert(
+                0,
+                IntStream.range(0, numberOfBytes)
+                    .map(ignore -> 0xff)
+                    .collect(
+                        ByteArrayOutputStream::new,
+                        (baos, i) -> baos.write((byte) i),
+                        (baos1, baos2) -> baos1.write(baos2.toByteArray(), 0, baos2.size())
+                    )
+                    .toByteArray(),
+                (byte) 0x0)
+        ).doubleValue();
     }
 }
