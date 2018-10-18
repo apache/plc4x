@@ -65,5 +65,9 @@ public class IndexOffset extends UnsignedIntLEByteValue {
         public static final IndexOffset TIMESERVICE_SYSTEMTIMES = IndexOffset.of(2);
         public static final IndexOffset TIMESERVICE_RTCTIMEDIFF = IndexOffset.of(3);
         public static final IndexOffset TIMESERVICE_ADJUSTTIMETORTC = IndexOffset.of(4);
+
+        private SystemServiceOffsets() {
+            // Container class
+        }
     }
 }

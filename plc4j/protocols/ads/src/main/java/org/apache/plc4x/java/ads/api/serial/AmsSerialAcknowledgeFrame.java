@@ -121,16 +121,30 @@ public class AmsSerialAcknowledgeFrame implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AmsSerialAcknowledgeFrame)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AmsSerialAcknowledgeFrame)) {
+            return false;
+        }
 
         AmsSerialAcknowledgeFrame that = (AmsSerialAcknowledgeFrame) o;
 
-        if (!magicCookie.equals(that.magicCookie)) return false;
-        if (!transmitterAddress.equals(that.transmitterAddress)) return false;
-        if (!receiverAddress.equals(that.receiverAddress)) return false;
-        if (!fragmentNumber.equals(that.fragmentNumber)) return false;
-        if (!userDataLength.equals(that.userDataLength)) return false;
+        if (!magicCookie.equals(that.magicCookie)) {
+            return false;
+        }
+        if (!transmitterAddress.equals(that.transmitterAddress)) {
+            return false;
+        }
+        if (!receiverAddress.equals(that.receiverAddress)) {
+            return false;
+        }
+        if (!fragmentNumber.equals(that.fragmentNumber)) {
+            return false;
+        }
+        if (!userDataLength.equals(that.userDataLength)) {
+            return false;
+        }
         return crc.equals(that.crc);
     }
 

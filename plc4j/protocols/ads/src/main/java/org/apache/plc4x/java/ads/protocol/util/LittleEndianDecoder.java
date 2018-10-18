@@ -42,7 +42,7 @@ public class LittleEndianDecoder {
     }
 
     @SuppressWarnings("unchecked")
-    public static FieldItem<?> decodeData(AdsDataType adsDataType, byte[] adsData) {
+    public static FieldItem decodeData(AdsDataType adsDataType, byte[] adsData) {
         ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(adsData);
         switch (adsDataType) {
             case BIT: {

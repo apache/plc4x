@@ -16,11 +16,17 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.ads.model;
 
-import org.apache.plc4x.java.api.model.PlcField;
+package org.apache.plc4x.java.ads.protocol.exception;
 
-@FunctionalInterface
-public interface AdsField extends PlcField {
-    AdsDataType getAdsDataType();
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+
+public class AdsProtocolOverflowException extends PlcRuntimeException {
+    public AdsProtocolOverflowException(Class<?> clazz, long length) {
+        super("Overflow in datatype " + clazz + " length: " + length);
+    }
+
+    public AdsProtocolOverflowException(String constantName, long expectedLength, long actualLength) {
+        super("Overflow of " + constantName + ": " + expectedLength + ". Actual " + actualLength + "bytes.");
+    }
 }

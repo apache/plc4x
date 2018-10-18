@@ -56,6 +56,9 @@ import java.net.UnknownHostException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -115,7 +118,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 pipeline.addLast(new Payload2TcpProtocol());
                 pipeline.addLast(new Ads2PayloadProtocol());
                 pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
-                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, timer)); // TODO: remove nulls; implement correctly
+                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, timer));
             }
         };
     }
@@ -200,7 +203,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             Invoke.NONE,
             indexGroup,
             indexOffset,
-            Length.of(adsDataType.getTargetByteSize() * numberOfElements),
+            Length.of(adsDataType.getTargetByteSize() * (long) numberOfElements),
             transmissionMode,
             MaxDelay.of(0),
             CycleTime.of(cycleTime)
@@ -223,7 +226,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,
-                __ -> Pair.of(PlcResponseCode.OK, adsSubscriptionHandle)
+                ignored -> Pair.of(PlcResponseCode.OK, adsSubscriptionHandle)
             ));
 
         future.complete(new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, responseItems));
@@ -324,7 +327,24 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
     @Override
     public void close() throws PlcConnectionException {
-        // TODO: unregister all consumers.
+        try {
+            consumerRegistrations.values().forEach(getChannel().pipeline().get(Plc4x2AdsProtocol.class)::removeConsumer);
+            List<PlcSubscriptionHandle> collect = consumerRegistrations.keySet().stream()
+                .map(InternalPlcConsumerRegistration::getAssociatedHandles)
+                .flatMap(Collection::stream)
+                .map(PlcSubscriptionHandle.class::cast)
+                .collect(Collectors.toList());
+
+            PlcUnsubscriptionRequest plcUnsubscriptionRequest = new DefaultPlcUnsubscriptionRequest.Builder(this).addHandles(collect).build();
+            unsubscribe(plcUnsubscriptionRequest).get(5, TimeUnit.SECONDS);
+
+            consumerRegistrations.clear();
+        } catch (InterruptedException e) {
+            LOGGER.warn("Exception while closing", e);
+            Thread.currentThread().interrupt();
+        } catch (RuntimeException | ExecutionException | TimeoutException e) {
+            LOGGER.warn("Exception while closing", e);
+        }
         super.close();
     }
 }

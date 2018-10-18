@@ -142,17 +142,33 @@ public class AmsSerialFrame implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AmsSerialFrame)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AmsSerialFrame)) {
+            return false;
+        }
 
         AmsSerialFrame that = (AmsSerialFrame) o;
 
-        if (!magicCookie.equals(that.magicCookie)) return false;
-        if (!transmitterAddress.equals(that.transmitterAddress)) return false;
-        if (!receiverAddress.equals(that.receiverAddress)) return false;
-        if (!fragmentNumber.equals(that.fragmentNumber)) return false;
-        if (!userDataLength.equals(that.userDataLength)) return false;
-        if (!userData.equals(that.userData)) return false;
+        if (!magicCookie.equals(that.magicCookie)) {
+            return false;
+        }
+        if (!transmitterAddress.equals(that.transmitterAddress)) {
+            return false;
+        }
+        if (!receiverAddress.equals(that.receiverAddress)) {
+            return false;
+        }
+        if (!fragmentNumber.equals(that.fragmentNumber)) {
+            return false;
+        }
+        if (!userDataLength.equals(that.userDataLength)) {
+            return false;
+        }
+        if (!userData.equals(that.userData)) {
+            return false;
+        }
         return crc.equals(that.crc);
     }
 

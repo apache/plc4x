@@ -283,7 +283,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,
-                __ -> responseCode
+                ignore -> responseCode
             ));
         return new DefaultPlcWriteResponse(plcWriteRequest, responseItems);
     }
@@ -304,7 +304,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,
-                __ -> Pair.of(responseCode, fieldItem)
+                ignore -> Pair.of(responseCode, fieldItem)
             ));
 
         return new DefaultPlcReadResponse(plcReadRequest, responseItems);
