@@ -16,38 +16,28 @@
  specific language governing permissions and limitations
  under the License.
  */
+
 package org.apache.plc4x.java.base.model;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.base.messages.PlcSubscriber;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegistration {
+public class DefaultPlcSubscriptionHandle implements InternalPlcSubscriptionHandle {
 
     private final PlcSubscriber plcSubscriber;
 
-    private final Collection<? extends InternalPlcSubscriptionHandle> handles;
-
-    private final int consumerHash;
-
-    public DefaultPlcConsumerRegistration(PlcSubscriber plcSubscriber, Consumer<PlcSubscriptionEvent> consumer, InternalPlcSubscriptionHandle... handles) {
+    public DefaultPlcSubscriptionHandle(PlcSubscriber plcSubscriber) {
         this.plcSubscriber = plcSubscriber;
-        this.handles = Arrays.asList(Objects.requireNonNull(handles));
-        this.consumerHash = Objects.requireNonNull(consumer).hashCode();
     }
 
     @Override
-    public int getConsumerHash() {
-        return consumerHash;
-    }
-
-    @Override
-    public Collection<? extends InternalPlcSubscriptionHandle> getAssociatedHandles() {
-        return handles;
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
+        return plcSubscriber.register(consumer, Collections.singletonList(this));
     }
 
     @Override
@@ -55,29 +45,22 @@ public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegist
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DefaultPlcConsumerRegistration)) {
+        if (!(o instanceof DefaultPlcSubscriptionHandle)) {
             return false;
         }
-        DefaultPlcConsumerRegistration that = (DefaultPlcConsumerRegistration) o;
-        return consumerHash == that.consumerHash &&
-            Objects.equals(handles, that.handles);
+        DefaultPlcSubscriptionHandle that = (DefaultPlcSubscriptionHandle) o;
+        return Objects.equals(plcSubscriber, that.plcSubscriber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(handles, consumerHash);
+        return Objects.hash(plcSubscriber);
     }
 
     @Override
     public String toString() {
-        return "DefaultPlcConsumerRegistration{" +
-            "handles=" + handles +
-            ", consumerHash=" + consumerHash +
+        return "DefaultPlcSubscriptionHandle{" +
+            "plcSubscriber=" + plcSubscriber +
             '}';
-    }
-
-    @Override
-    public void unregister() {
-        plcSubscriber.unregister(this);
     }
 }

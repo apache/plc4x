@@ -21,9 +21,13 @@ package org.apache.plc4x.java.ads;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class ManualPlc4XAdsTest {
 
@@ -34,34 +38,48 @@ public class ManualPlc4XAdsTest {
             connectionUrl = "ads:serial:///dev/ttys003/10.10.64.40.1.1:851/10.10.56.23.1.1:30000";
         } else {
             System.out.println("Using tcp");
-            connectionUrl = "ads:tcp://10.10.64.40/10.10.64.40.1.1:851/192.168.113.1.1.1:30000";
+            connectionUrl = "ads:tcp://10.10.64.40/10.10.64.40.1.1:851/10.10.56.23.1.1:30000";
         }
+        // TODO: temporary workaround
+        Thread.currentThread().setUncaughtExceptionHandler((t, e) -> {
+            System.err.println(t + " - " + e.getMessage());
+            e.printStackTrace(System.err);
+            System.exit(1);
+        });
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
-            PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("station", "Allgemein_S2.Station:BYTE").build();
+            PlcReadRequest.Builder readRequestBuilder = plcConnection.readRequestBuilder().orElseThrow(RuntimeException::new);
+            PlcReadRequest readRequest = readRequestBuilder.addItem("station", "Allgemein_S2.Station:BYTE").build();
             CompletableFuture<? extends PlcReadResponse> response = readRequest.execute();
             PlcReadResponse readResponse = response.get();
             System.out.println("Response " + readResponse);
             Collection<Integer> stations = readResponse.getAllIntegers("station");
             stations.forEach(System.out::println);
 
-            PlcSubscriptionRequest subscriptionRequest = plcConnection.subscriptionRequestBuilder().get().addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE").build();
-            CompletableFuture<? extends PlcSubscriptionResponse> subscribeResponse = subscriptionRequest.execute();
-            PlcSubscriptionResponse plcSubscriptionResponse = subscribeResponse.get();
+            // 2. We build a subscription
+            PlcSubscriptionRequest.Builder subscriptionRequestBuilder = plcConnection.subscriptionRequestBuilder().orElseThrow(RuntimeException::new);
+            PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder.addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE").build();
+            PlcSubscriptionResponse plcSubscriptionResponse = subscriptionRequest.execute().get();
 
-            // TODO: figure out what to do with this
-            /*PlcConsumerRegistration plcConsumerRegistration = plcSubscriber.register(System.out::println, plcSubscriptionResponse.getSubscriptionHandles());
+            List<PlcConsumerRegistration> plcConsumerRegistrations = plcSubscriptionResponse.getSubscriptionHandles().stream()
+                .map(plcSubscriptionHandle -> plcSubscriptionHandle.register(System.out::println))
+                .collect(Collectors.toList());
 
+            // Now we wait a bit
             TimeUnit.SECONDS.sleep(5);
 
-            plcSubscriber.unregister(plcConsumerRegistration);
-            PlcUnsubscriptionRequest unsubscriptionRequest = plcConnection.unsubscriptionRequestBuilder().get().addHandles(plcSubscriptionResponse.getSubscriptionHandles()).build();
-            CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionResponse = plcSubscriber.unsubscribe(unsubscriptionRequest);
+            // we unregister the listener
+            plcConsumerRegistrations.forEach(PlcConsumerRegistration::unregister);
+
+            // we unsubscribe at the plc
+            PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder = plcConnection.unsubscriptionRequestBuilder().orElseThrow(RuntimeException::new);
+            PlcUnsubscriptionRequest unsubscriptionRequest = unsubscriptionRequestBuilder.addHandles(plcSubscriptionResponse.getSubscriptionHandles()).build();
+            CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionResponse = unsubscriptionRequest.execute();
 
             unsubscriptionResponse
                 .get(5, TimeUnit.SECONDS);
-            System.out.println(unsubscriptionResponse);*/
+            System.out.println(unsubscriptionResponse);
         }
         System.exit(0);
     }

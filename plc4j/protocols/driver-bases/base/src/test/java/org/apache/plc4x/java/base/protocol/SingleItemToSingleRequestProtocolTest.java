@@ -25,15 +25,13 @@ import io.netty.channel.PendingWriteQueue;
 import io.netty.util.HashedWheelTimer;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.base.messages.PlcReader;
-import org.apache.plc4x.java.base.messages.PlcSubscriber;
-import org.apache.plc4x.java.base.messages.PlcWriter;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -434,13 +432,13 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
     private static class TestDefaultPlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
 
-        private TestDefaultPlcSubscriptionRequest(PlcSubscriber subscriber) {
-            super(subscriber);
+        private TestDefaultPlcSubscriptionRequest(PlcSubscriber subscriber, LinkedHashMap<String, SubscriptionPlcField> fields) {
+            super(subscriber, fields);
         }
 
         private static TestDefaultPlcSubscriptionRequest build(PlcSubscriber subscriber) {
             // TODO: implement me once available
-            return new TestDefaultPlcSubscriptionRequest(subscriber);
+            return new TestDefaultPlcSubscriptionRequest(subscriber, new LinkedHashMap<>());
         }
     }
 

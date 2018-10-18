@@ -20,4 +20,5 @@
 package org.apache.plc4x.java.api.model;
 
 public interface PlcConsumerRegistration {
+    void unregister();
 }

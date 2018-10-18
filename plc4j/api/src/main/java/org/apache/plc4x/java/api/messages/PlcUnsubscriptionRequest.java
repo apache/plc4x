@@ -23,10 +23,10 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-public interface PlcUnsubscriptionRequest extends PlcFieldRequest {
+public interface PlcUnsubscriptionRequest extends PlcRequest {
 
     @Override
-    CompletableFuture<? extends PlcUnsubscriptionResponse> execute();
+    CompletableFuture<PlcUnsubscriptionResponse> execute();
 
     interface Builder extends PlcRequestBuilder {
 

@@ -18,19 +18,19 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-// TODO: request broken needs finishing.
-public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest, InternalPlcFieldRequest {
+public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest, InternalPlcRequest {
 
     private final PlcSubscriber subscriber;
 
@@ -47,33 +47,8 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
     }
 
     @Override
-    public int getNumberOfFields() {
-        throw new IllegalStateException("not available");
-    }
-
-    @Override
-    public LinkedHashSet<String> getFieldNames() {
-        throw new IllegalStateException("not available");
-    }
-
-    @Override
-    public PlcField getField(String name) {
-        throw new IllegalStateException("not available");
-    }
-
-    @Override
-    public LinkedList<PlcField> getFields() {
-        throw new IllegalStateException("not available");
-    }
-
-    @Override
     public Collection<? extends InternalPlcSubscriptionHandle> getInternalPlcSubscriptionHandles() {
         return internalPlcSubscriptionHandles;
-    }
-
-    @Override
-    public LinkedList<Pair<String, PlcField>> getNamedFields() {
-        throw new IllegalStateException("not available");
     }
 
     public static class Builder implements PlcUnsubscriptionRequest.Builder {
