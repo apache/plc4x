@@ -99,9 +99,15 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                sh 'mvn -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} clean install'
+                // Make sure the directory is wiped.
+                sh 'rm -rf ./local-snapshots-dir'
+
+                // We'll deploy to a relative directory so we can save
+                // that and deploy in a later step on a different node
+                sh 'mvn -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+
                 // Stash the build results so we can deploy them on another node
-                stash name: 'plc4x-build'
+                stash name: 'plc4x-build-snapshots', includes: 'local-snapshots-dir/**'
             }
             post {
                 always {
@@ -134,8 +140,10 @@ pipeline {
             steps {
                 echo 'Deploying'
                 // Unstash the previously stashed build results.
-                unstash name: 'plc4x-build'
-                sh 'mvn -U -P${JENKINS_PROFILE} ${MVN_LOCAL_REPO_OPT} -Drat.skip=true -Djqassistant.skip=true -Dmaven.resources.skip=true -Dmaven.test.skip=true -Dmaven.install.skip=true deploy'
+                unstash name: 'plc4x-build-snapshots'
+
+                // Deploy the artifacts using the wagon-maven-plugin.
+                sh 'mvn -f jenkins.pom -P deploy-snapshots wagon:upload'
             }
         }
 
