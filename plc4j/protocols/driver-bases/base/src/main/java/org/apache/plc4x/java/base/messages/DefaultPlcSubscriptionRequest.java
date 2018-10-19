@@ -77,6 +77,11 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
     }
 
     @Override
+    public LinkedHashMap<String, SubscriptionPlcField> getSubscriptionPlcFieldMap() {
+        return fields;
+    }
+
+    @Override
     public LinkedList<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
             .stream()
@@ -88,7 +93,7 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
 
         private final PlcSubscriber subscriber;
         private final PlcFieldHandler fieldHandler;
-        private final Map<String, BuilderItem<Object>> fields;
+        private final Map<String, BuilderItem> fields;
 
         public Builder(PlcSubscriber subscriber, PlcFieldHandler fieldHandler) {
             this.subscriber = subscriber;
@@ -98,19 +103,19 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
 
         @Override
         public PlcSubscriptionRequest.Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval) {
-            fields.put(name, new BuilderItem<>(fieldQuery, PlcSubscriptionType.CYCLIC, pollingInterval));
+            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.CYCLIC, pollingInterval));
             return this;
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateField(String name, String fieldQuery) {
-            fields.put(name, new BuilderItem<>(fieldQuery, PlcSubscriptionType.CHANGE_OF_STATE));
+            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.CHANGE_OF_STATE));
             return this;
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery) {
-            fields.put(name, new BuilderItem<>(fieldQuery, PlcSubscriptionType.EVENT));
+            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.EVENT));
             return this;
         }
 
@@ -125,7 +130,7 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
             return new DefaultPlcSubscriptionRequest(subscriber, parsedFields);
         }
 
-        private static class BuilderItem<T> {
+        private static class BuilderItem {
             private final String fieldQuery;
             private final PlcSubscriptionType plcSubscriptionType;
             private final Duration duration;

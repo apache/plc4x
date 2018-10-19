@@ -33,7 +33,6 @@ import org.apache.plc4x.java.ads.protocol.Ads2PayloadProtocol;
 import org.apache.plc4x.java.ads.protocol.Payload2TcpProtocol;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -142,92 +141,87 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest plcSubscriptionRequest) {
         InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = checkInternal(plcSubscriptionRequest, InternalPlcSubscriptionRequest.class);
-        // TODO: Make this multi-value
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
-        if (internalPlcSubscriptionRequest.getNumberOfFields() != 1) {
-            throw new PlcNotImplementedException("Multirequest on subscribe not implemented yet");
-        }
 
-        SubscriptionPlcField subscriptionPlcField = internalPlcSubscriptionRequest.getSubscriptionFields().get(0);
-        PlcField field = subscriptionPlcField.getPlcField();
+        Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getSubscriptionPlcFieldMap().entrySet().stream()
+            .map(subscriptionPlcFieldEntry -> {
+                String plcFieldName = subscriptionPlcFieldEntry.getKey();
+                SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
+                PlcField field = subscriptionPlcField.getPlcField();
 
-        IndexGroup indexGroup;
-        IndexOffset indexOffset;
-        AdsDataType adsDataType;
-        int numberOfElements;
-        // If this is a symbolic field, it has to be resolved first.
-        // TODO: This is blocking, should be changed to be async.
-        if (field instanceof SymbolicAdsField) {
-            mapFields((SymbolicAdsField) field);
-            DirectAdsField directAdsField = fieldMapping.get(field);
-            if (directAdsField == null) {
-                throw new PlcRuntimeException("Unresolvable field " + field);
-            }
-            indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
-            indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
-            adsDataType = directAdsField.getAdsDataType();
-            numberOfElements = directAdsField.getNumberOfElements();
-        }
-        // If it's no symbolic field, we can continue immediately
-        // without having to do any resolving.
-        else if (field instanceof DirectAdsField) {
-            DirectAdsField directAdsField = (DirectAdsField) field;
-            indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
-            indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
-            adsDataType = directAdsField.getAdsDataType();
-            numberOfElements = directAdsField.getNumberOfElements();
-        } else {
-            throw new IllegalArgumentException("Unsupported field type " + field.getClass());
-        }
+                IndexGroup indexGroup;
+                IndexOffset indexOffset;
+                AdsDataType adsDataType;
+                int numberOfElements;
+                // If this is a symbolic field, it has to be resolved first.
+                // TODO: This is blocking, should be changed to be async.
+                if (field instanceof SymbolicAdsField) {
+                    mapFields((SymbolicAdsField) field);
+                    DirectAdsField directAdsField = fieldMapping.get(field);
+                    if (directAdsField == null) {
+                        throw new PlcRuntimeException("Unresolvable field " + field);
+                    }
+                    indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
+                    indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+                    adsDataType = directAdsField.getAdsDataType();
+                    numberOfElements = directAdsField.getNumberOfElements();
+                }
+                // If it's no symbolic field, we can continue immediately
+                // without having to do any resolving.
+                else if (field instanceof DirectAdsField) {
+                    DirectAdsField directAdsField = (DirectAdsField) field;
+                    indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
+                    indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+                    adsDataType = directAdsField.getAdsDataType();
+                    numberOfElements = directAdsField.getNumberOfElements();
+                } else {
+                    throw new IllegalArgumentException("Unsupported field type " + field.getClass());
+                }
 
-        final TransmissionMode transmissionMode;
-        long cycleTime = 4000000;
-        switch (subscriptionPlcField.getPlcSubscriptionType()) {
-            case CYCLIC:
-                transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE;
-                cycleTime = subscriptionPlcField.getDuration().orElseThrow(IllegalStateException::new).get(ChronoUnit.MILLIS);
-                break;
-            case CHANGE_OF_STATE:
-                transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERONCHA;
-                break;
-            default:
-                throw new PlcRuntimeException("Unmapped type " + subscriptionPlcField.getPlcSubscriptionType());
-        }
+                final TransmissionMode transmissionMode;
+                long cycleTime = 4000000;
+                switch (subscriptionPlcField.getPlcSubscriptionType()) {
+                    case CYCLIC:
+                        transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE;
+                        cycleTime = subscriptionPlcField.getDuration().orElseThrow(IllegalStateException::new).get(ChronoUnit.MILLIS);
+                        break;
+                    case CHANGE_OF_STATE:
+                        transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERONCHA;
+                        break;
+                    default:
+                        throw new PlcRuntimeException("Unmapped type " + subscriptionPlcField.getPlcSubscriptionType());
+                }
 
-        // Prepare the subscription request itself.
-        AdsAddDeviceNotificationRequest adsAddDeviceNotificationRequest = AdsAddDeviceNotificationRequest.of(
-            targetAmsNetId,
-            targetAmsPort,
-            sourceAmsNetId,
-            sourceAmsPort,
-            Invoke.NONE,
-            indexGroup,
-            indexOffset,
-            Length.of(adsDataType.getTargetByteSize() * (long) numberOfElements),
-            transmissionMode,
-            MaxDelay.of(0),
-            CycleTime.of(cycleTime)
-        );
+                // Prepare the subscription request itself.
+                AdsAddDeviceNotificationRequest adsAddDeviceNotificationRequest = AdsAddDeviceNotificationRequest.of(
+                    targetAmsNetId,
+                    targetAmsPort,
+                    sourceAmsNetId,
+                    sourceAmsPort,
+                    Invoke.NONE,
+                    indexGroup,
+                    indexOffset,
+                    Length.of(adsDataType.getTargetByteSize() * (long) numberOfElements),
+                    transmissionMode,
+                    MaxDelay.of(0),
+                    CycleTime.of(cycleTime)
+                );
 
-        // Send the request to the plc and wait for a response
-        // TODO: This is blocking, should be changed to be async.
-        CompletableFuture<InternalPlcProprietaryResponse<AdsAddDeviceNotificationResponse>> addDeviceFuture = new CompletableFuture<>();
-        channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsAddDeviceNotificationRequest), addDeviceFuture));
-        InternalPlcProprietaryResponse<AdsAddDeviceNotificationResponse> addDeviceResponse = getFromFuture(addDeviceFuture, ADD_DEVICE_TIMEOUT);
-        AdsAddDeviceNotificationResponse response = addDeviceResponse.getResponse();
+                // Send the request to the plc and wait for a response
+                // TODO: This is blocking, should be changed to be async.
+                CompletableFuture<InternalPlcProprietaryResponse<AdsAddDeviceNotificationResponse>> addDeviceFuture = new CompletableFuture<>();
+                channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsAddDeviceNotificationRequest), addDeviceFuture));
+                InternalPlcProprietaryResponse<AdsAddDeviceNotificationResponse> addDeviceResponse = getFromFuture(addDeviceFuture, ADD_DEVICE_TIMEOUT);
+                AdsAddDeviceNotificationResponse response = addDeviceResponse.getResponse();
 
-        // Abort if we got anything but a successful response.
-        if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
-            throw new PlcRuntimeException("Error code received " + response.getResult());
-        }
-        AdsSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(this, response.getNotificationHandle());
-
-        Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getFieldNames()
-            .stream()
-            .collect(Collectors.toMap(
-                fieldName -> fieldName,
-                ignored -> Pair.of(PlcResponseCode.OK, adsSubscriptionHandle)
-            ));
+                // Abort if we got anything but a successful response.
+                if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
+                    throw new PlcRuntimeException("Error code received " + response.getResult());
+                }
+                PlcSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(this, response.getNotificationHandle());
+                return Pair.of(plcFieldName, Pair.of(PlcResponseCode.OK, adsSubscriptionHandle));
+            })
+            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
 
         future.complete(new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, responseItems));
         return future;
