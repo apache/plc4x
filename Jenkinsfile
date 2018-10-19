@@ -143,7 +143,7 @@ pipeline {
                 unstash name: 'plc4x-build-snapshots'
 
                 // Deploy the artifacts using the wagon-maven-plugin.
-                sh 'mvn -f jenkins.pom -P deploy-snapshots wagon:upload'
+                sh 'mvn -f jenkins.pom -X -P deploy-snapshots wagon:upload'
             }
         }
 
