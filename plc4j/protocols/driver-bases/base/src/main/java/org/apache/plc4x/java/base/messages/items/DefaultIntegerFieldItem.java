@@ -31,7 +31,7 @@ public class DefaultIntegerFieldItem extends FieldItem<Integer> {
 
     @Override
     public Object getObject(int index) {
-        return getLong(index);
+        return getInteger(index);
     }
 
     @Override

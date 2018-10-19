@@ -31,7 +31,7 @@ public class DefaultShortFieldItem extends FieldItem<Short> {
 
     @Override
     public Object getObject(int index) {
-        return getLong(index);
+        return getShort(index);
     }
 
     @Override

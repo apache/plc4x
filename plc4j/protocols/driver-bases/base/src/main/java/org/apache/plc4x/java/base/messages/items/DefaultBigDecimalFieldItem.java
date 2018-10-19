@@ -31,7 +31,7 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Object getObject(int index) {
-        return getDouble(index);
+        return getBigDecimal(index);
     }
 
     @Override

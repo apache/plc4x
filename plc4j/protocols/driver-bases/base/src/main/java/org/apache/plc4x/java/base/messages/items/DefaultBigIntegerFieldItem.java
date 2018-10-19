@@ -31,7 +31,7 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Object getObject(int index) {
-        return getLong(index);
+        return getBigInteger(index);
     }
 
     @Override

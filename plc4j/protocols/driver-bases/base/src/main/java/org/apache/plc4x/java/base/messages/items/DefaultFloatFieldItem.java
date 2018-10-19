@@ -31,7 +31,7 @@ public class DefaultFloatFieldItem extends FieldItem<Float> {
 
     @Override
     public Object getObject(int index) {
-        return getDouble(index);
+        return getFloat(index);
     }
 
     @Override

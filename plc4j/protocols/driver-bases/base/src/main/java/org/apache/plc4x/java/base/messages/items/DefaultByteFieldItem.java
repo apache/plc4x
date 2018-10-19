@@ -31,7 +31,7 @@ public class DefaultByteFieldItem extends FieldItem<Byte> {
 
     @Override
     public Object getObject(int index) {
-        return getLong(index);
+        return getByte(index);
     }
 
     @Override

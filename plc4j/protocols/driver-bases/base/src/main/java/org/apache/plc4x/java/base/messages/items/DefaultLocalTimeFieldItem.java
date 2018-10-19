@@ -30,7 +30,7 @@ public class DefaultLocalTimeFieldItem extends FieldItem<LocalTime> {
 
     @Override
     public Object getObject(int index) {
-        return getDateTime(index);
+        return getTime(index);
     }
 
     @Override
