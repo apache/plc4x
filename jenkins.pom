@@ -52,7 +52,7 @@
                         <version>2.0.0</version>
                         <configuration>
                             <fromDir>${project.build.directory}/local-snapshots-dir</fromDir>
-                            <includes>*</includes>
+                            <includes>**</includes>
                             <serverId>apache.snapshots.https</serverId>
                             <url>${distMgmtSnapshotsUrl}</url>
                         </configuration>
