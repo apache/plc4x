@@ -121,6 +121,12 @@ pipeline {
             when {
                 branch 'master'
             }
+            // Only the official build nodes have the credentials to deploy setup.
+            agent {
+                node {
+                    label 'ubuntu && !H32'
+                }
+            }
             steps {
                 echo 'Building'
                 sh 'mvn -P${JENKINS_PROFILE} sonar:sonar'
@@ -134,7 +140,7 @@ pipeline {
             // Only the official build nodes have the credentials to deploy setup.
             agent {
                 node {
-                    label 'ubuntu && !H32'
+                    label 'ubuntu'
                 }
             }
             steps {
