@@ -774,7 +774,7 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.4.0.905</version>
+          <version>3.5.0.1254</version>
         </plugin>
 
         <!-- Configure the Site generation -->
