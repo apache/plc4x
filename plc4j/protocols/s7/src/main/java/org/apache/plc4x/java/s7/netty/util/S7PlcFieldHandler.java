@@ -22,9 +22,9 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultLocalDateTimeFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.s7.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
@@ -46,7 +46,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeBoolean(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         // All of these types are declared as Bit or Bit-String types.
         if ((s7Field.getDataType() == TransportSize.BOOL) || (s7Field.getDataType() == TransportSize.BYTE) ||
@@ -58,7 +58,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeByte(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if ((s7Field.getDataType() == TransportSize.BYTE) || (s7Field.getDataType() == TransportSize.SINT) ||
             (s7Field.getDataType() == TransportSize.USINT) || (s7Field.getDataType() == TransportSize.CHAR)) {
@@ -68,7 +68,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeShort(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeShort(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if ((s7Field.getDataType() == TransportSize.WORD) || (s7Field.getDataType() == TransportSize.INT) ||
             (s7Field.getDataType() == TransportSize.UINT)) {
@@ -78,7 +78,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeInteger(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if ((s7Field.getDataType() == TransportSize.DWORD) || (s7Field.getDataType() == TransportSize.DINT) ||
             (s7Field.getDataType() == TransportSize.UDINT)) {
@@ -88,7 +88,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeBigInteger(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if ((s7Field.getDataType() == TransportSize.DWORD) || (s7Field.getDataType() == TransportSize.DINT) ||
             (s7Field.getDataType() == TransportSize.UDINT)) {
@@ -98,7 +98,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeLong(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeLong(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if ((s7Field.getDataType() == TransportSize.LWORD) || (s7Field.getDataType() == TransportSize.LINT) ||
             (s7Field.getDataType() == TransportSize.ULINT)) {
@@ -108,7 +108,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeFloat(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if (s7Field.getDataType() == TransportSize.REAL) {
             return internalEncodeFloatingPoint(field, values);
@@ -117,7 +117,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDouble(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if (s7Field.getDataType() == TransportSize.LREAL) {
             return internalEncodeFloatingPoint(field, values);
@@ -126,7 +126,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeString(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeString(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if ((s7Field.getDataType() == TransportSize.CHAR) || (s7Field.getDataType() == TransportSize.WCHAR) ||
             (s7Field.getDataType() == TransportSize.STRING) || (s7Field.getDataType() == TransportSize.WSTRING)) {
@@ -136,7 +136,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeTime(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if (s7Field.getDataType() == TransportSize.TIME) {
             return internalEncodeTemporal(field, values);
@@ -145,7 +145,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDate(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDate(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if (s7Field.getDataType() == TransportSize.DATE) {
             return internalEncodeTemporal(field, values);
@@ -154,7 +154,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDateTime(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         if (s7Field.getDataType() == TransportSize.DATE_AND_TIME) {
             return internalEncodeTemporal(field, values);
@@ -162,7 +162,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
-    private FieldItem internalEncodeBoolean(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeBoolean(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case BOOL:
@@ -213,11 +213,11 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         return new S7BooleanFieldItem(s7Field.getDataType(), booleanValues.toArray(new Boolean[0]));
     }
 
-    private FieldItem internalEncodeInteger(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         BigInteger minValue;
         BigInteger maxValue;
-        Class<? extends FieldItem> fieldType;
+        Class<? extends BaseDefaultFieldItem> fieldType;
         switch (s7Field.getDataType()) {
             case BYTE:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
@@ -336,7 +336,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         }
     }
 
-    private FieldItem internalEncodeFloatingPoint(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeFloatingPoint(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         Double minValue;
         Double maxValue;
@@ -380,7 +380,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         return new S7FloatingPointFieldItem(s7Field.getDataType(), floatingPointValues);
     }
 
-    private FieldItem internalEncodeString(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeString(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         int maxLength;
         boolean encoding16Bit;
@@ -472,7 +472,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         return new S7StringFieldItem(s7Field.getDataType(), stringValues.toArray(new String[0]));
     }
 
-    private FieldItem internalEncodeTemporal(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeTemporal(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case TIME:

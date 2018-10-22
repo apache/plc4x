@@ -20,38 +20,38 @@ package org.apache.plc4x.java.base.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 public interface PlcFieldHandler {
 
     PlcField createField(String fieldQuery) throws PlcInvalidFieldException;
 
-    FieldItem encodeBoolean(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values);
 
-    FieldItem encodeByte(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeByte(PlcField field, Object[] values);
 
-    FieldItem encodeShort(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeShort(PlcField field, Object[] values);
 
-    FieldItem encodeInteger(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values);
 
-    FieldItem encodeBigInteger(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values);
 
-    FieldItem encodeLong(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeLong(PlcField field, Object[] values);
 
-    FieldItem encodeFloat(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values);
 
-    FieldItem encodeBigDecimal(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeBigDecimal(PlcField field, Object[] values);
 
-    FieldItem encodeDouble(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values);
 
-    FieldItem encodeString(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeString(PlcField field, Object[] values);
 
-    FieldItem encodeTime(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeTime(PlcField field, Object[] values);
 
-    FieldItem encodeDate(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeDate(PlcField field, Object[] values);
 
-    FieldItem encodeDateTime(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values);
 
-    FieldItem encodeByteArray(PlcField field, Object[] values);
+    BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values);
 
 }

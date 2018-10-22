@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 import java.time.LocalTime;
 
-public class DefaultLocalTimeFieldItem extends FieldItem<LocalTime> {
+public class DefaultLocalTimeFieldItem extends BaseDefaultFieldItem<LocalTime> {
 
     public DefaultLocalTimeFieldItem(LocalTime... values) {
         super(values);
@@ -30,7 +30,7 @@ public class DefaultLocalTimeFieldItem extends FieldItem<LocalTime> {
 
     @Override
     public Object getObject(int index) {
-        return getTime(index);
+        return getValue(index);
     }
 
     @Override

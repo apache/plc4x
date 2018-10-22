@@ -22,7 +22,7 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,9 +48,9 @@ public class LittleEndianDecoderTest {
     @ParameterizedTest
     @MethodSource("createAdsDataTypePears")
     public void decodeData(AdsDataType adsDataType, Collection expectedTypes, Class<?> clazz, byte[] adsData) throws Exception {
-        FieldItem<?> fieldItem = LittleEndianDecoder.decodeData(adsDataType, adsData);
+        BaseDefaultFieldItem<?> fieldItem = LittleEndianDecoder.decodeData(adsDataType, adsData);
 
-        Method getterMethod = MethodUtils.getAccessibleMethod(FieldItem.class, "get" + clazz.getSimpleName(), int.class);
+        Method getterMethod = MethodUtils.getAccessibleMethod(BaseDefaultFieldItem.class, "get" + clazz.getSimpleName(), int.class);
         LOG.info("Using {} to map", getterMethod);
 
         List<? super Object> actualTypes = new LinkedList<>();

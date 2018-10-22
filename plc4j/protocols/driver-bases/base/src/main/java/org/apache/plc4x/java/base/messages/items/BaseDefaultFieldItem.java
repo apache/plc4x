@@ -27,11 +27,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
-public abstract class FieldItem<T> {
+public abstract class BaseDefaultFieldItem<T> {
 
     private T[] values;
 
-    protected FieldItem(T[] values) {
+    protected BaseDefaultFieldItem(T[] values) {
         this.values = values;
     }
 
@@ -73,20 +73,20 @@ public abstract class FieldItem<T> {
         throw new PlcIncompatibleDatatypeException(Integer.class, index);
     }
 
-    public boolean isValidBigInteger(int index) {
-        return false;
-    }
-
-    public BigInteger getBigInteger(int index) {
-        throw new PlcIncompatibleDatatypeException(BigInteger.class, index);
-    }
-
     public boolean isValidLong(int index) {
         return false;
     }
 
     public Long getLong(int index) {
         throw new PlcIncompatibleDatatypeException(Long.class, index);
+    }
+
+    public boolean isValidBigInteger(int index) {
+        return false;
+    }
+
+    public BigInteger getBigInteger(int index) {
+        throw new PlcIncompatibleDatatypeException(BigInteger.class, index);
     }
 
     public boolean isValidFloat(int index) {
@@ -158,7 +158,7 @@ public abstract class FieldItem<T> {
     }
 
     protected T getValue(int index) {
-        if (index < 0 || (index >= values.length)) {
+        if ((values == null) || (index < 0 || (index >= values.length))) {
             return null;
         }
         return values[index];
@@ -169,10 +169,10 @@ public abstract class FieldItem<T> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FieldItem)) {
+        if (!(o instanceof BaseDefaultFieldItem)) {
             return false;
         }
-        FieldItem<?> fieldItem = (FieldItem<?>) o;
+        BaseDefaultFieldItem<?> fieldItem = (BaseDefaultFieldItem<?>) o;
         return Arrays.equals(values, fieldItem.values);
     }
 

@@ -29,7 +29,7 @@ import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.assertj.core.api.WithAssertions;
@@ -284,8 +284,8 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
             InternalPlcReadRequest request = (InternalPlcReadRequest) plcRequestContainer.getRequest();
             String fieldName = request.getFieldNames().iterator().next();
             CompletableFuture responseFuture = plcRequestContainer.getResponseFuture();
-            HashMap<String, Pair<PlcResponseCode, FieldItem>> responseFields = new HashMap<>();
-            responseFields.put(fieldName, Pair.of(PlcResponseCode.OK, mock(FieldItem.class)));
+            HashMap<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseFields = new HashMap<>();
+            responseFields.put(fieldName, Pair.of(PlcResponseCode.OK, mock(BaseDefaultFieldItem.class)));
             responseFuture.complete(new DefaultPlcReadResponse(request, responseFields));
             return null;
         }
@@ -294,13 +294,13 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
     @Nested
     class Decoding {
         @Test
-        void tryFinish() throws Exception {
+        void tryFinish() {
             SUT.tryFinish(1, null, new CompletableFuture<>());
             // TODO: add Assertions.
         }
 
         @Test
-        void errored() throws Exception {
+        void errored() {
             SUT.errored(1, mock(Throwable.class), new CompletableFuture<>());
             // TODO: add Assertions.
         }
@@ -385,12 +385,12 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         }
 
         @Test
-        void subscribe() throws Exception {
+        void subscribe() {
             // TODO: implement once available
         }
 
         @Test
-        void unsubcribe() throws Exception {
+        void unsubcribe() {
             // TODO: implement once available
         }
 
@@ -419,13 +419,13 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
     private static class TestDefaultPlcWriteRequest extends DefaultPlcWriteRequest {
 
-        private TestDefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, FieldItem>> fields) {
+        private TestDefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, BaseDefaultFieldItem>> fields) {
             super(writer, fields);
         }
 
         private static TestDefaultPlcWriteRequest build(PlcWriter writer) {
-            LinkedHashMap<String, Pair<PlcField, FieldItem>> fields = new LinkedHashMap<>();
-            IntStream.rangeClosed(1, 5).forEach(i -> fields.put("writeField" + i, Pair.of(mock(PlcField.class), mock(FieldItem.class))));
+            LinkedHashMap<String, Pair<PlcField, BaseDefaultFieldItem>> fields = new LinkedHashMap<>();
+            IntStream.rangeClosed(1, 5).forEach(i -> fields.put("writeField" + i, Pair.of(mock(PlcField.class), mock(BaseDefaultFieldItem.class))));
             return new TestDefaultPlcWriteRequest(writer, fields);
         }
     }

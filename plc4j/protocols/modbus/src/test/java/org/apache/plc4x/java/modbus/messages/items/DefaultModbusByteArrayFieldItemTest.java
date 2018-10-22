@@ -18,19 +18,20 @@
  */
 package org.apache.plc4x.java.modbus.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @SuppressWarnings("unchecked")
 public class DefaultModbusByteArrayFieldItemTest {
     @Test
     public void convertByteArrayToIntegerTest() {
-        FieldItem fieldItem = getFieldItemForIntegerArray();
+        BaseDefaultFieldItem fieldItem = getFieldItemForIntegerArray();
 
         Integer itemInteger = fieldItem.getInteger(1);
         assertEquals(456,itemInteger,0);
@@ -38,13 +39,13 @@ public class DefaultModbusByteArrayFieldItemTest {
 
     @Test
     public void convertByteArrayToIntegerTestReturnsNull() {
-        FieldItem fieldItem = getFieldItemForIntegerArray();
+        BaseDefaultFieldItem fieldItem = getFieldItemForIntegerArray();
 
         Integer itemInteger = fieldItem.getInteger(17);
         assertNull(itemInteger);
     }
 
-    private static FieldItem getFieldItemForIntegerArray() {
+    private static BaseDefaultFieldItem getFieldItemForIntegerArray() {
         int sizeIntByteBuffer = 12;
         ByteBuffer byteBuffer = ByteBuffer.allocate(sizeIntByteBuffer);
         byteBuffer.order(ByteOrder.BIG_ENDIAN);
@@ -65,7 +66,7 @@ public class DefaultModbusByteArrayFieldItemTest {
 
     @Test
     public void convertByteArrayToShortTest() {
-        FieldItem fieldItem = getFieldItemForShortArray();
+        BaseDefaultFieldItem fieldItem = getFieldItemForShortArray();
 
         Short itemShort = fieldItem.getShort(3);
         assertEquals(1011,itemShort,0);
@@ -73,13 +74,13 @@ public class DefaultModbusByteArrayFieldItemTest {
 
     @Test
     public void convertByteArrayToShortTestReturnsNull() {
-        FieldItem fieldItem = getFieldItemForShortArray();
+        BaseDefaultFieldItem fieldItem = getFieldItemForShortArray();
 
         Short itemShort = fieldItem.getShort(7);
         assertNull(itemShort);
     }
 
-    private static FieldItem getFieldItemForShortArray() {
+    private static BaseDefaultFieldItem getFieldItemForShortArray() {
         int sizeIntByteBuffer = 8;
         ByteBuffer byteBuffer = ByteBuffer.allocate(sizeIntByteBuffer);
         byteBuffer.order(ByteOrder.BIG_ENDIAN);
@@ -100,7 +101,7 @@ public class DefaultModbusByteArrayFieldItemTest {
 
     @Test
     public void convertByteArrayToLongTest() {
-        FieldItem fieldItem = getFieldItemForLongArray();
+        BaseDefaultFieldItem fieldItem = getFieldItemForLongArray();
 
         Long itemLong = fieldItem.getLong(1);
         assertEquals(456789123L,itemLong,0);
@@ -108,13 +109,13 @@ public class DefaultModbusByteArrayFieldItemTest {
 
     @Test
     public void convertByteArrayToLongTestReturnsNull() {
-        FieldItem fieldItem = getFieldItemForLongArray();
+        BaseDefaultFieldItem fieldItem = getFieldItemForLongArray();
 
         Long itemLong = fieldItem.getLong(4);
         assertNull(itemLong);
     }
 
-    private static FieldItem getFieldItemForLongArray() {
+    private static BaseDefaultFieldItem getFieldItemForLongArray() {
         int sizeIntByteBuffer = 32;
         ByteBuffer byteBuffer = ByteBuffer.allocate(sizeIntByteBuffer);
         byteBuffer.order(ByteOrder.BIG_ENDIAN);

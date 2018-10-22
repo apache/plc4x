@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.test;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 import java.util.*;
 
@@ -30,13 +30,13 @@ class TestDevice {
 
     private final Random random = new Random();
     private final String name;
-    private final Map<TestField, FieldItem> state = new HashMap<>();
+    private final Map<TestField, BaseDefaultFieldItem> state = new HashMap<>();
 
     TestDevice(String name) {
         this.name = name;
     }
 
-    Optional<FieldItem> get(TestField field) {
+    Optional<BaseDefaultFieldItem> get(TestField field) {
         Objects.requireNonNull(field);
         switch(field.getType()) {
             case STATE:
@@ -49,7 +49,7 @@ class TestDevice {
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
 
-    void set(TestField field, FieldItem value) {
+    void set(TestField field, BaseDefaultFieldItem value) {
         Objects.requireNonNull(field);
         switch (field.getType()) {
             case STATE:
@@ -66,7 +66,7 @@ class TestDevice {
     }
 
     @SuppressWarnings("unchecked")
-    private FieldItem randomValue(Class<?> type) {
+    private BaseDefaultFieldItem randomValue(Class<?> type) {
         Object result = null;
 
         if (type.equals(Byte.class))

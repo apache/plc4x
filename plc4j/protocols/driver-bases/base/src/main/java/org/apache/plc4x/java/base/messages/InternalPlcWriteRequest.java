@@ -21,15 +21,15 @@ package org.apache.plc4x.java.base.messages;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 import java.util.LinkedList;
 
 public interface InternalPlcWriteRequest extends PlcWriteRequest, InternalPlcRequest {
 
-    FieldItem getFieldItem(String name);
+    BaseDefaultFieldItem getFieldItem(String name);
 
-    LinkedList<FieldItem> getFieldItems();
+    LinkedList<BaseDefaultFieldItem> getFieldItems();
 
-    LinkedList<Triple<String, PlcField, FieldItem>> getNamedFieldTriples();
+    LinkedList<Triple<String, PlcField, BaseDefaultFieldItem>> getNamedFieldTriples();
 }

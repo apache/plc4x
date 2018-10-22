@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DefaultByteFieldItem extends FieldItem<Byte> {
+public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 
     public DefaultByteFieldItem(Byte... values) {
         super(values);
@@ -31,7 +31,7 @@ public class DefaultByteFieldItem extends FieldItem<Byte> {
 
     @Override
     public Object getObject(int index) {
-        return getByte(index);
+        return getValue(index);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class DefaultByteFieldItem extends FieldItem<Byte> {
     @Override
     public boolean isValidFloat(int index) {
         Byte value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= Float.MIN_VALUE);
+        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class DefaultByteFieldItem extends FieldItem<Byte> {
     @Override
     public boolean isValidDouble(int index) {
         Byte value = getValue(index);
-        return (value != null) && (value <= Double.MAX_VALUE) && (value >= Double.MIN_VALUE);
+        return (value != null) && (value <= Double.MAX_VALUE) && (value >= -Double.MAX_VALUE);
     }
 
     @Override

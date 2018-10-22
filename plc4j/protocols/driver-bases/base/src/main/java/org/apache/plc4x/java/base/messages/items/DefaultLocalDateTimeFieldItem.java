@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class DefaultLocalDateTimeFieldItem extends FieldItem<LocalDateTime> {
+public class DefaultLocalDateTimeFieldItem extends BaseDefaultFieldItem<LocalDateTime> {
 
     public DefaultLocalDateTimeFieldItem(LocalDateTime... values) {
         super(values);
@@ -32,7 +32,7 @@ public class DefaultLocalDateTimeFieldItem extends FieldItem<LocalDateTime> {
 
     @Override
     public Object getObject(int index) {
-        return getDateTime(index);
+        return getValue(index);
     }
 
     @Override

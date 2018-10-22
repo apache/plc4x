@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 import java.util.Objects;
 
-public class DefaultByteArrayFieldItem extends FieldItem<Byte[]> {
+public class DefaultByteArrayFieldItem extends BaseDefaultFieldItem<Byte[]> {
 
     public DefaultByteArrayFieldItem(Byte[]... values) {
         super(values);

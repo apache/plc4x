@@ -20,7 +20,7 @@ package org.apache.plc4x.java.base.messages.items;
 
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
-public class DefaultStringFieldItem extends FieldItem<String> {
+public class DefaultStringFieldItem extends BaseDefaultFieldItem<String> {
 
     public DefaultStringFieldItem(String... values) {
         super(values);
@@ -28,7 +28,7 @@ public class DefaultStringFieldItem extends FieldItem<String> {
 
     @Override
     public Object getObject(int index) {
-        return getString(index);
+        return getValue(index);
     }
 
     @Override

@@ -21,12 +21,10 @@ package org.apache.plc4x.java.test;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.base.messages.PlcReader;
-import org.apache.plc4x.java.base.messages.PlcWriter;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,11 +84,11 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
             throw new IllegalArgumentException("Read request doesn't implement InternalPlcReadRequest");
         }
         InternalPlcReadRequest request = (InternalPlcReadRequest) readRequest;
-        Map<String, Pair<PlcResponseCode, FieldItem>> fields = new HashMap<>();
+        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
         for (String fieldName : request.getFieldNames()) {
             TestField field = (TestField) request.getField(fieldName);
-            Optional<FieldItem> fieldItemOptional = device.get(field);
-            ImmutablePair<PlcResponseCode, FieldItem> fieldPair;
+            Optional<BaseDefaultFieldItem> fieldItemOptional = device.get(field);
+            ImmutablePair<PlcResponseCode, BaseDefaultFieldItem> fieldPair;
             boolean present = fieldItemOptional.isPresent();
             fieldPair = present
                 ? new ImmutablePair<>(PlcResponseCode.OK, fieldItemOptional.get())
@@ -110,7 +108,7 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
         Map<String, PlcResponseCode> fields = new HashMap<>();
         for (String fieldName : request.getFieldNames()) {
             TestField field = (TestField) request.getField(fieldName);
-            FieldItem fieldItem = request.getFieldItem(fieldName);
+            BaseDefaultFieldItem fieldItem = request.getFieldItem(fieldName);
             device.set(field, fieldItem);
             fields.put(fieldName, PlcResponseCode.OK);
         }

@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
+public class DefaultBigIntegerFieldItem extends BaseDefaultFieldItem<BigInteger> {
 
     public DefaultBigIntegerFieldItem(BigInteger... values) {
         super(values);
@@ -31,7 +31,7 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Object getObject(int index) {
-        return getBigInteger(index);
+        return getValue(index);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
     @Override
     public boolean isValidByte(int index) {
         BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Byte.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Byte.MIN_VALUE)) > 0);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Byte.MAX_VALUE)) <= 0) &&
+            (value.compareTo(BigInteger.valueOf(Byte.MIN_VALUE)) >= 0);
     }
 
     @Override
@@ -65,8 +65,8 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
     @Override
     public boolean isValidShort(int index) {
         BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Short.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Short.MIN_VALUE)) > 0);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Short.MAX_VALUE)) <= 0) &&
+            (value.compareTo(BigInteger.valueOf(Short.MIN_VALUE)) >= 0);
     }
 
     @Override
@@ -80,8 +80,8 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
     @Override
     public boolean isValidInteger(int index) {
         BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) > 0);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) <= 0) &&
+            (value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) >= 0);
     }
 
     @Override
@@ -95,8 +95,8 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
     @Override
     public boolean isValidLong(int index) {
         BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) > 0);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) <= 0) &&
+            (value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) >= 0);
     }
 
     @Override
@@ -126,8 +126,8 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
             return false;
         }
         BigDecimal decimalValue = new BigDecimal(value);
-        return (decimalValue.compareTo(BigDecimal.valueOf(Float.MAX_VALUE)) < 0) &&
-            (decimalValue.compareTo(BigDecimal.valueOf(Float.MIN_VALUE)) > 0);
+        return (decimalValue.compareTo(BigDecimal.valueOf(Float.MAX_VALUE)) <= 0) &&
+            (decimalValue.compareTo(BigDecimal.valueOf(-Float.MAX_VALUE)) >= 0);
     }
 
     @Override
@@ -145,8 +145,8 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
             return false;
         }
         BigDecimal decimalValue = new BigDecimal(value);
-        return (decimalValue.compareTo(BigDecimal.valueOf(Double.MAX_VALUE)) < 0) &&
-            (decimalValue.compareTo(BigDecimal.valueOf(Double.MIN_VALUE)) > 0);
+        return (decimalValue.compareTo(BigDecimal.valueOf(Double.MAX_VALUE)) <= 0) &&
+            (decimalValue.compareTo(BigDecimal.valueOf(-Double.MAX_VALUE)) >= 0);
     }
 
     @Override

@@ -34,7 +34,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.s7.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
@@ -193,7 +193,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             if(!(writeRequest instanceof DefaultPlcWriteRequest)) {
                 throw new PlcException("The writeRequest should have been of type DefaultPlcWriteRequest");
             }
-            FieldItem fieldItem = ((DefaultPlcWriteRequest) writeRequest).getFieldItem(fieldName);
+            BaseDefaultFieldItem fieldItem = ((DefaultPlcWriteRequest) writeRequest).getFieldItem(fieldName);
 
             // The number of elements provided in the request must match the number defined in the field, or
             // bad things are going to happen.
@@ -411,7 +411,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        Map<String, Pair<PlcResponseCode, FieldItem>> values = new HashMap<>();
+        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values = new HashMap<>();
         List<VarPayloadItem> payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcReadRequest.getFieldNames()) {
@@ -419,7 +419,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             VarPayloadItem payloadItem = payloadItems.get(index);
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            FieldItem fieldItem = null;
+            BaseDefaultFieldItem fieldItem = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
                 // TODO 2018-09-27 jf: array returning only implemented for BOOL, BYTE, INTEGERS, FP
@@ -572,7 +572,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         throw new PlcProtocolException("Unsupported type " + field.getDataType());
                 }
             }
-            Pair<PlcResponseCode, FieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
+            Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
             values.put(fieldName, result);
             index++;
         }

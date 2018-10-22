@@ -52,7 +52,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeBoolean(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         // All of these types are declared as Bit or Bit-String types.
         switch (adsField.getAdsDataType()) {
@@ -104,7 +104,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeByte(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -155,7 +155,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeShort(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeShort(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -206,7 +206,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeInteger(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -257,7 +257,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeBigInteger(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -308,7 +308,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeLong(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeLong(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -359,7 +359,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeFloat(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -410,7 +410,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDouble(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -461,7 +461,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeString(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeString(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -512,7 +512,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeTime(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeTime(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -563,7 +563,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDate(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDate(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -614,7 +614,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDateTime(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BIT:
@@ -664,7 +664,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         }
     }
 
-    private FieldItem internalEncodeBoolean(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeBoolean(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case BOOL:
@@ -714,11 +714,11 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         return new DefaultBooleanFieldItem(booleanValues.toArray(new Boolean[0]));
     }
 
-    private FieldItem internalEncodeInteger(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeInteger(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         BigDecimal minValue = BigDecimal.valueOf(adsField.getAdsDataType().getLowerBound());
         BigDecimal maxValue = BigDecimal.valueOf(adsField.getAdsDataType().getUpperBound());
-        Class<? extends FieldItem> fieldType;
+        Class<? extends BaseDefaultFieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case BYTE:
                 fieldType = DefaultByteFieldItem.class;
@@ -816,11 +816,11 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         }
     }
 
-    private FieldItem internalEncodeFloatingPoint(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeFloatingPoint(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         BigDecimal minValue = BigDecimal.valueOf(adsField.getAdsDataType().getLowerBound());
         BigDecimal maxValue = BigDecimal.valueOf(adsField.getAdsDataType().getUpperBound());
-        Class<? extends FieldItem> fieldType;
+        Class<? extends BaseDefaultFieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case REAL:
                 fieldType = DefaultFloatFieldItem.class;
@@ -883,7 +883,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         }
     }
 
-    private FieldItem internalEncodeString(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalEncodeString(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         double maxLength = adsField.getAdsDataType().getUpperBound();
         boolean encoding16Bit;
@@ -962,7 +962,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         return new DefaultStringFieldItem(stringValues.toArray(new String[0]));
     }
 
-    private FieldItem internalTimeTemporal(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalTimeTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case TIME:
@@ -981,7 +981,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         return new DefaultLocalTimeFieldItem(localTimeValues.toArray(new LocalTime[0]));
     }
 
-    private FieldItem internalDateTemporal(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalDateTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case TIME:
@@ -1000,7 +1000,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         return new DefaultLocalDateFieldItem(localDateValues.toArray(new LocalDate[0]));
     }
 
-    private FieldItem internalDateTimeTemporal(PlcField field, Object[] values) {
+    private BaseDefaultFieldItem internalDateTimeTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
             case TIME:

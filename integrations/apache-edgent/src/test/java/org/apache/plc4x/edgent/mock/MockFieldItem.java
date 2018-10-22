@@ -19,9 +19,9 @@
 
 package org.apache.plc4x.edgent.mock;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
-public class MockFieldItem extends FieldItem<Object> {
+public class MockFieldItem extends BaseDefaultFieldItem<Object> {
 
     public MockFieldItem(Object... values) {
         super(values);

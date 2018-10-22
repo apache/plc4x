@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
+public class DefaultBigDecimalFieldItem extends BaseDefaultFieldItem<BigDecimal> {
 
     public DefaultBigDecimalFieldItem(BigDecimal... values) {
         super(values);
@@ -31,12 +31,12 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
 
     @Override
     public Object getObject(int index) {
-        return getBigDecimal(index);
+        return getValue(index);
     }
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
         BigDecimal value = getValue(index);
         BigDecimal min = BigDecimal.valueOf(Byte.MIN_VALUE);
         BigDecimal max = BigDecimal.valueOf(Byte.MAX_VALUE);
-        return (value != null) && (value.compareTo(min) < 0) && (value.compareTo(max) > 0);
+        return (value != null) && (value.compareTo(min) >= 0) && (value.compareTo(max) <= 0);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
         BigDecimal value = getValue(index);
         BigDecimal min = BigDecimal.valueOf(Short.MIN_VALUE);
         BigDecimal max = BigDecimal.valueOf(Short.MAX_VALUE);
-        return (value != null) && (value.compareTo(min) < 0) && (value.compareTo(max) > 0);
+        return (value != null) && (value.compareTo(min) >= 0) && (value.compareTo(max) <= 0);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
         BigDecimal value = getValue(index);
         BigDecimal min = BigDecimal.valueOf(Integer.MIN_VALUE);
         BigDecimal max = BigDecimal.valueOf(Integer.MAX_VALUE);
-        return (value != null) && (value.compareTo(min) < 0) && (value.compareTo(max) > 0);
+        return (value != null) && (value.compareTo(min) >= 0) && (value.compareTo(max) <= 0);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
         BigDecimal value = getValue(index);
         BigDecimal min = BigDecimal.valueOf(Long.MIN_VALUE);
         BigDecimal max = BigDecimal.valueOf(Long.MAX_VALUE);
-        return (value != null) && (value.compareTo(min) < 0) && (value.compareTo(max) > 0);
+        return (value != null) && (value.compareTo(min) >= 0) && (value.compareTo(max) <= 0);
     }
 
     @Override
@@ -126,9 +126,9 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
     @Override
     public boolean isValidFloat(int index) {
         BigDecimal value = getValue(index);
-        BigDecimal min = BigDecimal.valueOf(Float.MIN_VALUE);
+        BigDecimal min = BigDecimal.valueOf(-Float.MAX_VALUE);
         BigDecimal max = BigDecimal.valueOf(Float.MAX_VALUE);
-        return (value != null) && (value.compareTo(min) < 0) && (value.compareTo(max) > 0);
+        return (value != null) && (value.compareTo(min) >= 0) && (value.compareTo(max) <= 0);
     }
 
     @Override
@@ -142,9 +142,9 @@ public class DefaultBigDecimalFieldItem extends FieldItem<BigDecimal> {
     @Override
     public boolean isValidDouble(int index) {
         BigDecimal value = getValue(index);
-        BigDecimal min = BigDecimal.valueOf(Double.MIN_VALUE);
+        BigDecimal min = BigDecimal.valueOf(-Double.MAX_VALUE);
         BigDecimal max = BigDecimal.valueOf(Double.MAX_VALUE);
-        return (value != null) && (value.compareTo(min) < 0) && (value.compareTo(max) > 0);
+        return (value != null) && (value.compareTo(min) >= 0) && (value.compareTo(max) <= 0);
     }
 
     @Override

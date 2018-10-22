@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DefaultFloatFieldItem extends FieldItem<Float> {
+public class DefaultFloatFieldItem extends BaseDefaultFieldItem<Float> {
 
     public DefaultFloatFieldItem(Float... values) {
         super(values);
@@ -31,7 +31,7 @@ public class DefaultFloatFieldItem extends FieldItem<Float> {
 
     @Override
     public Object getObject(int index) {
-        return getFloat(index);
+        return getValue(index);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DefaultFloatFieldItem extends FieldItem<Float> {
     @Override
     public boolean isValidFloat(int index) {
         Float value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= Float.MIN_VALUE);
+        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
     }
 
     @Override
@@ -131,6 +131,7 @@ public class DefaultFloatFieldItem extends FieldItem<Float> {
 
     @Override
     public boolean isValidDouble(int index) {
+        // If it's a valid Float value it will also be a valid double one.
         return (getValue(index) != null);
     }
 

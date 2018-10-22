@@ -38,8 +38,8 @@ import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.modbus.messages.items.DefaultModbusByteArrayFieldItem;
 import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
@@ -263,7 +263,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             LOGGER.debug("{}: Nothing", readCoilsResponse);
             ByteBuf byteBuf = readCoilsResponse.getCoilStatus();
             DefaultBooleanFieldItem data = produceCoilValueList(byteBuf, field.getQuantity());
-            Map<String, Pair<PlcResponseCode, FieldItem>> responseValues = new HashMap<>();
+            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseValues = new HashMap<>();
             responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadDiscreteInputsResponse) {
@@ -272,7 +272,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             LOGGER.debug("{}: Nothing", readDiscreteInputsResponse);
             ByteBuf byteBuf = readDiscreteInputsResponse.getInputStatus();
             DefaultBooleanFieldItem data = produceCoilValueList(byteBuf, field.getQuantity());
-            Map<String, Pair<PlcResponseCode, FieldItem>> responseValues = new HashMap<>();
+            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseValues = new HashMap<>();
             responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadHoldingRegistersResponse) {
@@ -282,7 +282,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             ByteBuf byteBuf = readHoldingRegistersResponse.getRegisters();
             // TODO: use register method
             DefaultModbusByteArrayFieldItem data = produceRegisterValueList(byteBuf, field.getQuantity());
-            Map<String, Pair<PlcResponseCode, FieldItem>> responseValues = new HashMap<>();
+            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseValues = new HashMap<>();
             responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadInputRegistersResponse) {
@@ -292,7 +292,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             ByteBuf byteBuf = readInputRegistersResponse.getRegisters();
             // TODO: use register method
             DefaultModbusByteArrayFieldItem data = produceRegisterValueList(byteBuf, field.getQuantity());
-            Map<String, Pair<PlcResponseCode, FieldItem>> responseValues = new HashMap<>();
+            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseValues = new HashMap<>();
             responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof MaskWriteRegisterResponse) {
