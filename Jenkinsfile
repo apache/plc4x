@@ -117,7 +117,8 @@ pipeline {
             }
         }
 
-        stage('Code Quality') {
+        // Disabled till auth issues are resolved on infra.
+        /*stage('Code Quality') {
             when {
                 branch 'master'
             }
@@ -131,7 +132,7 @@ pipeline {
                 echo 'Building'
                 sh 'mvn -P${JENKINS_PROFILE} sonar:sonar'
             }
-        }
+        }*/
 
         stage('Deploy') {
             when {
