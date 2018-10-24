@@ -350,7 +350,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         buf.writeByte(parameter.getSequenceNumber());
 
         // A response parameter has some more fields.
-        if((parameter instanceof CpuServicesResponseParameter)) {
+        if(parameter instanceof CpuServicesResponseParameter) {
             CpuServicesResponseParameter responseParameter = (CpuServicesResponseParameter) parameter;
             buf.writeByte(responseParameter.getDataUnitReferenceNumber());
             buf.writeByte(responseParameter.isLastDataUnit() ? 0x00 : 0x01);
@@ -567,7 +567,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             // This is a response to a READ_VAR request.
             else if ((readWriteVarParameter.getType() == ParameterType.READ_VAR) && isResponse) {
                 DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-                short length = (dataTransportSize.isSizeInBits()) ?
+                short length = dataTransportSize.isSizeInBits() ?
                     (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
                 byte[] data = new byte[length];
                 userData.readBytes(data);
@@ -692,7 +692,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             return new CpuServicesRequestParameter(functionGroup, subFunctionGroup, sequenceNumber);
         } else {
             byte dataUnitReferenceNumber = in.readByte();
-            boolean lastDataUnit = (in.readByte() == 0x00);
+            boolean lastDataUnit = in.readByte() == 0x00;
             ParameterError error = ParameterError.valueOf(in.readShort());
             return new CpuServicesResponseParameter(functionGroup, subFunctionGroup, sequenceNumber,
                 dataUnitReferenceNumber, lastDataUnit, error);
@@ -739,11 +739,6 @@ public class S7Protocol extends ChannelDuplexHandler {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    @Override
-    public void flush(ChannelHandlerContext ctx) throws Exception {
-        super.flush(ctx);
-    }
-
     private synchronized void trySendingMessages(ChannelHandlerContext ctx) {
         while(sentButUnacknowledgedTpdus.size() < maxAmqCaller) {
             // Get the TPDU that is up next in the queue.
@@ -784,7 +779,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             return S7ControllerType.S7_ANY;
         }
 
-        String model = articleNumber.substring(articleNumber.indexOf(" ") + 1, articleNumber.indexOf(" ") + 2);
+        String model = articleNumber.substring(articleNumber.indexOf(' ') + 1, articleNumber.indexOf(' ') + 2);
         switch (model) {
             case "2":
                 return S7ControllerType.S7_1200;

@@ -25,6 +25,7 @@ import org.apache.kafka.connect.sink.SinkTask;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
@@ -99,7 +100,7 @@ public class Plc4xSinkTask extends SinkTask {
             try {
                 plcConnection.close();
             } catch (Exception e) {
-                throw new RuntimeException("Caught exception while closing connection to PLC", e);
+                throw new PlcRuntimeException("Caught exception while closing connection to PLC", e);
             }
         }
     }

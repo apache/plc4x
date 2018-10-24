@@ -29,6 +29,7 @@ import org.apache.kafka.connect.source.SourceTask;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -103,7 +104,7 @@ public class Plc4xSourceTask extends SourceTask {
             throw new ConnectException("Reading not supported on this connection");
         }
 
-        int rate = Integer.valueOf(props.get(RATE_CONFIG));
+        int rate = Integer.parseInt(props.get(RATE_CONFIG));
         scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(Plc4xSourceTask.this::scheduleFetch, rate, rate, TimeUnit.MILLISECONDS);
     }
@@ -112,7 +113,9 @@ public class Plc4xSourceTask extends SourceTask {
     public void stop() {
         scheduler.shutdown();
         closeConnection();
-        notify(); // wake up thread waiting in awaitFetch
+        synchronized (this) {
+            notify(); // wake up thread waiting in awaitFetch
+        }
     }
 
     @Override
@@ -134,7 +137,7 @@ public class Plc4xSourceTask extends SourceTask {
             try {
                 plcConnection.close();
             } catch (Exception e) {
-                throw new RuntimeException("Caught exception while closing connection to PLC", e);
+                throw new PlcRuntimeException("Caught exception while closing connection to PLC", e);
             }
         }
     }
