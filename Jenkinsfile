@@ -21,7 +21,6 @@
 pipeline {
     agent {
         node {
-            //label 'ubuntu && !H32'
             label 'plc4x'
         }
     }
@@ -123,11 +122,11 @@ pipeline {
                 branch 'master'
             }
             // Only the official build nodes have the credentials to deploy setup.
-            agent {
+            /*agent {
                 node {
                     label 'ubuntu && !H32'
                 }
-            }
+            }*/
             steps {
                 echo 'Checking Code Quality'
                 withSonarQubeEnv('ASF Sonar Analysis') {
