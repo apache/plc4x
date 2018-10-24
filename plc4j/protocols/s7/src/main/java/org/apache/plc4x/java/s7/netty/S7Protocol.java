@@ -32,10 +32,13 @@ import org.apache.plc4x.java.isotp.netty.events.IsoTPConnectedEvent;
 import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DataTpdu;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
-import org.apache.plc4x.java.s7.netty.model.messages.*;
+import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
+import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
+import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
+import org.apache.plc4x.java.s7.netty.model.messages.SetupCommunicationRequestMessage;
 import org.apache.plc4x.java.s7.netty.model.params.*;
-import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuServicesPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
@@ -47,7 +50,6 @@ import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.strategies.S7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -417,7 +419,6 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
 
         List<S7Parameter> s7Parameters = new LinkedList<>();
-        VarParameter readWriteVarParameter = null;
         int i = 0;
 
         while (i < headerParametersLength) {
@@ -425,9 +426,6 @@ public class S7Protocol extends ChannelDuplexHandler {
             s7Parameters.add(parameter);
             if (parameter instanceof SetupCommunicationParameter) {
                 handleSetupCommunications(ctx, (SetupCommunicationParameter) parameter);
-            }
-            if (parameter instanceof VarParameter) {
-                readWriteVarParameter = (VarParameter) parameter;
             }
             i += S7SizeHelper.getParameterLength(parameter);
         }
@@ -606,15 +604,15 @@ public class S7Protocol extends ChannelDuplexHandler {
         // If the length is not 4, then it has to be at least 8.
         else if(length >= 8) {
             // TODO: We should probably ensure we don't read more than this.
-            short partialListLengthInWords = userData.readShort();
+            // Skip the partial list length in words.
+            userData.skipBytes(2);
             short partialListCount = userData.readShort();
             List<SslDataRecord> sslDataRecords = new LinkedList<>();
             for(int i = 0; i < partialListCount; i++) {
                 short index = userData.readShort();
                 byte[] articleNumberBytes = new byte[20];
                 userData.readBytes(articleNumberBytes);
-                String articleNumber = null;
-                articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
+                String articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
                 short bgType = userData.readShort();
                 short moduleOrOsVersion = userData.readShort();
                 short pgDescriptionFileVersion = userData.readShort();
