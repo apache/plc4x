@@ -118,7 +118,7 @@ pipeline {
         }
 
         // Disabled till auth issues are resolved on infra.
-        /*stage('Code Quality') {
+        stage('Code Quality') {
             when {
                 branch 'master'
             }
@@ -129,10 +129,12 @@ pipeline {
                 }
             }
             steps {
-                echo 'Building'
-                sh 'mvn -P${JENKINS_PROFILE} sonar:sonar'
+                echo 'Checking Code Quality'
+                withSonarQubeEnv('Apache SonarQube Server') {
+                    sh 'mvn -P${JENKINS_PROFILE} sonar:sonar'
+                }
             }
-        }*/
+        }
 
         stage('Deploy') {
             when {
