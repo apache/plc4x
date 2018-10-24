@@ -53,14 +53,12 @@ public class S7PlcToAzureIoTHubSample {
         String iotConnectionString = args[2];
         LOGGER.info("Connecting {}, {}, {}", plc4xConnectionString, addressString, iotConnectionString);
 
-        // Open a connection to the remote PLC.
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(plc4xConnectionString)) {
+        // Open both a connection to the remote PLC as well as a connection to the cloud service.
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(plc4xConnectionString);
+             DeviceClient client = new DeviceClient(iotConnectionString, IotHubClientProtocol.MQTT)) {
             LOGGER.info("Connected");
 
-            // Open a connection to the cloud service.
-            DeviceClient client = new DeviceClient(iotConnectionString, IotHubClientProtocol.MQTT);
             client.open();
-
 
             // Prepare a read request.
             PlcReadRequest request = plcConnection.readRequestBuilder().get().addItem(FIELD_NAME, addressString).build();
@@ -82,7 +80,6 @@ public class S7PlcToAzureIoTHubSample {
                 // Wait a second.
                 TimeUnit.SECONDS.sleep(1);
             }
-
         }
     }
 }
