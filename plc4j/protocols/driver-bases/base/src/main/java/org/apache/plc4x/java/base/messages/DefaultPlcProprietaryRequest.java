@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 
 import java.util.concurrent.CompletableFuture;
@@ -26,7 +27,7 @@ public class DefaultPlcProprietaryRequest<REQUEST> implements InternalPlcProprie
 
     @Override
     public CompletableFuture<PlcResponse> execute() {
-        throw new RuntimeException("not supported"); // TODO: figure out what to do with this
+        throw new PlcRuntimeException("not supported"); // TODO: figure out what to do with this
     }
 
     private REQUEST proprietaryRequest;
