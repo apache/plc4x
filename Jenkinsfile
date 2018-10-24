@@ -130,7 +130,7 @@ pipeline {
             }
             steps {
                 echo 'Checking Code Quality'
-                withSonarQubeEnv('Apache SonarQube Server') {
+                withSonarQubeEnv('ASF Sonar Analysis') {
                     sh 'mvn -P${JENKINS_PROFILE} sonar:sonar'
                 }
             }
