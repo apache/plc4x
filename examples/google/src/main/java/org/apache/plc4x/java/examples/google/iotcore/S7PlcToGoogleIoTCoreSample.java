@@ -31,10 +31,13 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 // [START iot_mqtt_includes]
@@ -49,7 +52,8 @@ public class S7PlcToGoogleIoTCoreSample {
     /**
      * Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key.
      */
-    private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
+    private static String createJwtRsa(String projectId, String privateKeyFile)
+        throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         DateTime now = new DateTime();
         // Create a JWT to authenticate this device. The device will be disconnected after the token
         // expires, and will have to reconnect with a new token. The audience field should always be set
@@ -70,7 +74,8 @@ public class S7PlcToGoogleIoTCoreSample {
     /**
      * Create a Cloud IoT Core JWT for the given project id, signed with the given ES key.
      */
-    private static String createJwtEs(String projectId, String privateKeyFile) throws Exception {
+    private static String createJwtEs(String projectId, String privateKeyFile)
+        throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         DateTime now = new DateTime();
         // Create a JWT to authenticate this device. The device will be disconnected after the token
         // expires, and will have to reconnect with a new token. The audience field should always be set
@@ -121,7 +126,8 @@ public class S7PlcToGoogleIoTCoreSample {
     // [END iot_mqtt_configcallback]
 
 
-    private static void setConnectPassword(MqttExampleOptions options, MqttConnectOptions connectOptions) throws Exception {
+    private static void setConnectPassword(MqttExampleOptions options, MqttConnectOptions connectOptions)
+        throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         switch (options.algorithm) {
             case "RS256":
                 connectOptions.setPassword(
@@ -220,7 +226,7 @@ public class S7PlcToGoogleIoTCoreSample {
         attachCallback(client, options.deviceId);
 
         // Publish to the events or state topic based on the flag.
-        String subTopic = options.messageType.equals("event") ? "events" : options.messageType;
+        String subTopic = "event".equals(options.messageType) ? "events" : options.messageType;
 
         // The MQTT topic that this device will publish telemetry data to. The MQTT topic name is
         // required to be in the format below. Note that this is not the same as the device registry's
@@ -242,7 +248,7 @@ public class S7PlcToGoogleIoTCoreSample {
                 // [START iot_mqtt_jwt_refresh]
                 long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
                 if (secsSinceRefresh > (options.tokenExpMins * 60)) {
-                    System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
+                    System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
                     iat = new DateTime();
                     setConnectPassword(options, connectOptions);
                     client.disconnect();
@@ -262,7 +268,7 @@ public class S7PlcToGoogleIoTCoreSample {
                     MqttMessage message = new MqttMessage(array);
                     message.setQos(1);
                     client.publish(mqttTopic, message);
-                    if (options.messageType.equals("event")) {
+                    if ("event".equals(options.messageType)) {
                         // Send telemetry events every second
                         Thread.sleep(1000);
                     } else {
