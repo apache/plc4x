@@ -121,7 +121,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
         // Reset transactionId on overflow
-        messageId.compareAndSet(Short.MAX_VALUE + 1, 0);
+        messageId.compareAndSet(Short.MAX_VALUE + 1L, 0);
         PlcRequest request = msg.getRequest();
         if (request instanceof PlcReadRequest) {
             encodeReadRequest(msg, out);
