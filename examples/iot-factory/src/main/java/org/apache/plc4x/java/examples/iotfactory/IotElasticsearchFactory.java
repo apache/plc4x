@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class IotElasticsearchFactory {
@@ -148,9 +149,9 @@ public class IotElasticsearchFactory {
 
             // Define the event stream.
             // 1) PLC4X source generating a stream of bytes.
-            Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, "%Q0:BYTE");
+            Supplier<List<Boolean>> plcSupplier = PlcFunctions.booleanListSupplier(plcAdapter, "%Q0:BYTE");
             // 2) Use polling to get an item from the byte-stream in regular intervals.
-            TStream<Byte> plcOutputStates = top.poll(plcSupplier, 100, TimeUnit.MILLISECONDS);
+            TStream<List<Boolean>> plcOutputStates = top.poll(plcSupplier, 100, TimeUnit.MILLISECONDS);
 
             // 3a) Create a stream that pumps all data into a 'factory-data' index.
             TStream<XContentBuilder> factoryData = plcOutputStates.map(this::translatePlcInput);
@@ -172,14 +173,14 @@ public class IotElasticsearchFactory {
         }
     }
 
-    private XContentBuilder translatePlcInput(Byte input) {
-        boolean conveyorEntry = (input & 1) != 0;
-        boolean load = (input & 2) != 0;
-        boolean unload = (input & 4) != 0;
-        boolean transferLeft = (input & 8) != 0;
-        boolean transferRight = (input & 16) != 0;
-        boolean conveyorLeft = (input & 32) != 0;
-        boolean conveyorRight = (input & 64) != 0;
+    private XContentBuilder translatePlcInput(List<Boolean> input) {
+        boolean conveyorEntry = input.get(0);
+        boolean load = input.get(1);
+        boolean unload = input.get(2);
+        boolean transferLeft = input.get(3);
+        boolean transferRight = input.get(4);
+        boolean conveyorLeft = input.get(5);
+        boolean conveyorRight = input.get(6);
 
         try(XContentBuilder builder = XContentFactory.jsonBuilder()
             .startObject()
@@ -198,9 +199,9 @@ public class IotElasticsearchFactory {
         }
     }
 
-    private XContentBuilder handlePlcInput(Byte input) {
-        boolean transferLeft = (input & 8) != 0;
-        boolean transferRight = (input & 16) != 0;
+    private XContentBuilder handlePlcInput(List<Boolean> input) {
+        boolean transferLeft = input.get(3);
+        boolean transferRight = input.get(4);
 
         if (conveyorState == ConveyorState.STOPPED) {
             if (transferLeft) {

@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.types.PlcClientDatatype;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 /**
  * WIP - A plc4x Apache Edgent {@link Supplier} and {@link Consumer} connector factory.
@@ -104,44 +105,88 @@ public class PlcFunctions {
         return adapter.newSupplier(Boolean.class, PlcClientDatatype.BOOLEAN, addressStr);
     }
 
+    public static Supplier<List<Boolean>> booleanListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(Boolean.class, PlcClientDatatype.BOOLEAN, addressStr);
+    }
+
     public static Supplier<Byte> byteSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(Byte.class, PlcClientDatatype.BYTE, addressStr);
+    }
+
+    public static Supplier<List<Byte>> byteListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(Byte.class, PlcClientDatatype.BYTE, addressStr);
     }
 
     public static Supplier<Short> shortSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(Short.class, PlcClientDatatype.SHORT, addressStr);
     }
 
+    public static Supplier<List<Short>> shortListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(Short.class, PlcClientDatatype.BYTE, addressStr);
+    }
+
     public static Supplier<Integer> integerSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(Integer.class, PlcClientDatatype.INTEGER, addressStr);
+    }
+
+    public static Supplier<List<Integer>> integerListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(Integer.class, PlcClientDatatype.BYTE, addressStr);
     }
 
     public static Supplier<Long> longSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(Long.class, PlcClientDatatype.LONG, addressStr);
     }
 
+    public static Supplier<List<Long>> longListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(Long.class, PlcClientDatatype.BYTE, addressStr);
+    }
+
     public static Supplier<Float> floatSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(Float.class, PlcClientDatatype.FLOAT, addressStr);
+    }
+
+    public static Supplier<List<Float>> floatListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(Float.class, PlcClientDatatype.BYTE, addressStr);
     }
 
     public static Supplier<Double> doubleSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(Double.class, PlcClientDatatype.DOUBLE, addressStr);
     }
 
+    public static Supplier<List<Double>> doubleListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(Double.class, PlcClientDatatype.BYTE, addressStr);
+    }
+
     public static Supplier<String> stringSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(String.class, PlcClientDatatype.STRING, addressStr);
+    }
+
+    public static Supplier<List<String>> stringListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(String.class, PlcClientDatatype.BYTE, addressStr);
     }
 
     public static Supplier<LocalTime> timeSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(LocalTime.class, PlcClientDatatype.TIME, addressStr);
     }
 
+    public static Supplier<List<LocalTime>> timeListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(LocalTime.class, PlcClientDatatype.BYTE, addressStr);
+    }
+
     public static Supplier<LocalDate> dateSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(LocalDate.class, PlcClientDatatype.DATE, addressStr);
     }
 
+    public static Supplier<List<LocalDate>> dateListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(LocalDate.class, PlcClientDatatype.BYTE, addressStr);
+    }
+
     public static Supplier<LocalDateTime> dateTimeSupplier(PlcConnectionAdapter adapter, String addressStr) {
         return adapter.newSupplier(LocalDateTime.class, PlcClientDatatype.DATE_TIME, addressStr);
+    }
+
+    public static Supplier<List<LocalDateTime>> dateTimeListSupplier(PlcConnectionAdapter adapter, String addressStr) {
+        return adapter.newListSupplier(LocalDateTime.class, PlcClientDatatype.BYTE, addressStr);
     }
 
     public static Supplier<PlcReadResponse> batchSupplier(PlcConnectionAdapter adapter, PlcReadRequest readRequest) {

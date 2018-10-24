@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * PlcConnectionAdapter encapsulates a plc4x {@link PlcConnection}.
@@ -129,6 +131,11 @@ public class PlcConnectionAdapter implements AutoCloseable {
         return new MySupplier<>(genericDatatype, clientDatatype, fieldQuery);
     }
 
+    <T> Supplier<List<T>> newListSupplier(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
+        // satisfy sonar's "Reduce number of anonymous class lines" code smell
+        return new MyListSupplier<>(genericDatatype, clientDatatype, fieldQuery);
+    }
+
     private class MySupplier<T> implements Supplier<T> {
 
         private static final long serialVersionUID = 1L;
@@ -154,6 +161,9 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 PlcReadResponse readResponse = readRequest.execute().get();
                 Object value = null;
                 switch (clientDatatype) {
+                    case BOOLEAN:
+                        value = readResponse.getBoolean(FIELD_NAME);
+                        break;
                     case BYTE:
                         value = readResponse.getByte(FIELD_NAME);
                         break;
@@ -191,6 +201,75 @@ public class PlcConnectionAdapter implements AutoCloseable {
                     } else {
                         logger.error("types don't match {} should be of type {}", value.getClass(), genericDatatype);
                     }
+                }
+            } catch (Exception e) {
+                logger.error("reading from plc device {} {} failed", connection, field, e);
+            }
+            return null;
+        }
+    }
+
+    private class MyListSupplier<T> implements Supplier<List<T>> {
+
+        private static final long serialVersionUID = 1L;
+
+        private Class<T> genericDatatype;
+        private PlcClientDatatype clientDatatype;
+        private String fieldQuery;
+
+        MyListSupplier(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
+            this.genericDatatype = genericDatatype;
+            this.clientDatatype = clientDatatype;
+            this.fieldQuery = fieldQuery;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public List<T> get() {
+            PlcConnection connection = null;
+            PlcField field = null;
+            try {
+                connection = getConnection();
+                PlcReadRequest readRequest = connection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading")).addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadResponse readResponse = readRequest.execute().get();
+                Object value = null;
+                switch (clientDatatype) {
+                    case BOOLEAN:
+                        value = readResponse.getAllBooleans(FIELD_NAME);
+                        break;
+                    case BYTE:
+                        value = readResponse.getAllBytes(FIELD_NAME);
+                        break;
+                    case SHORT:
+                        value = readResponse.getAllShorts(FIELD_NAME);
+                        break;
+                    case INTEGER:
+                        value = readResponse.getAllIntegers(FIELD_NAME);
+                        break;
+                    case LONG:
+                        value = readResponse.getAllLongs(FIELD_NAME);
+                        break;
+                    case FLOAT:
+                        value = readResponse.getAllFloats(FIELD_NAME);
+                        break;
+                    case DOUBLE:
+                        value = readResponse.getAllDoubles(FIELD_NAME);
+                        break;
+                    case STRING:
+                        value = readResponse.getAllStrings(FIELD_NAME);
+                        break;
+                    case TIME:
+                        value = readResponse.getAllTimes(FIELD_NAME);
+                        break;
+                    case DATE:
+                        value = readResponse.getAllDates(FIELD_NAME);
+                        break;
+                    case DATE_TIME:
+                        value = readResponse.getAllDateTimes(FIELD_NAME);
+                        break;
+                }
+                if (value != null) {
+                    return Collections.checkedList((List<T>) value, genericDatatype);
                 }
             } catch (Exception e) {
                 logger.error("reading from plc device {} {} failed", connection, field, e);
