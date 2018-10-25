@@ -21,77 +21,77 @@ package org.apache.plc4x.java.base.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
 
     @Override
-    public FieldItem encodeBoolean(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeByte(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeShort(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeShort(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeInteger(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeBigInteger(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeLong(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeLong(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeFloat(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeBigDecimal(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBigDecimal(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeDouble(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeString(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeString(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeTime(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeTime(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeDate(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDate(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeDateTime(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 
     @Override
-    public FieldItem encodeByteArray(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
 }

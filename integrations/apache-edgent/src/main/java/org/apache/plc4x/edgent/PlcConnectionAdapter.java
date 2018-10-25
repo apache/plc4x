@@ -23,9 +23,7 @@ import org.apache.edgent.function.Consumer;
 import org.apache.edgent.function.Function;
 import org.apache.edgent.function.Supplier;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -38,6 +36,8 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * PlcConnectionAdapter encapsulates a plc4x {@link PlcConnection}.
@@ -104,12 +104,12 @@ public class PlcConnectionAdapter implements AutoCloseable {
     }
 
     public PlcReadRequest.Builder readRequestBuilder() throws PlcException {
-        return getConnection().getReader().orElseThrow(
-            () -> new PlcException("This connection doesn't support reading")).readRequestBuilder();
+        return getConnection().readRequestBuilder().orElseThrow(
+            () -> new PlcException("This connection doesn't support reading"));
     }
 
-    Supplier<PlcReadResponse<?>> newSupplier(PlcReadRequest readRequest) {
-        return new Supplier<PlcReadResponse<?>>() {
+    Supplier<PlcReadResponse> newSupplier(PlcReadRequest readRequest) {
+        return new Supplier<PlcReadResponse>() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -117,9 +117,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 PlcConnection connection = null;
                 try {
                     connection = getConnection();
-                    PlcReader reader = connection.getReader()
-                        .orElseThrow(() -> new PlcException("This connection doesn't support reading"));
-                    return reader.read(readRequest).get();
+                    return readRequest.execute().get();
                 } catch (Exception e) {
                     logger.error("reading from plc device {} {} failed", connection, readRequest, e);
                     return null;
@@ -131,6 +129,11 @@ public class PlcConnectionAdapter implements AutoCloseable {
     <T> Supplier<T> newSupplier(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
         // satisfy sonar's "Reduce number of anonymous class lines" code smell
         return new MySupplier<>(genericDatatype, clientDatatype, fieldQuery);
+    }
+
+    <T> Supplier<List<T>> newListSupplier(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
+        // satisfy sonar's "Reduce number of anonymous class lines" code smell
+        return new MyListSupplier<>(genericDatatype, clientDatatype, fieldQuery);
     }
 
     private class MySupplier<T> implements Supplier<T> {
@@ -154,12 +157,13 @@ public class PlcConnectionAdapter implements AutoCloseable {
             PlcField field = null;
             try {
                 connection = getConnection();
-                PlcReader reader = connection.getReader()
-                    .orElseThrow(() -> new PlcException("This connection doesn't support reading"));
-                PlcReadRequest readRequest = reader.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();
-                PlcReadResponse readResponse = reader.read(readRequest).get();
+                PlcReadRequest readRequest = connection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading")).addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadResponse readResponse = readRequest.execute().get();
                 Object value = null;
                 switch (clientDatatype) {
+                    case BOOLEAN:
+                        value = readResponse.getBoolean(FIELD_NAME);
+                        break;
                     case BYTE:
                         value = readResponse.getByte(FIELD_NAME);
                         break;
@@ -205,6 +209,75 @@ public class PlcConnectionAdapter implements AutoCloseable {
         }
     }
 
+    private class MyListSupplier<T> implements Supplier<List<T>> {
+
+        private static final long serialVersionUID = 1L;
+
+        private Class<T> genericDatatype;
+        private PlcClientDatatype clientDatatype;
+        private String fieldQuery;
+
+        MyListSupplier(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
+            this.genericDatatype = genericDatatype;
+            this.clientDatatype = clientDatatype;
+            this.fieldQuery = fieldQuery;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public List<T> get() {
+            PlcConnection connection = null;
+            PlcField field = null;
+            try {
+                connection = getConnection();
+                PlcReadRequest readRequest = connection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading")).addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadResponse readResponse = readRequest.execute().get();
+                Object value = null;
+                switch (clientDatatype) {
+                    case BOOLEAN:
+                        value = readResponse.getAllBooleans(FIELD_NAME);
+                        break;
+                    case BYTE:
+                        value = readResponse.getAllBytes(FIELD_NAME);
+                        break;
+                    case SHORT:
+                        value = readResponse.getAllShorts(FIELD_NAME);
+                        break;
+                    case INTEGER:
+                        value = readResponse.getAllIntegers(FIELD_NAME);
+                        break;
+                    case LONG:
+                        value = readResponse.getAllLongs(FIELD_NAME);
+                        break;
+                    case FLOAT:
+                        value = readResponse.getAllFloats(FIELD_NAME);
+                        break;
+                    case DOUBLE:
+                        value = readResponse.getAllDoubles(FIELD_NAME);
+                        break;
+                    case STRING:
+                        value = readResponse.getAllStrings(FIELD_NAME);
+                        break;
+                    case TIME:
+                        value = readResponse.getAllTimes(FIELD_NAME);
+                        break;
+                    case DATE:
+                        value = readResponse.getAllDates(FIELD_NAME);
+                        break;
+                    case DATE_TIME:
+                        value = readResponse.getAllDateTimes(FIELD_NAME);
+                        break;
+                }
+                if (value != null) {
+                    return Collections.checkedList((List<T>) value, genericDatatype);
+                }
+            } catch (Exception e) {
+                logger.error("reading from plc device {} {} failed", connection, field, e);
+            }
+            return null;
+        }
+    }
+
     <T> Consumer<T> newJsonConsumer(Class<T> genericDatatype, PlcClientDatatype clientDatatype, String fieldQuery) {
         return new ObjectConsumer<>(genericDatatype, clientDatatype, fieldQuery);
     }
@@ -219,12 +292,10 @@ public class PlcConnectionAdapter implements AutoCloseable {
             PlcConnection connection = null;
             try {
                 connection = getConnection();
-                PlcWriter writer = connection.getWriter()
-                    .orElseThrow(() -> new PlcException("This connection doesn't support writing"));
-                PlcWriteRequest.Builder builder = writer.writeRequestBuilder();
+                PlcWriteRequest.Builder builder = connection.writeRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support writing"));
                 PlcWriteRequest writeRequest = builder.build();
                 addItem(builder, clientDatatype, fieldQuery, fieldValue);
-                writer.write(writeRequest).get();
+                writeRequest.execute().get();
             } catch (Exception e) {
                 logger.error("writing to plc device {} {} failed", connection, fieldQuery, e);
             }

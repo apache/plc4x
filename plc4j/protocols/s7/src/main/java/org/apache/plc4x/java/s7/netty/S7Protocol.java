@@ -32,10 +32,13 @@ import org.apache.plc4x.java.isotp.netty.events.IsoTPConnectedEvent;
 import org.apache.plc4x.java.isotp.netty.model.IsoTPMessage;
 import org.apache.plc4x.java.isotp.netty.model.tpdus.DataTpdu;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
-import org.apache.plc4x.java.s7.netty.model.messages.*;
+import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
+import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
+import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
+import org.apache.plc4x.java.s7.netty.model.messages.SetupCommunicationRequestMessage;
 import org.apache.plc4x.java.s7.netty.model.params.*;
-import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuServicesPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
@@ -47,7 +50,6 @@ import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.strategies.S7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -348,7 +350,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         buf.writeByte(parameter.getSequenceNumber());
 
         // A response parameter has some more fields.
-        if((parameter instanceof CpuServicesResponseParameter)) {
+        if(parameter instanceof CpuServicesResponseParameter) {
             CpuServicesResponseParameter responseParameter = (CpuServicesResponseParameter) parameter;
             buf.writeByte(responseParameter.getDataUnitReferenceNumber());
             buf.writeByte(responseParameter.isLastDataUnit() ? 0x00 : 0x01);
@@ -417,7 +419,6 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
 
         List<S7Parameter> s7Parameters = new LinkedList<>();
-        VarParameter readWriteVarParameter = null;
         int i = 0;
 
         while (i < headerParametersLength) {
@@ -425,9 +426,6 @@ public class S7Protocol extends ChannelDuplexHandler {
             s7Parameters.add(parameter);
             if (parameter instanceof SetupCommunicationParameter) {
                 handleSetupCommunications(ctx, (SetupCommunicationParameter) parameter);
-            }
-            if (parameter instanceof VarParameter) {
-                readWriteVarParameter = (VarParameter) parameter;
             }
             i += S7SizeHelper.getParameterLength(parameter);
         }
@@ -569,7 +567,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             // This is a response to a READ_VAR request.
             else if ((readWriteVarParameter.getType() == ParameterType.READ_VAR) && isResponse) {
                 DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-                short length = (dataTransportSize.isSizeInBits()) ?
+                short length = dataTransportSize.isSizeInBits() ?
                     (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
                 byte[] data = new byte[length];
                 userData.readBytes(data);
@@ -606,15 +604,15 @@ public class S7Protocol extends ChannelDuplexHandler {
         // If the length is not 4, then it has to be at least 8.
         else if(length >= 8) {
             // TODO: We should probably ensure we don't read more than this.
-            short partialListLengthInWords = userData.readShort();
+            // Skip the partial list length in words.
+            userData.skipBytes(2);
             short partialListCount = userData.readShort();
             List<SslDataRecord> sslDataRecords = new LinkedList<>();
             for(int i = 0; i < partialListCount; i++) {
                 short index = userData.readShort();
                 byte[] articleNumberBytes = new byte[20];
                 userData.readBytes(articleNumberBytes);
-                String articleNumber = null;
-                articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
+                String articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
                 short bgType = userData.readShort();
                 short moduleOrOsVersion = userData.readShort();
                 short pgDescriptionFileVersion = userData.readShort();
@@ -694,7 +692,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             return new CpuServicesRequestParameter(functionGroup, subFunctionGroup, sequenceNumber);
         } else {
             byte dataUnitReferenceNumber = in.readByte();
-            boolean lastDataUnit = (in.readByte() == 0x00);
+            boolean lastDataUnit = in.readByte() == 0x00;
             ParameterError error = ParameterError.valueOf(in.readShort());
             return new CpuServicesResponseParameter(functionGroup, subFunctionGroup, sequenceNumber,
                 dataUnitReferenceNumber, lastDataUnit, error);
@@ -741,11 +739,6 @@ public class S7Protocol extends ChannelDuplexHandler {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    @Override
-    public void flush(ChannelHandlerContext ctx) throws Exception {
-        super.flush(ctx);
-    }
-
     private synchronized void trySendingMessages(ChannelHandlerContext ctx) {
         while(sentButUnacknowledgedTpdus.size() < maxAmqCaller) {
             // Get the TPDU that is up next in the queue.
@@ -786,7 +779,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             return S7ControllerType.S7_ANY;
         }
 
-        String model = articleNumber.substring(articleNumber.indexOf(" ") + 1, articleNumber.indexOf(" ") + 2);
+        String model = articleNumber.substring(articleNumber.indexOf(' ') + 1, articleNumber.indexOf(' ') + 2);
         switch (model) {
             case "2":
                 return S7ControllerType.S7_1200;

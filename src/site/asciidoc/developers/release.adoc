@@ -382,6 +382,71 @@ All release artifacts released to the Apache release repo, will automatically be
 
 === Notifying the world
 
-Make sure you have given the Apache mirrors time to fetch the release files by waiting at least 24 hours after moving the release candidtate to the release part of the SVN.
+Make sure you have given the Apache mirrors time to fetch the release files by waiting at least 24 hours after moving the release candidate to the release part of the SVN.
 
-// TODO ... finish this ...
+After that it is time to announce your release to the world:
+
+```
+    From:
+your apache email address
+    To:
+announce@apache.org
+
+    CC:
+dev@plc4x.apache.org
+
+    E-Mail Topic:
+[ANNOUNCE] Apache PLC4X (incubating) 0.1.0 released
+
+    Message:
+The Apache PLC4X (Incubating) team is pleased to announce the release of Apache PLC4X (incubating) 0.1.0
+
+This is the first official release of PLC4X.
+
+PLC4X is a set of libraries for communicating with industrial programmable
+logic controllers (PLCs) using a variety of protocols but with a shared API.
+
+The current release contains drivers able to communicate with industrial PLCs using one of the following protocols:
+
+  *   Siemens S7 (0x32)
+  *   Beckhoff ADS
+  *   Modbus
+  *   EtherNet/IP
+
+Beyond that we also provide integration modules for the following Apache projects and frameworks:
+
+  *   Apache Edgent (Incubating)
+  *   Apache Camel
+  *   Apache Kafka (Kafka Connect)
+
+Visit the Apache PLC4X website [1] for general information or
+the downloads page [2] for release notes and download information.
+
+Regards,
+The Apache PLC4X team
+
+[1] http://plc4x.apache.org
+[2] http://plc4x.apache.org/users/download.html
+
+=====
+
+*Disclaimer*
+
+Apache PLC4X is an effort undergoing incubation at The Apache Software
+Foundation (ASF), sponsored by the name of Apache Incubator PMC. Incubation
+is required of all newly accepted projects until a further review indicates
+that the infrastructure, communications, and decision making process have
+stabilized in a manner consistent with other successful ASF projects. While
+incubation status is not necessarily a reflection of the completeness or
+stability of the code, it does indicate that the project has yet to be
+fully endorsed by the ASF.
+```
+It is important to note that you have to send this email from your apache email address or it will be rejected.
+This wasn't very simple for me to setup.
+A general description can be found here:
+https://reference.apache.org/committer/email
+Here's what I did in google mail to allow sending of emails:
+https://gmail.googleblog.com/2009/07/send-mail-from-another-address-without.html
+Note ... you will be able to select the alternat sending address if you click into the recipients line of a new email (Not very intuitive).
+
+After that email is out the door, you're done. Congrats!

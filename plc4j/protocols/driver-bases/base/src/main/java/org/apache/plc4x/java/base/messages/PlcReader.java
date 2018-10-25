@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.connection;
+package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -35,20 +35,6 @@ public interface PlcReader {
      * @param readRequest object describing the type and location of the value.
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
-    CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest);
-
-    /**
-     * Reads a requested value from a PLC.
-     *
-     * @param readRequestBuilderConsumer consumer which can be used to build requests.
-     * @return a {@link CompletableFuture} giving async access to the returned value.
-     */
-    default CompletableFuture<PlcReadResponse<?>> read(Consumer<PlcReadRequest.Builder> readRequestBuilderConsumer) {
-        PlcReadRequest.Builder requestBuilder = readRequestBuilder();
-        readRequestBuilderConsumer.accept(requestBuilder);
-        return read(requestBuilder.build());
-    }
-
-    PlcReadRequest.Builder readRequestBuilder();
+    CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest);
 
 }

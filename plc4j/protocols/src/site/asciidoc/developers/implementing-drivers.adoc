@@ -171,14 +171,14 @@ It allows to manually send and receive (binary) data to and from a pipeline for 
 == Implementing a custom driver
 
 PLC4X's `DriverManager` finds it's drivers, by using the default `Java ServiceLoader`.
-This requires a file called `org.apache.plc4x.java.api.PlcDriver` in the `META-INF/services` directory of the drivers JAR file.
+This requires a file called `org.apache.plc4x.java.spi.PlcDriver` in the `META-INF/services` directory of the drivers JAR file.
 For each type of driver provided inside this JAR, one line has to be added to this file containing the fully qualified class name of the driver implementation.
 
 For the S7 driver for example all it contains is this line:
 
     org.apache.plc4x.java.s7.S7PlcDriver
 
-A driver implementation must implement the `org.apache.plc4x.java.api.PlcDriver` interface.
+A driver implementation must implement the `org.apache.plc4x.java.spi.PlcDriver` interface.
 This defines the necessary methods for the `DriverManager` to find the correct implementation and create a new connection instance.
 
 The important methods here are:

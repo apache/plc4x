@@ -69,5 +69,9 @@ public class TransmissionMode extends UnsignedIntLEByteValue {
         public static final TransmissionMode ADSTRANS_SERVERONCHA2 = TransmissionMode.of(6);
         public static final TransmissionMode ADSTRANS_CLIENT1REQ = TransmissionMode.of(10);
         public static final TransmissionMode ADSTRANS_MAXMODES = TransmissionMode.of(Integer.MAX_VALUE);
+
+        private DefinedValues() {
+            // Container class
+        }
     }
 }

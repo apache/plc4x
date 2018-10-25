@@ -27,8 +27,9 @@ import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.util.*;
 
@@ -101,7 +102,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
             try {
                 connection = new PlcDriverManager().getConnection(property.getValue());
             } catch (PlcConnectionException e) {
-                getLogger().error("Error connecting to " + property.getValue());
+                getLogger().error("Error connecting to " + property.getValue(), e);
             }
         }
 
@@ -110,10 +111,33 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         for (String segment : addresses.getValue().split(";")) {
             String[] parts = segment.split("=");
             if(parts.length != 2) {
-                throw new RuntimeException("Invalid address format");
+                throw new PlcRuntimeException("Invalid address format");
             }
             addressMap.put(parts[0], parts[1]);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BasePlc4xProcessor)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        BasePlc4xProcessor that = (BasePlc4xProcessor) o;
+        return Objects.equals(descriptors, that.descriptors) &&
+            Objects.equals(getRelationships(), that.getRelationships()) &&
+            Objects.equals(getConnection(), that.getConnection()) &&
+            Objects.equals(addressMap, that.addressMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), descriptors, getRelationships(), getConnection(), addressMap);
     }
 
 }

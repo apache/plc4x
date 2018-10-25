@@ -43,7 +43,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeBoolean(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Boolean.class) {
             return new DefaultBooleanFieldItem((Boolean[]) values);
@@ -52,7 +52,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeByte(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Byte.class) {
             return new DefaultLongFieldItem(Arrays.stream(values).map(x -> new Long((Byte) x)).toArray(Long[]::new));
@@ -61,7 +61,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeShort(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeShort(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Short.class) {
             return new DefaultLongFieldItem(Arrays.stream(values).map(x -> new Long((Short) x)).toArray(Long[]::new));
@@ -70,7 +70,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeInteger(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Integer.class) {
             return new DefaultLongFieldItem(Arrays.stream(values).map(x -> new Long((Integer) x)).toArray(Long[]::new));
@@ -79,7 +79,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeBigInteger(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == BigInteger.class) {
             return new DefaultLongFieldItem(Arrays.stream(values).map(x -> ((BigInteger) x).longValue()).toArray(Long[]::new));
@@ -88,7 +88,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeLong(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeLong(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Long.class) {
             return new DefaultLongFieldItem((Long[]) values);
@@ -97,7 +97,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeFloat(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Float.class) {
             return new DefaultDoubleFieldItem((Double[]) values);
@@ -106,7 +106,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeBigDecimal(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBigDecimal(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == BigDecimal.class) {
             return new DefaultBigDecimalFieldItem((BigDecimal[]) values);
@@ -115,7 +115,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDouble(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == Double.class) {
             return new DefaultDoubleFieldItem((Double[]) values);
@@ -124,7 +124,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeString(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeString(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == String.class) {
             return new DefaultStringFieldItem((String[]) values);
@@ -133,7 +133,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeTime(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeTime(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == LocalTime.class) {
             return new DefaultLocalDateTimeFieldItem((LocalDateTime[]) values);
@@ -142,7 +142,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDate(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDate(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == LocalDate.class) {
             return new DefaultLocalDateTimeFieldItem((LocalDateTime[]) values);
@@ -151,7 +151,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeDateTime(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == LocalDateTime.class) {
             return new DefaultLocalDateTimeFieldItem((LocalDateTime[]) values);
@@ -160,7 +160,7 @@ public class TestFieldHandler implements PlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeByteArray(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values) {
         TestField testField = (TestField) field;
         if (testField.getDataType() == byte[].class) {
             return new DefaultByteArrayFieldItem(Arrays.stream(values).map(Byte.class::cast).toArray(Byte[]::new));

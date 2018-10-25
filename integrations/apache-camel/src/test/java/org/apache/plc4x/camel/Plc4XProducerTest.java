@@ -21,8 +21,8 @@ package org.apache.plc4x.camel;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,8 +45,10 @@ public class Plc4XProducerTest {
         Plc4XEndpoint endpointMock = mock(Plc4XEndpoint.class, RETURNS_DEEP_STUBS);
         when(endpointMock.getEndpointUri()).thenReturn("plc4x:mock:10.10.10.1/1/1");
         PlcDriverManager plcDriverManagerMock = mock(PlcDriverManager.class, RETURNS_DEEP_STUBS);
-        when(plcDriverManagerMock.getConnection(anyString()).getWriter())
-            .thenReturn(Optional.of(mock(PlcWriter.class, RETURNS_DEEP_STUBS)));
+
+        when(plcDriverManagerMock.getConnection(anyString()).writeRequestBuilder())
+            .thenReturn(Optional.of(mock(PlcWriteRequest.Builder.class, RETURNS_DEEP_STUBS)));
+
         when(endpointMock.getPlcDriverManager()).thenReturn(plcDriverManagerMock);
         SUT = new Plc4XProducer(endpointMock);
         testExchange = mock(Exchange.class, RETURNS_DEEP_STUBS);

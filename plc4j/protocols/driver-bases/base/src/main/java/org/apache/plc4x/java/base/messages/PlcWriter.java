@@ -16,10 +16,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.base.messages;
 
-public interface PlcProtocolMessage {
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 
-    PlcProtocolMessage getParent();
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+
+/**
+ * Interface implemented by all PlcConnections that are able to write to remote resources.
+ */
+public interface PlcWriter {
+
+    /**
+     * Writes a given value to a PLC.
+     *
+     * @param writeRequest object describing the type, location and value that whould be written.
+     * @return a {@link CompletableFuture} giving async access to the response of the write operation.
+     */
+    CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest);
 
 }

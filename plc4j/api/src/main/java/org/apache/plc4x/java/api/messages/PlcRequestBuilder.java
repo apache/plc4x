@@ -18,8 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-public interface PlcMessageBuilder<T> {
-
-    T build();
-
+public interface PlcRequestBuilder {
+    PlcRequest build();
 }

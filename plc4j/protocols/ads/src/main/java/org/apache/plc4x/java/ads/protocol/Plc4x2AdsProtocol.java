@@ -28,6 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsDataType;
+import org.apache.plc4x.java.ads.model.AdsField;
 import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.ads.protocol.exception.AdsException;
@@ -35,14 +36,13 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
-import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,14 +152,15 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         IndexGroup indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
 
-        FieldItem fieldItem = writeRequest.getFieldItems().get(0);
+        BaseDefaultFieldItem fieldItem = writeRequest.getFieldItems().get(0);
         Object[] values = fieldItem.getValues();
 
         byte[] bytes = encodeData(directAdsField.getAdsDataType(), values);
         int bytesToBeWritten = bytes.length;
         int maxTheoreticalSize = directAdsField.getAdsDataType().getTargetByteSize() * directAdsField.getNumberOfElements();
         if (bytesToBeWritten > maxTheoreticalSize) {
-            throw new PlcProtocolPayloadTooBigException("Ads", maxTheoreticalSize, bytesToBeWritten, values);
+            LOGGER.debug("Requested AdsDatatype {} is exceeded by number of bytes {}. Limit {}.", directAdsField.getAdsDataType(), bytesToBeWritten, maxTheoreticalSize);
+            throw new PlcProtocolPayloadTooBigException("ADS", maxTheoreticalSize, bytesToBeWritten, values);
         }
         Data data = Data.of(bytes);
         AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
@@ -282,7 +283,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,
-                __ -> responseCode
+                ignore -> responseCode
             ));
         return new DefaultPlcWriteResponse(plcWriteRequest, responseItems);
     }
@@ -292,19 +293,18 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
 
         // TODO: only single requests supported for now
-        DirectAdsField field = (DirectAdsField) plcReadRequest.getFields().get(0);
-
+        AdsField field = (AdsField) plcReadRequest.getFields().get(0);
 
         PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
         byte[] bytes = responseMessage.getData().getBytes();
-        FieldItem<?> fieldItem = decodeData(field.getAdsDataType(), bytes);
+        BaseDefaultFieldItem<?> fieldItem = decodeData(field.getAdsDataType(), bytes);
 
         // TODO: does every item has the same ads response or is this whole aggregation broken?
-        Map<String, Pair<PlcResponseCode, FieldItem>> responseItems = plcReadRequest.getFieldNames()
+        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseItems = plcReadRequest.getFieldNames()
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,
-                __ -> Pair.of(responseCode, fieldItem)
+                ignore -> Pair.of(responseCode, fieldItem)
             ));
 
         return new DefaultPlcReadResponse(plcReadRequest, responseItems);

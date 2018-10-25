@@ -56,6 +56,78 @@
       <artifactId>commons-codec</artifactId>
       <version>1.11</version>
     </dependency>
+
+    <!-- InfluxDB dependencies -->
+    <dependency>
+      <groupId>org.influxdb</groupId>
+      <artifactId>influxdb-java</artifactId>
+      <version>2.14</version>
+    </dependency>
+
+    <!-- Elasticsearch dependencies -->
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>6.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.elasticsearch.plugin</groupId>
+      <artifactId>transport-netty4-client</artifactId>
+      <version>6.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.dentrassi.elasticsearch</groupId>
+      <artifactId>log4j2-mock</artifactId>
+      <version>0.0.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <classpathScope>test</classpathScope>
+          <mainClass>org.apache.plc4x.java.deltav.PoCInflux</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+
+    This profile starts the application with a provided pcapng file instead of capturing real traffic.
+
+    Run With
+    mvn exec:java -P dummy -Dpcapng.file.path="/path/to/mycool.pcapng"
+
+  -->
+  <profiles>
+    <profile>
+      <id>dummy</id>
+
+      <properties>
+        <pcapng.file.path>hurz.pcapng</pcapng.file.path>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <configuration combine.children="append">
+              <arguments>${pcapng.file.path}</arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

@@ -23,7 +23,7 @@ import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 
 import java.util.Collection;
 
-public interface InternalPlcUnsubscriptionRequest extends PlcUnsubscriptionRequest, InternalPlcFieldRequest {
+public interface InternalPlcUnsubscriptionRequest extends PlcUnsubscriptionRequest, InternalPlcRequest {
 
     Collection<? extends InternalPlcSubscriptionHandle> getInternalPlcSubscriptionHandles();
 }

@@ -18,10 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DefaultLongFieldItem extends FieldItem<Long> {
+public class DefaultLongFieldItem extends BaseDefaultFieldItem<Long> {
 
     public DefaultLongFieldItem(Long... values) {
         super(values);
@@ -29,7 +31,7 @@ public class DefaultLongFieldItem extends FieldItem<Long> {
 
     @Override
     public Object getObject(int index) {
-        return getLong(index);
+        return getValue(index);
     }
 
     @Override
@@ -39,10 +41,10 @@ public class DefaultLongFieldItem extends FieldItem<Long> {
 
     @Override
     public Boolean getBoolean(int index) {
-        if (isValidBoolean(index)) {
-            return getValue(index) != 0L;
+        if (!isValidBoolean(index)) {
+            throw new PlcIncompatibleDatatypeException(Boolean.class, index);
         }
-        return null;
+        return getValue(index) != 0L;
     }
 
     @Override
@@ -53,10 +55,10 @@ public class DefaultLongFieldItem extends FieldItem<Long> {
 
     @Override
     public Byte getByte(int index) {
-        if (isValidByte(index)) {
-            return getValue(index).byteValue();
+        if (!isValidByte(index)) {
+            throw new PlcIncompatibleDatatypeException(Byte.class, index);
         }
-        return null;
+        return getValue(index).byteValue();
     }
 
     @Override
@@ -67,10 +69,10 @@ public class DefaultLongFieldItem extends FieldItem<Long> {
 
     @Override
     public Short getShort(int index) {
-        if (isValidShort(index)) {
-            return getValue(index).shortValue();
+        if (!isValidShort(index)) {
+            throw new PlcIncompatibleDatatypeException(Short.class, index);
         }
-        return null;
+        return getValue(index).shortValue();
     }
 
     @Override
@@ -81,22 +83,10 @@ public class DefaultLongFieldItem extends FieldItem<Long> {
 
     @Override
     public Integer getInteger(int index) {
-        if (isValidInteger(index)) {
-            return getValue(index).intValue();
+        if (!isValidInteger(index)) {
+            throw new PlcIncompatibleDatatypeException(Integer.class, index);
         }
-        return null;
-    }
-
-    public boolean isValidBigInteger(int index) {
-        Long value = getValue(index);
-        return value != null;
-    }
-
-    public BigInteger getBigInteger(int index) {
-        if (isValidBigInteger(index)) {
-            return BigInteger.valueOf(getValue(index));
-        }
-        return null;
+        return getValue(index).intValue();
     }
 
     @Override
@@ -106,38 +96,50 @@ public class DefaultLongFieldItem extends FieldItem<Long> {
 
     @Override
     public Long getLong(int index) {
-        if (isValidFloat(index)) {
-            return getValue(index);
+        if (!isValidLong(index)) {
+            throw new PlcIncompatibleDatatypeException(Long.class, index);
         }
-        return null;
+        return getValue(index);
+    }
+
+    public boolean isValidBigInteger(int index) {
+        Long value = getValue(index);
+        return value != null;
+    }
+
+    public BigInteger getBigInteger(int index) {
+        if (!isValidBigInteger(index)) {
+            throw new PlcIncompatibleDatatypeException(BigInteger.class, index);
+        }
+        return BigInteger.valueOf(getValue(index));
     }
 
     @Override
     public boolean isValidFloat(int index) {
         Long value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= Float.MIN_VALUE);
+        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
     }
 
     @Override
     public Float getFloat(int index) {
-        if (isValidFloat(index)) {
-            return getValue(index).floatValue();
+        if (!isValidFloat(index)) {
+            throw new PlcIncompatibleDatatypeException(Float.class, index);
         }
-        return null;
+        return getValue(index).floatValue();
     }
 
     @Override
     public boolean isValidDouble(int index) {
         Long value = getValue(index);
-        return (value != null) && (value <= Double.MAX_VALUE) && (value >= Double.MIN_VALUE);
+        return (value != null) && (value <= Double.MAX_VALUE) && (value >= -Double.MAX_VALUE);
     }
 
     @Override
     public Double getDouble(int index) {
-        if (isValidDouble(index)) {
-            return getValue(index).doubleValue();
+        if (!isValidDouble(index)) {
+            throw new PlcIncompatibleDatatypeException(Double.class, index);
         }
-        return null;
+        return getValue(index).doubleValue();
     }
 
     public boolean isValidBigDecimal(int index) {
@@ -145,6 +147,9 @@ public class DefaultLongFieldItem extends FieldItem<Long> {
     }
 
     public BigDecimal getBigDecimal(int index) {
+        if(!isValidBigDecimal(index)) {
+            throw new PlcIncompatibleDatatypeException(BigDecimal.class, index);
+        }
         return new BigDecimal(getValue(index));
     }
 

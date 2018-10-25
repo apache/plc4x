@@ -18,42 +18,32 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-// TODO: request broken needs finishing.
-public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest, InternalPlcFieldRequest {
+public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest, InternalPlcRequest {
+
+    private final PlcSubscriber subscriber;
 
     private final Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles;
 
-    public DefaultPlcUnsubscriptionRequest(Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+    public DefaultPlcUnsubscriptionRequest(PlcSubscriber subscriber, Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+        this.subscriber = subscriber;
         this.internalPlcSubscriptionHandles = internalPlcSubscriptionHandles;
     }
 
     @Override
-    public int getNumberOfFields() {
-        throw new IllegalStateException("not available");
-    }
-
-    @Override
-    public LinkedHashSet<String> getFieldNames() {
-        throw new IllegalStateException("not available");
-    }
-
-    @Override
-    public PlcField getField(String name) {
-        throw new IllegalStateException("not available");
-    }
-
-    @Override
-    public LinkedList<PlcField> getFields() {
-        throw new IllegalStateException("not available");
+    public CompletableFuture<PlcUnsubscriptionResponse> execute() {
+        return subscriber.unsubscribe(this);
     }
 
     @Override
@@ -61,16 +51,13 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
         return internalPlcSubscriptionHandles;
     }
 
-    @Override
-    public LinkedList<Pair<String, PlcField>> getNamedFields() {
-        throw new IllegalStateException("not available");
-    }
-
     public static class Builder implements PlcUnsubscriptionRequest.Builder {
 
+        private final PlcSubscriber subscriber;
         private List<InternalPlcSubscriptionHandle> plcSubscriptionHandles;
 
-        public Builder() {
+        public Builder(PlcSubscriber subscriber) {
+            this.subscriber = subscriber;
             plcSubscriptionHandles = new ArrayList<>();
         }
 
@@ -83,18 +70,18 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
         public PlcUnsubscriptionRequest.Builder addHandle(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
             this.plcSubscriptionHandles.add((InternalPlcSubscriptionHandle) plcSubscriptionHandle1);
             this.plcSubscriptionHandles.addAll(Arrays.stream(plcSubscriptionHandles).map(InternalPlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
-            return null;
+            return this;
         }
 
         @Override
         public PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandles) {
             this.plcSubscriptionHandles.addAll(plcSubscriptionHandles.stream().map(InternalPlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
-            return null;
+            return this;
         }
 
         @Override
         public PlcUnsubscriptionRequest build() {
-            return new DefaultPlcUnsubscriptionRequest(plcSubscriptionHandles);
+            return new DefaultPlcUnsubscriptionRequest(subscriber, plcSubscriptionHandles);
         }
 
 

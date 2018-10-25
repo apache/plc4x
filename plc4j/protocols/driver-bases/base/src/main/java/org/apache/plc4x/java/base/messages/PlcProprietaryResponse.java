@@ -16,14 +16,10 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.api.connection;
+package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
-import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
+import org.apache.plc4x.java.api.messages.PlcResponse;
 
-import java.util.concurrent.CompletableFuture;
-
-public interface PlcProprietarySender {
-
-    <PROP_REQUEST, PROP_RESPONSE> CompletableFuture<PlcProprietaryResponse<PlcProprietaryRequest<PROP_REQUEST>, PROP_RESPONSE>> send(PlcProprietaryRequest<PROP_REQUEST> proprietaryRequest);
+public interface PlcProprietaryResponse<T> extends PlcResponse {
+    T getResponse();
 }

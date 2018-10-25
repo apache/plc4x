@@ -16,9 +16,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.api.connection;
+package org.apache.plc4x.java.api;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 
 import java.util.Optional;
 
@@ -53,10 +57,12 @@ public interface PlcConnection extends AutoCloseable {
     @Override
     void close() throws Exception;
 
-    Optional<PlcReader> getReader();
+    Optional<PlcReadRequest.Builder> readRequestBuilder();
 
-    Optional<PlcWriter> getWriter();
+    Optional<PlcWriteRequest.Builder> writeRequestBuilder();
 
-    Optional<PlcSubscriber> getSubscriber();
+    Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder();
+
+    Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder();
 
 }

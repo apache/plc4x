@@ -57,7 +57,7 @@ public class DirectAdsField implements AdsField {
         return new DirectAdsField(indexGroup, indexOffset, adsDataType, numberOfElements);
     }
 
-    public static DirectAdsField of(String address) throws PlcInvalidFieldException {
+    public static DirectAdsField of(String address) {
         Matcher matcher = RESOURCE_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
             throw new PlcInvalidFieldException(address, RESOURCE_ADDRESS_PATTERN, "{indexGroup}/{indexOffset}:{adsDataType}([numberOfElements])?");
@@ -104,6 +104,7 @@ public class DirectAdsField implements AdsField {
         return indexOffset;
     }
 
+    @Override
     public AdsDataType getAdsDataType() {
         return adsDataType;
     }

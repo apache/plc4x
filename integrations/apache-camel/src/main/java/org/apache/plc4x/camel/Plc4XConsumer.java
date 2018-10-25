@@ -23,13 +23,9 @@ import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
 import org.apache.camel.support.ServiceSupport;
 import org.apache.camel.util.AsyncProcessorConverterHelper;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcSubscriber;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +47,6 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     private String fieldQuery;
     private Class<?> dataType;
     private PlcSubscriptionResponse subscriptionResponse;
-
 
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
         this.endpoint = endpoint;
@@ -83,19 +78,19 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
 
     @Override
     protected void doStart() throws InterruptedException, ExecutionException, PlcException {
-        PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(
-            () -> new PlcException("Connection doesn't support subscriptions."));
         // TODO: Is it correct to only support one field?
-        PlcSubscriptionRequest request = plcSubscriber.subscriptionRequestBuilder()
+        PlcSubscriptionRequest request = plcConnection.subscriptionRequestBuilder().get()
             .addCyclicField("default", fieldQuery, Duration.of(3, ChronoUnit.SECONDS)).build();
-        plcSubscriber.register(request, this);
+        subscriptionResponse = request.execute().get();
+        // TODO: we need to return the plcSubscriptionResponse here too as we need this to unsubscribe...
+        // TODO: figure out what to do with this
+        // plcSubscriber.register(this, plcSubscriptionResponse.getSubscriptionHandles());
     }
 
     @Override
     protected void doStop() throws InterruptedException, ExecutionException, TimeoutException, PlcException {
-        PlcSubscriber plcSubscriber = plcConnection.getSubscriber().orElseThrow(
-            () -> new PlcException("Connection doesn't support subscriptions."));
-        CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionFuture = plcSubscriber.unsubscribe(builder -> builder.addHandles(subscriptionResponse.getSubscriptionHandles()));
+        PlcUnsubscriptionRequest request = plcConnection.unsubscriptionRequestBuilder().get().addHandles(subscriptionResponse.getSubscriptionHandles()).build();
+        CompletableFuture<? extends PlcUnsubscriptionResponse> unsubscriptionFuture = request.execute();
         PlcUnsubscriptionResponse unsubscriptionResponse = unsubscriptionFuture.get(5, TimeUnit.SECONDS);
         // TODO: Handle the response ...
         try {
@@ -103,10 +98,6 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
         } catch (Exception e) {
             LOGGER.error("Error closing connection", e);
         }
-    }
-
-    private PlcSubscriber getSubscriber() {
-        return plcConnection.getSubscriber().orElseThrow(() -> new RuntimeException("No subscriber available"));
     }
 
     @Override

@@ -22,9 +22,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.modbus.messages.items.DefaultModbusByteArrayFieldItem;
 import org.apache.plc4x.java.modbus.model.*;
 
 import java.util.BitSet;
@@ -52,7 +52,7 @@ public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeBoolean(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
         ModbusField modbusField = (ModbusField) field;
         List<Boolean> booleanValues = new LinkedList<>();
         for (Object value : values) {
@@ -93,7 +93,7 @@ public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public FieldItem encodeByteArray(PlcField field, Object[] values) {
+    public BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values) {
         ModbusField modbusField = (ModbusField) field;
         List<Byte[]> byteArrays = new LinkedList<>();
         for (Object value : values) {
@@ -109,6 +109,6 @@ public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
                         " is not assignable to " + modbusField + " fields.");
             }
         }
-        return new DefaultByteArrayFieldItem(byteArrays.toArray(new Byte[0][0]));
+        return new DefaultModbusByteArrayFieldItem(byteArrays.toArray(new Byte[0][0]));
     }
 }

@@ -18,6 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-public interface PlcWriteResponse<T extends PlcWriteRequest> extends PlcFieldResponse<T> {
+public interface PlcWriteResponse extends PlcFieldResponse {
+
+    @Override
+    PlcWriteRequest getRequest();
 
 }

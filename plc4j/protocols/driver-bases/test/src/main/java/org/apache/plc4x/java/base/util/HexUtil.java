@@ -21,6 +21,7 @@ package org.apache.plc4x.java.base.util;
 
 import org.apache.commons.io.HexDump;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class HexUtil {
             HexDump.dump(bytes, 0, byteArrayOutputStream, 0);
             return byteArrayOutputStream.toString();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new PlcRuntimeException(e);
         }
     }
 }

@@ -85,6 +85,10 @@ public class IndexGroup extends UnsignedIntLEByteValue {
         public static final IndexGroup ADSIGRP_DEVICE_DATA = IndexGroup.of(0xF100);
         public static final IndexGroup ADSIOFFS_DEVDATA_ADSSTATE = IndexGroup.of(0x0000);
         public static final IndexGroup ADSIOFFS_DEVDATA_DEVSTATE = IndexGroup.of(0x0002);
+
+        private ReservedGroups() {
+            // Container class
+        }
     }
 
     public static final class SystemServiceGroups {
@@ -111,5 +115,9 @@ public class IndexGroup extends UnsignedIntLEByteValue {
         public static final IndexGroup SYSTEMSERVICE_TIMESERVICES = IndexGroup.of(400);
         public static final IndexGroup SYSTEMSERVICE_STARTPROCESS = IndexGroup.of(500);
         public static final IndexGroup SYSTEMSERVICE_CHANGENETID = IndexGroup.of(600);
+
+        private SystemServiceGroups() {
+            // Container class
+        }
     }
 }

@@ -18,10 +18,15 @@
  */
 package org.apache.plc4x.java.ads.model;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.stream.IntStream;
 
 /**
  * Documentation can be found here:
@@ -43,10 +48,8 @@ public enum AdsDataType {
     INT64(Long.MIN_VALUE, Long.MAX_VALUE, 64),
     UINT8(0, Short.MAX_VALUE, 8),
     UINT16(0, Integer.MAX_VALUE, 16),
-    // TODO: max might be off here
-    UINT32(0, Double.MAX_VALUE, 32),
-    // TODO: max might be off here
-    UINT64(0, Double.MAX_VALUE, 64),
+    UINT32(0, produceUnsignedMaxValue(32), 32),
+    UINT64(0, produceUnsignedMaxValue(64), 64),
     FLOAT(Float.MIN_VALUE, Float.MAX_VALUE, 32),
     DOUBLE(Double.MIN_VALUE, Double.MAX_VALUE, 64),
     // https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
@@ -174,7 +177,7 @@ public enum AdsDataType {
      * If no size specification is given, the default size of 80 characters will be used: Memory use [Bytes] =  80 + 1 Byte for string terminated Null character;
      * If string size specification is given: Memory use [Bytes] = String Size + 1 Byte for string terminated Null character);
      */
-    STRING(81),
+    STRING(81 * 8),
     /**
      * TIME
      * Duration time. The most siginificant digit is one millisecond. The data type is handled internally like DWORD.
@@ -510,7 +513,7 @@ public enum AdsDataType {
         this.upperBound = upperBound;
         this.typeName = name();
         this.memoryUse = memoryUse;
-        this.targetByteSize = this.memoryUse * 8;
+        this.targetByteSize = this.memoryUse / 8;
     }
 
     public String getTypeName() {
@@ -535,5 +538,32 @@ public enum AdsDataType {
 
     public boolean withinBounds(double other) {
         return other >= lowerBound && other <= upperBound;
+    }
+
+    @Override
+    public String toString() {
+        return "AdsDataType{" +
+            "typeName='" + typeName + '\'' +
+            ", lowerBound=" + lowerBound +
+            ", upperBound=" + upperBound +
+            ", memoryUse=" + memoryUse +
+            ", targetByteSize=" + targetByteSize +
+            "} " + super.toString();
+    }
+
+    private static double produceUnsignedMaxValue(int numberOfBytes) {
+        return new BigInteger(
+            ArrayUtils.insert(
+                0,
+                IntStream.range(0, numberOfBytes)
+                    .map(ignore -> 0xff)
+                    .collect(
+                        ByteArrayOutputStream::new,
+                        (baos, i) -> baos.write((byte) i),
+                        (baos1, baos2) -> baos1.write(baos2.toByteArray(), 0, baos2.size())
+                    )
+                    .toByteArray(),
+                (byte) 0x0)
+        ).doubleValue();
     }
 }

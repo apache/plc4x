@@ -33,7 +33,7 @@ import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
-import org.apache.plc4x.java.api.messages.PlcProprietaryResponse;
+import org.apache.plc4x.java.base.messages.PlcProprietaryResponse;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
@@ -123,7 +123,7 @@ public class AdsAbstractPlcConnectionTest {
 
     @Test
     public void read() {
-        CompletableFuture<PlcReadResponse<?>> read = SUT.read(mock(InternalPlcReadRequest.class));
+        CompletableFuture<PlcReadResponse> read = SUT.read(mock(InternalPlcReadRequest.class));
         assertNotNull(read);
 
         simulatePipelineError(() -> SUT.read(mock(InternalPlcReadRequest.class)));
@@ -131,7 +131,7 @@ public class AdsAbstractPlcConnectionTest {
 
     @Test
     public void write() {
-        CompletableFuture<PlcWriteResponse<?>> write = SUT.write(mock(InternalPlcWriteRequest.class));
+        CompletableFuture<PlcWriteResponse> write = SUT.write(mock(InternalPlcWriteRequest.class));
         assertNotNull(write);
 
         simulatePipelineError(() -> SUT.write(mock(InternalPlcWriteRequest.class)));

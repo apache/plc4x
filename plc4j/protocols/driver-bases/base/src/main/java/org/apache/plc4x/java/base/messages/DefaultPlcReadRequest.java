@@ -21,18 +21,27 @@ package org.apache.plc4x.java.base.messages;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPlcFieldRequest {
 
+    private final PlcReader reader;
     private LinkedHashMap<String, PlcField> fields;
 
-    protected DefaultPlcReadRequest(LinkedHashMap<String, PlcField> fields) {
+    protected DefaultPlcReadRequest(PlcReader reader, LinkedHashMap<String, PlcField> fields) {
+        this.reader = reader;
         this.fields = fields;
+    }
+
+    @Override
+    public CompletableFuture<PlcReadResponse> execute() {
+        return reader.read(this);
     }
 
     @Override
@@ -64,12 +73,18 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
+    protected PlcReader getReader() {
+        return reader;
+    }
+
     public static class Builder implements PlcReadRequest.Builder {
 
+        private final PlcReader reader;
         private final PlcFieldHandler fieldHandler;
         private final Map<String, String> fields;
 
-        public Builder(PlcFieldHandler fieldHandler) {
+        public Builder(PlcReader reader, PlcFieldHandler fieldHandler) {
+            this.reader = reader;
             this.fieldHandler = fieldHandler;
             fields = new TreeMap<>();
         }
@@ -90,7 +105,7 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
                 PlcField parsedField = fieldHandler.createField(fieldQuery);
                 parsedFields.put(name, parsedField);
             });
-            return new DefaultPlcReadRequest(parsedFields);
+            return new DefaultPlcReadRequest(reader, parsedFields);
         }
 
     }

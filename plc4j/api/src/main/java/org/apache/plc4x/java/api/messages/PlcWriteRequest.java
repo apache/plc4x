@@ -23,12 +23,19 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.concurrent.CompletableFuture;
 
 public interface PlcWriteRequest extends PlcFieldRequest {
 
+    @Override
+    CompletableFuture<? extends PlcWriteResponse> execute();
+
     int getNumberOfValues(String name);
 
-    interface Builder extends PlcMessageBuilder<PlcWriteRequest> {
+    interface Builder extends PlcRequestBuilder {
+
+        @Override
+        PlcWriteRequest build();
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Boolean... values);
 

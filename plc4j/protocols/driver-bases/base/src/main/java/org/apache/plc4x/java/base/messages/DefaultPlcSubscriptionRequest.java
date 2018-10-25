@@ -18,98 +18,133 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
-// TODO: request broken needs finishing.
 public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionRequest, InternalPlcFieldRequest {
+
+    private final PlcSubscriber subscriber;
+
+    private LinkedHashMap<String, SubscriptionPlcField> fields;
+
+    public DefaultPlcSubscriptionRequest(PlcSubscriber subscriber, LinkedHashMap<String, SubscriptionPlcField> fields) {
+        this.subscriber = subscriber;
+        this.fields = fields;
+    }
+
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> execute() {
+        return subscriber.subscribe(this);
+    }
 
     @Override
     public int getNumberOfFields() {
-        throw new IllegalStateException("not available");
+        return fields.size();
     }
 
     @Override
     public LinkedHashSet<String> getFieldNames() {
-        throw new IllegalStateException("not available");
+        return new LinkedHashSet<>(fields.keySet());
     }
 
     @Override
     public PlcField getField(String name) {
-        throw new IllegalStateException("not available");
+        SubscriptionPlcField subscriptionPlcField = fields.get(name);
+        if (subscriptionPlcField == null) {
+            return null;
+        }
+        return subscriptionPlcField.getPlcField();
     }
 
     @Override
     public LinkedList<PlcField> getFields() {
-        throw new IllegalStateException("not available");
+        return fields.values().stream().map(SubscriptionPlcField::getPlcField).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    public PlcSubscriptionType getPlcSubscriptionType() {
-        throw new IllegalStateException("not available");
+    public LinkedList<SubscriptionPlcField> getSubscriptionFields() {
+        return new LinkedList<>(fields.values());
+    }
+
+    @Override
+    public LinkedHashMap<String, SubscriptionPlcField> getSubscriptionPlcFieldMap() {
+        return fields;
     }
 
     @Override
     public LinkedList<Pair<String, PlcField>> getNamedFields() {
-        throw new IllegalStateException("not available");
+        return fields.entrySet()
+            .stream()
+            .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), (PlcField) stringPlcFieldEntry.getValue()))
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     public static class Builder implements PlcSubscriptionRequest.Builder {
 
+        private final PlcSubscriber subscriber;
         private final PlcFieldHandler fieldHandler;
-        private final Map<String, BuilderItem<Object>> fields;
+        private final Map<String, BuilderItem> fields;
 
-        public Builder(PlcFieldHandler fieldHandler) {
+        public Builder(PlcSubscriber subscriber, PlcFieldHandler fieldHandler) {
+            this.subscriber = subscriber;
             this.fieldHandler = fieldHandler;
             fields = new TreeMap<>();
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval) {
-            return null;
+            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.CYCLIC, pollingInterval));
+            return this;
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateField(String name, String fieldQuery) {
-            return null;
+            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.CHANGE_OF_STATE));
+            return this;
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery) {
-            return null;
+            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.EVENT));
+            return this;
         }
 
         @Override
         public PlcSubscriptionRequest build() {
-            LinkedHashMap<String, Pair<PlcField, FieldItem>> parsedFields = new LinkedHashMap<>();
+            LinkedHashMap<String, SubscriptionPlcField> parsedFields = new LinkedHashMap<>();
+
             fields.forEach((name, builderItem) -> {
-                // Compile the query string.
                 PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
-                // Encode the payload.
-                // TODO: Depending on the field type, handle the FieldItem creation differently.
-                FieldItem fieldItem = builderItem.encoder.apply(parsedField, null);
-                parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
+                parsedFields.put(name, new SubscriptionPlcField(builderItem.plcSubscriptionType, parsedField, builderItem.duration));
             });
-            return new DefaultPlcSubscriptionRequest();
+            return new DefaultPlcSubscriptionRequest(subscriber, parsedFields);
         }
 
-        private static class BuilderItem<T> {
+        private static class BuilderItem {
             private final String fieldQuery;
-            private final BiFunction<PlcField, T[], FieldItem> encoder;
+            private final PlcSubscriptionType plcSubscriptionType;
+            private final Duration duration;
 
-            private BuilderItem(String fieldQuery, BiFunction<PlcField, T[], FieldItem> encoder) {
-                this.fieldQuery = fieldQuery;
-                this.encoder = encoder;
+            private BuilderItem(String fieldQuery, PlcSubscriptionType plcSubscriptionType) {
+                this(fieldQuery, plcSubscriptionType, null);
             }
+
+            private BuilderItem(String fieldQuery, PlcSubscriptionType plcSubscriptionType, Duration duration) {
+                this.fieldQuery = fieldQuery;
+                this.plcSubscriptionType = plcSubscriptionType;
+                this.duration = duration;
+            }
+
         }
 
     }

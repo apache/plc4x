@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.base.model;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.base.messages.PlcSubscriber;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,12 +28,16 @@ import java.util.function.Consumer;
 
 public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegistration {
 
+    private final PlcSubscriber plcSubscriber;
+
     private final Collection<? extends InternalPlcSubscriptionHandle> handles;
+
     private final int consumerHash;
 
-    public DefaultPlcConsumerRegistration(Consumer<PlcSubscriptionEvent> consumer, InternalPlcSubscriptionHandle... handles) {
-        consumerHash = Objects.requireNonNull(consumer).hashCode();
+    public DefaultPlcConsumerRegistration(PlcSubscriber plcSubscriber, Consumer<PlcSubscriptionEvent> consumer, InternalPlcSubscriptionHandle... handles) {
+        this.plcSubscriber = plcSubscriber;
         this.handles = Arrays.asList(Objects.requireNonNull(handles));
+        this.consumerHash = Objects.requireNonNull(consumer).hashCode();
     }
 
     @Override
@@ -69,5 +74,10 @@ public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegist
             "handles=" + handles +
             ", consumerHash=" + consumerHash +
             '}';
+    }
+
+    @Override
+    public void unregister() {
+        plcSubscriber.unregister(this);
     }
 }

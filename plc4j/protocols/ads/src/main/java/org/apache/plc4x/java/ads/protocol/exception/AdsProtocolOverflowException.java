@@ -16,8 +16,17 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.api.messages;
 
-public interface PlcProprietaryResponse<REQUEST extends PlcProprietaryRequest, RESPONSE> extends PlcResponse<REQUEST> {
-    RESPONSE getResponse();
+package org.apache.plc4x.java.ads.protocol.exception;
+
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+
+public class AdsProtocolOverflowException extends PlcRuntimeException {
+    public AdsProtocolOverflowException(Class<?> clazz, long length) {
+        super("Overflow in datatype " + clazz + " length: " + length);
+    }
+
+    public AdsProtocolOverflowException(String constantName, long expectedLength, long actualLength) {
+        super("Overflow of " + constantName + ": " + expectedLength + ". Actual " + actualLength + "bytes.");
+    }
 }

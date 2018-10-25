@@ -18,15 +18,13 @@
  */
 package org.apache.plc4x.java.test;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
 import org.junit.Test;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TestDeviceTest {
 
@@ -35,7 +33,7 @@ public class TestDeviceTest {
         TestDevice device = new TestDevice("foobar");
         TestField field = TestField.of("RANDOM/foo:INTEGER");
 
-        Optional<FieldItem> value = device.get(field);
+        Optional<BaseDefaultFieldItem> value = device.get(field);
 
         assertTrue(value.isPresent());
     }
@@ -45,13 +43,13 @@ public class TestDeviceTest {
         TestDevice device = new TestDevice("foobar");
         TestField field = TestField.of("STATE/bar:INTEGER");
 
-        Optional<FieldItem> value = device.get(field);
+        Optional<BaseDefaultFieldItem> value = device.get(field);
         assertFalse(value.isPresent());
 
         device.set(field, new DefaultLongFieldItem((long) 42));
         value = device.get(field);
         assertTrue(value.isPresent());
-        FieldItem fieldItem = value.get();
+        BaseDefaultFieldItem fieldItem = value.get();
         assertEquals(42L, (long) fieldItem.getLong(0));
     }
 

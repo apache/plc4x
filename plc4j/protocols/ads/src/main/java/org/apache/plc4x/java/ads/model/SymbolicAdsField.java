@@ -46,7 +46,7 @@ public class SymbolicAdsField implements AdsField {
         }
     }
 
-    public static SymbolicAdsField of(String address) throws PlcInvalidFieldException {
+    public static SymbolicAdsField of(String address) {
         Matcher matcher = SYMBOLIC_ADDRESS_PATTERN.matcher(address);
         if (!matcher.matches()) {
             throw new PlcInvalidFieldException(address, SYMBOLIC_ADDRESS_PATTERN, "{address}");
@@ -70,6 +70,7 @@ public class SymbolicAdsField implements AdsField {
         return symbolicAddress;
     }
 
+    @Override
     public AdsDataType getAdsDataType() {
         return adsDataType;
     }

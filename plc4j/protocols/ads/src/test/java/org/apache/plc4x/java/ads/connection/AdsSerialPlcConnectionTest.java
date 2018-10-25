@@ -28,6 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialAcknowledgeFrame;
 import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.types.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
@@ -75,7 +76,8 @@ public class AdsSerialPlcConnectionTest {
     @Test
     public void testRead() throws Exception {
         prepareSerialSimulator();
-        CompletableFuture<PlcReadResponse<?>> read = SUT.read(builder -> builder.addItem("test", "0/0:BYTE"));
+        PlcReadRequest request = SUT.readRequestBuilder().get().addItem("test", "0/0:BYTE").build();
+        CompletableFuture<PlcReadResponse> read = SUT.read(request);
         PlcReadResponse plcReadResponse = read.get(30, TimeUnit.SECONDS);
         assertNotNull(plcReadResponse);
     }

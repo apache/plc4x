@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.hamcrest.core.IsEqual;
 import org.junit.Before;

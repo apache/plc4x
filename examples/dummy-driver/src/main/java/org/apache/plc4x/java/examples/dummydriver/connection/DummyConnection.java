@@ -21,12 +21,9 @@ package org.apache.plc4x.java.examples.dummydriver.connection;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcWriter;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.base.messages.PlcReader;
+import org.apache.plc4x.java.base.messages.PlcWriter;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.*;
@@ -34,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class DummyConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
@@ -58,13 +56,29 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public PlcReadRequest.Builder readRequestBuilder() {
+    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
         // TODO: Implement this ...
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
+    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
+        // TODO: Implement this ...
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
+        return Optional.empty();
+    }
+
+    @Override
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
             new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, readFuture);
@@ -74,13 +88,7 @@ public class DummyConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public PlcWriteRequest.Builder writeRequestBuilder() {
-        // TODO: Implement this ...
-        return null;
-    }
-
-    @Override
-    public CompletableFuture<PlcWriteResponse<?>> write(PlcWriteRequest writeRequest) {
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<InternalPlcWriteResponse> writeFuture = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
             new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, writeFuture);

@@ -19,27 +19,8 @@
 package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-
-import java.util.Collection;
 
 public class DefaultPlcUnsubscriptionResponse implements InternalPlcUnsubscriptionResponse {
-
-    @Override
-    public Collection<String> getFieldNames() {
-        return null;
-    }
-
-    @Override
-    public PlcField getField(String name) {
-        return null;
-    }
-
-    @Override
-    public PlcResponseCode getResponseCode(String name) {
-        return null;
-    }
 
     @Override
     public PlcUnsubscriptionRequest getRequest() {

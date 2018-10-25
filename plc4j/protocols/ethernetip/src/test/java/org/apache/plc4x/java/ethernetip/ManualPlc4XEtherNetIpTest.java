@@ -19,8 +19,7 @@
 package org.apache.plc4x.java.ethernetip;
 
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
@@ -34,15 +33,12 @@ public class ManualPlc4XEtherNetIpTest {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
-            // Get a reader instance.
-            PlcReader reader = plcConnection.getReader().orElseThrow(() -> new RuntimeException("No Reader found"));
-
-            PlcReadRequest readRequest = reader.readRequestBuilder()
+            PlcReadRequest readRequest = plcConnection.readRequestBuilder().orElseThrow(() -> new RuntimeException("Reading not supported"))
                 .addItem("field", "#4#105#3").build();
 
             // Execute the read operation.
-            CompletableFuture<PlcReadResponse<?>> response = reader.read(readRequest);
-            PlcReadResponse<?> readResponse = response.get();
+            CompletableFuture<? extends PlcReadResponse> response = readRequest.execute();
+            PlcReadResponse readResponse = response.get();
 
             // Output the response.
             for (String fieldName : readResponse.getFieldNames()) {

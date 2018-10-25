@@ -21,7 +21,7 @@ package org.apache.plc4x.java.base.messages;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -36,9 +36,9 @@ import java.util.Map;
 public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     private final InternalPlcReadRequest request;
-    private final Map<String, Pair<PlcResponseCode, FieldItem>> values;
+    private final Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values;
 
-    public DefaultPlcReadResponse(InternalPlcReadRequest request, Map<String, Pair<PlcResponseCode, FieldItem>> fields) {
+    public DefaultPlcReadResponse(InternalPlcReadRequest request, Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields) {
         this.request = request;
         this.values = fields;
     }
@@ -50,7 +50,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public int getNumberOfValues(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getNumberOfValues();
         }
@@ -76,7 +76,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     }
 
     @Override
-    public Map<String, Pair<PlcResponseCode, FieldItem>> getValues() {
+    public Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> getValues() {
         return values;
     }
 
@@ -87,7 +87,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Object getObject(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getObject(index);
         }
@@ -107,7 +107,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidBoolean(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidBoolean(index);
         }
@@ -121,7 +121,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Boolean getBoolean(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getBoolean(index);
         }
@@ -130,7 +130,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Boolean> getAllBooleans(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<Boolean> values = new ArrayList<>(num);
@@ -149,7 +149,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidByte(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidByte(index);
         }
@@ -163,7 +163,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Byte getByte(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getByte(index);
         }
@@ -172,7 +172,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Byte> getAllBytes(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<Byte> values = new ArrayList<>(num);
@@ -191,7 +191,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidShort(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidShort(index);
         }
@@ -205,7 +205,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Short getShort(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getShort(index);
         }
@@ -214,7 +214,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Short> getAllShorts(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<Short> values = new ArrayList<>(num);
@@ -233,7 +233,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidInteger(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidInteger(index);
         }
@@ -247,7 +247,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Integer getInteger(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getInteger(index);
         }
@@ -256,7 +256,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Integer> getAllIntegers(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<Integer> values = new ArrayList<>(num);
@@ -275,7 +275,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidBigInteger(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidInteger(index);
         }
@@ -289,7 +289,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public BigInteger getBigInteger(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getBigInteger(index);
         }
@@ -298,7 +298,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<BigInteger> getAllBigIntegers(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<BigInteger> values = new ArrayList<>(num);
@@ -317,7 +317,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidLong(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidLong(index);
         }
@@ -331,7 +331,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Long getLong(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getLong(index);
         }
@@ -340,7 +340,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Long> getAllLongs(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<Long> values = new ArrayList<>(num);
@@ -359,7 +359,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidFloat(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidFloat(index);
         }
@@ -373,7 +373,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Float getFloat(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getFloat(index);
         }
@@ -382,7 +382,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Float> getAllFloats(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<Float> values = new ArrayList<>(num);
@@ -401,7 +401,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidDouble(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidDouble(index);
         }
@@ -415,7 +415,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Double getDouble(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getDouble(index);
         }
@@ -424,7 +424,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Double> getAllDoubles(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<Double> values = new ArrayList<>(num);
@@ -443,7 +443,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidBigDecimal(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidBigDecimal(index);
         }
@@ -457,7 +457,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public BigDecimal getBigDecimal(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getBigDecimal(index);
         }
@@ -466,7 +466,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<BigDecimal> getAllBigDecimals(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<BigDecimal> values = new ArrayList<>(num);
@@ -485,7 +485,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidString(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidString(index);
         }
@@ -499,7 +499,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public String getString(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getString(index);
         }
@@ -508,7 +508,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<String> getAllStrings(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<String> values = new ArrayList<>(num);
@@ -527,7 +527,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidTime(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidTime(index);
         }
@@ -541,7 +541,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public LocalTime getTime(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getTime(index);
         }
@@ -550,7 +550,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<LocalTime> getAllTimes(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<LocalTime> values = new ArrayList<>(num);
@@ -569,7 +569,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidDate(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidDate(index);
         }
@@ -583,7 +583,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public LocalDate getDate(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getDate(index);
         }
@@ -592,7 +592,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<LocalDate> getAllDates(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<LocalDate> values = new ArrayList<>(num);
@@ -611,7 +611,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidDateTime(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidDateTime(index);
         }
@@ -625,7 +625,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public LocalDateTime getDateTime(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getDateTime(index);
         }
@@ -634,7 +634,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<LocalDateTime> getAllDateTimes(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<LocalDateTime> values = new ArrayList<>(num);
@@ -648,7 +648,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidByteArray(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidByteArray(0);
         }
@@ -657,7 +657,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public boolean isValidByteArray(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.isValidDateTime(index);
         }
@@ -666,7 +666,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Byte[] getByteArray(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getByteArray(0);
         }
@@ -675,7 +675,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Byte[] getByteArray(String name, int index) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             return fieldInternal.getByteArray(index);
         }
@@ -684,7 +684,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Byte[]> getAllByteArrays(String name) {
-        FieldItem fieldInternal = getFieldInternal(name);
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         if (fieldInternal != null) {
             int num = fieldInternal.getNumberOfValues();
             List<Byte[]> values = new ArrayList<>(num);
@@ -696,7 +696,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
         return null;
     }
 
-    private FieldItem getFieldInternal(String name) {
+    private BaseDefaultFieldItem getFieldInternal(String name) {
         // If this field doesn't exist, ignore it.
         if (values.get(name) == null) {
             return null;

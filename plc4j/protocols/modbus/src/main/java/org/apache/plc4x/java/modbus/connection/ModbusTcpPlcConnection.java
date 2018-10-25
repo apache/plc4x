@@ -24,6 +24,8 @@ import com.digitalpetri.modbus.codec.ModbusTcpCodec;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
@@ -32,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
@@ -69,7 +72,7 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
             protected void initChannel(Channel channel) {
                 channel.pipeline().addLast(new ModbusTcpCodec(new ModbusRequestEncoder(), new ModbusResponseDecoder()));
                 channel.pipeline().addLast(new Plc4XModbusProtocol());
-                channel.pipeline().addLast(new SingleItemToSingleRequestProtocol(timer));
+                channel.pipeline().addLast(new SingleItemToSingleRequestProtocol(ModbusTcpPlcConnection.this, ModbusTcpPlcConnection.this, timer));
             }
         };
     }

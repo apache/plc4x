@@ -19,10 +19,14 @@
 package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.base.model.SubscriptionPlcField;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 public interface InternalPlcSubscriptionRequest extends PlcSubscriptionRequest, InternalPlcFieldRequest {
 
-    PlcSubscriptionType getPlcSubscriptionType();
+    LinkedList<SubscriptionPlcField> getSubscriptionFields();
 
+    LinkedHashMap<String, SubscriptionPlcField> getSubscriptionPlcFieldMap();
 }

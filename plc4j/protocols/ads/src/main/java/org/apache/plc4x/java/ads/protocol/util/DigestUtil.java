@@ -33,7 +33,7 @@ public class DigestUtil {
         CRC16.isReflectOut(),
         CRC16.getFinalXor());
 
-    private static CRC crc16 = new CRC(CRC16_ADS);
+    private static CRC crc = new CRC(CRC16_ADS);
 
     private DigestUtil() {
         // Utility class
@@ -43,16 +43,16 @@ public class DigestUtil {
         if (byteReadables.length == 1) {
             return calculateCrc16(byteReadables[0].getBytes());
         }
-        long currentCrcValue = crc16.init();
+        long currentCrcValue = crc.init();
         for (ByteReadable byteReadable : byteReadables) {
-            currentCrcValue = crc16.update(currentCrcValue, byteReadable.getBytes());
+            currentCrcValue = crc.update(currentCrcValue, byteReadable.getBytes());
         }
-        short finalCrc = crc16.finalCRC16(currentCrcValue);
+        short finalCrc = crc.finalCRC16(currentCrcValue);
         return Short.toUnsignedInt(Short.reverseBytes(finalCrc));
     }
 
     public static int calculateCrc16(byte[] bytes) {
-        short finalCrc = (short) crc16.calculateCRC(bytes);
+        short finalCrc = (short) crc.calculateCRC(bytes);
         return Short.toUnsignedInt(Short.reverseBytes(finalCrc));
     }
 

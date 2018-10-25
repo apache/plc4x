@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -25,11 +27,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
-public abstract class FieldItem<T> {
+public abstract class BaseDefaultFieldItem<T> {
 
     private T[] values;
 
-    protected FieldItem(T[] values) {
+    protected BaseDefaultFieldItem(T[] values) {
         this.values = values;
     }
 
@@ -44,7 +46,7 @@ public abstract class FieldItem<T> {
     }
 
     public Boolean getBoolean(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(Boolean.class, index);
     }
 
     public boolean isValidByte(int index) {
@@ -52,7 +54,7 @@ public abstract class FieldItem<T> {
     }
 
     public Byte getByte(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(Byte.class, index);
     }
 
     public boolean isValidShort(int index) {
@@ -60,7 +62,7 @@ public abstract class FieldItem<T> {
     }
 
     public Short getShort(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(Short.class, index);
     }
 
     public boolean isValidInteger(int index) {
@@ -68,15 +70,7 @@ public abstract class FieldItem<T> {
     }
 
     public Integer getInteger(int index) {
-        return null;
-    }
-
-    public boolean isValidBigInteger(int index) {
-        return false;
-    }
-
-    public BigInteger getBigInteger(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(Integer.class, index);
     }
 
     public boolean isValidLong(int index) {
@@ -84,7 +78,15 @@ public abstract class FieldItem<T> {
     }
 
     public Long getLong(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(Long.class, index);
+    }
+
+    public boolean isValidBigInteger(int index) {
+        return false;
+    }
+
+    public BigInteger getBigInteger(int index) {
+        throw new PlcIncompatibleDatatypeException(BigInteger.class, index);
     }
 
     public boolean isValidFloat(int index) {
@@ -92,7 +94,7 @@ public abstract class FieldItem<T> {
     }
 
     public Float getFloat(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(Float.class, index);
     }
 
     public boolean isValidDouble(int index) {
@@ -100,7 +102,7 @@ public abstract class FieldItem<T> {
     }
 
     public Double getDouble(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(Double.class, index);
     }
 
     public boolean isValidBigDecimal(int index) {
@@ -108,7 +110,7 @@ public abstract class FieldItem<T> {
     }
 
     public BigDecimal getBigDecimal(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(BigDecimal.class, index);
     }
 
     public boolean isValidString(int index) {
@@ -116,7 +118,7 @@ public abstract class FieldItem<T> {
     }
 
     public String getString(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(String.class, index);
     }
 
     public boolean isValidTime(int index) {
@@ -124,7 +126,7 @@ public abstract class FieldItem<T> {
     }
 
     public LocalTime getTime(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(LocalTime.class, index);
     }
 
     public boolean isValidDate(int index) {
@@ -132,7 +134,7 @@ public abstract class FieldItem<T> {
     }
 
     public LocalDate getDate(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(LocalDate.class, index);
     }
 
     public boolean isValidDateTime(int index) {
@@ -140,7 +142,7 @@ public abstract class FieldItem<T> {
     }
 
     public LocalDateTime getDateTime(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(LocalDateTime.class, index);
     }
 
     public boolean isValidByteArray(int index) {
@@ -148,7 +150,7 @@ public abstract class FieldItem<T> {
     }
 
     public Byte[] getByteArray(int index) {
-        return null;
+        throw new PlcIncompatibleDatatypeException(Byte[].class, index);
     }
 
     public T[] getValues() {
@@ -156,7 +158,7 @@ public abstract class FieldItem<T> {
     }
 
     protected T getValue(int index) {
-        if (index < 0 || (index >= values.length)) {
+        if ((values == null) || (index < 0 || (index >= values.length))) {
             return null;
         }
         return values[index];
@@ -167,10 +169,10 @@ public abstract class FieldItem<T> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FieldItem)) {
+        if (!(o instanceof BaseDefaultFieldItem)) {
             return false;
         }
-        FieldItem<?> fieldItem = (FieldItem<?>) o;
+        BaseDefaultFieldItem<?> fieldItem = (BaseDefaultFieldItem<?>) o;
         return Arrays.equals(values, fieldItem.values);
     }
 
@@ -185,4 +187,5 @@ public abstract class FieldItem<T> {
             "values=" + Arrays.toString(values) +
             '}';
     }
+
 }
