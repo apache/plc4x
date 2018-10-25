@@ -31,13 +31,16 @@ import java.util.ServiceLoader;
 
 public class PlcDriverManager {
 
-    private Map<String, PlcDriver> driverMap = null;
+    protected ClassLoader classLoader;
+
+    private Map<String, PlcDriver> driverMap;
 
     public PlcDriverManager() {
         this(Thread.currentThread().getContextClassLoader());
     }
 
     public PlcDriverManager(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         driverMap = new HashMap<>();
         ServiceLoader<PlcDriver> plcDriverLoader = ServiceLoader.load(PlcDriver.class, classLoader);
         for (PlcDriver driver : plcDriverLoader) {
