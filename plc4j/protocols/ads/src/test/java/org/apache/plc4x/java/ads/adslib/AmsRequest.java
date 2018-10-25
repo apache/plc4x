@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.ads.adslib;
 
 import org.apache.plc4x.java.ads.api.generic.AmsPacket;
-import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
+import org.apache.plc4x.java.base.messages.PlcProprietaryRequest;
 import org.apache.plc4x.java.base.messages.DefaultPlcProprietaryRequest;
 
 import java.util.concurrent.CompletableFuture;

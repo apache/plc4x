@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.ethernetip;
 
-import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.spi.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.ethernetip.connection.EtherNetIpTcpPlcConnection;
 

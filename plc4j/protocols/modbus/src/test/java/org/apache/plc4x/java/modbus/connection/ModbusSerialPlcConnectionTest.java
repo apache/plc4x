@@ -24,6 +24,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
@@ -65,7 +66,8 @@ public class ModbusSerialPlcConnectionTest {
     @Test
     public void testRead() throws Exception {
         prepareSerialSimulator();
-        CompletableFuture<PlcReadResponse<?>> read = SUT.read(builder -> builder.addItem("randomRead", "0/0"));
+        PlcReadRequest readRequest = SUT.readRequestBuilder().get().addItem("randomRead", "0/0").build();
+        CompletableFuture<PlcReadResponse> read = SUT.read(readRequest);
         PlcReadResponse plcReadResponse = read.get(30, TimeUnit.SECONDS);
         assertNotNull(plcReadResponse);
     }

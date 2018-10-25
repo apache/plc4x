@@ -191,16 +191,12 @@ public class LittleEndianEncoder {
         return localTimeStream
             .map(localTime -> ChronoUnit.MILLIS.between(LocalTime.of(0, 0), localTime))
             .peek(value -> checkBound(adsDataType, value))
+            .map(Long::intValue)
             .map(time -> new byte[]{
                 (byte) (time & 0x00000000_000000ffL),
                 (byte) ((time & 0x00000000_0000ff00L) >> 8),
                 (byte) ((time & 0x00000000_00ff0000L) >> 16),
                 (byte) ((time & 0x00000000_ff000000L) >> 24),
-
-                (byte) ((time & 0x000000ff_00000000L) >> 32),
-                (byte) ((time & 0x0000ff00_00000000L) >> 40),
-                (byte) ((time & 0x00ff0000_00000000L) >> 48),
-                (byte) ((time & 0xff000000_00000000L) >> 56),
             });
     }
 
@@ -210,16 +206,12 @@ public class LittleEndianEncoder {
             .map(localDate -> localDate.atTime(0, 0).toInstant(ZoneOffset.UTC))
             .map(Instant::getEpochSecond)
             .peek(value -> checkBound(adsDataType, value))
+            .map(Long::intValue)
             .map(time -> new byte[]{
                 (byte) (time & 0x00000000_000000ffL),
                 (byte) ((time & 0x00000000_0000ff00L) >> 8),
                 (byte) ((time & 0x00000000_00ff0000L) >> 16),
                 (byte) ((time & 0x00000000_ff000000L) >> 24),
-
-                (byte) ((time & 0x000000ff_00000000L) >> 32),
-                (byte) ((time & 0x0000ff00_00000000L) >> 40),
-                (byte) ((time & 0x00ff0000_00000000L) >> 48),
-                (byte) ((time & 0xff000000_00000000L) >> 56),
             });
     }
 

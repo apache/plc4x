@@ -18,10 +18,12 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
+public class DefaultBigIntegerFieldItem extends BaseDefaultFieldItem<BigInteger> {
 
     public DefaultBigIntegerFieldItem(BigInteger... values) {
         super(values);
@@ -29,7 +31,7 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Object getObject(int index) {
-        return getLong(index);
+        return getValue(index);
     }
 
     @Override
@@ -39,56 +41,70 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
 
     @Override
     public Boolean getBoolean(int index) {
-        if (isValidBoolean(index)) {
-            return getValue(index).compareTo(BigInteger.ZERO) == 0;
+        if (!isValidBoolean(index)) {
+            throw new PlcIncompatibleDatatypeException(Boolean.class, index);
         }
-        return null;
+        return getValue(index).compareTo(BigInteger.ZERO) == 0;
     }
 
     @Override
     public boolean isValidByte(int index) {
         BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Byte.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Byte.MIN_VALUE)) > 0);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Byte.MAX_VALUE)) <= 0) &&
+            (value.compareTo(BigInteger.valueOf(Byte.MIN_VALUE)) >= 0);
     }
 
     @Override
     public Byte getByte(int index) {
-        if (isValidByte(index)) {
-            return getValue(index).byteValue();
+        if (!isValidByte(index)) {
+            throw new PlcIncompatibleDatatypeException(Byte.class, index);
         }
-        return null;
+        return getValue(index).byteValue();
     }
 
     @Override
     public boolean isValidShort(int index) {
         BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Short.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Short.MIN_VALUE)) > 0);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Short.MAX_VALUE)) <= 0) &&
+            (value.compareTo(BigInteger.valueOf(Short.MIN_VALUE)) >= 0);
     }
 
     @Override
     public Short getShort(int index) {
-        if (isValidShort(index)) {
-            return getValue(index).shortValue();
+        if (!isValidShort(index)) {
+            throw new PlcIncompatibleDatatypeException(Short.class, index);
         }
-        return null;
+        return getValue(index).shortValue();
     }
 
     @Override
     public boolean isValidInteger(int index) {
         BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) > 0);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) <= 0) &&
+            (value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) >= 0);
     }
 
     @Override
     public Integer getInteger(int index) {
-        if (isValidInteger(index)) {
-            BigInteger value = getValue(index);
-            return value.intValue();
+        if (!isValidInteger(index)) {
+            throw new PlcIncompatibleDatatypeException(Integer.class, index);
         }
-        return null;
+        return getValue(index).intValue();
+    }
+
+    @Override
+    public boolean isValidLong(int index) {
+        BigInteger value = getValue(index);
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) <= 0) &&
+            (value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) >= 0);
+    }
+
+    @Override
+    public Long getLong(int index) {
+        if (!isValidLong(index)) {
+            throw new PlcIncompatibleDatatypeException(Long.class, index);
+        }
+        return getValue(index).longValue();
     }
 
     public boolean isValidBigInteger(int index) {
@@ -97,26 +113,10 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
     }
 
     public BigInteger getBigInteger(int index) {
-        if (isValidBigInteger(index)) {
-            return getValue(index);
+        if (!isValidBigInteger(index)) {
+            throw new PlcIncompatibleDatatypeException(BigInteger.class, index);
         }
-        return null;
-    }
-
-    @Override
-    public boolean isValidLong(int index) {
-        BigInteger value = getValue(index);
-        return (value != null) && (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) < 0) &&
-            (value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) > 0);
-    }
-
-    @Override
-    public Long getLong(int index) {
-        if (isValidLong(index)) {
-            BigInteger value = getValue(index);
-            return value.longValue();
-        }
-        return null;
+        return getValue(index);
     }
 
     @Override
@@ -126,16 +126,16 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
             return false;
         }
         BigDecimal decimalValue = new BigDecimal(value);
-        return (decimalValue.compareTo(BigDecimal.valueOf(Float.MAX_VALUE)) < 0) &&
-            (decimalValue.compareTo(BigDecimal.valueOf(Float.MIN_VALUE)) > 0);
+        return (decimalValue.compareTo(BigDecimal.valueOf(Float.MAX_VALUE)) <= 0) &&
+            (decimalValue.compareTo(BigDecimal.valueOf(-Float.MAX_VALUE)) >= 0);
     }
 
     @Override
     public Float getFloat(int index) {
-        if (isValidFloat(index)) {
-            return getValue(index).floatValue();
+        if (!isValidFloat(index)) {
+            throw new PlcIncompatibleDatatypeException(Float.class, index);
         }
-        return null;
+        return getValue(index).floatValue();
     }
 
     @Override
@@ -145,16 +145,16 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
             return false;
         }
         BigDecimal decimalValue = new BigDecimal(value);
-        return (decimalValue.compareTo(BigDecimal.valueOf(Double.MAX_VALUE)) < 0) &&
-            (decimalValue.compareTo(BigDecimal.valueOf(Double.MIN_VALUE)) > 0);
+        return (decimalValue.compareTo(BigDecimal.valueOf(Double.MAX_VALUE)) <= 0) &&
+            (decimalValue.compareTo(BigDecimal.valueOf(-Double.MAX_VALUE)) >= 0);
     }
 
     @Override
     public Double getDouble(int index) {
-        if (isValidDouble(index)) {
-            return getValue(index).doubleValue();
+        if (!isValidDouble(index)) {
+            throw new PlcIncompatibleDatatypeException(Double.class, index);
         }
-        return null;
+        return getValue(index).doubleValue();
     }
 
     public boolean isValidBigDecimal(int index) {
@@ -162,6 +162,9 @@ public class DefaultBigIntegerFieldItem extends FieldItem<BigInteger> {
     }
 
     public BigDecimal getBigDecimal(int index) {
+        if(!isValidBigDecimal(index)) {
+            throw new PlcIncompatibleDatatypeException(BigDecimal.class, index);
+        }
         return new BigDecimal(getValue(index));
     }
 

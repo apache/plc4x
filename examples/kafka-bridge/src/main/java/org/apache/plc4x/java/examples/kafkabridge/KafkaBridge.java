@@ -86,10 +86,10 @@ public class KafkaBridge {
         PlcReadRequest readRequest = builder.build();
 
         // Create a supplier that is able to read the batch we just created.
-        Supplier<PlcReadResponse<?>> plcSupplier = PlcFunctions.batchSupplier(plcAdapter, readRequest);
+        Supplier<PlcReadResponse> plcSupplier = PlcFunctions.batchSupplier(plcAdapter, readRequest);
 
         // Start polling our plc source in the given interval.
-        TStream<PlcReadResponse<?>> source = top.poll(plcSupplier, config.getPollingInterval(), TimeUnit.MILLISECONDS);
+        TStream<PlcReadResponse> source = top.poll(plcSupplier, config.getPollingInterval(), TimeUnit.MILLISECONDS);
 
         // Convert the byte into a string.
         TStream<String> jsonSource = source.map(value -> {

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.ads.model;
 
 import org.apache.plc4x.java.api.model.PlcField;
 
+@FunctionalInterface
 public interface AdsField extends PlcField {
     AdsDataType getAdsDataType();
 }

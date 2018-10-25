@@ -124,7 +124,7 @@ public class Plc4XModbusProtocolTest {
     private static ImmutablePair<PlcRequestContainer<InternalPlcReadRequest, InternalPlcResponse>, ModbusTcpPayload> producePair(Class type, String field, ModbusPdu modbusPdu) {
         return ImmutablePair.of(
             new PlcRequestContainer<>(
-                (InternalPlcReadRequest) new DefaultPlcReadRequest.Builder(new ModbusPlcFieldHandler())
+                (InternalPlcReadRequest) new DefaultPlcReadRequest.Builder(null, new ModbusPlcFieldHandler()) // TODO: remove null
                     .addItem(RandomStringUtils.randomAlphabetic(10), field)
                     .build(), new CompletableFuture<>()),
             new ModbusTcpPayload((short) 0, (short) 0, modbusPdu)
@@ -139,7 +139,7 @@ public class Plc4XModbusProtocolTest {
         if (values.length == 1) {
             return ImmutablePair.of(
                 new PlcRequestContainer<>(
-                    (InternalPlcWriteRequest) new DefaultPlcWriteRequest.Builder(new ModbusPlcFieldHandler())
+                    (InternalPlcWriteRequest) new DefaultPlcWriteRequest.Builder(null, new ModbusPlcFieldHandler()) // TODO: remove null
                         .addItem(RandomStringUtils.randomAlphabetic(10), field, values[0])
                         .build(), new CompletableFuture<>()),
                 new ModbusTcpPayload((short) 0, (short) 0, modbusPdu)
@@ -147,7 +147,7 @@ public class Plc4XModbusProtocolTest {
         } else {
             return ImmutablePair.of(
                 new PlcRequestContainer<>(
-                    (InternalPlcWriteRequest) new DefaultPlcWriteRequest.Builder(new ModbusPlcFieldHandler())
+                    (InternalPlcWriteRequest) new DefaultPlcWriteRequest.Builder(null, new ModbusPlcFieldHandler()) // TODO: remove null
                         .addItem(RandomStringUtils.randomAlphabetic(10), field, values)
                         .build(), new CompletableFuture<>()),
                 new ModbusTcpPayload((short) 0, (short) 0, modbusPdu)

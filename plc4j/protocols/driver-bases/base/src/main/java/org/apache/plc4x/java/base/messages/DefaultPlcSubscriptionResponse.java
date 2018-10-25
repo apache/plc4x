@@ -20,6 +20,7 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -42,8 +43,14 @@ public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionRe
 
     @Override
     public PlcSubscriptionHandle getSubscriptionHandle(String name) {
-        // TODO: add safety
-        return values.get(name).getValue();
+        Pair<PlcResponseCode, PlcSubscriptionHandle> response = values.get(name);
+        if (response == null) {
+            return null;
+        }
+        if (response.getKey() != PlcResponseCode.OK) {
+            throw new PlcRuntimeException("Item " + name + " failed to subscribe: " + response.getKey());
+        }
+        return response.getValue();
     }
 
     @Override
@@ -53,14 +60,16 @@ public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionRe
 
     @Override
     public PlcField getField(String name) {
-        // TODO: or should subscription handle be a successor of PlcField?
-        throw new NotImplementedException("field access not implemented");
+        throw new NotImplementedException("field access not possible as these come async");
     }
 
     @Override
     public PlcResponseCode getResponseCode(String name) {
-        // TODO: add safety
-        return values.get(name).getKey();
+        Pair<PlcResponseCode, PlcSubscriptionHandle> response = values.get(name);
+        if (response == null) {
+            return null;
+        }
+        return response.getKey();
     }
 
     @Override

@@ -32,14 +32,16 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
 import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,7 +121,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
         // Reset transactionId on overflow
-        messageId.compareAndSet(Short.MAX_VALUE + 1, 0);
+        messageId.compareAndSet(Short.MAX_VALUE + 1L, 0);
         PlcRequest request = msg.getRequest();
         if (request instanceof PlcReadRequest) {
             encodeReadRequest(msg, out);
@@ -468,7 +470,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
         UnconnectedDataItemResponse enipResponse = (UnconnectedDataItemResponse) payload;
         ByteBuf data = enipResponse.getData();
         if (data.readableBytes() > 0) {
-            Map<String, Pair<PlcResponseCode, FieldItem>> values = new HashMap<>();
+            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values = new HashMap<>();
             // TODO: This is not quite correct as this will probalby not work when requesting more than one item.
             for (String fieldName : request.getFieldNames()) {
                 MessageRouterResponse cipResponse = MessageRouterResponse.decode(data);

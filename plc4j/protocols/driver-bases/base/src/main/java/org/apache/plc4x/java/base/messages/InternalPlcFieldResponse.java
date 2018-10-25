@@ -20,7 +20,7 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcFieldResponse;
 
-public interface InternalPlcFieldResponse<REQUEST_TYPE extends InternalPlcFieldRequest> extends PlcFieldResponse<REQUEST_TYPE> {
+public interface InternalPlcFieldResponse extends PlcFieldResponse {
 
 
 }

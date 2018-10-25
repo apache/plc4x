@@ -63,7 +63,7 @@ public class SingleMessageRateLimiter extends ChannelDuplexHandler {
             if (!messagesQueue.isEmpty() && messageOnTheWay.compareAndSet(false, true)) {
                 ToSend pop = messagesQueue.pop();
                 LOGGER.debug("Sending {}", pop);
-                pop.channelHandlerContext.writeAndFlush(pop.toSend, pop.promise);
+                pop.channelHandlerContext.writeAndFlush(pop.objectToSend, pop.promise);
                 LOGGER.debug("Send {}", pop);
             }
         }, 100, 10, TimeUnit.MILLISECONDS);
@@ -103,12 +103,12 @@ public class SingleMessageRateLimiter extends ChannelDuplexHandler {
 
     private static final class ToSend {
         final ChannelHandlerContext channelHandlerContext;
-        final Object toSend;
+        final Object objectToSend;
         final ChannelPromise promise;
 
-        private ToSend(ChannelHandlerContext channelHandlerContext, Object toSend, ChannelPromise promise) {
+        private ToSend(ChannelHandlerContext channelHandlerContext, Object objectToSend, ChannelPromise promise) {
             this.channelHandlerContext = channelHandlerContext;
-            this.toSend = toSend;
+            this.objectToSend = objectToSend;
             this.promise = promise;
         }
 
@@ -116,7 +116,7 @@ public class SingleMessageRateLimiter extends ChannelDuplexHandler {
         public String toString() {
             return "ToSend{" +
                 "channelHandlerContext=" + channelHandlerContext +
-                ", toSend=" + toSend +
+                ", objectToSend=" + objectToSend +
                 ", promise=" + promise +
                 '}';
         }

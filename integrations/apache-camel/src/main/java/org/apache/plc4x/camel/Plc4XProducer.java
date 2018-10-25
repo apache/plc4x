@@ -22,8 +22,7 @@ import org.apache.camel.AsyncCallback;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultAsyncProducer;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
@@ -34,14 +33,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XProducer extends DefaultAsyncProducer {
     private PlcConnection plcConnection;
-    private PlcWriter plcWriter;
     private AtomicInteger openRequests;
 
     public Plc4XProducer(Plc4XEndpoint endpoint) throws PlcException {
         super(endpoint);
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        plcWriter = plcConnection.getWriter().orElseThrow(() -> new PlcException("This connection doesn't support writing."));
+        if (!plcConnection.writeRequestBuilder().isPresent()) {
+            throw new PlcException("This connection (" + plc4xURI + ") doesn't support writing.");
+        }
         openRequests = new AtomicInteger();
     }
 
@@ -51,7 +51,6 @@ public class Plc4XProducer extends DefaultAsyncProducer {
         String fieldName = in.getHeader(Constants.FIELD_NAME_HEADER, String.class);
         String fieldQuery = in.getHeader(Constants.FIELD_QUERY_HEADER, String.class);
         Object body = in.getBody();
-        PlcWriteRequest.Builder builder = plcWriter.writeRequestBuilder();
         if (body instanceof List) {
             List<?> bodyList = in.getBody(List.class);
             Object[] values = bodyList.toArray();
@@ -60,8 +59,8 @@ public class Plc4XProducer extends DefaultAsyncProducer {
             Object value = in.getBody(Object.class);
 //            builder.addItem(fieldName, fieldQuery, value);
         }
-        PlcWriter plcWriter = plcConnection.getWriter().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
-        CompletableFuture<? extends PlcWriteResponse> completableFuture = plcWriter.write(builder.build());
+        PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
+        CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {
             log.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);

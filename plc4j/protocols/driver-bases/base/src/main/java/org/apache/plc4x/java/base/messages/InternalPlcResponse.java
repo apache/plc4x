@@ -20,5 +20,6 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcResponse;
 
-public interface InternalPlcResponse<REQUEST_TYPE extends InternalPlcRequest> extends PlcResponse<REQUEST_TYPE> {
+public interface InternalPlcResponse extends PlcResponse {
+
 }

@@ -21,10 +21,18 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
-public interface PlcUnsubscriptionRequest extends PlcFieldRequest {
+public interface PlcUnsubscriptionRequest extends PlcRequest {
 
-    interface Builder extends PlcMessageBuilder<PlcUnsubscriptionRequest> {
+    @Override
+    CompletableFuture<PlcUnsubscriptionResponse> execute();
+
+    interface Builder extends PlcRequestBuilder {
+
+        @Override
+        PlcUnsubscriptionRequest build();
+
         /**
          * TODO document me:
          *

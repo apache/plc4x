@@ -62,12 +62,18 @@ public class AmsTCPPacket implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AmsTCPPacket)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AmsTCPPacket)) {
+            return false;
+        }
 
         AmsTCPPacket that = (AmsTCPPacket) o;
 
-        if (!amsTcpHeader.equals(that.amsTcpHeader)) return false;
+        if (!amsTcpHeader.equals(that.amsTcpHeader)) {
+            return false;
+        }
         return userData.equals(that.userData);
     }
 

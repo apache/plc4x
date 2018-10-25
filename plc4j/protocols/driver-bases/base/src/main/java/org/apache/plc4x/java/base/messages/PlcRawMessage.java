@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.base.messages;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.messages.PlcProtocolMessage;
 
 public class PlcRawMessage implements PlcProtocolMessage {
 

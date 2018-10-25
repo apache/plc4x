@@ -18,7 +18,5 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.plc4x.java.api.messages.PlcProprietaryRequest;
-
 public interface InternalPlcProprietaryRequest<REQUEST> extends PlcProprietaryRequest<REQUEST>, InternalPlcRequest {
 }

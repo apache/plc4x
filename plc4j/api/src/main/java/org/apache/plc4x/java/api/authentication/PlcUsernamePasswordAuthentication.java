@@ -40,4 +40,25 @@ public class PlcUsernamePasswordAuthentication implements PlcAuthentication {
         return password;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlcUsernamePasswordAuthentication that = (PlcUsernamePasswordAuthentication) o;
+        return Objects.equals(username, that.username) &&
+            Objects.equals(password, that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password);
+    }
+
+    @Override
+    public String toString() {
+        return "PlcUsernamePasswordAuthentication{" +
+            "username='" + username + '\'' +
+            ", password='" + "*****************" + '\'' +
+            '}';
+    }
 }

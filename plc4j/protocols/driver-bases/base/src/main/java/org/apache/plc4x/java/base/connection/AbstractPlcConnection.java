@@ -22,15 +22,11 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcSubscriber;
-import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -113,30 +109,6 @@ public abstract class AbstractPlcConnection implements PlcConnection {
 
     protected void sendChannelCreatedEvent() {
         // Implemented in sub-classes, if needed.
-    }
-
-    @Override
-    public Optional<PlcReader> getReader() {
-        if (this instanceof PlcReader) {
-            return Optional.of((PlcReader) this);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PlcWriter> getWriter() {
-        if (this instanceof PlcWriter) {
-            return Optional.of((PlcWriter) this);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PlcSubscriber> getSubscriber() {
-        if (this instanceof PlcSubscriber) {
-            return Optional.of((PlcSubscriber) this);
-        }
-        return Optional.empty();
     }
 
     /**

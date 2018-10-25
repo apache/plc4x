@@ -18,6 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.api.model;
 
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+
+import java.util.function.Consumer;
+
 /**
  * When subscribing to remote resources, depending on the used protocol
  * different data is used to identify a subscription. This interface is
@@ -29,4 +33,5 @@ package org.apache.plc4x.java.api.model;
  */
 public interface PlcSubscriptionHandle {
 
+    PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer);
 }

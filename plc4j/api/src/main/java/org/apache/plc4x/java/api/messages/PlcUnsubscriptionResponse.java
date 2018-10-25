@@ -18,17 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
-public interface PlcUnsubscriptionResponse extends PlcFieldResponse<PlcUnsubscriptionRequest> {
+public interface PlcUnsubscriptionResponse extends PlcResponse {
 
-    interface Builder extends PlcMessageBuilder<PlcUnsubscriptionResponse> {
-        /**
-         * Adds a new field to the to be constructed request which should cancel a previously
-         * created subscription.
-         *
-         * @param name alias of the field.
-         * @return builder.
-         */
-        PlcReadRequest.Builder addField(String name);
-    }
+    @Override
+    PlcUnsubscriptionRequest getRequest();
 
 }

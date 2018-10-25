@@ -18,9 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java;
 
-import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.spi.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 import java.net.URI;
@@ -31,13 +31,16 @@ import java.util.ServiceLoader;
 
 public class PlcDriverManager implements PlcDriverManagerInterface {
 
-    private Map<String, PlcDriver> driverMap = null;
+    protected ClassLoader classLoader;
+
+    private Map<String, PlcDriver> driverMap;
 
     public PlcDriverManager() {
         this(Thread.currentThread().getContextClassLoader());
     }
 
     public PlcDriverManager(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         driverMap = new HashMap<>();
         ServiceLoader<PlcDriver> plcDriverLoader = ServiceLoader.load(PlcDriver.class, classLoader);
         for (PlcDriver driver : plcDriverLoader) {

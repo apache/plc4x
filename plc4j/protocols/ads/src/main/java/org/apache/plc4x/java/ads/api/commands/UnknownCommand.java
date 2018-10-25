@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 @AdsCommandType(Command.UNKNOWN)
 public class UnknownCommand extends AmsPacket {
 
-    private transient final ByteBuf remainingBytes;
+    private final transient ByteBuf remainingBytes;
 
     private UnknownCommand(AmsHeader amsHeader, ByteBuf remainingBytes) {
         super(amsHeader);

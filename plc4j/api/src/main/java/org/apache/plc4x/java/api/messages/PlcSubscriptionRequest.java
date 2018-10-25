@@ -19,10 +19,18 @@ under the License.
 package org.apache.plc4x.java.api.messages;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 public interface PlcSubscriptionRequest extends PlcFieldRequest {
 
-    interface Builder extends PlcMessageBuilder<PlcSubscriptionRequest> {
+    @Override
+    CompletableFuture<? extends PlcSubscriptionResponse> execute();
+
+    interface Builder extends PlcRequestBuilder {
+
+        @Override
+        PlcSubscriptionRequest build();
+
         /**
          * Adds a new field to the to be constructed request which should be polled cyclically.
          *

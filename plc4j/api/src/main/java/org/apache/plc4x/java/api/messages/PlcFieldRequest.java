@@ -22,8 +22,12 @@ import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
 
 public interface PlcFieldRequest extends PlcRequest {
+
+    @Override
+    CompletableFuture<? extends PlcFieldResponse> execute();
 
     int getNumberOfFields();
 

@@ -19,9 +19,9 @@
 
 package org.apache.plc4x.java.test;
 
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
-public class TestFieldItem<T> extends FieldItem<T> {
+public class TestFieldItem<T> extends BaseDefaultFieldItem<T> {
 
     public TestFieldItem(T[] values) {
         super(values);

@@ -75,7 +75,7 @@ Otherwise we would have to define the release and development version for each m
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
-2. The name of the tag the release commit will be tagged with in the SCM
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `rel/{release-version}`
 3. The next development version (The version present in the pom after the release)
 
 That the plugin does, is:
@@ -91,6 +91,16 @@ That the plugin does, is:
 9. Push the commit
 
 However this just prepared the repository for the release, we have to perform the release to get the release artifacts.
+
+== What if something goes wrong?
+
+If something goes wrong, you can always execute:
+
+   mvn release:rollback
+
+And it will change the versions back and commit and push things.
+
+However it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
 
 === Performing a release
 
@@ -159,7 +169,7 @@ All of the four `*-source-relese.zip*` artifacts should be located in the direct
 
 So after committing these files to SVN you are ready to start the vote.
 
-== Starting a vote on the mailing list
+=== Starting a vote on the mailing list
 
 After staging the release candidate in the Apache SVN, it is time to actually call out the vote.
 
@@ -178,6 +188,9 @@ The following is the one used to do our first release:
 
    A minimum of 3 binding +1 votes and more binding +1 than binding -1
    are required to pass.
+
+   Release tag: rel/0.1.0
+   Hash for the release tag: 8c1e0c1b85ce15814f2c08e0eec5d593951d168d
 
    Per [3] "Before voting +1 [P]PMC members are required to download
    the signed source code package, compile it as provided, and test
@@ -233,7 +246,7 @@ After the 72 hour minimum wait period is over and we have fulfilled the requirem
 
 ```
 
-== An extra step for incubator podlings
+=== An extra step for incubator podlings
 
 If the vote passes in the project, for a top-level project the formal process would be finished.
 
@@ -243,6 +256,7 @@ Now our mentors and any member of the Incubator PMC have the chance to review ou
 
 Only if this second vote passes, are we allowed to finally announce the release and release the artifacts.
 
+(The following template needs to be adjusted in several places for other releases):
 ```
     To:
 general@incubator.apache.org
@@ -299,14 +313,57 @@ Please vote accordingly:
 [ ] +0 no opinion
 [ ] -1 disapprove with the reason
 
-Best regards,
-Chris
+{your name here}
+Apache PLC4X
 ```
 
+As soon as the 72 hours period has passed and we got enough `+1` votes, we send a vote result email:
 
-== Releasing after a successful vote
+```
+    To:
+general@incubator.apache.org
+
+    E-Mail Topic:
+[VOTE] Release Apache PLC4X (Incubating) 0.1.0 [RC2]
+
+    Message:
+Hello all,
+
+The vote for releasing Apache PLC4X {version}-{RC-Number} (incubating) is closed, now.
+
+Vote result:
+{number of binding +1} (+1 binding) ({List of apache ids for voters})
+{number of binding 0} (0 binding) ({List of apache ids for voters})
+{number of binding -1} (-1 binding) ({List of apache ids for voters})
+
+number of non-binding +1} (+1 non-binding) ({List names of voters})
+number of non-binding 0} (0 non-binding) ({List names of voters})
+number of non-binding -1} (-1 non-binding) ({List names of voters})
+
+Thank you everyone for taking the time to review the release and help us.
+
+I will process to publish the release and send ANNOUNCE.
+
+{your name here}
+Apache PLC4X
+```
+
+Also you need to add the release to the next board report for the incubator:
+https://wiki.apache.org/incubator/October2018
+(Please adjust the url to the current date)
+
+=== Releasing after a successful vote
 
 As soon as the votes are finished and the results were in favor of a release, the staged artifacts can be released.
+This is done by moving them inside the Apache SVN.
+
+   svn move -m "Release Apache PLC4X (incubating) 0.1.0" \
+       https://dist.apache.org/repos/dist/dev/incubator/plc4x/0.1.0-incubating/rc2 \
+       https://dist.apache.org/repos/dist/release/incubator/plc4x/0.1.0-incubating
+
+This will make the release artifacts available and will trigger them being copied to mirror sites.
+
+This is also the reason why you should wait at least 24 hours before sending out the release notification emails.
 
 === Releasing the Maven artifacts
 
@@ -318,31 +375,78 @@ This will move all artifacts into the Apache release repository and delete the s
 
 All release artifacts released to the Apache release repo, will automatically be synced to Maven central.
 
-=== Releasing the source bundle
+=== Updating Jira
 
-// TODO ... finish this ...
+1. Set the released version to "released" and set the "release-date"
+2. Add the next version to the versions.
 
 === Notifying the world
 
-// TODO ... finish this ...
+Make sure you have given the Apache mirrors time to fetch the release files by waiting at least 24 hours after moving the release candidate to the release part of the SVN.
 
-== What if something goes wrong?
+After that it is time to announce your release to the world:
 
-If something goes wrong, you can always execute:
+```
+    From:
+your apache email address
+    To:
+announce@apache.org
 
-   mvn release:rollback
+    CC:
+dev@plc4x.apache.org
 
-And it will change the versions back and commit and push things.
+    E-Mail Topic:
+[ANNOUNCE] Apache PLC4X (incubating) 0.1.0 released
 
-However it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
+    Message:
+The Apache PLC4X (Incubating) team is pleased to announce the release of Apache PLC4X (incubating) 0.1.0
 
-== Actually performing the release
+This is the first official release of PLC4X.
 
-Up till now only a version in GIT has been produced. In order to actually release you have to execute:
+PLC4X is a set of libraries for communicating with industrial programmable
+logic controllers (PLCs) using a variety of protocols but with a shared API.
 
-   mvn release:perform
+The current release contains drivers able to communicate with industrial PLCs using one of the following protocols:
 
-This will do a clean checkout of the tag we previously created into the roots `target` directory and do a full build with the `apache-release` profile activated.
-This will build and test the project, create the site, JavaDoc, build the source release artifacts (Which we will be voting on) and stage all maven artifacts in a staging repo of Apache's Nexus.
+  *   Siemens S7 (0x32)
+  *   Beckhoff ADS
+  *   Modbus
+  *   EtherNet/IP
 
+Beyond that we also provide integration modules for the following Apache projects and frameworks:
 
+  *   Apache Edgent (Incubating)
+  *   Apache Camel
+  *   Apache Kafka (Kafka Connect)
+
+Visit the Apache PLC4X website [1] for general information or
+the downloads page [2] for release notes and download information.
+
+Regards,
+The Apache PLC4X team
+
+[1] http://plc4x.apache.org
+[2] http://plc4x.apache.org/users/download.html
+
+=====
+
+*Disclaimer*
+
+Apache PLC4X is an effort undergoing incubation at The Apache Software
+Foundation (ASF), sponsored by the name of Apache Incubator PMC. Incubation
+is required of all newly accepted projects until a further review indicates
+that the infrastructure, communications, and decision making process have
+stabilized in a manner consistent with other successful ASF projects. While
+incubation status is not necessarily a reflection of the completeness or
+stability of the code, it does indicate that the project has yet to be
+fully endorsed by the ASF.
+```
+It is important to note that you have to send this email from your apache email address or it will be rejected.
+This wasn't very simple for me to setup.
+A general description can be found here:
+https://reference.apache.org/committer/email
+Here's what I did in google mail to allow sending of emails:
+https://gmail.googleblog.com/2009/07/send-mail-from-another-address-without.html
+Note ... you will be able to select the alternat sending address if you click into the recipients line of a new email (Not very intuitive).
+
+After that email is out the door, you're done. Congrats!

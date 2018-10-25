@@ -18,13 +18,13 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-public class DefaultPlcProprietaryResponse<REQUEST, RESPONSE> implements InternalPlcProprietaryResponse<REQUEST, RESPONSE> {
+public class DefaultPlcProprietaryResponse<RESPONSE> implements InternalPlcProprietaryResponse<RESPONSE> {
 
-    private final InternalPlcProprietaryRequest<REQUEST> plcProprietaryRequest;
+    private final InternalPlcProprietaryRequest plcProprietaryRequest;
 
     private final RESPONSE proprietaryResponse;
 
-    public DefaultPlcProprietaryResponse(InternalPlcProprietaryRequest<REQUEST> plcProprietaryRequest, RESPONSE proprietaryResponse) {
+    public DefaultPlcProprietaryResponse(InternalPlcProprietaryRequest plcProprietaryRequest, RESPONSE proprietaryResponse) {
         this.plcProprietaryRequest = plcProprietaryRequest;
         this.proprietaryResponse = proprietaryResponse;
     }

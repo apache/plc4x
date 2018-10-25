@@ -148,6 +148,8 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
                 LOGGER.debug("Ams Serial Reset Frame received {}", amsSerialResetFrame);
                 ReferenceCountUtil.release(byteBuf);
                 break;
+            default:
+                throw new PlcProtocolException("Unknown type: " + magicCookie);
         }
         CRC calculatedCrc = CRC.of(DigestUtil.calculateCrc16(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, userDataLength, userData));
         if (!crc.equals(calculatedCrc)) {

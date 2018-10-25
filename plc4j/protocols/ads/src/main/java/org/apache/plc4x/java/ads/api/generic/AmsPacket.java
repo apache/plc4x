@@ -66,8 +66,12 @@ public abstract class AmsPacket implements ByteReadable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AmsPacket)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AmsPacket)) {
+            return false;
+        }
 
         AmsPacket amsPacket = (AmsPacket) o;
 

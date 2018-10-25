@@ -18,9 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.api.messages;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Base type for all messages sent from the plc4x system to a connected plc.
  */
 public interface PlcRequest extends PlcMessage {
-
+    CompletableFuture<? extends PlcResponse> execute();
 }

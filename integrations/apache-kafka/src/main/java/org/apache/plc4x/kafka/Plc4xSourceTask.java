@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.kafka;
 
 import org.apache.kafka.common.config.AbstractConfig;
+import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaBuilder;
 import org.apache.kafka.connect.data.Struct;
@@ -26,9 +27,9 @@ import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -44,6 +45,25 @@ import java.util.concurrent.*;
  * If the flag does not become true, the method returns null, otherwise a fetch is performed.
  */
 public class Plc4xSourceTask extends SourceTask {
+    static final String TOPIC_CONFIG = "topic";
+    private static final String TOPIC_DOC = "Kafka topic to publish to";
+
+    static final String URL_CONFIG = "url";
+    private static final String URL_DOC = "PLC URL";
+
+    static final String QUERIES_CONFIG = "queries";
+    private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
+
+    static final String RATE_CONFIG = "rate";
+    private static final Integer RATE_DEFAULT = 1000;
+    private static final String RATE_DOC = "Polling rate";
+
+    private static final ConfigDef CONFIG_DEF = new ConfigDef()
+        .define(TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
+        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC)
+        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC)
+        .define(RATE_CONFIG, ConfigDef.Type.INT, RATE_DEFAULT, ConfigDef.Importance.MEDIUM, RATE_DOC);
+
     private final static long WAIT_LIMIT_MILLIS = 100;
     private final static long TIMEOUT_LIMIT_MILLIS = 5000;
 
@@ -61,8 +81,6 @@ public class Plc4xSourceTask extends SourceTask {
     private List<String> queries;
 
     private PlcConnection plcConnection;
-    private PlcReader plcReader;
-    private PlcReadRequest plcRequest;
 
     // TODO: should we use shared (static) thread pool for this?
     private ScheduledExecutorService scheduler;
@@ -75,24 +93,18 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public void start(Map<String, String> props) {
-        AbstractConfig config = new AbstractConfig(Plc4xSourceConnector.CONFIG_DEF, props);
-        topic = config.getString(Plc4xSourceConnector.TOPIC_CONFIG);
-        url = config.getString(Plc4xSourceConnector.URL_CONFIG);
-        queries = config.getList(Plc4xSourceConnector.QUERIES_CONFIG);
+        AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
+        topic = config.getString(TOPIC_CONFIG);
+        url = config.getString(URL_CONFIG);
+        queries = config.getList(QUERIES_CONFIG);
 
         openConnection();
 
-        plcReader = plcConnection.getReader()
-            .orElseThrow(() -> new ConnectException("PlcReader not available for this type of connection"));
-
-
-        PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
-        for (String query : queries) {
-            builder.addItem(query, query);
+        if (!plcConnection.readRequestBuilder().isPresent()) {
+            throw new ConnectException("Reading not supported on this connection");
         }
-        plcRequest = builder.build();
 
-        int rate = Integer.valueOf(props.get(Plc4xSourceConnector.RATE_CONFIG));
+        int rate = Integer.parseInt(props.get(RATE_CONFIG));
         scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(Plc4xSourceTask.this::scheduleFetch, rate, rate, TimeUnit.MILLISECONDS);
     }
@@ -101,7 +113,9 @@ public class Plc4xSourceTask extends SourceTask {
     public void stop() {
         scheduler.shutdown();
         closeConnection();
-        notify(); // wake up thread waiting in awaitFetch
+        synchronized (this) {
+            notify(); // wake up thread waiting in awaitFetch
+        }
     }
 
     @Override
@@ -123,7 +137,7 @@ public class Plc4xSourceTask extends SourceTask {
             try {
                 plcConnection.close();
             } catch (Exception e) {
-                throw new RuntimeException("Caught exception while closing connection to PLC", e);
+                throw new PlcRuntimeException("Caught exception while closing connection to PLC", e);
             }
         }
     }
@@ -154,9 +168,9 @@ public class Plc4xSourceTask extends SourceTask {
     }
 
     private List<SourceRecord> doFetch() throws InterruptedException {
-        final CompletableFuture<PlcReadResponse<?>> response = plcReader.read(plcRequest);
+        final CompletableFuture<? extends PlcReadResponse> response = createReadRequest().execute();
         try {
-            final PlcReadResponse<?> received = response.get(TIMEOUT_LIMIT_MILLIS, TimeUnit.MILLISECONDS);
+            final PlcReadResponse received = response.get(TIMEOUT_LIMIT_MILLIS, TimeUnit.MILLISECONDS);
             return extractValues(received);
         } catch (ExecutionException e) {
             throw new ConnectException("Could not fetch data from source", e);
@@ -165,7 +179,15 @@ public class Plc4xSourceTask extends SourceTask {
         }
     }
 
-    private List<SourceRecord> extractValues(PlcReadResponse<?> response) {
+    private PlcReadRequest createReadRequest() {
+        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder().get();
+        for (String query : queries) {
+            builder.addItem(query, query);
+        }
+        return builder.build();
+    }
+
+    private List<SourceRecord> extractValues(PlcReadResponse response) {
         final List<SourceRecord> result = new LinkedList<>();
         for (String query : queries) {
             final PlcResponseCode rc = response.getResponseCode(query);

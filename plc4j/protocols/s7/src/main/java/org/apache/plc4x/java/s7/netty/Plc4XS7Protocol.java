@@ -21,12 +21,10 @@ package org.apache.plc4x.java.s7.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.exceptions.PlcIoException;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
@@ -36,7 +34,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.s7.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
@@ -51,11 +49,15 @@ import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This layer transforms between {@link PlcRequestContainer}s {@link S7Message}s.
@@ -191,7 +193,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             if(!(writeRequest instanceof DefaultPlcWriteRequest)) {
                 throw new PlcException("The writeRequest should have been of type DefaultPlcWriteRequest");
             }
-            FieldItem fieldItem = ((DefaultPlcWriteRequest) writeRequest).getFieldItem(fieldName);
+            BaseDefaultFieldItem fieldItem = ((DefaultPlcWriteRequest) writeRequest).getFieldItem(fieldName);
 
             // The number of elements provided in the request must match the number defined in the field, or
             // bad things are going to happen.
@@ -295,7 +297,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     int numBytes = fieldItem.getNumberOfValues() * 4;
                     ByteBuffer buffer = ByteBuffer.allocate(numBytes);
                     for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putInt((int) (double) fieldItem.getDouble(i));
+                        buffer.putInt((int) (long) fieldItem.getLong(i));
                     }
                     byteData = buffer.array();
                     break;
@@ -409,7 +411,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        Map<String, Pair<PlcResponseCode, FieldItem>> values = new HashMap<>();
+        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values = new HashMap<>();
         List<VarPayloadItem> payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcReadRequest.getFieldNames()) {
@@ -417,25 +419,28 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             VarPayloadItem payloadItem = payloadItems.get(index);
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            FieldItem fieldItem = null;
+            BaseDefaultFieldItem fieldItem = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
+                // TODO 2018-09-27 jf: array returning only implemented for BOOL, BYTE, INTEGERS, FP
+                // not for CHARS & STRINGS and not for all other bit-strings except for BYTE
                 switch (field.getDataType()) {
                     // -----------------------------------------
                     // Bit
                     // -----------------------------------------
                     case BOOL: {
-                        byte byteValue = data.readByte();
-                        fieldItem = new S7BooleanFieldItem(field.getDataType(),byteValue != 0x00);
+                        Boolean[] booleans = readAllValues(Boolean.class, field, i -> data.readByte() != 0x00);
+                        fieldItem = new S7BooleanFieldItem(field.getDataType(),booleans);
                         break;
                     }
                     // -----------------------------------------
                     // Bit-strings
                     // -----------------------------------------
                     case BYTE: { // 1 byte
-                        BitSet bitSet = BitSet.valueOf(new byte[]{data.readByte()});
-                        Boolean[] booleanValues = new Boolean[8];
-                        for(int i = 0; i < 8; i++) {
+                        byte[] bytes = ArrayUtils.toPrimitive(readAllValues(Byte.class, field, i -> data.readByte()));
+                        BitSet bitSet = BitSet.valueOf(bytes);
+                        Boolean[] booleanValues = new Boolean[8 * bytes.length];
+                        for(int i = 0; i < 8 * bytes.length; i++) {
                             booleanValues[i] = bitSet.get(i);
                         }
                         fieldItem = new S7BooleanFieldItem(field.getDataType(),booleanValues);
@@ -474,59 +479,59 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // -----------------------------------------
                     // 8 bit:
                     case SINT: {
-                        Long longValue = (long) data.readByte();
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
+                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readByte());
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
                         break;
                     }
                     case USINT: {
-                        Long longValue = (long) data.readUnsignedByte();
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
+                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readUnsignedByte());
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
                         break;
                     }
                     // 16 bit:
                     case INT: {
-                        Long longValue = (long) data.readShort();
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
+                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readShort());
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
                         break;
                     }
                     case UINT: {
-                        Long longValue = (long) data.readUnsignedShort();
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
+                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readUnsignedShort());
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
                         break;
                     }
                     // 32 bit:
                     case DINT: {
-                        Long longValue = (long) data.readInt();
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
+                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readInt());
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
                         break;
                     }
                     case UDINT: {
-                        Long longValue = data.readUnsignedInt();
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longValue);
+                        Long[] longs = readAllValues(Long.class, field, i -> data.readUnsignedInt());
+                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
                         break;
                     }
                     // 64 bit:
                     case LINT: {
-                        BigInteger bigIntegerValue = readSigned64BitInteger(data);
-                        fieldItem = new S7BigIntegerFieldItem(field.getDataType(), bigIntegerValue);
+                        BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readSigned64BitInteger(data));
+                        fieldItem = new S7BigIntegerFieldItem(field.getDataType(), bigIntegers);
                         break;
                     }
                     case ULINT: {
-                        BigInteger bigIntegerValue = readUnsigned64BitInteger(data);
-                        fieldItem = new S7BigIntegerFieldItem(field.getDataType(), bigIntegerValue);
+                        BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readUnsigned64BitInteger(data));
+                        fieldItem = new S7BigIntegerFieldItem(field.getDataType(), bigIntegers);
                         break;
                     }
                     // -----------------------------------------
                     // Floating point values
                     // -----------------------------------------
                     case REAL: {
-                        double doubleValue = data.readFloat();
-                        fieldItem = new S7FloatingPointFieldItem(field.getDataType(), doubleValue);
+                        Double[] doubles = readAllValues(Double.class, field, i -> (double)data.readFloat());
+                        fieldItem = new S7FloatingPointFieldItem(field.getDataType(), doubles);
                         break;
                     }
                     case LREAL: {
-                        double doubleValue = data.readDouble();
-                        fieldItem = new S7FloatingPointFieldItem(field.getDataType(), doubleValue);
+                        Double[] doubles = readAllValues(Double.class, field, i -> data.readDouble());
+                        fieldItem = new S7FloatingPointFieldItem(field.getDataType(), doubles);
                         break;
                     }
                     // -----------------------------------------
@@ -567,12 +572,23 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         throw new PlcProtocolException("Unsupported type " + field.getDataType());
                 }
             }
-            Pair<PlcResponseCode, FieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
+            Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
             values.put(fieldName, result);
             index++;
         }
 
         return new DefaultPlcReadResponse(plcReadRequest, values);
+    }
+
+    private static <T> T[] readAllValues(Class<T> clazz, S7Field field, Function<Integer, T> extract) {
+        try {
+            return IntStream.rangeClosed(1, field.getNumElements())
+                .mapToObj(extract::apply)
+                .collect(Collectors.toList())
+                .toArray((T[])Array.newInstance(clazz, 0));
+        } catch (IndexOutOfBoundsException e) {
+            throw new PlcRuntimeException("To few bytes in the buffer to read requested type", e);
+        }
     }
 
     @SuppressWarnings("unchecked")

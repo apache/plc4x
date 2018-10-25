@@ -22,8 +22,7 @@ import com.microsoft.azure.sdk.iot.device.DeviceClient;
 import com.microsoft.azure.sdk.iot.device.IotHubClientProtocol;
 import com.microsoft.azure.sdk.iot.device.Message;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
@@ -54,23 +53,19 @@ public class S7PlcToAzureIoTHubSample {
         String iotConnectionString = args[2];
         LOGGER.info("Connecting {}, {}, {}", plc4xConnectionString, addressString, iotConnectionString);
 
-        // Open a connection to the remote PLC.
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(plc4xConnectionString)) {
+        // Open both a connection to the remote PLC as well as a connection to the cloud service.
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(plc4xConnectionString);
+             DeviceClient client = new DeviceClient(iotConnectionString, IotHubClientProtocol.MQTT)) {
             LOGGER.info("Connected");
 
-            // Open a connection to the cloud service.
-            DeviceClient client = new DeviceClient(iotConnectionString, IotHubClientProtocol.MQTT);
             client.open();
 
-            // Get a reader instance.
-            PlcReader plcReader = plcConnection.getReader().orElseThrow(IllegalStateException::new);
-
             // Prepare a read request.
-            PlcReadRequest request = plcReader.readRequestBuilder().addItem(FIELD_NAME, addressString).build();
+            PlcReadRequest request = plcConnection.readRequestBuilder().get().addItem(FIELD_NAME, addressString).build();
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
-                PlcReadResponse<?> response = plcReader.read(request).get();
+                PlcReadResponse response = request.execute().get();
                 response.getAllLongs(FIELD_NAME)
                     .forEach(longValue -> {
                             String result = Long.toBinaryString(longValue);
@@ -85,7 +80,6 @@ public class S7PlcToAzureIoTHubSample {
                 // Wait a second.
                 TimeUnit.SECONDS.sleep(1);
             }
-
         }
     }
 }

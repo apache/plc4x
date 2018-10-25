@@ -24,8 +24,7 @@ import org.apache.camel.PollingConsumer;
 import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
 import org.apache.camel.support.ServiceSupport;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -44,8 +43,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     private Plc4XEndpoint endpoint;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private PlcReader plcReader;
-    private PlcReadRequest readRequest;
+    private PlcReadRequest.Builder requestBuilder;
     private Class dataType;
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
@@ -54,8 +52,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        this.plcReader = plcConnection.getReader().orElseThrow(() -> new PlcException("This connection doesn't support reading."));
-        readRequest = plcReader.readRequestBuilder().addItem("default", endpoint.getAddress()).build();
+        this.requestBuilder = plcConnection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading."));
     }
 
     @Override
@@ -79,7 +76,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive() {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<? extends PlcReadResponse> read = plcReader.read(readRequest);
+        CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
             PlcReadResponse plcReadResponse = read.get();
             exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
@@ -97,7 +94,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive(long timeout) {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<? extends PlcReadResponse> read = plcReader.read(readRequest);
+        CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
             exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
@@ -119,6 +116,10 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         } catch (Exception e) {
             LOGGER.error("Error closing connection", e);
         }
+    }
+
+    private PlcReadRequest createReadRequest() {
+        return requestBuilder.addItem("default", endpoint.getAddress()).build();
     }
 
     private Object unwrapIfSingle(Collection collection) {

@@ -18,11 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.util;
 
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,6 +35,9 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class S7PlcFieldHandlerTest {
 
@@ -331,10 +331,10 @@ class S7PlcFieldHandlerTest {
     }
 
     private void encode(String name, PlcField field, Object[] values, Set<String> expectedSuccess,
-                        BiFunction<PlcField, Object[], FieldItem> encoder) {
+                        BiFunction<PlcField, Object[], BaseDefaultFieldItem> encoder) {
         boolean success = expectedSuccess.contains(name);
         try {
-            FieldItem fieldItem = encoder.apply(field, values);
+            BaseDefaultFieldItem fieldItem = encoder.apply(field, values);
             assertNotNull(fieldItem, "A FieldItem instance should have been returned for testcase " + name);
             if(!success) {
                 fail("Expected to fail for testcase " + name);

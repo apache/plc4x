@@ -69,10 +69,6 @@ public class AmsPort extends UnsignedShortLEByteValue {
 
     public static class ReservedPorts {
 
-        private ReservedPorts() {
-            // Container class
-        }
-
         /**
          * Logger (only NT-Log)
          */
@@ -128,5 +124,9 @@ public class AmsPort extends UnsignedShortLEByteValue {
          * Scope
          */
         public static final AmsPort scope = AmsPort.of(900);
+
+        private ReservedPorts() {
+            // Container class
+        }
     }
 }
