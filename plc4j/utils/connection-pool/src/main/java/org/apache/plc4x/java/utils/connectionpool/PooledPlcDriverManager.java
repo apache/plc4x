@@ -100,7 +100,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         PlcAuthentication plcAuthentication = argPair.getRight();
         ObjectPool<PlcConnection> pool = poolMap.get(argPair);
         if (pool == null) {
-            Lock lock = readWriteLock.readLock();
+            Lock lock = readWriteLock.writeLock();
             lock.lock();
             try {
                 poolMap.computeIfAbsent(argPair, pair -> poolCreator.createPool(new PooledPlcConnectionFactory() {
@@ -150,19 +150,25 @@ public class PooledPlcDriverManager extends PlcDriverManager {
 
     // TODO: maybe export to jmx
     public Map<String, Number> getStatistics() {
-        HashMap<String, Number> statistics = new HashMap<>();
-        for (Map.Entry<Pair<String, PlcAuthentication>, ObjectPool<PlcConnection>> poolEntry : poolMap.entrySet()) {
-            Pair<String, PlcAuthentication> pair = poolEntry.getKey();
-            ObjectPool<PlcConnection> objectPool = poolEntry.getValue();
-            String url = pair.getLeft();
-            PlcAuthentication plcAuthentication = pair.getRight();
+        Lock lock = readWriteLock.readLock();
+        try {
+            lock.lock();
+            HashMap<String, Number> statistics = new HashMap<>();
+            for (Map.Entry<Pair<String, PlcAuthentication>, ObjectPool<PlcConnection>> poolEntry : poolMap.entrySet()) {
+                Pair<String, PlcAuthentication> pair = poolEntry.getKey();
+                ObjectPool<PlcConnection> objectPool = poolEntry.getValue();
+                String url = pair.getLeft();
+                PlcAuthentication plcAuthentication = pair.getRight();
 
-            String authSuffix = plcAuthentication != noPlcAuthentication ? "/" + plcAuthentication : "";
-            statistics.put(url + authSuffix + ".numActive", objectPool.getNumActive());
-            statistics.put(url + authSuffix + ".numIdle", objectPool.getNumIdle());
+                String authSuffix = plcAuthentication != noPlcAuthentication ? "/" + plcAuthentication : "";
+                statistics.put(url + authSuffix + ".numActive", objectPool.getNumActive());
+                statistics.put(url + authSuffix + ".numIdle", objectPool.getNumIdle());
+            }
+
+            return statistics;
+        } finally {
+            lock.unlock();
         }
-
-        return statistics;
     }
 
     private static final class NoPlcAuthentication implements PlcAuthentication {
