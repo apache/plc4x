@@ -17,7 +17,6 @@
 
 package org.apache.plc4x.java.utils.connectionpool;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.plc4x.java.PlcDriverManager;
@@ -28,10 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
@@ -46,7 +42,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
 
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-    private ConcurrentMap<Pair<String, PlcAuthentication>, ObjectPool<PlcConnection>> poolMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<PoolKey, ObjectPool<PlcConnection>> poolMap = new ConcurrentHashMap<>();
 
     // Marker class do detected a non null value
     private static final NoPlcAuthentication noPlcAuthentication = new NoPlcAuthentication();
@@ -76,13 +72,19 @@ public class PooledPlcDriverManager extends PlcDriverManager {
 
     @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        Pair<String, PlcAuthentication> argPair = Pair.of(url, authentication);
-        ObjectPool<PlcConnection> pool = retrieveFromPool(argPair);
+        PoolKey poolKey = PoolKey.of(url, authentication);
+        ObjectPool<PlcConnection> pool = retrieveFromPool(poolKey);
         try {
-            LOGGER.debug("Try to borrow an object for url {} and authentication {}", url, authentication);
+            if (LOGGER.isDebugEnabled()) {
+                if (authentication != noPlcAuthentication) {
+                    LOGGER.debug("Try to borrow an object for url {} and authentication {}", url, authentication);
+                } else {
+                    LOGGER.debug("Try to borrow an object for url {}", url);
+                }
+            }
             PlcConnection plcConnection = pool.borrowObject();
             return (PlcConnection) Proxy.newProxyInstance(classLoader, new Class[]{PlcConnection.class}, (o, method, objects) -> {
-                if (method.getName().equals("close")) {
+                if ("close".equals(method.getName())) {
                     LOGGER.debug("close called on {}. Returning to {}", plcConnection, pool);
                     pool.returnObject(plcConnection);
                     return null;
@@ -95,15 +97,17 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         }
     }
 
-    private ObjectPool<PlcConnection> retrieveFromPool(Pair<String, PlcAuthentication> argPair) {
-        String url = argPair.getLeft();
-        PlcAuthentication plcAuthentication = argPair.getRight();
-        ObjectPool<PlcConnection> pool = poolMap.get(argPair);
+    private ObjectPool<PlcConnection> retrieveFromPool(PoolKey poolKey) {
+        ObjectPool<PlcConnection> pool = poolMap.get(poolKey);
         if (pool == null) {
+            LOGGER.debug("No pool found for poolKey {}", poolKey);
+            String url = poolKey.getUrl();
+            PlcAuthentication plcAuthentication = poolKey.getPlcAuthentication();
+
             Lock lock = readWriteLock.writeLock();
             lock.lock();
             try {
-                poolMap.computeIfAbsent(argPair, pair -> poolCreator.createPool(new PooledPlcConnectionFactory() {
+                pool = poolMap.computeIfAbsent(poolKey, pair -> poolCreator.createPool(new PooledPlcConnectionFactory() {
                     @Override
                     public PlcConnection create() throws PlcConnectionException {
                         if (plcAuthentication == noPlcAuthentication) {
@@ -115,7 +119,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
                         }
                     }
                 }));
-                pool = poolMap.get(argPair);
+                LOGGER.debug("Using pool {}:{} for poolKey {}", pool.hashCode(), pool, poolKey);
             } finally {
                 lock.unlock();
             }
@@ -133,7 +137,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         Lock lock = readWriteLock.writeLock();
         lock.lock();
         try {
-            Set<Pair<String, PlcAuthentication>> itemsToBeremoved = new LinkedHashSet<>();
+            Set<PoolKey> itemsToBeremoved = new LinkedHashSet<>();
             poolMap.forEach((key, value) -> {
                 // TODO: check if this pool has been used in the last time and if not remove it.
                 // TODO: evicting empty pools for now
@@ -154,11 +158,11 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         try {
             lock.lock();
             HashMap<String, Number> statistics = new HashMap<>();
-            for (Map.Entry<Pair<String, PlcAuthentication>, ObjectPool<PlcConnection>> poolEntry : poolMap.entrySet()) {
-                Pair<String, PlcAuthentication> pair = poolEntry.getKey();
+            for (Map.Entry<PoolKey, ObjectPool<PlcConnection>> poolEntry : poolMap.entrySet()) {
+                PoolKey pair = poolEntry.getKey();
                 ObjectPool<PlcConnection> objectPool = poolEntry.getValue();
-                String url = pair.getLeft();
-                PlcAuthentication plcAuthentication = pair.getRight();
+                String url = pair.getUrl();
+                PlcAuthentication plcAuthentication = pair.getPlcAuthentication();
 
                 String authSuffix = plcAuthentication != noPlcAuthentication ? "/" + plcAuthentication : "";
                 statistics.put(url + authSuffix + ".numActive", objectPool.getNumActive());
@@ -173,5 +177,55 @@ public class PooledPlcDriverManager extends PlcDriverManager {
 
     private static final class NoPlcAuthentication implements PlcAuthentication {
 
+    }
+
+    private static final class PoolKey {
+        final String url;
+        final PlcAuthentication plcAuthentication;
+
+        // TODO: we need to extract relevant parts of the url as key as we don't want many connections for different racks in s7 for example.
+        // TODO: So we might end up need a generic key and special keys for all known protocols which parses the relevant portions.
+        public PoolKey(String url, PlcAuthentication plcAuthentication) {
+            this.url = url;
+            this.plcAuthentication = plcAuthentication;
+        }
+
+        public static PoolKey of(String host, PlcAuthentication plcAuthentication) {
+            return new PoolKey(host, plcAuthentication);
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public PlcAuthentication getPlcAuthentication() {
+            return plcAuthentication;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof PoolKey)) {
+                return false;
+            }
+            PoolKey poolKey = (PoolKey) o;
+            return Objects.equals(url, poolKey.url) &&
+                Objects.equals(plcAuthentication, poolKey.plcAuthentication);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(url, plcAuthentication);
+        }
+
+        @Override
+        public String toString() {
+            return "PoolKey{" +
+                "url='" + url + '\'' +
+                (plcAuthentication != noPlcAuthentication ? ", plcAuthentication=" + plcAuthentication : "") +
+                '}';
+        }
     }
 }

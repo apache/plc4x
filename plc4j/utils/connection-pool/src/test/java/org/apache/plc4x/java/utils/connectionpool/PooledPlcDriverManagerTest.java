@@ -36,8 +36,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,9 +49,7 @@ import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PooledPlcDriverManagerTest implements WithAssertions {
@@ -90,7 +89,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         // This: should result in one open connection
         IntStream.range(0, 8).forEach(i -> callables.add(() -> {
             try {
-                return SUT.getConnection("dummydummy:single");
+                return SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true");
             } catch (PlcConnectionException e) {
                 throw new RuntimeException(e);
             }
@@ -99,7 +98,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         // This should result in five open connections
         IntStream.range(0, 5).forEach(i -> callables.add(() -> {
             try {
-                return SUT.getConnection("dummydummy:multi-" + i);
+                return SUT.getConnection("dummydummy:multi-" + i + "/socket1/socket2?fancyOption=true");
             } catch (PlcConnectionException e) {
                 throw new RuntimeException(e);
             }
@@ -138,7 +137,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         // This: should result in one open connection
         IntStream.range(0, 8).forEach(i -> callables.add(() -> {
             try {
-                return SUT.getConnection("dummydummy:single", new PlcUsernamePasswordAuthentication("user", "passwordp954368564098ß"));
+                return SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true", new PlcUsernamePasswordAuthentication("user", "passwordp954368564098ß"));
             } catch (PlcConnectionException e) {
                 throw new RuntimeException(e);
             }
@@ -147,7 +146,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         // This should result in five open connections
         IntStream.range(0, 5).forEach(i -> callables.add(() -> {
             try {
-                return SUT.getConnection("dummydummy:single-" + i, new PlcUsernamePasswordAuthentication("user", "passwordp954368564098ß"));
+                return SUT.getConnection("dummydummy:single-" + i + "/socket1/socket2?fancyOption=true", new PlcUsernamePasswordAuthentication("user", "passwordp954368564098ß"));
             } catch (PlcConnectionException e) {
                 throw new RuntimeException(e);
             }
