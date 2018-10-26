@@ -34,6 +34,7 @@ import org.apache.plc4x.java.spi.PlcDriver;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -46,6 +47,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -75,7 +77,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         driverMap.put("dummydummy", plcDriver);
         executorService = Executors.newFixedThreadPool(100);
 
-        assertThat(SUT.getStatistics()).isEmpty();
+        assertThat(SUT.getStatistics()).containsOnly(entry("pools.count", 0));
     }
 
     @AfterEach
@@ -219,6 +221,66 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         assertThatThrownBy(connection::subscriptionRequestBuilder).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
         assertThatThrownBy(connection::unsubscriptionRequestBuilder).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
     }
+
+    @Nested
+    class PoolCleanup {
+        @Test
+        void poolRemovedUnusedPoolsNormal() throws Exception {
+            // special config needed
+            SUT = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
+                GenericObjectPoolConfig<PlcConnection> plcConnectionGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
+                plcConnectionGenericObjectPoolConfig.setMinIdle(1);
+                return new GenericObjectPool<>(pooledPlcConnectionFactory, plcConnectionGenericObjectPoolConfig);
+            });
+            setUp();
+
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
+            SUT.removedUnusedPools();
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
+            PlcConnection connection = SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true");
+            connection.close();
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 1);
+            SUT.removedUnusedPools();
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 1);
+            // Usually the removedUnusedPools should do nothing at this place.
+        }
+
+        @Test
+        void poolRemovedUnusedPoolsNoIdles() throws Exception {
+            // special config needed
+            AtomicReference<GenericObjectPool<PlcConnection>> atomicReference = new AtomicReference<>();
+            SUT = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
+                GenericObjectPoolConfig<PlcConnection> plcConnectionGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
+                plcConnectionGenericObjectPoolConfig.setMinIdle(0);
+                GenericObjectPool<PlcConnection> plcConnectionGenericObjectPool = new GenericObjectPool<>(pooledPlcConnectionFactory, plcConnectionGenericObjectPoolConfig);
+                atomicReference.set(plcConnectionGenericObjectPool);
+                // Evict under all circumstances
+                plcConnectionGenericObjectPool.setEvictionPolicy((config, underTest, idleCount) -> true);
+                return plcConnectionGenericObjectPool;
+            });
+            setUp();
+
+            // Pool should be empty at the beginning
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
+            SUT.removedUnusedPools();
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
+            PlcConnection connection = SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true");
+            connection.close();
+
+            // after a connection we should have one pool
+            GenericObjectPool<PlcConnection> pool = atomicReference.get();
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 1);
+            SUT.removedUnusedPools();
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 1);
+
+            // now we force a eviction with your dummy policy
+            pool.evict();
+            SUT.removedUnusedPools();
+            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
+            // and have no more open pools
+        }
+    }
+
 
     class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {
 

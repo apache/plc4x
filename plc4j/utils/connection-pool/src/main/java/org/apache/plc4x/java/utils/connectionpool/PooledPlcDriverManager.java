@@ -96,6 +96,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
                     pool.returnObject(plcConnection);
                     return null;
                 } else {
+                    // TODO: add exception handler which catches exceptions like plcConnectionException and then invalidates them
                     return method.invoke(plcConnection, args);
                 }
             });
@@ -144,15 +145,18 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         Lock lock = readWriteLock.writeLock();
         lock.lock();
         try {
+            LOGGER.debug("doing cleanup now on {}", poolMap);
             Set<PoolKey> itemsToBeremoved = new LinkedHashSet<>();
             poolMap.forEach((key, value) -> {
                 // TODO: check if this pool has been used in the last time and if not remove it.
                 // TODO: evicting empty pools for now
+                LOGGER.debug("pool {}:{} has numActive: {} numIdle: {}", key, value, value.getNumActive(), value.getNumIdle());
                 if (value.getNumActive() == 0 && value.getNumIdle() == 0) {
                     LOGGER.info("Removing unused pool {}", value);
                     itemsToBeremoved.add(key);
                 }
             });
+            LOGGER.debug("items to be removed {} on {}", itemsToBeremoved, poolMap);
             itemsToBeremoved.forEach(poolMap::remove);
         } finally {
             lock.unlock();
@@ -165,6 +169,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         try {
             lock.lock();
             HashMap<String, Number> statistics = new HashMap<>();
+            statistics.put("pools.count", poolMap.size());
             for (Map.Entry<PoolKey, ObjectPool<PlcConnection>> poolEntry : poolMap.entrySet()) {
                 PoolKey pair = poolEntry.getKey();
                 ObjectPool<PlcConnection> objectPool = poolEntry.getValue();
