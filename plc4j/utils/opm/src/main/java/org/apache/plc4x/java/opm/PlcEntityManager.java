@@ -22,6 +22,8 @@ package org.apache.plc4x.java.opm;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.*;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.PlcDriverManager;
@@ -85,6 +87,9 @@ public class PlcEntityManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityManager.class);
 
+    private static final Configuration CONF = new SystemConfiguration();
+    private static final long READ_TIMEOUT = CONF.getLong("org.apache.plc4x.java.opm.entity_manager.read_timeout", 1_000);
+
     private final PlcDriverManager driverManager;
 
     public PlcEntityManager() {
@@ -119,8 +124,7 @@ public class PlcEntityManager {
             PlcReadRequest request = requestBuilder.build();
 
             // Perform the request
-            // TODO: make configurable.
-            PlcReadResponse response = request.execute().get(1_000, TimeUnit.MILLISECONDS);
+            PlcReadResponse response = getPlcReadResponse(request);
 
             // Construct the Object
             T instance = clazz.getConstructor().newInstance();
@@ -131,19 +135,14 @@ public class PlcEntityManager {
                 setField(clazz, instance, response, targetFieldName, fieldName);
             }
             return instance;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new OPMException("Unable to fetch request", e);
-        } catch (ExecutionException e) {
-            throw new OPMException("Unable to fetch request", e);
-        } catch (TimeoutException e) {
-            throw new OPMException("Timeout during fetching values", e);
         } catch (PlcInvalidFieldException e) {
             throw new OPMException("Unable to parse one field request", e);
         } catch (PlcConnectionException e) {
             throw new OPMException("Unable to get connection with url '" + source + "'", e);
-        } catch (Exception e) {
+        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
             throw new OPMException("Unable to fetch PlcEntity " + clazz.getName(), e);
+        } catch (Exception e) {
+            throw new OPMException("Unknown Error", e);
         }
     }
 
@@ -285,8 +284,10 @@ public class PlcEntityManager {
                     throw new PlcRuntimeException(e);
                 }
             }
-        } catch (Exception e) {
+        } catch (PlcConnectionException e) {
             throw new OPMException("Problem during processing", e);
+        } catch (Exception e) {
+            throw new OPMException("Unknown Error", e);
         }
     }
 
@@ -320,8 +321,7 @@ public class PlcEntityManager {
                 .addItem(m.getName(), annotation.value())
                 .build();
 
-            PlcReadResponse response;
-            response = getPlcReadResponse(request);
+            PlcReadResponse response = getPlcReadResponse(request);
 
             return getTyped(m.getReturnType(), response, m.getName());
         } catch (ClassCastException e) {
@@ -419,19 +419,20 @@ public class PlcEntityManager {
     /**
      * Fetch the request and do appropriate error handling
      *
-     * @param request
-     * @return
-     * @throws OPMException
+     * @param request the request to get the exception from
+     * @return the response from the exception.
+     * @throws OPMException on {@link InterruptedException} or {@link ExecutionException} or {@link TimeoutException}
      */
     private PlcReadResponse getPlcReadResponse(PlcReadRequest request) throws OPMException {
         try {
-            // TODO: add configurable timeout
-            return request.execute().get();
+            return request.execute().get(READ_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new OPMException("Exception during execution", e);
         } catch (ExecutionException e) {
             throw new OPMException("Exception during execution", e);
+        } catch (TimeoutException e) {
+            throw new OPMException("Timeout during fetching values", e);
         }
     }
 
