@@ -131,6 +131,7 @@ public class PlcEntityManagerTest {
         Map<String, BaseDefaultFieldItem> map = new HashMap<>();
         map.put("getIntVar", new DefaultIntegerFieldItem(1));
         map.put("getStringVar", new DefaultStringFieldItem("Hello"));
+        map.put("isBoolVar", new DefaultBooleanFieldItem(true));
         PlcEntityManager manager = getPlcEntityManager(map);
 
         ConnectedEntity connect = manager.connect(ConnectedEntity.class);
@@ -140,6 +141,7 @@ public class PlcEntityManagerTest {
         // Call getter
         assertEquals(1, connect.getIntVar());
         assertEquals("Hello", connect.getStringVar());
+        assertEquals(true, connect.isBoolVar());
     }
 
     private PlcEntityManager getPlcEntityManager(final Map<String, BaseDefaultFieldItem> responses) throws PlcConnectionException {
@@ -320,6 +322,9 @@ public class PlcEntityManagerTest {
             // Default
         }
 
+        public boolean isBoolVar() {
+            return boolVar;
+        }
 
         public byte getByteVar() {
             return byteVar;

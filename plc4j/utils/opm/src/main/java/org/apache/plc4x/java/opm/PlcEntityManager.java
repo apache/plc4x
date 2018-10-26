@@ -234,7 +234,7 @@ public class PlcEntityManager {
             // Fetch single value
             LOGGER.trace("Invoked method {} is boolean flag method, trying to find annotated field and return requested value",
                 m.getName());
-            return fetchValueForGetter(that, m);
+            return fetchValueForIsGetter(that, m);
         }
 
         // Fetch all values, than invoke method
@@ -294,9 +294,18 @@ public class PlcEntityManager {
         }
     }
 
-    // TODO: why isn't o used?
+
+    private Object fetchValueForIsGetter(Object o, Method m) throws OPMException {
+        return fetchValueForGetter(o, m, 2);
+    }
+
     private Object fetchValueForGetter(Object o, Method m) throws OPMException {
-        String s = m.getName().substring(3);
+        return fetchValueForGetter(o, m, 3);
+    }
+
+    // TODO: why isn't o used?
+    private Object fetchValueForGetter(Object o, Method m, int prefixLength) throws OPMException {
+        String s = m.getName().substring(prefixLength);
         // First char to lower
         String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
         LOGGER.trace("Looking for field with name {} after invokation of getter {}", variable, m.getName());
