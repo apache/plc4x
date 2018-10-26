@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.connectionpool;
 
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 
 public interface ConnectionProxy extends PlcConnection {
 }

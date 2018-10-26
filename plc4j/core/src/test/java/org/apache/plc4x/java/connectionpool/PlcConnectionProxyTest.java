@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.connectionpool;
 
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -56,19 +56,19 @@ public class PlcConnectionProxyTest {
 
     @Test
     public void getReader() {
-        plcConnectionProxy.getReader();
-        Mockito.verify(plcConnection, Mockito.times(1)).getReader();
+        plcConnectionProxy.readRequestBuilder();
+        Mockito.verify(plcConnection, Mockito.times(1)).readRequestBuilder();
     }
 
     @Test
     public void getWriter() {
-        plcConnectionProxy.getWriter();
-        Mockito.verify(plcConnection, Mockito.times(1)).getWriter();
+        plcConnectionProxy.writeRequestBuilder();
+        Mockito.verify(plcConnection, Mockito.times(1)).writeRequestBuilder();
     }
 
     @Test
     public void getSubscriber() {
-        plcConnectionProxy.getSubscriber();
-        Mockito.verify(plcConnection, Mockito.times(1)).getSubscriber();
+        plcConnectionProxy.subscriptionRequestBuilder();
+        Mockito.verify(plcConnection, Mockito.times(1)).subscriptionRequestBuilder();
     }
 }

@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.connectionpool;
 
-import org.apache.plc4x.java.api.connection.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.exceptions.NoConnectionAvailableException;
 import org.apache.plc4x.java.exceptions.NotConnectedException;

@@ -18,11 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.connectionpool;
 
-
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
-import org.apache.plc4x.java.api.connection.PlcSubscriber;
-import org.apache.plc4x.java.api.connection.PlcWriter;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 
 import java.util.Optional;
 
@@ -71,31 +71,39 @@ public class PlcConnectionProxy implements PlcConnection {
     }
 
     @Override
-    public Optional<PlcReader> getReader() {
+    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
         if(closed){
             return Optional.empty();
         }else {
-            return plcConnection.getReader();
+            return plcConnection.readRequestBuilder();
         }
     }
 
     @Override
-    public Optional<PlcWriter> getWriter() {
+    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
         if(closed) {
             return Optional.empty();
         }else{
-            return plcConnection.getWriter();
+            return plcConnection.writeRequestBuilder();
         }
     }
 
     @Override
-    public Optional<PlcSubscriber> getSubscriber() {
+    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
         if(closed){
             return Optional.empty();
         }else {
-            return plcConnection.getSubscriber();
+            return plcConnection.subscriptionRequestBuilder();
         }
     }
 
+    @Override
+    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
+        if(closed){
+            return Optional.empty();
+        }else {
+            return plcConnection.unsubscriptionRequestBuilder();
+        }
+    }
 
 }
