@@ -39,6 +39,7 @@ import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -68,8 +69,9 @@ public class PlcEntityManagerTest {
     @Test
     public void read() throws OPMException, PlcConnectionException {
         Map<String, BaseDefaultFieldItem> results = new HashMap<>();
-        results.put("counter", new DefaultIntegerFieldItem(1));
-        results.put("counter2", new DefaultIntegerFieldItem(1));
+        String prefix = MyEntity.class.getName() + ".";
+        results.put(prefix + "counter", new DefaultIntegerFieldItem(1));
+        results.put(prefix + "counter2", new DefaultLongFieldItem(1l));
         PlcEntityManager manager = getPlcEntityManager(results);
 
         MyEntity myEntity = manager.read(MyEntity.class);
@@ -81,13 +83,14 @@ public class PlcEntityManagerTest {
     @Test
     public void readComplexObject() throws PlcConnectionException, OPMException {
         Map<String, BaseDefaultFieldItem> map = new HashMap<>();
-        map.put("boolVar", new DefaultBooleanFieldItem(true));
-        map.put("byteVar", new DefaultByteFieldItem((byte) 1));
-        map.put("shortVar", new DefaultShortFieldItem((short) 1));
-        map.put("intVar", new DefaultIntegerFieldItem(1));
-        map.put("longVar", new DefaultLongFieldItem(1l));
-        map.put("boxedLongVar", new DefaultLongFieldItem(1L));
-        map.put("stringVar", new DefaultStringFieldItem("Hallo"));
+        String prefix = ConnectedEntity.class.getName() + ".";
+        map.put(prefix + "boolVar", new DefaultBooleanFieldItem(true));
+        map.put(prefix + "byteVar", new DefaultByteFieldItem((byte) 1));
+        map.put(prefix + "shortVar", new DefaultShortFieldItem((short) 1));
+        map.put(prefix + "intVar", new DefaultIntegerFieldItem(1));
+        map.put(prefix + "longVar", new DefaultLongFieldItem(1l));
+        map.put(prefix + "boxedLongVar", new DefaultLongFieldItem(1L));
+        map.put(prefix + "stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
         ConnectedEntity connect = manager.read(ConnectedEntity.class);
@@ -101,15 +104,16 @@ public class PlcEntityManagerTest {
     }
 
     @Test
-    public void connec_callComplexMethodt() throws PlcConnectionException, OPMException {
+    public void connect_callComplexMethod() throws PlcConnectionException, OPMException {
         Map<String, BaseDefaultFieldItem> map = new HashMap<>();
-        map.put("boolVar", new DefaultBooleanFieldItem(true));
-        map.put("byteVar", new DefaultByteFieldItem((byte) 1));
-        map.put("shortVar", new DefaultShortFieldItem((short) 1));
-        map.put("intVar", new DefaultIntegerFieldItem(1));
-        map.put("longVar", new DefaultLongFieldItem(1l));
-        map.put("boxedLongVar", new DefaultLongFieldItem(1L));
-        map.put("stringVar", new DefaultStringFieldItem("Hallo"));
+        String prefix = ConnectedEntity.class.getName() + ".";
+        map.put(prefix + "boolVar", new DefaultBooleanFieldItem(true));
+        map.put(prefix + "byteVar", new DefaultByteFieldItem((byte) 1));
+        map.put(prefix + "shortVar", new DefaultShortFieldItem((short) 1));
+        map.put(prefix + "intVar", new DefaultIntegerFieldItem(1));
+        map.put(prefix + "longVar", new DefaultLongFieldItem(1l));
+        map.put(prefix + "boxedLongVar", new DefaultLongFieldItem(1L));
+        map.put(prefix + "stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
         ConnectedEntity connect = manager.connect(ConnectedEntity.class);
@@ -165,11 +169,11 @@ public class PlcEntityManagerTest {
             Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> map = readRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
-                    s -> Pair.of(PlcResponseCode.OK, responses.get(s))
+                    s -> Pair.of(PlcResponseCode.OK, Objects.requireNonNull(responses.get(s), s + " not found"))
                 ));
-            return CompletableFuture.completedFuture(new DefaultPlcReadResponse(((InternalPlcReadRequest) readRequest), map));
+            return CompletableFuture.completedFuture(new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, map));
         };
-        when(connection.readRequestBuilder()).thenReturn(new DefaultPlcReadRequest.Builder(reader, getFieldHandler()));
+        when(connection.readRequestBuilder()).then(invocation -> new DefaultPlcReadRequest.Builder(reader, getFieldHandler()));
 
         return new PlcEntityManager(mock);
     }

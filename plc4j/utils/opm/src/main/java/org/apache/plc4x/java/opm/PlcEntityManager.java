@@ -23,6 +23,7 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.*;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -41,6 +42,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -105,18 +107,14 @@ public class PlcEntityManager {
 
             PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
 
-            // Do the necessary queries for all fields
-            // HashMap<ReadRequestItem<?>, Field> requestItems = new HashMap<>();
-            for (Field field : clazz.getDeclaredFields()) {
-                PlcField fieldAnnotation = field.getAnnotation(PlcField.class);
-                if (fieldAnnotation == null) {
-                    // Ignore that field
-                    continue;
-                }
-                // Create the suitable Request
-                String query = fieldAnnotation.value();
-                requestBuilder.addItem(field.getName(), query);
-            }
+            Arrays.stream(clazz.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(PlcField.class))
+                .forEach(field ->
+                    requestBuilder.addItem(
+                        field.getDeclaringClass().getName() + "." + field.getName(),
+                        field.getAnnotation(PlcField.class).value()
+                    )
+                );
 
             // Build the request
             PlcReadRequest request;
@@ -142,7 +140,8 @@ public class PlcEntityManager {
 
             // Fill all requested fields
             for (String fieldName : response.getFieldNames()) {
-                setField(clazz, instance, response, fieldName);
+                String targetFieldName = StringUtils.substringAfterLast(fieldName, ".");
+                setField(clazz, instance, response, targetFieldName, fieldName);
             }
             return instance;
         } catch (PlcConnectionException e) {
@@ -249,31 +248,37 @@ public class PlcEntityManager {
      * @throws OPMException
      */
     private void refetchAllFields(Object o) throws OPMException {
+        // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> superclass = o.getClass().getSuperclass();
         PlcEntity plcEntity = superclass.getAnnotation(PlcEntity.class);
+        if (plcEntity == null) {
+            throw new OPMException("Non PlcEntity supplied");
+        }
 
         try (PlcConnection connection = driverManager.getConnection(plcEntity.value())) {
             // Catch the exception, if no reader present (see below)
             // Build the query
-            PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            for (Field field : superclass.getDeclaredFields()) {
-                // Check if the field has an annotation
-                PlcField plcField = field.getDeclaredAnnotation(PlcField.class);
-                if (plcField != null) {
-                    LOGGER.trace("Adding field " + field.getName() + " to request as " + plcField.value());
-                    builder.addItem(field.getName(), plcField.value());
-                }
+            PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
 
-            }
-            PlcReadRequest request = builder.build();
+            Arrays.stream(superclass.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(PlcField.class))
+                .forEach(field ->
+                    requestBuilder.addItem(
+                        field.getDeclaringClass().getName() + "." + field.getName(),
+                        field.getAnnotation(PlcField.class).value()
+                    )
+                );
+
+            PlcReadRequest request = requestBuilder.build();
 
             PlcReadResponse response = getPlcReadResponse(request);
 
             // Fill all requested fields
             for (String fieldName : response.getFieldNames()) {
                 LOGGER.trace("Value for field " + fieldName + " is " + response.getObject(fieldName));
+                String clazzFieldName = StringUtils.substringAfterLast(fieldName, ".");
                 try {
-                    setField(o.getClass().getSuperclass(), o, response, fieldName);
+                    setField(o.getClass().getSuperclass(), o, response, clazzFieldName, fieldName);
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     throw new PlcRuntimeException(e);
                 }
@@ -320,63 +325,61 @@ public class PlcEntityManager {
      * This is one by looking for a field in the class and a response item
      * which is equal to the given fieldName parameter.
      *
-     * @param o         Object to set the value on
-     * @param response  Response to fetch the response from
-     * @param fieldName Name of the field in the object and the response
+     * @param o               Object to set the value on
+     * @param response        Response to fetch the response from
+     * @param targetFieldName Name of the field in the object
+     * @param sourceFieldName Name of the field in the response
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    private void setField(Class<?> clazz, Object o, PlcReadResponse response, String fieldName) throws NoSuchFieldException, IllegalAccessException {
-        Field field = clazz.getDeclaredField(fieldName);
+    private void setField(Class<?> clazz, Object o, PlcReadResponse response, String targetFieldName, String sourceFieldName) throws NoSuchFieldException, IllegalAccessException {
+        LOGGER.debug("setField on clazz: {}, Object: {}, response: {}, targetFieldName: {}, sourceFieldName:{} ", clazz, o, response, targetFieldName, sourceFieldName);
+        Field field = clazz.getDeclaredField(targetFieldName);
         field.setAccessible(true);
         try {
-            field.set(o, getTyped(field.getType(), response, fieldName));
+            field.set(o, getTyped(field.getType(), response, sourceFieldName));
         } catch (ClassCastException e) {
             // TODO should we simply fail here?
-            LOGGER.warn("Unable to assign return value {} to field {} with type {}", response.getObject(fieldName), fieldName, field.getType(), e);
+            LOGGER.warn("Unable to assign return value {} to field {} with type {}", response.getObject(sourceFieldName), targetFieldName, field.getType(), e);
         }
     }
 
-    private Object getTyped(Class<?> clazz, PlcReadResponse response, String fieldName) {
-        Object responseObject = response.getObject(fieldName);
-        if (responseObject == null) {
-            // TODO: shall we better throw an exception or is object never null?
-            return null;
-        }
+    private Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
+        LOGGER.debug("getTyped clazz: {}, response: {}, fieldName: {}", clazz, response, sourceFieldName);
         if (clazz.isPrimitive()) {
             if (clazz == boolean.class) {
-                return response.getBoolean(fieldName);
+                return response.getBoolean(sourceFieldName);
             } else if (clazz == byte.class) {
-                return response.getByte(fieldName);
+                return response.getByte(sourceFieldName);
             } else if (clazz == short.class) {
-                return response.getShort(fieldName);
+                return response.getShort(sourceFieldName);
             } else if (clazz == int.class) {
-                return response.getInteger(fieldName);
+                return response.getInteger(sourceFieldName);
             } else if (clazz == long.class) {
-                return response.getLong(fieldName);
+                return response.getLong(sourceFieldName);
             }
         }
 
         if (clazz == Boolean.class) {
-            return response.getBoolean(fieldName);
+            return response.getBoolean(sourceFieldName);
         } else if (clazz == Byte.class) {
-            return response.getByte(fieldName);
+            return response.getByte(sourceFieldName);
         } else if (clazz == Short.class) {
-            return response.getShort(fieldName);
+            return response.getShort(sourceFieldName);
         } else if (clazz == Integer.class) {
-            return response.getInteger(fieldName);
+            return response.getInteger(sourceFieldName);
         } else if (clazz == Long.class) {
-            return response.getLong(fieldName);
+            return response.getLong(sourceFieldName);
         } else if (clazz == BigInteger.class) {
-            return response.getBigInteger(fieldName);
+            return response.getBigInteger(sourceFieldName);
         } else if (clazz == Float.class) {
-            return response.getFloat(fieldName);
+            return response.getFloat(sourceFieldName);
         } else if (clazz == Double.class) {
-            return response.getDouble(fieldName);
+            return response.getDouble(sourceFieldName);
         } else if (clazz == BigDecimal.class) {
-            return response.getBigDecimal(fieldName);
+            return response.getBigDecimal(sourceFieldName);
         } else if (clazz == String.class) {
-            return response.getString(fieldName);
+            return response.getString(sourceFieldName);
         } else if (clazz == LocalTime.class) {
             // TODO: where are the methods for this?
             throw new UnsupportedOperationException("no supported yet for " + clazz);
@@ -387,11 +390,13 @@ public class PlcEntityManager {
             // TODO: where are the methods for this?
             throw new UnsupportedOperationException("no supported yet for " + clazz);
         } else if (clazz == byte[].class) {
-            return ArrayUtils.toPrimitive(response.getByteArray(fieldName));
+            return ArrayUtils.toPrimitive(response.getByteArray(sourceFieldName));
         } else if (clazz == Byte[].class) {
-            return response.getByteArray(fieldName);
+            return response.getByteArray(sourceFieldName);
         }
 
+        // Fallback
+        Object responseObject = response.getObject(sourceFieldName);
         if (clazz.isAssignableFrom(responseObject.getClass())) {
             return responseObject;
         }
