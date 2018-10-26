@@ -83,6 +83,8 @@ public class PooledPlcDriverManager extends PlcDriverManager {
                 }
             }
             PlcConnection plcConnection = pool.borrowObject();
+            // TODO 25-10-2018 jf: Return a real wrapper object. This implementation leaks the connection.
+            // The connection can be reused by the pool but is still referenced and can thus still be used.
             return (PlcConnection) Proxy.newProxyInstance(classLoader, new Class[]{PlcConnection.class}, (o, method, objects) -> {
                 if ("close".equals(method.getName())) {
                     LOGGER.debug("close called on {}. Returning to {}", plcConnection, pool);
