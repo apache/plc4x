@@ -22,10 +22,11 @@ import io.netty.channel.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.base.messages.PlcReader;
-import org.apache.plc4x.java.base.messages.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
@@ -48,7 +49,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -245,23 +245,13 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
     }
 
     @Override
-    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
-        return Optional.of(new DefaultPlcReadRequest.Builder(this, new S7PlcFieldHandler()));
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(this, new S7PlcFieldHandler());
     }
 
     @Override
-    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
-        return Optional.of(new DefaultPlcWriteRequest.Builder(this, new S7PlcFieldHandler()));
-    }
-
-    @Override
-    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
-        return Optional.empty();
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(this, new S7PlcFieldHandler());
     }
 
     @Override

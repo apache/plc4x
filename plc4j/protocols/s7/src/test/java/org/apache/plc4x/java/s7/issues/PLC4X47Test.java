@@ -38,7 +38,7 @@ public class PLC4X47Test {
         EmbeddedChannel channel = channelFactory.getChannel();*/
         S7PlcConnection connection = (S7PlcConnection) new PlcDriverManager().getConnection("s7://10.10.64.20/1/1");
 
-        PlcReadRequest.Builder builder = connection.readRequestBuilder().get();
+        PlcReadRequest.Builder builder = connection.readRequestBuilder();
         for (int i = 1; i <= 30; i++) {
             // just the first byte of each db
             builder.addItem("field-" + i, "%DB3.DB" + i + ":SINT");

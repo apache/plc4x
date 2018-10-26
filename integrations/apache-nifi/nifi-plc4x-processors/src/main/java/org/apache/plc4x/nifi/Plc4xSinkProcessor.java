@@ -52,12 +52,12 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
         // Get an instance of a component able to write to a PLC.
         PlcConnection connection = getConnection();
-        if (!connection.writeRequestBuilder().isPresent()) {
+        if (!connection.getMetadata().canWrite()) {
             throw new ProcessException("Writing not supported by connection");
         }
 
         // Prepare the request.
-        PlcWriteRequest.Builder builder = connection.writeRequestBuilder().get();
+        PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
         flowFile.getAttributes().forEach((field, value) -> {
             String address = getAddress(field);
             if(address != null) {

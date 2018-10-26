@@ -52,7 +52,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        this.requestBuilder = plcConnection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading."));
+        this.requestBuilder = plcConnection.readRequestBuilder();
     }
 
     @Override

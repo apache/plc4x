@@ -21,6 +21,7 @@ package org.apache.plc4x.java.test;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -80,23 +81,23 @@ class TestConnection implements PlcConnection, PlcConnectionMetadata, PlcReader,
     }
 
     @Override
-    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
-        return Optional.of(new DefaultPlcReadRequest.Builder(this, new TestFieldHandler()));
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(this, new TestFieldHandler());
     }
 
     @Override
-    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
-        return Optional.of(new DefaultPlcWriteRequest.Builder(this, new TestFieldHandler()));
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(this, new TestFieldHandler());
     }
 
     @Override
-    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
-        return Optional.empty();
+    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+        throw new PlcUnsupportedOperationException("The connection does not support subscription");
     }
 
     @Override
-    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
-        return Optional.empty();
+    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
+        throw new PlcUnsupportedOperationException("The connection does not support subscription");
     }
 
     @Override

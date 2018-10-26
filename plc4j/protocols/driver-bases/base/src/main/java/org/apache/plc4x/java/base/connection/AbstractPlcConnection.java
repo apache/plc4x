@@ -25,6 +25,11 @@ import io.netty.util.Timer;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 
 import java.util.Objects;
@@ -120,6 +125,26 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public boolean canSubscribe() {
         return false;
+    }
+
+    @Override
+    public PlcReadRequest.Builder readRequestBuilder() {
+        throw new PlcUnsupportedOperationException("The connection does not support reading");
+    }
+
+    @Override
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        throw new PlcUnsupportedOperationException("The connection does not support writing");
+    }
+
+    @Override
+    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+        throw new PlcUnsupportedOperationException("The connection does not support subscription");
+    }
+
+    @Override
+    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
+        throw new PlcUnsupportedOperationException("The connection does not support subscription");
     }
 
     public Channel getChannel() {

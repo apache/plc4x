@@ -18,18 +18,17 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
-import org.apache.plc4x.java.spi.PlcDriver;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.base.messages.PlcSubscriber;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcSubscriptionRequest;
+import org.apache.plc4x.java.base.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.PlcDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,10 +55,12 @@ public class MockDriver implements PlcDriver {
     public PlcConnection connect(String url) {
         // Mock a connection.
         PlcConnection plcConnectionMock = mock(PlcConnection.class, RETURNS_DEEP_STUBS);
-        when(plcConnectionMock.readRequestBuilder()).thenReturn(Optional.of(mock(PlcReadRequest.Builder.class, RETURNS_DEEP_STUBS)));
-        when(plcConnectionMock.writeRequestBuilder()).thenReturn(Optional.of(mock(PlcWriteRequest.Builder.class, RETURNS_DEEP_STUBS)));
-        when(plcConnectionMock.subscriptionRequestBuilder()).thenReturn(Optional.of(mock(PlcSubscriptionRequest.Builder.class, RETURNS_DEEP_STUBS)));
-        when(plcConnectionMock.unsubscriptionRequestBuilder()).thenReturn(Optional.of(mock(PlcUnsubscriptionRequest.Builder.class, RETURNS_DEEP_STUBS)));
+        when(plcConnectionMock.getMetadata().canRead()).thenReturn(true);
+        when(plcConnectionMock.getMetadata().canWrite()).thenReturn(true);
+        when(plcConnectionMock.readRequestBuilder()).thenReturn(mock(PlcReadRequest.Builder.class, RETURNS_DEEP_STUBS));
+        when(plcConnectionMock.writeRequestBuilder()).thenReturn(mock(PlcWriteRequest.Builder.class, RETURNS_DEEP_STUBS));
+        when(plcConnectionMock.subscriptionRequestBuilder()).thenReturn(mock(PlcSubscriptionRequest.Builder.class, RETURNS_DEEP_STUBS));
+        when(plcConnectionMock.unsubscriptionRequestBuilder()).thenReturn(mock(PlcUnsubscriptionRequest.Builder.class, RETURNS_DEEP_STUBS));
 
         // Mock a typical subscriber.
         PlcSubscriber plcSubscriber = mock(PlcSubscriber.class, RETURNS_DEEP_STUBS);

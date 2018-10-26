@@ -93,11 +93,11 @@ public class PlcEntityManager {
 
         try (PlcConnection connection = driverManager.getConnection(source)) {
 
-            if (!connection.readRequestBuilder().isPresent()) {
+            if (!connection.getMetadata().canRead()) {
                 throw new OPMException("Unable to get Reader for connection with url '" + source + "'");
             }
 
-            PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder().get();
+            PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
 
             // Do the necessary queries for all fields
             // HashMap<ReadRequestItem<?>, Field> requestItems = new HashMap<>();
@@ -249,7 +249,7 @@ public class PlcEntityManager {
         try (PlcConnection connection = driverManager.getConnection(plcEntity.value())) {
             // Catch the exception, if no reader present (see below)
             // Build the query
-            PlcReadRequest.Builder builder = connection.readRequestBuilder().get();
+            PlcReadRequest.Builder builder = connection.readRequestBuilder();
             for (Field field : superclass.getDeclaredFields()) {
                 // Check if the field has an annotation
                 PlcField plcField = field.getDeclaredAnnotation(PlcField.class);
@@ -294,7 +294,7 @@ public class PlcEntityManager {
             // Catch the exception, if no reader present (see below)
 
             // Assume to do the query here...
-            PlcReadRequest request = connection.readRequestBuilder().orElseThrow(IllegalStateException::new)
+            PlcReadRequest request = connection.readRequestBuilder()
                 .addItem(m.getName(), annotation.value())
                 .build();
 

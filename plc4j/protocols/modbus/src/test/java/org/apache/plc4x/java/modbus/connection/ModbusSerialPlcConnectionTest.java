@@ -66,7 +66,7 @@ public class ModbusSerialPlcConnectionTest {
     @Test
     public void testRead() throws Exception {
         prepareSerialSimulator();
-        PlcReadRequest readRequest = SUT.readRequestBuilder().get().addItem("randomRead", "0/0").build();
+        PlcReadRequest readRequest = SUT.readRequestBuilder().addItem("randomRead", "0/0").build();
         CompletableFuture<PlcReadResponse> read = SUT.read(readRequest);
         PlcReadResponse plcReadResponse = read.get(30, TimeUnit.SECONDS);
         assertNotNull(plcReadResponse);

@@ -79,7 +79,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
     @Override
     protected void doStart() throws InterruptedException, ExecutionException, PlcException {
         // TODO: Is it correct to only support one field?
-        PlcSubscriptionRequest request = plcConnection.subscriptionRequestBuilder().get()
+        PlcSubscriptionRequest request = plcConnection.subscriptionRequestBuilder()
             .addCyclicField("default", fieldQuery, Duration.of(3, ChronoUnit.SECONDS)).build();
         subscriptionResponse = request.execute().get();
         // TODO: we need to return the plcSubscriptionResponse here too as we need this to unsubscribe...
@@ -89,7 +89,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
 
     @Override
     protected void doStop() throws InterruptedException, ExecutionException, TimeoutException, PlcException {
-        PlcUnsubscriptionRequest request = plcConnection.unsubscriptionRequestBuilder().get().addHandles(subscriptionResponse.getSubscriptionHandles()).build();
+        PlcUnsubscriptionRequest request = plcConnection.unsubscriptionRequestBuilder().addHandles(subscriptionResponse.getSubscriptionHandles()).build();
         CompletableFuture<? extends PlcUnsubscriptionResponse> unsubscriptionFuture = request.execute();
         PlcUnsubscriptionResponse unsubscriptionResponse = unsubscriptionFuture.get(5, TimeUnit.SECONDS);
         // TODO: Handle the response ...

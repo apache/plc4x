@@ -104,8 +104,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
     }
 
     public PlcReadRequest.Builder readRequestBuilder() throws PlcException {
-        return getConnection().readRequestBuilder().orElseThrow(
-            () -> new PlcException("This connection doesn't support reading"));
+        return getConnection().readRequestBuilder();
     }
 
     Supplier<PlcReadResponse> newSupplier(PlcReadRequest readRequest) {
@@ -157,7 +156,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
             PlcField field = null;
             try {
                 connection = getConnection();
-                PlcReadRequest readRequest = connection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading")).addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadRequest readRequest = connection.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();
                 PlcReadResponse readResponse = readRequest.execute().get();
                 Object value = null;
                 switch (clientDatatype) {
@@ -230,7 +229,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
             PlcField field = null;
             try {
                 connection = getConnection();
-                PlcReadRequest readRequest = connection.readRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support reading")).addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadRequest readRequest = connection.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();
                 PlcReadResponse readResponse = readRequest.execute().get();
                 Object value = null;
                 switch (clientDatatype) {
@@ -292,7 +291,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
             PlcConnection connection = null;
             try {
                 connection = getConnection();
-                PlcWriteRequest.Builder builder = connection.writeRequestBuilder().orElseThrow(() -> new PlcException("This connection doesn't support writing"));
+                PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
                 PlcWriteRequest writeRequest = builder.build();
                 addItem(builder, clientDatatype, fieldQuery, fieldValue);
                 writeRequest.execute().get();

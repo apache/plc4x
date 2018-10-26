@@ -19,41 +19,35 @@ under the License.
 package org.apache.plc4x.java.api;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 
-import java.util.Optional;
-
 /**
  * Interface defining the most basic methods a PLC4X connection should support.
  * This generally handles the connection establishment itself and the parsing of
  * field address strings to the platform dependent PlcField instances.
- * <p>
- * The individual operations are then defined by other interfaces within this package.
  */
 public interface PlcConnection extends AutoCloseable {
 
     /**
-     * Established the connection to the remote PLC.
-     *
-     * @throws PlcConnectionException an exception if the connection attempt failed.
+     * Establishes the connection to the remote PLC.
+     * @throws PlcConnectionException if the connection attempt failed
      */
     void connect() throws PlcConnectionException;
 
     /**
-     * Returns true if the PlcConnection is connected to a remote PLC.
-     *
-     * @return true, if connected, false, if not.
+     * Indicates if the connection is established to a remote PLC.
+     * @return {@code true} if connected, {@code false} otherwise
      */
     boolean isConnected();
 
     /**
      * Closes the connection to the remote PLC.
-     *
-     * @throws Exception an exception if shutting down the connection failed.
+     * @throws Exception if shutting down the connection failed
      */
     @Override
     void close() throws Exception;
@@ -63,12 +57,28 @@ public interface PlcConnection extends AutoCloseable {
      */
     PlcConnectionMetadata getMetadata();
 
-    Optional<PlcReadRequest.Builder> readRequestBuilder();
+    /**
+     * Obtain read request builder.
+     * @throws PlcUnsupportedOperationException if the connection does not support reading
+     */
+    PlcReadRequest.Builder readRequestBuilder();
 
-    Optional<PlcWriteRequest.Builder> writeRequestBuilder();
+    /**
+     * Obtain write request builder.
+     * @throws PlcUnsupportedOperationException if the connection does not support writing
+     */
+    PlcWriteRequest.Builder writeRequestBuilder();
 
-    Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder();
+    /**
+     * Obtain subscription request builder.
+     * @throws PlcUnsupportedOperationException if the connection does not support subscription
+     */
+    PlcSubscriptionRequest.Builder subscriptionRequestBuilder();
 
-    Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder();
+    /**
+     * Obtain unsubscription request builder.
+     * @throws PlcUnsupportedOperationException if the connection does not support subscription
+     */
+    PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder();
 
 }

@@ -48,14 +48,14 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
         PlcConnection connection = getConnection();
 
         // Prepare the request.
-        if (!connection.readRequestBuilder().isPresent()) {
+        if (!connection.getMetadata().canRead()) {
             throw new ProcessException("Writing not supported by connection");
         }
 
         FlowFile flowFile = session.create();
         session.append(flowFile, out -> {
             try {
-                PlcReadRequest.Builder builder = connection.readRequestBuilder().get();
+                PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 getFields().forEach(field -> {
                     String address = getAddress(field);
                     if(address != null) {

@@ -33,7 +33,7 @@ public class ManualPlc4XEtherNetIpTest {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
-            PlcReadRequest readRequest = plcConnection.readRequestBuilder().orElseThrow(() -> new RuntimeException("Reading not supported"))
+            PlcReadRequest readRequest = plcConnection.readRequestBuilder()
                 .addItem("field", "#4#105#3").build();
 
             // Execute the read operation.

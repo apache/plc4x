@@ -19,12 +19,7 @@ under the License.
 package org.apache.plc4x.java.base.connection;
 
 import io.netty.channel.ChannelHandler;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class MockConnection extends AbstractPlcConnection {
@@ -35,26 +30,6 @@ public class MockConnection extends AbstractPlcConnection {
 
     public MockConnection(boolean awaitSessionSetupComplete) {
         super(new TestChannelFactory(), awaitSessionSetupComplete);
-    }
-
-    @Override
-    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
-        return Optional.empty();
     }
 
     @Override

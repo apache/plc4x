@@ -19,8 +19,6 @@ under the License.
 package org.apache.plc4x.java.ethernetip.connection;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.base.messages.PlcReader;
-import org.apache.plc4x.java.base.messages.PlcWriter;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -32,7 +30,6 @@ import org.apache.plc4x.java.ethernetip.netty.util.EnipPlcFieldHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class BaseEtherNetIpPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
@@ -70,13 +67,13 @@ public abstract class BaseEtherNetIpPlcConnection extends AbstractPlcConnection 
     }
 
     @Override
-    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
-        return Optional.of(new DefaultPlcReadRequest.Builder(this, new EnipPlcFieldHandler()));
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(this, new EnipPlcFieldHandler());
     }
 
     @Override
-    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
-        return Optional.of(new DefaultPlcWriteRequest.Builder(this, new EnipPlcFieldHandler()));
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(this, new EnipPlcFieldHandler());
     }
 
     @Override

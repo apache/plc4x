@@ -61,7 +61,7 @@ public class S7PlcToAzureIoTHubSample {
             client.open();
 
             // Prepare a read request.
-            PlcReadRequest request = plcConnection.readRequestBuilder().get().addItem(FIELD_NAME, addressString).build();
+            PlcReadRequest request = plcConnection.readRequestBuilder().addItem(FIELD_NAME, addressString).build();
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
