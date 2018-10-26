@@ -23,8 +23,7 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.*;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.connection.PlcConnection;
-import org.apache.plc4x.java.api.connection.PlcReader;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -94,13 +93,11 @@ public class PlcEntityManager {
 
         try (PlcConnection connection = driverManager.getConnection(source)) {
 
-            if (!connection.getReader().isPresent()) {
+            if (!connection.readRequestBuilder().isPresent()) {
                 throw new OPMException("Unable to get Reader for connection with url '" + source + "'");
             }
 
-            PlcReader reader = connection.getReader().get();
-
-            PlcReadRequest.Builder requestBuilder = reader.readRequestBuilder();
+            PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder().get();
 
             // Do the necessary queries for all fields
             // HashMap<ReadRequestItem<?>, Field> requestItems = new HashMap<>();
@@ -124,10 +121,10 @@ public class PlcEntityManager {
             }
 
             // Perform the request
-            PlcReadResponse<?> response;
+            PlcReadResponse response;
             try {
                 // TODO: make configurable.
-                response = reader.read(request).get(1_000, TimeUnit.MILLISECONDS);
+                response = request.execute().get(1_000, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException e) {
                 throw new OPMException("Request fetching not able", e);
             } catch (TimeoutException e) {
@@ -251,10 +248,8 @@ public class PlcEntityManager {
 
         try (PlcConnection connection = driverManager.getConnection(plcEntity.value())) {
             // Catch the exception, if no reader present (see below)
-            PlcReader plcReader = connection.getReader().get();
-
             // Build the query
-            PlcReadRequest.Builder builder = plcReader.readRequestBuilder();
+            PlcReadRequest.Builder builder = connection.readRequestBuilder().get();
             for (Field field : superclass.getDeclaredFields()) {
                 // Check if the field has an annotation
                 PlcField plcField = field.getDeclaredAnnotation(PlcField.class);
@@ -266,7 +261,7 @@ public class PlcEntityManager {
             }
             PlcReadRequest request = builder.build();
 
-            PlcReadResponse<?> response = getPlcReadResponse(plcReader, request);
+            PlcReadResponse response = getPlcReadResponse(request);
 
             // Fill all requested fields
             for (String fieldName : response.getFieldNames()) {
@@ -297,15 +292,14 @@ public class PlcEntityManager {
         PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
         try (PlcConnection connection = driverManager.getConnection(plcEntity.value())) {
             // Catch the exception, if no reader present (see below)
-            PlcReader plcReader = connection.getReader().orElseThrow(IllegalStateException::new);
 
             // Assume to do the query here...
-            PlcReadRequest request = plcReader.readRequestBuilder()
+            PlcReadRequest request = connection.readRequestBuilder().orElseThrow(IllegalStateException::new)
                 .addItem(m.getName(), annotation.value())
                 .build();
 
-            PlcReadResponse<?> response;
-            response = getPlcReadResponse(plcReader, request);
+            PlcReadResponse response;
+            response = getPlcReadResponse(request);
 
             return getTyped(m.getReturnType(), response, m.getName());
         } catch (ClassCastException e) {
@@ -326,7 +320,7 @@ public class PlcEntityManager {
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    private void setField(Class<?> clazz, Object o, PlcReadResponse<?> response, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+    private void setField(Class<?> clazz, Object o, PlcReadResponse response, String fieldName) throws NoSuchFieldException, IllegalAccessException {
         Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);
         try {
@@ -337,7 +331,7 @@ public class PlcEntityManager {
         }
     }
 
-    private Object getTyped(Class<?> clazz, PlcReadResponse<?> response, String fieldName) {
+    private Object getTyped(Class<?> clazz, PlcReadResponse response, String fieldName) {
         if (clazz.isPrimitive()) {
             if (clazz == byte.class) {
                 return response.getByte(fieldName);
@@ -359,15 +353,14 @@ public class PlcEntityManager {
     /**
      * Fetch the request and do appropriate error handling
      *
-     * @param plcReader
      * @param request
      * @return
      * @throws OPMException
      */
-    private PlcReadResponse<?> getPlcReadResponse(PlcReader plcReader, PlcReadRequest request) throws OPMException {
-        PlcReadResponse<?> response;
+    private PlcReadResponse getPlcReadResponse(PlcReadRequest request) throws OPMException {
+        PlcReadResponse response;
         try {
-            response = plcReader.read(request).get();
+            response = request.execute().get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new OPMException("Exception during execution", e);

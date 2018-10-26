@@ -38,12 +38,6 @@
       <version>0.2.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.mutabilitydetector</groupId>
-      <artifactId>MutabilityDetector</artifactId>
-      <version>0.9.6</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
 </project>
