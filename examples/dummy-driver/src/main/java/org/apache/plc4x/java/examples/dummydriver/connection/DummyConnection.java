@@ -25,7 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.util.concurrent.CompletableFuture;
 
-public class DummyConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
+public class DummyConnection extends NettyPlcConnection implements PlcReader, PlcWriter {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(DummyConnection.class);

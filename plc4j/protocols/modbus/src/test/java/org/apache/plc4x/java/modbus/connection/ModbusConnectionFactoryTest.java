@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.modbus.connection;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.junit.Test;
@@ -70,7 +70,7 @@ public class ModbusConnectionFactoryTest {
 
     public void assertPort(ModbusTcpPlcConnection modbusTcpPlcConnection, int port) throws Exception {
         TcpSocketChannelFactory channelFactory = (TcpSocketChannelFactory) FieldUtils
-            .getDeclaredField(AbstractPlcConnection.class, "channelFactory", true)
+            .getDeclaredField(NettyPlcConnection.class, "channelFactory", true)
             .get(modbusTcpPlcConnection);
         assertEquals(port, channelFactory.getPort());
     }
@@ -88,7 +88,7 @@ public class ModbusConnectionFactoryTest {
 
     public void assertPort(ModbusSerialPlcConnection modbusSerialPlcConnection, String serialPort) throws Exception {
         SerialChannelFactory channelFactory = (SerialChannelFactory) FieldUtils
-            .getDeclaredField(AbstractPlcConnection.class, "channelFactory", true)
+            .getDeclaredField(NettyPlcConnection.class, "channelFactory", true)
             .get(modbusSerialPlcConnection);
         assertEquals(serialPort, channelFactory.getSerialPort());
     }

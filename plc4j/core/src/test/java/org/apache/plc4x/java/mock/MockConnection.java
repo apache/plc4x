@@ -22,12 +22,12 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.TestChannelFactory;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MockConnection extends AbstractPlcConnection {
+public class MockConnection extends NettyPlcConnection {
 
     private final PlcAuthentication authentication;
 
