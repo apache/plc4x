@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.modbus.util.ModbusPlcFieldHandler;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class BaseModbusPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
+public abstract class BaseModbusPlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseModbusPlcConnection.class);
 
