@@ -46,10 +46,16 @@
       <artifactId>plc4j-core</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <!-- Utils -->
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy</artifactId>
       <version>1.8.15</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <!--Testing-->
@@ -66,7 +72,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.2.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

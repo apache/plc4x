@@ -22,6 +22,7 @@ package org.apache.plc4x.java.opm;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.*;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -35,6 +36,11 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -332,22 +338,66 @@ public class PlcEntityManager {
     }
 
     private Object getTyped(Class<?> clazz, PlcReadResponse response, String fieldName) {
+        Object responseObject = response.getObject(fieldName);
+        if (responseObject == null) {
+            // TODO: shall we better throw an exception or is object never null?
+            return null;
+        }
         if (clazz.isPrimitive()) {
-            if (clazz == byte.class) {
+            if (clazz == boolean.class) {
+                return response.getBoolean(fieldName);
+            } else if (clazz == byte.class) {
                 return response.getByte(fieldName);
+            } else if (clazz == short.class) {
+                return response.getShort(fieldName);
             } else if (clazz == int.class) {
                 return response.getInteger(fieldName);
             } else if (clazz == long.class) {
                 return response.getLong(fieldName);
-            } else if (clazz == short.class) {
-                return response.getShort(fieldName);
             }
-            // TODO this should fail on Short, Integer, ... because it always gets a Long
-        } else if (clazz.isAssignableFrom(response.getObject(fieldName).getClass())) {
-            return response.getObject(fieldName);
         }
+
+        if (clazz == Boolean.class) {
+            return response.getBoolean(fieldName);
+        } else if (clazz == Byte.class) {
+            return response.getByte(fieldName);
+        } else if (clazz == Short.class) {
+            return response.getShort(fieldName);
+        } else if (clazz == Integer.class) {
+            return response.getInteger(fieldName);
+        } else if (clazz == Long.class) {
+            return response.getLong(fieldName);
+        } else if (clazz == BigInteger.class) {
+            return response.getBigInteger(fieldName);
+        } else if (clazz == Float.class) {
+            return response.getFloat(fieldName);
+        } else if (clazz == Double.class) {
+            return response.getDouble(fieldName);
+        } else if (clazz == BigDecimal.class) {
+            return response.getBigDecimal(fieldName);
+        } else if (clazz == String.class) {
+            return response.getString(fieldName);
+        } else if (clazz == LocalTime.class) {
+            // TODO: where are the methods for this?
+            throw new UnsupportedOperationException("no supported yet for " + clazz);
+        } else if (clazz == LocalDate.class) {
+            // TODO: where are the methods for this?
+            throw new UnsupportedOperationException("no supported yet for " + clazz);
+        } else if (clazz == LocalDateTime.class) {
+            // TODO: where are the methods for this?
+            throw new UnsupportedOperationException("no supported yet for " + clazz);
+        } else if (clazz == byte[].class) {
+            return ArrayUtils.toPrimitive(response.getByteArray(fieldName));
+        } else if (clazz == Byte[].class) {
+            return response.getByteArray(fieldName);
+        }
+
+        if (clazz.isAssignableFrom(responseObject.getClass())) {
+            return responseObject;
+        }
+
         // If nothing matched, throw
-        throw new ClassCastException("Unable to return response item " + response.getObject(fieldName) + " as instance of " + clazz);
+        throw new ClassCastException("Unable to return response item " + responseObject + "(" + responseObject.getClass() + ") as instance of " + clazz);
     }
 
     /**
@@ -358,16 +408,15 @@ public class PlcEntityManager {
      * @throws OPMException
      */
     private PlcReadResponse getPlcReadResponse(PlcReadRequest request) throws OPMException {
-        PlcReadResponse response;
         try {
-            response = request.execute().get();
+            // TODO: add configurable timeout
+            return request.execute().get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new OPMException("Exception during execution", e);
         } catch (ExecutionException e) {
             throw new OPMException("Exception during execution", e);
         }
-        return response;
     }
 
 }

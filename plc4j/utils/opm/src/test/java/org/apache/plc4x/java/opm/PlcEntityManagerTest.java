@@ -19,25 +19,33 @@
 
 package org.apache.plc4x.java.opm;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
-import org.apache.plc4x.java.base.messages.items.FieldItem;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.base.messages.PlcReader;
+import org.apache.plc4x.java.base.messages.items.*;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+
 
 public class PlcEntityManagerTest {
 
@@ -57,11 +65,9 @@ public class PlcEntityManagerTest {
         manager.read(EntityWithBadConstructor.class);
     }
 
-    // TODO
-    @Ignore
     @Test
     public void read() throws OPMException, PlcConnectionException {
-        Map<String, FieldItem> results = new HashMap<>();
+        Map<String, BaseDefaultFieldItem> results = new HashMap<>();
         results.put("counter", new DefaultIntegerFieldItem(1));
         results.put("counter2", new DefaultIntegerFieldItem(1));
         PlcEntityManager manager = getPlcEntityManager(results);
@@ -72,16 +78,15 @@ public class PlcEntityManagerTest {
         assertEquals(1, myEntity.getCounter2());
     }
 
-    // TODO
-    @Ignore
     @Test
     public void readComplexObject() throws PlcConnectionException, OPMException {
-        Map<String, FieldItem> map = new HashMap<>();
-        map.put("byteVar", new DefaultIntegerFieldItem(1));
-        map.put("shortVar", new DefaultIntegerFieldItem(1));
+        Map<String, BaseDefaultFieldItem> map = new HashMap<>();
+        map.put("boolVar", new DefaultBooleanFieldItem(true));
+        map.put("byteVar", new DefaultByteFieldItem((byte) 1));
+        map.put("shortVar", new DefaultShortFieldItem((short) 1));
         map.put("intVar", new DefaultIntegerFieldItem(1));
-        map.put("longVar", new DefaultIntegerFieldItem(1));
-        map.put("boxedLongVar", new DefaultIntegerFieldItem(1));
+        map.put("longVar", new DefaultLongFieldItem(1l));
+        map.put("boxedLongVar", new DefaultLongFieldItem(1L));
         map.put("stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
@@ -92,19 +97,18 @@ public class PlcEntityManagerTest {
         // Call different mehtod
         String s = connect.toString();
 
-        assertEquals("ConnectedEntity{byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
+        assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
     }
 
-    // TODO
-    @Ignore
     @Test
     public void connec_callComplexMethodt() throws PlcConnectionException, OPMException {
-        Map<String, FieldItem> map = new HashMap<>();
-        map.put("byteVar", new DefaultIntegerFieldItem(1));
-        map.put("shortVar", new DefaultIntegerFieldItem(1));
+        Map<String, BaseDefaultFieldItem> map = new HashMap<>();
+        map.put("boolVar", new DefaultBooleanFieldItem(true));
+        map.put("byteVar", new DefaultByteFieldItem((byte) 1));
+        map.put("shortVar", new DefaultShortFieldItem((short) 1));
         map.put("intVar", new DefaultIntegerFieldItem(1));
-        map.put("longVar", new DefaultIntegerFieldItem(1));
-        map.put("boxedLongVar", new DefaultIntegerFieldItem(1));
+        map.put("longVar", new DefaultLongFieldItem(1l));
+        map.put("boxedLongVar", new DefaultLongFieldItem(1L));
         map.put("stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
@@ -115,14 +119,12 @@ public class PlcEntityManagerTest {
         // Call different mehtod
         String s = connect.toString();
 
-        assertEquals("ConnectedEntity{byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
+        assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
     }
 
-    // TODO
-    @Ignore
     @Test
     public void connect_callGetter() throws PlcConnectionException, OPMException {
-        Map<String, FieldItem> map = new HashMap<>();
+        Map<String, BaseDefaultFieldItem> map = new HashMap<>();
         map.put("getIntVar", new DefaultIntegerFieldItem(1));
         map.put("getStringVar", new DefaultStringFieldItem("Hello"));
         PlcEntityManager manager = getPlcEntityManager(map);
@@ -136,30 +138,38 @@ public class PlcEntityManagerTest {
         assertEquals("Hello", connect.getStringVar());
     }
 
-    private PlcEntityManager getPlcEntityManager(final Map<String, FieldItem> responses) throws PlcConnectionException {
+    private PlcEntityManager getPlcEntityManager(final Map<String, BaseDefaultFieldItem> responses) throws PlcConnectionException {
         driverManager = Mockito.mock(PlcDriverManager.class);
         PlcDriverManager mock = driverManager;
         PlcConnection connection = Mockito.mock(PlcConnection.class);
         when(mock.getConnection(ArgumentMatchers.anyString())).thenReturn(connection);
+        when(connection.getMetadata()).thenReturn(new PlcConnectionMetadata() {
 
-        // TODO: fix this
-        /*PlcReader reader = new PlcReader() {
             @Override
-            public CompletableFuture<PlcReadResponse<?>> read(PlcReadRequest readRequest) {
-                Map<String, Pair<PlcResponseCode, FieldItem>> map = readRequest.getFieldNames().stream()
-                    .collect(Collectors.toMap(
-                        Function.identity(),
-                        s -> Pair.of(PlcResponseCode.OK, responses.get(s))
-                    ));
-                return CompletableFuture.completedFuture(new DefaultPlcReadResponse(((InternalPlcReadRequest) readRequest), map));
+            public boolean canRead() {
+                return true;
             }
 
             @Override
-            public PlcReadRequest.Builder readRequestBuilder() {
-                return new DefaultPlcReadRequest.Builder(getFieldHandler());
+            public boolean canWrite() {
+                return true;
             }
+
+            @Override
+            public boolean canSubscribe() {
+                return true;
+            }
+        });
+
+        PlcReader reader = readRequest -> {
+            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> map = readRequest.getFieldNames().stream()
+                .collect(Collectors.toMap(
+                    Function.identity(),
+                    s -> Pair.of(PlcResponseCode.OK, responses.get(s))
+                ));
+            return CompletableFuture.completedFuture(new DefaultPlcReadResponse(((InternalPlcReadRequest) readRequest), map));
         };
-        when(connection.getReader()).thenReturn(Optional.of(reader));*/
+        when(connection.readRequestBuilder()).thenReturn(new DefaultPlcReadRequest.Builder(reader, getFieldHandler()));
 
         return new PlcEntityManager(mock);
     }
@@ -176,62 +186,72 @@ public class PlcEntityManagerTest {
         }
 
         @Override
-        public FieldItem encodeBoolean(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeBoolean(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeByte(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeByte(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeShort(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeShort(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeInteger(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeInteger(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeBigInteger(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeBigInteger(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeLong(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeLong(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeFloat(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeFloat(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeDouble(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeBigDecimal(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeString(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeDouble(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeTime(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeString(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeDate(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeTime(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
 
         @Override
-        public FieldItem encodeDateTime(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public BaseDefaultFieldItem encodeDate(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+            return null;
+        }
+
+        @Override
+        public BaseDefaultFieldItem encodeDateTime(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+            return null;
+        }
+
+        @Override
+        public BaseDefaultFieldItem encodeByteArray(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
     }
@@ -277,6 +297,8 @@ public class PlcEntityManagerTest {
     @PlcEntity("s7://localhost:5555/0/0")
     public static class ConnectedEntity {
 
+        @PlcField("%DB1.DW111:BOOL")
+        private boolean boolVar;
         @PlcField("%DB1.DW111:BYTE")
         private byte byteVar;
         @PlcField("%DB1.DW111:SHORT")
@@ -326,7 +348,8 @@ public class PlcEntityManagerTest {
         @Override
         public String toString() {
             return "ConnectedEntity{" +
-                "byteVar=" + byteVar +
+                "boolVar=" + boolVar +
+                ", byteVar=" + byteVar +
                 ", shortVar=" + shortVar +
                 ", intVar=" + intVar +
                 ", longVar=" + longVar +
