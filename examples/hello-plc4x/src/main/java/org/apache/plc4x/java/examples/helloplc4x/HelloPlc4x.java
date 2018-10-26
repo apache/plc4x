@@ -55,14 +55,14 @@ public static void main(String[] args) throws Exception {
         for (int i = 1; i < args.length; i++) {
             builder.addItem("value-" + i, args[i]);
         }
-        PlcReadRequest readRequest = builder.build();
 
         //////////////////////////////////////////////////////////
         // Read synchronously ...
         // NOTICE: the ".get()" immediately lets this thread pause until
         // the response is processed and available.
         System.out.println("Synchronous request ...");
-        PlcReadResponse syncResponse = readRequest.execute().get();
+        PlcReadRequest syncReadRequest = builder.build();
+        PlcReadResponse syncResponse = syncReadRequest.execute().get();
         // Simply iterating over the field names returned in the response.
         printResponse(syncResponse);
 
@@ -70,15 +70,17 @@ public static void main(String[] args) throws Exception {
         // Read asynchronously ...
         // Register a callback executed as soon as a response arrives.
         System.out.println("Asynchronous request ...");
-        CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
+        PlcReadRequest asyncReadRequest = builder.build();
+        CompletableFuture<? extends PlcReadResponse> asyncResponse = asyncReadRequest.execute();
         asyncResponse.whenComplete((readResponse, throwable) -> {
             if (readResponse != null) {
-                printResponse(syncResponse);
+                printResponse(readResponse);
             } else {
                 System.err.println("An error occurred: " + throwable.getMessage());
                 throwable.printStackTrace();
             }
         });
+
     }
 }
 
