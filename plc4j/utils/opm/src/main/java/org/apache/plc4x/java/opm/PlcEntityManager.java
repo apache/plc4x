@@ -205,58 +205,58 @@ public class PlcEntityManager {
      * If the field is no getter, then all fields are refreshed by calling {@link #refetchAllFields(Object)}
      * and then, the method is invoked.
      *
-     * @param o    Object to intercept
-     * @param m    Method that was intercepted
-     * @param c    Callable to call the method after fetching the values
-     * @param that Reference to the proxy object
+     * @param proxy    Object to intercept
+     * @param method   Method that was intercepted
+     * @param callable Callable to call the method after fetching the values
+     * @param entity   Reference to the PlcEntity
      * @return possible result of the original methods invocation
      * @throws OPMException Problems with plc / proxying
      */
+    @SuppressWarnings("unused")
     @RuntimeType
-    // TODO: avoid using single letter params.
-    public Object intercept(@This Object o, @Origin Method m, @SuperCall Callable<?> c, @Super Object that) throws OPMException {
-        LOGGER.trace("Invoked method {} on connected PlcEntity {}", m.getName(), that);
+    public Object intercept(@This Object proxy, @Origin Method method, @SuperCall Callable<?> callable, @Super Object entity) throws OPMException {
+        LOGGER.trace("Invoked method {} on connected PlcEntity {}", method.getName(), entity);
 
-        if (m.getName().startsWith("get")) {
-            if (m.getParameterCount() > 0) {
+        if (method.getName().startsWith("get")) {
+            if (method.getParameterCount() > 0) {
                 throw new OPMException("Only getter with no arguments are supported");
             }
             // Fetch single value
             LOGGER.trace("Invoked method {} is getter, trying to find annotated field and return requested value",
-                m.getName());
-            return fetchValueForGetter(that, m);
+                method.getName());
+            return fetchValueForGetter(entity, method);
         }
 
-        if (m.getName().startsWith("is") && (m.getReturnType() == boolean.class || m.getReturnType() == Boolean.class)) {
-            if (m.getParameterCount() > 0) {
+        if (method.getName().startsWith("is") && (method.getReturnType() == boolean.class || method.getReturnType() == Boolean.class)) {
+            if (method.getParameterCount() > 0) {
                 throw new OPMException("Only getter with no arguments are supported");
             }
             // Fetch single value
             LOGGER.trace("Invoked method {} is boolean flag method, trying to find annotated field and return requested value",
-                m.getName());
-            return fetchValueForIsGetter(that, m);
+                method.getName());
+            return fetchValueForIsGetter(entity, method);
         }
 
         // Fetch all values, than invoke method
         try {
-            LOGGER.trace("Invoked method is no getter, refetch all fields and invoke method {} then", m.getName());
-            refetchAllFields(o);
-            return c.call();
+            LOGGER.trace("Invoked method is no getter, refetch all fields and invoke method {} then", method.getName());
+            refetchAllFields(proxy);
+            return callable.call();
         } catch (Exception e) {
-            throw new OPMException("Unbale to forward invokation " + m.getName() + " on connected PlcEntity", e);
+            throw new OPMException("Unable to forward invocation " + method.getName() + " on connected PlcEntity", e);
         }
     }
 
     /**
      * Renews all values of all Fields that are annotated with {@link PlcEntity}.
      *
-     * @param o Object to refresh he fields on.
-     * @throws OPMException
+     * @param proxy Object to refresh the fields on.
+     * @throws OPMException on various errors.
      */
-    private void refetchAllFields(Object o) throws OPMException {
+    private void refetchAllFields(Object proxy) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
-        Class<?> superclass = o.getClass().getSuperclass();
-        PlcEntity plcEntity = superclass.getAnnotation(PlcEntity.class);
+        Class<?> entityClass = proxy.getClass().getSuperclass();
+        PlcEntity plcEntity = entityClass.getAnnotation(PlcEntity.class);
         if (plcEntity == null) {
             throw new OPMException("Non PlcEntity supplied");
         }
@@ -266,7 +266,7 @@ public class PlcEntityManager {
             // Build the query
             PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
 
-            Arrays.stream(superclass.getDeclaredFields())
+            Arrays.stream(entityClass.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(PlcField.class))
                 .forEach(field ->
                     requestBuilder.addItem(
@@ -284,7 +284,7 @@ public class PlcEntityManager {
                 LOGGER.trace("Value for field " + fieldName + " is " + response.getObject(fieldName));
                 String clazzFieldName = StringUtils.substringAfterLast(fieldName, ".");
                 try {
-                    setField(o.getClass().getSuperclass(), o, response, clazzFieldName, fieldName);
+                    setField(entityClass, proxy, response, clazzFieldName, fieldName);
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     throw new PlcRuntimeException(e);
                 }
