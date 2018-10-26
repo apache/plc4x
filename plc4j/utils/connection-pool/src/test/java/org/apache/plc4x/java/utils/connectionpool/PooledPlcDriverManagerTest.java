@@ -54,6 +54,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class PooledPlcDriverManagerTest implements WithAssertions {
 
+    private static Logger LOGGER = LoggerFactory.getLogger(PooledPlcDriverManagerTest.class);
+
     private PooledPlcDriverManager SUT = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
         GenericObjectPoolConfig<PlcConnection> plcConnectionGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
         plcConnectionGenericObjectPoolConfig.setMinIdle(1);
@@ -106,12 +108,22 @@ class PooledPlcDriverManagerTest implements WithAssertions {
 
         List<Future<PlcConnection>> futures = executorService.invokeAll(callables);
 
+        // Wait for existing connections
+        futures.forEach(plcConnectionFuture1 -> {
+            try {
+                plcConnectionFuture1.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        LOGGER.info("Statistics after execution {}", SUT.getStatistics());
+
         // As we have a pool size of 8 we should have only 8 + 5 calls for the separate pools
         verify(plcDriver, times(13)).connect(anyString());
 
         assertThat(SUT.getStatistics()).contains(
-            entry("dummydummy:single.numActive", 8),
-            entry("dummydummy:single.numIdle", 0)
+            entry("dummydummy:single/socket1/socket2?fancyOption=true.numActive", 8),
+            entry("dummydummy:single/socket1/socket2?fancyOption=true.numIdle", 0)
         );
 
         futures.forEach(plcConnectionFuture -> {
@@ -123,8 +135,8 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         });
 
         assertThat(SUT.getStatistics()).contains(
-            entry("dummydummy:single.numActive", 0),
-            entry("dummydummy:single.numIdle", 8)
+            entry("dummydummy:single/socket1/socket2?fancyOption=true.numActive", 0),
+            entry("dummydummy:single/socket1/socket2?fancyOption=true.numIdle", 8)
         );
     }
 
@@ -154,17 +166,26 @@ class PooledPlcDriverManagerTest implements WithAssertions {
 
         List<Future<PlcConnection>> futures = executorService.invokeAll(callables);
 
+        futures.forEach(plcConnectionFuture1 -> {
+            try {
+                plcConnectionFuture1.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        LOGGER.info("Statistics after execution {}", SUT.getStatistics());
+
         // As we have a pool size of 8 we should have only 8 + 5 calls for the separate pools
         verify(plcDriver, times(13)).connect(anyString(), any());
 
         assertThat(SUT.getStatistics()).contains(
-            entry("dummydummy:single/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numActive", 8),
-            entry("dummydummy:single/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numIdle", 0)
+            entry("dummydummy:single/socket1/socket2?fancyOption=true/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numActive", 8),
+            entry("dummydummy:single/socket1/socket2?fancyOption=true/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numIdle", 0)
         );
 
         futures.forEach(plcConnectionFuture -> {
             try {
-                plcConnectionFuture.get().connect();
                 plcConnectionFuture.get().close();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -172,8 +193,8 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         });
 
         assertThat(SUT.getStatistics()).contains(
-            entry("dummydummy:single/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numActive", 0),
-            entry("dummydummy:single/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numIdle", 8)
+            entry("dummydummy:single/socket1/socket2?fancyOption=true/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numActive", 0),
+            entry("dummydummy:single/socket1/socket2?fancyOption=true/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numIdle", 8)
         );
     }
 
