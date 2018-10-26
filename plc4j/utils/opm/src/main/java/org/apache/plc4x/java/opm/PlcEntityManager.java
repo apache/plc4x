@@ -392,14 +392,11 @@ public class PlcEntityManager {
         } else if (clazz == String.class) {
             return response.getString(sourceFieldName);
         } else if (clazz == LocalTime.class) {
-            // TODO: where are the methods for this?
-            throw new UnsupportedOperationException("no supported yet for " + clazz);
+            return response.getTime(sourceFieldName);
         } else if (clazz == LocalDate.class) {
-            // TODO: where are the methods for this?
-            throw new UnsupportedOperationException("no supported yet for " + clazz);
+            return response.getDate(sourceFieldName);
         } else if (clazz == LocalDateTime.class) {
-            // TODO: where are the methods for this?
-            throw new UnsupportedOperationException("no supported yet for " + clazz);
+            return response.getDateTime(sourceFieldName);
         } else if (clazz == byte[].class) {
             return ArrayUtils.toPrimitive(response.getByteArray(sourceFieldName));
         } else if (clazz == Byte[].class) {

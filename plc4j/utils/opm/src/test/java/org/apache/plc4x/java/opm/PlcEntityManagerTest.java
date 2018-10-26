@@ -37,6 +37,12 @@ import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -89,7 +95,20 @@ public class PlcEntityManagerTest {
         map.put(prefix + "shortVar", new DefaultShortFieldItem((short) 1));
         map.put(prefix + "intVar", new DefaultIntegerFieldItem(1));
         map.put(prefix + "longVar", new DefaultLongFieldItem(1l));
-        map.put(prefix + "boxedLongVar", new DefaultLongFieldItem(1L));
+        map.put(prefix + "boxedBoolVar", new DefaultLongFieldItem(1L));
+        map.put(prefix + "boxedByteVar", new DefaultByteFieldItem((byte) 1));
+        map.put(prefix + "boxedShortVar", new DefaultShortFieldItem((short) 1));
+        map.put(prefix + "boxedIntegerVar", new DefaultIntegerFieldItem(1));
+        map.put(prefix + "boxedLongVar", new DefaultLongFieldItem(1l));
+        map.put(prefix + "bigIntegerVar", new DefaultBigIntegerFieldItem(BigInteger.ONE));
+        map.put(prefix + "floatVar", new DefaultFloatFieldItem(1f));
+        map.put(prefix + "doubleVar", new DefaultDoubleFieldItem(1d));
+        map.put(prefix + "bigDecimalVar", new DefaultBigDecimalFieldItem(BigDecimal.ONE));
+        map.put(prefix + "localTimeVar", new DefaultLocalTimeFieldItem(LocalTime.of(1, 1)));
+        map.put(prefix + "localDateVar", new DefaultLocalDateFieldItem(LocalDate.of(1, 1, 1)));
+        map.put(prefix + "localDateTimeVar", new DefaultLocalDateTimeFieldItem(LocalDateTime.of(1, 1, 1, 1, 1)));
+        map.put(prefix + "byteArrayVar", new DefaultByteArrayFieldItem(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "bigByteArrayVar", new DefaultByteArrayFieldItem(new Byte[]{0x0, 0x1}));
         map.put(prefix + "stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
@@ -100,7 +119,7 @@ public class PlcEntityManagerTest {
         // Call different mehtod
         String s = connect.toString();
 
-        assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
+        assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedBoolVar=true, boxedByteVar=1, boxedShortVar=1, boxedIntegerVar=1, boxedLongVar=1, bigIntegerVar=1, floatVar=1.0, doubleVar=1.0, bigDecimalVar=1, localTimeVar=01:01, localDateVar=0001-01-01, localDateTimeVar=0001-01-01T01:01, byteArrayVar=[0, 1], bigByteArrayVar=[0, 1], stringVar='Hallo'}", s);
     }
 
     @Test
@@ -112,7 +131,20 @@ public class PlcEntityManagerTest {
         map.put(prefix + "shortVar", new DefaultShortFieldItem((short) 1));
         map.put(prefix + "intVar", new DefaultIntegerFieldItem(1));
         map.put(prefix + "longVar", new DefaultLongFieldItem(1l));
-        map.put(prefix + "boxedLongVar", new DefaultLongFieldItem(1L));
+        map.put(prefix + "boxedBoolVar", new DefaultLongFieldItem(1L));
+        map.put(prefix + "boxedByteVar", new DefaultByteFieldItem((byte) 1));
+        map.put(prefix + "boxedShortVar", new DefaultShortFieldItem((short) 1));
+        map.put(prefix + "boxedIntegerVar", new DefaultIntegerFieldItem(1));
+        map.put(prefix + "boxedLongVar", new DefaultLongFieldItem(1l));
+        map.put(prefix + "bigIntegerVar", new DefaultBigIntegerFieldItem(BigInteger.ONE));
+        map.put(prefix + "floatVar", new DefaultFloatFieldItem(1f));
+        map.put(prefix + "doubleVar", new DefaultDoubleFieldItem(1d));
+        map.put(prefix + "bigDecimalVar", new DefaultBigDecimalFieldItem(BigDecimal.ONE));
+        map.put(prefix + "localTimeVar", new DefaultLocalTimeFieldItem(LocalTime.of(1, 1)));
+        map.put(prefix + "localDateVar", new DefaultLocalDateFieldItem(LocalDate.of(1, 1, 1)));
+        map.put(prefix + "localDateTimeVar", new DefaultLocalDateTimeFieldItem(LocalDateTime.of(1, 1, 1, 1, 1)));
+        map.put(prefix + "byteArrayVar", new DefaultByteArrayFieldItem(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "bigByteArrayVar", new DefaultByteArrayFieldItem(new Byte[]{0x0, 0x1}));
         map.put(prefix + "stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
@@ -123,7 +155,7 @@ public class PlcEntityManagerTest {
         // Call different mehtod
         String s = connect.toString();
 
-        assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedLongVar=1, stringVar='Hallo'}", s);
+        assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedBoolVar=true, boxedByteVar=1, boxedShortVar=1, boxedIntegerVar=1, boxedLongVar=1, bigIntegerVar=1, floatVar=1.0, doubleVar=1.0, bigDecimalVar=1, localTimeVar=01:01, localDateVar=0001-01-01, localDateTimeVar=0001-01-01T01:01, byteArrayVar=[0, 1], bigByteArrayVar=[0, 1], stringVar='Hallo'}", s);
     }
 
     @Test
@@ -313,8 +345,35 @@ public class PlcEntityManagerTest {
         private int intVar;
         @PlcField("%DB1.DW111:LONG")
         private long longVar;
-        @PlcField("%DB1.DW111:STRING")
+        @PlcField("%DB1.DW111:BOOL")
+        private Boolean boxedBoolVar;
+        @PlcField("%DB1.DW111:BYTE")
+        private Byte boxedByteVar;
+        @PlcField("%DB1.DW111:SHORT")
+        private Short boxedShortVar;
+        @PlcField("%DB1.DW111:SHORT")
+        private Integer boxedIntegerVar;
+        @PlcField("%DB1.DW111:LONG")
         private Long boxedLongVar;
+        @PlcField("%DB1.DW111:BIGINT")
+        private BigInteger bigIntegerVar;
+        @PlcField("%DB1.DW111:FLOAT")
+        private Float floatVar;
+        @PlcField("%DB1.DW111:DOUBLE")
+        private Double doubleVar;
+        @PlcField("%DB1.DW111:BIGDECIMAL")
+        private BigDecimal bigDecimalVar;
+        @PlcField("%DB1.DW111:LOCALTIME")
+        private LocalTime localTimeVar;
+        @PlcField("%DB1.DW111:LOCALDATE")
+        private LocalDate localDateVar;
+        @PlcField("%DB1.DW111:LOCALDATETIME")
+        private LocalDateTime localDateTimeVar;
+        @PlcField("%DB1.DW111:BYTEARRAY")
+        private byte[] byteArrayVar;
+        @PlcField("%DB1.DW111:BYTEARRAY")
+        private Byte[] bigByteArrayVar;
+
         @PlcField("%DB1.DW111:STRING")
         private String stringVar;
 
@@ -362,7 +421,20 @@ public class PlcEntityManagerTest {
                 ", shortVar=" + shortVar +
                 ", intVar=" + intVar +
                 ", longVar=" + longVar +
+                ", boxedBoolVar=" + boxedBoolVar +
+                ", boxedByteVar=" + boxedByteVar +
+                ", boxedShortVar=" + boxedShortVar +
+                ", boxedIntegerVar=" + boxedIntegerVar +
                 ", boxedLongVar=" + boxedLongVar +
+                ", bigIntegerVar=" + bigIntegerVar +
+                ", floatVar=" + floatVar +
+                ", doubleVar=" + doubleVar +
+                ", bigDecimalVar=" + bigDecimalVar +
+                ", localTimeVar=" + localTimeVar +
+                ", localDateVar=" + localDateVar +
+                ", localDateTimeVar=" + localDateTimeVar +
+                ", byteArrayVar=" + Arrays.toString(byteArrayVar) +
+                ", bigByteArrayVar=" + Arrays.toString(bigByteArrayVar) +
                 ", stringVar='" + stringVar + '\'' +
                 '}';
         }
