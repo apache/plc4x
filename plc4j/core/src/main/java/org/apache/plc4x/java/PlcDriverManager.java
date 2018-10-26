@@ -18,10 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java;
 
-import org.apache.plc4x.java.spi.PlcDriver;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.spi.PlcDriver;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-public class PlcDriverManager implements PlcDriverManagerInterface {
+public class PlcDriverManager {
 
     protected ClassLoader classLoader;
 
@@ -60,7 +60,6 @@ public class PlcDriverManager implements PlcDriverManagerInterface {
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         PlcDriver driver = getDriver(url);
         PlcConnection connection = driver.connect(url);
@@ -76,7 +75,6 @@ public class PlcDriverManager implements PlcDriverManagerInterface {
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         PlcDriver driver = getDriver(url);
         PlcConnection connection = driver.connect(url, authentication);
