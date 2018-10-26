@@ -24,7 +24,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class HelloPlc4x {
@@ -45,15 +44,14 @@ public static void main(String[] args) throws Exception {
     try (PlcConnection plcConnection = new PlcDriverManager().getConnection(args[0])) {
 
         // Check if this connection support reading of data.
-        Optional<PlcReadRequest.Builder> builderOptional = plcConnection.readRequestBuilder();
-        if (!builderOptional.isPresent()) {
+        if (!plcConnection.getMetadata().canRead()) {
             System.err.println("This connection doesn't support reading.");
             return;
         }
 
         // Create a new read request:
         // - Give the single item requested the alias name "value"
-        PlcReadRequest.Builder builder = builderOptional.get();
+        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
         for (int i = 1; i < args.length; i++) {
             builder.addItem("value-" + i, args[i]);
         }

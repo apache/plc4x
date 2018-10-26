@@ -310,13 +310,18 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     @Override
-    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
-        return Optional.of(new DefaultPlcSubscriptionRequest.Builder(this, new AdsPlcFieldHandler()));
+    public boolean canSubscribe() {
+        return true;
     }
 
     @Override
-    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
-        return Optional.of(new DefaultPlcUnsubscriptionRequest.Builder(this));
+    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+        return new DefaultPlcSubscriptionRequest.Builder(this, new AdsPlcFieldHandler());
+    }
+
+    @Override
+    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
+        return new DefaultPlcUnsubscriptionRequest.Builder(this);
     }
 
     @Override

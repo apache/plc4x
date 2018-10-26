@@ -39,7 +39,7 @@ public class Plc4XProducer extends DefaultAsyncProducer {
         super(endpoint);
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        if (!plcConnection.writeRequestBuilder().isPresent()) {
+        if (!plcConnection.getMetadata().canWrite()) {
             throw new PlcException("This connection (" + plc4xURI + ") doesn't support writing.");
         }
         openRequests = new AtomicInteger();
@@ -59,7 +59,7 @@ public class Plc4XProducer extends DefaultAsyncProducer {
             Object value = in.getBody(Object.class);
 //            builder.addItem(fieldName, fieldQuery, value);
         }
-        PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder().orElseThrow(() -> new IllegalArgumentException("Writer for driver not found"));
+        PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
         CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {

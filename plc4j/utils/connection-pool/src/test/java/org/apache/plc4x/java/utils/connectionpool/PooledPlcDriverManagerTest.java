@@ -24,10 +24,12 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.spi.PlcDriver;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.AfterEach;
@@ -43,7 +45,6 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
@@ -198,7 +199,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         );
     }
 
-    class DummyPlcConnection implements PlcConnection {
+    class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {
 
         private final String url;
 
@@ -226,28 +227,48 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         }
 
         @Override
+        public PlcConnectionMetadata getMetadata() {
+            return this;
+        }
+
+        @Override
+        public boolean canRead() {
+            return false;
+        }
+
+        @Override
+        public boolean canWrite() {
+            return false;
+        }
+
+        @Override
+        public boolean canSubscribe() {
+            return false;
+        }
+
+        @Override
         public void close() throws Exception {
             throw new UnsupportedOperationException("this should never be called due to pool");
         }
 
         @Override
-        public Optional<PlcReadRequest.Builder> readRequestBuilder() {
-            return Optional.empty();
+        public PlcReadRequest.Builder readRequestBuilder() {
+            throw new PlcUnsupportedOperationException("The connection does not support reading");
         }
 
         @Override
-        public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
-            return Optional.empty();
+        public PlcWriteRequest.Builder writeRequestBuilder() {
+            throw new PlcUnsupportedOperationException("The connection does not support writing");
         }
 
         @Override
-        public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
-            return Optional.empty();
+        public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+            throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
 
         @Override
-        public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
-            return Optional.empty();
+        public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
+            throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
 
         @Override

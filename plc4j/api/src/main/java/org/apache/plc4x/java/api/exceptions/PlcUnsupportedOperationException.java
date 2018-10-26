@@ -16,25 +16,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.api.exceptions;
 
-import io.netty.channel.ChannelHandler;
+public class PlcUnsupportedOperationException extends PlcRuntimeException {
 
-import java.util.concurrent.CompletableFuture;
-
-public class MockConnection extends AbstractPlcConnection {
-
-    public MockConnection() {
-        super(new TestChannelFactory());
-    }
-
-    public MockConnection(boolean awaitSessionSetupComplete) {
-        super(new TestChannelFactory(), awaitSessionSetupComplete);
-    }
-
-    @Override
-    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return null;
+    public PlcUnsupportedOperationException(String message) {
+        super(message);
     }
 
 }

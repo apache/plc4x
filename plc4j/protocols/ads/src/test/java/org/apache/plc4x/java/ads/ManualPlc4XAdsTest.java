@@ -49,7 +49,7 @@ public class ManualPlc4XAdsTest {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
             System.out.println("PlcConnection " + plcConnection);
 
-            PlcReadRequest.Builder readRequestBuilder = plcConnection.readRequestBuilder().orElseThrow(RuntimeException::new);
+            PlcReadRequest.Builder readRequestBuilder = plcConnection.readRequestBuilder();
             PlcReadRequest readRequest = readRequestBuilder.addItem("station", "Allgemein_S2.Station:BYTE").build();
             CompletableFuture<? extends PlcReadResponse> response = readRequest.execute();
             PlcReadResponse readResponse = response.get();
@@ -58,7 +58,7 @@ public class ManualPlc4XAdsTest {
             stations.forEach(System.out::println);
 
             // 2. We build a subscription
-            PlcSubscriptionRequest.Builder subscriptionRequestBuilder = plcConnection.subscriptionRequestBuilder().orElseThrow(RuntimeException::new);
+            PlcSubscriptionRequest.Builder subscriptionRequestBuilder = plcConnection.subscriptionRequestBuilder();
             PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder.addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE").build();
             PlcSubscriptionResponse plcSubscriptionResponse = subscriptionRequest.execute().get();
 
@@ -73,7 +73,7 @@ public class ManualPlc4XAdsTest {
             plcConsumerRegistrations.forEach(PlcConsumerRegistration::unregister);
 
             // we unsubscribe at the plc
-            PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder = plcConnection.unsubscriptionRequestBuilder().orElseThrow(RuntimeException::new);
+            PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder = plcConnection.unsubscriptionRequestBuilder();
             PlcUnsubscriptionRequest unsubscriptionRequest = unsubscriptionRequestBuilder.addHandles(plcSubscriptionResponse.getSubscriptionHandles()).build();
             CompletableFuture<PlcUnsubscriptionResponse> unsubscriptionResponse = unsubscriptionRequest.execute();
 

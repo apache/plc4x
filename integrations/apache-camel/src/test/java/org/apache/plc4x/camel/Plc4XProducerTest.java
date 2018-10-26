@@ -29,7 +29,6 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mockito.Mockito.*;
@@ -46,8 +45,10 @@ public class Plc4XProducerTest {
         when(endpointMock.getEndpointUri()).thenReturn("plc4x:mock:10.10.10.1/1/1");
         PlcDriverManager plcDriverManagerMock = mock(PlcDriverManager.class, RETURNS_DEEP_STUBS);
 
+        when(plcDriverManagerMock.getConnection(anyString()).getMetadata().canRead()).thenReturn(true);
+        when(plcDriverManagerMock.getConnection(anyString()).getMetadata().canWrite()).thenReturn(true);
         when(plcDriverManagerMock.getConnection(anyString()).writeRequestBuilder())
-            .thenReturn(Optional.of(mock(PlcWriteRequest.Builder.class, RETURNS_DEEP_STUBS)));
+            .thenReturn(mock(PlcWriteRequest.Builder.class, RETURNS_DEEP_STUBS));
 
         when(endpointMock.getPlcDriverManager()).thenReturn(plcDriverManagerMock);
         SUT = new Plc4XProducer(endpointMock);

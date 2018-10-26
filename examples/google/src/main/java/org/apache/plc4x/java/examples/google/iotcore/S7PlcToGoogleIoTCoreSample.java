@@ -238,7 +238,7 @@ public class S7PlcToGoogleIoTCoreSample {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://10.10.64.20/1/1")) {
             logger.info("Connected");
 
-            PlcReadRequest readRequest = plcConnection.readRequestBuilder().get().addItem("outputs", "OUTPUTS/0").build();
+            PlcReadRequest readRequest = plcConnection.readRequestBuilder().addItem("outputs", "OUTPUTS/0").build();
 
             while (!Thread.currentThread().isInterrupted()) {
 

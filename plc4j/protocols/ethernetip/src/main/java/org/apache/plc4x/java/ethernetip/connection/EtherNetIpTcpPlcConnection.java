@@ -19,8 +19,6 @@ under the License.
 package org.apache.plc4x.java.ethernetip.connection;
 
 import io.netty.channel.*;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
@@ -31,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class EtherNetIpTcpPlcConnection extends BaseEtherNetIpPlcConnection {
@@ -53,16 +50,6 @@ public class EtherNetIpTcpPlcConnection extends BaseEtherNetIpPlcConnection {
 
     public EtherNetIpTcpPlcConnection(ChannelFactory channelFactory, String params) {
         super(channelFactory, params);
-    }
-
-    @Override
-    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
-        return Optional.empty();
     }
 
     @Override

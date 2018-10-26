@@ -50,7 +50,7 @@ public class Plc4xSinkTask extends SinkTask {
 
         openConnection();
 
-        if (!plcConnection.writeRequestBuilder().isPresent()) {
+        if (!plcConnection.getMetadata().canWrite()) {
             throw new ConnectException("Writing not supported on this connection");
         }
     }
@@ -65,7 +65,7 @@ public class Plc4xSinkTask extends SinkTask {
         for (SinkRecord record: records) {
             String query = record.key().toString();
             Object value = record.value();
-            PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder().get();
+            PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
             PlcWriteRequest plcRequest = addToBuilder(builder, query, value).build();
             doWrite(plcRequest);
         }

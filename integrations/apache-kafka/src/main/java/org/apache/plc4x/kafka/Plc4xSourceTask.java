@@ -100,7 +100,7 @@ public class Plc4xSourceTask extends SourceTask {
 
         openConnection();
 
-        if (!plcConnection.readRequestBuilder().isPresent()) {
+        if (!plcConnection.getMetadata().canRead()) {
             throw new ConnectException("Reading not supported on this connection");
         }
 
@@ -180,7 +180,7 @@ public class Plc4xSourceTask extends SourceTask {
     }
 
     private PlcReadRequest createReadRequest() {
-        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder().get();
+        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
         for (String query : queries) {
             builder.addItem(query, query);
         }

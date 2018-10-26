@@ -31,9 +31,6 @@ import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsPlcFieldHandler;
 import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
-import org.apache.plc4x.java.base.messages.PlcProprietarySender;
-import org.apache.plc4x.java.base.messages.PlcReader;
-import org.apache.plc4x.java.base.messages.PlcWriter;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -43,7 +40,6 @@ import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.concurrent.*;
 
 public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
@@ -93,6 +89,16 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
+    public boolean canRead() {
+        return true;
+    }
+
+    @Override
+    public boolean canWrite() {
+        return true;
+    }
+
+    @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         mapFields(readRequest);
         CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();
@@ -107,23 +113,13 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
-    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
-        return Optional.of(new DefaultPlcReadRequest.Builder(this, new AdsPlcFieldHandler()));
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(this, new AdsPlcFieldHandler());
     }
 
     @Override
-    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
-        return Optional.of(new DefaultPlcWriteRequest.Builder(this, new AdsPlcFieldHandler()));
-    }
-
-    @Override
-    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
-        return Optional.empty();
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(this, new AdsPlcFieldHandler());
     }
 
     @Override

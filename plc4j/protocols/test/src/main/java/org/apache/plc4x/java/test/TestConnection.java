@@ -21,7 +21,9 @@ package org.apache.plc4x.java.test;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
@@ -35,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
  * Connection to a test device.
  * This class is not thread-safe.
  */
-class TestConnection implements PlcConnection, PlcReader, PlcWriter {
+class TestConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter {
     private final TestDevice device;
     private boolean connected = false;
 
@@ -59,23 +61,43 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
     }
 
     @Override
-    public Optional<PlcReadRequest.Builder> readRequestBuilder() {
-        return Optional.of(new DefaultPlcReadRequest.Builder(this, new TestFieldHandler()));
+    public PlcConnectionMetadata getMetadata() {
+        return this;
     }
 
     @Override
-    public Optional<PlcWriteRequest.Builder> writeRequestBuilder() {
-        return Optional.of(new DefaultPlcWriteRequest.Builder(this, new TestFieldHandler()));
+    public boolean canRead() {
+        return true;
     }
 
     @Override
-    public Optional<PlcSubscriptionRequest.Builder> subscriptionRequestBuilder() {
-        return Optional.empty();
+    public boolean canWrite() {
+        return true;
     }
 
     @Override
-    public Optional<PlcUnsubscriptionRequest.Builder> unsubscriptionRequestBuilder() {
-        return Optional.empty();
+    public boolean canSubscribe() {
+        return false;
+    }
+
+    @Override
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(this, new TestFieldHandler());
+    }
+
+    @Override
+    public PlcWriteRequest.Builder writeRequestBuilder() {
+        return new DefaultPlcWriteRequest.Builder(this, new TestFieldHandler());
+    }
+
+    @Override
+    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+        throw new PlcUnsupportedOperationException("The connection does not support subscription");
+    }
+
+    @Override
+    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
+        throw new PlcUnsupportedOperationException("The connection does not support subscription");
     }
 
     @Override

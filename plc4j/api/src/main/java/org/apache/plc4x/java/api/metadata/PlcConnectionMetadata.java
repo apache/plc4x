@@ -16,25 +16,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.api.metadata;
 
-import io.netty.channel.ChannelHandler;
+/**
+ * Information about connection capabilities.
+ * This includes connection and driver specific metadata.
+ */
+public interface PlcConnectionMetadata {
 
-import java.util.concurrent.CompletableFuture;
+    /**
+     * Indicates that the connection supports reading.
+     */
+    boolean canRead();
 
-public class MockConnection extends AbstractPlcConnection {
+    /**
+     * Indicates that the connection supports writing.
+     */
+    boolean canWrite();
 
-    public MockConnection() {
-        super(new TestChannelFactory());
-    }
-
-    public MockConnection(boolean awaitSessionSetupComplete) {
-        super(new TestChannelFactory(), awaitSessionSetupComplete);
-    }
-
-    @Override
-    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return null;
-    }
+    /**
+     * Indicates that the connection supports subscription.
+     */
+    boolean canSubscribe();
 
 }
