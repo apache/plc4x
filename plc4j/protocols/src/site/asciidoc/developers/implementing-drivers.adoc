@@ -198,7 +198,7 @@ If no form of `PlcAuthentication` is provided, the normal `connect` method is th
 If however authentication information is provided, the second connect method is used.
 However we still have to find and implement a protocol that actually supports authentication.
 
-The probably simplest way to implement a custom connection is to extend `org.apache.plc4x.java.base.connection.AbstractPlcConnection`.
+The probably simplest way to implement a custom connection is to extend `org.apache.plc4x.java.base.connection.NettyPlcConnection`.
 This allows passing in a `ChannelFactory` instance, which allows overriding the default communication channel used by the driver.
 
 An `AbstractPlcConnection` is required to implement a method called `getChannelHandler`.

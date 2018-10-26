@@ -36,7 +36,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata {
+public abstract class NettyPlcConnection implements PlcConnection, PlcConnectionMetadata {
 
     /**
      * a {@link HashedWheelTimer} shall be only instantiated once.
@@ -52,11 +52,11 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     protected boolean connected;
 
-    protected AbstractPlcConnection(ChannelFactory channelFactory) {
+    protected NettyPlcConnection(ChannelFactory channelFactory) {
         this(channelFactory, false);
     }
 
-    protected AbstractPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
+    protected NettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         this.connected = false;

@@ -26,7 +26,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -73,7 +73,7 @@ public class ModbusSerialPlcConnectionTest {
     }
 
     private void prepareSerialSimulator() throws Exception {
-        Field channelFactoryField = FieldUtils.getField(AbstractPlcConnection.class, "channelFactory", true);
+        Field channelFactoryField = FieldUtils.getField(NettyPlcConnection.class, "channelFactory", true);
         SerialChannelFactory serialChannelFactory = (SerialChannelFactory) channelFactoryField.get(SUT);
         SerialChannelFactory serialChannelFactorySpied = spy(serialChannelFactory);
         EmbeddedChannel embeddedChannel = new EmbeddedChannel(SUT.getChannelHandler(null));

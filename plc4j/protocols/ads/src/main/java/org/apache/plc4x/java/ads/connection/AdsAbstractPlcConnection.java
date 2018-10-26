@@ -34,7 +34,7 @@ import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
 
-public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
+public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsAbstractPlcConnection.class);
 

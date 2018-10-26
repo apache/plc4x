@@ -27,7 +27,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
@@ -72,7 +72,7 @@ import java.util.concurrent.TimeoutException;
  * where the {bit-offset} is optional.
  * All Available Memory Areas for this mode are defined in the {@link MemoryArea} enum.
  */
-public class S7PlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter {
+public class S7PlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter {
 
     private static final int ISO_ON_TCP_PORT = 102;
 

@@ -22,7 +22,7 @@ import io.netty.channel.ChannelHandler;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MockConnection extends AbstractPlcConnection {
+public class MockConnection extends NettyPlcConnection {
 
     public MockConnection() {
         super(new TestChannelFactory());
