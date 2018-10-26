@@ -218,6 +218,9 @@ public class PlcEntityManager {
         LOGGER.trace("Invoked method {} on connected PlcEntity {}", m.getName(), that);
 
         if (m.getName().startsWith("get")) {
+            if (m.getParameterCount() > 0) {
+                throw new OPMException("Only getter with no arguments are supported");
+            }
             // Fetch single value
             LOGGER.trace("Invoked method {} is getter, trying to find annotated field and return requested value",
                 m.getName());
@@ -225,6 +228,9 @@ public class PlcEntityManager {
         }
 
         if (m.getName().startsWith("is") && (m.getReturnType() == boolean.class || m.getReturnType() == Boolean.class)) {
+            if (m.getParameterCount() > 0) {
+                throw new OPMException("Only getter with no arguments are supported");
+            }
             // Fetch single value
             LOGGER.trace("Invoked method {} is boolean flag method, trying to find annotated field and return requested value",
                 m.getName());
