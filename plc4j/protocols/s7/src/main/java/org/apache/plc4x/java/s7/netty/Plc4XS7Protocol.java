@@ -34,8 +34,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.s7.messages.items.*;
+import org.apache.plc4x.java.base.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
@@ -430,7 +429,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // -----------------------------------------
                     case BOOL: {
                         Boolean[] booleans = readAllValues(Boolean.class, field, i -> data.readByte() != 0x00);
-                        fieldItem = new S7BooleanFieldItem(field.getDataType(),booleans);
+                        fieldItem = new DefaultBooleanFieldItem(booleans);
                         break;
                     }
                     // -----------------------------------------
@@ -443,7 +442,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         for(int i = 0; i < 8 * bytes.length; i++) {
                             booleanValues[i] = bitSet.get(i);
                         }
-                        fieldItem = new S7BooleanFieldItem(field.getDataType(),booleanValues);
+                        fieldItem = new DefaultBooleanFieldItem(booleanValues);
                         break;
                     }
                     case WORD: { // 2 byte (16 bit)
@@ -452,7 +451,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         for(int i = 0; i < 16; i++) {
                             booleanValues[i] = bitSet.get(i);
                         }
-                        fieldItem = new S7BooleanFieldItem(field.getDataType(),booleanValues);
+                        fieldItem = new DefaultBooleanFieldItem(booleanValues);
                         break;
                     }
                     case DWORD: { // 4 byte (32 bit)
@@ -462,7 +461,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         for(int i = 0; i < 32; i++) {
                             booleanValues[i] = bitSet.get(i);
                         }
-                        fieldItem = new S7BooleanFieldItem(field.getDataType(),booleanValues);
+                        fieldItem = new DefaultBooleanFieldItem(booleanValues);
                         break;
                     }
                     case LWORD: { // 8 byte (64 bit)
@@ -471,7 +470,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         for(int i = 0; i < 64; i++) {
                             booleanValues[i] = bitSet.get(i);
                         }
-                        fieldItem = new S7BooleanFieldItem(field.getDataType(),booleanValues);
+                        fieldItem = new DefaultBooleanFieldItem(booleanValues);
                         break;
                     }
                     // -----------------------------------------
@@ -479,59 +478,59 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // -----------------------------------------
                     // 8 bit:
                     case SINT: {
-                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readByte());
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
+                        Byte[] bytes = readAllValues(Byte.class, field, i -> data.readByte());
+                        fieldItem = new DefaultByteFieldItem(bytes);
                         break;
                     }
                     case USINT: {
-                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readUnsignedByte());
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
+                        Short[] shorts = readAllValues(Short.class, field, i -> data.readUnsignedByte());
+                        fieldItem = new DefaultShortFieldItem(shorts);
                         break;
                     }
                     // 16 bit:
                     case INT: {
-                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readShort());
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
+                        Short[] shorts = readAllValues(Short.class, field, i -> data.readShort());
+                        fieldItem = new DefaultShortFieldItem(shorts);
                         break;
                     }
                     case UINT: {
-                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readUnsignedShort());
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
+                        Integer[] ints = readAllValues(Integer.class, field, i -> data.readUnsignedShort());
+                        fieldItem = new DefaultIntegerFieldItem(ints);
                         break;
                     }
                     // 32 bit:
                     case DINT: {
-                        Long[] longs = readAllValues(Long.class, field, i -> (long)data.readInt());
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
+                        Integer[] ints = readAllValues(Integer.class, field, i -> data.readInt());
+                        fieldItem = new DefaultIntegerFieldItem(ints);
                         break;
                     }
                     case UDINT: {
                         Long[] longs = readAllValues(Long.class, field, i -> data.readUnsignedInt());
-                        fieldItem = new S7LongFieldItem(field.getDataType(), longs);
+                        fieldItem = new DefaultLongFieldItem(longs);
                         break;
                     }
                     // 64 bit:
                     case LINT: {
                         BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readSigned64BitInteger(data));
-                        fieldItem = new S7BigIntegerFieldItem(field.getDataType(), bigIntegers);
+                        fieldItem = new DefaultBigIntegerFieldItem(bigIntegers);
                         break;
                     }
                     case ULINT: {
                         BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readUnsigned64BitInteger(data));
-                        fieldItem = new S7BigIntegerFieldItem(field.getDataType(), bigIntegers);
+                        fieldItem = new DefaultBigIntegerFieldItem(bigIntegers);
                         break;
                     }
                     // -----------------------------------------
                     // Floating point values
                     // -----------------------------------------
                     case REAL: {
-                        Double[] doubles = readAllValues(Double.class, field, i -> (double)data.readFloat());
-                        fieldItem = new S7FloatingPointFieldItem(field.getDataType(), doubles);
+                        Float[] floats = readAllValues(Float.class, field, i -> data.readFloat());
+                        fieldItem = new DefaultFloatFieldItem(floats);
                         break;
                     }
                     case LREAL: {
                         Double[] doubles = readAllValues(Double.class, field, i -> data.readDouble());
-                        fieldItem = new S7FloatingPointFieldItem(field.getDataType(), doubles);
+                        fieldItem = new DefaultDoubleFieldItem(doubles);
                         break;
                     }
                     // -----------------------------------------
@@ -540,13 +539,13 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     case CHAR: { // 1 byte (8 bit)
                         // TODO: Double check, if this is ok?
                         String stringValue = data.readCharSequence(1, Charset.forName("UTF-8")).toString();
-                        fieldItem = new S7StringFieldItem(field.getDataType(), stringValue);
+                        fieldItem = new DefaultStringFieldItem(stringValue);
                         break;
                     }
                     case WCHAR: { // 2 byte
                         // TODO: Double check, if this is ok? Alternatives: BMP, UCS2
                         String stringValue = data.readCharSequence(2, Charset.forName("UTF-16")).toString();
-                        fieldItem = new S7StringFieldItem(field.getDataType(), stringValue);
+                        fieldItem = new DefaultStringFieldItem(stringValue);
                         break;
                     }
                     case STRING: {
@@ -555,7 +554,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         byte actualLength = data.readByte();
                         // TODO: Double check, if this is ok?
                         String stringValue = data.readCharSequence(actualLength, Charset.forName("UTF-8")).toString();
-                        fieldItem = new S7StringFieldItem(field.getDataType(), stringValue);
+                        fieldItem = new DefaultStringFieldItem(stringValue);
                         break;
                     }
                     case WSTRING: {
@@ -565,7 +564,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         // TODO: Double check, if this is ok?
                         String stringValue = data.readCharSequence(
                             actualLength * 2, Charset.forName("UTF-16")).toString();
-                        fieldItem = new S7StringFieldItem(field.getDataType(), stringValue);
+                        fieldItem = new DefaultStringFieldItem(stringValue);
                         break;
                     }
                     default:
