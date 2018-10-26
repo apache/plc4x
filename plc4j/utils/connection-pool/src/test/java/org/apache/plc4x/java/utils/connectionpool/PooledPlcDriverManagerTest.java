@@ -62,6 +62,8 @@ class PooledPlcDriverManagerTest implements WithAssertions {
     private PooledPlcDriverManager SUT = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
         GenericObjectPoolConfig<PlcConnection> plcConnectionGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
         plcConnectionGenericObjectPoolConfig.setMinIdle(1);
+        plcConnectionGenericObjectPoolConfig.setTestOnBorrow(true);
+        plcConnectionGenericObjectPoolConfig.setTestOnReturn(true);
         return new GenericObjectPool<>(pooledPlcConnectionFactory, plcConnectionGenericObjectPoolConfig);
     });
 

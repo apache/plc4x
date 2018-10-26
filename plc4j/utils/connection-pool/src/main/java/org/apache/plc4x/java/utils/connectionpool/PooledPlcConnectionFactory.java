@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class PooledPlcConnectionFactory extends BasePooledObjectFactory<PlcConnection> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(PooledPlcConnectionFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PooledPlcConnectionFactory.class);
 
     @Override
     public PooledObject<PlcConnection> wrap(PlcConnection plcConnection) {

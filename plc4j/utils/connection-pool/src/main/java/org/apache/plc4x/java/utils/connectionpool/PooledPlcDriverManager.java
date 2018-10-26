@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class PooledPlcDriverManager extends PlcDriverManager {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(PooledPlcDriverManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PooledPlcDriverManager.class);
 
     private PoolCreator poolCreator;
 
