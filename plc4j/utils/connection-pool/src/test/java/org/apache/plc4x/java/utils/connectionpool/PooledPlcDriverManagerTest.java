@@ -199,6 +199,27 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         );
     }
 
+    @Test
+    void connectionInvalidation() throws Exception {
+        when(plcDriver.connect(anyString())).then(invocationOnMock -> new DummyPlcConnection(invocationOnMock.getArgument(0)));
+
+        PlcConnection connection = SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true");
+        assertThat(connection.isConnected()).isEqualTo(true);
+        assertThat(connection.getMetadata().canRead()).isEqualTo(false);
+        assertThat(connection.getMetadata().canWrite()).isEqualTo(false);
+        assertThat(connection.getMetadata().canSubscribe()).isEqualTo(false);
+
+        connection.close();
+        assertThatThrownBy(connection::connect).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
+        assertThatThrownBy(connection::isConnected).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
+        assertThatThrownBy(connection::close).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
+        assertThatThrownBy(connection::getMetadata).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
+        assertThatThrownBy(connection::readRequestBuilder).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
+        assertThatThrownBy(connection::writeRequestBuilder).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
+        assertThatThrownBy(connection::subscriptionRequestBuilder).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
+        assertThatThrownBy(connection::unsubscriptionRequestBuilder).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
+    }
+
     class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {
 
         private final String url;

@@ -30,6 +30,7 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -83,15 +84,19 @@ public class PooledPlcDriverManager extends PlcDriverManager {
                 }
             }
             PlcConnection plcConnection = pool.borrowObject();
-            // TODO 25-10-2018 jf: Return a real wrapper object. This implementation leaks the connection.
-            // The connection can be reused by the pool but is still referenced and can thus still be used.
-            return (PlcConnection) Proxy.newProxyInstance(classLoader, new Class[]{PlcConnection.class}, (o, method, objects) -> {
+            // Used to invalidate a proxy
+            AtomicBoolean proxyInvalidated = new AtomicBoolean(false);
+            return (PlcConnection) Proxy.newProxyInstance(classLoader, new Class[]{PlcConnection.class}, (proxy, method, args) -> {
+                if (proxyInvalidated.get()) {
+                    throw new IllegalStateException("Proxy not valid anymore");
+                }
                 if ("close".equals(method.getName())) {
                     LOGGER.debug("close called on {}. Returning to {}", plcConnection, pool);
+                    proxyInvalidated.set(true);
                     pool.returnObject(plcConnection);
                     return null;
                 } else {
-                    return method.invoke(plcConnection, objects);
+                    return method.invoke(plcConnection, args);
                 }
             });
         } catch (Exception e) {
