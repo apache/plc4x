@@ -100,7 +100,6 @@ public class PlcEntityManager {
         String source = annotation.value();
 
         try (PlcConnection connection = driverManager.getConnection(source)) {
-
             if (!connection.getMetadata().canRead()) {
                 throw new OPMException("Unable to get Reader for connection with url '" + source + "'");
             }
@@ -117,23 +116,11 @@ public class PlcEntityManager {
                 );
 
             // Build the request
-            PlcReadRequest request;
-            try {
-                request = requestBuilder.build();
-            } catch (PlcInvalidFieldException e) {
-                throw new OPMException("Unable to parse one field request", e);
-            }
+            PlcReadRequest request = requestBuilder.build();
 
             // Perform the request
-            PlcReadResponse response;
-            try {
-                // TODO: make configurable.
-                response = request.execute().get(1_000, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException | ExecutionException e) {
-                throw new OPMException("Request fetching not able", e);
-            } catch (TimeoutException e) {
-                throw new OPMException("Timeout during fetching values", e);
-            }
+            // TODO: make configurable.
+            PlcReadResponse response = request.execute().get(1_000, TimeUnit.MILLISECONDS);
 
             // Construct the Object
             T instance = clazz.getConstructor().newInstance();
@@ -144,6 +131,15 @@ public class PlcEntityManager {
                 setField(clazz, instance, response, targetFieldName, fieldName);
             }
             return instance;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new OPMException("Unable to fetch request", e);
+        } catch (ExecutionException e) {
+            throw new OPMException("Unable to fetch request", e);
+        } catch (TimeoutException e) {
+            throw new OPMException("Timeout during fetching values", e);
+        } catch (PlcInvalidFieldException e) {
+            throw new OPMException("Unable to parse one field request", e);
         } catch (PlcConnectionException e) {
             throw new OPMException("Unable to get connection with url '" + source + "'", e);
         } catch (Exception e) {
