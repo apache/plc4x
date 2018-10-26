@@ -25,12 +25,13 @@ import io.netty.util.Timer;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public abstract class AbstractPlcConnection implements PlcConnection {
+public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata {
 
     /**
      * a {@link HashedWheelTimer} shall be only instantiated once.
@@ -99,6 +100,26 @@ public abstract class AbstractPlcConnection implements PlcConnection {
     @Override
     public boolean isConnected() {
         return connected;
+    }
+
+    @Override
+    public PlcConnectionMetadata getMetadata() {
+        return this;
+    }
+
+    @Override
+    public boolean canRead() {
+        return false;
+    }
+
+    @Override
+    public boolean canWrite() {
+        return false;
+    }
+
+    @Override
+    public boolean canSubscribe() {
+        return false;
     }
 
     public Channel getChannel() {

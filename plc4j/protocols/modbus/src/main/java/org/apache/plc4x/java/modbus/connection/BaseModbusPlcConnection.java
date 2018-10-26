@@ -57,6 +57,16 @@ public abstract class BaseModbusPlcConnection extends AbstractPlcConnection impl
     }
 
     @Override
+    public boolean canRead() {
+        return true;
+    }
+
+    @Override
+    public boolean canWrite() {
+        return true;
+    }
+
+    @Override
     public Optional<PlcReadRequest.Builder> readRequestBuilder() {
         return Optional.of(new DefaultPlcReadRequest.Builder(this, new ModbusPlcFieldHandler()));
     }

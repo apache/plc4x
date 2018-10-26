@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.spi.PlcDriver;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.AfterEach;
@@ -198,7 +199,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         );
     }
 
-    class DummyPlcConnection implements PlcConnection {
+    class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {
 
         private final String url;
 
@@ -223,6 +224,26 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         @Override
         public boolean isConnected() {
             return connected;
+        }
+
+        @Override
+        public PlcConnectionMetadata getMetadata() {
+            return this;
+        }
+
+        @Override
+        public boolean canRead() {
+            return false;
+        }
+
+        @Override
+        public boolean canWrite() {
+            return false;
+        }
+
+        @Override
+        public boolean canSubscribe() {
+            return false;
         }
 
         @Override

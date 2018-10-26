@@ -66,6 +66,16 @@ public class MockConnection extends org.apache.plc4x.java.base.connection.MockCo
     }
 
     @Override
+    public boolean canRead() {
+        return true;
+    }
+
+    @Override
+    public boolean canWrite() {
+        return true;
+    }
+
+    @Override
     public Optional<PlcReadRequest.Builder> readRequestBuilder() {
         return Optional.of(new DefaultPlcReadRequest.Builder(this, new MockFieldHandler()));
     }

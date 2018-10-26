@@ -93,6 +93,16 @@ public abstract class AdsAbstractPlcConnection extends AbstractPlcConnection imp
     }
 
     @Override
+    public boolean canRead() {
+        return true;
+    }
+
+    @Override
+    public boolean canWrite() {
+        return true;
+    }
+
+    @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         mapFields(readRequest);
         CompletableFuture<InternalPlcReadResponse> readFuture = new CompletableFuture<>();

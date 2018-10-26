@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 
 import java.util.Optional;
 
@@ -56,6 +57,11 @@ public interface PlcConnection extends AutoCloseable {
      */
     @Override
     void close() throws Exception;
+
+    /**
+     * Provides connection metadata.
+     */
+    PlcConnectionMetadata getMetadata();
 
     Optional<PlcReadRequest.Builder> readRequestBuilder();
 

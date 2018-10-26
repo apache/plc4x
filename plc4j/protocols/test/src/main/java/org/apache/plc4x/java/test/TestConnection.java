@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
@@ -35,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
  * Connection to a test device.
  * This class is not thread-safe.
  */
-class TestConnection implements PlcConnection, PlcReader, PlcWriter {
+class TestConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter {
     private final TestDevice device;
     private boolean connected = false;
 
@@ -56,6 +57,26 @@ class TestConnection implements PlcConnection, PlcReader, PlcWriter {
     @Override
     public void close() {
         connected = false;
+    }
+
+    @Override
+    public PlcConnectionMetadata getMetadata() {
+        return this;
+    }
+
+    @Override
+    public boolean canRead() {
+        return true;
+    }
+
+    @Override
+    public boolean canWrite() {
+        return true;
+    }
+
+    @Override
+    public boolean canSubscribe() {
+        return false;
     }
 
     @Override
