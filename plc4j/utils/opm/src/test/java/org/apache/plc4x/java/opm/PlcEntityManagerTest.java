@@ -62,14 +62,14 @@ public class PlcEntityManagerTest {
     public void noEntity_throws() throws OPMException {
         PlcEntityManager manager = new PlcEntityManager();
 
-        manager.read(NoEntity.class);
+        manager.read(NoEntity.class, "s7://localhost:5555/0/0");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void noValidConstructor_throws() throws OPMException {
         PlcEntityManager manager = new PlcEntityManager();
 
-        manager.read(EntityWithBadConstructor.class);
+        manager.read(EntityWithBadConstructor.class, "s7://localhost:5555/0/0");
     }
 
     @Test
@@ -80,7 +80,7 @@ public class PlcEntityManagerTest {
         results.put(prefix + "counter2", new DefaultLongFieldItem(1l));
         PlcEntityManager manager = getPlcEntityManager(results);
 
-        MyEntity myEntity = manager.read(MyEntity.class);
+        MyEntity myEntity = manager.read(MyEntity.class, "s7://localhost:5555/0/0");
 
         assertEquals(1, (long) myEntity.getCounter());
         assertEquals(1, myEntity.getCounter2());
@@ -112,7 +112,7 @@ public class PlcEntityManagerTest {
         map.put(prefix + "stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
-        ConnectedEntity connect = manager.read(ConnectedEntity.class);
+        ConnectedEntity connect = manager.read(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
         Assert.assertNotNull(connect);
 
@@ -148,7 +148,7 @@ public class PlcEntityManagerTest {
         map.put(prefix + "stringVar", new DefaultStringFieldItem("Hallo"));
         PlcEntityManager manager = getPlcEntityManager(map);
 
-        ConnectedEntity connect = manager.connect(ConnectedEntity.class);
+        ConnectedEntity connect = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
         Assert.assertNotNull(connect);
 
@@ -166,7 +166,7 @@ public class PlcEntityManagerTest {
         map.put("isBoolVar", new DefaultBooleanFieldItem(true));
         PlcEntityManager manager = getPlcEntityManager(map);
 
-        ConnectedEntity connect = manager.connect(ConnectedEntity.class);
+        ConnectedEntity connect = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
         Assert.assertNotNull(connect);
 
@@ -298,7 +298,7 @@ public class PlcEntityManagerTest {
 
     }
 
-    @PlcEntity("source")
+    @PlcEntity()
     public static class EntityWithBadConstructor {
 
         @PlcField("asdf")
@@ -313,7 +313,7 @@ public class PlcEntityManagerTest {
         }
     }
 
-    @PlcEntity("s7://localhost:5555/0/0")
+    @PlcEntity()
     public static class MyEntity {
 
         @PlcField("%DB3.DBW500")
@@ -332,7 +332,7 @@ public class PlcEntityManagerTest {
 
     }
 
-    @PlcEntity("s7://localhost:5555/0/0")
+    @PlcEntity()
     public static class ConnectedEntity {
 
         @PlcField("%DB1.DW111:BOOL")

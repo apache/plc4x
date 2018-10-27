@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.opm;
 
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.*;
 import org.apache.commons.configuration2.Configuration;
@@ -59,22 +60,22 @@ import static net.bytebuddy.matcher.ElementMatchers.any;
  * First, the necessary annotations are {@link PlcEntity} and {@link PlcField}.
  * For a class to be usable as PlcEntity it needs
  * <ul>
- * <li>be non-final (as proxiing has to be used in case of {@link #connect(Class)}</li>
+ * <li>be non-final (as proxiing has to be used in case of {@link #connect(Class, String)}</li>
  * <li>a public no args constructor for instanciation</li>
  * <li>Needs to be annotated with {@link PlcEntity} and has a valid value which is the connection string</li>
  * </ul>
  * <p>
- * Basically, the {@link PlcEntityManager} has to operation "modes" represented by the methods {@link #read(Class)} and
- * {@link #connect(Class)}.
+ * Basically, the {@link PlcEntityManager} has to operation "modes" represented by the methods {@link #read(Class,String)} and
+ * {@link #connect(Class,String)}.
  * <p>
  * For a field to get Values from the Plc Injected it needs to be annotated with the {@link PlcField} annotation.
  * The value has to be the plc fields string (which is inserted in the {@link PlcReadRequest}).
  * The connection string is taken from the value of the {@link PlcEntity} annotation on the class.
  * <p>
- * The {@link #read(Class)} method has no direkt equivalent in JPA (as far as I know) as it only returns a "detached"
+ * The {@link #read(Class,String)} method has no direkt equivalent in JPA (as far as I know) as it only returns a "detached"
  * entity. This means it fetches all values from the plc that are annotated wiht the {@link PlcField} annotations.
  * <p>
- * The {@link #connect(Class)} method is more JPA-like as it returns a "connected" entity. This means, that each
+ * The {@link #connect(Class,String)} method is more JPA-like as it returns a "connected" entity. This means, that each
  * time one of the getters on the returned entity is called a call is made to the plc (and the field value is changed
  * for this specific field).
  * Furthermore, if a method which is no getter is called, then all {@link PlcField}s are refreshed before doing the call.
@@ -89,6 +90,7 @@ public class PlcEntityManager {
 
     private static final Configuration CONF = new SystemConfiguration();
     private static final long READ_TIMEOUT = CONF.getLong("org.apache.plc4x.java.opm.entity_manager.read_timeout", 1_000);
+    public static final String PLC_ADDRESS_FIELD_NAME = "_plcAddress";
 
     private final PlcDriverManager driverManager;
 
@@ -100,13 +102,12 @@ public class PlcEntityManager {
         this.driverManager = driverManager;
     }
 
-    public <T> T read(Class<T> clazz) throws OPMException {
+    public <T> T read(Class<T> clazz, String address) throws OPMException {
         PlcEntity annotation = getPlcEntityAndCheckPreconditions(clazz);
-        String source = annotation.value();
 
-        try (PlcConnection connection = driverManager.getConnection(source)) {
+        try (PlcConnection connection = driverManager.getConnection(address)) {
             if (!connection.getMetadata().canRead()) {
-                throw new OPMException("Unable to get Reader for connection with url '" + source + "'");
+                throw new OPMException("Unable to get Reader for connection with url '" + address + "'");
             }
 
             PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
@@ -138,7 +139,7 @@ public class PlcEntityManager {
         } catch (PlcInvalidFieldException e) {
             throw new OPMException("Unable to parse one field request", e);
         } catch (PlcConnectionException e) {
-            throw new OPMException("Unable to get connection with url '" + source + "'", e);
+            throw new OPMException("Unable to get connection with url '" + address + "'", e);
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
             throw new OPMException("Unable to fetch PlcEntity " + clazz.getName(), e);
         } catch (Exception e) {
@@ -154,21 +155,29 @@ public class PlcEntityManager {
      * @return a connected entity.
      * @throws OPMException when proxy can't be build.
      */
-    public <T> T connect(Class<T> clazz) throws OPMException {
+    public <T> T connect(Class<T> clazz, String address) throws OPMException {
         getPlcEntityAndCheckPreconditions(clazz);
         try {
             // Use Byte Buddy to generate a subclassed proxy that delegates all PlcField Methods
             // to the intercept method
-            return new ByteBuddy()
+            T instance = new ByteBuddy()
                 .subclass(clazz)
+                .defineField(PLC_ADDRESS_FIELD_NAME, String.class, Visibility.PRIVATE)
                 .method(any()).intercept(MethodDelegation.to(this))
                 .make()
                 .load(Thread.currentThread().getContextClassLoader())
                 .getLoaded()
                 .getConstructor()
                 .newInstance();
+            // Set connection value into the private field
+            Field plcAddress = instance.getClass().getDeclaredField(PLC_ADDRESS_FIELD_NAME);
+            plcAddress.setAccessible(true);
+            plcAddress.set(instance, address);
+            return instance;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new OPMException("Unable to instantiate Proxy", e);
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("Problem with field injection during proxy generation", e);
         }
     }
 
@@ -195,9 +204,9 @@ public class PlcEntityManager {
     /**
      * Basic Intersector for all methods on the proxy object.
      * It checks if the invoked method is a getter and if so, only retrieves the requested field, forwarding to
-     * the {@link #fetchValueForGetter(Object, Method)} method.
+     * the {@link #fetchValueForGetter(Method, String)} method.
      * <p>
-     * If the field is no getter, then all fields are refreshed by calling {@link #refetchAllFields(Object)}
+     * If the field is no getter, then all fields are refreshed by calling {@link #refetchAllFields(Object,String)}
      * and then, the method is invoked.
      *
      * @param proxy    Object to intercept
@@ -212,6 +221,9 @@ public class PlcEntityManager {
     public Object intercept(@This Object proxy, @Origin Method method, @SuperCall Callable<?> callable, @Super Object entity) throws OPMException {
         LOGGER.trace("Invoked method {} on connected PlcEntity {}", method.getName(), entity);
 
+        // Fetch connection from internal variable
+        String address = extractAddress(proxy);
+
         if (method.getName().startsWith("get")) {
             if (method.getParameterCount() > 0) {
                 throw new OPMException("Only getter with no arguments are supported");
@@ -219,7 +231,7 @@ public class PlcEntityManager {
             // Fetch single value
             LOGGER.trace("Invoked method {} is getter, trying to find annotated field and return requested value",
                 method.getName());
-            return fetchValueForGetter(entity, method);
+            return fetchValueForGetter(method, address);
         }
 
         if (method.getName().startsWith("is") && (method.getReturnType() == boolean.class || method.getReturnType() == Boolean.class)) {
@@ -229,13 +241,13 @@ public class PlcEntityManager {
             // Fetch single value
             LOGGER.trace("Invoked method {} is boolean flag method, trying to find annotated field and return requested value",
                 method.getName());
-            return fetchValueForIsGetter(entity, method);
+            return fetchValueForIsGetter(method, address);
         }
 
         // Fetch all values, than invoke method
         try {
             LOGGER.trace("Invoked method is no getter, refetch all fields and invoke method {} then", method.getName());
-            refetchAllFields(proxy);
+            refetchAllFields(proxy, address);
             return callable.call();
         } catch (Exception e) {
             throw new OPMException("Unable to forward invocation " + method.getName() + " on connected PlcEntity", e);
@@ -248,7 +260,7 @@ public class PlcEntityManager {
      * @param proxy Object to refresh the fields on.
      * @throws OPMException on various errors.
      */
-    private void refetchAllFields(Object proxy) throws OPMException {
+    private void refetchAllFields(Object proxy, String address) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
         PlcEntity plcEntity = entityClass.getAnnotation(PlcEntity.class);
@@ -256,7 +268,7 @@ public class PlcEntityManager {
             throw new OPMException("Non PlcEntity supplied");
         }
 
-        try (PlcConnection connection = driverManager.getConnection(plcEntity.value())) {
+        try (PlcConnection connection = driverManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
             // Build the query
             PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
@@ -291,17 +303,28 @@ public class PlcEntityManager {
         }
     }
 
-
-    private Object fetchValueForIsGetter(Object o, Method m) throws OPMException {
-        return fetchValueForGetter(o, m, 2);
+    private static String extractAddress(Object proxy) throws OPMException {
+        String address;
+        try {
+            Field field = proxy.getClass().getDeclaredField(PLC_ADDRESS_FIELD_NAME);
+            field.setAccessible(true);
+            address = (String) field.get(proxy);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new OPMException("Problem with accessing internal plc address", e);
+        }
+        return address;
     }
 
-    private Object fetchValueForGetter(Object o, Method m) throws OPMException {
-        return fetchValueForGetter(o, m, 3);
+
+    private Object fetchValueForIsGetter(Method m, String address) throws OPMException {
+        return fetchValueForGetter(m, 2, address);
     }
 
-    // TODO: why isn't o used?
-    private Object fetchValueForGetter(Object o, Method m, int prefixLength) throws OPMException {
+    private Object fetchValueForGetter(Method m, String address) throws OPMException {
+        return fetchValueForGetter(m, 3, address);
+    }
+
+    private Object fetchValueForGetter(Method m, int prefixLength, String address) throws OPMException {
         String s = m.getName().substring(prefixLength);
         // First char to lower
         String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
@@ -312,8 +335,7 @@ public class PlcEntityManager {
         } catch (NoSuchFieldException e) {
             throw new OPMException("Unable to identify field annotated field for call to " + m.getName(), e);
         }
-        PlcEntity plcEntity = m.getDeclaringClass().getAnnotation(PlcEntity.class);
-        try (PlcConnection connection = driverManager.getConnection(plcEntity.value())) {
+        try (PlcConnection connection = driverManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
 
             // Assume to do the query here...
