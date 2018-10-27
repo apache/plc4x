@@ -47,6 +47,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
@@ -224,6 +225,47 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         assertThatThrownBy(connection::unsubscriptionRequestBuilder).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
     }
 
+    @Test
+    void cleanupOfBrokenConnections() throws Exception {
+        AtomicBoolean failNow = new AtomicBoolean(false);
+        when(plcDriver.connect(anyString())).then(invocationOnMock -> {
+            DummyPlcConnection dummyPlcConnection = spy(new DummyPlcConnection(invocationOnMock.getArgument(0)));
+            // we fake an connection which breaks at this call
+            doAnswer(invocation -> {
+                if (failNow.get()) {
+                    throw new PlcConnectionException("blub");
+                }
+                return invocation.callRealMethod();
+            }).when(dummyPlcConnection).connect();
+            return dummyPlcConnection;
+        });
+
+        assertThat(SUT.getStatistics()).containsOnly(
+            entry("pools.count", 0)
+        );
+        PlcConnection connection = SUT.getConnection("dummydummy:breakIt");
+        assertThat(SUT.getStatistics()).containsOnly(
+            entry("pools.count", 1),
+            entry("dummydummy:breakIt.numActive", 1),
+            entry("dummydummy:breakIt.numIdle", 0)
+        );
+        failNow.set(true);
+        try {
+            connection.connect();
+            fail("This should throw an exception");
+        } catch (Exception e) {
+            // TODO: currently UndeclaredThrowableException is the top one which should be InvocationTargetException
+            //assertThat(e).isInstanceOf(InvocationTargetException.class);
+            assertThat(e).hasRootCauseInstanceOf(PlcConnectionException.class);
+        }
+        // Faulty connection should have been discarded
+        assertThat(SUT.getStatistics()).containsOnly(
+            entry("pools.count", 1),
+            entry("dummydummy:breakIt.numActive", 0),
+            entry("dummydummy:breakIt.numIdle", 0)
+        );
+    }
+
     @Nested
     class PoolCleanup {
         @Test
@@ -283,7 +325,6 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         }
     }
 
-
     class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {
 
         private final String url;
@@ -332,8 +373,8 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         }
 
         @Override
-        public void close() throws Exception {
-            throw new UnsupportedOperationException("this should never be called due to pool");
+        public void close() {
+            connected = false;
         }
 
         @Override

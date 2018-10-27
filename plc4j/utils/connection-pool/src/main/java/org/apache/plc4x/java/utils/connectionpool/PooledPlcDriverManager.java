@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,34 +76,42 @@ public class PooledPlcDriverManager extends PlcDriverManager {
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         PoolKey poolKey = PoolKey.of(url, authentication);
         ObjectPool<PlcConnection> pool = retrieveFromPool(poolKey);
-        try {
-            if (LOGGER.isDebugEnabled()) {
-                if (authentication != noPlcAuthentication) {
-                    LOGGER.debug("Try to borrow an object for url {} and authentication {}", url, authentication);
-                } else {
-                    LOGGER.debug("Try to borrow an object for url {}", url);
-                }
+        if (LOGGER.isDebugEnabled()) {
+            if (authentication != noPlcAuthentication) {
+                LOGGER.debug("Try to borrow an object for url {} and authentication {}", url, authentication);
+            } else {
+                LOGGER.debug("Try to borrow an object for url {}", url);
             }
-            PlcConnection plcConnection = pool.borrowObject();
-            // Used to invalidate a proxy
-            AtomicBoolean proxyInvalidated = new AtomicBoolean(false);
-            return (PlcConnection) Proxy.newProxyInstance(classLoader, new Class[]{PlcConnection.class}, (proxy, method, args) -> {
-                if (proxyInvalidated.get()) {
-                    throw new IllegalStateException("Proxy not valid anymore");
-                }
-                if ("close".equals(method.getName())) {
-                    LOGGER.debug("close called on {}. Returning to {}", plcConnection, pool);
-                    proxyInvalidated.set(true);
-                    pool.returnObject(plcConnection);
-                    return null;
-                } else {
-                    // TODO: add exception handler which catches exceptions like plcConnectionException and then invalidates them
-                    return method.invoke(plcConnection, args);
-                }
-            });
+        }
+        PlcConnection plcConnection;
+        try {
+            plcConnection = pool.borrowObject();
         } catch (Exception e) {
             throw new PlcConnectionException(e);
         }
+        // Used to invalidate a proxy
+        AtomicBoolean proxyInvalidated = new AtomicBoolean(false);
+        return (PlcConnection) Proxy.newProxyInstance(classLoader, new Class[]{PlcConnection.class}, (proxy, method, args) -> {
+            if (proxyInvalidated.get()) {
+                throw new IllegalStateException("Proxy not valid anymore");
+            }
+            if ("close".equals(method.getName())) {
+                LOGGER.debug("close called on {}. Returning to {}", plcConnection, pool);
+                proxyInvalidated.set(true);
+                pool.returnObject(plcConnection);
+                return null;
+            } else {
+                try {
+                    return method.invoke(plcConnection, args);
+                } catch (InvocationTargetException e) {
+                    if (e.getCause().getClass() == PlcConnectionException.class) {
+                        pool.invalidateObject(plcConnection);
+                        proxyInvalidated.set(true);
+                    }
+                    throw e;
+                }
+            }
+        });
     }
 
     private ObjectPool<PlcConnection> retrieveFromPool(PoolKey poolKey) {
