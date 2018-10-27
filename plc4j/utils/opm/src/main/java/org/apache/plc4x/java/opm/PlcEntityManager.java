@@ -86,11 +86,11 @@ import static net.bytebuddy.matcher.ElementMatchers.any;
  */
 public class PlcEntityManager {
 
+    public static final String PLC_ADDRESS_FIELD_NAME = "_plcAddress";
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityManager.class);
 
     private static final Configuration CONF = new SystemConfiguration();
     private static final long READ_TIMEOUT = CONF.getLong("org.apache.plc4x.java.opm.entity_manager.read_timeout", 1_000);
-    public static final String PLC_ADDRESS_FIELD_NAME = "_plcAddress";
 
     private final PlcDriverManager driverManager;
 
@@ -103,7 +103,7 @@ public class PlcEntityManager {
     }
 
     public <T> T read(Class<T> clazz, String address) throws OPMException {
-        PlcEntity annotation = getPlcEntityAndCheckPreconditions(clazz);
+        PlcEntity annotation = OpmUtils.getPlcEntityAndCheckPreconditions(clazz);
 
         try (PlcConnection connection = driverManager.getConnection(address)) {
             if (!connection.getMetadata().canRead()) {
@@ -156,7 +156,7 @@ public class PlcEntityManager {
      * @throws OPMException when proxy can't be build.
      */
     public <T> T connect(Class<T> clazz, String address) throws OPMException {
-        getPlcEntityAndCheckPreconditions(clazz);
+        OpmUtils.getPlcEntityAndCheckPreconditions(clazz);
         try {
             // Use Byte Buddy to generate a subclassed proxy that delegates all PlcField Methods
             // to the intercept method
@@ -179,20 +179,6 @@ public class PlcEntityManager {
         } catch (NoSuchFieldException e) {
             throw new IllegalStateException("Problem with field injection during proxy generation", e);
         }
-    }
-
-    private <T> PlcEntity getPlcEntityAndCheckPreconditions(Class<T> clazz) {
-        PlcEntity annotation = clazz.getAnnotation(PlcEntity.class);
-        if (annotation == null) {
-            throw new IllegalArgumentException("Given Class is no Plc Entity, i.e., not annotated with @PlcEntity");
-        }
-        // Check if default constructor exists
-        try {
-            clazz.getConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Cannot use PlcEntity without default constructor", e);
-        }
-        return annotation;
     }
 
     //------------------------------------------------------------------------------------------------
@@ -222,7 +208,7 @@ public class PlcEntityManager {
         LOGGER.trace("Invoked method {} on connected PlcEntity {}", method.getName(), entity);
 
         // Fetch connection from internal variable
-        String address = extractAddress(proxy);
+        String address = OpmUtils.extractAddress(proxy);
 
         if (method.getName().startsWith("get")) {
             if (method.getParameterCount() > 0) {
@@ -301,18 +287,6 @@ public class PlcEntityManager {
         } catch (Exception e) {
             throw new OPMException("Unknown Error", e);
         }
-    }
-
-    private static String extractAddress(Object proxy) throws OPMException {
-        String address;
-        try {
-            Field field = proxy.getClass().getDeclaredField(PLC_ADDRESS_FIELD_NAME);
-            field.setAccessible(true);
-            address = (String) field.get(proxy);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new OPMException("Problem with accessing internal plc address", e);
-        }
-        return address;
     }
 
 
