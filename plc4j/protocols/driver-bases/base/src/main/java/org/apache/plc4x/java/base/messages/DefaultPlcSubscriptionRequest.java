@@ -85,7 +85,15 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
     public LinkedList<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
             .stream()
-            .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), (PlcField) stringPlcFieldEntry.getValue()))
+            .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue().getPlcField()))
+            .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    @Override
+    public LinkedList<Pair<String, SubscriptionPlcField>> getNamedSubscriptionFields() {
+        return fields.entrySet()
+            .stream()
+            .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))
             .collect(Collectors.toCollection(LinkedList::new));
     }
 

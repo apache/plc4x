@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 
@@ -29,4 +30,6 @@ public interface InternalPlcSubscriptionRequest extends PlcSubscriptionRequest, 
     LinkedList<SubscriptionPlcField> getSubscriptionFields();
 
     LinkedHashMap<String, SubscriptionPlcField> getSubscriptionPlcFieldMap();
+
+    LinkedList<Pair<String, SubscriptionPlcField>> getNamedSubscriptionFields();
 }

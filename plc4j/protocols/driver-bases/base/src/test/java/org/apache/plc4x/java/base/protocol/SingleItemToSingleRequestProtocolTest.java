@@ -27,6 +27,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
@@ -38,7 +39,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
@@ -53,18 +57,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
-    PlcReader mockReader = null;
-    PlcWriter mockWriter = null;
-    PlcSubscriber mockSubscriber = null;
-
-    @InjectMocks
-    SingleItemToSingleRequestProtocol SUT = new SingleItemToSingleRequestProtocol(
-        mockReader,
-        mockWriter,
-        new HashedWheelTimer(),
-        TimeUnit.SECONDS.toMillis(1),
-        false
-    );
+    SingleItemToSingleRequestProtocol SUT;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     ChannelHandlerContext channelHandlerContext;
@@ -75,8 +68,23 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
     @Mock
     CompletableFuture<InternalPlcResponse> responseCompletableFuture;
 
+    @Mock
+    PlcReader mockReader;
+    @Mock
+    PlcWriter mockWriter;
+    @Mock
+    PlcSubscriber mockSubscriber;
+
     @BeforeEach
     void setUp() throws Exception {
+        SUT = new SingleItemToSingleRequestProtocol(
+            mockReader,
+            mockWriter,
+            mockSubscriber,
+            new HashedWheelTimer(),
+            TimeUnit.SECONDS.toMillis(1),
+            false
+        );
         SUT.channelRegistered(channelHandlerContext);
         when(channelHandlerContext.executor().inEventLoop()).thenReturn(true);
     }
@@ -142,152 +150,215 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
 
     @Nested
     class Roundtrip {
-        @Captor
-        ArgumentCaptor<PlcRequestContainer> plcRequestContainerArgumentCaptor;
+        @Nested
+        class Read {
+            @Captor
+            ArgumentCaptor<PlcRequestContainer> plcRequestContainerArgumentCaptor;
 
-        @Test
-        void simpleRead() throws Exception {
-            // Given
-            // we have a simple read
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
-            // When
-            // we write this
-            SUT.write(channelHandlerContext, msg, channelPromise);
-            // And
-            // and we simulate that all get responded
-            verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
-            List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
-            capturedDownstreamContainers.forEach(this::produceReadResponse);
-            // Then
-            // our complete container should complete normally
-            verify(responseCompletableFuture).complete(any());
-            // And we should have no memory leak
-            assertThat(SUT.getStatistics()).containsOnly(
-                entry("queue", 0),
-                entry("sentButUnacknowledgedSubContainer", 0),
-                entry("correlationToParentContainer", 0),
-                entry("containerCorrelationIdMap", 0),
-                entry("responsesToBeDelivered", 0),
-                entry("correlationIdGenerator", 5),
-                entry("erroredItems", 0L),
-                entry("deliveredItems", 5L),
-                entry("deliveredContainers", 1L),
-                entry("erroredContainers", 0L)
-            );
-        }
-
-        @Test
-        void partialRead() throws Exception {
-            // Given
-            // we have a simple read
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
-            // When
-            // we write this
-            SUT.write(channelHandlerContext, msg, channelPromise);
-            // And
-            // and we simulate that some one responded
-            verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
-            List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
-            capturedDownstreamContainers.stream().findFirst().map(this::produceReadResponse);
-            // Then
-            // We create SUT with 1 seconds timeout
-            TimeUnit.SECONDS.sleep(2);
-            // our complete container should complete normally
-            verify(responseCompletableFuture).completeExceptionally(any());
-            // And we should have no memory leak
-            assertThat(SUT.getStatistics()).containsOnly(
-                entry("queue", 0),
-                entry("sentButUnacknowledgedSubContainer", 0),
-                entry("correlationToParentContainer", 0),
-                entry("containerCorrelationIdMap", 0),
-                entry("responsesToBeDelivered", 0),
-                entry("correlationIdGenerator", 5),
-                entry("deliveredItems", 1L),
-                entry("erroredItems", 4L),
-                entry("deliveredContainers", 0L),
-                entry("erroredContainers", 1L)
-            );
-        }
-
-        @Test
-        void partialReadOneErrored() throws Exception {
-            // Given
-            // we have a simple read
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
-            // When
-            // we write this
-            SUT.write(channelHandlerContext, msg, channelPromise);
-            // And
-            // and we simulate that some one responded
-            verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
-            List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
-            capturedDownstreamContainers.stream()
-                .findFirst()
-                .map(plcRequestContainer ->
-                    plcRequestContainer
-                        .getResponseFuture()
-                        .completeExceptionally(new RuntimeException("ErrorOccurred"))
+            @Test
+            void simpleRead() throws Exception {
+                // Given
+                // we have a simple read
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // And
+                // and we simulate that all get responded
+                verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
+                List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
+                capturedDownstreamContainers.forEach(this::produceReadResponse);
+                // Then
+                // our complete container should complete normally
+                verify(responseCompletableFuture).complete(any());
+                // And we should have no memory leak
+                assertThat(SUT.getStatistics()).containsOnly(
+                    entry("queue", 0),
+                    entry("sentButUnacknowledgedSubContainer", 0),
+                    entry("correlationToParentContainer", 0),
+                    entry("containerCorrelationIdMap", 0),
+                    entry("responsesToBeDelivered", 0),
+                    entry("correlationIdGenerator", 5),
+                    entry("erroredItems", 0L),
+                    entry("deliveredItems", 5L),
+                    entry("deliveredContainers", 1L),
+                    entry("erroredContainers", 0L)
                 );
-            // Then
-            // We create SUT with 1 seconds timeout
-            TimeUnit.SECONDS.sleep(2);
-            // our complete container should complete normally
-            verify(responseCompletableFuture).completeExceptionally(any());
-            // And we should have no memory leak
-            assertThat(SUT.getStatistics()).containsOnly(
-                entry("queue", 0),
-                entry("sentButUnacknowledgedSubContainer", 0),
-                entry("correlationToParentContainer", 0),
-                entry("containerCorrelationIdMap", 0),
-                entry("responsesToBeDelivered", 0),
-                entry("correlationIdGenerator", 5),
-                entry("deliveredItems", 0L),
-                entry("erroredItems", 1L),
-                entry("deliveredContainers", 0L),
-                entry("erroredContainers", 1L)
-            );
+            }
+
+            @Test
+            void partialRead() throws Exception {
+                // Given
+                // we have a simple read
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // And
+                // and we simulate that some one responded
+                verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
+                List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
+                capturedDownstreamContainers.stream().findFirst().map(this::produceReadResponse);
+                // Then
+                // We create SUT with 1 seconds timeout
+                TimeUnit.SECONDS.sleep(2);
+                // our complete container should complete normally
+                verify(responseCompletableFuture).completeExceptionally(any());
+                // And we should have no memory leak
+                assertThat(SUT.getStatistics()).containsOnly(
+                    entry("queue", 0),
+                    entry("sentButUnacknowledgedSubContainer", 0),
+                    entry("correlationToParentContainer", 0),
+                    entry("containerCorrelationIdMap", 0),
+                    entry("responsesToBeDelivered", 0),
+                    entry("correlationIdGenerator", 5),
+                    entry("deliveredItems", 1L),
+                    entry("erroredItems", 4L),
+                    entry("deliveredContainers", 0L),
+                    entry("erroredContainers", 1L)
+                );
+            }
+
+            @Test
+            void partialReadOneErrored() throws Exception {
+                // Given
+                // we have a simple read
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // And
+                // and we simulate that some one responded
+                verify(channelHandlerContext, times(5)).write(plcRequestContainerArgumentCaptor.capture(), any());
+                List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
+                capturedDownstreamContainers.stream()
+                    .findFirst()
+                    .map(plcRequestContainer ->
+                        plcRequestContainer
+                            .getResponseFuture()
+                            .completeExceptionally(new RuntimeException("ErrorOccurred"))
+                    );
+                // Then
+                // We create SUT with 1 seconds timeout
+                TimeUnit.SECONDS.sleep(2);
+                // our complete container should complete normally
+                verify(responseCompletableFuture).completeExceptionally(any());
+                // And we should have no memory leak
+                assertThat(SUT.getStatistics()).containsOnly(
+                    entry("queue", 0),
+                    entry("sentButUnacknowledgedSubContainer", 0),
+                    entry("correlationToParentContainer", 0),
+                    entry("containerCorrelationIdMap", 0),
+                    entry("responsesToBeDelivered", 0),
+                    entry("correlationIdGenerator", 5),
+                    entry("deliveredItems", 0L),
+                    entry("erroredItems", 1L),
+                    entry("deliveredContainers", 0L),
+                    entry("erroredContainers", 1L)
+                );
+            }
+
+            @Test
+            void noRead() throws Exception {
+                // Given
+                // we have a simple read
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // And
+                // and we simulate that some one responded
+                verify(channelHandlerContext, times(5)).write(any(), any());
+                // Then
+                // We create SUT with 1 seconds timeout
+                TimeUnit.SECONDS.sleep(2);
+                // our complete container should complete normally
+                verify(responseCompletableFuture).completeExceptionally(any());
+                // And we should have no memory leak
+                assertThat(SUT.getStatistics()).containsOnly(
+                    entry("queue", 0),
+                    entry("sentButUnacknowledgedSubContainer", 0),
+                    entry("correlationToParentContainer", 0),
+                    entry("containerCorrelationIdMap", 0),
+                    entry("responsesToBeDelivered", 0),
+                    entry("correlationIdGenerator", 5),
+                    entry("deliveredItems", 0L),
+                    entry("erroredItems", 5L),
+                    entry("deliveredContainers", 0L),
+                    entry("erroredContainers", 1L)
+                );
+            }
+
+            @SuppressWarnings("unchecked")
+            private Void produceReadResponse(PlcRequestContainer plcRequestContainer) {
+                InternalPlcReadRequest request = (InternalPlcReadRequest) plcRequestContainer.getRequest();
+                // TODO: we need a response for every item
+                String fieldName = request.getFieldNames().iterator().next();
+                CompletableFuture responseFuture = plcRequestContainer.getResponseFuture();
+                HashMap<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseFields = new HashMap<>();
+                responseFields.put(fieldName, Pair.of(PlcResponseCode.OK, mock(BaseDefaultFieldItem.class)));
+                responseFuture.complete(new DefaultPlcReadResponse(request, responseFields));
+                return null;
+            }
         }
 
-        @Test
-        void noRead() throws Exception {
-            // Given
-            // we have a simple read
-            PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
-            // When
-            // we write this
-            SUT.write(channelHandlerContext, msg, channelPromise);
-            // And
-            // and we simulate that some one responded
-            verify(channelHandlerContext, times(5)).write(any(), any());
-            // Then
-            // We create SUT with 1 seconds timeout
-            TimeUnit.SECONDS.sleep(2);
-            // our complete container should complete normally
-            verify(responseCompletableFuture).completeExceptionally(any());
-            // And we should have no memory leak
-            assertThat(SUT.getStatistics()).containsOnly(
-                entry("queue", 0),
-                entry("sentButUnacknowledgedSubContainer", 0),
-                entry("correlationToParentContainer", 0),
-                entry("containerCorrelationIdMap", 0),
-                entry("responsesToBeDelivered", 0),
-                entry("correlationIdGenerator", 5),
-                entry("deliveredItems", 0L),
-                entry("erroredItems", 5L),
-                entry("deliveredContainers", 0L),
-                entry("erroredContainers", 1L)
-            );
+        @Nested
+        class Write {
+            // TODO: implement me
         }
 
-        @SuppressWarnings("unchecked")
-        private Void produceReadResponse(PlcRequestContainer plcRequestContainer) {
-            InternalPlcReadRequest request = (InternalPlcReadRequest) plcRequestContainer.getRequest();
-            String fieldName = request.getFieldNames().iterator().next();
-            CompletableFuture responseFuture = plcRequestContainer.getResponseFuture();
-            HashMap<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseFields = new HashMap<>();
-            responseFields.put(fieldName, Pair.of(PlcResponseCode.OK, mock(BaseDefaultFieldItem.class)));
-            responseFuture.complete(new DefaultPlcReadResponse(request, responseFields));
-            return null;
+        @Nested
+        class Subscribe {
+            @Captor
+            ArgumentCaptor<PlcRequestContainer> plcRequestContainerArgumentCaptor;
+
+            @Test
+            void simpleSubscribe() throws Exception {
+                // Given
+                // we have a simple read
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcSubscriptionRequest.build(mockSubscriber), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // And
+                // and we simulate that all get responded
+                verify(channelHandlerContext, times(3)).write(plcRequestContainerArgumentCaptor.capture(), any());
+                List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
+                capturedDownstreamContainers.forEach(this::produceSubscriptionResponse);
+                // Then
+                // our complete container should complete normally
+                verify(responseCompletableFuture).complete(any());
+                // And we should have no memory leak
+                assertThat(SUT.getStatistics()).containsOnly(
+                    entry("queue", 0),
+                    entry("sentButUnacknowledgedSubContainer", 0),
+                    entry("correlationToParentContainer", 0),
+                    entry("containerCorrelationIdMap", 0),
+                    entry("responsesToBeDelivered", 0),
+                    entry("correlationIdGenerator", 3),
+                    entry("erroredItems", 0L),
+                    entry("deliveredItems", 3L),
+                    entry("deliveredContainers", 1L),
+                    entry("erroredContainers", 0L)
+                );
+            }
+
+            @Test
+            void simpleUnsubscribe() {
+                // TODO: implement me
+            }
+
+            @SuppressWarnings("unchecked")
+            private Void produceSubscriptionResponse(PlcRequestContainer plcRequestContainer) {
+                InternalPlcSubscriptionRequest request = (InternalPlcSubscriptionRequest) plcRequestContainer.getRequest();
+                // TODO: we need a response for every item
+                String fieldName = request.getFieldNames().iterator().next();
+                CompletableFuture responseFuture = plcRequestContainer.getResponseFuture();
+                HashMap<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseFields = new HashMap<>();
+                responseFields.put(fieldName, Pair.of(PlcResponseCode.OK, mock(PlcSubscriptionHandle.class)));
+                responseFuture.complete(new DefaultPlcSubscriptionResponse(request, responseFields));
+                return null;
+            }
         }
     }
 
@@ -437,8 +508,11 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         }
 
         private static TestDefaultPlcSubscriptionRequest build(PlcSubscriber subscriber) {
-            // TODO: implement me once available
-            return new TestDefaultPlcSubscriptionRequest(subscriber, new LinkedHashMap<>());
+            LinkedHashMap<String, SubscriptionPlcField> fields = new LinkedHashMap<>();
+            fields.put("sub1", mock(SubscriptionPlcField.class));
+            fields.put("sub2", mock(SubscriptionPlcField.class));
+            fields.put("sub3", mock(SubscriptionPlcField.class));
+            return new TestDefaultPlcSubscriptionRequest(subscriber, fields);
         }
     }
 
@@ -449,8 +523,11 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
         }
 
         private static TestDefaultPlcUnsubscriptionRequest build(PlcSubscriber subscriber) {
-            // TODO: implement me once available
-            return new TestDefaultPlcUnsubscriptionRequest(subscriber, Collections.emptyList());
+            List<InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles = new LinkedList<>();
+            internalPlcSubscriptionHandles.add(mock(InternalPlcSubscriptionHandle.class));
+            internalPlcSubscriptionHandles.add(mock(InternalPlcSubscriptionHandle.class));
+            internalPlcSubscriptionHandles.add(mock(InternalPlcSubscriptionHandle.class));
+            return new TestDefaultPlcUnsubscriptionRequest(subscriber, internalPlcSubscriptionHandles);
         }
     }
 }

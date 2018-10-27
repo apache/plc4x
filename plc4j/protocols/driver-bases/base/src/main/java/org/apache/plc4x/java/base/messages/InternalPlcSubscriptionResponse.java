@@ -18,8 +18,13 @@
  */
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-public interface InternalPlcSubscriptionResponse extends PlcSubscriptionResponse {
+import java.util.Map;
 
+public interface InternalPlcSubscriptionResponse extends PlcSubscriptionResponse, InternalPlcResponse {
+    Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> getValues();
 }

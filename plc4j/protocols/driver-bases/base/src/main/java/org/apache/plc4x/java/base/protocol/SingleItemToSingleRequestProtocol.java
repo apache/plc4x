@@ -28,9 +28,11 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcTimeoutException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +52,10 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     private final Timer timer;
 
     private final PlcReader reader;
+
     private final PlcWriter writer;
+
+    private final PlcSubscriber subscriber;
 
     // TODO: maybe better get from map
     private long defaultReceiveTimeout;
@@ -84,17 +89,18 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     private AtomicLong erroredItems;
 
-    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, Timer timer) {
-        this(reader, writer, timer, true);
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer) {
+        this(reader, writer, subscriber, timer, true);
     }
 
-    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, Timer timer, boolean betterImplementationPossible) {
-        this(reader, writer, timer, TimeUnit.SECONDS.toMillis(30), betterImplementationPossible);
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, boolean betterImplementationPossible) {
+        this(reader, writer, subscriber, timer, TimeUnit.SECONDS.toMillis(30), betterImplementationPossible);
     }
 
-    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, Timer timer, long defaultReceiveTimeout, boolean betterImplementationPossible) {
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, long defaultReceiveTimeout, boolean betterImplementationPossible) {
         this.reader = reader;
         this.writer = writer;
+        this.subscriber = subscriber;
         this.timer = timer;
         this.defaultReceiveTimeout = defaultReceiveTimeout;
         if (betterImplementationPossible) {
@@ -201,6 +207,16 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                     .forEach(stringPairMap -> stringPairMap.forEach(values::put));
 
                 plcResponse = new DefaultPlcWriteResponse(internalPlcWriteRequest, values);
+            } else if (originalPlcRequestContainer.getRequest() instanceof InternalPlcSubscriptionRequest) {
+                InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = (InternalPlcSubscriptionRequest) originalPlcRequestContainer.getRequest();
+                HashMap<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> fields = new HashMap<>();
+
+                correlatedResponseItems.stream()
+                    .map(InternalPlcSubscriptionResponse.class::cast)
+                    .map(InternalPlcSubscriptionResponse::getValues)
+                    .forEach(stringPairMap -> stringPairMap.forEach(fields::put));
+
+                plcResponse = new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, fields);
             } else {
                 errored(currentTdpu, new PlcProtocolException("Unknown type detected " + originalPlcRequestContainer.getRequest().getClass()), originalResponseFuture);
                 return;
@@ -304,6 +320,32 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                                 }
                             });
                         PlcRequestContainer<CorrelatedPlcWriteRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcWriteRequest.of(writer, fieldItemTriple, tdpu), correlatedCompletableFuture);
+                        correlationToParentContainer.put(tdpu, in);
+                        queue.add(correlatedPlcRequestContainer, subPromise);
+                        if (!tdpus.add(tdpu)) {
+                            throw new IllegalStateException("AtomicInteger should not create duplicated ids: " + tdpu);
+                        }
+                        promiseCombiner.add((Future) subPromise);
+                    });
+                    // TODO: add sub/unsub
+                } else if (internalPlcFieldRequest instanceof InternalPlcSubscriptionRequest) {
+                    InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = (InternalPlcSubscriptionRequest) internalPlcFieldRequest;
+                    internalPlcSubscriptionRequest.getNamedSubscriptionFields().forEach(field -> {
+                        ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
+
+                        Integer tdpu = correlationIdGenerator.getAndIncrement();
+                        CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>();
+                        // Important: don't chain to above as we want the above to be completed not the result of when complete
+                        correlatedCompletableFuture
+                            .thenApply(InternalPlcResponse.class::cast)
+                            .whenComplete((internalPlcResponse, throwable) -> {
+                                if (throwable != null) {
+                                    errored(tdpu, throwable, in.getResponseFuture());
+                                } else {
+                                    tryFinish(tdpu, internalPlcResponse, in.getResponseFuture());
+                                }
+                            });
+                        PlcRequestContainer<CorrelatedPlcSubscriptionRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcSubscriptionRequest.of(subscriber, field, tdpu), correlatedCompletableFuture);
                         correlationToParentContainer.put(tdpu, in);
                         queue.add(correlatedPlcRequestContainer, subPromise);
                         if (!tdpus.add(tdpu)) {
@@ -421,6 +463,27 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
             LinkedHashMap<String, Pair<PlcField, BaseDefaultFieldItem>> fields = new LinkedHashMap<>();
             fields.put(fieldItemTriple.getLeft(), Pair.of(fieldItemTriple.getMiddle(), fieldItemTriple.getRight()));
             return new CorrelatedPlcWriteRequest(writer, fields, tdpu);
+        }
+
+        @Override
+        public int getTdpu() {
+            return tdpu;
+        }
+    }
+
+    protected static class CorrelatedPlcSubscriptionRequest extends DefaultPlcSubscriptionRequest implements CorrelatedPlcRequest {
+
+        protected final int tdpu;
+
+        protected CorrelatedPlcSubscriptionRequest(PlcSubscriber subscriber, LinkedHashMap<String, SubscriptionPlcField> fields, int tdpu) {
+            super(subscriber, fields);
+            this.tdpu = tdpu;
+        }
+
+        protected static CorrelatedPlcSubscriptionRequest of(PlcSubscriber subscriber, Pair<String, SubscriptionPlcField> stringPlcFieldPair, int tdpu) {
+            LinkedHashMap<String, SubscriptionPlcField> fields = new LinkedHashMap<>();
+            fields.put(stringPlcFieldPair.getKey(), stringPlcFieldPair.getValue());
+            return new CorrelatedPlcSubscriptionRequest(subscriber, fields, tdpu);
         }
 
         @Override

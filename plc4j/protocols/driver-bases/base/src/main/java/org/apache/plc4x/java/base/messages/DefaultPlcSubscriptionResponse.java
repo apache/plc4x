@@ -82,4 +82,8 @@ public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionRe
         return values.values().stream().map(Pair::getValue).collect(Collectors.toList());
     }
 
+    @Override
+    public Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> getValues() {
+        return values;
+    }
 }

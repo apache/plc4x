@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.LinkedList;
 
-public interface InternalPlcFieldRequest extends PlcFieldRequest {
+public interface InternalPlcFieldRequest extends PlcFieldRequest, InternalPlcRequest {
 
     LinkedList<Pair<String, PlcField>> getNamedFields();
 
