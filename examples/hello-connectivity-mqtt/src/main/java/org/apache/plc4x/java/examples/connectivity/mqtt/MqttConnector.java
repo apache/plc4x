@@ -33,7 +33,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.examples.connectivity.mqtt.model.Configuration;
 import org.apache.plc4x.java.examples.connectivity.mqtt.model.PlcFieldConfig;
-import org.apache.plc4x.java.examples.connectivity.mqtt.model.PlcMemoryBlock;
 import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
@@ -95,21 +94,19 @@ public class MqttConnector {
 
             // Create a new read request.
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            for(PlcMemoryBlock plcMemoryBlock : config.getPlcConfig().getPlcMemoryBlocks()) {
-                for (PlcFieldConfig address : config.getPlcConfig().getPlcFields()) {
-                    builder = builder.addItem(plcMemoryBlock.getName() + "/" + address.getName(),
-                        "DATA_BLOCKS/" + plcMemoryBlock.getAddress() + "/" + address.getAddress());
-                }
+            for (PlcFieldConfig fieldConfig : config.getPlcConfig().getPlcFields()) {
+                builder = builder.addItem(fieldConfig.getName(), fieldConfig.getAddress());
             }
             PlcReadRequest readRequest = builder.build();
 
             // Send a message containing the PLC read response.
             Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter -> {
                 PlcReadResponse response = readRequest.execute().get();
+                String jsonPayload = getPayload(response);
                 final Mqtt3Publish publishMessage = Mqtt3Publish.builder()
                     .topic(config.getMqttConfig().getTopicName())
                     .qos(MqttQos.AT_LEAST_ONCE)
-                    .payload(getPayload(response))
+                    .payload(jsonPayload.getBytes())
                     .build();
                 emitter.onNext(publishMessage);
             });
@@ -132,18 +129,18 @@ public class MqttConnector {
         }
     }
 
-    private static byte[] getPayload(PlcReadResponse response) {
+    private String getPayload(PlcReadResponse response) {
         JsonObject jsonObject = new JsonObject();
         response.getFieldNames().forEach(fieldName -> {
             if(response.getNumberOfValues(fieldName) == 1) {
-                jsonObject.addProperty(fieldName, Byte.toString(response.getByte(fieldName)));
+                jsonObject.addProperty(fieldName, response.getObject(fieldName).toString());
             } else if (response.getNumberOfValues(fieldName) > 1) {
                 JsonArray values = new JsonArray();
                 response.getAllBytes(fieldName).forEach(values::add);
                 jsonObject.add(fieldName, values);
             }
         });
-        return jsonObject.toString().getBytes();
+        return jsonObject.toString();
     }
 
     public static void main(String[] args) throws Exception {

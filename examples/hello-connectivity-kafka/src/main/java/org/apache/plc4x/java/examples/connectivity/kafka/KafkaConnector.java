@@ -96,7 +96,7 @@ public class KafkaConnector {
             JsonObject jsonObject = new JsonObject();
             value.getFieldNames().forEach(fieldName -> {
                 if(value.getNumberOfValues(fieldName) == 1) {
-                    jsonObject.addProperty(fieldName, Byte.toString(value.getByte(fieldName)));
+                    jsonObject.addProperty(fieldName, value.getObject(fieldName).toString());
                 } else if (value.getNumberOfValues(fieldName) > 1) {
                     JsonArray values = new JsonArray();
                     value.getAllBytes(fieldName).forEach(values::add);

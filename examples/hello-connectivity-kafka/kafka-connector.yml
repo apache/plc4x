@@ -19,17 +19,16 @@
 ---
 kafka:
   topic-name: test-topic
-  bootstrap-servers: localhost
-  server-port: 1234
+  bootstrap-servers: localhost:9092
 plc:
-  connection: s7://192.168.0.1/1/1
+  connection: test:plc4x-example-mqtt
   addresses:
-    - name: param1
-      address: INPUTS/0
-      size: 1
-      type: java.lang.Byte
-    - name: param2
-      address: OUTPUTS/0
-      size: 1
-      type: java.lang.Byte
+  - name: intParam1
+    address: RANDOM/foo:INTEGER
+    size: 1
+    type: java.lang.Integer
+  - name: intParam2
+    address: RANDOM/bar:INTEGER
+    size: 1
+    type: java.lang.Integer
 polling-interval: 1000
