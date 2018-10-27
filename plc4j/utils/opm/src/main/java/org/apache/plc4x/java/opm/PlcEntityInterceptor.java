@@ -74,6 +74,8 @@ public class PlcEntityInterceptor {
      * @param proxy    Object to intercept
      * @param method   Method that was intercepted
      * @param callable Callable to call the method after fetching the values
+     * @param address  Address of the plc (injected from private field)
+     * @param driverManager DriverManager instance to use (injected from private field)
      * @return possible result of the original methods invocation
      * @throws OPMException Problems with plc / proxying
      */
@@ -131,7 +133,7 @@ public class PlcEntityInterceptor {
      * @param driverManager
      * @throws OPMException on various errors.
      */
-    private static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address) throws OPMException {
+    static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
         PlcEntity plcEntity = entityClass.getAnnotation(PlcEntity.class);
@@ -188,22 +190,26 @@ public class PlcEntityInterceptor {
         String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
         LOGGER.trace("Looking for field with name {} after invokation of getter {}", variable, m.getName());
         PlcField annotation;
+        Field field;
         try {
-            annotation = m.getDeclaringClass().getDeclaredField(variable).getDeclaredAnnotation(PlcField.class);
+            field = m.getDeclaringClass().getDeclaredField(variable);
+            annotation = field.getDeclaredAnnotation(PlcField.class);
         } catch (NoSuchFieldException e) {
             throw new OPMException("Unable to identify field annotated field for call to " + m.getName(), e);
         }
         try (PlcConnection connection = driverManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
 
-            // Assume to do the query here...
+            // Use Fully qualified Name as field index
+            String fqn = field.getDeclaringClass().getName() + "." + field.getName();
+
             PlcReadRequest request = connection.readRequestBuilder()
-                .addItem(m.getName(), annotation.value())
+                .addItem(fqn, annotation.value())
                 .build();
 
             PlcReadResponse response = getPlcReadResponse(request);
 
-            return getTyped(m.getReturnType(), response, m.getName());
+            return getTyped(m.getReturnType(), response, fqn);
         } catch (ClassCastException e) {
             throw new OPMException("Unable to return response as suitable type", e);
         } catch (Exception e) {

@@ -31,4 +31,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 public @interface PlcField {
     String value();
+    // TODO enable both annotation values in the Interceptor / Entitymanager
+    long cacheDurationMillis() default 1000;
+    boolean throwOnUnavailable() default true;
 }

@@ -71,9 +71,11 @@ import static net.bytebuddy.matcher.ElementMatchers.any;
  * Thus, all operations on fields that are annotated with {@link PlcField} are always done against the "live" values
  * from the PLC.
  * <p>
- * All invocations on the getters are forwarded to the {@link PlcEntityInterceptor#intercept(Object, Method, Callable, Object)}
+ * A connected @{@link PlcEntity} can be disconnected calling {@link #disconnect(Object)}, then it behaves like the
+ * regular Pojo it was before.
+ * <p>
+ * All invocations on the getters are forwarded to the {@link PlcEntityInterceptor#intercept(Object, Method, Callable, String, PlcDriverManager)}
  * method.
- * // TODO Add detach method
  */
 public class PlcEntityManager {
 
@@ -163,9 +165,35 @@ public class PlcEntityManager {
             // Set connection value into the private field
             FieldUtils.writeDeclaredField(instance, PLC_ADDRESS_FIELD_NAME, address, true);
             FieldUtils.writeDeclaredField(instance, DRIVER_MANAGER_FIELD_NAME, driverManager, true);
+
+            // Initially fetch all values
+            PlcEntityInterceptor.refetchAllFields(instance, driverManager, address);
+
             return instance;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new OPMException("Unable to instantiate Proxy", e);
+        }
+    }
+
+    /**
+     * Disconnects the given instance.
+     * @param entity Instance of a PlcEntity.
+     * @throws OPMException Is thrown when the plc is already disconnected or no entity.
+     */
+    public void disconnect(Object entity) throws OPMException {
+        // Check if this is an entity
+        PlcEntity annotation = entity.getClass().getSuperclass().getAnnotation(PlcEntity.class);
+        if (annotation == null) {
+            throw new OPMException("Unable to disconnect Object, is no entity!");
+        }
+        try {
+            Object manager = FieldUtils.readDeclaredField(entity, DRIVER_MANAGER_FIELD_NAME, true);
+            if (manager == null) {
+                throw new OPMException("Instance is already disconnected!");
+            }
+            FieldUtils.writeDeclaredField(entity, DRIVER_MANAGER_FIELD_NAME, null, true);
+        } catch (IllegalAccessException e) {
+            throw new OPMException("Unbale to fetch driverManager instance on entity instance", e);
         }
     }
 

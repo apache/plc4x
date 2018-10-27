@@ -1,0 +1,61 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== What is Object Plc Mapping (OPM)?
+
+ASDF:
+
+....
+    public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
+
+        private static final int MODBUS_TCP_PORT = 502;
+
+        public ModbusTcpPlcConnection(InetAddress address, String params) {
+            this(new TcpSocketChannelFactory(address, MODBUS_TCP_PORT), params);
+            logger.info("Configured ModbusTcpPlcConnection with: host-name {}", address.getHostAddress());
+        }
+
+        ModbusTcpPlcConnection(ChannelFactory channelFactory, String params) {
+            super(channelFactory, params);
+        }
+
+        @Override
+        protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+            return new ChannelInitializer() {
+                @Override
+                protected void initChannel(Channel channel) {
+                    // Build the protocol stack for communicating with the modbus protocol.
+                    ChannelPipeline pipeline = channel.pipeline();
+                    pipeline.addLast(new ModbusTcpProtocol());
+                    pipeline.addLast(new ModbusProtocol());
+                    pipeline.addLast(new Plc4XModbusProtocol());
+                }
+            };
+        }
+
+    }
+....
+
+As you can see in above example there are two constructors.
+The first one is the default, which establishes a connection using the default connector.
+As the TCP variant of the `Modbus` protocol uses normal TCP, a `TcpSocketChannelFactory` instance is used.
+However in order to test the driver, a unit- or integration-test can use the second constructor to inject a different `ChannelFactory`.
+Notice that this constructor can be package-private if the test-case is in the same package.
+Here the `TestConnectionFactory` will allow creating tests without having to worry about the physical connection and all problems that come with it.
+
+The pipeline itself is created in the `getChannelHandler` method.
+Here you have to keep in mind that the layer that is closest to the connection has to be added first, the `PLC4X Layer` last.

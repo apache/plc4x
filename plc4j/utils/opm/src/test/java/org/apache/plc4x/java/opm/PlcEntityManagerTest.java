@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.opm;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
@@ -51,6 +52,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 
@@ -88,29 +91,7 @@ public class PlcEntityManagerTest {
 
     @Test
     public void readComplexObject() throws PlcConnectionException, OPMException {
-        Map<String, BaseDefaultFieldItem> map = new HashMap<>();
-        String prefix = ConnectedEntity.class.getName() + ".";
-        map.put(prefix + "boolVar", new DefaultBooleanFieldItem(true));
-        map.put(prefix + "byteVar", new DefaultByteFieldItem((byte) 1));
-        map.put(prefix + "shortVar", new DefaultShortFieldItem((short) 1));
-        map.put(prefix + "intVar", new DefaultIntegerFieldItem(1));
-        map.put(prefix + "longVar", new DefaultLongFieldItem(1l));
-        map.put(prefix + "boxedBoolVar", new DefaultLongFieldItem(1L));
-        map.put(prefix + "boxedByteVar", new DefaultByteFieldItem((byte) 1));
-        map.put(prefix + "boxedShortVar", new DefaultShortFieldItem((short) 1));
-        map.put(prefix + "boxedIntegerVar", new DefaultIntegerFieldItem(1));
-        map.put(prefix + "boxedLongVar", new DefaultLongFieldItem(1l));
-        map.put(prefix + "bigIntegerVar", new DefaultBigIntegerFieldItem(BigInteger.ONE));
-        map.put(prefix + "floatVar", new DefaultFloatFieldItem(1f));
-        map.put(prefix + "doubleVar", new DefaultDoubleFieldItem(1d));
-        map.put(prefix + "bigDecimalVar", new DefaultBigDecimalFieldItem(BigDecimal.ONE));
-        map.put(prefix + "localTimeVar", new DefaultLocalTimeFieldItem(LocalTime.of(1, 1)));
-        map.put(prefix + "localDateVar", new DefaultLocalDateFieldItem(LocalDate.of(1, 1, 1)));
-        map.put(prefix + "localDateTimeVar", new DefaultLocalDateTimeFieldItem(LocalDateTime.of(1, 1, 1, 1, 1)));
-        map.put(prefix + "byteArrayVar", new DefaultByteArrayFieldItem(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "bigByteArrayVar", new DefaultByteArrayFieldItem(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "stringVar", new DefaultStringFieldItem("Hallo"));
-        PlcEntityManager manager = getPlcEntityManager(map);
+        PlcEntityManager manager = getInitializedEntityManager();
 
         ConnectedEntity connect = manager.read(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
@@ -124,6 +105,19 @@ public class PlcEntityManagerTest {
 
     @Test
     public void connect_callComplexMethod() throws PlcConnectionException, OPMException {
+        PlcEntityManager manager = getInitializedEntityManager();
+
+        ConnectedEntity connect = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
+
+        Assert.assertNotNull(connect);
+
+        // Call different mehtod
+        String s = connect.toString();
+
+        assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedBoolVar=true, boxedByteVar=1, boxedShortVar=1, boxedIntegerVar=1, boxedLongVar=1, bigIntegerVar=1, floatVar=1.0, doubleVar=1.0, bigDecimalVar=1, localTimeVar=01:01, localDateVar=0001-01-01, localDateTimeVar=0001-01-01T01:01, byteArrayVar=[0, 1], bigByteArrayVar=[0, 1], stringVar='Hallo'}", s);
+    }
+
+    private PlcEntityManager getInitializedEntityManager() throws PlcConnectionException {
         Map<String, BaseDefaultFieldItem> map = new HashMap<>();
         String prefix = ConnectedEntity.class.getName() + ".";
         map.put(prefix + "boolVar", new DefaultBooleanFieldItem(true));
@@ -146,25 +140,12 @@ public class PlcEntityManagerTest {
         map.put(prefix + "byteArrayVar", new DefaultByteArrayFieldItem(new Byte[]{0x0, 0x1}));
         map.put(prefix + "bigByteArrayVar", new DefaultByteArrayFieldItem(new Byte[]{0x0, 0x1}));
         map.put(prefix + "stringVar", new DefaultStringFieldItem("Hallo"));
-        PlcEntityManager manager = getPlcEntityManager(map);
-
-        ConnectedEntity connect = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
-
-        Assert.assertNotNull(connect);
-
-        // Call different mehtod
-        String s = connect.toString();
-
-        assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedBoolVar=true, boxedByteVar=1, boxedShortVar=1, boxedIntegerVar=1, boxedLongVar=1, bigIntegerVar=1, floatVar=1.0, doubleVar=1.0, bigDecimalVar=1, localTimeVar=01:01, localDateVar=0001-01-01, localDateTimeVar=0001-01-01T01:01, byteArrayVar=[0, 1], bigByteArrayVar=[0, 1], stringVar='Hallo'}", s);
+        return getPlcEntityManager(map);
     }
 
     @Test
     public void connect_callGetter() throws PlcConnectionException, OPMException {
-        Map<String, BaseDefaultFieldItem> map = new HashMap<>();
-        map.put("getIntVar", new DefaultIntegerFieldItem(1));
-        map.put("getStringVar", new DefaultStringFieldItem("Hello"));
-        map.put("isBoolVar", new DefaultBooleanFieldItem(true));
-        PlcEntityManager manager = getPlcEntityManager(map);
+        PlcEntityManager manager = getInitializedEntityManager();
 
         ConnectedEntity connect = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
@@ -172,8 +153,36 @@ public class PlcEntityManagerTest {
 
         // Call getter
         assertEquals(1, connect.getIntVar());
-        assertEquals("Hello", connect.getStringVar());
+        assertEquals("Hallo", connect.getStringVar());
         assertEquals(true, connect.isBoolVar());
+    }
+
+    @Test
+    public void disconnect() throws PlcConnectionException, OPMException, IllegalAccessException {
+        PlcEntityManager manager = getInitializedEntityManager();
+
+        ConnectedEntity connected = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
+
+        manager.disconnect(connected);
+
+        // Assert disconnected
+        Object o = FieldUtils.readDeclaredField(connected, PlcEntityManager.DRIVER_MANAGER_FIELD_NAME, true);
+        assertNull(o);
+
+        // Call a method and receive the result
+        // We are ok if a result is received and no NPE is thrown, then everything works as expected
+        assertNotNull(connected.toString());
+        assertNotNull(connected.getByteVar());
+    }
+
+    @Test(expected = OPMException.class)
+    public void disconnectTwice_throwsException() throws PlcConnectionException, OPMException {
+        PlcEntityManager manager = getPlcEntityManager(new HashMap<>());
+
+        ConnectedEntity connected = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
+
+        manager.disconnect(connected);
+        manager.disconnect(connected);
     }
 
     private PlcEntityManager getPlcEntityManager(final Map<String, BaseDefaultFieldItem> responses) throws PlcConnectionException {
