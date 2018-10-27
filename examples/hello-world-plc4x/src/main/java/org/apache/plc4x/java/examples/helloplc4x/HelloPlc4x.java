@@ -23,86 +23,89 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
 public class HelloPlc4x {
+
+    private static final Logger logger = LoggerFactory.getLogger(HelloPlc4x.class);
 
     /**
      * Example code do demonstrate using PLC4X.
      *
      * @param args ignored.
      */
-public static void main(String[] args) throws Exception {
-    if (args.length < 2) {
-        System.out.println("Usage: HelloPlc4x {connection-string} {address-string}+");
-        System.out.println("Example: HelloPlc4x s7://10.10.64.20/1/1 %Q0.0:BOOL %Q0:BYTE");
-        return;
-    }
-
-    // Establish a connection to the plc using the url provided as first argument
-    try (PlcConnection plcConnection = new PlcDriverManager().getConnection(args[0])) {
-
-        // Check if this connection support reading of data.
-        if (!plcConnection.getMetadata().canRead()) {
-            System.err.println("This connection doesn't support reading.");
+    public static void main(String[] args) throws Exception {
+        if (args.length < 2) {
+            logger.info("Usage: HelloPlc4x {connection-string} {address-string}+");
+            logger.info("Example: HelloPlc4x test:plc4x-example-mqtt RANDOM/foo:INTEGER RANDOM/bar:INTEGER");
             return;
         }
 
-        // Create a new read request:
-        // - Give the single item requested the alias name "value"
-        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-        for (int i = 1; i < args.length; i++) {
-            builder.addItem("value-" + i, args[i]);
+        // Establish a connection to the plc using the url provided as first argument
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(args[0])) {
+
+            // Check if this connection support reading of data.
+            if (!plcConnection.getMetadata().canRead()) {
+                logger.error("This connection doesn't support reading.");
+                return;
+            }
+
+            // Create a new read request:
+            // - Give the single item requested the alias name "value"
+            PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+            for (int i = 1; i < args.length; i++) {
+                builder.addItem("value-" + i, args[i]);
+            }
+            PlcReadRequest readRequest = builder.build();
+
+            //////////////////////////////////////////////////////////
+            // Read synchronously ...
+            // NOTICE: the ".get()" immediately lets this thread pause until
+            // the response is processed and available.
+            logger.info("Synchronous request ...");
+            PlcReadResponse syncResponse = readRequest.execute().get();
+            // Simply iterating over the field names returned in the response.
+            printResponse(syncResponse);
+
+            //////////////////////////////////////////////////////////
+            // Read asynchronously ...
+            // Register a callback executed as soon as a response arrives.
+            logger.info("Asynchronous request ...");
+            CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
+            asyncResponse.whenComplete((readResponse, throwable) -> {
+                if (readResponse != null) {
+                    printResponse(syncResponse);
+                } else {
+                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
+                }
+            });
         }
-        PlcReadRequest readRequest = builder.build();
-
-        //////////////////////////////////////////////////////////
-        // Read synchronously ...
-        // NOTICE: the ".get()" immediately lets this thread pause until
-        // the response is processed and available.
-        System.out.println("Synchronous request ...");
-        PlcReadResponse syncResponse = readRequest.execute().get();
-        // Simply iterating over the field names returned in the response.
-        printResponse(syncResponse);
-
-        //////////////////////////////////////////////////////////
-        // Read asynchronously ...
-        // Register a callback executed as soon as a response arrives.
-        System.out.println("Asynchronous request ...");
-        CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
-        asyncResponse.whenComplete((readResponse, throwable) -> {
-            if (readResponse != null) {
-                printResponse(syncResponse);
-            } else {
-                System.err.println("An error occurred: " + throwable.getMessage());
-                throwable.printStackTrace();
-            }
-        });
     }
-}
 
-private static void printResponse(PlcReadResponse response) {
-    for (String fieldName : response.getFieldNames()) {
-        if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-            int numValues = response.getNumberOfValues(fieldName);
-            // If it's just one element, output just one single line.
-            if(numValues == 1) {
-                System.out.println("Value[" + fieldName + "]: " + response.getObject(fieldName));
-            }
-            // If it's more than one element, output each in a single row.
-            else {
-                System.out.println("Value[" + fieldName + "]:");
-                for(int i = 0; i < numValues; i++) {
-                    System.out.println(" - " + response.getObject(fieldName, i));
+    private static void printResponse(PlcReadResponse response) {
+        for (String fieldName : response.getFieldNames()) {
+            if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
+                int numValues = response.getNumberOfValues(fieldName);
+                // If it's just one element, output just one single line.
+                if(numValues == 1) {
+                    logger.info("Value[" + fieldName + "]: " + response.getObject(fieldName));
+                }
+                // If it's more than one element, output each in a single row.
+                else {
+                    logger.info("Value[" + fieldName + "]:");
+                    for(int i = 0; i < numValues; i++) {
+                        logger.info(" - " + response.getObject(fieldName, i));
+                    }
                 }
             }
-        }
-        // Something went wrong, to output an error message instead.
-        else {
-            System.out.println("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
+            // Something went wrong, to output an error message instead.
+            else {
+                logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
+            }
         }
     }
-}
 
 }

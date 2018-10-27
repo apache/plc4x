@@ -54,6 +54,12 @@
       <version>0.2.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-protocol-test</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -78,6 +84,7 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-protocol-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-protocol-test</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>
