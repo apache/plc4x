@@ -28,7 +28,7 @@ import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.List;
 public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField createField(String fieldQuery) {
         if (S7Field.matches(fieldQuery)) {
             return S7Field.of(fieldQuery);
         }
@@ -302,8 +302,8 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
             BigInteger value;
             if (val instanceof BigInteger) {
                 value = (BigInteger) val;
-            } else if (((val instanceof Byte) || (val instanceof Short) ||
-                (val instanceof Integer) || (val instanceof Long))) {
+            } else if ((val instanceof Byte) || (val instanceof Short) ||
+                (val instanceof Integer) || (val instanceof Long)) {
                 value = BigInteger.valueOf(((Number) val).longValue());
             } else {
                 throw new IllegalArgumentException(
@@ -435,9 +435,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 Byte byteValue = (Byte) value;
                 byte[] stringBytes = new byte[]{byteValue};
                 if (encoding16Bit) {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-16")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-8")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
             } else if (value instanceof Short) {
                 Short shortValue = (Short) value;
@@ -445,9 +445,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 stringBytes[0] = (byte) (shortValue >> 8);
                 stringBytes[1] = (byte) (shortValue & 0xFF);
                 if (encoding16Bit) {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-16")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-8")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
             } else if (value instanceof Integer) {
                 Integer integerValue = (Integer) value;
@@ -457,9 +457,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 stringBytes[2] = (byte) ((integerValue >> 8) & 0xFF);
                 stringBytes[3] = (byte) (integerValue & 0xFF);
                 if (encoding16Bit) {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-16")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-8")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
             } else if (value instanceof Long) {
                 Long longValue = (Long) value;
@@ -473,9 +473,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 stringBytes[6] = (byte) ((longValue >> 8) & 0xFF);
                 stringBytes[7] = (byte) (longValue & 0xFF);
                 if (encoding16Bit) {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-16")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-8")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
             } else {
                 throw new IllegalArgumentException(

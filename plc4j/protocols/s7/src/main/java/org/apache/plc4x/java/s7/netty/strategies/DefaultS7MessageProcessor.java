@@ -33,9 +33,9 @@ import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.java.s7.netty.util.S7RequestSizeCalculator;
 import org.apache.plc4x.java.s7.netty.util.S7ResponseSizeEstimator;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -64,8 +64,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     }
 
     @Override
-    public Collection<? extends S7RequestMessage> processRequest(S7RequestMessage request, int pduSize)
-        throws PlcException {
+    public Collection<S7RequestMessage> processRequest(S7RequestMessage request, int pduSize) throws PlcException {
         // The following considerations have to be taken into account:
         // - The size of all parameters and payloads of a message cannot exceed the negotiated PDU size
         // - When reading data, the size of the returned data cannot exceed the negotiated PDU size

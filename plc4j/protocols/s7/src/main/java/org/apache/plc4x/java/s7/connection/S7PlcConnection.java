@@ -103,9 +103,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         this.rack = rack;
         this.slot = slot;
 
-        int paramPduSize = 1024;
-        short paramMaxAmqCaller = 8;
-        short paramMaxAmqCallee = 8;
+        int curParamPduSize = 1024;
+        short curParamMaxAmqCaller = 8;
+        short curParamMaxAmqCallee = 8;
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
@@ -115,13 +115,13 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                     String paramValue = paramElements[1];
                     switch (paramName) {
                         case "pdu-size":
-                            paramPduSize = Integer.parseInt(paramValue);
+                            curParamPduSize = Integer.parseInt(paramValue);
                             break;
                         case "max-amq-caller":
-                            paramMaxAmqCaller = Short.parseShort(paramValue);
+                            curParamMaxAmqCaller = Short.parseShort(paramValue);
                             break;
                         case "max-amq-callee":
-                            paramMaxAmqCallee = Short.parseShort(paramValue);
+                            curParamMaxAmqCallee = Short.parseShort(paramValue);
                             break;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
@@ -134,9 +134,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
         // IsoTP uses pre defined sizes. Find the smallest box,
         // that would be able to contain the requested pdu size.
-        this.paramPduSize = TpduSize.valueForGivenSize(paramPduSize);
-        this.paramMaxAmqCaller = paramMaxAmqCaller;
-        this.paramMaxAmqCallee = paramMaxAmqCallee;
+        this.paramPduSize = TpduSize.valueForGivenSize(curParamPduSize);
+        this.paramMaxAmqCaller = curParamMaxAmqCaller;
+        this.paramMaxAmqCallee = curParamMaxAmqCallee;
     }
 
     @Override

@@ -51,7 +51,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -538,13 +538,13 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // -----------------------------------------
                     case CHAR: { // 1 byte (8 bit)
                         // TODO: Double check, if this is ok?
-                        String stringValue = data.readCharSequence(1, Charset.forName("UTF-8")).toString();
+                        String stringValue = data.readCharSequence(1, StandardCharsets.UTF_8).toString();
                         fieldItem = new DefaultStringFieldItem(stringValue);
                         break;
                     }
                     case WCHAR: { // 2 byte
                         // TODO: Double check, if this is ok? Alternatives: BMP, UCS2
-                        String stringValue = data.readCharSequence(2, Charset.forName("UTF-16")).toString();
+                        String stringValue = data.readCharSequence(2, StandardCharsets.UTF_16).toString();
                         fieldItem = new DefaultStringFieldItem(stringValue);
                         break;
                     }
@@ -553,7 +553,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         data.readByte();
                         byte actualLength = data.readByte();
                         // TODO: Double check, if this is ok?
-                        String stringValue = data.readCharSequence(actualLength, Charset.forName("UTF-8")).toString();
+                        String stringValue = data.readCharSequence(actualLength, StandardCharsets.UTF_8).toString();
                         fieldItem = new DefaultStringFieldItem(stringValue);
                         break;
                     }
@@ -563,7 +563,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         byte actualLength = data.readByte();
                         // TODO: Double check, if this is ok?
                         String stringValue = data.readCharSequence(
-                            actualLength * 2, Charset.forName("UTF-16")).toString();
+                            actualLength * 2, StandardCharsets.UTF_16).toString();
                         fieldItem = new DefaultStringFieldItem(stringValue);
                         break;
                     }

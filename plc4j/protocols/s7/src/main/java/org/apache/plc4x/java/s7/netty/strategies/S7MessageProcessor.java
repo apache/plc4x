@@ -31,7 +31,7 @@ import java.util.Collection;
  */
 public interface S7MessageProcessor {
 
-    Collection<? extends S7RequestMessage> processRequest(S7RequestMessage request, int pduSize) throws PlcException;
+    Collection<S7RequestMessage> processRequest(S7RequestMessage request, int pduSize) throws PlcException;
 
     S7ResponseMessage processResponse(S7RequestMessage request, S7ResponseMessage response) throws PlcException;
 
