@@ -139,12 +139,12 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
             LOGGER.warn("CIP Encapsulation not supported by remote, payload encapsulation must be handled by target and originator");
         }
 
-        PlcWriteRequest request = (PlcWriteRequest) msg.getRequest();
+        /*PlcWriteRequest request = (PlcWriteRequest) msg.getRequest();
 
         // Create a ForwardOpen CIP request
 
         // Create EIP UnconnectedDataItemRequest
-        /*UnconnectedDataItemRequest dataItem = new UnconnectedDataItemRequest(dataEncoder);
+        UnconnectedDataItemRequest dataItem = new UnconnectedDataItemRequest(dataEncoder);
         CpfPacket packet = new CpfPacket(new NullAddressItem(), dataItem);
 
         // Send that via EIP SendRRData packet
@@ -414,7 +414,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
      */
     private void handleNop(ChannelHandlerContext ctx, EnipPacket msg) {
         if (msg.getStatus() == EnipStatus.EIP_SUCCESS) {
-            Nop nop = (Nop) msg.getCommand();
+            //Nop nop = (Nop) msg.getCommand();
             // TODO: Reset some sort of timer ...
         } else {
             ctx.channel().pipeline().fireExceptionCaught(

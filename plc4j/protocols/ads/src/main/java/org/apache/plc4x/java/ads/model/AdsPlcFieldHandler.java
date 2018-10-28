@@ -886,10 +886,10 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     private BaseDefaultFieldItem internalEncodeString(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         double maxLength = adsField.getAdsDataType().getUpperBound();
-        boolean encoding16Bit;
+        //boolean encoding16Bit;
         switch (adsField.getAdsDataType()) {
             case STRING:
-                encoding16Bit = false;
+                //encoding16Bit = false;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -910,21 +910,21 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
             else if (value instanceof Byte) {
                 Byte byteValue = (Byte) value;
                 byte[] stringBytes = new byte[]{byteValue};
-                if (encoding16Bit) {
+                /*if (encoding16Bit) {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
-                } else {
+                } else {*/
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
-                }
+                /*}*/
             } else if (value instanceof Short) {
                 Short shortValue = (Short) value;
                 byte[] stringBytes = new byte[2];
                 stringBytes[0] = (byte) (shortValue >> 8);
                 stringBytes[1] = (byte) (shortValue & 0xFF);
-                if (encoding16Bit) {
+                /*if (encoding16Bit) {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
-                } else {
+                } else {*/
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
-                }
+                /*}*/
             } else if (value instanceof Integer) {
                 Integer integerValue = (Integer) value;
                 byte[] stringBytes = new byte[4];
@@ -932,11 +932,11 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 stringBytes[1] = (byte) ((integerValue >> 16) & 0xFF);
                 stringBytes[2] = (byte) ((integerValue >> 8) & 0xFF);
                 stringBytes[3] = (byte) (integerValue & 0xFF);
-                if (encoding16Bit) {
+                /*if (encoding16Bit) {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
-                } else {
+                } else {*/
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
-                }
+                /*}*/
             } else if (value instanceof Long) {
                 Long longValue = (Long) value;
                 byte[] stringBytes = new byte[8];
@@ -948,11 +948,11 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 stringBytes[5] = (byte) ((longValue >> 16) & 0xFF);
                 stringBytes[6] = (byte) ((longValue >> 8) & 0xFF);
                 stringBytes[7] = (byte) (longValue & 0xFF);
-                if (encoding16Bit) {
+                /*if (encoding16Bit) {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
-                } else {
+                } else {*/
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
-                }
+                /*}*/
             } else {
                 throw new IllegalArgumentException(
                     "Value of type " + value.getClass().getName() +
