@@ -80,9 +80,6 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
 
     private final Map<Long, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> requestsMap = new ConcurrentHashMap<>();
 
-    public Plc4XEtherNetIpProtocol() {
-    }
-
     /**
      * If the IsoTP protocol is used on top of the ISO on TCP protocol, then as soon as the pipeline receives the
      * request to connect, an IsoTP connection request TPDU must be sent in order to initialize the connection.

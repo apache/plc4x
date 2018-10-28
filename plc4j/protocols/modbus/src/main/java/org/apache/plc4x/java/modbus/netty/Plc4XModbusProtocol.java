@@ -227,7 +227,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         ModbusField field = (ModbusField) request.getField(fieldName);
 
         ModbusPdu modbusPdu = msg.getModbusPdu();
-        short unitId = msg.getUnitId();
+        //short unitId = msg.getUnitId();
 
         if (modbusPdu instanceof WriteMultipleCoilsResponse) {
             // TODO: finish implementation
