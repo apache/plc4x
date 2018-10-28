@@ -64,13 +64,13 @@ public class Plc4xSourceTask extends SourceTask {
         .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC)
         .define(RATE_CONFIG, ConfigDef.Type.INT, RATE_DEFAULT, ConfigDef.Importance.MEDIUM, RATE_DOC);
 
-    private final static long WAIT_LIMIT_MILLIS = 100;
-    private final static long TIMEOUT_LIMIT_MILLIS = 5000;
+    private static final long WAIT_LIMIT_MILLIS = 100;
+    private static final long TIMEOUT_LIMIT_MILLIS = 5000;
 
-    private final static String URL_FIELD = "url";
-    private final static String QUERY_FIELD = "query";
+    private static final String URL_FIELD = "url";
+    private static final String QUERY_FIELD = "query";
 
-    private final static Schema KEY_SCHEMA =
+    private static final Schema KEY_SCHEMA =
         new SchemaBuilder(Schema.Type.STRUCT)
             .field(URL_FIELD, Schema.STRING_SCHEMA)
             .field(QUERY_FIELD, Schema.STRING_SCHEMA)
@@ -151,7 +151,7 @@ public class Plc4xSourceTask extends SourceTask {
     }
 
     /**
-     * Wait for next scheduled fetch operation.
+     * Wait for next scheduled fetch operation or till the source is closed.
      * @param milliseconds maximum time to wait
      * @throws InterruptedException if the thread is interrupted
      * @return true if a fetch should be performed, false otherwise

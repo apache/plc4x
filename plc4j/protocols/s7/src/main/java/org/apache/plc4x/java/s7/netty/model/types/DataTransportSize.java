@@ -35,6 +35,14 @@ public enum DataTransportSize {
     REAL((byte) 0x07, false, false),
     OCTET_STRING((byte) 0x09, false, true);
 
+    private static final Map<Byte, DataTransportSize> map;
+    static {
+        map = new HashMap<>();
+        for (DataTransportSize dataTransportSize : DataTransportSize.values()) {
+            map.put(dataTransportSize.code, dataTransportSize);
+        }
+    }
+
     private final byte code;
     private final boolean sizeInBits;
     private final boolean hasBlankByte;
@@ -55,15 +63,6 @@ public enum DataTransportSize {
 
     public boolean isHasBlankByte() {
         return hasBlankByte;
-    }
-
-    private final static Map<Byte, DataTransportSize> map;
-
-    static {
-        map = new HashMap<>();
-        for (DataTransportSize dataTransportSize : DataTransportSize.values()) {
-            map.put(dataTransportSize.code, dataTransportSize);
-        }
     }
 
     public static DataTransportSize valueOf(byte code) {

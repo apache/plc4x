@@ -25,6 +25,7 @@ import org.apache.edgent.topology.TStream;
 import org.apache.edgent.topology.Topology;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -137,6 +138,16 @@ public class ElasticsearchStorage {
         // Start an Elasticsearch node.
         Node esNode = startElasticsearchNode();
         Client esClient = esNode.client();
+        // Register a shutdown hook.
+        final Thread mainThread = Thread.currentThread();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                esNode.close();
+                mainThread.join();
+            } catch (IOException | InterruptedException e) {
+                throw new PlcRuntimeException("Error closing ES Node", e);
+            }
+        }));
         System.out.println("Started Elasticsearch node on port 9200");
 
         // Make sure the indexes exist prior to writing to them.

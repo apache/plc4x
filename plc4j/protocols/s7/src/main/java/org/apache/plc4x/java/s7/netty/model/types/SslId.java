@@ -68,6 +68,14 @@ public enum SslId {
 
     private static final Logger logger = LoggerFactory.getLogger(SslId.class);
 
+    private static final Map<Short, SslId> map;
+    static {
+        map = new HashMap<>();
+        for (SslId sslId : SslId.values()) {
+            map.put(sslId.code, sslId);
+        }
+    }
+
     private final short code;
 
     SslId(short code) {
@@ -76,15 +84,6 @@ public enum SslId {
 
     public short getCode() {
         return code;
-    }
-
-    private final static Map<Short, SslId> map;
-
-    static {
-        map = new HashMap<>();
-        for (SslId sslId : SslId.values()) {
-            map.put(sslId.code, sslId);
-        }
     }
 
     public static SslId valueOf(short code) {

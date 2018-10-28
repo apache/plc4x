@@ -34,6 +34,14 @@ public enum DataTransportErrorCode {
 
     private static final Logger logger = LoggerFactory.getLogger(DataTransportErrorCode.class);
 
+    private static final Map<Byte, DataTransportErrorCode> map;
+    static {
+        map = new HashMap<>();
+        for (DataTransportErrorCode dataTransportErrorCode : DataTransportErrorCode.values()) {
+            map.put(dataTransportErrorCode.code, dataTransportErrorCode);
+        }
+    }
+
     private byte code;
 
     DataTransportErrorCode(byte code) {
@@ -42,15 +50,6 @@ public enum DataTransportErrorCode {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, DataTransportErrorCode> map;
-
-    static {
-        map = new HashMap<>();
-        for (DataTransportErrorCode dataTransportErrorCode : DataTransportErrorCode.values()) {
-            map.put(dataTransportErrorCode.code, dataTransportErrorCode);
-        }
     }
 
     public static DataTransportErrorCode valueOf(byte code) {

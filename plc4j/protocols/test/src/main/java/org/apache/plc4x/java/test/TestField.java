@@ -21,6 +21,8 @@ package org.apache.plc4x.java.test;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +31,8 @@ import java.util.regex.Pattern;
  * Test address for accessing values in virtual devices.
  */
 class TestField implements PlcField {
+
+    private static final Logger logger = LoggerFactory.getLogger(TestField.class);
 
     /**
      * Examples:
@@ -55,6 +59,7 @@ class TestField implements PlcField {
                 Class<?> dataType = Class.forName("java.lang." + dataTypeName);
                 return new TestField(type, name, dataType, numElements);
             } catch (ClassNotFoundException e) {
+                logger.error("Unsupported type: " + dataTypeName, e);
                 throw new PlcInvalidFieldException("Unsupported type: " + dataTypeName);
             }
         }

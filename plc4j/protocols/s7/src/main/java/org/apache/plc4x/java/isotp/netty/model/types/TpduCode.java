@@ -34,6 +34,14 @@ public enum TpduCode {
     TPDU_ERROR((byte) 0x70),
     TPDU_UNKNOWN((byte) 0xFF);
 
+    private static final Map<Byte, TpduCode> map;
+    static {
+        map = new HashMap<>();
+        for (TpduCode tpduCode : TpduCode.values()) {
+            map.put(tpduCode.code, tpduCode);
+        }
+    }
+
     private final byte code;
 
     TpduCode(byte code) {
@@ -42,15 +50,6 @@ public enum TpduCode {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, TpduCode> map;
-
-    static {
-        map = new HashMap<>();
-        for (TpduCode tpduCode : TpduCode.values()) {
-            map.put(tpduCode.code, tpduCode);
-        }
     }
 
     public static TpduCode valueOf(byte code) {
