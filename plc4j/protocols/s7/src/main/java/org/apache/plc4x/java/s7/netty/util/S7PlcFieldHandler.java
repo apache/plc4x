@@ -219,78 +219,91 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         BigInteger maxValue;
         Class<? extends BaseDefaultFieldItem> fieldType;
         Class<?> valueType;
+        Object[] castedValues;
         switch (s7Field.getDataType()) {
             case BYTE:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
                 fieldType = DefaultByteFieldItem.class;
                 valueType = Byte[].class;
+                castedValues = new Byte[values.length];
                 break;
             case WORD:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
                 fieldType = DefaultShortFieldItem.class;
                 valueType = Short[].class;
+                castedValues = new Short[values.length];
                 break;
             case DWORD:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 valueType = Integer[].class;
+                castedValues = new Integer[values.length];
                 break;
             case LWORD:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
                 fieldType = DefaultLongFieldItem.class;
                 valueType = Long[].class;
+                castedValues = new Long[values.length];
                 break;
             case SINT:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
                 fieldType = DefaultByteFieldItem.class;
                 valueType = Byte[].class;
+                castedValues = new Byte[values.length];
                 break;
             case USINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE * 2);
                 fieldType = DefaultShortFieldItem.class;
                 valueType = Short[].class;
+                castedValues = new Short[values.length];
                 break;
             case INT:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
                 fieldType = DefaultShortFieldItem.class;
                 valueType = Short[].class;
+                castedValues = new Short[values.length];
                 break;
             case UINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Short.MAX_VALUE) * 2);
                 fieldType = DefaultIntegerFieldItem.class;
                 valueType = Integer[].class;
+                castedValues = new Integer[values.length];
                 break;
             case DINT:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 valueType = Integer[].class;
+                castedValues = new Integer[values.length];
                 break;
             case UDINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Integer.MAX_VALUE) * 2);
                 fieldType = DefaultLongFieldItem.class;
                 valueType = Long[].class;
+                castedValues = new Long[values.length];
                 break;
             case LINT:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
                 fieldType = DefaultLongFieldItem.class;
                 valueType = Long[].class;
+                castedValues = new Long[values.length];
                 break;
             case ULINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf((long) 2));
                 fieldType = DefaultBigIntegerFieldItem.class;
                 valueType = BigInteger[].class;
+                castedValues = new BigInteger[values.length];
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -298,16 +311,16 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         }
 
         // Check the constraints
-        for (Object val : values) {
+        for (int i = 0; i < values.length; i++) {
             BigInteger value;
-            if (val instanceof BigInteger) {
-                value = (BigInteger) val;
-            } else if ((val instanceof Byte) || (val instanceof Short) ||
-                (val instanceof Integer) || (val instanceof Long)) {
-                value = BigInteger.valueOf(((Number) val).longValue());
+            if (values[i] instanceof BigInteger) {
+                value = (BigInteger) values[i];
+            } else if ((values[i] instanceof Byte) || (values[i] instanceof Short) ||
+                (values[i] instanceof Integer) || (values[i] instanceof Long)) {
+                value = BigInteger.valueOf(((Number) values[i]).longValue());
             } else {
                 throw new IllegalArgumentException(
-                    "Value of type " + val.getClass().getName() +
+                    "Value of type " + values[i].getClass().getName() +
                         " is not assignable to " + s7Field.getDataType().name() + " fields.");
             }
             if (minValue.compareTo(value) > 0) {
@@ -320,11 +333,22 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                     "Value of " + value.toString() + " exceeds allowed maximum for type "
                         + s7Field.getDataType().name() + " (max " + maxValue.toString() + ")");
             }
+            if(valueType == Byte[].class) {
+                castedValues[i] = value.byteValue();
+            } else if (valueType == Short[].class) {
+                castedValues[i] = value.shortValue();
+            } else if (valueType == Integer[].class) {
+                castedValues[i] = value.intValue();
+            } else if (valueType == Long[].class) {
+                castedValues[i] = value.longValue();
+            } else {
+                castedValues[i] = value;
+            }
         }
 
         // Create the field item.
         try {
-            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{values});
+            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{castedValues});
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
         }
@@ -338,6 +362,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         Double maxValue;
         Class<? extends BaseDefaultFieldItem> fieldType;
         Class<?> valueType;
+        Object[] castedValues;
         switch (s7Field.getDataType()) {
             case REAL:
                 // Yes this is actually correct, if I set min to Float.MIN_VALUE (0.0 < Float.MIN_VALUE = true)
@@ -345,6 +370,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 maxValue = (double) Float.MAX_VALUE;
                 fieldType = DefaultFloatFieldItem.class;
                 valueType = Float[].class;
+                castedValues = new Float[values.length];
                 break;
             case LREAL:
                 // Yes this is actually correct, if I set min to Double.MIN_VALUE (0.0 < Double.MIN_VALUE = true)
@@ -352,6 +378,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 maxValue = Double.MAX_VALUE;
                 fieldType = DefaultDoubleFieldItem.class;
                 valueType = Double[].class;
+                castedValues = new Double[values.length];
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -359,15 +386,15 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         }
 
         // Check the constraints
-        for (Object val : values) {
+        for (int i = 0; i < values.length; i++) {
             Double value;
-            if (val instanceof Float) {
-                value = ((Float) val).doubleValue();
-            } else if (val instanceof Double) {
-                value = (Double) val;
+            if (values[i] instanceof Float) {
+                value = ((Float) values[i]).doubleValue();
+            } else if (values[i] instanceof Double) {
+                value = (Double) values[i];
             } else {
                 throw new IllegalArgumentException(
-                    "Value of type " + val.getClass().getName() +
+                    "Value of type " + values[i].getClass().getName() +
                         " is not assignable to " + s7Field.getDataType().name() + " fields.");
             }
             if (value < minValue) {
@@ -380,11 +407,16 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                     "Value of " + value + " exceeds allowed maximum for type "
                         + s7Field.getDataType().name() + " (max " + maxValue.toString() + ")");
             }
+            if(valueType == Float[].class) {
+                castedValues[i] = value.floatValue();
+            } else {
+                castedValues[i] = value;
+            }
         }
 
         // Create the field item.
         try {
-            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{values});
+            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{castedValues});
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
         }

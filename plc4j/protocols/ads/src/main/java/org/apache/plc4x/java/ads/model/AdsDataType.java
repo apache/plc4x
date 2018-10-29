@@ -50,8 +50,8 @@ public enum AdsDataType {
     UINT16(0, Integer.MAX_VALUE, 16),
     UINT32(0, produceUnsignedMaxValue(32), 32),
     UINT64(0, produceUnsignedMaxValue(64), 64),
-    FLOAT(Float.MIN_VALUE, Float.MAX_VALUE, 32),
-    DOUBLE(Double.MIN_VALUE, Double.MAX_VALUE, 64),
+    FLOAT(-Float.MAX_VALUE, Float.MAX_VALUE, 32),
+    DOUBLE(-Double.MAX_VALUE, Double.MAX_VALUE, 64),
     // https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
     // Standard Data Types
     /**
