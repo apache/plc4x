@@ -97,7 +97,7 @@ public class S7TypeEncoder {
         for (int i = 0; i < length; i++) {
             double doubleValue = (double) values[i];
             long longValue = Double.doubleToLongBits(doubleValue);
-            result[(i * 8)] = (byte) ((longValue & 0xFF000000_00000000L) >> 56);
+            result[i * 8] = (byte) ((longValue & 0xFF000000_00000000L) >> 56);
             result[(i * 8) + 1] = (byte) ((longValue & 0x00FF0000_00000000L) >> 48);
             result[(i * 8) + 2] = (byte) ((longValue & 0x0000FF00_00000000L) >> 40);
             result[(i * 8) + 3] = (byte) ((longValue & 0x000000FF_00000000L) >> 32);

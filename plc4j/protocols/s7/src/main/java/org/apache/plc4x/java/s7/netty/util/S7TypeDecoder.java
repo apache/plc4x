@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.s7.netty.util;
 
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 
 import java.nio.charset.StandardCharsets;
@@ -32,7 +31,7 @@ public class S7TypeDecoder {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> List<T> decodeData(Class<T> datatype, byte[] s7Data) throws PlcProtocolException {
+    public static <T> List<T> decodeData(Class<T> datatype, byte[] s7Data) {
 
         List<Object> result = new LinkedList<>();
         int i = 0;
@@ -73,7 +72,7 @@ public class S7TypeDecoder {
                     | (((long) (s7Data[i + 3] & 0xff)) << 24)
                     | (((long) (s7Data[i + 4] & 0xff)) << 16)
                     | (((long) (s7Data[i + 5] & 0xff)) << 8)
-                    | (((long) s7Data[i + 6] & 0xff));
+                    | ((long) s7Data[i + 6] & 0xff);
                 result.add(Double.longBitsToDouble(longValue));
                 i += 8;
             } else if (datatype == String.class) {
