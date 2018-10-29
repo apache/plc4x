@@ -208,7 +208,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             DataTransportSize dataTransportSize = s7Field.getDataType().getDataTransportSize();
 
             // TODO: Checkout if the payload items are sort of a flatMap of all request items.
-            byte[] byteData = null;
+            byte[] byteData;
             switch(s7Field.getDataType()) {
                 // -----------------------------------------
                 // Bit

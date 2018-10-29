@@ -200,7 +200,8 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     private void processBooleanWriteVarParameter(S7RequestMessage request, VarParameter varParameter, VarPayload varPayload,
                                          S7AnyVarParameterItem s7AnyVarParameterItem, VarPayloadItem varPayloadItem,
                                          short byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
-        byte bitOffset = 0;
+        short curByteOffset = byteOffset;
+        byte curBitOffset = 0;
         for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
             // Create a new message with only one single value item in the var parameter.
             VarParameterItem item = new S7AnyVarParameterItem(
@@ -208,14 +209,14 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 s7AnyVarParameterItem.getMemoryArea(),
                 s7AnyVarParameterItem.getDataType(), (short) 1,
                 s7AnyVarParameterItem.getDataBlockNumber(),
-                byteOffset, bitOffset);
+                curByteOffset, curBitOffset);
             S7Parameter subVarParameter = new VarParameter(varParameter.getType(),
                 Collections.singletonList(item));
 
             // Create a one-byte byte array and set it to 0x01, if the corresponding bit
             // was 1 else set it to 0x00.
             byte[] elementData = new byte[1];
-            elementData[0] = (byte) ((varPayloadItem.getData()[byteOffset] >> bitOffset) & 0x01);
+            elementData[0] = (byte) ((varPayloadItem.getData()[curByteOffset] >> curBitOffset) & 0x01);
 
             // Create the new payload item.
             VarPayloadItem itemPayload = new VarPayloadItem(
@@ -235,10 +236,10 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             compositeRequestMessage.addRequestMessage(subMessage);
 
             // Calculate the new memory and bit offset.
-            bitOffset++;
-            if ((i > 0) && ((bitOffset % 8) == 0)) {
-                byteOffset++;
-                bitOffset = 0;
+            curBitOffset++;
+            if ((i > 0) && ((curBitOffset % 8) == 0)) {
+                curByteOffset++;
+                curBitOffset = 0;
             }
         }
     }
@@ -246,6 +247,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     private void processNonBooleanWriteVarParameter(S7RequestMessage request, VarParameter varParameter, VarPayload varPayload,
                                             S7AnyVarParameterItem s7AnyVarParameterItem, VarPayloadItem varPayloadItem,
                                             short byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
+        short curByteOffset = byteOffset;
         int payloadPosition = 0;
         for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
             int elementSize = s7AnyVarParameterItem.getDataType().getSizeInBytes();
@@ -256,7 +258,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 s7AnyVarParameterItem.getMemoryArea(),
                 s7AnyVarParameterItem.getDataType(), (short) 1,
                 s7AnyVarParameterItem.getDataBlockNumber(),
-                byteOffset, (byte) 0);
+                curByteOffset, (byte) 0);
             S7Parameter subVarParameter = new VarParameter(varParameter.getType(),
                 Collections.singletonList(itemParameter));
 
@@ -283,7 +285,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             compositeRequestMessage.addRequestMessage(subMessage);
 
             // Calculate the new memory offset.
-            byteOffset += elementSize;
+            curByteOffset += elementSize;
         }
     }
 
