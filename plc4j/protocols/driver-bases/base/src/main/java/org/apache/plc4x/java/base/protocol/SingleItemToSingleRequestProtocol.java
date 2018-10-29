@@ -91,20 +91,27 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     private AtomicLong erroredItems;
 
+    private SplitConfig splitConfig;
+
     public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer) {
-        this(reader, writer, subscriber, timer, true);
+        this(reader, writer, subscriber, timer, new SplitConfig());
     }
 
-    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, boolean betterImplementationPossible) {
-        this(reader, writer, subscriber, timer, TimeUnit.SECONDS.toMillis(30), betterImplementationPossible);
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, SplitConfig splitConfig) {
+        this(reader, writer, subscriber, timer, splitConfig, true);
     }
 
-    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, long defaultReceiveTimeout, boolean betterImplementationPossible) {
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, SplitConfig splitConfig, boolean betterImplementationPossible) {
+        this(reader, writer, subscriber, timer, TimeUnit.SECONDS.toMillis(30), splitConfig, betterImplementationPossible);
+    }
+
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, long defaultReceiveTimeout, SplitConfig splitConfig, boolean betterImplementationPossible) {
         this.reader = reader;
         this.writer = writer;
         this.subscriber = subscriber;
         this.timer = timer;
         this.defaultReceiveTimeout = defaultReceiveTimeout;
+        this.splitConfig = splitConfig;
         if (betterImplementationPossible) {
             String callStack = Arrays.stream(Thread.currentThread().getStackTrace())
                 .map(StackTraceElement::toString)
@@ -281,10 +288,10 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
             // Create a promise that has to be called multiple times.
             PromiseCombiner promiseCombiner = new PromiseCombiner();
             InternalPlcRequest request = in.getRequest();
-            if (request instanceof InternalPlcFieldRequest) {
+            if (request instanceof InternalPlcFieldRequest && (splitConfig.splitRead || splitConfig.splitWrite || splitConfig.splitSubscription)) {
                 InternalPlcFieldRequest internalPlcFieldRequest = (InternalPlcFieldRequest) request;
 
-                if (internalPlcFieldRequest instanceof InternalPlcReadRequest) {
+                if (internalPlcFieldRequest instanceof InternalPlcReadRequest && splitConfig.splitRead) {
                     InternalPlcReadRequest internalPlcReadRequest = (InternalPlcReadRequest) internalPlcFieldRequest;
                     internalPlcReadRequest.getNamedFields().forEach(field -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
@@ -309,7 +316,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
-                } else if (internalPlcFieldRequest instanceof InternalPlcWriteRequest) {
+                } else if (internalPlcFieldRequest instanceof InternalPlcWriteRequest && splitConfig.splitWrite) {
                     InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) internalPlcFieldRequest;
                     internalPlcWriteRequest.getNamedFieldTriples().forEach(fieldItemTriple -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
@@ -332,7 +339,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
-                } else if (internalPlcFieldRequest instanceof InternalPlcSubscriptionRequest) {
+                } else if (internalPlcFieldRequest instanceof InternalPlcSubscriptionRequest && splitConfig.splitSubscription) {
                     InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = (InternalPlcSubscriptionRequest) internalPlcFieldRequest;
                     internalPlcSubscriptionRequest.getNamedSubscriptionFields().forEach(field -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
@@ -360,7 +367,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                 } else {
                     throw new PlcProtocolException("Unmapped request type " + request.getClass());
                 }
-            } else if (request instanceof InternalPlcUnsubscriptionRequest) {
+            } else if (request instanceof InternalPlcUnsubscriptionRequest && splitConfig.splitUnsubscription) {
                 InternalPlcUnsubscriptionRequest internalPlcUnsubscriptionRequest = (InternalPlcUnsubscriptionRequest) request;
                 internalPlcUnsubscriptionRequest.getInternalPlcSubscriptionHandles().forEach(handle -> {
                     ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
@@ -555,5 +562,81 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         statistics.put("deliveredContainers", deliveredContainers.get());
         statistics.put("erroredContainers", erroredContainers.get());
         return statistics;
+    }
+
+    public static class SplitConfig {
+        private final boolean splitRead;
+        private final boolean splitWrite;
+        private final boolean splitSubscription;
+        private final boolean splitUnsubscription;
+
+        public SplitConfig() {
+            splitRead = true;
+            splitWrite = true;
+            splitSubscription = true;
+            splitUnsubscription = true;
+        }
+
+        private SplitConfig(boolean splitRead, boolean splitWrite, boolean splitSubscription, boolean splitUnsubscription) {
+            this.splitRead = splitRead;
+            this.splitWrite = splitWrite;
+            this.splitSubscription = splitSubscription;
+            this.splitUnsubscription = splitUnsubscription;
+        }
+
+        public static SplitConfigBuilder builder() {
+            return new SplitConfigBuilder();
+        }
+
+        public static class SplitConfigBuilder {
+            private boolean splitRead = true;
+            private boolean splitWrite = true;
+            private boolean splitSubscription = true;
+            private boolean splitUnsubscription = true;
+
+            public SplitConfigBuilder splitRead() {
+                splitRead = true;
+                return this;
+            }
+
+            public SplitConfigBuilder dontSplitRead() {
+                splitRead = false;
+                return this;
+            }
+
+            public SplitConfigBuilder splitWrite() {
+                splitWrite = true;
+                return this;
+            }
+
+            public SplitConfigBuilder dontSplitWrite() {
+                splitWrite = false;
+                return this;
+            }
+
+            public SplitConfigBuilder splitSubscribe() {
+                splitSubscription = true;
+                return this;
+            }
+
+            public SplitConfigBuilder dontSplitSubscribe() {
+                splitSubscription = false;
+                return this;
+            }
+
+            public SplitConfigBuilder splitUnsubscribe() {
+                splitUnsubscription = true;
+                return this;
+            }
+
+            public SplitConfigBuilder dontSplitUnsubscribe() {
+                splitUnsubscription = false;
+                return this;
+            }
+
+            public SplitConfig build() {
+                return new SplitConfig(splitRead, splitWrite, splitSubscription, splitUnsubscription);
+            }
+        }
     }
 }

@@ -83,6 +83,7 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
             mockSubscriber,
             new HashedWheelTimer(),
             TimeUnit.SECONDS.toMillis(1),
+            new SingleItemToSingleRequestProtocol.SplitConfig(),
             false
         );
         SUT.channelRegistered(channelHandlerContext);
@@ -146,6 +147,164 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
                 entry("erroredContainers", 0L)
             );
         }
+    }
+
+    @Nested
+    class SplitConfig {
+
+        @Nested
+        class SplitOn {
+            @BeforeEach
+            void setUp() throws Exception {
+                // We setup the SUT with a special configuration
+                SUT = new SingleItemToSingleRequestProtocol(
+                    mockReader,
+                    mockWriter,
+                    mockSubscriber,
+                    new HashedWheelTimer(),
+                    TimeUnit.SECONDS.toMillis(1),
+                    SingleItemToSingleRequestProtocol.SplitConfig.builder()
+                        .dontSplitRead()
+                        .dontSplitWrite()
+                        .dontSplitSubscribe()
+                        .dontSplitUnsubscribe()
+                        .build(),
+                    false
+                );
+                SUT.channelRegistered(channelHandlerContext);
+                when(channelHandlerContext.executor().inEventLoop()).thenReturn(true);
+            }
+
+            @Test
+            void read() throws Exception {
+                // Given
+                // we have a simple read
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // then
+                // we should invoke this only one time
+                verify(channelHandlerContext, times(1)).write(eq(msg), any());
+            }
+
+            @Test
+            void write() throws Exception {
+                // Given
+                // we have a simple write
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcWriteRequest.build(mockWriter), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // then
+                // we should invoke this only one time
+                verify(channelHandlerContext, times(1)).write(eq(msg), any());
+            }
+
+            @Test
+            void subscribe() throws Exception {
+                // Given
+                // we have a simple subscribe
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcSubscriptionRequest.build(mockSubscriber), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // then
+                // we should invoke this only one time
+                verify(channelHandlerContext, times(1)).write(eq(msg), any());
+            }
+
+            @Test
+            void unsubsribe() throws Exception {
+                // Given
+                // we have a simple unsubscribe
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcUnsubscriptionRequest.build(mockSubscriber), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // then
+                // we should invoke this only one time
+                verify(channelHandlerContext, times(1)).write(eq(msg), any());
+            }
+        }
+
+        @Nested
+        class SplitOff {
+            @BeforeEach
+            void setUp() throws Exception {
+                // We setup the SUT with a special configuration
+                SUT = new SingleItemToSingleRequestProtocol(
+                    mockReader,
+                    mockWriter,
+                    mockSubscriber,
+                    new HashedWheelTimer(),
+                    TimeUnit.SECONDS.toMillis(1),
+                    SingleItemToSingleRequestProtocol.SplitConfig.builder()
+                        .splitRead()
+                        .splitWrite()
+                        .splitSubscribe()
+                        .splitUnsubscribe()
+                        .build(),
+                    false
+                );
+                SUT.channelRegistered(channelHandlerContext);
+                when(channelHandlerContext.executor().inEventLoop()).thenReturn(true);
+            }
+
+            @Test
+            void read() throws Exception {
+                // Given
+                // we have a simple read
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcReadRequest.build(mockReader), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // then
+                // we should invoke this only one time
+                verify(channelHandlerContext, times(5)).write(any(), any());
+            }
+
+            @Test
+            void write() throws Exception {
+                // Given
+                // we have a simple write
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcWriteRequest.build(mockWriter), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // then
+                // we should invoke this only one time
+                verify(channelHandlerContext, times(5)).write(any(), any());
+            }
+
+            @Test
+            void subscribe() throws Exception {
+                // Given
+                // we have a simple subscribe
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcSubscriptionRequest.build(mockSubscriber), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // then
+                // we should invoke this only one time
+                verify(channelHandlerContext, times(3)).write(any(), any());
+            }
+
+            @Test
+            void unsubsribe() throws Exception {
+                // Given
+                // we have a simple unsubscribe
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcUnsubscriptionRequest.build(mockSubscriber), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // then
+                // we should invoke this only one time
+                verify(channelHandlerContext, times(3)).write(any(), any());
+            }
+        }
+
+
     }
 
     @Nested
