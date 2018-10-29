@@ -23,8 +23,6 @@ import java.util.Map;
 
 /**
  * (Values determined by evaluating generated ".pcapng" files)
- *
- * TODO: Double chcek the sizeInBits values ... looks fishy to me ...
  */
 public enum DataTransportSize {
     NULL((byte) 0x00, false, false),

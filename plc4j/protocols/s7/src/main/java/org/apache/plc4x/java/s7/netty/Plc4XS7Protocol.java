@@ -213,131 +213,67 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 // -----------------------------------------
                 // Bit
                 // -----------------------------------------
-                case BOOL: {
-                    int numBytes = fieldItem.getNumberOfValues() >> 3 / 8;
-                    byteData = new byte[numBytes];
-                    BitSet bitSet = new BitSet();
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        bitSet.set(i, fieldItem.getBoolean(i));
-                    }
-                    System.arraycopy(bitSet.toByteArray(), 0, byteData, 0, numBytes);
+                case BOOL:
+                    byteData = encodeWriteRequestBitField(fieldItem);
                     break;
-                }
                 // -----------------------------------------
                 // Signed integer values
                 // -----------------------------------------
                 case BYTE:
                 case SINT:
-                case CHAR: { // 1 byte
-                    int numBytes = fieldItem.getNumberOfValues();
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.put(fieldItem.getByte(i));
-                    }
-                    byteData = buffer.array();
+                case CHAR:  // 1 byte
+                    byteData = encodeWriteRequestByteField(fieldItem, true);
                     break;
-                }
                 case WORD:
                 case INT:
-                case WCHAR: { // 2 byte (16 bit)
-                    int numBytes = fieldItem.getNumberOfValues() * 2;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putShort(fieldItem.getShort(i));
-                    }
-                    byteData = buffer.array();
+                case WCHAR:  // 2 byte (16 bit)
+                    byteData = encodeWriteRequestShortField(fieldItem, true);
                     break;
-                }
                 case DWORD:
-                case DINT: { // 4 byte (32 bit)
-                    int numBytes = fieldItem.getNumberOfValues() * 4;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putInt(fieldItem.getInteger(i));
-                    }
-                    byteData = buffer.array();
+                case DINT:  // 4 byte (32 bit)
+                    byteData = encodeWriteRequestIntegerField(fieldItem, true);
                     break;
-                }
                 case LWORD:
-                case LINT: { // 8 byte (64 bit)
-                    int numBytes = fieldItem.getNumberOfValues() * 8;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putLong(fieldItem.getLong(i));
-                    }
-                    byteData = buffer.array();
+                case LINT:  // 8 byte (64 bit)
+                    byteData = encodeWriteRequestLongField(fieldItem, true);
                     break;
-                }
                 // -----------------------------------------
                 // Unsigned integer values
                 // -----------------------------------------
                 // 8 bit:
-                case USINT: {
-                    int numBytes = fieldItem.getNumberOfValues();
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.put((byte) (short) fieldItem.getShort(i));
-                    }
-                    byteData = buffer.array();
+                case USINT:
+                    byteData = encodeWriteRequestByteField(fieldItem, false);
                     break;
-                }
                 // 16 bit:
-                case UINT: {
-                    int numBytes = fieldItem.getNumberOfValues() * 2;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putShort((short) (int) fieldItem.getInteger(i));
-                    }
-                    byteData = buffer.array();
+                case UINT:
+                    byteData = encodeWriteRequestShortField(fieldItem, false);
                     break;
-                }
                 // 32 bit:
-                case UDINT: {
-                    int numBytes = fieldItem.getNumberOfValues() * 4;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putInt((int) (long) fieldItem.getLong(i));
-                    }
-                    byteData = buffer.array();
+                case UDINT:
+                    byteData = encodeWriteRequestIntegerField(fieldItem, false);
                     break;
-                }
                 // 64 bit:
-                case ULINT: {
-                    // TODO: Implement this ...
+                case ULINT:
+                    byteData = encodeWriteRequestLongField(fieldItem, false);
                     break;
-                }
                 // -----------------------------------------
                 // Floating point values
                 // -----------------------------------------
-                case REAL: {
-                    int numBytes = fieldItem.getNumberOfValues() * 4;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putFloat(fieldItem.getFloat(i));
-                    }
-                    byteData = buffer.array();
+                case REAL:
+                    byteData = encodeWriteRequestFloatField(fieldItem);
                     break;
-                }
-                case LREAL: {
-                    int numBytes = fieldItem.getNumberOfValues() * 8;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putDouble(fieldItem.getDouble(i));
-                    }
-                    byteData = buffer.array();
+                case LREAL:
+                    byteData = encodeWriteRequestDoubleField(fieldItem);
                     break;
-                }
                 // -----------------------------------------
                 // Characters & Strings
                 // -----------------------------------------
-                case STRING: {
-                    // TODO: Implement this ...
+                case STRING:
+                    byteData = encodeWriteRequestStringField(fieldItem, false);
                     break;
-                }
-                case WSTRING: {
-                    // TODO: Implement this ...
+                case WSTRING:
+                    byteData = encodeWriteRequestStringField(fieldItem, true);
                     break;
-                }
                 default:
                     throw new PlcProtocolException("Unsupported type " + s7Field.getDataType());
             }
@@ -358,6 +294,92 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         requests.put(s7WriteRequest.getTpduReference(), msg);
 
         out.add(s7WriteRequest);
+    }
+
+    byte[] encodeWriteRequestBitField(BaseDefaultFieldItem fieldItem) {
+        int numBytes = fieldItem.getNumberOfValues() >> 3 / 8;
+        byte[] byteData = new byte[numBytes];
+        BitSet bitSet = new BitSet();
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            bitSet.set(i, fieldItem.getBoolean(i));
+        }
+        System.arraycopy(bitSet.toByteArray(), 0, byteData, 0, numBytes);
+        return byteData;
+    }
+
+    byte[] encodeWriteRequestByteField(BaseDefaultFieldItem fieldItem, boolean signed) {
+        int numBytes = fieldItem.getNumberOfValues();
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            if(signed) {
+                buffer.put(fieldItem.getByte(i));
+            } else {
+                buffer.put((byte) (short) fieldItem.getShort(i));
+            }
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestShortField(BaseDefaultFieldItem fieldItem, boolean signed) {
+        int numBytes = fieldItem.getNumberOfValues() * 2;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            if(signed) {
+                buffer.putShort(fieldItem.getShort(i));
+            } else {
+                buffer.putShort((short) (int) fieldItem.getInteger(i));
+            }
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestIntegerField(BaseDefaultFieldItem fieldItem, boolean signed) {
+        int numBytes = fieldItem.getNumberOfValues() * 4;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            if(signed) {
+                buffer.putInt(fieldItem.getInteger(i));
+            } else {
+                buffer.putInt((int) (long) fieldItem.getLong(i));
+            }
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestLongField(BaseDefaultFieldItem fieldItem, boolean signed) {
+        int numBytes = fieldItem.getNumberOfValues() * 8;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            if(signed) {
+                buffer.putLong(fieldItem.getLong(i));
+            } else {
+                // TODO: Implement this ...
+            }
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestFloatField(BaseDefaultFieldItem fieldItem) {
+        int numBytes = fieldItem.getNumberOfValues() * 4;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            buffer.putFloat(fieldItem.getFloat(i));
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestDoubleField(BaseDefaultFieldItem fieldItem) {
+        int numBytes = fieldItem.getNumberOfValues() * 8;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            buffer.putDouble(fieldItem.getDouble(i));
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestStringField(BaseDefaultFieldItem fieldItem, boolean isUtf16) {
+        // TODO: Implement this ...
+        return new byte[0];
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

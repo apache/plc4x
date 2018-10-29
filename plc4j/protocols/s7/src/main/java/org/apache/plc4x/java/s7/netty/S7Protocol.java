@@ -186,20 +186,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             if(messages != null) {
                 for (S7Message message : messages) {
                     ByteBuf buf = Unpooled.buffer();
-
-                    encodeHeader(message, buf);
-                    encodeParameters(message, buf);
-                    encodePayloads(message, buf);
-
-                    // Check if the message doesn't exceed the negotiated maximum size.
-                    if (buf.writerIndex() > pduSize) {
-                        ctx.fireExceptionCaught(new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), message));
-                    } else {
-                        ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
-                        queue.add(new DataTpdu(true, (byte) 0x01, Collections.emptyList(), buf, message), subPromise);
-                        promiseCombiner.add((Future) subPromise);
-                        logger.debug("S7 Message with id {} queued", message.getTpduReference());
-                    }
+                    writeS7Message(ctx, promise.channel(), promiseCombiner, message, buf);
                 }
             }
             promiseCombiner.finish(promise);
@@ -211,65 +198,87 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
     }
 
+    private void writeS7Message(ChannelHandlerContext ctx, Channel channel, PromiseCombiner promiseCombiner, S7Message message, ByteBuf buf) {
+        encodeHeader(message, buf);
+        encodeParameters(message, buf);
+        encodePayloads(message, buf);
+
+        // Check if the message doesn't exceed the negotiated maximum size.
+        if (buf.writerIndex() > pduSize) {
+            ctx.fireExceptionCaught(new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), message));
+        } else {
+            ChannelPromise subPromise = new DefaultChannelPromise(channel);
+            queue.add(new DataTpdu(true, (byte) 0x01, Collections.emptyList(), buf, message), subPromise);
+            promiseCombiner.add((Future) subPromise);
+            logger.debug("S7 Message with id {} queued", message.getTpduReference());
+        }
+    }
+
     private void encodePayloads(S7Message in, ByteBuf buf) {
         for (S7Payload payload : in.getPayloads()) {
             switch (payload.getType()) {
-
                 case WRITE_VAR:
-                    VarPayload varPayload = (VarPayload) payload;
-                    for (VarPayloadItem payloadItem : varPayload.getItems()) {
-                        buf.writeByte(payloadItem.getReturnCode().getCode());
-                        buf.writeByte(payloadItem.getDataTransportSize().getCode());
-                        // TODO: Check if this is correct?!?! Might be problems with sizeInBits = true/false
-                        buf.writeShort(payloadItem.getData().length);
-                        buf.writeBytes(payloadItem.getData());
-                        // TODO: It looks as if BIT type reads require a 0x00 fill byte at the end ...
-                    }
+                    encodeWriteVarPayload((VarPayload) payload, buf);
                     break;
-
                 case CPU_SERVICES:
-                    CpuServicesPayload cpuServicesPayload = (CpuServicesPayload) payload;
-                    buf.writeByte(cpuServicesPayload.getReturnCode().getCode());
-                    // This seems to be constantly set to this.
-                    buf.writeByte(DataTransportSize.OCTET_STRING.getCode());
-
-                    // A request payload is simple.
-                    if (cpuServicesPayload.getSslDataRecords().isEmpty()) {
-                        buf.writeShort(4);
-                        buf.writeShort(cpuServicesPayload.getSslId().getCode());
-                        buf.writeShort(cpuServicesPayload.getSslIndex());
-                    }
-                    // The response payload contains a lot more information.
-                    else {
-                        short length = 8;
-                        short sizeOfDataItem = 0;
-                        for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
-                            sizeOfDataItem = (short) (sslDataRecord.getLengthInWords() * (short) 2);
-                            length += sizeOfDataItem;
-                        }
-                        buf.writeShort(length);
-                        buf.writeShort(cpuServicesPayload.getSslId().getCode());
-                        buf.writeShort(cpuServicesPayload.getSslIndex());
-                        buf.writeShort(sizeOfDataItem);
-                        buf.writeShort(cpuServicesPayload.getSslDataRecords().size());
-                        // Output any sort of ssl list items, if there are any.
-                        for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
-                            if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
-                                SslModuleIdentificationDataRecord midr = (SslModuleIdentificationDataRecord) sslDataRecord;
-                                buf.writeShort(midr.getIndex());
-                                byte[] articleNumberBytes = midr.getArticleNumber().getBytes(StandardCharsets.UTF_8);
-                                // An array full of 20 spaces.
-                                byte[] data = new byte[]{0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-                                    0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20};
-                                // Copy max 20 bytes from the article number into the dest array.
-                                System.arraycopy(articleNumberBytes, 0, data, 0, 20);
-                                buf.writeBytes(data);
-                                buf.writeShort(midr.getModuleOrOsVersion());
-                                buf.writeShort(midr.getPgDescriptionFileVersion());
-                            }
-                        }
-                    }
+                    encodeCpuServicesPayload((CpuServicesPayload) payload, buf);
                     break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void encodeWriteVarPayload(VarPayload varPayload, ByteBuf buf) {
+        for (VarPayloadItem payloadItem : varPayload.getItems()) {
+            buf.writeByte(payloadItem.getReturnCode().getCode());
+            buf.writeByte(payloadItem.getDataTransportSize().getCode());
+            // TODO: Check if this is correct?!?! Might be problems with sizeInBits = true/false
+            buf.writeShort(payloadItem.getData().length);
+            buf.writeBytes(payloadItem.getData());
+            // TODO: It looks as if BIT type reads require a 0x00 fill byte at the end ...
+        }
+    }
+
+    private void encodeCpuServicesPayload(CpuServicesPayload cpuServicesPayload, ByteBuf buf) {
+        buf.writeByte(cpuServicesPayload.getReturnCode().getCode());
+        // This seems to be constantly set to this.
+        buf.writeByte(DataTransportSize.OCTET_STRING.getCode());
+
+        // A request payload is simple.
+        if (cpuServicesPayload.getSslDataRecords().isEmpty()) {
+            buf.writeShort(4);
+            buf.writeShort(cpuServicesPayload.getSslId().getCode());
+            buf.writeShort(cpuServicesPayload.getSslIndex());
+        }
+        // The response payload contains a lot more information.
+        else {
+            short length = 8;
+            short sizeOfDataItem = 0;
+            for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
+                sizeOfDataItem = (short) (sslDataRecord.getLengthInWords() * (short) 2);
+                length += sizeOfDataItem;
+            }
+            buf.writeShort(length);
+            buf.writeShort(cpuServicesPayload.getSslId().getCode());
+            buf.writeShort(cpuServicesPayload.getSslIndex());
+            buf.writeShort(sizeOfDataItem);
+            buf.writeShort(cpuServicesPayload.getSslDataRecords().size());
+            // Output any sort of ssl list items, if there are any.
+            for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
+                if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
+                    SslModuleIdentificationDataRecord midr = (SslModuleIdentificationDataRecord) sslDataRecord;
+                    buf.writeShort(midr.getIndex());
+                    byte[] articleNumberBytes = midr.getArticleNumber().getBytes(StandardCharsets.UTF_8);
+                    // An array full of 20 spaces.
+                    byte[] data = new byte[]{0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
+                        0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20};
+                    // Copy max 20 bytes from the article number into the dest array.
+                    System.arraycopy(articleNumberBytes, 0, data, 0, 20);
+                    buf.writeBytes(data);
+                    buf.writeShort(midr.getModuleOrOsVersion());
+                    buf.writeShort(midr.getPgDescriptionFileVersion());
+                }
             }
         }
     }
@@ -422,7 +431,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         int i = 0;
 
         while (i < headerParametersLength) {
-            S7Parameter parameter = decodeParameter(userData, isResponse, headerParametersLength - i);
+            S7Parameter parameter = decodeParameter(userData, isResponse);
             s7Parameters.add(parameter);
             if (parameter instanceof SetupCommunicationParameter) {
                 handleSetupCommunications(ctx, (SetupCommunicationParameter) parameter);
@@ -523,10 +532,12 @@ public class S7Protocol extends ChannelDuplexHandler {
                 }
             }
         }
-        logger.info("Successfully connected to S7: " + controllerType.name());
-        logger.info("- max amq caller: " + maxAmqCaller);
-        logger.info("- max amq callee: " + maxAmqCallee);
-        logger.info("- pdu size: " + pduSize);
+        if(logger.isInfoEnabled()) {
+            logger.info(String.format("Successfully connected to S7: %s", controllerType.name()));
+            logger.info(String.format("- max amq caller: %s", maxAmqCaller));
+            logger.info(String.format("- max amq callee: %s", maxAmqCallee));
+            logger.info(String.format("- pdu size: %s", pduSize));
+        }
 
         // Send an event that connection setup is complete.
         ctx.channel().pipeline().fireUserEventTriggered(new S7ConnectedEvent());
@@ -540,9 +551,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 VarPayload varPayload = decodeVarPayload(userData, isResponse, userDataLength, readWriteVarParameter);
                 s7Payloads.add(varPayload);
             } else if(s7Parameter instanceof CpuServicesParameter) {
-                CpuServicesParameter cpuServicesParameter = (CpuServicesParameter) s7Parameter;
-                CpuServicesPayload cpuServicesPayload = decodeCpuServicesPayload(userData, isResponse, userDataLength,
-                    cpuServicesParameter);
+                CpuServicesPayload cpuServicesPayload = decodeCpuServicesPayload(userData);
                 s7Payloads.add(cpuServicesPayload);
             }
         }
@@ -587,8 +596,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         return new VarPayload(readWriteVarParameter.getType(), payloadItems);
     }
 
-    private CpuServicesPayload decodeCpuServicesPayload(ByteBuf userData, boolean isResponse, short userDataLength,
-                                                        CpuServicesParameter cpuServicesParameter) {
+    private CpuServicesPayload decodeCpuServicesPayload(ByteBuf userData) {
         DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
         if(dataTransportSize != DataTransportSize.OCTET_STRING) {
@@ -628,7 +636,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         return null;
     }
 
-    private S7Parameter decodeParameter(ByteBuf in, boolean isResponse, int restLength) {
+    private S7Parameter decodeParameter(ByteBuf in, boolean isResponse) {
         ParameterType parameterType = ParameterType.valueOf(in.readByte());
         if (parameterType == null) {
             logger.error("Could not find parameter type");
@@ -790,7 +798,9 @@ public class S7Protocol extends ChannelDuplexHandler {
             case "4":
                 return S7ControllerType.S7_400;
             default:
-                logger.info("Looking up unknown article number " + articleNumber);
+                if(logger.isInfoEnabled()) {
+                    logger.info(String.format("Looking up unknown article number %s", articleNumber));
+                }
                 return S7ControllerType.S7_ANY;
         }
     }
