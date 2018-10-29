@@ -17,54 +17,65 @@
 
 package org.apache.plc4x.java.utils.connectionpool;
 
-import org.apache.commons.pool2.ObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.pool2.KeyedObjectPool;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class PooledPlcDriverManager extends PlcDriverManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PooledPlcDriverManager.class);
 
-    private PoolCreator poolCreator;
-
-    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
-    private ConcurrentMap<PoolKey, ObjectPool<PlcConnection>> poolMap = new ConcurrentHashMap<>();
+    private KeyedObjectPool<PoolKey, PlcConnection> keyedObjectPool;
 
     // Marker class do detected a non null value
-    private static final NoPlcAuthentication noPlcAuthentication = new NoPlcAuthentication();
+    static final NoPlcAuthentication noPlcAuthentication = new NoPlcAuthentication();
 
     public PooledPlcDriverManager() {
-        this(GenericObjectPool::new);
+        this(GenericKeyedObjectPool::new);
     }
 
     public PooledPlcDriverManager(ClassLoader classLoader) {
         super(classLoader);
-        this.poolCreator = GenericObjectPool::new;
+        setFromPoolCreator(GenericKeyedObjectPool::new);
     }
 
     public PooledPlcDriverManager(PoolCreator poolCreator) {
-        this.poolCreator = poolCreator;
+        setFromPoolCreator(poolCreator);
     }
 
     public PooledPlcDriverManager(ClassLoader classLoader, PoolCreator poolCreator) {
         super(classLoader);
-        this.poolCreator = poolCreator;
+        setFromPoolCreator(poolCreator);
+    }
+
+    private void setFromPoolCreator(PoolCreator poolCreator) {
+        this.keyedObjectPool = poolCreator.createPool(new PooledPlcConnectionFactory() {
+            @Override
+            public PlcConnection create(PoolKey key) throws Exception {
+                PlcAuthentication plcAuthentication = key.plcAuthentication;
+                String url = key.url;
+                if (plcAuthentication == noPlcAuthentication) {
+                    LOGGER.debug("getting actual connection for {}", url);
+                    return PooledPlcDriverManager.super.getConnection(url);
+                } else {
+                    LOGGER.debug("getting actual connection for {} and plcAuthentication {}", url, plcAuthentication);
+                    return PooledPlcDriverManager.super.getConnection(url, plcAuthentication);
+                }
+            }
+        });
     }
 
     @Override
@@ -75,7 +86,6 @@ public class PooledPlcDriverManager extends PlcDriverManager {
     @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         PoolKey poolKey = PoolKey.of(url, authentication);
-        ObjectPool<PlcConnection> pool = retrieveFromPool(poolKey);
         if (LOGGER.isDebugEnabled()) {
             if (authentication != noPlcAuthentication) {
                 LOGGER.debug("Try to borrow an object for url {} and authentication {}", url, authentication);
@@ -85,7 +95,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         }
         PlcConnection plcConnection;
         try {
-            plcConnection = pool.borrowObject();
+            plcConnection = keyedObjectPool.borrowObject(poolKey);
         } catch (Exception e) {
             throw new PlcConnectionException(e);
         }
@@ -96,16 +106,16 @@ public class PooledPlcDriverManager extends PlcDriverManager {
                 throw new IllegalStateException("Proxy not valid anymore");
             }
             if ("close".equals(method.getName())) {
-                LOGGER.debug("close called on {}. Returning to {}", plcConnection, pool);
+                LOGGER.debug("close called on {}", plcConnection);
                 proxyInvalidated.set(true);
-                pool.returnObject(plcConnection);
+                keyedObjectPool.returnObject(poolKey, plcConnection);
                 return null;
             } else {
                 try {
                     return method.invoke(plcConnection, args);
                 } catch (InvocationTargetException e) {
                     if (e.getCause().getClass() == PlcConnectionException.class) {
-                        pool.invalidateObject(plcConnection);
+                        keyedObjectPool.invalidateObject(poolKey, plcConnection);
                         proxyInvalidated.set(true);
                     }
                     throw e;
@@ -114,139 +124,35 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         });
     }
 
-    private ObjectPool<PlcConnection> retrieveFromPool(PoolKey poolKey) {
-        ObjectPool<PlcConnection> pool = poolMap.get(poolKey);
-        if (pool == null) {
-            LOGGER.debug("No pool found for poolKey {}", poolKey);
-            String url = poolKey.getUrl();
-            PlcAuthentication plcAuthentication = poolKey.getPlcAuthentication();
-
-            Lock lock = readWriteLock.writeLock();
-            lock.lock();
-            try {
-                pool = poolMap.computeIfAbsent(poolKey, pair -> poolCreator.createPool(new PooledPlcConnectionFactory() {
-                    @Override
-                    public PlcConnection create() throws PlcConnectionException {
-                        if (plcAuthentication == noPlcAuthentication) {
-                            LOGGER.debug("getting actual connection for {}", url);
-                            return PooledPlcDriverManager.super.getConnection(url);
-                        } else {
-                            LOGGER.debug("getting actual connection for {} and plcAuthentication {}", url, plcAuthentication);
-                            return PooledPlcDriverManager.super.getConnection(url, plcAuthentication);
-                        }
-                    }
-                }));
-                LOGGER.debug("Using pool {}:{} for poolKey {}", pool.hashCode(), pool, poolKey);
-            } finally {
-                lock.unlock();
-            }
-        }
-        return pool;
-    }
-
     @FunctionalInterface
     interface PoolCreator {
-        ObjectPool<PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory);
+        KeyedObjectPool<PoolKey, PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory);
     }
 
-    // TODO: maybe add a Thread which calls this cyclic
-    public void removedUnusedPools() {
-        Lock lock = readWriteLock.writeLock();
-        lock.lock();
-        try {
-            LOGGER.debug("doing cleanup now on {}", poolMap);
-            Set<PoolKey> itemsToBeremoved = new LinkedHashSet<>();
-            poolMap.forEach((key, value) -> {
-                // TODO: check if this pool has been used in the last time and if not remove it.
-                // TODO: evicting empty pools for now
-                LOGGER.debug("pool {}:{} has numActive: {} numIdle: {}", key, value, value.getNumActive(), value.getNumIdle());
-                if (value.getNumActive() == 0 && value.getNumIdle() == 0) {
-                    LOGGER.info("Removing unused pool {}", value);
-                    itemsToBeremoved.add(key);
-                }
-            });
-            LOGGER.debug("items to be removed {} on {}", itemsToBeremoved, poolMap);
-            itemsToBeremoved.forEach(poolMap::remove);
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    // TODO: maybe export to jmx
+    // TODO: maybe export to jmx // generic poolKey has builting jmx too
     public Map<String, Number> getStatistics() {
-        Lock lock = readWriteLock.readLock();
-        try {
-            lock.lock();
-            HashMap<String, Number> statistics = new HashMap<>();
-            statistics.put("pools.count", poolMap.size());
-            for (Map.Entry<PoolKey, ObjectPool<PlcConnection>> poolEntry : poolMap.entrySet()) {
-                PoolKey pair = poolEntry.getKey();
-                ObjectPool<PlcConnection> objectPool = poolEntry.getValue();
-                String url = pair.getUrl();
-                PlcAuthentication plcAuthentication = pair.getPlcAuthentication();
-
-                String authSuffix = plcAuthentication != noPlcAuthentication ? "/" + plcAuthentication : "";
-                statistics.put(url + authSuffix + ".numActive", objectPool.getNumActive());
-                statistics.put(url + authSuffix + ".numIdle", objectPool.getNumIdle());
+        HashMap<String, Number> statistics = new HashMap<>();
+        statistics.put("numActive", keyedObjectPool.getNumActive());
+        statistics.put("numIdle", keyedObjectPool.getNumIdle());
+        if (keyedObjectPool instanceof GenericKeyedObjectPool) {
+            GenericKeyedObjectPool<PoolKey, PlcConnection> genericKeyedObjectPool = (GenericKeyedObjectPool<PoolKey, PlcConnection>) this.keyedObjectPool;
+            // Thats pretty ugly and we really should't do that...
+            try {
+                Map poolMap = (Map) FieldUtils.getField(GenericKeyedObjectPool.class, "poolMap", true).get(this.keyedObjectPool);
+                statistics.put("pools.count", poolMap.size());
+            } catch (IllegalAccessException e) {
+                throw new PlcRuntimeException(e);
             }
-
-            return statistics;
-        } finally {
-            lock.unlock();
+            Map<String, Integer> numActivePerKey = genericKeyedObjectPool.getNumActivePerKey();
+            for (Map.Entry<String, Integer> entry : numActivePerKey.entrySet()) {
+                statistics.put(entry.getKey() + ".numActive", entry.getValue());
+            }
         }
+
+        return statistics;
     }
 
     private static final class NoPlcAuthentication implements PlcAuthentication {
 
-    }
-
-    private static final class PoolKey {
-        final String url;
-        final PlcAuthentication plcAuthentication;
-
-        // TODO: we need to extract relevant parts of the url as key as we don't want many connections for different racks in s7 for example.
-        // TODO: So we might end up need a generic key and special keys for all known protocols which parses the relevant portions.
-        public PoolKey(String url, PlcAuthentication plcAuthentication) {
-            this.url = url;
-            this.plcAuthentication = plcAuthentication;
-        }
-
-        public static PoolKey of(String host, PlcAuthentication plcAuthentication) {
-            return new PoolKey(host, plcAuthentication);
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public PlcAuthentication getPlcAuthentication() {
-            return plcAuthentication;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof PoolKey)) {
-                return false;
-            }
-            PoolKey poolKey = (PoolKey) o;
-            return Objects.equals(url, poolKey.url) &&
-                Objects.equals(plcAuthentication, poolKey.plcAuthentication);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(url, plcAuthentication);
-        }
-
-        @Override
-        public String toString() {
-            return "PoolKey{" +
-                "url='" + url + '\'' +
-                (plcAuthentication != noPlcAuthentication ? ", plcAuthentication=" + plcAuthentication : "") +
-                '}';
-        }
     }
 }
