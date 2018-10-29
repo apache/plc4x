@@ -22,9 +22,15 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 
 public class DefaultPlcUnsubscriptionResponse implements InternalPlcUnsubscriptionResponse {
 
+    private final InternalPlcUnsubscriptionRequest request;
+
+    public DefaultPlcUnsubscriptionResponse(InternalPlcUnsubscriptionRequest request) {
+        this.request = request;
+    }
+
     @Override
     public PlcUnsubscriptionRequest getRequest() {
-        return null;
+        return request;
     }
 
 }

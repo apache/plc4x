@@ -344,8 +344,34 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
             }
 
             @Test
-            void simpleUnsubscribe() {
-                // TODO: implement me
+            void simpleUnsubscribe() throws Exception {
+                // Given
+                // we have a simple read
+                PlcRequestContainer<?, ?> msg = new PlcRequestContainer<>(TestDefaultPlcUnsubscriptionRequest.build(mockSubscriber), responseCompletableFuture);
+                // When
+                // we write this
+                SUT.write(channelHandlerContext, msg, channelPromise);
+                // And
+                // and we simulate that all get responded
+                verify(channelHandlerContext, times(3)).write(plcRequestContainerArgumentCaptor.capture(), any());
+                List<PlcRequestContainer> capturedDownstreamContainers = plcRequestContainerArgumentCaptor.getAllValues();
+                capturedDownstreamContainers.forEach(this::produceUnsubscriptionResponse);
+                // Then
+                // our complete container should complete normally
+                verify(responseCompletableFuture).complete(any());
+                // And we should have no memory leak
+                assertThat(SUT.getStatistics()).containsOnly(
+                    entry("queue", 0),
+                    entry("sentButUnacknowledgedSubContainer", 0),
+                    entry("correlationToParentContainer", 0),
+                    entry("containerCorrelationIdMap", 0),
+                    entry("responsesToBeDelivered", 0),
+                    entry("correlationIdGenerator", 3),
+                    entry("erroredItems", 0L),
+                    entry("deliveredItems", 3L),
+                    entry("deliveredContainers", 1L),
+                    entry("erroredContainers", 0L)
+                );
             }
 
             @SuppressWarnings("unchecked")
@@ -357,6 +383,17 @@ class SingleItemToSingleRequestProtocolTest implements WithAssertions {
                 HashMap<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseFields = new HashMap<>();
                 responseFields.put(fieldName, Pair.of(PlcResponseCode.OK, mock(PlcSubscriptionHandle.class)));
                 responseFuture.complete(new DefaultPlcSubscriptionResponse(request, responseFields));
+                return null;
+            }
+
+            @SuppressWarnings("unchecked")
+            private Void produceUnsubscriptionResponse(PlcRequestContainer plcRequestContainer) {
+                InternalPlcUnsubscriptionRequest request = (InternalPlcUnsubscriptionRequest) plcRequestContainer.getRequest();
+                // TODO: we need a response for every item
+                InternalPlcSubscriptionHandle internalPlcSubscriptionHandle = request.getInternalPlcSubscriptionHandles().iterator().next();
+                // TODO: handles ignored for now.
+                CompletableFuture responseFuture = plcRequestContainer.getResponseFuture();
+                responseFuture.complete(new DefaultPlcUnsubscriptionResponse(request));
                 return null;
             }
         }

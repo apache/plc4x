@@ -32,6 +32,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 /**
  * This layer can be used to split a {@link org.apache.plc4x.java.api.messages.PlcRequest} which addresses multiple {@link PlcField}s into multiple subsequent {@link org.apache.plc4x.java.api.messages.PlcRequest}s.
  */
+// TODO: add split config so we can override special requests that are allready splitted downstream
 public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(SingleItemToSingleRequestProtocol.class);
@@ -217,6 +219,9 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                     .forEach(stringPairMap -> stringPairMap.forEach(fields::put));
 
                 plcResponse = new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, fields);
+            } else if (originalPlcRequestContainer.getRequest() instanceof InternalPlcUnsubscriptionRequest) {
+                InternalPlcUnsubscriptionRequest internalPlcUnsubscriptionRequest = (InternalPlcUnsubscriptionRequest) originalPlcRequestContainer.getRequest();
+                plcResponse = new DefaultPlcUnsubscriptionResponse(internalPlcUnsubscriptionRequest);
             } else {
                 errored(currentTdpu, new PlcProtocolException("Unknown type detected " + originalPlcRequestContainer.getRequest().getClass()), originalResponseFuture);
                 return;
@@ -327,7 +332,6 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
-                    // TODO: add sub/unsub
                 } else if (internalPlcFieldRequest instanceof InternalPlcSubscriptionRequest) {
                     InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = (InternalPlcSubscriptionRequest) internalPlcFieldRequest;
                     internalPlcSubscriptionRequest.getNamedSubscriptionFields().forEach(field -> {
@@ -353,10 +357,34 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
-                    // TODO: add sub/unsub
                 } else {
                     throw new PlcProtocolException("Unmapped request type " + request.getClass());
                 }
+            } else if (request instanceof InternalPlcUnsubscriptionRequest) {
+                InternalPlcUnsubscriptionRequest internalPlcUnsubscriptionRequest = (InternalPlcUnsubscriptionRequest) request;
+                internalPlcUnsubscriptionRequest.getInternalPlcSubscriptionHandles().forEach(handle -> {
+                    ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
+
+                    Integer tdpu = correlationIdGenerator.getAndIncrement();
+                    CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>();
+                    // Important: don't chain to above as we want the above to be completed not the result of when complete
+                    correlatedCompletableFuture
+                        .thenApply(InternalPlcResponse.class::cast)
+                        .whenComplete((internalPlcResponse, throwable) -> {
+                            if (throwable != null) {
+                                errored(tdpu, throwable, in.getResponseFuture());
+                            } else {
+                                tryFinish(tdpu, internalPlcResponse, in.getResponseFuture());
+                            }
+                        });
+                    PlcRequestContainer<CorrelatedPlcUnsubscriptionRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcUnsubscriptionRequest.of(subscriber, handle, tdpu), correlatedCompletableFuture);
+                    correlationToParentContainer.put(tdpu, in);
+                    queue.add(correlatedPlcRequestContainer, subPromise);
+                    if (!tdpus.add(tdpu)) {
+                        throw new IllegalStateException("AtomicInteger should not create duplicated ids: " + tdpu);
+                    }
+                    promiseCombiner.add((Future) subPromise);
+                });
             } else {
                 ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
                 queue.add(msg, subPromise);
@@ -484,6 +512,27 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
             LinkedHashMap<String, SubscriptionPlcField> fields = new LinkedHashMap<>();
             fields.put(stringPlcFieldPair.getKey(), stringPlcFieldPair.getValue());
             return new CorrelatedPlcSubscriptionRequest(subscriber, fields, tdpu);
+        }
+
+        @Override
+        public int getTdpu() {
+            return tdpu;
+        }
+    }
+
+    protected static class CorrelatedPlcUnsubscriptionRequest extends DefaultPlcUnsubscriptionRequest implements CorrelatedPlcRequest {
+
+        protected final int tdpu;
+
+        protected CorrelatedPlcUnsubscriptionRequest(PlcSubscriber subscriber, LinkedList<InternalPlcSubscriptionHandle> subscriptionHandles, int tdpu) {
+            super(subscriber, subscriptionHandles);
+            this.tdpu = tdpu;
+        }
+
+        protected static CorrelatedPlcUnsubscriptionRequest of(PlcSubscriber subscriber, InternalPlcSubscriptionHandle subscriptionHandle, int tdpu) {
+            LinkedList<InternalPlcSubscriptionHandle> list = new LinkedList<>();
+            list.add(subscriptionHandle);
+            return new CorrelatedPlcUnsubscriptionRequest(subscriber, list, tdpu);
         }
 
         @Override

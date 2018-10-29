@@ -255,7 +255,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             }
         }
         CompletableFuture<PlcUnsubscriptionResponse> future = new CompletableFuture<>();
-        future.complete(new DefaultPlcUnsubscriptionResponse());
+        future.complete(new DefaultPlcUnsubscriptionResponse(internalPlcUnsubscriptionRequest));
         return future;
     }
 
