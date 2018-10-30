@@ -94,10 +94,6 @@ public class S7ResponseSizeEstimator {
     }
 
     private static short getEstimatedResponseParameterSize(S7Parameter parameter) {
-        if (parameter == null) {
-            return 0;
-        }
-
         switch (parameter.getType()) {
             case READ_VAR:
             case WRITE_VAR:
@@ -125,19 +121,15 @@ public class S7ResponseSizeEstimator {
     }
 
     private static short getEstimatedResponsePayloadSize(S7Parameter parameter) {
-        if (parameter == null) {
-            return 0;
-        }
-
         switch (parameter.getType()) {
             case READ_VAR:
                 return getEstimatedResponseReadVarPayloadSize((VarParameter) parameter);
             case WRITE_VAR:
                 return getEstimatedResponseWriteVarPayloadSize((VarParameter) parameter);
-            case SETUP_COMMUNICATION:
+            // As we already handled all cases in the parameter size section, SETUP_COMMUNICATION
+            // is the last possible option.
+            default :
                 return 0;
-            default:
-                throw new NotImplementedException("Not implemented");
         }
     }
 
