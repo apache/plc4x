@@ -361,14 +361,14 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                         readVarPayload = (VarPayload) payload;
                         s7Payloads.add(payload);
                     } else {
-                        readVarPayload.mergePayload((VarPayload) payload);
+                        readVarPayload = readVarPayload.mergePayload((VarPayload) payload);
                     }
                 } else if(payload.getType() == ParameterType.WRITE_VAR) {
                     if(writeVarPayload == null) {
                         writeVarPayload = (VarPayload) payload;
                         s7Payloads.add(payload);
                     } else {
-                        writeVarPayload.mergePayload((VarPayload) payload);
+                        readVarPayload = writeVarPayload.mergePayload((VarPayload) payload);
                     }
                 } else {
                     s7Payloads.add(payload);

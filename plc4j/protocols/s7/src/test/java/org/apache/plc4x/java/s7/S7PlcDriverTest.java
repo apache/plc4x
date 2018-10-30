@@ -18,13 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.s7;
 
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
 import org.apache.plc4x.test.FastTests;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -33,14 +31,30 @@ import static org.junit.Assert.assertThat;
 
 public class S7PlcDriverTest {
 
-    @Ignore("We first have to find/build some tool to help test these connections.")
+    @Test
+    @Category(FastTests.class)
+    public void getProtocolCode() {
+        assertThat(new S7PlcDriver().getProtocolCode(), equalTo("s7"));
+    }
+
+    @Test
+    @Category(FastTests.class)
+    public void getProtocolName() {
+        assertThat(new S7PlcDriver().getProtocolName(), equalTo("Siemens S7 (Basic)"));
+    }
+
     @Test
     @Category(FastTests.class)
     public void getConnection() throws PlcException {
-        S7PlcConnection s7Connection = (S7PlcConnection)
-            new PlcDriverManager().getConnection("s7://localhost/1/2");
+        S7PlcConnection s7Connection = (S7PlcConnection) new S7PlcDriver().connect("s7://localhost/1/2");
         assertThat(s7Connection.getRack(), equalTo(1));
         assertThat(s7Connection.getSlot(), equalTo(2));
+    }
+
+    @Test(expected = PlcConnectionException.class)
+    @Category(FastTests.class)
+    public void getConnectionToUnknownHost() throws PlcException {
+        new S7PlcDriver().connect("s7://IHopeThisHostDoesntExistAAAAAAAAhhhhhhh/1/2");
     }
 
     /**
@@ -49,7 +63,7 @@ public class S7PlcDriverTest {
     @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
     public void getConnectionInvalidUrl() throws PlcConnectionException {
-        new PlcDriverManager().getConnection("s7://localhost/hurz/2");
+        new S7PlcDriver().connect("s7://localhost/hurz/2");
     }
 
     /**
@@ -59,8 +73,7 @@ public class S7PlcDriverTest {
     @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
     public void getConnectionWithAuthentication() throws PlcConnectionException {
-        new PlcDriverManager().getConnection("s7://localhost/1/2",
-            new PlcUsernamePasswordAuthentication("user", "pass"));
+        new S7PlcDriver().connect("s7://localhost/1/2", new PlcUsernamePasswordAuthentication("user", "pass"));
     }
 
 }
