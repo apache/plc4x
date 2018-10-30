@@ -65,8 +65,8 @@ public class S7RequestSizeCalculator {
      * @return size in bytes this item would add to an existing request message.
      */
     public static short getRequestItemTotalSize(VarParameterItem varParameterItem, VarPayloadItem varPayloadItem) {
-        return (short) (getRequestReadWriteVarParameterItemSize(varParameterItem) +
-            getRequestWriteVarPayloadItemSize(varPayloadItem));
+        return (short) (getRequestReadWriteVarParameterItemSize(varParameterItem) + ((varPayloadItem != null) ?
+            getRequestWriteVarPayloadItemSize(varPayloadItem) : 0));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

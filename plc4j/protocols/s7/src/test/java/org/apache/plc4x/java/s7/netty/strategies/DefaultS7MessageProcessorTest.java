@@ -593,7 +593,7 @@ public class DefaultS7MessageProcessorTest {
 
     /**
      * This test handles the special case in which a response is part of a single request message.
-     * This means that it is immediatly finished and is hereby immediatly processed.
+     * This means that it is immediately finished and is hereby immediately processed.
      *
      * @throws PlcException
      */
@@ -651,6 +651,7 @@ public class DefaultS7MessageProcessorTest {
 
         assertThat(processedResponse.getPayloads(), hasSize(1));
         assertThat(processedResponse.getPayload(VarPayload.class).isPresent(), is(true));
+
         VarPayload varPayload = processedResponse.getPayload(VarPayload.class).get();
         assertThat(varPayload.getItems(), hasSize(2));
     }

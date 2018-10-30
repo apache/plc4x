@@ -359,17 +359,19 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 if(payload.getType() == ParameterType.READ_VAR) {
                     if (readVarPayload == null) {
                         readVarPayload = (VarPayload) payload;
-                        s7Payloads.add(payload);
                     } else {
+                        s7Payloads.remove(readVarPayload);
                         readVarPayload = readVarPayload.mergePayload((VarPayload) payload);
                     }
+                    s7Payloads.add(readVarPayload);
                 } else if(payload.getType() == ParameterType.WRITE_VAR) {
                     if(writeVarPayload == null) {
                         writeVarPayload = (VarPayload) payload;
-                        s7Payloads.add(payload);
                     } else {
-                        readVarPayload = writeVarPayload.mergePayload((VarPayload) payload);
+                        s7Payloads.remove(writeVarPayload);
+                        writeVarPayload = writeVarPayload.mergePayload((VarPayload) payload);
                     }
+                    s7Payloads.add(writeVarPayload);
                 } else {
                     s7Payloads.add(payload);
                 }
