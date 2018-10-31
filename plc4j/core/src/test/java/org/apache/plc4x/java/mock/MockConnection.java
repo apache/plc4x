@@ -18,94 +18,35 @@ under the License.
 */
 package org.apache.plc4x.java.mock;
 
-import org.apache.plc4x.java.api.PlcConnection;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelInitializer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.base.connection.TestChannelFactory;
 
-public class MockConnection implements PlcConnection {
+import java.util.concurrent.CompletableFuture;
+
+public class MockConnection extends AbstractPlcConnection {
 
     private final PlcAuthentication authentication;
 
-    private boolean isConnected = false;
-    private MockDevice device;
-
     MockConnection(PlcAuthentication authentication) {
+        super(new TestChannelFactory());
         this.authentication = authentication;
     }
 
-    public MockDevice getDevice() {
-        return device;
-    }
-
-    public void setDevice(MockDevice device) {
-        this.device = device;
-    }
-
     @Override
-    public void connect() {
-        // do nothing
-    }
-
-    @Override
-    public boolean isConnected() {
-        // is connected if a device is set
-        return device != null;
-    }
-
-    @Override
-    public void close() {
-        // unset device
-        this.device = null;
-    }
-
-    @Override
-    public PlcConnectionMetadata getMetadata() {
-        return new PlcConnectionMetadata() {
+    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+        return new ChannelInitializer() {
             @Override
-            public boolean canRead() {
-                return true;
-            }
-
-            @Override
-            public boolean canWrite() {
-                return false;
-            }
-
-            @Override
-            public boolean canSubscribe() {
-                return false;
+            protected void initChannel(Channel channel) {
             }
         };
-    }
-
-    @Override
-    public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(new MockReader(device), new MockFieldHandler());
-    }
-
-    @Override
-    public PlcWriteRequest.Builder writeRequestBuilder() {
-        throw new PlcUnsupportedOperationException("Write not supported by Mock Driver");
-    }
-
-    @Override
-    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        throw new PlcUnsupportedOperationException("Subscription not supported by Mock Driver");
-    }
-
-    @Override
-    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-        throw new PlcUnsupportedOperationException("Subscription not supported by Mock Driver");
     }
 
     public PlcAuthentication getAuthentication() {
         return authentication;
     }
+
 }

@@ -44,7 +44,7 @@ public class MockReader implements PlcReader {
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> response = readRequest.getFieldNames().stream()
-            .collect(Collectors.toMap(Function.identity(), name -> device.read(readRequest.getField(name))));
+            .collect(Collectors.toMap(Function.identity(), name -> device.read(((MockField) readRequest.getField(name)).getFieldQuery())));
         return CompletableFuture.completedFuture(new DefaultPlcReadResponse((DefaultPlcReadRequest)readRequest, response));
     }
 
