@@ -19,98 +19,53 @@ under the License.
 
 package org.apache.plc4x.java.s7.connection;
 
-import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
-import org.apache.plc4x.java.s7.model.S7Field;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.InetAddress;
-
+import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.core.StringContains.containsString;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class S7PlcConnectionTests {
 
-    private S7PlcConnection  s7PlcConnection;
+    private S7PlcTestConnection SUT;
 
     @Before
-    public void setUp() throws Exception {
-        InetAddress address = InetAddress.getByName("localhost");
-        s7PlcConnection = new S7PlcConnection(address, 1, 2,
-            "pdu-size=1&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag");
+    public void setUp() {
+        SUT = new S7PlcTestConnection(1, 2,
+            "pdu-size=1&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag", S7ControllerType.S7_1200);
     }
 
     @After
     public void tearDown() {
-        s7PlcConnection = null;
+        SUT = null;
     }
 
     @Test
     public void initialState() {
-        assertThat("Rack is incorrect", s7PlcConnection.getRack(), equalTo(1) );
-        assertThat("Slot is incorrect", s7PlcConnection.getSlot(), equalTo(2) );
-        assertThat("Pdu size is incorrect", s7PlcConnection.getParamPduSize(), equalTo(TpduSize.SIZE_128));
-        assertThat("Max AMQ Caller size is incorrect", s7PlcConnection.getParamMaxAmqCaller(), equalTo(2) );
-        assertThat("Max AMQ Callee size is incorrect", s7PlcConnection.getParamMaxAmqCallee(), equalTo(3) );
-    }
-
-/*    @Test
-    public void prepareEmptyField() {
-        try {
-            s7PlcConnection.prepareField("");
-        }
-        catch (PlcException exception) {
-            assertThat(exception, instanceOf(PlcInvalidFieldException.class));
-            assertThat(exception.getMessage(), containsString("invalid") );
-        }
+        assertThat("Rack is incorrect", SUT.getRack(), equalTo(1) );
+        assertThat("Slot is incorrect", SUT.getSlot(), equalTo(2) );
+        assertThat("Pdu size is incorrect", SUT.getParamPduSize(), equalTo(TpduSize.SIZE_128));
+        assertThat("Max AMQ Caller size is incorrect", SUT.getParamMaxAmqCaller(), equalTo(2) );
+        assertThat("Max AMQ Callee size is incorrect", SUT.getParamMaxAmqCallee(), equalTo(3) );
     }
 
     @Test
-    public void prepareDatablockField() {
-        try {
-            S7DataBlockField field = (S7DataBlockField)
-                s7PlcConnection.prepareField("DATA_BLOCKS/20/100");
+    public void capabilities() {
+        assertThat(SUT.canRead(), equalTo(true));
+        assertThat(SUT.readRequestBuilder(), notNullValue());
 
-            assertThat("unexpected data block", field.getDataBlockNumber(), equalTo((short) 20) );
-            assertThat("unexpected byte offset", field.getByteOffset(), equalTo((short) 100) );
-        }
-        catch (PlcException exception) {
-            fail("valid data block field");
-        }
+        assertThat(SUT.canWrite(), equalTo(true));
+        assertThat(SUT.writeRequestBuilder(), notNullValue());
+
+        assertThat(SUT.canSubscribe(), equalTo(false));
+        assertThrows(PlcUnsupportedOperationException.class, () -> SUT.subscriptionRequestBuilder());
+        assertThrows(PlcUnsupportedOperationException.class, () -> SUT.unsubscriptionRequestBuilder());
     }
-
-    @Test
-    public void prepareField() {
-        try {
-            S7Field field = (S7Field) s7PlcConnection.prepareField("TIMERS/10");
-
-            assertThat("unexpected memory area", field.getMemoryArea(), equalTo(MemoryArea.TIMERS) );
-            assertThat("unexpected byte offset", field.getByteOffset(), equalTo((short) 10) );
-        }
-        catch (PlcException exception) {
-            fail("valid timer block field");
-        }
-    }
-
-    @Test
-    public void prepareBitField() {
-        try {
-            S7BitField field = (S7BitField) s7PlcConnection.prepareField("TIMERS/10/4");
-
-            assertThat("unexpected memory area", field.getMemoryArea(), equalTo(MemoryArea.TIMERS) );
-            assertThat("unexpected byte offset", field.getByteOffset(), equalTo((short) 10) );
-            assertThat("unexpected but offset", field.getBitOffset(), equalTo((byte) 4) );
-        }
-        catch (PlcException exception) {
-            fail("valid timer block bit field");
-        }
-    }*/
 
 }
