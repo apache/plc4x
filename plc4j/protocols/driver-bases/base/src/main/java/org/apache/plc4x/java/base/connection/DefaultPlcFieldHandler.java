@@ -23,6 +23,10 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
+/**
+ * Base Implementation of {@link PlcFieldHandler} which throws a {@link PlcRuntimeException} for all
+ * encodeXXX methods.
+ */
 public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
 
     @Override

@@ -22,6 +22,9 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
+/**
+ * Field Handler which handles the parsing of string to {@link PlcField} and the encoding of retrieved plc values.
+ */
 public interface PlcFieldHandler {
 
     PlcField createField(String fieldQuery) throws PlcInvalidFieldException;
