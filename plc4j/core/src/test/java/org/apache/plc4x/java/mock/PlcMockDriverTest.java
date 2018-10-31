@@ -31,11 +31,12 @@ import org.mockito.Mockito;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class MockDriverTest {
+public class PlcMockDriverTest {
 
     private final PlcDriverManager driverManager = new PlcDriverManager();
 
@@ -48,7 +49,7 @@ public class MockDriverTest {
 
     @Test
     public void useMockDriver_deviceSet_isConnected() throws Exception {
-        MockConnection connection = (MockConnection) driverManager.getConnection("mock:dummy");
+        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:dummy");
         MockDevice mock = Mockito.mock(MockDevice.class);
         connection.setDevice(mock);
 
@@ -57,7 +58,7 @@ public class MockDriverTest {
 
     @Test
     public void mockDriver_assertSimpleRequest() throws PlcConnectionException {
-        MockConnection connection = (MockConnection) driverManager.getConnection("mock:dummy");
+        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:dummy");
         MockDevice mock = Mockito.mock(MockDevice.class);
         when(mock.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(1L)));
         connection.setDevice(mock);
@@ -68,6 +69,6 @@ public class MockDriverTest {
             .execute();
 
         // Verify the call
-        verify(mock, times(1)).read(any());
+        verify(mock, times(1)).read(eq("myPlcField"));
     }
 }

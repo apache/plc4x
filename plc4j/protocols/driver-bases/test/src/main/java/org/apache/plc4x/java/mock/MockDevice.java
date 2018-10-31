@@ -19,18 +19,16 @@
 
 package org.apache.plc4x.java.mock;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
-public class MockField implements PlcField {
+/**
+ * Mock Object to do assertions on.
+ */
+public interface MockDevice {
 
-    private final String fieldQuery;
+    Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery);
 
-    public MockField(String fieldQuery) {
-
-        this.fieldQuery = fieldQuery;
-    }
-
-    public String getFieldQuery() {
-        return fieldQuery;
-    }
 }
