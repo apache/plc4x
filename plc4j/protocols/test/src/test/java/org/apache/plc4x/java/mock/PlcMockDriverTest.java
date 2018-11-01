@@ -19,11 +19,23 @@
 
 package org.apache.plc4x.java.mock;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import java.util.concurrent.ExecutionException;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class PlcMockDriverTest {
@@ -38,8 +50,42 @@ public class PlcMockDriverTest {
         assertEquals(conn1, conn2);
     }
 
+    /**
+     * Example of Mock Usage.
+     * The idea is to fetch a mock connection with a specific name and prepare a {@link MockDevice} which is set there.
+     *
+     * Some application code which uses the same Connection String will then automatically get the same connection
+     * and operate against the same {@link MockDevice} without the necessity to also mock field queries or other things.
+     *
+     * In this example the {@link #someCodeWhichShouldDoPlcManipulation(String)} function represents the Business Logic
+     * which should be tested and where only the connection string is manipulated for the test.
+     */
     @Test
-    public void exampleUsage() {
+    public void testScenarioExample() throws PlcConnectionException, ExecutionException, InterruptedException {
+        PlcMockConnection preparingConnection = ((PlcMockConnection) driver.connect("test:123"));
+        MockDevice mock = Mockito.mock(MockDevice.class);
+        when(mock.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
+        preparingConnection.setDevice(mock);
 
+        // Now we can simply inject this URL into our code and automatically have our mock
+        someCodeWhichShouldDoPlcManipulation("test:123");
+
+        // Verify that the code did indeed what we wanted it to do
+        verify(mock, times(1)).read("DB2.DBD17:INT");
+    }
+
+    /**
+     * Example function that does some reading from a siemens plc using Siemens Syntax
+     * @param connection Connection String, e.g., from config
+     */
+    private void someCodeWhichShouldDoPlcManipulation(String connection) throws PlcConnectionException, ExecutionException, InterruptedException {
+        // Normally this would be from the driver manager
+        PlcConnection connect = driver.connect(connection);
+        PlcReadResponse response = connect.readRequestBuilder()
+            .addItem("value", "DB2.DBD17:INT")
+            .build()
+            .execute()
+            .get();
+        // Normally do something with the response
     }
 }

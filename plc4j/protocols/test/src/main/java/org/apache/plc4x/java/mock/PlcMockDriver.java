@@ -28,7 +28,7 @@ import java.util.WeakHashMap;
 
 /**
  * Mocking Driver that keeps a Map of references to Connections so that you can fetch a reference to a connection
- * which will be acquired by someone else (via the string).
+ * which will be acquired by someone else (via the connection string).
  * This allows for efficient Mocking.
  */
 public class PlcMockDriver implements PlcDriver {
