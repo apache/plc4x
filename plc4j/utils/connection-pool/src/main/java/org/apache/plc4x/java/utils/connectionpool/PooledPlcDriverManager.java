@@ -43,22 +43,39 @@ public class PooledPlcDriverManager extends PlcDriverManager {
     // Marker class do detected a non null value
     static final NoPlcAuthentication noPlcAuthentication = new NoPlcAuthentication();
 
+    private final PoolKeyFactory poolKeyFactory;
+
     public PooledPlcDriverManager() {
         this(GenericKeyedObjectPool::new);
     }
 
+    public PooledPlcDriverManager(PoolKeyFactory poolKeyFactory) {
+        this(GenericKeyedObjectPool::new, poolKeyFactory);
+    }
+
     public PooledPlcDriverManager(ClassLoader classLoader) {
+        this(classLoader, new PoolKeyFactory());
+    }
+
+    public PooledPlcDriverManager(ClassLoader classLoader, PoolKeyFactory poolKeyFactory) {
         super(classLoader);
         setFromPoolCreator(GenericKeyedObjectPool::new);
+        this.poolKeyFactory = poolKeyFactory;
     }
 
     public PooledPlcDriverManager(PoolCreator poolCreator) {
+        this(poolCreator, new PoolKeyFactory());
+    }
+
+    public PooledPlcDriverManager(PoolCreator poolCreator, PoolKeyFactory poolKeyFactory) {
         setFromPoolCreator(poolCreator);
+        this.poolKeyFactory = poolKeyFactory;
     }
 
     public PooledPlcDriverManager(ClassLoader classLoader, PoolCreator poolCreator) {
         super(classLoader);
         setFromPoolCreator(poolCreator);
+        poolKeyFactory = new PoolKeyFactory();
     }
 
     private void setFromPoolCreator(PoolCreator poolCreator) {
@@ -85,7 +102,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
 
     @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        PoolKey poolKey = PoolKey.of(url, authentication);
+        PoolKey poolKey = poolKeyFactory.getPoolKey(url, authentication);
         if (LOGGER.isDebugEnabled()) {
             if (authentication != noPlcAuthentication) {
                 LOGGER.debug("Try to borrow an object for url {} and authentication {}", url, authentication);

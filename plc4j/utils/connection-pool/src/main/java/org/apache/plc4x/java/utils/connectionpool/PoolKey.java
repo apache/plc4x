@@ -23,19 +23,13 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 
 import java.util.Objects;
 
-public class PoolKey {
-    final String url;
-    final PlcAuthentication plcAuthentication;
+public abstract class PoolKey {
+    protected final String url;
+    protected final PlcAuthentication plcAuthentication;
 
-    // TODO: we need to extract relevant parts of the url as key as we don't want many connections for different racks in s7 for example.
-    // TODO: So we might end up need a generic key and special keys for all known protocols which parses the relevant portions.
     public PoolKey(String url, PlcAuthentication plcAuthentication) {
         this.url = url;
         this.plcAuthentication = plcAuthentication;
-    }
-
-    public static PoolKey of(String host, PlcAuthentication plcAuthentication) {
-        return new PoolKey(host, plcAuthentication);
     }
 
     public String getUrl() {
@@ -46,6 +40,11 @@ public class PoolKey {
         return plcAuthentication;
     }
 
+    /**
+     * @return the part of the url that should be pooled.
+     */
+    public abstract String getPoolableKey();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -55,13 +54,13 @@ public class PoolKey {
             return false;
         }
         PoolKey poolKey = (PoolKey) o;
-        return Objects.equals(url, poolKey.url) &&
+        return Objects.equals(getPoolableKey(), poolKey.getPoolableKey()) &&
             Objects.equals(plcAuthentication, poolKey.plcAuthentication);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(url, plcAuthentication);
+        return Objects.hash(getPoolableKey(), plcAuthentication);
     }
 
     @Override
