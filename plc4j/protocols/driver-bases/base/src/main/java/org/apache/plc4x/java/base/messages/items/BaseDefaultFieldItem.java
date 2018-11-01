@@ -183,7 +183,7 @@ public abstract class BaseDefaultFieldItem<T> {
 
     @Override
     public String toString() {
-        return "FieldItem{" +
+        return getClass().getSimpleName() + "{" +
             "values=" + Arrays.toString(values) +
             '}';
     }

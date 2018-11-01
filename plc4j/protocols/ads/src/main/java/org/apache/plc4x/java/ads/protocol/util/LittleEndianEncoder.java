@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.protocol.util;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 
@@ -102,17 +103,28 @@ public class LittleEndianEncoder {
         return stringStream
             .map(s -> s.getBytes(Charset.defaultCharset()))
             // TODO: this 0 termination is from s7 but might be completly wrong in ads. Guess its a terminator
-            .map(bytes -> ArrayUtils.add(bytes, (byte) 0x0));
+            .map(bytes -> ArrayUtils.add(bytes, (byte) 0x0))
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeByteArray(AdsDataType adsDataType, Stream<byte[]> byteArrayStream) {
         // TODO: add boundchecks and add optional extension
-        return byteArrayStream;
+        return byteArrayStream
+            .peek(bytes -> {
+                if (bytes.length > adsDataType.getTargetByteSize()) {
+                    throw new PlcRuntimeException(new PlcProtocolPayloadTooBigException("ads", adsDataType.getTargetByteSize(), bytes.length, bytes));
+                }
+            });
     }
 
     private static Stream<byte[]> encodeBigByteArray(AdsDataType adsDataType, Stream<Byte[]> byteArrayStream) {
         // TODO: add boundchecks and add optional extension
-        return byteArrayStream.map(ArrayUtils::toPrimitive);
+        return byteArrayStream.map(ArrayUtils::toPrimitive)
+            .peek(bytes -> {
+                if (bytes.length > adsDataType.getTargetByteSize()) {
+                    throw new PlcRuntimeException(new PlcProtocolPayloadTooBigException("ads", adsDataType.getTargetByteSize(), bytes.length, bytes));
+                }
+            });
     }
 
     private static Stream<byte[]> encodeFloat(AdsDataType adsDataType, Stream<Float> floatStream) {
@@ -125,7 +137,8 @@ public class LittleEndianEncoder {
                 (byte) ((intValue & 0x0000ff00) >> 8),
                 (byte) ((intValue & 0x00ff0000) >> 16),
                 (byte) ((intValue & 0xff000000) >> 24),
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeDouble(AdsDataType adsDataType, Stream<Double> doubleStream) {
@@ -142,7 +155,8 @@ public class LittleEndianEncoder {
                 (byte) ((longValue & 0x0000ff00_00000000L) >> 40),
                 (byte) ((longValue & 0x00ff0000_00000000L) >> 48),
                 (byte) ((longValue & 0xff000000_00000000L) >> 56),
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeInteger(AdsDataType adsDataType, Stream<Integer> integerStream) {
@@ -153,11 +167,12 @@ public class LittleEndianEncoder {
                 (byte) ((intValue & 0x0000ff00) >> 8),
                 (byte) ((intValue & 0x00ff0000) >> 16),
                 (byte) ((intValue & 0xff000000) >> 24),
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
-    private static Stream<byte[]> encodeLong(AdsDataType adsDataType, Stream<Long> integerStream) {
-        return integerStream
+    private static Stream<byte[]> encodeLong(AdsDataType adsDataType, Stream<Long> longStream) {
+        return longStream
             .peek(value -> checkBound(adsDataType, value))
             .map(longValue -> new byte[]{
                 (byte) (longValue & 0x00000000_000000ffL),
@@ -168,7 +183,8 @@ public class LittleEndianEncoder {
                 (byte) ((longValue & 0x0000ff00_00000000L) >> 40),
                 (byte) ((longValue & 0x00ff0000_00000000L) >> 48),
                 (byte) ((longValue & 0xff000000_00000000L) >> 56),
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeBigInteger(AdsDataType adsDataType, Stream<BigInteger> bigIntegerStream) {
@@ -176,15 +192,16 @@ public class LittleEndianEncoder {
         return bigIntegerStream
             .map(bigIntValue -> {
                 byte[] bytes = bigIntValue.toByteArray();
-                if (bytes[0] == 0x0) {
-                    byte[] subArray = ArrayUtils.subarray(bytes, 1, bytes.length);
+                if (bytes.length > 1 && bytes[0] == 0x0) {
+                    byte[] subArray = Arrays.copyOf(ArrayUtils.subarray(bytes, 1, bytes.length), adsDataType.getTargetByteSize());
                     ArrayUtils.reverse(subArray);
                     return subArray;
                 } else {
-                    ArrayUtils.reverse(bytes);
+                    ArrayUtils.reverse(Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
                     return bytes;
                 }
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeLocalTime(AdsDataType adsDataType, Stream<LocalTime> localTimeStream) {
@@ -197,7 +214,8 @@ public class LittleEndianEncoder {
                 (byte) ((time & 0x00000000_0000ff00L) >> 8),
                 (byte) ((time & 0x00000000_00ff0000L) >> 16),
                 (byte) ((time & 0x00000000_ff000000L) >> 24),
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeLocalDate(AdsDataType adsDataType, Stream<LocalDate> localDateStream) {
@@ -212,7 +230,8 @@ public class LittleEndianEncoder {
                 (byte) ((time & 0x00000000_0000ff00L) >> 8),
                 (byte) ((time & 0x00000000_00ff0000L) >> 16),
                 (byte) ((time & 0x00000000_ff000000L) >> 24),
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeLocalDateTime(AdsDataType adsDataType, Stream<LocalDateTime> localDateTimeStream) {
@@ -231,7 +250,8 @@ public class LittleEndianEncoder {
                 (byte) ((time & 0x0000ff00_00000000L) >> 40),
                 (byte) ((time & 0x00ff0000_00000000L) >> 48),
                 (byte) ((time & 0xff000000_00000000L) >> 56),
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
 
@@ -241,19 +261,21 @@ public class LittleEndianEncoder {
             .map(shortValue -> new byte[]{
                 (byte) (shortValue & 0x00ff),
                 (byte) ((shortValue & 0xff00) >> 8),
-            });
+            })
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeByte(AdsDataType adsDataType, Stream<Byte> byteStream) {
         return byteStream
             .peek(value -> checkBound(adsDataType, value))
-            .map(aByte -> new byte[]{aByte});
+            .map(aByte -> new byte[]{aByte})
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static Stream<byte[]> encodeBoolean(AdsDataType adsDataType, Stream<Boolean> booleanStream) {
-        // TODO: add boundchecks and add optional extension
         return booleanStream
-            .map(booleanValue -> new byte[]{booleanValue ? (byte) 0x01 : (byte) 0x00});
+            .map(booleanValue -> new byte[]{booleanValue ? (byte) 0x01 : (byte) 0x00})
+            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
     }
 
     private static void checkBound(AdsDataType adsDataType, double other) {
