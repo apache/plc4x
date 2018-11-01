@@ -46,7 +46,7 @@ public class HelloOpm {
     private static final String PLC_FIELD_ADDRESS = "%DB225.DBW0:INT";
     private final PlcEntityManager entityManager;
 
-    public static void main(String[] args) throws OPMException, InterruptedException {
+    public static void main(String[] args) throws OPMException {
         HelloOpm helloOpm = new HelloOpm();
         // Do a fetch via connected entity
         helloOpm.readValueFromPlcUsingConnectedEntity();
@@ -65,10 +65,9 @@ public class HelloOpm {
      * If another method is called on the Entity all Fields are feched from the Plc first, and then the method is
      * invoked.
      *
-     * @throws InterruptedException
      * @throws OPMException
      */
-    public void readValueFromPlcUsingConnectedEntity() throws InterruptedException, OPMException {
+    public void readValueFromPlcUsingConnectedEntity() throws OPMException {
         // Fetch connected Entity
         DistanceSensor distanceSensor = entityManager.connect(DistanceSensor.class, ADDRESS);
         // Read shoot values a hundred times
@@ -83,10 +82,9 @@ public class HelloOpm {
      * <b>once</b> and injects them in the new instance. After the constructing this is a regular POJO with no fancy
      * functionality.
      *
-     * @throws InterruptedException
      * @throws OPMException
      */
-    public void readValueFromPlcUsingRead() throws InterruptedException, OPMException {
+    public void readValueFromPlcUsingRead() throws OPMException {
         // Read Entity from PLC
         DistanceSensor distanceSensor = entityManager.read(DistanceSensor.class, ADDRESS);
         System.out.println("Current distance: " + distanceSensor.getDistance());

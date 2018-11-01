@@ -24,7 +24,6 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -64,6 +63,11 @@ public class PlcEntityInterceptor {
 
     private static final Configuration CONF = new SystemConfiguration();
     private static final long READ_TIMEOUT = CONF.getLong("org.apache.plc4x.java.opm.entity_manager.read_timeout", 1_000);
+
+    private PlcEntityInterceptor() {
+        throw new UnsupportedOperationException("This class is not to be instantiated");
+    }
+
     /**
      * Basic Intersector for all methods on the proxy object.
      * It checks if the invoked method is a getter and if so, only retrieves the requested field, forwarding to
@@ -134,6 +138,7 @@ public class PlcEntityInterceptor {
      * @param driverManager
      * @throws OPMException on various errors.
      */
+    @SuppressWarnings("squid:S1141") // Nested try blocks readability is okay, move to other method makes it imho worse
     static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
@@ -162,7 +167,7 @@ public class PlcEntityInterceptor {
 
             // Fill all requested fields
             for (String fieldName : response.getFieldNames()) {
-                LOGGER.trace("Value for field " + fieldName + " is " + response.getObject(fieldName));
+                LOGGER.trace("Value for field {}  is {}", fieldName, response.getObject(fieldName));
                 String clazzFieldName = StringUtils.substringAfterLast(fieldName, ".");
                 try {
                     setField(entityClass, proxy, response, clazzFieldName, fieldName);
@@ -242,6 +247,7 @@ public class PlcEntityInterceptor {
         }
     }
 
+    @SuppressWarnings("squid:S3776") // Cognitive Complexity not too high, as highly structured
     private static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
         LOGGER.debug("getTyped clazz: {}, response: {}, fieldName: {}", clazz, response, sourceFieldName);
         if (response.getResponseCode(sourceFieldName) != PlcResponseCode.OK) {
