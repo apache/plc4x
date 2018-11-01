@@ -178,7 +178,7 @@ public class PlcEntityInterceptor {
         } catch (PlcConnectionException e) {
             throw new OPMException("Problem during processing", e);
         } catch (Exception e) {
-            throw new OPMException("Unknown Error", e);
+            throw new OPMException("Unexpected error during processing", e);
         }
     }
 
