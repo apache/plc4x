@@ -716,8 +716,6 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
 
     private BaseDefaultFieldItem internalEncodeInteger(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
-        BigDecimal minValue = BigDecimal.valueOf(adsField.getAdsDataType().getLowerBound());
-        BigDecimal maxValue = BigDecimal.valueOf(adsField.getAdsDataType().getUpperBound());
         Class<? extends BaseDefaultFieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case BYTE:
@@ -772,16 +770,10 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                         "Value of type " + values[i].getClass().getName() +
                             " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
                 }
-                BigDecimal value = BigDecimal.valueOf(((Number) values[i]).longValue());
-                if (minValue.compareTo(value) > 0) {
-                    throw new IllegalArgumentException(
-                        "Value of " + value.toString() + " exceeds allowed minimum for type "
-                            + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
-                }
-                if (maxValue.compareTo(value) < 0) {
-                    throw new IllegalArgumentException(
-                        "Value of " + value.toString() + " exceeds allowed maximum for type "
-                            + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
+
+                Number value = (Number) values[i];
+                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
+                    throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsField.getAdsDataType());
                 }
                 longValues[i] = value.longValue();
             }
@@ -800,15 +792,8 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                         "Value of type " + values[i].getClass().getName() +
                             " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
                 }
-                if (minValue.compareTo(value) > 0) {
-                    throw new IllegalArgumentException(
-                        "Value of " + value.toString() + " exceeds allowed minimum for type "
-                            + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
-                }
-                if (maxValue.compareTo(value) < 0) {
-                    throw new IllegalArgumentException(
-                        "Value of " + value.toString() + " exceeds allowed maximum for type "
-                            + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
+                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
+                    throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsField.getAdsDataType());
                 }
                 bigIntegerValues[i] = value.toBigInteger();
             }
@@ -818,8 +803,6 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
 
     private BaseDefaultFieldItem internalEncodeFloatingPoint(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
-        BigDecimal minValue = BigDecimal.valueOf(adsField.getAdsDataType().getLowerBound());
-        BigDecimal maxValue = BigDecimal.valueOf(adsField.getAdsDataType().getUpperBound());
         Class<? extends BaseDefaultFieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case REAL:
@@ -845,15 +828,9 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                             " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
                 }
 
-                if (minValue.compareTo(new BigDecimal(floatingPointValues[i])) > 0) {
-                    throw new IllegalArgumentException(
-                        "Value of " + floatingPointValues[i] + " exceeds allowed minimum for type "
-                            + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
-                }
-                if (maxValue.compareTo(new BigDecimal(floatingPointValues[i])) < 0) {
-                    throw new IllegalArgumentException(
-                        "Value of " + floatingPointValues[i] + " exceeds allowed maximum for type "
-                            + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
+                Number value = (Number) values[i];
+                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
+                    throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsField.getAdsDataType());
                 }
             }
             return new DefaultDoubleFieldItem(floatingPointValues);
@@ -868,15 +845,9 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                             " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
                 }
 
-                if (minValue.compareTo(new BigDecimal(floatingPointValues[i])) > 0) {
-                    throw new IllegalArgumentException(
-                        "Value of " + floatingPointValues[i] + " exceeds allowed minimum for type "
-                            + adsField.getAdsDataType().name() + " (min " + minValue.toString() + ")");
-                }
-                if (maxValue.compareTo(new BigDecimal(floatingPointValues[i])) < 0) {
-                    throw new IllegalArgumentException(
-                        "Value of " + floatingPointValues[i] + " exceeds allowed maximum for type "
-                            + adsField.getAdsDataType().name() + " (max " + maxValue.toString() + ")");
+                Number value = (Number) values[i];
+                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
+                    throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsField.getAdsDataType());
                 }
             }
             return new DefaultFloatFieldItem(floatingPointValues);
@@ -885,7 +856,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
 
     private BaseDefaultFieldItem internalEncodeString(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
-        double maxLength = adsField.getAdsDataType().getUpperBound();
+        Number maxLength = adsField.getAdsDataType().getUpperBound();
         //boolean encoding16Bit;
         switch (adsField.getAdsDataType()) {
             case STRING:
@@ -899,7 +870,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
         for (Object value : values) {
             if (value instanceof String) {
                 String stringValue = (String) value;
-                if (stringValue.length() > maxLength) {
+                if (stringValue.length() > maxLength.intValue()) {
                     throw new IllegalArgumentException(
                         "String length " + stringValue.length() + " exceeds allowed maximum for type "
                             + adsField.getAdsDataType().name() + " (max " + maxLength + ")");
@@ -913,7 +884,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 /*if (encoding16Bit) {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {*/
-                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
+                stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 /*}*/
             } else if (value instanceof Short) {
                 Short shortValue = (Short) value;
@@ -923,7 +894,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 /*if (encoding16Bit) {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {*/
-                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
+                stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 /*}*/
             } else if (value instanceof Integer) {
                 Integer integerValue = (Integer) value;
@@ -935,7 +906,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 /*if (encoding16Bit) {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {*/
-                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
+                stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 /*}*/
             } else if (value instanceof Long) {
                 Long longValue = (Long) value;
@@ -951,7 +922,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 /*if (encoding16Bit) {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {*/
-                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
+                stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 /*}*/
             } else {
                 throw new IllegalArgumentException(
