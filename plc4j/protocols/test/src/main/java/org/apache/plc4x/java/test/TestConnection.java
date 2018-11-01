@@ -38,11 +38,24 @@ import java.util.concurrent.CompletableFuture;
  * This class is not thread-safe.
  */
 class TestConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter {
+
+    // Virtual Device which this driver communicates with
     private final TestDevice device;
+    // Optional MockDevice where all "MOCK" Fields are forwarded to
+    private MockDevice mockDevice;
+
     private boolean connected = false;
 
     TestConnection(TestDevice device) {
         this.device = device;
+    }
+
+    public void setMockDevice(MockDevice mockDevice) {
+        this.device.setMockDevice(mockDevice);
+    }
+
+    public void unsetMockDevice() {
+        this.device.unsetMockDevice();
     }
 
     @Override

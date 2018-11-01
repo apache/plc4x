@@ -23,6 +23,7 @@ public enum TestType {
 
     RANDOM,
     STATE,
-    STDOUT
+    STDOUT,
+    MOCK
 
 }

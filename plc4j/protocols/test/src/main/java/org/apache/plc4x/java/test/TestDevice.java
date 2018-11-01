@@ -32,6 +32,9 @@ class TestDevice {
     private final String name;
     private final Map<TestField, BaseDefaultFieldItem> state = new HashMap<>();
 
+    // Optional Mock Device
+    private MockDevice mockDevice;
+
     TestDevice(String name) {
         this.name = name;
     }
@@ -45,6 +48,11 @@ class TestDevice {
                 return Optional.of(randomValue(field.getDataType()));
             case STDOUT:
                 return Optional.empty();
+            case MOCK:
+                if (mockDevice == null) {
+                    throw new IllegalArgumentException("No Mock Device set for this connection!");
+                }
+                return Optional.ofNullable(mockDevice.get(field.getName(), field.getDataType()));
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
@@ -60,6 +68,12 @@ class TestDevice {
                 return;
             case RANDOM:
                 System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), Objects.toString(value.getValues()[0]));
+                return;
+            case MOCK:
+                if (mockDevice == null) {
+                    throw new IllegalArgumentException("No Mock Device set for this connection!");
+                }
+                mockDevice.set(field.getName(), value);
                 return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
@@ -115,4 +129,12 @@ class TestDevice {
         return name;
     }
 
+    public void setMockDevice(MockDevice mockDevice) {
+        this.mockDevice = mockDevice;
+    }
+
+
+    public void unsetMockDevice() {
+        this.mockDevice = null;
+    }
 }
