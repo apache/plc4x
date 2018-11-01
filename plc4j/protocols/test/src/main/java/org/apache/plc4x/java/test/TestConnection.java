@@ -39,10 +39,10 @@ import java.util.concurrent.CompletableFuture;
  */
 class TestConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter {
 
-    // Virtual Device which this driver communicates with
+    /**
+     * Virtual Device which this driver communicates with
+      */
     private final TestDevice device;
-    // Optional MockDevice where all "MOCK" Fields are forwarded to
-    private MockDevice mockDevice;
 
     private boolean connected = false;
 
@@ -50,10 +50,16 @@ class TestConnection implements PlcConnection, PlcConnectionMetadata, PlcReader,
         this.device = device;
     }
 
+    /**
+     * Set a Mock Object to the device
+     */
     public void setMockDevice(MockDevice mockDevice) {
         this.device.setMockDevice(mockDevice);
     }
 
+    /**
+     * Remove Mock Object from device
+     */
     public void unsetMockDevice() {
         this.device.unsetMockDevice();
     }

@@ -22,10 +22,10 @@ package org.apache.plc4x.java.test;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 /**
- * TODO write comment
+ * Interface for Mocking.
+ * A mock or stub can be instantiated based on this interface and interact with the Plc Connection.
  *
  * @author julian
- * Created by julian on 01.11.18
  */
 public interface MockDevice {
 
