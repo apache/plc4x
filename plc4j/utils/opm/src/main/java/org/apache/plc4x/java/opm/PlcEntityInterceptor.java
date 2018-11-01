@@ -31,6 +31,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -236,13 +237,17 @@ public class PlcEntityInterceptor {
         try {
             field.set(o, getTyped(field.getType(), response, sourceFieldName));
         } catch (ClassCastException e) {
-            // TODO should we simply fail here?
-            LOGGER.warn("Unable to assign return value {} to field {} with type {}", response.getObject(sourceFieldName), targetFieldName, field.getType(), e);
+            throw new PlcRuntimeException(String.format("Unable to assign return value %s to field %s with type %s",
+                response.getObject(sourceFieldName), targetFieldName, field.getType()), e);
         }
     }
 
     private static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
         LOGGER.debug("getTyped clazz: {}, response: {}, fieldName: {}", clazz, response, sourceFieldName);
+        if (response.getResponseCode(sourceFieldName) != PlcResponseCode.OK) {
+            throw new PlcRuntimeException(String.format("Unable to read specified field %s, response code was %s",
+                sourceFieldName, response));
+        }
         if (clazz.isPrimitive()) {
             if (clazz == boolean.class) {
                 return response.getBoolean(sourceFieldName);
