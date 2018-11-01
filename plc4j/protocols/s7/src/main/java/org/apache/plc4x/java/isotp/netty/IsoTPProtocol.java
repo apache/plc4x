@@ -90,7 +90,7 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Tpdu in, List<Object> out) {
-        logger.debug("ISO Transport Protocol Message sent");
+        logger.trace("ISO Transport Protocol Message sent");
 
         if (in == null) {
             return;
@@ -209,13 +209,13 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
 
     @Override
     protected void decode(ChannelHandlerContext ctx, IsoOnTcpMessage in, List<Object> out) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
-        }
-        logger.debug("ISO TP Message received");
-
+        logger.trace("ISO TP Message received");
         if (in == null) {
             return;
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
         }
 
         ByteBuf userData = in.getUserData();
