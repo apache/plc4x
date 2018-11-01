@@ -52,6 +52,8 @@ public class HelloOpm {
         helloOpm.readValueFromPlcUsingConnectedEntity();
         // Do a fetch via read
         helloOpm.readValueFromPlcUsingRead();
+        // Stop the application
+        System.exit(0);
     }
 
     public HelloOpm() {
