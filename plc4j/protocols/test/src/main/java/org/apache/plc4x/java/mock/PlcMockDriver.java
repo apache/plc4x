@@ -23,7 +23,17 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
+/**
+ * Mocking Driver that keeps a Map of references to Connections so that you can fetch a reference to a connection
+ * which will be acquired by someone else (via the string).
+ * This allows for efficient Mocking.
+ */
 public class PlcMockDriver implements PlcDriver {
+
+    private Map<String, PlcConnection> connectionMap = new WeakHashMap<>();
 
     @Override
     public String getProtocolCode() {
@@ -36,13 +46,17 @@ public class PlcMockDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection connect(String url) {
-        return new PlcMockConnection(null);
+    public PlcConnection connect(String url) throws PlcConnectionException {
+        return connect(url, null);
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) {
-        return new PlcMockConnection(authentication);
+    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
+        String deviceName = url.substring(5);
+        if (deviceName.isEmpty()) {
+            throw new PlcConnectionException("Invalid URL: no device name given.");
+        }
+        return connectionMap.computeIfAbsent(deviceName, name -> new PlcMockConnection(name, authentication));
     }
 
 }

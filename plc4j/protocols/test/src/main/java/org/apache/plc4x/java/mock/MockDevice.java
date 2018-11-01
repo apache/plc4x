@@ -31,4 +31,7 @@ public interface MockDevice {
 
     Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery);
 
+    // TODO Implement this
+    // void write(String fieldQuery, BaseDefaultFieldItem value);
+
 }

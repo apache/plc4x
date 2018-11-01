@@ -18,25 +18,34 @@ under the License.
 */
 package org.apache.plc4x.java.mock;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.base.messages.PlcReader;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
-public class PlcMockConnection implements PlcConnection {
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+public class PlcMockConnection implements PlcConnection, PlcReader {
+
+    private final String name;
     private final PlcAuthentication authentication;
 
     private boolean isConnected = false;
     private MockDevice device;
 
-    PlcMockConnection(PlcAuthentication authentication) {
+    PlcMockConnection(String name, PlcAuthentication authentication) {
+        this.name = name;
         this.authentication = authentication;
     }
 
@@ -87,7 +96,14 @@ public class PlcMockConnection implements PlcConnection {
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(new MockReader(device), new MockFieldHandler());
+        return new DefaultPlcReadRequest.Builder(this, new MockFieldHandler());
+    }
+
+    @Override
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> response = readRequest.getFieldNames().stream()
+            .collect(Collectors.toMap(Function.identity(), name -> device.read(((MockField) readRequest.getField(name)).getFieldQuery())));
+        return CompletableFuture.completedFuture(new DefaultPlcReadResponse((DefaultPlcReadRequest)readRequest, response));
     }
 
     @Override
