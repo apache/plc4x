@@ -41,6 +41,7 @@
     <module>hello-connectivity-kafka</module>
     <module>hello-connectivity-mqtt</module>
     <module>hello-integration-edgent</module>
+    <module>hello-opm</module>
     <module>hello-storage-elasticsearch</module>
     <module>hello-world-plc4x</module>
   </modules>
