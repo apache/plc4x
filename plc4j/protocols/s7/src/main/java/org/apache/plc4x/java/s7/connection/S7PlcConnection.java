@@ -42,6 +42,7 @@ import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
 import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.slf4j.Logger;
@@ -171,7 +172,8 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                 });
                 pipeline.addLast(new IsoOnTcpProtocol());
                 pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, paramPduSize));
-                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue()));
+                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue(),
+                    new DefaultS7MessageProcessor()));
                 pipeline.addLast(new Plc4XS7Protocol());
             }
         };

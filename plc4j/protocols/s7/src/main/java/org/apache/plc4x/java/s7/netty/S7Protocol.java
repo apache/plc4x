@@ -26,6 +26,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.PromiseCombiner;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
 import org.apache.plc4x.java.isotp.netty.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.netty.events.IsoTPConnectedEvent;
@@ -46,7 +47,6 @@ import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslDataRecord;
 import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslModuleIdentificationDataRecord;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.strategies.S7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
@@ -99,12 +99,12 @@ public class S7Protocol extends ChannelDuplexHandler {
     private PendingWriteQueue queue;
     private Map<Short, DataTpdu> sentButUnacknowledgedTpdus;
 
-    public S7Protocol(short requestedMaxAmqCaller, short requestedMaxAmqCallee, short requestedPduSize) {
+    public S7Protocol(short requestedMaxAmqCaller, short requestedMaxAmqCallee, short requestedPduSize, S7MessageProcessor messageProcessor) {
         this.maxAmqCaller = requestedMaxAmqCaller;
         this.maxAmqCallee = requestedMaxAmqCallee;
         this.pduSize = requestedPduSize;
+        this.messageProcessor = messageProcessor;
         sentButUnacknowledgedTpdus = new HashMap<>();
-        messageProcessor = new DefaultS7MessageProcessor();
     }
 
     @Override
@@ -163,49 +163,51 @@ public class S7Protocol extends ChannelDuplexHandler {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if(msg instanceof S7Message) {
-            S7Message in = (S7Message) msg;
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
+        try {
+            if(msg instanceof S7Message) {
+                S7Message in = (S7Message) msg;
 
-            // Give message processors to process the incoming message.
-            Collection<? extends S7Message> messages;
-            if((messageProcessor != null) && (in instanceof S7RequestMessage)) {
-                try {
+                // Give message processors to process the incoming message.
+                Collection<? extends S7Message> messages;
+                if ((messageProcessor != null) && (in instanceof S7RequestMessage)) {
                     messages = messageProcessor.processRequest((S7RequestMessage) in, pduSize);
-                } catch(Exception e) {
-                    logger.error("Error processing message", e);
-                    ctx.fireExceptionCaught(e);
-                    return;
+                } else {
+                    messages = Collections.singleton(in);
                 }
-            } else {
-                messages = Collections.singleton(in);
-            }
 
-            // Create a promise that has to be called multiple times.
-            PromiseCombiner promiseCombiner = new PromiseCombiner();
-            if(messages != null) {
+                // Create a promise that has to be called multiple times.
+                PromiseCombiner promiseCombiner = new PromiseCombiner();
                 for (S7Message message : messages) {
                     ByteBuf buf = Unpooled.buffer();
-                    writeS7Message(ctx, promise.channel(), promiseCombiner, message, buf);
+                    writeS7Message(promise.channel(), promiseCombiner, message, buf);
                 }
-            }
-            promiseCombiner.finish(promise);
+                promiseCombiner.finish(promise);
 
-            // Start sending the queue content.
-            trySendingMessages(ctx);
-        } else {
-            super.write(ctx, msg, promise);
+                // Start sending the queue content.
+                trySendingMessages(ctx);
+            }
+            // Especially during the phase of connection establishment, we might be sending
+            // messages of a lower level protocol, so if it's not S7, we forward it to the next
+            // in the pipeline and hope it can handle it. If no layer can handle it Netty will
+            // exceptionally complete the future.
+            else {
+                ctx.write(msg, promise);
+            }
+        } catch (Exception e) {
+            promise.setFailure(e);
         }
     }
 
-    private void writeS7Message(ChannelHandlerContext ctx, Channel channel, PromiseCombiner promiseCombiner, S7Message message, ByteBuf buf) {
+    private void writeS7Message(Channel channel, PromiseCombiner promiseCombiner,
+                                S7Message message, ByteBuf buf) throws PlcProtocolException {
         encodeHeader(message, buf);
         encodeParameters(message, buf);
         encodePayloads(message, buf);
 
         // Check if the message doesn't exceed the negotiated maximum size.
         if (buf.writerIndex() > pduSize) {
-            ctx.fireExceptionCaught(new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), message));
+            throw new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), message);
         } else {
             ChannelPromise subPromise = new DefaultChannelPromise(channel);
             queue.add(new DataTpdu(true, (byte) 0x01, Collections.emptyList(), buf, message), subPromise);
@@ -214,17 +216,20 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
     }
 
-    private void encodePayloads(S7Message in, ByteBuf buf) {
-        for (S7Payload payload : in.getPayloads()) {
-            switch (payload.getType()) {
-                case WRITE_VAR:
-                    encodeWriteVarPayload((VarPayload) payload, buf);
-                    break;
-                case CPU_SERVICES:
-                    encodeCpuServicesPayload((CpuServicesPayload) payload, buf);
-                    break;
-                default:
-                    break;
+    private void encodePayloads(S7Message in, ByteBuf buf) throws PlcProtocolException {
+        if(in.getPayloads() != null) {
+            for (S7Payload payload : in.getPayloads()) {
+                switch (payload.getType()) {
+                    case WRITE_VAR:
+                        encodeWriteVarPayload((VarPayload) payload, buf);
+                        break;
+                    case CPU_SERVICES:
+                        encodeCpuServicesPayload((CpuServicesPayload) payload, buf);
+                        break;
+                    default:
+                        throw new PlcProtocolException("Writing payloads of type " +
+                            payload.getType().name() + " not implemented.");
+                }
             }
         }
     }
@@ -240,7 +245,8 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
     }
 
-    private void encodeCpuServicesPayload(CpuServicesPayload cpuServicesPayload, ByteBuf buf) {
+    private void encodeCpuServicesPayload(CpuServicesPayload cpuServicesPayload, ByteBuf buf)
+            throws PlcProtocolException {
         buf.writeByte(cpuServicesPayload.getReturnCode().getCode());
         // This seems to be constantly set to this.
         buf.writeByte(DataTransportSize.OCTET_STRING.getCode());
@@ -253,7 +259,8 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
         // The response payload contains a lot more information.
         else {
-            short length = 8;
+            throw new PlcProtocolException("Unexpected SZL Data Records");
+            /*short length = 8;
             short sizeOfDataItem = 0;
             for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
                 sizeOfDataItem = (short) (sslDataRecord.getLengthInWords() * (short) 2);
@@ -279,11 +286,11 @@ public class S7Protocol extends ChannelDuplexHandler {
                     buf.writeShort(midr.getModuleOrOsVersion());
                     buf.writeShort(midr.getPgDescriptionFileVersion());
                 }
-            }
+            }*/
         }
     }
 
-    private void encodeParameters(S7Message in, ByteBuf buf) {
+    private void encodeParameters(S7Message in, ByteBuf buf) throws PlcProtocolException {
         for (S7Parameter s7Parameter : in.getParameters()) {
             buf.writeByte(s7Parameter.getType().getCode());
             switch (s7Parameter.getType()) {
@@ -298,7 +305,8 @@ public class S7Protocol extends ChannelDuplexHandler {
                     encodeCpuServicesParameter(buf, (CpuServicesParameter) s7Parameter);
                     break;
                 default:
-                    logger.error("writing this parameter type not implemented");
+                    throw new PlcProtocolException("Writing parameters of type " +
+                        s7Parameter.getType().name() + " not implemented.");
             }
         }
     }
@@ -314,11 +322,12 @@ public class S7Protocol extends ChannelDuplexHandler {
         buf.writeShort(S7SizeHelper.getParametersLength(in.getParameters()));
         // Data field length
         buf.writeShort(S7SizeHelper.getPayloadsLength(in.getPayloads()));
-        if (in instanceof S7ResponseMessage) {
+        // Not sure why this is implemented, we should never be sending out responses.
+        /*if (in instanceof S7ResponseMessage) {
             S7ResponseMessage s7ResponseMessage = (S7ResponseMessage) in;
             buf.writeByte(s7ResponseMessage.getErrorClass());
             buf.writeByte(s7ResponseMessage.getErrorCode());
-        }
+        }*/
     }
 
     private void encodeParameterSetupCommunication(ByteBuf buf, SetupCommunicationParameter s7Parameter) {
@@ -329,7 +338,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         buf.writeShort(s7Parameter.getPduLength());
     }
 
-    private void encodeParameterReadWriteVar(ByteBuf buf, VarParameter s7Parameter) {
+    private void encodeParameterReadWriteVar(ByteBuf buf, VarParameter s7Parameter) throws PlcProtocolException {
         List<VarParameterItem> items = s7Parameter.getItems();
         // PlcReadRequestItem count (Read one variable at a time)
         buf.writeByte((byte) items.size());
@@ -338,7 +347,8 @@ public class S7Protocol extends ChannelDuplexHandler {
             if (addressMode == VariableAddressingMode.S7ANY) {
                 encodeS7AnyParameterItem(buf, (S7AnyVarParameterItem) item);
             } else {
-                logger.error("writing this item type not implemented");
+                throw new PlcProtocolException("Writing VarParameterItems with addressing mode " +
+                    addressMode.name() + " not implemented");
             }
         }
     }
@@ -359,12 +369,13 @@ public class S7Protocol extends ChannelDuplexHandler {
         buf.writeByte(parameter.getSequenceNumber());
 
         // A response parameter has some more fields.
-        if(parameter instanceof CpuServicesResponseParameter) {
+        // Not sure why this is implemented, we should never be sending out responses.
+        /*if(parameter instanceof CpuServicesResponseParameter) {
             CpuServicesResponseParameter responseParameter = (CpuServicesResponseParameter) parameter;
             buf.writeByte(responseParameter.getDataUnitReferenceNumber());
             buf.writeByte(responseParameter.isLastDataUnit() ? 0x00 : 0x01);
             buf.writeShort(responseParameter.getError().getCode());
-        }
+        }*/
     }
 
     private void encodeS7AnyParameterItem(ByteBuf buf, S7AnyVarParameterItem s7AnyRequestItem) {

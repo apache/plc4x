@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.io.IOUtils;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.base.connection.TestChannelFactory;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.pcap4j.core.NotOpenException;
@@ -83,6 +84,9 @@ public class S7PlcTestConnection extends S7PlcConnection {
         super.sendChannelCreatedEvent();
 
         ByteBuf writtenData = channel.readOutbound();
+        if(writtenData == null) {
+            throw new PlcRuntimeException("Error reading initial channel output");
+        }
         byte[] connectionRequest = new byte[writtenData.readableBytes()];
         writtenData.readBytes(connectionRequest);
         // TODO: Check the content of the Iso TP connection request.
