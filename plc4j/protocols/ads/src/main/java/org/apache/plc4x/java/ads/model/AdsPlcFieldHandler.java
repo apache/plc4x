@@ -982,20 +982,34 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
 
     private BaseDefaultFieldItem internalDateTimeTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
+        Class<? extends BaseDefaultFieldItem> fieldType;
         switch (adsField.getAdsDataType()) {
             case TIME:
+                fieldType = DefaultLocalTimeFieldItem.class;
+                break;
             case DATE:
+                fieldType = DefaultLocalDateFieldItem.class;
+                break;
             case DATE_AND_TIME:
+                fieldType = DefaultLocalDateTimeFieldItem.class;
                 break;
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");
         }
-        // TODO: support other types
-        List<LocalDateTime> localDateTimeValues = Arrays.stream(values)
-            .filter(LocalDateTime.class::isInstance)
-            .map(LocalDateTime.class::cast)
-            .collect(Collectors.toList());
-        return new DefaultLocalDateTimeFieldItem(localDateTimeValues.toArray(new LocalDateTime[0]));
+        // TODO: add type conversion
+        if (fieldType == DefaultLocalDateTimeFieldItem.class) {
+            return new DefaultLocalDateTimeFieldItem(Arrays.stream(values)
+                .filter(LocalDateTime.class::isInstance)
+                .map(LocalDateTime.class::cast).toArray(LocalDateTime[]::new));
+        } else if (fieldType == DefaultLocalDateFieldItem.class) {
+            return new DefaultLocalDateFieldItem(Arrays.stream(values)
+                .filter(LocalDate.class::isInstance)
+                .map(LocalDate.class::cast).toArray(LocalDate[]::new));
+        } else {
+            return new DefaultLocalTimeFieldItem(Arrays.stream(values)
+                .filter(LocalTime.class::isInstance)
+                .map(LocalTime.class::cast).toArray(LocalTime[]::new));
+        }
     }
 }
