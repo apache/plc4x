@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.base.messages;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
@@ -699,10 +700,10 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     private BaseDefaultFieldItem getFieldInternal(String name) {
         // If this field doesn't exist, ignore it.
         if (values.get(name) == null) {
-            return null;
+            throw new PlcRuntimeException("No field with name '" + name + "' present in the response");
         }
         if (values.get(name).getKey() != PlcResponseCode.OK) {
-            return null;
+            throw new PlcRuntimeException("Field '" + name + "' could not be fetched, response was " + values.get(name).getKey());
         }
         return values.get(name).getValue();
     }
