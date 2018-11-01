@@ -158,7 +158,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * REAL	~ -3.402823 x 1038	~ 3.402823 x 1038	32 Bit
      */
-    REAL(Float.MIN_VALUE, Float.MAX_VALUE, 32),
+    REAL(-Float.MAX_VALUE, Float.MAX_VALUE, 32),
     /**
      * LREAL
      * 64 Bit floating point data type. It is required to represent rational numbers.
@@ -166,7 +166,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * LREAL	~ -1.79769313486231E308	~ 1.79769313486232E308	64 Bit
      */
-    LREAL(Double.MIN_VALUE, Double.MAX_VALUE, 64),
+    LREAL(-Double.MAX_VALUE, Double.MAX_VALUE, 64),
     /**
      * STRING
      * A STRING type variable can contain any string of characters. The size entry in the declaration determines how much memory space should be reserved for the variable. It refers to the number of characters in the string and can be placed in parentheses or square brackets.

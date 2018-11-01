@@ -804,7 +804,8 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
     private BaseDefaultFieldItem internalEncodeFloatingPoint(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         Class<? extends BaseDefaultFieldItem> fieldType;
-        switch (adsField.getAdsDataType()) {
+        AdsDataType adsDataType = adsField.getAdsDataType();
+        switch (adsDataType) {
             case REAL:
                 fieldType = DefaultFloatFieldItem.class;
                 break;
@@ -813,7 +814,7 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 break;
             default:
                 throw new IllegalArgumentException(
-                    "Cannot assign floating point values to " + adsField.getAdsDataType().name() + " fields.");
+                    "Cannot assign floating point values to " + adsDataType.name() + " fields.");
         }
         if (fieldType == DefaultDoubleFieldItem.class) {
             Double[] floatingPointValues = new Double[values.length];
@@ -825,29 +826,37 @@ public class AdsPlcFieldHandler extends DefaultPlcFieldHandler {
                 } else {
                     throw new IllegalArgumentException(
                         "Value of type " + values[i].getClass().getName() +
-                            " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
+                            " is not assignable to " + adsDataType.name() + " fields.");
                 }
 
                 Number value = (Number) values[i];
-                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
-                    throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsField.getAdsDataType());
+                if (!adsDataType.withinBounds(value.doubleValue())) {
+                    throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsDataType);
                 }
             }
             return new DefaultDoubleFieldItem(floatingPointValues);
         } else {
             Float[] floatingPointValues = new Float[values.length];
             for (int i = 0; i < values.length; i++) {
-                if (values[i] instanceof Float) {
+                if (values[i] instanceof Double) {
+                    Double aDouble = (Double) values[i];
+                    if (!adsDataType.withinBounds(aDouble)) {
+                        throw new IllegalArgumentException(
+                            "Value of " + aDouble + " exceeds allowed minimum for type "
+                                + adsDataType.name() + " (min " + adsDataType.getLowerBound() + "/max +" + adsDataType.getUpperBound() + ")");
+                    }
+                    floatingPointValues[i] = aDouble.floatValue();
+                } else if (values[i] instanceof Float) {
                     floatingPointValues[i] = (Float) values[i];
                 } else {
                     throw new IllegalArgumentException(
                         "Value of type " + values[i].getClass().getName() +
-                            " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
+                            " is not assignable to " + adsDataType.name() + " fields.");
                 }
 
                 Number value = (Number) values[i];
-                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
-                    throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsField.getAdsDataType());
+                if (!adsDataType.withinBounds(value.doubleValue())) {
+                    throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsDataType);
                 }
             }
             return new DefaultFloatFieldItem(floatingPointValues);
