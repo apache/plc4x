@@ -21,7 +21,6 @@ package org.apache.plc4x.java.s7.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -156,7 +155,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         for (String fieldName : readRequest.getFieldNames()) {
             PlcField field = readRequest.getField(fieldName);
             if (!(field instanceof S7Field)) {
-                throw new PlcException("The field should have been of type S7Field");
+                throw new PlcProtocolException("The field should have been of type S7Field");
             }
             S7Field s7Field = (S7Field) field;
 
@@ -459,13 +458,13 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         fieldItem = decodeReadResponseByteBitStringField(field, data);
                         break;
                     case WORD:  // 2 byte (16 bit)
-                        fieldItem = decodeReadResponseShortBitStringField(data);
+                        fieldItem = decodeReadResponseShortBitStringField(field, data);
                         break;
                     case DWORD:  // 4 byte (32 bit)
-                        fieldItem = decodeReadResponseIntegerBitStringField(data);
+                        fieldItem = decodeReadResponseIntegerBitStringField(field, data);
                         break;
                     case LWORD:  // 8 byte (64 bit)
-                        fieldItem = decodeReadResponseLongBitStringField(data);
+                        fieldItem = decodeReadResponseLongBitStringField(field, data);
                         break;
                     // -----------------------------------------
                     // Integers
@@ -540,39 +539,37 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     }
 
     BaseDefaultFieldItem decodeReadResponseByteBitStringField(S7Field field, ByteBuf data) {
-        byte[] bytes = ArrayUtils.toPrimitive(readAllValues(Byte.class, field, i -> data.readByte()));
+        byte[] bytes = new byte[field.getNumElements()];
+        data.readBytes(bytes);
+        return decodeBitStringField(bytes);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseShortBitStringField(S7Field field, ByteBuf data) {
+        byte[] bytes = new byte[field.getNumElements() * 2];
+        data.readBytes(bytes);
+        return decodeBitStringField(bytes);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseIntegerBitStringField(S7Field field, ByteBuf data) {
+        byte[] bytes = new byte[field.getNumElements() * 4];
+        data.readBytes(bytes);
+        return decodeBitStringField(bytes);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseLongBitStringField(S7Field field, ByteBuf data) {
+        byte[] bytes = new byte[field.getNumElements() * 8];
+        data.readBytes(bytes);
+        return decodeBitStringField(bytes);
+    }
+
+    BaseDefaultFieldItem decodeBitStringField(byte[] bytes) {
         BitSet bitSet = BitSet.valueOf(bytes);
         Boolean[] booleanValues = new Boolean[8 * bytes.length];
-        for(int i = 0; i < 8 * bytes.length; i++) {
-            booleanValues[i] = bitSet.get(i);
-        }
-        return new DefaultBooleanFieldItem(booleanValues);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseShortBitStringField(ByteBuf data) {
-        BitSet bitSet = BitSet.valueOf(new byte[]{data.readByte(), data.readByte()});
-        Boolean[] booleanValues = new Boolean[8];
-        for(int i = 0; i < 16; i++) {
-            booleanValues[i] = bitSet.get(i);
-        }
-        return new DefaultBooleanFieldItem(booleanValues);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseIntegerBitStringField(ByteBuf data) {
-        BitSet bitSet = BitSet.valueOf(new byte[]{
-            data.readByte(), data.readByte(), data.readByte(), data.readByte()});
-        Boolean[] booleanValues = new Boolean[8];
-        for(int i = 0; i < 32; i++) {
-            booleanValues[i] = bitSet.get(i);
-        }
-        return new DefaultBooleanFieldItem(booleanValues);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseLongBitStringField(ByteBuf data) {
-        BitSet bitSet = BitSet.valueOf(new long[]{data.readLong()});
-        Boolean[] booleanValues = new Boolean[8];
-        for(int i = 0; i < 64; i++) {
-            booleanValues[i] = bitSet.get(i);
+        int k = 0;
+        for(int i = bytes.length - 1; i >= 0; i--) {
+            for(int j = 0; j < 8; j++) {
+                booleanValues[k++] = bitSet.get(8 * i + j);
+            }
         }
         return new DefaultBooleanFieldItem(booleanValues);
     }
@@ -608,8 +605,8 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     }
 
     BaseDefaultFieldItem decodeReadResponseSignedLongField(S7Field field, ByteBuf data) {
-        BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readSigned64BitInteger(data));
-        return new DefaultBigIntegerFieldItem(bigIntegers);
+        Long[] longs = readAllValues(Long.class, field, i -> data.readLong());
+        return new DefaultLongFieldItem(longs);
     }
 
     BaseDefaultFieldItem decodeReadResponseUnsignedLongField(S7Field field, ByteBuf data) {

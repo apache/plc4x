@@ -18,208 +18,168 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty;
 
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.codec.EncoderException;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.base.messages.InternalPlcRequest;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.netty.NettyTestBase;
+import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
+import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
+import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
+import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
-import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
-import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
+import org.apache.plc4x.java.s7.netty.model.types.*;
+import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.Calendar;
-import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@SuppressWarnings("unchecked")
-//@RunWith(Parameterized.class)
 public class Plc4XS7ProtocolTest extends NettyTestBase {
 
-/*    private Plc4XS7Protocol SUT;
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-    // TODO: implement these types
-    private List<String> notYetSupportedDataType = Stream.of(
-        Calendar.class,
-        GregorianCalendar.class,
-        BigInteger.class,
-        byte[].class,
-        Byte[].class
-    ).map(Class::getSimpleName).collect(Collectors.toList());
-
-    @Parameterized.Parameter
-    public Class<?> type;
-
-    @Parameterized.Parameter(1)
-    public S7Field field;
-
-    @Parameterized.Parameters(name = "{index} Type:{0} {1}")
-    public static Collection<Object[]> data() {
-        List<Object[]> arguments = new LinkedList<>();
-        // Build the cross product of all variables and field types.
-        streamOfPlc4XSupportedDataTypes()
-            .forEach(
-                aClass -> Arrays.asList(
-                    mock(S7Field.class))
-                    .forEach(field -> arguments.add(new Object[]{aClass, field}))
-            );
-        return arguments;
-    }
+    private EmbeddedChannel SUT;
+    private PlcReadRequest.Builder readRequestBuilder =
+        new DefaultPlcReadRequest.Builder(mock(PlcReader.class), new S7PlcFieldHandler());
+    private PlcWriteRequest.Builder writeRequestBuilder =
+        new DefaultPlcWriteRequest.Builder(mock(PlcWriter.class), new S7PlcFieldHandler());
+    private CompletableFuture<S7Message> writeFuture;
 
     @Before
     public void setUp() {
-        SUT = new Plc4XS7Protocol();
+        writeFuture = new CompletableFuture<>();
+        SUT = new EmbeddedChannel(new ChannelOutboundHandlerAdapter() {
+            @Override
+            public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
+                if(msg instanceof S7Message) {
+                    writeFuture.complete((S7Message) msg);
+                    promise.setSuccess();
+                } else {
+                    promise.setFailure(new PlcProtocolException(
+                        "Got message of type " + msg.getClass().getSimpleName()));
+                }
+            }
+        }, new Plc4XS7Protocol());
     }
 
     @Test
-    @Category(FastTests.class)
-    public void encode() throws Exception {
-        assumeThat(type + " not yet implemented", notYetSupportedDataType, not(hasItem(type.getSimpleName())));
-        // TODO: finish me
-        // Read Request Tests
-        {
-            LinkedList<Object> out = new LinkedList<>();
-            SUT.encode(null, createMockedContainer(new TypeSafePlcReadRequest(type, field)), out);
-            // TODO: finish the asserts
-            assertThat(out, hasSize(1));
-        }
-        // Write Request Tests
-        {
-            LinkedList<Object> out = new LinkedList<>();
-            SUT.encode(null, createMockedContainer(new TypeSafePlcWriteRequest(type, field, fakeValueFor(type))), out);
-            // TODO: finish the asserts
-            assertThat(out, hasSize(1));
-        }
-    }*/
+    @SuppressWarnings("unchecked")
+    public void testInvalidFieldType() {
+        CompletableFuture<InternalPlcReadRequest> future = new CompletableFuture<>();
+        DefaultPlcReadRequest readRequest = mock(DefaultPlcReadRequest.class);
+        when(readRequest.getFieldNames()).thenReturn(new LinkedHashSet<>(Collections.singleton("foo")));
+        when(readRequest.getField("foo")).thenReturn(mock(PlcField.class));
+        PlcRequestContainer container = new PlcRequestContainer(readRequest, future);
+        ChannelFuture channelFuture = SUT.writeOneOutbound(container);
+        assertThat("The promise should have been set to 'success'", channelFuture.isSuccess(), equalTo(false));
 
-/*    @Test
-    @Category(FastTests.class)
-    public void decode() throws Exception {
-        assumeThat(type + " not yet implemented", notYetSupportedDataType, not(hasItem(type.getSimpleName())));
-        // Read Test
-        {
-            short fakeTpduReference = (short) 1;
-            {
-                // We need to put in a fake tpdu reference
-                Field requests = Plc4XS7Protocol.class.getDeclaredField("requests");
-                requests.setAccessible(true);
-                Map<Short, PlcRequestContainer> requestContainerMap = (Map<Short, PlcRequestContainer>) requests.get(SUT);
-                requestContainerMap.put(fakeTpduReference, createMockedContainer(new TypeSafePlcReadRequest(type, field)));
-            }
-            S7ResponseMessage msg = new S7ResponseMessage(
-                MessageType.ACK,
-                fakeTpduReference,
-                singletonList(mock(VarParameter.class)),
-                singletonList(new VarPayload(ParameterType.READ_VAR, singletonList(varPayloadItemFor(type)))),
-                (byte) 0x00,
-                (byte) 0x00);
-            LinkedList<Object> out = new LinkedList<>();
-            SUT.decode(null, msg, out);
-            // TODO: finish the asserts
-            assertThat(out, hasSize(0));
-        }
-        // Write Test
-        {
-            short fakeTpduReference = (short) 2;
-            {
-                // We need to put in a fake tpdu reference
-                Field requests = Plc4XS7Protocol.class.getDeclaredField("requests");
-                requests.setAccessible(true);
-                Map<Short, PlcRequestContainer> requestContainerMap = (Map<Short, PlcRequestContainer>) requests.get(SUT);
-                requestContainerMap.put(fakeTpduReference, createMockedContainer(new TypeSafePlcWriteRequest(type, field, fakeValueFor(type))));
-            }
-            S7ResponseMessage msg = new S7ResponseMessage(
-                MessageType.ACK,
-                fakeTpduReference,
-                singletonList(mock(VarParameter.class)),
-                singletonList(new VarPayload(ParameterType.WRITE_VAR, singletonList(varPayloadItemFor(type)))),
-                (byte) 0x00,
-                (byte) 0x00);
-            LinkedList<Object> out = new LinkedList<>();
-            SUT.decode(null, msg, out);
-            // TODO: finish the asserts
-            assertThat(out, hasSize(0));
-        }
-    }*/
-
-    private <T> T fakeValueFor(Class<T> type) {
-        if (type == Boolean.class) {
-            return (T) Boolean.TRUE;
-        } else if (type == Byte.class) {
-            return (T) Byte.valueOf((byte) 0x0000_0000);
-        } else if (type == Short.class) {
-            return (T) Short.valueOf((short) 123);
-        } else if (type == Calendar.class) {
-            return (T) Calendar.getInstance();
-        } else if (type == Float.class) {
-            return (T) Float.valueOf(123f);
-        } else if (type == Double.class) {
-            return (T) Double.valueOf(123f);
-        } else if (type == Integer.class) {
-            return (T) Integer.valueOf(123);
-        } else if (type == String.class) {
-            return (T) "string";
-        } else {
-            throw new IllegalArgumentException("Type t not supported " + type);
-        }
+        Throwable exception = channelFuture.cause();
+        assertThat("An exception should have been thrown", exception, notNullValue());
+        assertThat(exception, instanceOf(EncoderException.class));
+        EncoderException encoderException = (EncoderException) exception;
+        assertThat(encoderException.getCause(), instanceOf(PlcProtocolException.class));
     }
 
-    private VarPayloadItem varPayloadItemFor(Class type) {
-        // TODO: Most of these are just some value. We have to check if this is actually correct.
-        final DataTransportSize size;
-        final byte[] data;
-        if (type == Boolean.class) {
-            size = DataTransportSize.BIT;
-            data = new byte[]{(byte) 0b0};
-        } else if (type == Byte.class) {
-            size = DataTransportSize.BYTE_WORD_DWORD;
-            data = new byte[]{(byte) 0b0000_0000};
-        } else if (type == Short.class) {
-            size = DataTransportSize.BYTE_WORD_DWORD;
-            data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000};
-        } else if (type == Calendar.class) {
-            size = DataTransportSize.BYTE_WORD_DWORD;
-            // TODO: what size is calender?
-            data = new byte[]{(byte) 0b0000_0000};
-        } else if (type == Float.class) {
-            size = DataTransportSize.REAL;
-            data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
-        } else if (type == Double.class) {
-            size = DataTransportSize.REAL;
-            data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
-        } else if (type == Integer.class) {
-            size = DataTransportSize.INTEGER;
-            data = new byte[]{(byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000, (byte) 0b0000_0000};
-        } else if (type == String.class) {
-            size = DataTransportSize.BYTE_WORD_DWORD;
-            data = new byte[]{(byte) 0xDE, (byte) 0x23, (byte) 'S', (byte) 't', (byte) 'r', (byte) 'i', (byte) 'n', (byte) 'g', (byte) 0x0};
-        } else {
-            throw new IllegalArgumentException("Type t not supported " + type);
-        }
-        return new VarPayloadItem(DataTransportErrorCode.OK, size, data);
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSimpleReadVarRequest() throws InterruptedException, ExecutionException, TimeoutException {
+        CompletableFuture<InternalPlcReadRequest> future = new CompletableFuture<>();
+        PlcRequestContainer container = new PlcRequestContainer(
+            (DefaultPlcReadRequest) readRequestBuilder.addItem("foo", "%Q0:BYTE").build(), future);
+        ChannelFuture channelFuture = SUT.writeOneOutbound(container);
+        assertThat("The promise should have been set to 'success'", channelFuture.isSuccess(), equalTo(true));
+
+        Throwable exception = channelFuture.cause();
+        assertThat("No exception should have been thrown", exception, nullValue());
+
+        S7Message writtenMessage = writeFuture.get(100, TimeUnit.MILLISECONDS);
+        assertThat("The protocol layer should have output something", writtenMessage, notNullValue());
+        assertThat("The protocol layer should have output something", writtenMessage, instanceOf(S7RequestMessage.class));
+
+        assertThat("The message should have one parameter", writtenMessage.getParameters(), hasSize(1));
+        assertThat("The message should have no payload", writtenMessage.getPayloads(), empty());
+        assertThat("The request container should be assigned parent to the write message",
+            writtenMessage.getParent(), equalTo(container));
+
+        assertThat(writtenMessage.getParameters().get(0), instanceOf(VarParameter.class));
+        VarParameter varParameter = (VarParameter) writtenMessage.getParameters().get(0);
+        assertThat(varParameter.getItems(), hasSize(1));
+
+        assertThat(varParameter.getItems().get(0), instanceOf(S7AnyVarParameterItem.class));
+        S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameter.getItems().get(0);
+        assertThat(s7AnyVarParameterItem.getSpecificationType(), equalTo(SpecificationType.VARIABLE_SPECIFICATION));
+        assertThat(s7AnyVarParameterItem.getMemoryArea(), equalTo(MemoryArea.OUTPUTS));
+        assertThat(s7AnyVarParameterItem.getDataBlockNumber(), equalTo((short) 0));
+        assertThat(s7AnyVarParameterItem.getByteOffset(), equalTo((short) 0));
+        assertThat(s7AnyVarParameterItem.getBitOffset(), equalTo((byte) 0));
+        assertThat(s7AnyVarParameterItem.getNumElements(), equalTo(1));
+        assertThat(s7AnyVarParameterItem.getDataType(), equalTo(TransportSize.BYTE));
     }
 
-    private <T extends InternalPlcRequest> PlcRequestContainer createMockedContainer(T initialRequest) {
-        return createMockedContainer(initialRequest, null);
-    }
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSimpleWriteVarRequest() throws InterruptedException, ExecutionException, TimeoutException {
+        CompletableFuture<InternalPlcWriteRequest> future = new CompletableFuture<>();
+        PlcRequestContainer container = new PlcRequestContainer(
+            (DefaultPlcWriteRequest) writeRequestBuilder.addItem("foo", "%Q0:BYTE", (byte) 0x42).build(), future);
+        ChannelFuture channelFuture = SUT.writeOneOutbound(container);
+        assertThat("The promise should have been set to 'success'", channelFuture.isSuccess(), equalTo(true));
 
-    private <T extends InternalPlcRequest> PlcRequestContainer createMockedContainer(T initialRequest, Consumer<T> requestEnricher) {
-        Objects.requireNonNull(initialRequest);
-        PlcRequestContainer mock = mock(PlcRequestContainer.class, RETURNS_DEEP_STUBS);
-        if (requestEnricher != null) {
-            requestEnricher.accept(initialRequest);
-        }
-        when(mock.getRequest()).thenReturn(initialRequest);
-        if (PlcReadRequest.class.isAssignableFrom(initialRequest.getClass())) {
-            return mock;
-        } else if (PlcWriteRequest.class.isAssignableFrom(initialRequest.getClass())) {
-            return mock;
-        } else {
-            throw new IllegalArgumentException("Unsupported Type: " + initialRequest.getClass());
-        }
+        Throwable exception = channelFuture.cause();
+        assertThat("No exception should have been thrown", exception, nullValue());
+
+        S7Message writtenMessage = writeFuture.get(100, TimeUnit.MILLISECONDS);
+        assertThat("The protocol layer should have output something", writtenMessage, notNullValue());
+        assertThat("The protocol layer should have output something", writtenMessage, instanceOf(S7RequestMessage.class));
+
+        assertThat("The message should have one parameter", writtenMessage.getParameters(), hasSize(1));
+        assertThat("The message should have one payload", writtenMessage.getPayloads(), hasSize(1));
+        assertThat("The request container should be assigned parent to the write message",
+            writtenMessage.getParent(), equalTo(container));
+
+        assertThat(writtenMessage.getParameters().get(0), instanceOf(VarParameter.class));
+        VarParameter varParameter = (VarParameter) writtenMessage.getParameters().get(0);
+        assertThat(varParameter.getItems(), hasSize(1));
+        assertThat(varParameter.getItems().get(0), instanceOf(S7AnyVarParameterItem.class));
+        S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameter.getItems().get(0);
+        assertThat(s7AnyVarParameterItem.getSpecificationType(), equalTo(SpecificationType.VARIABLE_SPECIFICATION));
+        assertThat(s7AnyVarParameterItem.getMemoryArea(), equalTo(MemoryArea.OUTPUTS));
+        assertThat(s7AnyVarParameterItem.getDataBlockNumber(), equalTo((short) 0));
+        assertThat(s7AnyVarParameterItem.getByteOffset(), equalTo((short) 0));
+        assertThat(s7AnyVarParameterItem.getBitOffset(), equalTo((byte) 0));
+        assertThat(s7AnyVarParameterItem.getNumElements(), equalTo(1));
+        assertThat(s7AnyVarParameterItem.getDataType(), equalTo(TransportSize.BYTE));
+
+        assertThat(writtenMessage.getPayloads().get(0), instanceOf(VarPayload.class));
+        VarPayload varPayload = (VarPayload) writtenMessage.getPayloads().get(0);
+        assertThat(varPayload.getItems(), hasSize(1));
+        assertThat(varPayload.getItems().get(0), instanceOf(VarPayloadItem.class));
+        VarPayloadItem varPayloadItem = varPayload.getItems().get(0);
+        assertThat(varPayloadItem.getReturnCode(), equalTo(DataTransportErrorCode.RESERVED));
+        assertThat(varPayloadItem.getDataTransportSize(), equalTo(DataTransportSize.BYTE_WORD_DWORD));
+        assertThat(varPayloadItem.getData(), notNullValue());
+        assertThat(varPayloadItem.getData().length, equalTo(1));
+        assertThat(varPayloadItem.getData()[0], equalTo((byte) 0x42));
     }
 
 }

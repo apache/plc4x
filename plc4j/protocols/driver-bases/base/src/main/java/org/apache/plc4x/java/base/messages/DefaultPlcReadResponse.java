@@ -97,7 +97,15 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Collection<Object> getAllObjects(String name) {
-        // TODO: Implement this ...
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
+        if (fieldInternal != null) {
+            int num = fieldInternal.getNumberOfValues();
+            List<Object> values = new ArrayList<>(num);
+            for (int i = 0; i < num; i++) {
+                values.add(fieldInternal.getObject(i));
+            }
+            return values;
+        }
         return null;
     }
 
