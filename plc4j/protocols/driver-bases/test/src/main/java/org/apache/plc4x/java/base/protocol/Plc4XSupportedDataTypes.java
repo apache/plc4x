@@ -41,8 +41,8 @@ import static org.junit.Assert.assertThat;
 
 public class Plc4XSupportedDataTypes {
 
-    private final static Map<Class, DataTypePair<?>> littleEndianMap;
-    private final static Map<Class, DataTypePair<?>> bigEndianMap;
+    private static final Map<Class, DataTypePair<?>> littleEndianMap;
+    private static final Map<Class, DataTypePair<?>> bigEndianMap;
 
     static {
         littleEndianMap = new HashMap<>();

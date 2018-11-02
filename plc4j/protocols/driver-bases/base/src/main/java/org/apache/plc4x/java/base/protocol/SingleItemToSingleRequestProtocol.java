@@ -32,6 +32,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 /**
  * This layer can be used to split a {@link org.apache.plc4x.java.api.messages.PlcRequest} which addresses multiple {@link PlcField}s into multiple subsequent {@link org.apache.plc4x.java.api.messages.PlcRequest}s.
  */
+// TODO: add split config so we can override special requests that are allready splitted downstream
 public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(SingleItemToSingleRequestProtocol.class);
@@ -89,20 +91,27 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
     private AtomicLong erroredItems;
 
+    private SplitConfig splitConfig;
+
     public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer) {
-        this(reader, writer, subscriber, timer, true);
+        this(reader, writer, subscriber, timer, new SplitConfig());
     }
 
-    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, boolean betterImplementationPossible) {
-        this(reader, writer, subscriber, timer, TimeUnit.SECONDS.toMillis(30), betterImplementationPossible);
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, SplitConfig splitConfig) {
+        this(reader, writer, subscriber, timer, splitConfig, true);
     }
 
-    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, long defaultReceiveTimeout, boolean betterImplementationPossible) {
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, SplitConfig splitConfig, boolean betterImplementationPossible) {
+        this(reader, writer, subscriber, timer, TimeUnit.SECONDS.toMillis(30), splitConfig, betterImplementationPossible);
+    }
+
+    public SingleItemToSingleRequestProtocol(PlcReader reader, PlcWriter writer, PlcSubscriber subscriber, Timer timer, long defaultReceiveTimeout, SplitConfig splitConfig, boolean betterImplementationPossible) {
         this.reader = reader;
         this.writer = writer;
         this.subscriber = subscriber;
         this.timer = timer;
         this.defaultReceiveTimeout = defaultReceiveTimeout;
+        this.splitConfig = splitConfig;
         if (betterImplementationPossible) {
             String callStack = Arrays.stream(Thread.currentThread().getStackTrace())
                 .map(StackTraceElement::toString)
@@ -217,6 +226,9 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                     .forEach(stringPairMap -> stringPairMap.forEach(fields::put));
 
                 plcResponse = new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, fields);
+            } else if (originalPlcRequestContainer.getRequest() instanceof InternalPlcUnsubscriptionRequest) {
+                InternalPlcUnsubscriptionRequest internalPlcUnsubscriptionRequest = (InternalPlcUnsubscriptionRequest) originalPlcRequestContainer.getRequest();
+                plcResponse = new DefaultPlcUnsubscriptionResponse(internalPlcUnsubscriptionRequest);
             } else {
                 errored(currentTdpu, new PlcProtocolException("Unknown type detected " + originalPlcRequestContainer.getRequest().getClass()), originalResponseFuture);
                 return;
@@ -276,10 +288,10 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
             // Create a promise that has to be called multiple times.
             PromiseCombiner promiseCombiner = new PromiseCombiner();
             InternalPlcRequest request = in.getRequest();
-            if (request instanceof InternalPlcFieldRequest) {
+            if (request instanceof InternalPlcFieldRequest && (splitConfig.splitRead || splitConfig.splitWrite || splitConfig.splitSubscription)) {
                 InternalPlcFieldRequest internalPlcFieldRequest = (InternalPlcFieldRequest) request;
 
-                if (internalPlcFieldRequest instanceof InternalPlcReadRequest) {
+                if (internalPlcFieldRequest instanceof InternalPlcReadRequest && splitConfig.splitRead) {
                     InternalPlcReadRequest internalPlcReadRequest = (InternalPlcReadRequest) internalPlcFieldRequest;
                     internalPlcReadRequest.getNamedFields().forEach(field -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
@@ -304,7 +316,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
-                } else if (internalPlcFieldRequest instanceof InternalPlcWriteRequest) {
+                } else if (internalPlcFieldRequest instanceof InternalPlcWriteRequest && splitConfig.splitWrite) {
                     InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) internalPlcFieldRequest;
                     internalPlcWriteRequest.getNamedFieldTriples().forEach(fieldItemTriple -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
@@ -327,8 +339,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
-                    // TODO: add sub/unsub
-                } else if (internalPlcFieldRequest instanceof InternalPlcSubscriptionRequest) {
+                } else if (internalPlcFieldRequest instanceof InternalPlcSubscriptionRequest && splitConfig.splitSubscription) {
                     InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = (InternalPlcSubscriptionRequest) internalPlcFieldRequest;
                     internalPlcSubscriptionRequest.getNamedSubscriptionFields().forEach(field -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
@@ -353,10 +364,34 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         }
                         promiseCombiner.add((Future) subPromise);
                     });
-                    // TODO: add sub/unsub
                 } else {
                     throw new PlcProtocolException("Unmapped request type " + request.getClass());
                 }
+            } else if (request instanceof InternalPlcUnsubscriptionRequest && splitConfig.splitUnsubscription) {
+                InternalPlcUnsubscriptionRequest internalPlcUnsubscriptionRequest = (InternalPlcUnsubscriptionRequest) request;
+                internalPlcUnsubscriptionRequest.getInternalPlcSubscriptionHandles().forEach(handle -> {
+                    ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
+
+                    Integer tdpu = correlationIdGenerator.getAndIncrement();
+                    CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>();
+                    // Important: don't chain to above as we want the above to be completed not the result of when complete
+                    correlatedCompletableFuture
+                        .thenApply(InternalPlcResponse.class::cast)
+                        .whenComplete((internalPlcResponse, throwable) -> {
+                            if (throwable != null) {
+                                errored(tdpu, throwable, in.getResponseFuture());
+                            } else {
+                                tryFinish(tdpu, internalPlcResponse, in.getResponseFuture());
+                            }
+                        });
+                    PlcRequestContainer<CorrelatedPlcUnsubscriptionRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcUnsubscriptionRequest.of(subscriber, handle, tdpu), correlatedCompletableFuture);
+                    correlationToParentContainer.put(tdpu, in);
+                    queue.add(correlatedPlcRequestContainer, subPromise);
+                    if (!tdpus.add(tdpu)) {
+                        throw new IllegalStateException("AtomicInteger should not create duplicated ids: " + tdpu);
+                    }
+                    promiseCombiner.add((Future) subPromise);
+                });
             } else {
                 ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
                 queue.add(msg, subPromise);
@@ -492,6 +527,27 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         }
     }
 
+    protected static class CorrelatedPlcUnsubscriptionRequest extends DefaultPlcUnsubscriptionRequest implements CorrelatedPlcRequest {
+
+        protected final int tdpu;
+
+        protected CorrelatedPlcUnsubscriptionRequest(PlcSubscriber subscriber, LinkedList<InternalPlcSubscriptionHandle> subscriptionHandles, int tdpu) {
+            super(subscriber, subscriptionHandles);
+            this.tdpu = tdpu;
+        }
+
+        protected static CorrelatedPlcUnsubscriptionRequest of(PlcSubscriber subscriber, InternalPlcSubscriptionHandle subscriptionHandle, int tdpu) {
+            LinkedList<InternalPlcSubscriptionHandle> list = new LinkedList<>();
+            list.add(subscriptionHandle);
+            return new CorrelatedPlcUnsubscriptionRequest(subscriber, list, tdpu);
+        }
+
+        @Override
+        public int getTdpu() {
+            return tdpu;
+        }
+    }
+
     // TODO: maybe export to jmx
     public Map<String, Number> getStatistics() {
         HashMap<String, Number> statistics = new HashMap<>();
@@ -506,5 +562,81 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         statistics.put("deliveredContainers", deliveredContainers.get());
         statistics.put("erroredContainers", erroredContainers.get());
         return statistics;
+    }
+
+    public static class SplitConfig {
+        private final boolean splitRead;
+        private final boolean splitWrite;
+        private final boolean splitSubscription;
+        private final boolean splitUnsubscription;
+
+        public SplitConfig() {
+            splitRead = true;
+            splitWrite = true;
+            splitSubscription = true;
+            splitUnsubscription = true;
+        }
+
+        private SplitConfig(boolean splitRead, boolean splitWrite, boolean splitSubscription, boolean splitUnsubscription) {
+            this.splitRead = splitRead;
+            this.splitWrite = splitWrite;
+            this.splitSubscription = splitSubscription;
+            this.splitUnsubscription = splitUnsubscription;
+        }
+
+        public static SplitConfigBuilder builder() {
+            return new SplitConfigBuilder();
+        }
+
+        public static class SplitConfigBuilder {
+            private boolean splitRead = true;
+            private boolean splitWrite = true;
+            private boolean splitSubscription = true;
+            private boolean splitUnsubscription = true;
+
+            public SplitConfigBuilder splitRead() {
+                splitRead = true;
+                return this;
+            }
+
+            public SplitConfigBuilder dontSplitRead() {
+                splitRead = false;
+                return this;
+            }
+
+            public SplitConfigBuilder splitWrite() {
+                splitWrite = true;
+                return this;
+            }
+
+            public SplitConfigBuilder dontSplitWrite() {
+                splitWrite = false;
+                return this;
+            }
+
+            public SplitConfigBuilder splitSubscribe() {
+                splitSubscription = true;
+                return this;
+            }
+
+            public SplitConfigBuilder dontSplitSubscribe() {
+                splitSubscription = false;
+                return this;
+            }
+
+            public SplitConfigBuilder splitUnsubscribe() {
+                splitUnsubscription = true;
+                return this;
+            }
+
+            public SplitConfigBuilder dontSplitUnsubscribe() {
+                splitUnsubscription = false;
+                return this;
+            }
+
+            public SplitConfig build() {
+                return new SplitConfig(splitRead, splitWrite, splitSubscription, splitUnsubscription);
+            }
+        }
     }
 }

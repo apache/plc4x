@@ -24,11 +24,10 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +35,7 @@ import java.util.List;
 public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField createField(String fieldQuery) {
         if (S7Field.matches(fieldQuery)) {
             return S7Field.of(fieldQuery);
         }
@@ -47,117 +46,152 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         // All of these types are declared as Bit or Bit-String types.
-        if ((s7Field.getDataType() == TransportSize.BOOL) || (s7Field.getDataType() == TransportSize.BYTE) ||
-            (s7Field.getDataType() == TransportSize.WORD) || (s7Field.getDataType() == TransportSize.DWORD) ||
-            (s7Field.getDataType() == TransportSize.LWORD)) {
-            return internalEncodeBoolean(field, values);
+        switch (s7Field.getDataType()) {
+            case BOOL:
+            case BYTE:
+            case WORD:
+            case DWORD:
+            case LWORD:
+                return internalEncodeBoolean(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == TransportSize.BYTE) || (s7Field.getDataType() == TransportSize.SINT) ||
-            (s7Field.getDataType() == TransportSize.USINT) || (s7Field.getDataType() == TransportSize.CHAR)) {
-            return internalEncodeInteger(field, values);
+        // All of these types are declared as Bit or Bit-String types.
+        switch (s7Field.getDataType()) {
+            case BYTE:
+            case SINT:
+            case USINT:
+            case CHAR:
+                return internalEncodeInteger(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeShort(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == TransportSize.WORD) || (s7Field.getDataType() == TransportSize.INT) ||
-            (s7Field.getDataType() == TransportSize.UINT)) {
-            return internalEncodeInteger(field, values);
+        switch (s7Field.getDataType()) {
+            case WORD:
+            case INT:
+            case UINT:
+                return internalEncodeInteger(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == TransportSize.DWORD) || (s7Field.getDataType() == TransportSize.DINT) ||
-            (s7Field.getDataType() == TransportSize.UDINT)) {
-            return internalEncodeInteger(field, values);
+        switch (s7Field.getDataType()) {
+            case DWORD:
+            case DINT:
+            case UDINT:
+                return internalEncodeInteger(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == TransportSize.DWORD) || (s7Field.getDataType() == TransportSize.DINT) ||
-            (s7Field.getDataType() == TransportSize.UDINT)) {
-            return internalEncodeInteger(field, values);
+        switch (s7Field.getDataType()) {
+            case DWORD:
+            case DINT:
+            case UDINT:
+                return internalEncodeInteger(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeLong(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == TransportSize.LWORD) || (s7Field.getDataType() == TransportSize.LINT) ||
-            (s7Field.getDataType() == TransportSize.ULINT)) {
-            return internalEncodeInteger(field, values);
+        switch (s7Field.getDataType()) {
+            case LWORD:
+            case LINT:
+            case ULINT:
+                return internalEncodeInteger(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == TransportSize.REAL) {
-            return internalEncodeFloatingPoint(field, values);
+        switch (s7Field.getDataType()) {
+            case REAL:
+                return internalEncodeFloatingPoint(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == TransportSize.LREAL) {
-            return internalEncodeFloatingPoint(field, values);
+        switch (s7Field.getDataType()) {
+            case LREAL:
+                return internalEncodeFloatingPoint(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeString(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if ((s7Field.getDataType() == TransportSize.CHAR) || (s7Field.getDataType() == TransportSize.WCHAR) ||
-            (s7Field.getDataType() == TransportSize.STRING) || (s7Field.getDataType() == TransportSize.WSTRING)) {
-            return internalEncodeString(field, values);
+        switch (s7Field.getDataType()) {
+            case CHAR:
+            case WCHAR:
+            case STRING:
+            case WSTRING:
+                return internalEncodeString(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == TransportSize.TIME) {
-            return internalEncodeTemporal(field, values);
+        switch (s7Field.getDataType()) {
+            case TIME:
+                return internalEncodeTemporal(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeDate(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == TransportSize.DATE) {
-            return internalEncodeTemporal(field, values);
+        switch (s7Field.getDataType()) {
+            case DATE:
+                return internalEncodeTemporal(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     @Override
     public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        if (s7Field.getDataType() == TransportSize.DATE_AND_TIME) {
-            return internalEncodeTemporal(field, values);
+        switch (s7Field.getDataType()) {
+            case DATE_AND_TIME:
+                return internalEncodeTemporal(field, values);
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
         }
-        throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
     }
 
     private BaseDefaultFieldItem internalEncodeBoolean(PlcField field, Object[] values) {
@@ -219,78 +253,91 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         BigInteger maxValue;
         Class<? extends BaseDefaultFieldItem> fieldType;
         Class<?> valueType;
+        Object[] castedValues;
         switch (s7Field.getDataType()) {
             case BYTE:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
                 fieldType = DefaultByteFieldItem.class;
                 valueType = Byte[].class;
+                castedValues = new Byte[values.length];
                 break;
             case WORD:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
                 fieldType = DefaultShortFieldItem.class;
                 valueType = Short[].class;
+                castedValues = new Short[values.length];
                 break;
             case DWORD:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 valueType = Integer[].class;
+                castedValues = new Integer[values.length];
                 break;
             case LWORD:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
                 fieldType = DefaultLongFieldItem.class;
                 valueType = Long[].class;
+                castedValues = new Long[values.length];
                 break;
             case SINT:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
                 fieldType = DefaultByteFieldItem.class;
                 valueType = Byte[].class;
+                castedValues = new Byte[values.length];
                 break;
             case USINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE * 2);
                 fieldType = DefaultShortFieldItem.class;
                 valueType = Short[].class;
+                castedValues = new Short[values.length];
                 break;
             case INT:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
                 fieldType = DefaultShortFieldItem.class;
                 valueType = Short[].class;
+                castedValues = new Short[values.length];
                 break;
             case UINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Short.MAX_VALUE) * 2);
                 fieldType = DefaultIntegerFieldItem.class;
                 valueType = Integer[].class;
+                castedValues = new Integer[values.length];
                 break;
             case DINT:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
                 fieldType = DefaultIntegerFieldItem.class;
                 valueType = Integer[].class;
+                castedValues = new Integer[values.length];
                 break;
             case UDINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Integer.MAX_VALUE) * 2);
                 fieldType = DefaultLongFieldItem.class;
                 valueType = Long[].class;
+                castedValues = new Long[values.length];
                 break;
             case LINT:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
                 fieldType = DefaultLongFieldItem.class;
                 valueType = Long[].class;
+                castedValues = new Long[values.length];
                 break;
             case ULINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf((long) 2));
                 fieldType = DefaultBigIntegerFieldItem.class;
                 valueType = BigInteger[].class;
+                castedValues = new BigInteger[values.length];
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -298,16 +345,16 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         }
 
         // Check the constraints
-        for (Object val : values) {
+        for (int i = 0; i < values.length; i++) {
             BigInteger value;
-            if (val instanceof BigInteger) {
-                value = (BigInteger) val;
-            } else if (((val instanceof Byte) || (val instanceof Short) ||
-                (val instanceof Integer) || (val instanceof Long))) {
-                value = BigInteger.valueOf(((Number) val).longValue());
+            if (values[i] instanceof BigInteger) {
+                value = (BigInteger) values[i];
+            } else if ((values[i] instanceof Byte) || (values[i] instanceof Short) ||
+                (values[i] instanceof Integer) || (values[i] instanceof Long)) {
+                value = BigInteger.valueOf(((Number) values[i]).longValue());
             } else {
                 throw new IllegalArgumentException(
-                    "Value of type " + val.getClass().getName() +
+                    "Value of type " + values[i].getClass().getName() +
                         " is not assignable to " + s7Field.getDataType().name() + " fields.");
             }
             if (minValue.compareTo(value) > 0) {
@@ -320,11 +367,22 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                     "Value of " + value.toString() + " exceeds allowed maximum for type "
                         + s7Field.getDataType().name() + " (max " + maxValue.toString() + ")");
             }
+            if (valueType == Byte[].class) {
+                castedValues[i] = value.byteValue();
+            } else if (valueType == Short[].class) {
+                castedValues[i] = value.shortValue();
+            } else if (valueType == Integer[].class) {
+                castedValues[i] = value.intValue();
+            } else if (valueType == Long[].class) {
+                castedValues[i] = value.longValue();
+            } else {
+                castedValues[i] = value;
+            }
         }
 
         // Create the field item.
         try {
-            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{values});
+            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{castedValues});
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
         }
@@ -338,6 +396,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         Double maxValue;
         Class<? extends BaseDefaultFieldItem> fieldType;
         Class<?> valueType;
+        Object[] castedValues;
         switch (s7Field.getDataType()) {
             case REAL:
                 // Yes this is actually correct, if I set min to Float.MIN_VALUE (0.0 < Float.MIN_VALUE = true)
@@ -345,6 +404,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 maxValue = (double) Float.MAX_VALUE;
                 fieldType = DefaultFloatFieldItem.class;
                 valueType = Float[].class;
+                castedValues = new Float[values.length];
                 break;
             case LREAL:
                 // Yes this is actually correct, if I set min to Double.MIN_VALUE (0.0 < Double.MIN_VALUE = true)
@@ -352,6 +412,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 maxValue = Double.MAX_VALUE;
                 fieldType = DefaultDoubleFieldItem.class;
                 valueType = Double[].class;
+                castedValues = new Double[values.length];
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -359,15 +420,15 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         }
 
         // Check the constraints
-        for (Object val : values) {
+        for (int i = 0; i < values.length; i++) {
             Double value;
-            if (val instanceof Float) {
-                value = ((Float) val).doubleValue();
-            } else if (val instanceof Double) {
-                value = (Double) val;
+            if (values[i] instanceof Float) {
+                value = ((Float) values[i]).doubleValue();
+            } else if (values[i] instanceof Double) {
+                value = (Double) values[i];
             } else {
                 throw new IllegalArgumentException(
-                    "Value of type " + val.getClass().getName() +
+                    "Value of type " + values[i].getClass().getName() +
                         " is not assignable to " + s7Field.getDataType().name() + " fields.");
             }
             if (value < minValue) {
@@ -380,11 +441,16 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                     "Value of " + value + " exceeds allowed maximum for type "
                         + s7Field.getDataType().name() + " (max " + maxValue.toString() + ")");
             }
+            if (valueType == Float[].class) {
+                castedValues[i] = value.floatValue();
+            } else {
+                castedValues[i] = value;
+            }
         }
 
         // Create the field item.
         try {
-            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{values});
+            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{castedValues});
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
         }
@@ -435,9 +501,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 Byte byteValue = (Byte) value;
                 byte[] stringBytes = new byte[]{byteValue};
                 if (encoding16Bit) {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-16")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-8")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
             } else if (value instanceof Short) {
                 Short shortValue = (Short) value;
@@ -445,9 +511,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 stringBytes[0] = (byte) (shortValue >> 8);
                 stringBytes[1] = (byte) (shortValue & 0xFF);
                 if (encoding16Bit) {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-16")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-8")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
             } else if (value instanceof Integer) {
                 Integer integerValue = (Integer) value;
@@ -457,9 +523,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 stringBytes[2] = (byte) ((integerValue >> 8) & 0xFF);
                 stringBytes[3] = (byte) (integerValue & 0xFF);
                 if (encoding16Bit) {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-16")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-8")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
             } else if (value instanceof Long) {
                 Long longValue = (Long) value;
@@ -473,9 +539,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 stringBytes[6] = (byte) ((longValue >> 8) & 0xFF);
                 stringBytes[7] = (byte) (longValue & 0xFF);
                 if (encoding16Bit) {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-16")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
                 } else {
-                    stringValues.add(new String(stringBytes, Charset.forName("UTF-8")));
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
             } else {
                 throw new IllegalArgumentException(

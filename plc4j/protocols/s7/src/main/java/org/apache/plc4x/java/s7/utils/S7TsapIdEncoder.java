@@ -22,9 +22,13 @@ import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
 
 public class S7TsapIdEncoder {
 
+    private S7TsapIdEncoder() {
+        // Prevent this from being instantiated.
+    }
+
     public static short encodeS7TsapId(DeviceGroup deviceGroup, int rack, int slot) {
-        short firstByte = ((short) (deviceGroup.getCode() << 8));
-        short secondByte = ((short) ((rack << 4) | (slot & 0x0F)));
+        short firstByte = (short) (deviceGroup.getCode() << 8);
+        short secondByte = (short) ((rack << 4) | (slot & 0x0F));
         return (short) (firstByte | secondByte);
     }
 
@@ -34,11 +38,11 @@ public class S7TsapIdEncoder {
     }
 
     public static int decodeRack(short tsapId) {
-        return ((tsapId >> 4) & 0xF);
+        return (tsapId >> 4) & 0xF;
     }
 
     public static int decodeSlot(short tsapId) {
-        return (tsapId & 0xF);
+        return tsapId & 0xF;
     }
 
 }

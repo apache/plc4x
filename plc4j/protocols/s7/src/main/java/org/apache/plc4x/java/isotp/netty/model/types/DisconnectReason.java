@@ -39,6 +39,14 @@ public enum DisconnectReason {
     CONNECTION_REQUEST_REFUSED((byte) 0x88),
     HEADER_OR_PARAMETER_LENGTH_INVALID((byte) 0x8A);
 
+    private static final Map<Byte, DisconnectReason> map;
+    static {
+        map = new HashMap<>();
+        for (DisconnectReason disconnectReason : DisconnectReason.values()) {
+            map.put(disconnectReason.code, disconnectReason);
+        }
+    }
+
     private final byte code;
 
     DisconnectReason(byte code) {
@@ -47,15 +55,6 @@ public enum DisconnectReason {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, DisconnectReason> map;
-
-    static {
-        map = new HashMap<>();
-        for (DisconnectReason disconnectReason : DisconnectReason.values()) {
-            map.put(disconnectReason.code, disconnectReason);
-        }
     }
 
     public static DisconnectReason valueOf(byte code) {

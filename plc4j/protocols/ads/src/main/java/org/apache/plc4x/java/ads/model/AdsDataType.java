@@ -23,9 +23,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 /**
@@ -37,21 +39,21 @@ import java.util.stream.IntStream;
 public enum AdsDataType {
     // TODO: maybe this are just types for the plc ide and can be removed
     // https://infosys.beckhoff.com/english.php?content=../content/1033/tcsystemmanager/basics/TcSysMgr_DatatypeComparison.htm&id=
-    BIT(8),
-    BIT8(8),
-    BITARR8(8),
-    BITARR16(16),
-    BITARR32(32),
-    INT8(8),
+    BIT(0, 1, 8),
+    BIT8((short) 0x00, (short) 0xFF, 8),
+    BITARR8((short) 0x00, (short) 0xFF, 8),
+    BITARR16(0x0000, 0xFFFF, 16),
+    BITARR32(0x0000_0000L, 0xFFFF_FFFFL, 32),
+    INT8(Byte.MIN_VALUE, Byte.MAX_VALUE, 8),
     INT16(Short.MIN_VALUE, Short.MAX_VALUE, 16),
     INT32(Integer.MIN_VALUE, Integer.MAX_VALUE, 32),
     INT64(Long.MIN_VALUE, Long.MAX_VALUE, 64),
-    UINT8(0, Short.MAX_VALUE, 8),
-    UINT16(0, Integer.MAX_VALUE, 16),
-    UINT32(0, produceUnsignedMaxValue(32), 32),
-    UINT64(0, produceUnsignedMaxValue(64), 64),
-    FLOAT(Float.MIN_VALUE, Float.MAX_VALUE, 32),
-    DOUBLE(Double.MIN_VALUE, Double.MAX_VALUE, 64),
+    UINT8((short) 0, (short) 0xFF, 8),
+    UINT16(0, 0xFFFF, 16),
+    UINT32(0L, 0xFFFF_FFFFL, 32),
+    UINT64(BigInteger.ZERO, produceUnsignedMaxValue(8), 64),
+    FLOAT(-Float.MAX_VALUE, Float.MAX_VALUE, 32),
+    DOUBLE(-Double.MAX_VALUE, Double.MAX_VALUE, 64),
     // https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id
     // Standard Data Types
     /**
@@ -67,7 +69,7 @@ public enum AdsDataType {
      * <p>
      * The boolean variable is in the same memory range as the byte variable.
      */
-    BOOL(8),
+    BOOL((byte) 0, (byte) 1, 8),
     /**
      * BYTE
      * <p>
@@ -76,7 +78,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * BYTE	0	255	8 Bit
      */
-    BYTE(0, 255, 8),
+    BYTE((short) 0, (short) 255, 8),
     /**
      * WORD
      * Integer data type.
@@ -92,7 +94,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * DWORD	0	4294967295	32 Bit
      */
-    DWORD(0, 4294967295L, 32),
+    DWORD(0L, 4294967295L, 32),
     /**
      * SINT
      * (Short) signed integer data type.
@@ -100,7 +102,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * SINT	-128	127	8 Bit
      */
-    SINT(-128, 127, 8),
+    SINT(Byte.MIN_VALUE, Byte.MAX_VALUE, 8),
     /**
      * USINT
      * Unsigned (short) integer data type.
@@ -108,7 +110,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * USINT	0	255	8 Bit
      */
-    USINT(0, 255, 8),
+    USINT((short) 0, (short) 0xFF, 8),
     /**
      * INT
      * Signed integer data type.
@@ -116,7 +118,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * INT	-32768	32767	16 Bit
      */
-    INT(-32768, 32767, 16),
+    INT(Short.MIN_VALUE, Short.MAX_VALUE, 16),
     /**
      * UINT
      * Unsigned integer data type.
@@ -140,15 +142,15 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * UDINT	0	4294967295	32 Bit
      */
-    UDINT(0, 4294967295L, 32),
+    UDINT(0L, 4294967295L, 32),
     /**
      * LINT  (64 bit integer, currently not supported by TwinCAT)
      */
-    LINT(64),
+    LINT(Long.MIN_VALUE, Long.MAX_VALUE, 64),
     /**
      * ULINT (Unsigned 64 bit integer, currently not supported by TwinCAT)
      */
-    ULINT(64),
+    ULINT(BigInteger.ZERO, produceUnsignedMaxValue(8), 64),
     /**
      * REAL
      * 32 Bit floating point data type. It is required to represent rational numbers.
@@ -156,7 +158,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * REAL	~ -3.402823 x 1038	~ 3.402823 x 1038	32 Bit
      */
-    REAL(Float.MIN_VALUE, Float.MAX_VALUE, 32),
+    REAL(-Float.MAX_VALUE, Float.MAX_VALUE, 32),
     /**
      * LREAL
      * 64 Bit floating point data type. It is required to represent rational numbers.
@@ -164,7 +166,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * LREAL	~ -1.79769313486231E308	~ 1.79769313486232E308	64 Bit
      */
-    LREAL(Double.MIN_VALUE, Double.MAX_VALUE, 64),
+    LREAL(-Double.MAX_VALUE, Double.MAX_VALUE, 64),
     /**
      * STRING
      * A STRING type variable can contain any string of characters. The size entry in the declaration determines how much memory space should be reserved for the variable. It refers to the number of characters in the string and can be placed in parentheses or square brackets.
@@ -185,7 +187,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * TIME	T#0ms	T#71582m47s295ms	32 Bit
      */
-    TIME(0, Duration.ofMinutes(71582).plusSeconds(47).plusMillis(295).toMillis(), 32),
+    TIME(0L, Duration.ofMinutes(71582).plusSeconds(47).plusMillis(295).toMillis(), 32),
     /**
      * TIME_OF_DAY
      * TOD
@@ -197,7 +199,7 @@ public enum AdsDataType {
      * <p>
      * TOD#00:00	TOD#1193:02:47.295	32 Bit
      *///TODO: strange maximum
-    TIME_OF_DAY(0, ChronoUnit.MILLIS.between(LocalTime.of(0, 0), LocalTime.of(23, 59, 59)), 32),
+    TIME_OF_DAY(0L, ChronoUnit.MILLIS.between(LocalTime.of(0, 0), LocalTime.of(23, 59, 59)), 32),
     /**
      * DATE
      * Date. The most significant digit is one second. The data type is handled internally like DWORD.
@@ -205,7 +207,7 @@ public enum AdsDataType {
      * Type	Lower bound	Upper bound	Memory use
      * DATE	D#1970-01-01	D#2106-02-06	32 Bit
      */
-    DATE(0, ChronoUnit.SECONDS.between(LocalDateTime.of(1970, 1, 1, 0, 0), LocalDateTime.of(2106, 2, 6, 0, 0)), 32),
+    DATE(0L, TimeUnit.DAYS.toSeconds(ChronoUnit.DAYS.between(LocalDate.of(1970, 1, 1), LocalDate.of(2106, 2, 6))), 32),
     /**
      * DATE_AND_TIME
      * DT
@@ -216,8 +218,8 @@ public enum AdsDataType {
      * DT
      * <p>
      * DT#1970-01-01-00:00	DT#2106-02-06-06:28:15	32 Bit
-     *////TODO: calculate max
-    DATE_AND_TIME(0, -1, 32),
+     */
+    DATE_AND_TIME(0L, ChronoUnit.SECONDS.between(LocalDateTime.of(1970, 1, 1, 0, 0), LocalDateTime.of(2106, 2, 6, 6, 28, 15)), 32),
     //User-defined Data Types
     /**
      * Arrays
@@ -495,9 +497,13 @@ public enum AdsDataType {
 
     private final String typeName;
 
-    private final double lowerBound;
+    private final Number lowerBound;
 
-    private final double upperBound;
+    private final double lowerBoundDouble;
+
+    private final Number upperBound;
+
+    private final double upperBoundDouble;
 
     private final int memoryUse;
 
@@ -508,9 +514,11 @@ public enum AdsDataType {
         this(0, Byte.MAX_VALUE, memoryUse);
     }
 
-    AdsDataType(double lowerBound, double upperBound, int memoryUse) {
+    AdsDataType(Number lowerBound, Number upperBound, int memoryUse) {
         this.lowerBound = lowerBound;
+        this.lowerBoundDouble = lowerBound.doubleValue();
         this.upperBound = upperBound;
+        this.upperBoundDouble = upperBound.doubleValue();
         this.typeName = name();
         this.memoryUse = memoryUse;
         this.targetByteSize = this.memoryUse / 8;
@@ -520,11 +528,11 @@ public enum AdsDataType {
         return typeName;
     }
 
-    public double getLowerBound() {
+    public Number getLowerBound() {
         return lowerBound;
     }
 
-    public double getUpperBound() {
+    public Number getUpperBound() {
         return upperBound;
     }
 
@@ -537,7 +545,7 @@ public enum AdsDataType {
     }
 
     public boolean withinBounds(double other) {
-        return other >= lowerBound && other <= upperBound;
+        return other >= lowerBoundDouble && other <= upperBoundDouble;
     }
 
     @Override
@@ -551,7 +559,7 @@ public enum AdsDataType {
             "} " + super.toString();
     }
 
-    private static double produceUnsignedMaxValue(int numberOfBytes) {
+    private static BigInteger produceUnsignedMaxValue(int numberOfBytes) {
         return new BigInteger(
             ArrayUtils.insert(
                 0,
@@ -564,6 +572,6 @@ public enum AdsDataType {
                     )
                     .toByteArray(),
                 (byte) 0x0)
-        ).doubleValue();
+        );
     }
 }

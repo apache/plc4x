@@ -42,6 +42,7 @@ import org.apache.plc4x.java.isotp.netty.model.types.TpduSize;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
 import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.slf4j.Logger;
@@ -103,9 +104,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
         this.rack = rack;
         this.slot = slot;
 
-        int paramPduSize = 1024;
-        short paramMaxAmqCaller = 8;
-        short paramMaxAmqCallee = 8;
+        int curParamPduSize = 1024;
+        short curParamMaxAmqCaller = 8;
+        short curParamMaxAmqCallee = 8;
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
@@ -115,13 +116,13 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                     String paramValue = paramElements[1];
                     switch (paramName) {
                         case "pdu-size":
-                            paramPduSize = Integer.parseInt(paramValue);
+                            curParamPduSize = Integer.parseInt(paramValue);
                             break;
                         case "max-amq-caller":
-                            paramMaxAmqCaller = Short.parseShort(paramValue);
+                            curParamMaxAmqCaller = Short.parseShort(paramValue);
                             break;
                         case "max-amq-callee":
-                            paramMaxAmqCallee = Short.parseShort(paramValue);
+                            curParamMaxAmqCallee = Short.parseShort(paramValue);
                             break;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
@@ -134,9 +135,9 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
 
         // IsoTP uses pre defined sizes. Find the smallest box,
         // that would be able to contain the requested pdu size.
-        this.paramPduSize = TpduSize.valueForGivenSize(paramPduSize);
-        this.paramMaxAmqCaller = paramMaxAmqCaller;
-        this.paramMaxAmqCallee = paramMaxAmqCallee;
+        this.paramPduSize = TpduSize.valueForGivenSize(curParamPduSize);
+        this.paramMaxAmqCaller = curParamMaxAmqCaller;
+        this.paramMaxAmqCallee = curParamMaxAmqCallee;
     }
 
     @Override
@@ -171,7 +172,8 @@ public class S7PlcConnection extends AbstractPlcConnection implements PlcReader,
                 });
                 pipeline.addLast(new IsoOnTcpProtocol());
                 pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, paramPduSize));
-                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue()));
+                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue(),
+                    new DefaultS7MessageProcessor()));
                 pipeline.addLast(new Plc4XS7Protocol());
             }
         };

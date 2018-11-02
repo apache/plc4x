@@ -24,13 +24,13 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +63,11 @@ public class PlcEntityInterceptor {
 
     private static final Configuration CONF = new SystemConfiguration();
     private static final long READ_TIMEOUT = CONF.getLong("org.apache.plc4x.java.opm.entity_manager.read_timeout", 1_000);
+
+    private PlcEntityInterceptor() {
+        throw new UnsupportedOperationException("This class is not to be instantiated");
+    }
+
     /**
      * Basic Intersector for all methods on the proxy object.
      * It checks if the invoked method is a getter and if so, only retrieves the requested field, forwarding to
@@ -133,6 +138,7 @@ public class PlcEntityInterceptor {
      * @param driverManager
      * @throws OPMException on various errors.
      */
+    @SuppressWarnings("squid:S1141") // Nested try blocks readability is okay, move to other method makes it imho worse
     static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
@@ -161,7 +167,7 @@ public class PlcEntityInterceptor {
 
             // Fill all requested fields
             for (String fieldName : response.getFieldNames()) {
-                LOGGER.trace("Value for field " + fieldName + " is " + response.getObject(fieldName));
+                LOGGER.trace("Value for field {}  is {}", fieldName, response.getObject(fieldName));
                 String clazzFieldName = StringUtils.substringAfterLast(fieldName, ".");
                 try {
                     setField(entityClass, proxy, response, clazzFieldName, fieldName);
@@ -172,7 +178,7 @@ public class PlcEntityInterceptor {
         } catch (PlcConnectionException e) {
             throw new OPMException("Problem during processing", e);
         } catch (Exception e) {
-            throw new OPMException("Unknown Error", e);
+            throw new OPMException("Unexpected error during processing", e);
         }
     }
 
@@ -236,13 +242,18 @@ public class PlcEntityInterceptor {
         try {
             field.set(o, getTyped(field.getType(), response, sourceFieldName));
         } catch (ClassCastException e) {
-            // TODO should we simply fail here?
-            LOGGER.warn("Unable to assign return value {} to field {} with type {}", response.getObject(sourceFieldName), targetFieldName, field.getType(), e);
+            throw new PlcRuntimeException(String.format("Unable to assign return value %s to field %s with type %s",
+                response.getObject(sourceFieldName), targetFieldName, field.getType()), e);
         }
     }
 
+    @SuppressWarnings("squid:S3776") // Cognitive Complexity not too high, as highly structured
     private static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
         LOGGER.debug("getTyped clazz: {}, response: {}, fieldName: {}", clazz, response, sourceFieldName);
+        if (response.getResponseCode(sourceFieldName) != PlcResponseCode.OK) {
+            throw new PlcRuntimeException(String.format("Unable to read specified field %s, response code was %s",
+                sourceFieldName, response));
+        }
         if (clazz.isPrimitive()) {
             if (clazz == boolean.class) {
                 return response.getBoolean(sourceFieldName);

@@ -46,7 +46,7 @@ class S7PlcFieldHandlerTest {
 
     private static S7PlcFieldHandler SUT = new S7PlcFieldHandler();
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @ValueSource(strings = {
         "%DB1.DBX1.0:BOOL",
         "%DB1.DBW1.0:WORD"
@@ -55,7 +55,7 @@ class S7PlcFieldHandlerTest {
         SUT.createField(fieldQuery);
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("createInputArrays")
     void encodeOneBitTypes(String name, PlcField field, Object[] values) {
         Set<String> expectedSuccess = new HashSet<>(Arrays.asList(
@@ -92,7 +92,7 @@ class S7PlcFieldHandlerTest {
         encode(name, field, values, expectedSuccess, SUT::encodeBoolean);
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("createInputArrays")
     void encodeOneByteIntegerTypes(String name, PlcField field, Object[] values) {
         Set<String> expectedSuccess = new HashSet<>(Arrays.asList(
@@ -115,7 +115,7 @@ class S7PlcFieldHandlerTest {
         encode(name, field, values, expectedSuccess, SUT::encodeByte);
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("createInputArrays")
     void encodeTwoByteIntegerTypes(String name, PlcField field, Object[] values) {
         Set<String> expectedSuccess = new HashSet<>(Arrays.asList(
@@ -137,7 +137,7 @@ class S7PlcFieldHandlerTest {
         encode(name, field, values, expectedSuccess, SUT::encodeShort);
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("createInputArrays")
     void encodeFourByteIntegerTypes(String name, PlcField field, Object[] values) {
         Set<String> expectedSuccess = new HashSet<>(Arrays.asList(
@@ -159,7 +159,7 @@ class S7PlcFieldHandlerTest {
         encode(name, field, values, expectedSuccess, SUT::encodeInteger);
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("createInputArrays")
     void encodeEightByteIntegerTypes(String name, PlcField field, Object[] values) {
         Set<String> expectedSuccess = new HashSet<>(Arrays.asList(
@@ -183,7 +183,7 @@ class S7PlcFieldHandlerTest {
         encode(name, field, values, expectedSuccess, SUT::encodeLong);
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("createInputArrays")
     void encodeFourByteFloatTypes(String name, PlcField field, Object[] values) {
         Set<String> expectedSuccess = new HashSet<>(Arrays.asList(
@@ -193,7 +193,7 @@ class S7PlcFieldHandlerTest {
         encode(name, field, values, expectedSuccess, SUT::encodeFloat);
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("createInputArrays")
     void encodeEightByteFloatTypes(String name, PlcField field, Object[] values) {
         Set<String> expectedSuccess = new HashSet<>(Arrays.asList(
@@ -203,7 +203,7 @@ class S7PlcFieldHandlerTest {
         encode(name, field, values, expectedSuccess, SUT::encodeDouble);
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @MethodSource("createInputArrays")
     void encodeString(String name, PlcField field, Object[] values) {
         Set<String> expectedSuccess = new HashSet<>(Arrays.asList(
@@ -279,7 +279,7 @@ class S7PlcFieldHandlerTest {
 
                 BaseDefaultFieldItem fieldItem;
                 try {
-                    fieldItem = javaType.fieldItemType.getDeclaredConstructor(testValues[0].getClass()).newInstance(new Object[]{testValues});
+                    fieldItem = javaType.fieldItemType.getDeclaredConstructor(Array.newInstance(testValues[0].getClass(), 0).getClass()).newInstance(new Object[]{testValues});
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     throw new PlcRuntimeException("Error initializing field class " + javaType.fieldItemType.getSimpleName(), e);
                 }

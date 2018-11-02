@@ -43,6 +43,14 @@ public enum MemoryArea {
     S7_200_IEC_COUNTERS(null, (byte) 0x1E), * Renamed from "IEC counters (200 family)" *
     S7_200_IEC_TIMERS(null, (byte) 0x1F); * Renamed from "IEC timers (200 family)" */
 
+    private static final Map<Byte, MemoryArea> map;
+    static {
+        map = new HashMap<>();
+        for (MemoryArea memoryArea : MemoryArea.values()) {
+            map.put(memoryArea.code, memoryArea);
+        }
+    }
+
     private final String shortName;
     private final byte code;
 
@@ -57,15 +65,6 @@ public enum MemoryArea {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, MemoryArea> map;
-
-    static {
-        map = new HashMap<>();
-        for (MemoryArea memoryArea : MemoryArea.values()) {
-            map.put(memoryArea.code, memoryArea);
-        }
     }
 
     public static MemoryArea valueOfShortName(String shortName) {

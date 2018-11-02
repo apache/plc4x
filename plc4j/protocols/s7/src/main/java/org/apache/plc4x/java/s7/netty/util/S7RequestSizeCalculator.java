@@ -65,8 +65,8 @@ public class S7RequestSizeCalculator {
      * @return size in bytes this item would add to an existing request message.
      */
     public static short getRequestItemTotalSize(VarParameterItem varParameterItem, VarPayloadItem varPayloadItem) {
-        return (short) (getRequestReadWriteVarParameterItemSize(varParameterItem) +
-            getRequestWriteVarPayloadItemSize(varPayloadItem));
+        return (short) (getRequestReadWriteVarParameterItemSize(varParameterItem) + ((varPayloadItem != null) ?
+            getRequestWriteVarPayloadItemSize(varPayloadItem) : 0));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,10 +84,6 @@ public class S7RequestSizeCalculator {
     }
 
     private static short getRequestParameterSize(S7Parameter parameter) {
-        if (parameter == null) {
-            return 0;
-        }
-
         switch (parameter.getType()) {
             case READ_VAR:
             case WRITE_VAR:
@@ -130,10 +126,6 @@ public class S7RequestSizeCalculator {
     }
 
     private static short getRequestPayloadSize(S7Payload payload) {
-        if (payload == null) {
-            return 0;
-        }
-
         switch (payload.getType()) {
             case WRITE_VAR:
                 return getRequestWriteVarPayloadSize((VarPayload) payload);
@@ -152,10 +144,6 @@ public class S7RequestSizeCalculator {
     }
 
     private static short getRequestWriteVarPayloadItemSize(VarPayloadItem varPayloadItem) {
-        if(varPayloadItem == null) {
-            return 0;
-        }
-
         // A var payload item always has a minimum size of 4 bytes (return code, transport size, size (two bytes))
         short length = 4;
         length += varPayloadItem.getData().length;

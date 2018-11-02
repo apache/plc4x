@@ -18,8 +18,8 @@
 package org.apache.plc4x.java.utils.connectionpool;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
@@ -34,7 +34,6 @@ import org.apache.plc4x.java.spi.PlcDriver;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -48,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -61,11 +59,11 @@ class PooledPlcDriverManagerTest implements WithAssertions {
     private static Logger LOGGER = LoggerFactory.getLogger(PooledPlcDriverManagerTest.class);
 
     private PooledPlcDriverManager SUT = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
-        GenericObjectPoolConfig<PlcConnection> plcConnectionGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
-        plcConnectionGenericObjectPoolConfig.setMinIdle(1);
-        plcConnectionGenericObjectPoolConfig.setTestOnBorrow(true);
-        plcConnectionGenericObjectPoolConfig.setTestOnReturn(true);
-        return new GenericObjectPool<>(pooledPlcConnectionFactory, plcConnectionGenericObjectPoolConfig);
+        GenericKeyedObjectPoolConfig<PlcConnection> config = new GenericKeyedObjectPoolConfig<>();
+        config.setMinIdlePerKey(1);
+        config.setTestOnBorrow(true);
+        config.setTestOnReturn(true);
+        return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, config);
     });
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -80,7 +78,11 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         driverMap.put("dummydummy", plcDriver);
         executorService = Executors.newFixedThreadPool(100);
 
-        assertThat(SUT.getStatistics()).containsOnly(entry("pools.count", 0));
+        assertThat(SUT.getStatistics()).containsOnly(
+            entry("pools.count", 0),
+            entry("numActive", 0),
+            entry("numIdle", 0)
+        );
     }
 
     @AfterEach
@@ -128,8 +130,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         verify(plcDriver, times(13)).connect(anyString());
 
         assertThat(SUT.getStatistics()).contains(
-            entry("dummydummy:single/socket1/socket2?fancyOption=true.numActive", 8),
-            entry("dummydummy:single/socket1/socket2?fancyOption=true.numIdle", 0)
+            entry("PoolKey{url='dummydummy:single/socket1/socket2?fancyOption=true'}.numActive", 8)
         );
 
         futures.forEach(plcConnectionFuture -> {
@@ -141,8 +142,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         });
 
         assertThat(SUT.getStatistics()).contains(
-            entry("dummydummy:single/socket1/socket2?fancyOption=true.numActive", 0),
-            entry("dummydummy:single/socket1/socket2?fancyOption=true.numIdle", 8)
+            entry("PoolKey{url='dummydummy:single/socket1/socket2?fancyOption=true'}.numActive", 0)
         );
     }
 
@@ -164,7 +164,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         // This should result in five open connections
         IntStream.range(0, 5).forEach(i -> callables.add(() -> {
             try {
-                return SUT.getConnection("dummydummy:single-" + i + "/socket1/socket2?fancyOption=true", new PlcUsernamePasswordAuthentication("user", "passwordp954368564098ß"));
+                return SUT.getConnection("dummydummy:multi-" + i + "/socket1/socket2?fancyOption=true", new PlcUsernamePasswordAuthentication("user", "passwordp954368564098ß"));
             } catch (PlcConnectionException e) {
                 throw new RuntimeException(e);
             }
@@ -186,8 +186,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         verify(plcDriver, times(13)).connect(anyString(), any());
 
         assertThat(SUT.getStatistics()).contains(
-            entry("dummydummy:single/socket1/socket2?fancyOption=true/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numActive", 8),
-            entry("dummydummy:single/socket1/socket2?fancyOption=true/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numIdle", 0)
+            entry("PoolKey{url='dummydummy:single/socket1/socket2?fancyOption=true', plcAuthentication=PlcUsernamePasswordAuthentication{username='user', password='*****************'}}.numActive", 8)
         );
 
         futures.forEach(plcConnectionFuture -> {
@@ -199,8 +198,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         });
 
         assertThat(SUT.getStatistics()).contains(
-            entry("dummydummy:single/socket1/socket2?fancyOption=true/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numActive", 0),
-            entry("dummydummy:single/socket1/socket2?fancyOption=true/PlcUsernamePasswordAuthentication{username='user', password='*****************'}.numIdle", 8)
+            entry("PoolKey{url='dummydummy:single/socket1/socket2?fancyOption=true', plcAuthentication=PlcUsernamePasswordAuthentication{username='user', password='*****************'}}.numActive", 0)
         );
     }
 
@@ -241,13 +239,16 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         });
 
         assertThat(SUT.getStatistics()).containsOnly(
-            entry("pools.count", 0)
+            entry("pools.count", 0),
+            entry("numActive", 0),
+            entry("numIdle", 0)
         );
         PlcConnection connection = SUT.getConnection("dummydummy:breakIt");
         assertThat(SUT.getStatistics()).containsOnly(
             entry("pools.count", 1),
-            entry("dummydummy:breakIt.numActive", 1),
-            entry("dummydummy:breakIt.numIdle", 0)
+            entry("numActive", 1),
+            entry("numIdle", 0),
+            entry("PoolKey{url='dummydummy:breakIt'}.numActive", 1)
         );
         failNow.set(true);
         try {
@@ -260,69 +261,10 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         }
         // Faulty connection should have been discarded
         assertThat(SUT.getStatistics()).containsOnly(
-            entry("pools.count", 1),
-            entry("dummydummy:breakIt.numActive", 0),
-            entry("dummydummy:breakIt.numIdle", 0)
+            entry("pools.count", 0),
+            entry("numActive", 0),
+            entry("numIdle", 0)
         );
-    }
-
-    @Nested
-    class PoolCleanup {
-        @Test
-        void poolRemovedUnusedPoolsNormal() throws Exception {
-            // special config needed
-            SUT = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
-                GenericObjectPoolConfig<PlcConnection> plcConnectionGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
-                plcConnectionGenericObjectPoolConfig.setMinIdle(1);
-                return new GenericObjectPool<>(pooledPlcConnectionFactory, plcConnectionGenericObjectPoolConfig);
-            });
-            setUp();
-
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
-            SUT.removedUnusedPools();
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
-            PlcConnection connection = SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true");
-            connection.close();
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 1);
-            SUT.removedUnusedPools();
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 1);
-            // Usually the removedUnusedPools should do nothing at this place.
-        }
-
-        @Test
-        void poolRemovedUnusedPoolsNoIdles() throws Exception {
-            // special config needed
-            AtomicReference<GenericObjectPool<PlcConnection>> atomicReference = new AtomicReference<>();
-            SUT = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
-                GenericObjectPoolConfig<PlcConnection> plcConnectionGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
-                plcConnectionGenericObjectPoolConfig.setMinIdle(0);
-                GenericObjectPool<PlcConnection> plcConnectionGenericObjectPool = new GenericObjectPool<>(pooledPlcConnectionFactory, plcConnectionGenericObjectPoolConfig);
-                atomicReference.set(plcConnectionGenericObjectPool);
-                // Evict under all circumstances
-                plcConnectionGenericObjectPool.setEvictionPolicy((config, underTest, idleCount) -> true);
-                return plcConnectionGenericObjectPool;
-            });
-            setUp();
-
-            // Pool should be empty at the beginning
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
-            SUT.removedUnusedPools();
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
-            PlcConnection connection = SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true");
-            connection.close();
-
-            // after a connection we should have one pool
-            GenericObjectPool<PlcConnection> pool = atomicReference.get();
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 1);
-            SUT.removedUnusedPools();
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 1);
-
-            // now we force a eviction with your dummy policy
-            pool.evict();
-            SUT.removedUnusedPools();
-            assertThat(SUT.getStatistics()).containsEntry("pools.count", 0);
-            // and have no more open pools
-        }
     }
 
     class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {

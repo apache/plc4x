@@ -28,6 +28,14 @@ public enum ProtocolClass {
     CLASS_3((byte) 0x30),
     CLASS_4((byte) 0x40);
 
+    private static final Map<Byte, ProtocolClass> map;
+    static {
+        map = new HashMap<>();
+        for (ProtocolClass protocolClass : ProtocolClass.values()) {
+            map.put(protocolClass.code, protocolClass);
+        }
+    }
+
     private final byte code;
 
     ProtocolClass(byte code) {
@@ -36,15 +44,6 @@ public enum ProtocolClass {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, ProtocolClass> map;
-
-    static {
-        map = new HashMap<>();
-        for (ProtocolClass protocolClass : ProtocolClass.values()) {
-            map.put(protocolClass.code, protocolClass);
-        }
     }
 
     public static ProtocolClass valueOf(byte code) {

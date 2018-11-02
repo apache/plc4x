@@ -176,7 +176,6 @@ public class AdsAbstractPlcConnectionTest {
         SUT.mapFields(mock(PlcFieldRequest.class));
     }
 
-    @Ignore("Currently broken // TODO // FIXME")
     @Test
     public void mapField() {
         // positive
@@ -211,7 +210,7 @@ public class AdsAbstractPlcConnectionTest {
             });
 
             assertThrows(PlcRuntimeException.class, () -> SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]")));
-            verify(channel, times(1)).writeAndFlush(any(PlcRequestContainer.class));
+            verify(channel, times(0)).writeAndFlush(any(PlcRequestContainer.class));
             SUT.clearMapping();
             reset(channel);
         }

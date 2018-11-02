@@ -35,14 +35,15 @@
   <description>Parent of all application example modules.</description>
 
   <modules>
-    <module>azure</module>
     <module>dummy-driver</module>
-    <module>google</module>
-    <module>hello-plc4x</module>
-    <module>iot-factory</module>
-    <module>iotree</module>
-    <module>kafka-bridge</module>
-    <module>plclogger</module>
+    <module>hello-cloud-azure</module>
+    <module>hello-cloud-google</module>
+    <module>hello-connectivity-kafka</module>
+    <module>hello-connectivity-mqtt</module>
+    <module>hello-integration-edgent</module>
+    <module>hello-opm</module>
+    <module>hello-storage-elasticsearch</module>
+    <module>hello-world-plc4x</module>
   </modules>
 
   <dependencyManagement>

@@ -30,6 +30,14 @@ public enum CpuServicesParameterFunctionGroup {
 
     private static final Logger logger = LoggerFactory.getLogger(CpuServicesParameterFunctionGroup.class);
 
+    private static final Map<Byte, CpuServicesParameterFunctionGroup> map;
+    static {
+        map = new HashMap<>();
+        for (CpuServicesParameterFunctionGroup cpuServicesParameterFunctionGroup : CpuServicesParameterFunctionGroup.values()) {
+            map.put(cpuServicesParameterFunctionGroup.code, cpuServicesParameterFunctionGroup);
+        }
+    }
+
     private final byte code;
 
     CpuServicesParameterFunctionGroup(byte code) {
@@ -38,15 +46,6 @@ public enum CpuServicesParameterFunctionGroup {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, CpuServicesParameterFunctionGroup> map;
-
-    static {
-        map = new HashMap<>();
-        for (CpuServicesParameterFunctionGroup cpuServicesParameterFunctionGroup : CpuServicesParameterFunctionGroup.values()) {
-            map.put(cpuServicesParameterFunctionGroup.code, cpuServicesParameterFunctionGroup);
-        }
     }
 
     public static CpuServicesParameterFunctionGroup valueOf(byte code) {

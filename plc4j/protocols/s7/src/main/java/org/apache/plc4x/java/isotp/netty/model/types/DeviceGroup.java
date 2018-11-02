@@ -26,6 +26,14 @@ public enum DeviceGroup {
     OS((byte) 0x02),
     OTHERS((byte) 0x03);
 
+    private static final Map<Byte, DeviceGroup> map;
+    static {
+        map = new HashMap<>();
+        for (DeviceGroup deviceGroup : DeviceGroup.values()) {
+            map.put(deviceGroup.code, deviceGroup);
+        }
+    }
+
     private final byte code;
 
     DeviceGroup(byte code) {
@@ -34,15 +42,6 @@ public enum DeviceGroup {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, DeviceGroup> map;
-
-    static {
-        map = new HashMap<>();
-        for (DeviceGroup deviceGroup : DeviceGroup.values()) {
-            map.put(deviceGroup.code, deviceGroup);
-        }
     }
 
     public static DeviceGroup valueOf(byte code) {

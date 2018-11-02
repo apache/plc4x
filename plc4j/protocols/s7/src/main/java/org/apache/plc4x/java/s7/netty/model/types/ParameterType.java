@@ -43,6 +43,14 @@ public enum ParameterType {
 
     private static final Logger logger = LoggerFactory.getLogger(ParameterType.class);
 
+    private static final Map<Byte, ParameterType> map;
+    static {
+        map = new HashMap<>();
+        for (ParameterType parameterType : ParameterType.values()) {
+            map.put(parameterType.code, parameterType);
+        }
+    }
+
     private final byte code;
 
     ParameterType(byte code) {
@@ -51,15 +59,6 @@ public enum ParameterType {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, ParameterType> map;
-
-    static {
-        map = new HashMap<>();
-        for (ParameterType parameterType : ParameterType.values()) {
-            map.put(parameterType.code, parameterType);
-        }
     }
 
     public static ParameterType valueOf(byte code) {

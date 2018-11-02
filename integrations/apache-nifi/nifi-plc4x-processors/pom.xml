@@ -24,7 +24,6 @@
   </parent>
 
   <artifactId>nifi-plc4x-processors</artifactId>
-  <packaging>jar</packaging>
 
   <dependencies>
     <dependency>

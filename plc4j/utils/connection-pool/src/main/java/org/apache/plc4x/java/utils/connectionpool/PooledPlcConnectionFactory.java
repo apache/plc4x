@@ -17,14 +17,14 @@
 
 package org.apache.plc4x.java.utils.connectionpool;
 
-import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class PooledPlcConnectionFactory extends BasePooledObjectFactory<PlcConnection> {
+public abstract class PooledPlcConnectionFactory extends BaseKeyedPooledObjectFactory<PoolKey, PlcConnection> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PooledPlcConnectionFactory.class);
 
@@ -35,12 +35,12 @@ public abstract class PooledPlcConnectionFactory extends BasePooledObjectFactory
     }
 
     @Override
-    public void destroyObject(PooledObject<PlcConnection> p) throws Exception {
+    public void destroyObject(PoolKey key, PooledObject<PlcConnection> p) throws Exception {
         p.getObject().close();
     }
 
     @Override
-    public boolean validateObject(PooledObject<PlcConnection> p) {
+    public boolean validateObject(PoolKey key, PooledObject<PlcConnection> p) {
         return p.getObject().isConnected();
     }
 }

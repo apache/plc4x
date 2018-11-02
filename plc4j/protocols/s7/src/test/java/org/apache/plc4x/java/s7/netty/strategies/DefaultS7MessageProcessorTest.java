@@ -27,7 +27,6 @@ import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +34,9 @@ import org.junit.Test;
 import java.util.*;
 
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
@@ -62,7 +61,7 @@ public class DefaultS7MessageProcessorTest {
             Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
                     TransportSize.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0)));
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
         assertThat(processedRequests, hasSize(1));
@@ -87,7 +86,7 @@ public class DefaultS7MessageProcessorTest {
                     TransportSize.BYTE, (short) 1, (short) 1, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
                     TransportSize.BYTE, (short) 1, (short) 2, (short) 0, (byte) 0)));
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
         assertThat(processedRequests, hasSize(1));
@@ -146,7 +145,7 @@ public class DefaultS7MessageProcessorTest {
                     TransportSize.BYTE, (short) 1, (short) 18, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
                     TransportSize.BYTE, (short) 1, (short) 19, (short) 0, (byte) 0)));
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
         assertThat(processedRequests, hasSize(1));
@@ -208,7 +207,7 @@ public class DefaultS7MessageProcessorTest {
                     TransportSize.BYTE, (short) 1, (short) 19, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
                     TransportSize.BYTE, (short) 1, (short) 20, (short) 0, (byte) 0)));
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
         assertThat(processedRequests, hasSize(2));
@@ -243,7 +242,7 @@ public class DefaultS7MessageProcessorTest {
                     TransportSize.BYTE, (short) 200, (short) 1, (short) 0, (byte) 0),
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
                     TransportSize.BYTE, (short) 200, (short) 2, (short) 0, (byte) 0)));
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 256);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 256);
 
         assertThat(processedRequests, notNullValue());
         assertThat(processedRequests, hasSize(2));
@@ -270,7 +269,7 @@ public class DefaultS7MessageProcessorTest {
             Collections.singletonList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {0x00}))
             );
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
         assertThat(processedRequests, hasSize(1));
@@ -306,7 +305,7 @@ public class DefaultS7MessageProcessorTest {
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BIT, new byte[] {
                     (byte) 0xAA, (byte) 0x02}))
         );
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         // Initialize a set of expected fields.
         Set<String> expectedFields = new HashSet<>(10);
@@ -370,7 +369,7 @@ public class DefaultS7MessageProcessorTest {
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A}))
         );
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         // Initialize a set of expected fields.
         Set<Short> expectedFields = new HashSet<>(10);
@@ -441,7 +440,7 @@ public class DefaultS7MessageProcessorTest {
                     0x00, 0x00, 0x00, 0x08,
                     0x00, 0x00, 0x00, 0x09,
                     0x00, 0x00, 0x00, 0x0A})));
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         // Initialize a set of expected fields.
         Set<Short> expectedFields = new HashSet<>(10);
@@ -516,7 +515,7 @@ public class DefaultS7MessageProcessorTest {
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {0x00, 0x00, 0x00, 0x00})
             )
         );
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
         assertThat(processedRequests, hasSize(5));
@@ -557,7 +556,7 @@ public class DefaultS7MessageProcessorTest {
                     0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04})
             )
         );
-        Collection<? extends S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         assertThat(processedRequests, notNullValue());
         assertThat(processedRequests, hasSize(4));
@@ -594,7 +593,7 @@ public class DefaultS7MessageProcessorTest {
 
     /**
      * This test handles the special case in which a response is part of a single request message.
-     * This means that it is immediatly finished and is hereby immediatly processed.
+     * This means that it is immediately finished and is hereby immediately processed.
      *
      * @throws PlcException
      */
@@ -652,6 +651,7 @@ public class DefaultS7MessageProcessorTest {
 
         assertThat(processedResponse.getPayloads(), hasSize(1));
         assertThat(processedResponse.getPayload(VarPayload.class).isPresent(), is(true));
+
         VarPayload varPayload = processedResponse.getPayload(VarPayload.class).get();
         assertThat(varPayload.getItems(), hasSize(2));
     }

@@ -51,7 +51,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -208,136 +208,72 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             DataTransportSize dataTransportSize = s7Field.getDataType().getDataTransportSize();
 
             // TODO: Checkout if the payload items are sort of a flatMap of all request items.
-            byte[] byteData = null;
+            byte[] byteData;
             switch(s7Field.getDataType()) {
                 // -----------------------------------------
                 // Bit
                 // -----------------------------------------
-                case BOOL: {
-                    int numBytes = fieldItem.getNumberOfValues() >> 3 / 8;
-                    byteData = new byte[numBytes];
-                    BitSet bitSet = new BitSet();
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        bitSet.set(i, fieldItem.getBoolean(i));
-                    }
-                    System.arraycopy(bitSet.toByteArray(), 0, byteData, 0, numBytes);
+                case BOOL:
+                    byteData = encodeWriteRequestBitField(fieldItem);
                     break;
-                }
                 // -----------------------------------------
                 // Signed integer values
                 // -----------------------------------------
                 case BYTE:
                 case SINT:
-                case CHAR: { // 1 byte
-                    int numBytes = fieldItem.getNumberOfValues();
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.put(fieldItem.getByte(i));
-                    }
-                    byteData = buffer.array();
+                case CHAR:  // 1 byte
+                    byteData = encodeWriteRequestByteField(fieldItem, true);
                     break;
-                }
                 case WORD:
                 case INT:
-                case WCHAR: { // 2 byte (16 bit)
-                    int numBytes = fieldItem.getNumberOfValues() * 2;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putShort(fieldItem.getShort(i));
-                    }
-                    byteData = buffer.array();
+                case WCHAR:  // 2 byte (16 bit)
+                    byteData = encodeWriteRequestShortField(fieldItem, true);
                     break;
-                }
                 case DWORD:
-                case DINT: { // 4 byte (32 bit)
-                    int numBytes = fieldItem.getNumberOfValues() * 4;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putInt(fieldItem.getInteger(i));
-                    }
-                    byteData = buffer.array();
+                case DINT:  // 4 byte (32 bit)
+                    byteData = encodeWriteRequestIntegerField(fieldItem, true);
                     break;
-                }
                 case LWORD:
-                case LINT: { // 8 byte (64 bit)
-                    int numBytes = fieldItem.getNumberOfValues() * 8;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putLong(fieldItem.getLong(i));
-                    }
-                    byteData = buffer.array();
+                case LINT:  // 8 byte (64 bit)
+                    byteData = encodeWriteRequestLongField(fieldItem, true);
                     break;
-                }
                 // -----------------------------------------
                 // Unsigned integer values
                 // -----------------------------------------
                 // 8 bit:
-                case USINT: {
-                    int numBytes = fieldItem.getNumberOfValues();
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.put((byte) (short) fieldItem.getShort(i));
-                    }
-                    byteData = buffer.array();
+                case USINT:
+                    byteData = encodeWriteRequestByteField(fieldItem, false);
                     break;
-                }
                 // 16 bit:
-                case UINT: {
-                    int numBytes = fieldItem.getNumberOfValues() * 2;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putShort((short) (int) fieldItem.getInteger(i));
-                    }
-                    byteData = buffer.array();
+                case UINT:
+                    byteData = encodeWriteRequestShortField(fieldItem, false);
                     break;
-                }
                 // 32 bit:
-                case UDINT: {
-                    int numBytes = fieldItem.getNumberOfValues() * 4;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putInt((int) (long) fieldItem.getLong(i));
-                    }
-                    byteData = buffer.array();
+                case UDINT:
+                    byteData = encodeWriteRequestIntegerField(fieldItem, false);
                     break;
-                }
                 // 64 bit:
-                case ULINT: {
-                    // TODO: Implement this ...
+                case ULINT:
+                    byteData = encodeWriteRequestLongField(fieldItem, false);
                     break;
-                }
                 // -----------------------------------------
                 // Floating point values
                 // -----------------------------------------
-                case REAL: {
-                    int numBytes = fieldItem.getNumberOfValues() * 4;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putFloat(fieldItem.getFloat(i));
-                    }
-                    byteData = buffer.array();
+                case REAL:
+                    byteData = encodeWriteRequestFloatField(fieldItem);
                     break;
-                }
-                case LREAL: {
-                    int numBytes = fieldItem.getNumberOfValues() * 8;
-                    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-                    for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
-                        buffer.putDouble(fieldItem.getDouble(i));
-                    }
-                    byteData = buffer.array();
+                case LREAL:
+                    byteData = encodeWriteRequestDoubleField(fieldItem);
                     break;
-                }
                 // -----------------------------------------
                 // Characters & Strings
                 // -----------------------------------------
-                case STRING: {
-                    // TODO: Implement this ...
+                case STRING:
+                    byteData = encodeWriteRequestStringField(fieldItem, false);
                     break;
-                }
-                case WSTRING: {
-                    // TODO: Implement this ...
+                case WSTRING:
+                    byteData = encodeWriteRequestStringField(fieldItem, true);
                     break;
-                }
                 default:
                     throw new PlcProtocolException("Unsupported type " + s7Field.getDataType());
             }
@@ -358,6 +294,92 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         requests.put(s7WriteRequest.getTpduReference(), msg);
 
         out.add(s7WriteRequest);
+    }
+
+    byte[] encodeWriteRequestBitField(BaseDefaultFieldItem fieldItem) {
+        int numBytes = fieldItem.getNumberOfValues() >> 3 / 8;
+        byte[] byteData = new byte[numBytes];
+        BitSet bitSet = new BitSet();
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            bitSet.set(i, fieldItem.getBoolean(i));
+        }
+        System.arraycopy(bitSet.toByteArray(), 0, byteData, 0, numBytes);
+        return byteData;
+    }
+
+    byte[] encodeWriteRequestByteField(BaseDefaultFieldItem fieldItem, boolean signed) {
+        int numBytes = fieldItem.getNumberOfValues();
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            if(signed) {
+                buffer.put(fieldItem.getByte(i));
+            } else {
+                buffer.put((byte) (short) fieldItem.getShort(i));
+            }
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestShortField(BaseDefaultFieldItem fieldItem, boolean signed) {
+        int numBytes = fieldItem.getNumberOfValues() * 2;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            if(signed) {
+                buffer.putShort(fieldItem.getShort(i));
+            } else {
+                buffer.putShort((short) (int) fieldItem.getInteger(i));
+            }
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestIntegerField(BaseDefaultFieldItem fieldItem, boolean signed) {
+        int numBytes = fieldItem.getNumberOfValues() * 4;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            if(signed) {
+                buffer.putInt(fieldItem.getInteger(i));
+            } else {
+                buffer.putInt((int) (long) fieldItem.getLong(i));
+            }
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestLongField(BaseDefaultFieldItem fieldItem, boolean signed) {
+        int numBytes = fieldItem.getNumberOfValues() * 8;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            if(signed) {
+                buffer.putLong(fieldItem.getLong(i));
+            } else {
+                // TODO: Implement this ...
+            }
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestFloatField(BaseDefaultFieldItem fieldItem) {
+        int numBytes = fieldItem.getNumberOfValues() * 4;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            buffer.putFloat(fieldItem.getFloat(i));
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestDoubleField(BaseDefaultFieldItem fieldItem) {
+        int numBytes = fieldItem.getNumberOfValues() * 8;
+        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+        for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+            buffer.putDouble(fieldItem.getDouble(i));
+        }
+        return buffer.array();
+    }
+
+    byte[] encodeWriteRequestStringField(BaseDefaultFieldItem fieldItem, boolean isUtf16) {
+        // TODO: Implement this ...
+        return new byte[0];
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,146 +449,79 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                     // -----------------------------------------
                     // Bit
                     // -----------------------------------------
-                    case BOOL: {
-                        Boolean[] booleans = readAllValues(Boolean.class, field, i -> data.readByte() != 0x00);
-                        fieldItem = new DefaultBooleanFieldItem(booleans);
+                    case BOOL:
+                        fieldItem = decodeReadResponseBitField(field, data);
                         break;
-                    }
                     // -----------------------------------------
                     // Bit-strings
                     // -----------------------------------------
-                    case BYTE: { // 1 byte
-                        byte[] bytes = ArrayUtils.toPrimitive(readAllValues(Byte.class, field, i -> data.readByte()));
-                        BitSet bitSet = BitSet.valueOf(bytes);
-                        Boolean[] booleanValues = new Boolean[8 * bytes.length];
-                        for(int i = 0; i < 8 * bytes.length; i++) {
-                            booleanValues[i] = bitSet.get(i);
-                        }
-                        fieldItem = new DefaultBooleanFieldItem(booleanValues);
+                    case BYTE:  // 1 byte
+                        fieldItem = decodeReadResponseByteBitStringField(field, data);
                         break;
-                    }
-                    case WORD: { // 2 byte (16 bit)
-                        BitSet bitSet = BitSet.valueOf(new byte[]{data.readByte(), data.readByte()});
-                        Boolean[] booleanValues = new Boolean[8];
-                        for(int i = 0; i < 16; i++) {
-                            booleanValues[i] = bitSet.get(i);
-                        }
-                        fieldItem = new DefaultBooleanFieldItem(booleanValues);
+                    case WORD:  // 2 byte (16 bit)
+                        fieldItem = decodeReadResponseShortBitStringField(data);
                         break;
-                    }
-                    case DWORD: { // 4 byte (32 bit)
-                        BitSet bitSet = BitSet.valueOf(new byte[]{
-                            data.readByte(), data.readByte(), data.readByte(), data.readByte()});
-                        Boolean[] booleanValues = new Boolean[8];
-                        for(int i = 0; i < 32; i++) {
-                            booleanValues[i] = bitSet.get(i);
-                        }
-                        fieldItem = new DefaultBooleanFieldItem(booleanValues);
+                    case DWORD:  // 4 byte (32 bit)
+                        fieldItem = decodeReadResponseIntegerBitStringField(data);
                         break;
-                    }
-                    case LWORD: { // 8 byte (64 bit)
-                        BitSet bitSet = BitSet.valueOf(new long[]{data.readLong()});
-                        Boolean[] booleanValues = new Boolean[8];
-                        for(int i = 0; i < 64; i++) {
-                            booleanValues[i] = bitSet.get(i);
-                        }
-                        fieldItem = new DefaultBooleanFieldItem(booleanValues);
+                    case LWORD:  // 8 byte (64 bit)
+                        fieldItem = decodeReadResponseLongBitStringField(data);
                         break;
-                    }
                     // -----------------------------------------
                     // Integers
                     // -----------------------------------------
                     // 8 bit:
-                    case SINT: {
-                        Byte[] bytes = readAllValues(Byte.class, field, i -> data.readByte());
-                        fieldItem = new DefaultByteFieldItem(bytes);
+                    case SINT:
+                        fieldItem = decodeReadResponseSignedByteField(field, data);
                         break;
-                    }
-                    case USINT: {
-                        Short[] shorts = readAllValues(Short.class, field, i -> data.readUnsignedByte());
-                        fieldItem = new DefaultShortFieldItem(shorts);
+                    case USINT:
+                        fieldItem = decodeReadResponseUnsignedByteField(field, data);
                         break;
-                    }
                     // 16 bit:
-                    case INT: {
-                        Short[] shorts = readAllValues(Short.class, field, i -> data.readShort());
-                        fieldItem = new DefaultShortFieldItem(shorts);
+                    case INT:
+                        fieldItem = decodeReadResponseSignedShortField(field, data);
                         break;
-                    }
-                    case UINT: {
-                        Integer[] ints = readAllValues(Integer.class, field, i -> data.readUnsignedShort());
-                        fieldItem = new DefaultIntegerFieldItem(ints);
+                    case UINT:
+                        fieldItem = decodeReadResponseUnsignedShortField(field, data);
                         break;
-                    }
                     // 32 bit:
-                    case DINT: {
-                        Integer[] ints = readAllValues(Integer.class, field, i -> data.readInt());
-                        fieldItem = new DefaultIntegerFieldItem(ints);
+                    case DINT:
+                        fieldItem = decodeReadResponseSignedIntegerField(field, data);
                         break;
-                    }
-                    case UDINT: {
-                        Long[] longs = readAllValues(Long.class, field, i -> data.readUnsignedInt());
-                        fieldItem = new DefaultLongFieldItem(longs);
+                    case UDINT:
+                        fieldItem = decodeReadResponseUnsignedIntegerField(field, data);
                         break;
-                    }
                     // 64 bit:
-                    case LINT: {
-                        BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readSigned64BitInteger(data));
-                        fieldItem = new DefaultBigIntegerFieldItem(bigIntegers);
+                    case LINT:
+                        fieldItem = decodeReadResponseSignedLongField(field, data);
                         break;
-                    }
-                    case ULINT: {
-                        BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readUnsigned64BitInteger(data));
-                        fieldItem = new DefaultBigIntegerFieldItem(bigIntegers);
+                    case ULINT:
+                        fieldItem = decodeReadResponseUnsignedLongField(field, data);
                         break;
-                    }
                     // -----------------------------------------
                     // Floating point values
                     // -----------------------------------------
-                    case REAL: {
-                        Float[] floats = readAllValues(Float.class, field, i -> data.readFloat());
-                        fieldItem = new DefaultFloatFieldItem(floats);
+                    case REAL:
+                        fieldItem = decodeReadResponseFloatField(field, data);
                         break;
-                    }
-                    case LREAL: {
-                        Double[] doubles = readAllValues(Double.class, field, i -> data.readDouble());
-                        fieldItem = new DefaultDoubleFieldItem(doubles);
+                    case LREAL:
+                        fieldItem = decodeReadResponseDoubleField(field, data);
                         break;
-                    }
                     // -----------------------------------------
                     // Characters & Strings
                     // -----------------------------------------
-                    case CHAR: { // 1 byte (8 bit)
-                        // TODO: Double check, if this is ok?
-                        String stringValue = data.readCharSequence(1, Charset.forName("UTF-8")).toString();
-                        fieldItem = new DefaultStringFieldItem(stringValue);
+                    case CHAR: // 1 byte (8 bit)
+                        fieldItem = decodeReadResponseFixedLengthStringField(1, false, data);
                         break;
-                    }
-                    case WCHAR: { // 2 byte
-                        // TODO: Double check, if this is ok? Alternatives: BMP, UCS2
-                        String stringValue = data.readCharSequence(2, Charset.forName("UTF-16")).toString();
-                        fieldItem = new DefaultStringFieldItem(stringValue);
+                    case WCHAR: // 2 byte
+                        fieldItem = decodeReadResponseFixedLengthStringField(1, true, data);
                         break;
-                    }
-                    case STRING: {
-                        // Max length ... ignored.
-                        data.readByte();
-                        byte actualLength = data.readByte();
-                        // TODO: Double check, if this is ok?
-                        String stringValue = data.readCharSequence(actualLength, Charset.forName("UTF-8")).toString();
-                        fieldItem = new DefaultStringFieldItem(stringValue);
+                    case STRING:
+                        fieldItem = decodeReadResponseVarLengthStringField(false, data);
                         break;
-                    }
-                    case WSTRING: {
-                        // Max length ... ignored.
-                        data.readByte();
-                        byte actualLength = data.readByte();
-                        // TODO: Double check, if this is ok?
-                        String stringValue = data.readCharSequence(
-                            actualLength * 2, Charset.forName("UTF-16")).toString();
-                        fieldItem = new DefaultStringFieldItem(stringValue);
+                    case WSTRING:
+                        fieldItem = decodeReadResponseVarLengthStringField(true, data);
                         break;
-                    }
                     default:
                         throw new PlcProtocolException("Unsupported type " + field.getDataType());
                 }
@@ -577,6 +532,112 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         }
 
         return new DefaultPlcReadResponse(plcReadRequest, values);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseBitField(S7Field field, ByteBuf data) {
+        Boolean[] booleans = readAllValues(Boolean.class, field, i -> data.readByte() != 0x00);
+        return new DefaultBooleanFieldItem(booleans);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseByteBitStringField(S7Field field, ByteBuf data) {
+        byte[] bytes = ArrayUtils.toPrimitive(readAllValues(Byte.class, field, i -> data.readByte()));
+        BitSet bitSet = BitSet.valueOf(bytes);
+        Boolean[] booleanValues = new Boolean[8 * bytes.length];
+        for(int i = 0; i < 8 * bytes.length; i++) {
+            booleanValues[i] = bitSet.get(i);
+        }
+        return new DefaultBooleanFieldItem(booleanValues);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseShortBitStringField(ByteBuf data) {
+        BitSet bitSet = BitSet.valueOf(new byte[]{data.readByte(), data.readByte()});
+        Boolean[] booleanValues = new Boolean[8];
+        for(int i = 0; i < 16; i++) {
+            booleanValues[i] = bitSet.get(i);
+        }
+        return new DefaultBooleanFieldItem(booleanValues);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseIntegerBitStringField(ByteBuf data) {
+        BitSet bitSet = BitSet.valueOf(new byte[]{
+            data.readByte(), data.readByte(), data.readByte(), data.readByte()});
+        Boolean[] booleanValues = new Boolean[8];
+        for(int i = 0; i < 32; i++) {
+            booleanValues[i] = bitSet.get(i);
+        }
+        return new DefaultBooleanFieldItem(booleanValues);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseLongBitStringField(ByteBuf data) {
+        BitSet bitSet = BitSet.valueOf(new long[]{data.readLong()});
+        Boolean[] booleanValues = new Boolean[8];
+        for(int i = 0; i < 64; i++) {
+            booleanValues[i] = bitSet.get(i);
+        }
+        return new DefaultBooleanFieldItem(booleanValues);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseSignedByteField(S7Field field, ByteBuf data) {
+        Byte[] bytes = readAllValues(Byte.class, field, i -> data.readByte());
+        return new DefaultByteFieldItem(bytes);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseUnsignedByteField(S7Field field, ByteBuf data) {
+        Short[] shorts = readAllValues(Short.class, field, i -> data.readUnsignedByte());
+        return new DefaultShortFieldItem(shorts);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseSignedShortField(S7Field field, ByteBuf data) {
+        Short[] shorts = readAllValues(Short.class, field, i -> data.readShort());
+        return new DefaultShortFieldItem(shorts);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseUnsignedShortField(S7Field field, ByteBuf data) {
+        Integer[] ints = readAllValues(Integer.class, field, i -> data.readUnsignedShort());
+        return new DefaultIntegerFieldItem(ints);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseSignedIntegerField(S7Field field, ByteBuf data) {
+        Integer[] ints = readAllValues(Integer.class, field, i -> data.readInt());
+        return new DefaultIntegerFieldItem(ints);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseUnsignedIntegerField(S7Field field, ByteBuf data) {
+        Long[] longs = readAllValues(Long.class, field, i -> data.readUnsignedInt());
+        return new DefaultLongFieldItem(longs);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseSignedLongField(S7Field field, ByteBuf data) {
+        BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readSigned64BitInteger(data));
+        return new DefaultBigIntegerFieldItem(bigIntegers);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseUnsignedLongField(S7Field field, ByteBuf data) {
+        BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readUnsigned64BitInteger(data));
+        return new DefaultBigIntegerFieldItem(bigIntegers);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseFloatField(S7Field field, ByteBuf data) {
+        Float[] floats = readAllValues(Float.class, field, i -> data.readFloat());
+        return new DefaultFloatFieldItem(floats);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseDoubleField(S7Field field, ByteBuf data) {
+        Double[] doubles = readAllValues(Double.class, field, i -> data.readDouble());
+        return new DefaultDoubleFieldItem(doubles);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseFixedLengthStringField(int numChars, boolean isUtf16, ByteBuf data) {
+        int numBytes = isUtf16 ? numChars * 2 : numChars;
+        String stringValue = data.readCharSequence(numBytes, StandardCharsets.UTF_8).toString();
+        return new DefaultStringFieldItem(stringValue);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseVarLengthStringField(boolean isUtf16, ByteBuf data) {
+        // Max length ... ignored.
+        data.skipBytes(1);
+        byte actualLength = data.readByte();
+        return decodeReadResponseFixedLengthStringField(actualLength, isUtf16, data);
     }
 
     private static <T> T[] readAllValues(Class<T> clazz, S7Field field, Function<Integer, T> extract) {

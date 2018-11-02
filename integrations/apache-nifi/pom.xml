@@ -66,6 +66,14 @@
           <scmBranchPropertyName>buildBranch</scmBranchPropertyName>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>com.buschmais.jqassistant</groupId>
+        <artifactId>jqassistant-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

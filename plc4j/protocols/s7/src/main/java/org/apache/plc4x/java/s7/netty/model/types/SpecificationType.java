@@ -27,6 +27,14 @@ import java.util.Map;
 public enum SpecificationType {
     VARIABLE_SPECIFICATION((byte) 0x12);
 
+    private static final Map<Byte, SpecificationType> map;
+    static {
+        map = new HashMap<>();
+        for (SpecificationType specificationType : SpecificationType.values()) {
+            map.put(specificationType.code, specificationType);
+        }
+    }
+
     private final byte code;
 
     SpecificationType(byte code) {
@@ -35,15 +43,6 @@ public enum SpecificationType {
 
     public byte getCode() {
         return code;
-    }
-
-    private final static Map<Byte, SpecificationType> map;
-
-    static {
-        map = new HashMap<>();
-        for (SpecificationType specificationType : SpecificationType.values()) {
-            map.put(specificationType.code, specificationType);
-        }
     }
 
     public static SpecificationType valueOf(byte code) {

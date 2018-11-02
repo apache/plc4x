@@ -20,6 +20,6 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 
-public interface InternalPlcUnsubscriptionResponse extends PlcUnsubscriptionResponse {
+public interface InternalPlcUnsubscriptionResponse extends PlcUnsubscriptionResponse, InternalPlcResponse {
 
 }

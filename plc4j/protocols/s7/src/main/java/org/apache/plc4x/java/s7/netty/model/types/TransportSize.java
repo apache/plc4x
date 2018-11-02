@@ -121,9 +121,17 @@ public enum TransportSize {
     // 0x20: HS Counter
     //
 
+    private static final Map<Byte, TransportSize> map;
+    static {
+        map = new HashMap<>();
+        for (TransportSize dataType : TransportSize.values()) {
+            map.put(dataType.typeCode, dataType);
+        }
+    }
+
     private final byte typeCode;
     private final String sizeCode;
-    private int sizeInBytes;
+    private final int sizeInBytes;
     private final Set<S7ControllerType> supportedControllerTypes;
     private final TransportSize baseType;
     private final DataTransportSize dataTransportSize;
@@ -180,15 +188,6 @@ public enum TransportSize {
 
     boolean isControllerTypeSupported(S7ControllerType controllerType) {
         return supportedControllerTypes.contains(controllerType);
-    }
-
-    private final static Map<Byte, TransportSize> map;
-
-    static {
-        map = new HashMap<>();
-        for (TransportSize dataType : TransportSize.values()) {
-            map.put(dataType.typeCode, dataType);
-        }
     }
 
     public static TransportSize valueOf(byte code) {
