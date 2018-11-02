@@ -17,3 +17,4 @@
 # under the License.
 #
 org.apache.plc4x.java.test.TestPlcDriver
+org.apache.plc4x.java.mock.PlcMockDriver
