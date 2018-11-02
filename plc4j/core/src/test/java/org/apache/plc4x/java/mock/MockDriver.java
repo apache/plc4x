@@ -37,12 +37,12 @@ public class MockDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url) {
-        return new PlcMockConnection(null);
+        return new MockConnection(null);
     }
 
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) {
-        return new PlcMockConnection(authentication);
+        return new MockConnection(authentication);
     }
 
 }
