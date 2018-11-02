@@ -16,33 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.mock;
 
-import org.apache.plc4x.java.spi.PlcDriver;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.model.PlcField;
 
-public class DoubleMockDriver implements PlcDriver {
+public class MockField implements PlcField {
 
-    @Override
-    public String getProtocolCode() {
-        return "spi-mock";
+    private final String fieldQuery;
+
+    public MockField(String fieldQuery) {
+        this.fieldQuery = fieldQuery;
     }
 
-    @Override
-    public String getProtocolName() {
-        return "Mock Protocol Implementation";
-    }
-
-    @Override
-    public PlcConnection connect(String url) {
-        return new PlcMockConnection(null);
-    }
-
-    @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) {
-        return new PlcMockConnection(authentication);
+    public String getFieldQuery() {
+        return fieldQuery;
     }
 
 }

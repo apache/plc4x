@@ -23,11 +23,11 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
-public class MockDriver implements PlcDriver {
+public class PlcMockDriver implements PlcDriver {
 
     @Override
     public String getProtocolCode() {
-        return "spi-mock";
+        return "mock";
     }
 
     @Override
@@ -37,12 +37,12 @@ public class MockDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url) {
-        return new MockConnection(null);
+        return new PlcMockConnection(null);
     }
 
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) {
-        return new MockConnection(authentication);
+        return new PlcMockConnection(authentication);
     }
 
 }

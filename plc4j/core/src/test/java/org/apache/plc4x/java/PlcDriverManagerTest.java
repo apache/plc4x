@@ -47,7 +47,7 @@ public class PlcDriverManagerTest {
     @Test
     @Category(FastTests.class)
     public void getExistingDriverTest() throws PlcException {
-        MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url");
+        MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("spi-mock://some-cool-url");
         assertThat(mockConnection.getAuthentication(), nullValue());
         assertThat(mockConnection.isConnected(), is(true));
     }
@@ -62,7 +62,7 @@ public class PlcDriverManagerTest {
     public void getExistingDriverWithAuthenticationTest() throws PlcException {
         PlcUsernamePasswordAuthentication authentication =
             new PlcUsernamePasswordAuthentication("user", "pass");
-        MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("mock://some-cool-url", authentication);
+        MockConnection mockConnection = (MockConnection) new PlcDriverManager().getConnection("spi-mock://some-cool-url", authentication);
 
         assertThat(mockConnection.getAuthentication(), notNullValue());
         assertThat(mockConnection.getAuthentication(), instanceOf(PlcUsernamePasswordAuthentication.class));
@@ -110,7 +110,7 @@ public class PlcDriverManagerTest {
         ClassLoader fakeClassLoader = new URLClassLoader(urls, originalClassloader);
 
         // expect exception
-        new PlcDriverManager(fakeClassLoader).getConnection("mock://some-cool-url");
+        new PlcDriverManager(fakeClassLoader).getConnection("spi-mock://some-cool-url");
     }
 
 }
