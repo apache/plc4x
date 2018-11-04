@@ -45,53 +45,43 @@ This method returns an object implementing the `Address` interface which then ca
 
 [ditaa,plc4x-architecture]
 ....
-+---------------------------------------------------------------------------+
-|c05A                                                                       |
-|                                                                           |
-|                              User Application                             |
-|                                                                           |
-|                                                                           |
-|                  +-----------+------------------+------------------+------+
-|                  |           |                  |                  |
-|                  |           |                  |                  |
-|                  |           v                  v                  v
-|                  |    +-------------+    +-------------+    +-------------+
-|                  |    |c0BA         |    |c0BA         |    |c0BA         |
-|                  |    |   Apache    |    |   Apache    |    |   Apache    |
-|                  |    |   Kafka     |    |    Camel    |    |   Edgent    |
-|                  |    |   Connect   |    | Integration |    | Integration |
-|                  |    |             |    |             |    |             |
-+---------+--------+    +------+------+    +------+------+    +------+------+
-          |                    |                  |                  |
-          |                    |                  |                  |
-          v                    v                  v                  v
-+---------------------------------------------------------------------------+
-|cAAA                                                                       |
-|                                                                           |
-|                                 PLC4X API                                 |
-|                                                                           |
-|                                                                           |
-+-------------------------------------+-------------------------------------+
-                                      |
-                                      |
-                                      v
-+---------------------------------------------------------------------------+
-|cAAA                                                                       |
-|                                                                           |
-|                                PLC4X Core                                 |
-|                                                                           |
-|                                                                           |
-+-----+---------------+---------------+---------------+---------------+-----+
-      |               |               |               |               |
-      |               |               |               |               |
-      v               v               v               v               v
-+-----------+   +-----------+   +-----------+   +-----------+   +-----------+
-|c0BA       |   |c0BA       |   |c0BA       |   |c0BA       |   |c05A       |
-|  Siemens  |   | Beckhoff  |   |  Modbus   |   |  OPC-UA   |   |   User    |
-|    S7     |   |    ADS    |   |  Driver   |   |  Driver   |   |  Driver   |
-|  Driver   |   |  Driver   |   |           |   |           |   |           |
-|           |   |           |   |           |   |           |   |           |
-+-----------+   +-----------+   +-----------+   +-----------+   +-----------+
++----------------------------------------------------------------------------------------------+
+|c05A                                                                                          |
+|                                                                                              |
+|                              User Application                                                |
+|                                                                                              |
+|                                                                                              |
+|                  +-----------+------------------+------------------+------------------+------+
+|                  |           |                  |                  |                  |
+|                  |           |                  |                  |                  |
+|                  |           v                  v                  v                  v
+|                  |    +-------------+    +-------------+    +-------------+    +-------------+
+|                  |    |c0BA         |    |c0BA         |    |c0BA         |    |c0BA         |
+|                  |    |   Apache    |    |   Apache    |    |   Apache    |    |   Apache    |
+|                  |    |   Kafka     |    |    Camel    |    |   Edgent    |    |    Nifi     |
+|                  |    |   Connect   |    | Integration |    | Integration |    | Integration |
+|                  |    |             |    |             |    |             |    |             |
++---------+--------+    +------+------+    +------+------+    +------+------+    +------+------+
+          |                    |                  |                  |                  |
+          |                    |                  |                  |                  |
+          v                    v                  v                  v                  v
++----------------------------------------------------------------------------------------------+
+|cAAA                                                                                          |
+|                                                                                              |
+|                                             PLC4X API                                        |
+|                                                                                              |
+|                                                                                              |
++------+---------------+---------------+---------------+---------------+---------------+-------+
+       |               |               |               |               |               |
+       |               |               |               |               |               |
+       v               v               v               v               v               v
+ +-----------+   +-----------+   +-----------+   +-----------+   +-----------+   +-----------+
+ |c0BA       |   |c0BA       |   |c0BA       |   |c0BA       |   |c0BA       |   |c05A       |
+ |  Siemens  |   | Beckhoff  |   |  Modbus   |   |  OPC UA   |   |  Emerson  |   |   User    |
+ |    S7     |   |   ADS     |   |  Driver   |   |  Driver   |   |  DeltaV   |   |  Driver   |
+ |  Driver   |   |  Driver   |   |           |   |           |   |  Driver   |   |           |
+ |           |   |           |   |           |   |           |   |           |   |           |
+ +-----------+   +-----------+   +-----------+   +-----------+   +-----------+   +-----------+
 ....
 
 === Usage
@@ -103,70 +93,8 @@ It also demonstrates two ways this information can be accessed:
 - Synchronously (The application pauses, till the response is received)
 - Asynchronously (The application continues and can
 
-....
-public class S7PlcDriverSample {
-
-    /**
-     * Example code do demonstrate using the S7 Plc Driver.
-     *
-     * @param args ignored.
-     * @throws Exception something went wrong.
-     */
-    public static void main(String[] args) throws Exception {
-        // Create a connection to the S7 PLC (s7://{hostname/ip}/{racknumber}/{slotnumber})
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.0.1/0/0")){
-
-            Optional<PlcReader> reader = plcConnection.getReader();
-            // Check if this connection support reading of data.
-            if (reader.isPresent()) {
-                PlcReader plcReader = reader.get();
-
-                // Prepare some address object for accessing fields in the PLC.
-                // ({memory-area}/{byte-offset}[/{bit-offset}]
-                // "bit-offset is only specified if the requested type is "bit"
-                // NOTICE: This format is probably only valid when using a S7 connection.
-                Address inputs = plcConnection.parseAddress("INPUTS/0");
-                Address outputs = plcConnection.parseAddress("OUTPUTS/0");
-
-                //////////////////////////////////////////////////////////
-                // Read synchronously ...
-                // NOTICE: the ".get()" immediately lets this thread pause till
-                // the response is processed and available.
-                PlcReadResponse<Byte> plcReadResponse = plcReader.read(
-                    new BytePlcReadRequest(inputs)).get();
-                Byte data = plcReadResponse.getValue();
-                System.out.println("Inputs: " + data);
-
-                //////////////////////////////////////////////////////////
-                // Read asynchronously ...
-                Calendar start = Calendar.getInstance();
-                CompletableFuture<PlcReadResponse<Byte>> asyncResponse = plcReader.read(
-                    new BytePlcReadRequest(outputs));
-
-                asyncResponse.thenAccept(bytePlcReadResponse -> {
-                    Calendar end = Calendar.getInstance();
-                    Byte dataAsync = bytePlcReadResponse.getValue();
-                    System.out.println("Outputs: " + dataAsync + " (in " + (end.getTimeInMillis() - start.getTimeInMillis()) + "ms)");
-                });
-
-                // Simulate doing something else ...
-                while (true) {
-                    Thread.sleep(1);
-                    if (asyncResponse.isDone()) {
-                        break;
-                    }
-                }
-            }
-        }
-        // Catch any exception or the application won't be able to finish if something goes wrong.
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-}
-
-....
-
- 
+[source,java]
+----
+include::../../../../examples/hello-world-plc4x/src/main/java/org/apache/plc4x/java/examples/helloplc4x/HelloPlc4x.java[lines=19..200]
+----
 
