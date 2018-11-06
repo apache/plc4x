@@ -33,4 +33,5 @@ public class OPMException extends PlcException {
     public OPMException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }

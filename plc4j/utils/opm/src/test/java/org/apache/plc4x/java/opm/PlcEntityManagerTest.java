@@ -51,9 +51,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 
@@ -97,7 +95,7 @@ public class PlcEntityManagerTest {
 
         Assert.assertNotNull(connect);
 
-        // Call different mehtod
+        // Call different method
         String s = connect.toString();
 
         assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedBoolVar=true, boxedByteVar=1, boxedShortVar=1, boxedIntegerVar=1, boxedLongVar=1, bigIntegerVar=1, floatVar=1.0, doubleVar=1.0, bigDecimalVar=1, localTimeVar=01:01, localDateVar=0001-01-01, localDateTimeVar=0001-01-01T01:01, byteArrayVar=[0, 1], bigByteArrayVar=[0, 1], stringVar='Hallo'}", s);
@@ -111,7 +109,7 @@ public class PlcEntityManagerTest {
 
         Assert.assertNotNull(connect);
 
-        // Call different mehtod
+        // Call different method
         String s = connect.toString();
 
         assertEquals("ConnectedEntity{boolVar=true, byteVar=1, shortVar=1, intVar=1, longVar=1, boxedBoolVar=true, boxedByteVar=1, boxedShortVar=1, boxedIntegerVar=1, boxedLongVar=1, bigIntegerVar=1, floatVar=1.0, doubleVar=1.0, bigDecimalVar=1, localTimeVar=01:01, localDateVar=0001-01-01, localDateTimeVar=0001-01-01T01:01, byteArrayVar=[0, 1], bigByteArrayVar=[0, 1], stringVar='Hallo'}", s);

@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -19,27 +19,24 @@
 
 package org.apache.plc4x.java.opm;
 
-/**
- * Utility methods for usage with OPM.
- */
-public final class OpmUtils {
+import org.junit.jupiter.api.Test;
 
-    private OpmUtils() {
-        // Util class
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class OPMExceptionTest {
+
+    @Test
+    public void simpleStringConstructor() {
+        assertThrows(OPMException.class, () -> {
+            throw new OPMException("Foo");
+        });
     }
 
-    static <T> PlcEntity getPlcEntityAndCheckPreconditions(Class<T> clazz) {
-        PlcEntity annotation = clazz.getAnnotation(PlcEntity.class);
-        if (annotation == null) {
-            throw new IllegalArgumentException("Given Class is no Plc Entity, i.e., not annotated with @PlcEntity");
-        }
-        // Check if default constructor exists
-        try {
-            clazz.getConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Cannot use PlcEntity without default constructor", e);
-        }
-        return annotation;
+    @Test
+    public void simpleStringAndThrowableConstructor() {
+        assertThrows(OPMException.class, () -> {
+            throw new OPMException("foo", new IllegalArgumentException("bar"));
+        });
     }
 
 }
