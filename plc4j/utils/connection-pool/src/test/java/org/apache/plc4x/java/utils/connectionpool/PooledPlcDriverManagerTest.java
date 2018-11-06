@@ -267,6 +267,15 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         );
     }
 
+    @Test
+    public void testOtherConstructors() {
+        assertThat(new PooledPlcDriverManager()).isNotNull();
+        assertThat(new PooledPlcDriverManager(new PoolKeyFactory())).isNotNull();
+        assertThat(new PooledPlcDriverManager(PooledPlcDriverManager.class.getClassLoader())).isNotNull();
+        assertThat(new PooledPlcDriverManager(
+            PooledPlcDriverManager.class.getClassLoader(), new PoolKeyFactory())).isNotNull();
+    }
+
     class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {
 
         private final String url;
@@ -285,7 +294,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         }
 
         @Override
-        public void connect() throws PlcConnectionException {
+        public void connect() {
             connected = true;
         }
 
