@@ -19,7 +19,9 @@ under the License.
 package org.apache.plc4x.java.api.authentication;
 
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.apache.plc4x.test.FastTests;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -30,11 +32,28 @@ public class PlcUsernamePasswordAuthenticationTest {
 
     @Test
     @Category(FastTests.class)
-    public void authenication() {
+    public void authentication() {
         PlcUsernamePasswordAuthentication authenication = new PlcUsernamePasswordAuthentication("user", "password");
 
         assertThat("Unexpected user name", authenication.getUsername(), equalTo("user"));
         assertThat("Unexpected password", authenication.getPassword(), equalTo("password"));
+    }
+
+    /**
+     * Usually in a toString method most properties are output.
+     * However the password field should never be output this way or the password could be leaked to a log-file
+     * unintentionally.
+     */
+    @Test
+   public void toStringDoesntLeakPassword() {
+        PlcUsernamePasswordAuthentication authenication = new PlcUsernamePasswordAuthentication("user", "top-secret");
+
+        assertThat(authenication.toString(), Matchers.not(Matchers.containsString("top-secret")));
+    }
+
+    @Test
+    public void equalsContract() {
+        EqualsVerifier.forClass(PlcUsernamePasswordAuthentication.class).usingGetClass().verify();
     }
 
 }

@@ -19,10 +19,12 @@ under the License.
 package org.apache.plc4x.java.api.types;
 
 public enum PlcResponseCode {
+
     OK,
     NOT_FOUND,
     INVALID_ADDRESS,
     INVALID_DATATYPE,
     INTERNAL_ERROR,
     RESPONSE_PENDING
+
 }
