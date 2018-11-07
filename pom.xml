@@ -320,7 +320,8 @@
                 <requireJavaVersion>
                   <version>1.8.0</version>
                 </requireJavaVersion>
-                <reactorModuleConvergence/>
+                <!-- Disabled for now as it breaks the ability to build single modules -->
+                <!--reactorModuleConvergence/-->
                 <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies" />
               </rules>
             </configuration>
