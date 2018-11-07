@@ -129,7 +129,7 @@ public class PlcEntityManager {
             }
             return instance;
         } catch (PlcInvalidFieldException e) {
-            throw new OPMException("Unable to parse one field request", e);
+            throw new OPMException("Unable to parse field '" + e.getFieldToBeParsed() + "'", e);
         } catch (PlcConnectionException e) {
             throw new OPMException("Unable to get connection with url '" + address + "'", e);
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
@@ -170,7 +170,7 @@ public class PlcEntityManager {
             PlcEntityInterceptor.refetchAllFields(instance, driverManager, address);
 
             return instance;
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | IllegalAccessError e) {
             throw new OPMException("Unable to instantiate Proxy", e);
         }
     }

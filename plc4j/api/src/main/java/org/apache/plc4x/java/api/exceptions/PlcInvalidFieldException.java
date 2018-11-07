@@ -26,17 +26,24 @@ import java.util.regex.Pattern;
 public class PlcInvalidFieldException extends PlcRuntimeException {
 
     private static final long serialVersionUID = 1L;
+    private final String fieldToBeParsed;
 
     public PlcInvalidFieldException(String fieldToBeParsed) {
         super(fieldToBeParsed + " invalid");
+        this.fieldToBeParsed = fieldToBeParsed;
     }
 
     public PlcInvalidFieldException(String fieldToBeParsed, Pattern pattern) {
         super(fieldToBeParsed + " doesn't match " + pattern);
+        this.fieldToBeParsed = fieldToBeParsed;
     }
 
     public PlcInvalidFieldException(String fieldToBeParsed, Pattern pattern, String readablePattern) {
         super(fieldToBeParsed + " doesn't match " + readablePattern + '(' + pattern + ')');
+        this.fieldToBeParsed = fieldToBeParsed;
     }
 
+    public String getFieldToBeParsed() {
+        return fieldToBeParsed;
+    }
 }
