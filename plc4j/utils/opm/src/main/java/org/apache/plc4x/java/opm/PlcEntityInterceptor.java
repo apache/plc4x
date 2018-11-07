@@ -201,7 +201,7 @@ public class PlcEntityInterceptor {
             field = m.getDeclaringClass().getDeclaredField(variable);
             annotation = field.getDeclaredAnnotation(PlcField.class);
         } catch (NoSuchFieldException e) {
-            throw new OPMException("Unable to identify field annotated field for call to " + m.getName(), e);
+            throw new OPMException("Unable to identify field with name '" + variable + "' for call to '" + m.getName() + "'", e);
         }
         try (PlcConnection connection = driverManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
@@ -248,11 +248,11 @@ public class PlcEntityInterceptor {
     }
 
     @SuppressWarnings("squid:S3776") // Cognitive Complexity not too high, as highly structured
-    private static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
+    static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
         LOGGER.debug("getTyped clazz: {}, response: {}, fieldName: {}", clazz, response, sourceFieldName);
         if (response.getResponseCode(sourceFieldName) != PlcResponseCode.OK) {
-            throw new PlcRuntimeException(String.format("Unable to read specified field %s, response code was %s",
-                sourceFieldName, response));
+            throw new PlcRuntimeException(String.format("Unable to read specified field '%s', response code was '%s'",
+                sourceFieldName, response.getResponseCode(sourceFieldName)));
         }
         if (clazz.isPrimitive()) {
             if (clazz == boolean.class) {
