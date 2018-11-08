@@ -33,18 +33,18 @@ import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.model.SymbolicAdsField;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
-import org.apache.plc4x.java.base.messages.PlcProprietaryResponse;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.messages.*;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,12 +54,11 @@ import java.util.concurrent.*;
 
 import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings("unchecked")
-public class AdsAbstractPlcConnectionTest {
+@ExtendWith(MockitoExtension.class)
+class AdsAbstractPlcConnectionTest implements WithAssertions {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsAbstractPlcConnectionTest.class);
 
@@ -71,8 +70,8 @@ public class AdsAbstractPlcConnectionTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Channel channel;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         SUT = new AdsAbstractPlcConnection(channelFactory, mock(AmsNetId.class), mock(AmsPort.class), mock(AmsNetId.class), mock(AmsPort.class)) {
             @Override
             protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
@@ -85,101 +84,98 @@ public class AdsAbstractPlcConnectionTest {
         SUT.connect();
     }
 
-    @Test
-    public void lazyConstructor() {
-        AdsAbstractPlcConnection constructed = new AdsAbstractPlcConnection(channelFactory, mock(AmsNetId.class), mock(AmsPort.class)) {
-            @Override
-            protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-                return null;
-            }
-        };
-        assertEquals(AdsAbstractPlcConnection.generateAMSNetId(), constructed.getSourceAmsNetId());
-        assertEquals(AdsAbstractPlcConnection.generateAMSPort(), constructed.getSourceAmsPort());
-    }
-
-    @Test
-    public void getTargetAmsNetId() {
-        AmsNetId targetAmsNetId = SUT.getTargetAmsNetId();
-        assertNotNull(targetAmsNetId);
-    }
-
-    @Test
-    public void getTargetAmsPort() {
-        AmsPort targetAmsPort = SUT.getTargetAmsPort();
-        assertNotNull(targetAmsPort);
-    }
-
-    @Test
-    public void getSourceAmsNetId() {
-        AmsNetId sourceAmsNetId = SUT.getSourceAmsNetId();
-        assertNotNull(sourceAmsNetId);
-    }
-
-    @Test
-    public void getSourceAmsPort() {
-        AmsPort sourceAmsPort = SUT.getSourceAmsPort();
-        assertNotNull(sourceAmsPort);
-    }
-
-    @Test
-    public void read() {
-        CompletableFuture<PlcReadResponse> read = SUT.read(mock(InternalPlcReadRequest.class));
-        assertNotNull(read);
-
-        simulatePipelineError(() -> SUT.read(mock(InternalPlcReadRequest.class)));
-    }
-
-    @Test
-    public void write() {
-        CompletableFuture<PlcWriteResponse> write = SUT.write(mock(InternalPlcWriteRequest.class));
-        assertNotNull(write);
-
-        simulatePipelineError(() -> SUT.write(mock(InternalPlcWriteRequest.class)));
-    }
-
-    @Test
-    public void send() {
-        CompletableFuture send = SUT.send(mock(InternalPlcProprietaryRequest.class));
-        assertNotNull(send);
-
-        simulatePipelineError(() -> SUT.send(mock(InternalPlcProprietaryRequest.class)));
-    }
-
-    public void simulatePipelineError(FutureProducingTestRunnable futureProducingTestRunnable) {
-        ChannelFuture channelFuture = mock(ChannelFuture.class);
-        // Simulate error in the pipeline
-        when(channelFuture.addListener(any())).thenAnswer(invocation -> {
-            Future future = mock(Future.class);
-            when(future.isSuccess()).thenReturn(false);
-            when(future.cause()).thenReturn(new DummyException());
-            GenericFutureListener genericFutureListener = invocation.getArgument(0);
-            genericFutureListener.operationComplete(future);
-            return mock(ChannelFuture.class);
-        });
-        when(channel.writeAndFlush(any())).thenReturn(channelFuture);
-        assertThrows(DummyException.class, () -> {
-            CompletableFuture completableFuture = futureProducingTestRunnable.run();
-            try {
-                completableFuture.get(3, TimeUnit.SECONDS);
-                fail("Should have thrown a ExecutionException");
-            } catch (ExecutionException e) {
-                if (e.getCause() instanceof DummyException) {
-                    throw (DummyException) e.getCause();
+    @Nested
+    class Lifecycle {
+        @Test
+        void lazyConstructor() {
+            AdsAbstractPlcConnection constructed = new AdsAbstractPlcConnection(channelFactory, mock(AmsNetId.class), mock(AmsPort.class)) {
+                @Override
+                protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+                    return null;
                 }
-                throw e;
-            }
-        });
+            };
+            assertEquals(AdsAbstractPlcConnection.generateAMSNetId(), constructed.getSourceAmsNetId());
+            assertEquals(AdsAbstractPlcConnection.generateAMSPort(), constructed.getSourceAmsPort());
+        }
+
+        @Test
+        void close() throws Exception {
+            Map fieldMapping = (Map) FieldUtils.getDeclaredField(AdsAbstractPlcConnection.class, "fieldMapping", true).get(SUT);
+            fieldMapping.put(mock(SymbolicAdsField.class), mock(DirectAdsField.class));
+            SUT.close();
+        }
     }
 
-    @Test
-    public void mapFields() {
-        SUT.mapFields(mock(PlcFieldRequest.class));
+
+    @Nested
+    class Communication {
+
+        @Test
+        void read() {
+            CompletableFuture<PlcReadResponse> read = SUT.read(mock(InternalPlcReadRequest.class));
+            assertNotNull(read);
+
+            simulatePipelineError(() -> SUT.read(mock(InternalPlcReadRequest.class)));
+        }
+
+        @Test
+        void write() {
+            CompletableFuture<PlcWriteResponse> write = SUT.write(mock(InternalPlcWriteRequest.class));
+            assertNotNull(write);
+
+            simulatePipelineError(() -> SUT.write(mock(InternalPlcWriteRequest.class)));
+        }
+
+        @Test
+        void send() {
+            CompletableFuture send = SUT.send(mock(InternalPlcProprietaryRequest.class));
+            assertNotNull(send);
+
+            simulatePipelineError(() -> SUT.send(mock(InternalPlcProprietaryRequest.class)));
+        }
+
+        void simulatePipelineError(FutureProducingTestRunnable futureProducingTestRunnable) {
+            ChannelFuture channelFuture = mock(ChannelFuture.class);
+            // Simulate error in the pipeline
+            when(channelFuture.addListener(any())).thenAnswer(invocation -> {
+                Future future = mock(Future.class);
+                when(future.isSuccess()).thenReturn(false);
+                when(future.cause()).thenReturn(new DummyException());
+                GenericFutureListener genericFutureListener = invocation.getArgument(0);
+                genericFutureListener.operationComplete(future);
+                return mock(ChannelFuture.class);
+            });
+            when(channel.writeAndFlush(any())).thenReturn(channelFuture);
+            assertThrows(DummyException.class, () -> {
+                CompletableFuture completableFuture = futureProducingTestRunnable.run();
+                try {
+                    completableFuture.get(3, TimeUnit.SECONDS);
+                    fail("Should have thrown a ExecutionException");
+                } catch (ExecutionException e) {
+                    if (e.getCause() instanceof DummyException) {
+                        throw (DummyException) e.getCause();
+                    }
+                    throw e;
+                }
+            });
+        }
     }
 
-    @Test
-    public void mapField() {
-        // positive
-        {
+    @Nested
+    class Symbolic {
+
+        @BeforeEach
+        void setUp() {
+            SUT.clearMapping();
+        }
+
+        @Test
+        void mapFields() {
+            SUT.mapFields(mock(PlcFieldRequest.class));
+        }
+
+        @Test
+        void mapSingleField() {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
                 PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
                 PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
@@ -197,8 +193,9 @@ public class AdsAbstractPlcConnectionTest {
             SUT.clearMapping();
             reset(channel);
         }
-        // negative
-        {
+
+        @Test
+        void mapSingleFieldNegative() {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
                 PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
                 PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
@@ -209,86 +206,117 @@ public class AdsAbstractPlcConnectionTest {
                 return mock(ChannelFuture.class);
             });
 
-            assertThrows(PlcRuntimeException.class, () -> SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]")));
-            verify(channel, times(0)).writeAndFlush(any(PlcRequestContainer.class));
+            assertThatThrownBy(() -> SUT.mapFields(SymbolicAdsField.of("Main.byByte[0]:INT64")))
+                .isInstanceOf(PlcRuntimeException.class)
+                .hasMessageMatching("Non error code received .*");
+            verify(channel, times(1)).writeAndFlush(any(PlcRequestContainer.class));
             SUT.clearMapping();
             reset(channel);
         }
     }
 
-    @Test
-    public void generateAMSNetId() {
-        AmsNetId targetAmsNetId = AdsAbstractPlcConnection.generateAMSNetId();
-        assertNotNull(targetAmsNetId);
-    }
 
-    @Test
-    public void generateAMSPort() {
-        AmsPort amsPort = AdsAbstractPlcConnection.generateAMSPort();
-        assertNotNull(amsPort);
-    }
-
-    @Test
-    public void close() throws Exception {
-        Map fieldMapping = (Map) FieldUtils.getDeclaredField(AdsAbstractPlcConnection.class, "fieldMapping", true).get(SUT);
-        fieldMapping.put(mock(SymbolicAdsField.class), mock(DirectAdsField.class));
-        SUT.close();
-    }
-
-    @Test
-    public void getFromFuture() throws Exception {
-        runInThread(() -> {
-            CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
-            Object fromFuture = SUT.getFromFuture(completableFuture, 1);
-            assertNotNull(fromFuture);
-        });
-        runInThread(() -> {
-            CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
-            when(completableFuture.get(anyLong(), any())).thenThrow(InterruptedException.class);
-            assertThrows(PlcRuntimeException.class, () -> SUT.getFromFuture(completableFuture, 1));
-        });
-        runInThread(() -> {
-            CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
-            when(completableFuture.get(anyLong(), any())).thenThrow(ExecutionException.class);
-            assertThrows(PlcRuntimeException.class, () -> SUT.getFromFuture(completableFuture, 1));
-        });
-        runInThread(() -> {
-            CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
-            when(completableFuture.get(anyLong(), any())).thenThrow(TimeoutException.class);
-            assertThrows(PlcRuntimeException.class, () -> SUT.getFromFuture(completableFuture, 1));
-        });
-        assertFalse("The current Thread should not be interrupted", Thread.currentThread().isInterrupted());
-    }
-
-    /**
-     * Runs tests steps in a dedicated {@link Thread} so a possible {@link InterruptedException} doesn't lead to a
-     * interrupt flag being set on the main Thread ({@link Thread#isInterrupted}).
-     *
-     * @param testRunnable a special {@link Runnable} which adds a {@code throws Exception} to the {@code run} signature.
-     * @throws InterruptedException when this {@link Thread} gets interrupted.
-     */
-    public void runInThread(TestRunnable testRunnable) throws InterruptedException {
-        Thread thread = new Thread(() -> {
-            try {
-                testRunnable.run();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Queue<Throwable> uncaughtExceptions = new ConcurrentLinkedQueue<>();
-        thread.setUncaughtExceptionHandler((t, e) -> uncaughtExceptions.add(e));
-        thread.start();
-        thread.join();
-        if (!uncaughtExceptions.isEmpty()) {
-            uncaughtExceptions.forEach(throwable -> LOGGER.error("Assertion Error: Unexpected Exception", throwable));
-            throw new AssertionError("Test failures. Check log");
+    @Nested
+    class Misc {
+        @Test
+        void remainingMethods() {
+            assertThat(SUT.canRead()).isTrue();
+            assertThat(SUT.canWrite()).isTrue();
+            assertThat(SUT.readRequestBuilder()).isNotNull();
+            assertThat(SUT.writeRequestBuilder()).isNotNull();
         }
-    }
 
-    @Test
-    public void testToString() {
-        String s = SUT.toString();
-        assertNotNull(s);
+        @Test
+        void testToString() {
+            String s = SUT.toString();
+            assertNotNull(s);
+        }
+
+        @Test
+        void getTargetAmsNetId() {
+            AmsNetId targetAmsNetId = SUT.getTargetAmsNetId();
+            assertNotNull(targetAmsNetId);
+        }
+
+        @Test
+        void getTargetAmsPort() {
+            AmsPort targetAmsPort = SUT.getTargetAmsPort();
+            assertNotNull(targetAmsPort);
+        }
+
+        @Test
+        void getSourceAmsNetId() {
+            AmsNetId sourceAmsNetId = SUT.getSourceAmsNetId();
+            assertNotNull(sourceAmsNetId);
+        }
+
+        @Test
+        void getSourceAmsPort() {
+            AmsPort sourceAmsPort = SUT.getSourceAmsPort();
+            assertNotNull(sourceAmsPort);
+        }
+
+        @Test
+        void generateAMSNetId() {
+            AmsNetId targetAmsNetId = AdsAbstractPlcConnection.generateAMSNetId();
+            assertNotNull(targetAmsNetId);
+        }
+
+        @Test
+        void generateAMSPort() {
+            AmsPort amsPort = AdsAbstractPlcConnection.generateAMSPort();
+            assertNotNull(amsPort);
+        }
+
+        @Test
+        void getFromFuture() throws Exception {
+            runInThread(() -> {
+                CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
+                Object fromFuture = SUT.getFromFuture(completableFuture, 1);
+                assertNotNull(fromFuture);
+            });
+            runInThread(() -> {
+                CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
+                when(completableFuture.get(anyLong(), any())).thenThrow(InterruptedException.class);
+                assertThrows(PlcRuntimeException.class, () -> SUT.getFromFuture(completableFuture, 1));
+            });
+            runInThread(() -> {
+                CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
+                when(completableFuture.get(anyLong(), any())).thenThrow(ExecutionException.class);
+                assertThrows(PlcRuntimeException.class, () -> SUT.getFromFuture(completableFuture, 1));
+            });
+            runInThread(() -> {
+                CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
+                when(completableFuture.get(anyLong(), any())).thenThrow(TimeoutException.class);
+                assertThrows(PlcRuntimeException.class, () -> SUT.getFromFuture(completableFuture, 1));
+            });
+            assertFalse("The current Thread should not be interrupted", Thread.currentThread().isInterrupted());
+        }
+
+        /**
+         * Runs tests steps in a dedicated {@link Thread} so a possible {@link InterruptedException} doesn't lead to a
+         * interrupt flag being set on the main Thread ({@link Thread#isInterrupted}).
+         *
+         * @param testRunnable a special {@link Runnable} which adds a {@code throws Exception} to the {@code run} signature.
+         * @throws InterruptedException when this {@link Thread} gets interrupted.
+         */
+        void runInThread(TestRunnable testRunnable) throws InterruptedException {
+            Thread thread = new Thread(() -> {
+                try {
+                    testRunnable.run();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            Queue<Throwable> uncaughtExceptions = new ConcurrentLinkedQueue<>();
+            thread.setUncaughtExceptionHandler((t, e) -> uncaughtExceptions.add(e));
+            thread.start();
+            thread.join();
+            if (!uncaughtExceptions.isEmpty()) {
+                uncaughtExceptions.forEach(throwable -> LOGGER.error("Assertion Error: Unexpected Exception", throwable));
+                throw new AssertionError("Test failures. Check log");
+            }
+        }
     }
 
     /**

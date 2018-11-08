@@ -20,35 +20,64 @@ under the License.
 package org.apache.plc4x.java.ads.connection;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.ads.api.commands.AdsAddDeviceNotificationResponse;
+import org.apache.plc4x.java.ads.api.commands.AdsDeleteDeviceNotificationResponse;
+import org.apache.plc4x.java.ads.api.commands.AdsDeviceNotificationRequest;
+import org.apache.plc4x.java.ads.api.commands.types.*;
+import org.apache.plc4x.java.ads.api.generic.AmsHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
+import org.apache.plc4x.java.ads.model.DirectAdsField;
+import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.model.InternalPlcConsumerRegistration;
+import org.apache.plc4x.java.base.model.SubscriptionPlcField;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.InetAddress;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-public class AdsTcpPlcConnectionTests {
+@ExtendWith(MockitoExtension.class)
+class AdsTcpPlcConnectionTests implements WithAssertions {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdsTcpPlcConnectionTests.class);
+    AdsTcpPlcConnection SUT;
 
-    private AdsTcpPlcConnection SUT;
+    @Mock
+    Channel channelMock;
 
-    private Channel channelMock;
+    @Mock
+    PlcSubscriber plcSubscriber;
 
-    private ExecutorService executorService;
+    ExecutorService executorService;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         SUT = AdsTcpPlcConnection.of(InetAddress.getByName("localhost"), AmsNetId.of("0.0.0.0.0.0"), AmsPort.of(13));
         // TODO: Refactor this to use the TestChannelFactory instead.
         channelMock = mock(Channel.class, RETURNS_DEEP_STUBS);
@@ -56,20 +85,96 @@ public class AdsTcpPlcConnectionTests {
         executorService = Executors.newFixedThreadPool(10);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         executorService.shutdownNow();
         SUT = null;
     }
 
-    @Test
-    public void initialState() {
-        assertEquals(SUT.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
-        assertEquals(SUT.getTargetAmsPort().toString(), "13");
+    @Nested
+    class Lifecycle {
+        @Test
+        void initialState() {
+            assertEquals(SUT.getTargetAmsNetId().toString(), "0.0.0.0.0.0");
+            assertEquals(SUT.getTargetAmsPort().toString(), "13");
+        }
     }
 
-    @Test
-    public void implementMeTestNewAndMissingMethods() {
-        // TODO: implement me
+    @Nested
+    class Subscription {
+        @Test
+        void subscribe() {
+            when(channelMock.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
+                PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
+                PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
+                AdsAddDeviceNotificationResponse adsAddDeviceNotificationResponse = mock(AdsAddDeviceNotificationResponse.class, RETURNS_DEEP_STUBS);
+                when(adsAddDeviceNotificationResponse.getResult()).thenReturn(Result.of(0));
+                when(adsAddDeviceNotificationResponse.getNotificationHandle()).thenReturn(NotificationHandle.of(1));
+                when(plcProprietaryResponse.getResponse()).thenReturn(adsAddDeviceNotificationResponse);
+                plcRequestContainer.getResponseFuture().complete(plcProprietaryResponse);
+                return mock(ChannelFuture.class);
+            });
+
+            SUT.subscribe(new DefaultPlcSubscriptionRequest(
+                plcSubscriber,
+                new LinkedHashMap<>(
+                    Collections.singletonMap("field1",
+                        new SubscriptionPlcField(PlcSubscriptionType.CYCLIC, DirectAdsField.of("0/0:BOOL"), Duration.of(1, ChronoUnit.SECONDS)))
+                )
+            ));
+        }
+
+        @Test
+        void unsubscribe() {
+            when(channelMock.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
+                PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
+                PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
+                AdsDeleteDeviceNotificationResponse adsDeleteDeviceNotificationResponse = mock(AdsDeleteDeviceNotificationResponse.class, RETURNS_DEEP_STUBS);
+                when(adsDeleteDeviceNotificationResponse.getResult()).thenReturn(Result.of(0));
+                when(plcProprietaryResponse.getResponse()).thenReturn(adsDeleteDeviceNotificationResponse);
+                plcRequestContainer.getResponseFuture().complete(plcProprietaryResponse);
+                return mock(ChannelFuture.class);
+            });
+
+            SUT.unsubscribe(new DefaultPlcUnsubscriptionRequest(plcSubscriber,
+                Collections.singletonList(new AdsSubscriptionHandle(plcSubscriber, NotificationHandle.of(1))))
+            );
+        }
     }
+
+    @Nested
+    class Registration {
+        @Captor
+        ArgumentCaptor<Consumer<AdsDeviceNotificationRequest>> consumerArgumentCaptor;
+
+        @Test
+        void register() throws Exception {
+            Plc4x2AdsProtocol plc4x2AdsProtocol = mock(Plc4x2AdsProtocol.class);
+            when(channelMock.pipeline().get(Plc4x2AdsProtocol.class)).thenReturn(plc4x2AdsProtocol);
+
+            AtomicReference<PlcSubscriptionEvent> plcSubscriptionEventAtomicReference = new AtomicReference<>();
+            SUT.register(plcSubscriptionEventAtomicReference::set);
+            verify(plc4x2AdsProtocol).addConsumer(consumerArgumentCaptor.capture());
+
+            consumerArgumentCaptor.getValue().accept(AdsDeviceNotificationRequest.of(mock(AmsHeader.class), Length.of(1), Stamps.of(1), Collections.singletonList(AdsStampHeader.of(TimeStamp.of(1), Collections.singletonList(AdsNotificationSample.of(NotificationHandle.of(1), Data.of("Hello World!")))))));
+            TimeUnit.MILLISECONDS.sleep(100);
+            assertThat(plcSubscriptionEventAtomicReference).isNotNull();
+        }
+
+        @Test
+        void unregister() {
+            SUT.unregister(mock(InternalPlcConsumerRegistration.class));
+        }
+    }
+
+    @Nested
+    class Misc {
+        @Test
+        void remainingMethods() {
+            assertThat(SUT.canSubscribe()).isTrue();
+            assertThat(SUT.subscriptionRequestBuilder()).isNotNull();
+            assertThat(SUT.unsubscriptionRequestBuilder()).isNotNull();
+        }
+    }
+
 }

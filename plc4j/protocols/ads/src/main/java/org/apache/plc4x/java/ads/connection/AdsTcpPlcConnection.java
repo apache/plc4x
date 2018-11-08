@@ -147,7 +147,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             .map(subscriptionPlcFieldEntry -> {
                 String plcFieldName = subscriptionPlcFieldEntry.getKey();
                 SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
-                PlcField field = subscriptionPlcField.getPlcField();
+                PlcField field = Objects.requireNonNull(subscriptionPlcField.getPlcField());
 
                 IndexGroup indexGroup;
                 IndexOffset indexOffset;
@@ -183,7 +183,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 switch (subscriptionPlcField.getPlcSubscriptionType()) {
                     case CYCLIC:
                         transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE;
-                        cycleTime = subscriptionPlcField.getDuration().orElseThrow(IllegalStateException::new).get(ChronoUnit.MILLIS);
+                        cycleTime = TimeUnit.NANOSECONDS.toMillis(subscriptionPlcField.getDuration().orElseThrow(IllegalStateException::new).get(ChronoUnit.NANOS));
                         break;
                     case CHANGE_OF_STATE:
                         transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERONCHA;
