@@ -103,8 +103,7 @@ public class LittleEndianEncoder {
         return stringStream
             .map(s -> s.getBytes(Charset.defaultCharset()))
             // TODO: this 0 termination is from s7 but might be completly wrong in ads. Guess its a terminator
-            .map(bytes -> ArrayUtils.add(bytes, (byte) 0x0))
-            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
+            .map(bytes -> ArrayUtils.add(bytes, (byte) 0x0));
     }
 
     private static Stream<byte[]> encodeByteArray(AdsDataType adsDataType, Stream<byte[]> byteArrayStream) {

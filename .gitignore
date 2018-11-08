@@ -77,3 +77,5 @@ local.properties
 # Emacs backup files
 *~
 .scannerwork
+
+spock-reports

@@ -23,6 +23,7 @@ import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.ads.model.AdsDataType;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.base.messages.items.*;
 
 import java.io.ByteArrayOutputStream;
@@ -339,11 +340,9 @@ public class LittleEndianDecoder {
             case SUB_RANGE_DATA_TYPE: {
                 throw new NotImplementedException("not implemented yet " + adsDataType);
             }
-            case UNKNOWN: {
-                throw new NotImplementedException("not implemented yet " + adsDataType);
-            }
+            case UNKNOWN:
             default:
-                throw new IllegalArgumentException("Unsupported adsDataType " + adsDataType);
+                throw new PlcUnsupportedDataTypeException("Unsupported adsDataType " + adsDataType);
         }
     }
 
