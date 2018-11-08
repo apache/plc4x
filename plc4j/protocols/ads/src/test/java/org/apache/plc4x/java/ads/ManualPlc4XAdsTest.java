@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -59,15 +60,20 @@ public class ManualPlc4XAdsTest {
 
             // 2. We build a subscription
             PlcSubscriptionRequest.Builder subscriptionRequestBuilder = plcConnection.subscriptionRequestBuilder();
-            PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder.addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE").build();
+            PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder
+                .addChangeOfStateField("stationChange", "Allgemein_S2.Station:BYTE")
+                .addCyclicField("stationChange2", "Allgemein_S2.Station:BYTE", Duration.ofSeconds(3))
+                .build();
             PlcSubscriptionResponse plcSubscriptionResponse = subscriptionRequest.execute().get();
 
             List<PlcConsumerRegistration> plcConsumerRegistrations = plcSubscriptionResponse.getSubscriptionHandles().stream()
-                .map(plcSubscriptionHandle -> plcSubscriptionHandle.register(System.out::println))
+                .map(plcSubscriptionHandle -> plcSubscriptionHandle.register(plcSubscriptionEvent -> {
+                    System.out.println(String.format("%s: [%d]- StationsNummer: {%d}", plcSubscriptionEvent.getTimestamp(), plcSubscriptionEvent.getBytes().length, plcSubscriptionEvent.getBytes()[0]));
+                }))
                 .collect(Collectors.toList());
 
             // Now we wait a bit
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.SECONDS.sleep(10);
 
             // we unregister the listener
             plcConsumerRegistrations.forEach(PlcConsumerRegistration::unregister);

@@ -19,68 +19,74 @@
 
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Calendar;
 import java.util.Collection;
 
+// TODO: FIXME: implement me
 public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent {
 
+    public final Instant timestamp;
 
-    public DefaultPlcSubscriptionEvent(Calendar timeStamp, byte[] bytes) {
-        // TODO: move to instant
+    public final byte[] bytes;
+
+    public DefaultPlcSubscriptionEvent(Instant timestamp, byte[] bytes) {
+        this.timestamp = timestamp;
+        this.bytes = bytes;
     }
 
     @Override
     public int getNumberOfValues(String name) {
-        return 0;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Object getObject(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Object getObject(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<Object> getAllObjects(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public boolean isValidBoolean(String name) {
-        return false;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public boolean isValidBoolean(String name, int index) {
-        return false;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Boolean getBoolean(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Boolean getBoolean(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<Boolean> getAllBooleans(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -95,17 +101,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Byte getByte(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Byte getByte(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<Byte> getAllBytes(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -120,17 +126,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Short getShort(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Short getShort(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<Short> getAllShorts(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -145,17 +151,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Integer getInteger(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Integer getInteger(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<Integer> getAllIntegers(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -170,17 +176,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public BigInteger getBigInteger(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public BigInteger getBigInteger(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<BigInteger> getAllBigIntegers(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -195,17 +201,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Long getLong(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Long getLong(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<Long> getAllLongs(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -220,17 +226,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Float getFloat(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Float getFloat(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<Float> getAllFloats(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -245,17 +251,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Double getDouble(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Double getDouble(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<Double> getAllDoubles(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -270,17 +276,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public BigDecimal getBigDecimal(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public BigDecimal getBigDecimal(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<BigDecimal> getAllBigDecimals(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -295,17 +301,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public String getString(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public String getString(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<String> getAllStrings(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -320,17 +326,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public LocalTime getTime(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public LocalTime getTime(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<LocalTime> getAllTimes(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -345,17 +351,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public LocalDate getDate(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public LocalDate getDate(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<LocalDate> getAllDates(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -370,17 +376,17 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public LocalDateTime getDateTime(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public LocalDateTime getDateTime(String name, int index) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<LocalDateTime> getAllDateTimes(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
@@ -405,27 +411,36 @@ public class DefaultPlcSubscriptionEvent implements InternalPlcSubscriptionEvent
 
     @Override
     public Collection<Byte[]> getAllByteArrays(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public Collection<String> getFieldNames() {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public PlcField getField(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public PlcResponseCode getResponseCode(String name) {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
     @Override
     public PlcReadRequest getRequest() {
-        return null;
+        throw new NotImplementedException("TODO: implement me");
     }
 
+    @Override
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    @Override
+    public byte[] getBytes() {
+        return bytes;
+    }
 }

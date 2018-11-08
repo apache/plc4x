@@ -112,6 +112,9 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
         this.timer = timer;
         this.defaultReceiveTimeout = defaultReceiveTimeout;
         this.splitConfig = splitConfig;
+        if (this.splitConfig == null) {
+            this.splitConfig = new SplitConfig();
+        }
         if (betterImplementationPossible) {
             String callStack = Arrays.stream(Thread.currentThread().getStackTrace())
                 .map(StackTraceElement::toString)

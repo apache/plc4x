@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.ads.api.tcp.AmsTCPPacket;
@@ -43,18 +44,26 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
     @SuppressWarnings("unchecked")
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) {
+        if (byteBuf == Unpooled.EMPTY_BUFFER) {
+            // Cleanup...
+            return;
+        }
         LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, byteBuf, out);
+        if (byteBuf.readableBytes() < AmsTcpHeader.Reserved.NUM_BYTES + TcpLength.NUM_BYTES) {
+            // wait till we can read the length header
+            return;
+        }
+        if (byteBuf.readableBytes() < byteBuf.getUnsignedIntLE(AmsTcpHeader.Reserved.NUM_BYTES)) {
+            // wait till we have a complete ADS packet
+            return;
+        }
         // Reserved
         byteBuf.skipBytes(AmsTcpHeader.Reserved.NUM_BYTES);
         TcpLength packetLength = TcpLength.of(byteBuf);
         AmsTcpHeader amsTcpHeader = AmsTcpHeader.of(packetLength);
         LOGGER.debug("AMS TCP Header {}", amsTcpHeader);
 
-        int readableBytes = byteBuf.readableBytes();
-        if (readableBytes != packetLength.getAsLong()) {
-            throw new IllegalStateException("To many bytes to read: " + readableBytes + " bytes. Expected " + packetLength.getAsLong() + " bytes.");
-        }
-        out.add(byteBuf.readBytes(readableBytes));
+        out.add(byteBuf.readBytes((int) packetLength.getAsLong()));
     }
 
 }

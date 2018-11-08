@@ -52,7 +52,8 @@ import org.slf4j.LoggerFactory;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.temporal.ChronoUnit;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -183,7 +184,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 switch (subscriptionPlcField.getPlcSubscriptionType()) {
                     case CYCLIC:
                         transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE;
-                        cycleTime = TimeUnit.NANOSECONDS.toMillis(subscriptionPlcField.getDuration().orElseThrow(IllegalStateException::new).get(ChronoUnit.NANOS));
+                        cycleTime = subscriptionPlcField.getDuration().orElse(Duration.ofSeconds(1)).toMillis();
                         break;
                     case CHANGE_OF_STATE:
                         transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERONCHA;
@@ -203,7 +204,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                     indexOffset,
                     Length.of(adsDataType.getTargetByteSize() * (long) numberOfElements),
                     transmissionMode,
-                    MaxDelay.of(0),
+                    // We set max delay to cycle time as we don't have a second parameter for this in the plc4j-api
+                    MaxDelay.of(cycleTime + 1),
                     CycleTime.of(cycleTime)
                 );
 
@@ -276,8 +278,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
         Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer =
             adsDeviceNotificationRequest -> adsDeviceNotificationRequest.getAdsStampHeaders().forEach(adsStampHeader -> {
-                Calendar timeStamp = Calendar.getInstance();
-                timeStamp.setTime(adsStampHeader.getTimeStamp().getAsDate());
+                Instant timeStamp = adsStampHeader.getTimeStamp().getAsDate().toInstant();
 
                 adsStampHeader.getAdsNotificationSamples()
                     .forEach(adsNotificationSample -> {

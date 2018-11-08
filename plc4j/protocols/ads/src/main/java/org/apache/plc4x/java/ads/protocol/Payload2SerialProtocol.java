@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
@@ -51,6 +52,14 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws PlcProtocolPayloadTooBigException {
+        if (amsPacket == Unpooled.EMPTY_BUFFER) {
+            // Cleanup...
+            ScheduledFuture<?> scheduledFuture = currentRetryer.get();
+            if (scheduledFuture != null) {
+                scheduledFuture.cancel(true);
+            }
+            return;
+        }
         LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
         int fragmentNumber = fragmentCounter.getAndUpdate(value -> value > 255 ? 0 : ++value);
         LOGGER.debug("Using fragmentNumber {} for {}", fragmentNumber, amsPacket);

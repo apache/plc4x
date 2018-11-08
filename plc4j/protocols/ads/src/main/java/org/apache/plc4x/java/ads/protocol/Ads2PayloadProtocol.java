@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.commons.configuration2.Configuration;
@@ -77,6 +78,11 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> out) {
+        if (byteBuf == Unpooled.EMPTY_BUFFER) {
+            // Cleanup...
+            reset();
+            return;
+        }
         LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, byteBuf, out);
         AmsNetId targetAmsNetId = AmsNetId.of(byteBuf);
         AmsPort targetAmsPort = AmsPort.of(byteBuf);
