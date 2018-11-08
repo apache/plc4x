@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -16,27 +16,35 @@
  specific language governing permissions and limitations
  under the License.
  */
+
 package org.apache.plc4x.java.base.messages;
 
-public class DefaultPlcProprietaryResponse<RESPONSE> implements InternalPlcProprietaryResponse<RESPONSE> {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-    private final InternalPlcProprietaryRequest plcProprietaryRequest;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
-    private final RESPONSE proprietaryResponse;
+class DefaultPlcProprietaryResponseTest {
 
-    public DefaultPlcProprietaryResponse(InternalPlcProprietaryRequest plcProprietaryRequest, RESPONSE proprietaryResponse) {
-        this.plcProprietaryRequest = plcProprietaryRequest;
-        this.proprietaryResponse = proprietaryResponse;
+    private InternalPlcProprietaryRequest request;
+    private DefaultPlcProprietaryResponse<String> SUT;
+
+    @BeforeEach
+    void setUp() {
+        request = mock(InternalPlcProprietaryRequest.class);
+        SUT = new DefaultPlcProprietaryResponse<>(request, "foo");
     }
 
-    @Override
-    public RESPONSE getResponse() {
-        return proprietaryResponse;
+    @Test
+    void getResponse() {
+        assertThat(SUT.getResponse(), equalTo("foo"));
     }
 
-    @Override
-    public InternalPlcProprietaryRequest getRequest() {
-        return plcProprietaryRequest;
+    @Test
+    void getRequest() {
+        assertThat(SUT.getRequest(), equalTo(request));
     }
 
 }

@@ -61,13 +61,13 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
             plcSubscriptionHandles = new ArrayList<>();
         }
 
-        public PlcUnsubscriptionRequest.Builder addHandle(PlcSubscriptionHandle plcSubscriptionHandle) {
+        public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle) {
             plcSubscriptionHandles.add((InternalPlcSubscriptionHandle) plcSubscriptionHandle);
             return this;
         }
 
         @Override
-        public PlcUnsubscriptionRequest.Builder addHandle(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
+        public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
             this.plcSubscriptionHandles.add((InternalPlcSubscriptionHandle) plcSubscriptionHandle1);
             this.plcSubscriptionHandles.addAll(Arrays.stream(plcSubscriptionHandles).map(InternalPlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
             return this;

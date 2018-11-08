@@ -27,8 +27,8 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
@@ -258,9 +258,10 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        InternalPlcReadRequest internalReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
         CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
-            new PlcRequestContainer<>((InternalPlcReadRequest) readRequest, future);
+            new PlcRequestContainer<>(internalReadRequest, future);
         channel.writeAndFlush(container).addListener(f -> {
             if (!f.isSuccess()) {
                 future.completeExceptionally(f.cause());
@@ -272,9 +273,10 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        InternalPlcWriteRequest internalWriteRequest = checkInternal(writeRequest, InternalPlcWriteRequest.class);
         CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
-            new PlcRequestContainer<>((InternalPlcWriteRequest) writeRequest, future);
+            new PlcRequestContainer<>(internalWriteRequest, future);
         channel.writeAndFlush(container).addListener(f -> {
             if (!f.isSuccess()) {
                 future.completeExceptionally(f.cause());

@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.base.messages;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -97,6 +98,10 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
+    protected PlcSubscriber getSubscriber() {
+        return subscriber;
+    }
+
     public static class Builder implements PlcSubscriptionRequest.Builder {
 
         private final PlcSubscriber subscriber;
@@ -123,6 +128,9 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
 
         @Override
         public PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
             fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.EVENT));
             return this;
         }

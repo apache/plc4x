@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
+import org.apache.plc4x.java.api.exceptions.PlcFieldRangeException;
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 import java.math.BigDecimal;
@@ -26,13 +27,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Objects;
 
 public abstract class BaseDefaultFieldItem<T> {
 
     private T[] values;
 
     protected BaseDefaultFieldItem(T[] values) {
-        this.values = values;
+        this.values = Objects.requireNonNull(values);
     }
 
     public int getNumberOfValues() {
@@ -159,7 +161,7 @@ public abstract class BaseDefaultFieldItem<T> {
 
     protected T getValue(int index) {
         if ((values == null) || (index < 0 || (index >= values.length))) {
-            return null;
+            throw new PlcFieldRangeException((values == null) ? -1 : values.length - 1, index);
         }
         return values[index];
     }

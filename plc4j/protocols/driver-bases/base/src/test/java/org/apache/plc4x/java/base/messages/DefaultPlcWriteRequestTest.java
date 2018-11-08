@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -16,27 +16,55 @@
  specific language governing permissions and limitations
  under the License.
  */
+
 package org.apache.plc4x.java.base.messages;
 
-public class DefaultPlcProprietaryResponse<RESPONSE> implements InternalPlcProprietaryResponse<RESPONSE> {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-    private final InternalPlcProprietaryRequest plcProprietaryRequest;
+class DefaultPlcWriteRequestTest {
 
-    private final RESPONSE proprietaryResponse;
-
-    public DefaultPlcProprietaryResponse(InternalPlcProprietaryRequest plcProprietaryRequest, RESPONSE proprietaryResponse) {
-        this.plcProprietaryRequest = plcProprietaryRequest;
-        this.proprietaryResponse = proprietaryResponse;
+    @BeforeEach
+    void setUp() {
     }
 
-    @Override
-    public RESPONSE getResponse() {
-        return proprietaryResponse;
+    @Test
+    void execute() {
     }
 
-    @Override
-    public InternalPlcProprietaryRequest getRequest() {
-        return plcProprietaryRequest;
+    @Test
+    void getNumberOfFields() {
     }
 
+    @Test
+    void getFieldNames() {
+    }
+
+    @Test
+    void getField() {
+    }
+
+    @Test
+    void getFields() {
+    }
+
+    @Test
+    void getFieldItem() {
+    }
+
+    @Test
+    void getFieldItems() {
+    }
+
+    @Test
+    void getNamedFields() {
+    }
+
+    @Test
+    void getNamedFieldTriples() {
+    }
+
+    @Test
+    void getNumberOfValues() {
+    }
 }

@@ -29,4 +29,21 @@
 Apache 2.0 licensed JNI library for accessing raw IPv4 and IPv6 sockets. Might be the ideal starting point for implementing protocols below TCP & UDP.
 https://www.savarese.org/software/rocksaw/
 
-Links to different Wireshark captures: https://github.com/automayt/ICS-pcap
+Links to different WireShark captures: https://github.com/automayt/ICS-pcap
+
+==== BACNet
+
+Used in the building automation sector.
+http://www.bacnet.org/Addenda/Add-135-2008t.pdf
+
+AKA: ISO 16484-5:
+The official specification can be purchased here: https://www.iso.org/standard/71935.html
+
+==== IEC 61850
+
+Used by the IDS SAS (station automation system)
+
+https://de.wikipedia.org/wiki/IEC_60870
+
+German norm: DIN EN 60870
+The official specification can be purchased here: https://www.beuth.de/de/norm/din-en-60870-5-104/100426613

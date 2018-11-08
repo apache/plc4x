@@ -48,4 +48,5 @@ public class PooledDummyDriver implements PlcDriver {
     public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
         return mockedPlcDriver.connect(url, authentication);
     }
+
 }

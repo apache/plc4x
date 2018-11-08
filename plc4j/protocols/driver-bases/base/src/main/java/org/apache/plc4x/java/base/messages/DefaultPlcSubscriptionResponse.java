@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -60,7 +60,7 @@ public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionRe
 
     @Override
     public PlcField getField(String name) {
-        throw new NotImplementedException("field access not possible as these come async");
+        throw new PlcNotImplementedException("field access not possible as these come async");
     }
 
     @Override
@@ -86,4 +86,5 @@ public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionRe
     public Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> getValues() {
         return values;
     }
+
 }
