@@ -26,11 +26,25 @@ import java.util.Objects;
 
 public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
-    private NotificationHandle notificationHandle;
+    private final String plcFieldName;
 
-    public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, NotificationHandle notificationHandle) {
+    private final AdsDataType adsDataType;
+
+    private final NotificationHandle notificationHandle;
+
+    public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, String plcFieldName, AdsDataType adsDataType, NotificationHandle notificationHandle) {
         super(plcSubscriber);
+        this.plcFieldName = plcFieldName;
+        this.adsDataType = adsDataType;
         this.notificationHandle = notificationHandle;
+    }
+
+    public String getPlcFieldName() {
+        return plcFieldName;
+    }
+
+    public AdsDataType getAdsDataType() {
+        return adsDataType;
     }
 
     public NotificationHandle getNotificationHandle() {
@@ -45,19 +59,26 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         if (!(o instanceof AdsSubscriptionHandle)) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
         AdsSubscriptionHandle that = (AdsSubscriptionHandle) o;
-        return Objects.equals(notificationHandle, that.notificationHandle);
+        return Objects.equals(plcFieldName, that.plcFieldName) &&
+            adsDataType == that.adsDataType &&
+            Objects.equals(notificationHandle, that.notificationHandle);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(notificationHandle);
+        return Objects.hash(super.hashCode(), plcFieldName, adsDataType, notificationHandle);
     }
 
     @Override
     public String toString() {
         return "AdsSubscriptionHandle{" +
-            "notificationHandle=" + notificationHandle +
-            '}';
+            "plcFieldName='" + plcFieldName + '\'' +
+            ", adsDataType=" + adsDataType +
+            ", notificationHandle=" + notificationHandle +
+            "} " + super.toString();
     }
 }

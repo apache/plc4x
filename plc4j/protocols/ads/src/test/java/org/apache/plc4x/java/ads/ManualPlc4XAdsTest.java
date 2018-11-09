@@ -68,7 +68,9 @@ public class ManualPlc4XAdsTest {
 
             List<PlcConsumerRegistration> plcConsumerRegistrations = plcSubscriptionResponse.getSubscriptionHandles().stream()
                 .map(plcSubscriptionHandle -> plcSubscriptionHandle.register(plcSubscriptionEvent -> {
-                    System.out.println(String.format("%s: [%d]- StationsNummer: {%d}", plcSubscriptionEvent.getTimestamp(), plcSubscriptionEvent.getBytes().length, plcSubscriptionEvent.getBytes()[0]));
+                    int stationChange = plcSubscriptionEvent.getNumberOfValues("stationChange");
+                    int stationChange2 = plcSubscriptionEvent.getNumberOfValues("stationChange2");
+                    System.out.println(String.format("%s: [%d]- StationsNummer: {%d}", plcSubscriptionEvent.getTimestamp(), stationChange + stationChange2, plcSubscriptionEvent.getInteger("stationChange2")));
                 }))
                 .collect(Collectors.toList());
 

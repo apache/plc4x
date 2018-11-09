@@ -25,11 +25,4 @@ public interface PlcSubscriptionEvent extends PlcReadResponse {
      * @return the timestamp at which this event occurred.
      */
     Instant getTimestamp();
-
-    /**
-     * @return the bytes of this event till the responses are fully implemented.
-     * @deprecated don't use this yet.
-     */
-    @Deprecated
-    byte[] getBytes();
 }

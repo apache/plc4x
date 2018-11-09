@@ -562,7 +562,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
         return values;
     }
 
-    private BaseDefaultFieldItem getFieldInternal(String name) {
+    protected BaseDefaultFieldItem getFieldInternal(String name) {
         Objects.requireNonNull(name, "Name argument required");
         // If this field doesn't exist, ignore it.
         if (values.get(name) == null) {

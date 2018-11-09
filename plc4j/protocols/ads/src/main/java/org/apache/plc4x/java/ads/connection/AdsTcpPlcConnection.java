@@ -41,6 +41,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.base.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
@@ -61,7 +62,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder.decodeData;
 
 public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements PlcSubscriber {
 
@@ -146,14 +150,14 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
         Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getSubscriptionPlcFieldMap().entrySet().stream()
             .map(subscriptionPlcFieldEntry -> {
-                String plcFieldName = subscriptionPlcFieldEntry.getKey();
-                SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
-                PlcField field = Objects.requireNonNull(subscriptionPlcField.getPlcField());
+                final String plcFieldName = subscriptionPlcFieldEntry.getKey();
+                final SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
+                final PlcField field = Objects.requireNonNull(subscriptionPlcField.getPlcField());
 
-                IndexGroup indexGroup;
-                IndexOffset indexOffset;
-                AdsDataType adsDataType;
-                int numberOfElements;
+                final IndexGroup indexGroup;
+                final IndexOffset indexOffset;
+                final AdsDataType adsDataType;
+                final int numberOfElements;
                 // If this is a symbolic field, it has to be resolved first.
                 // TODO: This is blocking, should be changed to be async.
                 if (field instanceof SymbolicAdsField) {
@@ -220,7 +224,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
                     throw new PlcRuntimeException("Error code received " + response.getResult());
                 }
-                PlcSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(this, response.getNotificationHandle());
+                PlcSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(this, plcFieldName, adsDataType, response.getNotificationHandle());
                 return Pair.of(plcFieldName, Pair.of(PlcResponseCode.OK, adsSubscriptionHandle));
             })
             .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
@@ -275,21 +279,42 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         }
 
         InternalPlcConsumerRegistration internalPlcConsumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, internalPlcSubscriptionHandles);
+        Map<NotificationHandle, AdsSubscriptionHandle> notificationHandleAdsSubscriptionHandleMap = Arrays.stream(internalPlcSubscriptionHandles)
+            .map(subscriptionHandle -> checkInternal(subscriptionHandle, AdsSubscriptionHandle.class))
+            .collect(Collectors.toConcurrentMap(AdsSubscriptionHandle::getNotificationHandle, Function.identity()));
 
         Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer =
             adsDeviceNotificationRequest -> adsDeviceNotificationRequest.getAdsStampHeaders().forEach(adsStampHeader -> {
                 Instant timeStamp = adsStampHeader.getTimeStamp().getAsDate().toInstant();
 
+                Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
                 adsStampHeader.getAdsNotificationSamples()
                     .forEach(adsNotificationSample -> {
+                        NotificationHandle notificationHandle = adsNotificationSample.getNotificationHandle();
                         Data data = adsNotificationSample.getData();
+                        AdsSubscriptionHandle adsSubscriptionHandle = notificationHandleAdsSubscriptionHandleMap.get(notificationHandle);
+                        if (adsSubscriptionHandle == null) {
+                            // TODO: we might want to refactor this so that we don't subscribe to everything in the first place.
+                            // TODO: rather than we add a Consumer with the handle as key
+                            LOGGER.trace("We are not interested in this sample {} with handle {}", adsNotificationSample, notificationHandle);
+                            return;
+                        }
+                        String plcFieldName = adsSubscriptionHandle.getPlcFieldName();
+                        AdsDataType adsDataType = adsSubscriptionHandle.getAdsDataType();
                         try {
-                            PlcSubscriptionEvent subscriptionEventItem = new DefaultPlcSubscriptionEvent(timeStamp, data.getBytes());
-                            consumer.accept(subscriptionEventItem);
+                            BaseDefaultFieldItem baseDefaultFieldItem = decodeData(adsDataType, data.getBytes());
+                            fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultFieldItem));
                         } catch (RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }
+
                     });
+                try {
+                    PlcSubscriptionEvent subscriptionEventItem = new DefaultPlcSubscriptionEvent(timeStamp, fields);
+                    consumer.accept(subscriptionEventItem);
+                } catch (RuntimeException e) {
+                    LOGGER.error("Can't dispatch adsStampHeader {}", adsStampHeader, e);
+                }
             });
 
         // Store the reference for so it can be uses for later
