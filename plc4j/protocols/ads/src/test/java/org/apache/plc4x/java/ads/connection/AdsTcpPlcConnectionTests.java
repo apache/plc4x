@@ -29,6 +29,7 @@ import org.apache.plc4x.java.ads.api.commands.types.*;
 import org.apache.plc4x.java.ads.api.generic.AmsHeader;
 import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
+import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
@@ -137,7 +138,7 @@ class AdsTcpPlcConnectionTests implements WithAssertions {
             });
 
             SUT.unsubscribe(new DefaultPlcUnsubscriptionRequest(plcSubscriber,
-                Collections.singletonList(new AdsSubscriptionHandle(plcSubscriber, NotificationHandle.of(1))))
+                Collections.singletonList(new AdsSubscriptionHandle(plcSubscriber, "hurz", AdsDataType.BYTE, NotificationHandle.of(1))))
             );
         }
     }
