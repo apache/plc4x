@@ -19,330 +19,102 @@
 
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 class DefaultPlcReadResponseTest {
+
+    @Mock
+    private InternalPlcReadRequest request;
+    private DefaultPlcReadResponse SUT;
 
     @BeforeEach
     void setUp() {
+        Byte[] data = new Byte[] {(byte) 0x42, (byte) 0x23};
+        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
+        fields.put("foo", new ImmutablePair<>(PlcResponseCode.OK, new DefaultByteArrayFieldItem(data)));
+        fields.put("bar", new ImmutablePair<>(PlcResponseCode.NOT_FOUND, new DefaultByteArrayFieldItem(data)));
+        SUT = new DefaultPlcReadResponse(request, fields);
     }
 
     @Test
     void getRequest() {
-    }
-
-    @Test
-    void getNumberOfValues() {
-    }
-
-    @Test
-    void getFieldNames() {
+        assertThat(SUT.getRequest(), equalTo(request));
     }
 
     @Test
     void getField() {
+        when(request.getField("foo")).thenReturn(mock(PlcField.class));
+        PlcField field = SUT.getField("foo");
+        assertThat(field, notNullValue());
     }
 
     @Test
-    void getResponseCode() {
-    }
-
-    @Test
-    void getValues() {
-    }
-
-    @Test
-    void getObject() {
-    }
-
-    @Test
-    void getObjectWithName() {
-    }
-
-    @Test
-    void getAllObjects() {
-    }
-
-    @Test
-    void isValidBoolean() {
-    }
-
-    @Test
-    void isValidBooleanWithName() {
-    }
-
-    @Test
-    void getBoolean() {
-    }
-
-    @Test
-    void getBooleanWithName() {
-    }
-
-    @Test
-    void getAllBooleans() {
-    }
-
-    @Test
-    void isValidByte() {
-    }
-
-    @Test
-    void isValidByteWithName() {
-    }
-
-    @Test
-    void getByte() {
-    }
-
-    @Test
-    void getByteWithName() {
-    }
-
-    @Test
-    void getAllBytes() {
-    }
-
-    @Test
-    void isValidShort() {
-    }
-
-    @Test
-    void isValidShortWithName() {
-    }
-
-    @Test
-    void getShort() {
-    }
-
-    @Test
-    void getShortWithName() {
-    }
-
-    @Test
-    void getAllShorts() {
-    }
-
-    @Test
-    void isValidInteger() {
-    }
-
-    @Test
-    void isValidIntegerWithName() {
-    }
-
-    @Test
-    void getInteger() {
-    }
-
-    @Test
-    void getIntegerWithName() {
-    }
-
-    @Test
-    void getAllIntegers() {
-    }
-
-    @Test
-    void isValidBigInteger() {
-    }
-
-    @Test
-    void isValidBigIntegerWithName() {
-    }
-
-    @Test
-    void getBigInteger() {
-    }
-
-    @Test
-    void getBigIntegerWithName() {
-    }
-
-    @Test
-    void getAllBigIntegers() {
-    }
-
-    @Test
-    void isValidLong() {
-    }
-
-    @Test
-    void isValidLongWithName() {
-    }
-
-    @Test
-    void getLong() {
-    }
-
-    @Test
-    void getLongWithName() {
-    }
-
-    @Test
-    void getAllLongs() {
-    }
-
-    @Test
-    void isValidFloat() {
-    }
-
-    @Test
-    void isValidFloatWithName() {
-    }
-
-    @Test
-    void getFloat() {
-    }
-
-    @Test
-    void getFloatWithName() {
-    }
-
-    @Test
-    void getAllFloats() {
-    }
-
-    @Test
-    void isValidDouble() {
-    }
-
-    @Test
-    void isValidDoubleWithName() {
-    }
-
-    @Test
-    void getDouble() {
-    }
-
-    @Test
-    void getDoubleWithName() {
-    }
-
-    @Test
-    void getAllDoubles() {
-    }
-
-    @Test
-    void isValidBigDecimal() {
-    }
-
-    @Test
-    void isValidBigDecimalWithName() {
-    }
-
-    @Test
-    void getBigDecimal() {
-    }
-
-    @Test
-    void getBigDecimalWithName() {
-    }
-
-    @Test
-    void getAllBigDecimals() {
-    }
-
-    @Test
-    void isValidString() {
-    }
-
-    @Test
-    void isValidStringWithName() {
-    }
-
-    @Test
-    void getString() {
-    }
-
-    @Test
-    void getStringWithName() {
-    }
-
-    @Test
-    void getAllStrings() {
-    }
-
-    @Test
-    void isValidTime() {
-    }
-
-    @Test
-    void isValidTimeWithName() {
-    }
-
-    @Test
-    void getTime() {
-    }
-
-    @Test
-    void getTimeWithName() {
-    }
-
-    @Test
-    void getAllTimes() {
-    }
-
-    @Test
-    void isValidDate() {
-    }
-
-    @Test
-    void isValidDateWithName() {
-    }
-
-    @Test
-    void getDate() {
-    }
-
-    @Test
-    void getDateWithName() {
-    }
-
-    @Test
-    void getAllDates() {
-    }
-
-    @Test
-    void isValidDateTime() {
-    }
-
-    @Test
-    void isValidDateTimeWithName() {
-    }
-
-    @Test
-    void getDateTime() {
-    }
-
-    @Test
-    void getDateTimeWithName() {
-    }
-
-    @Test
-    void getAllDateTimes() {
+    void getResponseCodeForNonexistentField() {
+        assertThrows(PlcInvalidFieldException.class, () -> SUT.getResponseCode("hurz"));
     }
 
     @Test
     void isValidByteArray() {
+        boolean valid = SUT.isValidByteArray("foo");
+        assertThat(valid, equalTo(true));
     }
 
     @Test
-    void isValidByteArrayWithName() {
+    void checkInvalidField() {
+        assertThrows(PlcInvalidFieldException.class, () -> SUT.isValidByteArray("hurz"));
+    }
+
+    @Test
+    void checkNonOkResponseCode() {
+        assertThrows(PlcRuntimeException.class, () -> SUT.isValidByteArray("bar"));
+    }
+
+    @Test
+    void isValidByteArrayWithIndex() {
+        boolean valid = SUT.isValidByteArray("foo", 0);
+        assertThat(valid, equalTo(true));
     }
 
     @Test
     void getByteArray() {
+        Byte[] data = SUT.getByteArray("foo");
+        assertThat(data, notNullValue());
     }
 
     @Test
-    void getByteArrayWithName() {
+    void getByteArrayWithIndex() {
+        Byte[] data = SUT.getByteArray("foo", 0);
+        assertThat(data, notNullValue());
     }
 
     @Test
     void getAllByteArrays() {
+        Collection<Byte[]> byteArrays = SUT.getAllByteArrays("foo");
+        assertThat(byteArrays, notNullValue());
     }
-
 
 }

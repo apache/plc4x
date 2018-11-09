@@ -37,6 +37,7 @@ class DefaultPlcReadResponseSpec extends Specification {
         setup:
         InternalPlcReadRequest request = Mock(InternalPlcReadRequest)
         request.getFieldNames() >> ['foo']
+
         when:
         DefaultPlcReadResponse SUT = new DefaultPlcReadResponse(request,
             ["foo": new ImmutablePair<>(PlcResponseCode.OK, fieldType.newInstance(*fieldValues))])

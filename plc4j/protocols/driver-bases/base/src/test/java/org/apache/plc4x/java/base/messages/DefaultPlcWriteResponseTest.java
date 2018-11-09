@@ -19,32 +19,73 @@
 
 package org.apache.plc4x.java.base.messages;
 
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Map;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 class DefaultPlcWriteResponseTest {
+
+    @Mock
+    private InternalPlcWriteRequest request;
+    private DefaultPlcWriteResponse SUT;
 
     @BeforeEach
     void setUp() {
+        SUT = new DefaultPlcWriteResponse(request, Collections.singletonMap("foo", PlcResponseCode.OK));
     }
 
     @Test
     void getValues() {
+        Map<String, PlcResponseCode> values = SUT.getValues();
+        assertThat(values, notNullValue());
+        assertThat(values.size(), equalTo(1));
+        assertThat(values.keySet().iterator().next(), equalTo("foo"));
+        assertThat(values.values().iterator().next(), equalTo(PlcResponseCode.OK));
     }
 
     @Test
     void getRequest() {
+        InternalPlcWriteRequest actRequest = SUT.getRequest();
+        assertThat(actRequest, equalTo(request));
     }
 
     @Test
     void getFieldNames() {
+        when(request.getFieldNames()).thenReturn(new LinkedHashSet<>(Collections.singletonList("foo")));
+        Collection<String> fieldNames = SUT.getFieldNames();
+        assertThat(fieldNames, notNullValue());
+        assertThat(fieldNames.size(), equalTo(1));
+        assertThat(fieldNames.iterator().next(), equalTo("foo"));
     }
 
     @Test
     void getField() {
+        when(request.getField("foo")).thenReturn(mock(PlcField.class));
+        PlcField field = SUT.getField("foo");
+        assertThat(field, notNullValue());
     }
 
     @Test
     void getResponseCode() {
+        PlcResponseCode responseCode = SUT.getResponseCode("foo");
+        assertThat(responseCode, notNullValue());
+        assertThat(responseCode, equalTo(PlcResponseCode.OK));
     }
+
 }

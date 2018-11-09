@@ -536,7 +536,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     @Override
     public boolean isValidByteArray(String name, int index) {
         BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidDateTime(index);
+        return fieldInternal.isValidByteArray(index);
     }
 
     @Override
@@ -566,16 +566,13 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
         Objects.requireNonNull(name, "Name argument required");
         // If this field doesn't exist, ignore it.
         if (values.get(name) == null) {
-            throw new PlcRuntimeException("No field with name '" + name + "' present in the response");
+            throw new PlcInvalidFieldException(name);
         }
         if (values.get(name).getKey() != PlcResponseCode.OK) {
             throw new PlcRuntimeException("Field '" + name + "' could not be fetched, response was " + values.get(name).getKey());
         }
-        BaseDefaultFieldItem value = values.get(name).getValue();
-        if (value == null) {
-            throw new IllegalStateException(String.format("Null field detected for field name %s", name));
-        }
-        return value;
+        // No need to check for "null" as this is already captured by the constructors.
+        return values.get(name).getValue();
     }
 
 }
