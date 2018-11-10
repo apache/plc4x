@@ -23,7 +23,9 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import java.util.Collection;
 
 public interface InternalPlcConsumerRegistration extends PlcConsumerRegistration {
+
     int getConsumerHash();
 
     Collection<? extends InternalPlcSubscriptionHandle> getAssociatedHandles();
+
 }

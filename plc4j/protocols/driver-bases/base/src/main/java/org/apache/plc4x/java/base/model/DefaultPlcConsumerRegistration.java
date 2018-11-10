@@ -30,7 +30,7 @@ public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegist
 
     private final PlcSubscriber plcSubscriber;
 
-    private final Collection<? extends InternalPlcSubscriptionHandle> handles;
+    private final Collection<InternalPlcSubscriptionHandle> handles;
 
     private final int consumerHash;
 
@@ -46,12 +46,17 @@ public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegist
     }
 
     @Override
-    public Collection<? extends InternalPlcSubscriptionHandle> getAssociatedHandles() {
+    public Collection<InternalPlcSubscriptionHandle> getAssociatedHandles() {
         return handles;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public void unregister() {
+        plcSubscriber.unregister(this);
+    }
+
+    @Override
+    public final boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -59,13 +64,14 @@ public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegist
             return false;
         }
         DefaultPlcConsumerRegistration that = (DefaultPlcConsumerRegistration) o;
-        return consumerHash == that.consumerHash &&
-            Objects.equals(handles, that.handles);
+        return Objects.equals(plcSubscriber, that.plcSubscriber) &&
+            Objects.equals(handles, that.handles) &&
+            consumerHash == that.consumerHash;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(handles, consumerHash);
+    public final int hashCode() {
+        return Objects.hash(plcSubscriber, handles, consumerHash);
     }
 
     @Override
@@ -76,8 +82,4 @@ public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegist
             '}';
     }
 
-    @Override
-    public void unregister() {
-        plcSubscriber.unregister(this);
-    }
 }

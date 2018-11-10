@@ -53,7 +53,7 @@ public class PlcUsernamePasswordAuthenticationTest {
 
     @Test
     public void equalsContract() {
-        EqualsVerifier.forClass(PlcUsernamePasswordAuthentication.class).usingGetClass().verify();
+        EqualsVerifier.forClass(PlcUsernamePasswordAuthentication.class).verify();
     }
 
 }

@@ -81,4 +81,5 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             ", notificationHandle=" + notificationHandle +
             "} " + super.toString();
     }
+
 }

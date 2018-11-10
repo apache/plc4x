@@ -70,7 +70,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
     }
 
     @Override
-    public LinkedList<PlcField> getFields() {
+    public List<PlcField> getFields() {
         return fields.values().stream().map(Pair::getKey).collect(Collectors.toCollection(LinkedList::new));
     }
 
@@ -79,12 +79,12 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
     }
 
     @Override
-    public LinkedList<BaseDefaultFieldItem> getFieldItems() {
+    public List<BaseDefaultFieldItem> getFieldItems() {
         return fields.values().stream().map(Pair::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    public LinkedList<Pair<String, PlcField>> getNamedFields() {
+    public List<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
             .stream()
             .map(stringPairEntry ->
@@ -96,7 +96,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
     }
 
     @Override
-    public LinkedList<Triple<String, PlcField, BaseDefaultFieldItem>> getNamedFieldTriples() {
+    public List<Triple<String, PlcField, BaseDefaultFieldItem>> getNamedFieldTriples() {
         return fields.entrySet()
             .stream()
             .map(stringPairEntry ->

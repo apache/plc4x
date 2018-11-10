@@ -23,13 +23,14 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.List;
 
 public interface InternalPlcSubscriptionRequest extends PlcSubscriptionRequest, InternalPlcFieldRequest {
 
-    LinkedList<SubscriptionPlcField> getSubscriptionFields();
+    List<SubscriptionPlcField> getSubscriptionFields();
 
     LinkedHashMap<String, SubscriptionPlcField> getSubscriptionPlcFieldMap();
 
-    LinkedList<Pair<String, SubscriptionPlcField>> getNamedSubscriptionFields();
+    List<Pair<String, SubscriptionPlcField>> getNamedSubscriptionFields();
+
 }

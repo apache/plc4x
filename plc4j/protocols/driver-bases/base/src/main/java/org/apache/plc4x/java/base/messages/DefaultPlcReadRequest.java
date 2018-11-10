@@ -61,12 +61,12 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
     }
 
     @Override
-    public LinkedList<PlcField> getFields() {
+    public List<PlcField> getFields() {
         return new LinkedList<>(fields.values());
     }
 
     @Override
-    public LinkedList<Pair<String, PlcField>> getNamedFields() {
+    public List<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
             .stream()
             .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))

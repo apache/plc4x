@@ -33,7 +33,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.List;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -88,7 +88,7 @@ class DefaultPlcSubscriptionRequestTest {
 
     @Test
     void getFields() {
-        LinkedList<PlcField> fields = SUT.getFields();
+        List<PlcField> fields = SUT.getFields();
         assertThat(fields, notNullValue());
         assertThat(fields.size(), equalTo(1));
         PlcField field = fields.iterator().next();
@@ -97,7 +97,7 @@ class DefaultPlcSubscriptionRequestTest {
 
     @Test
     void getSubscriptionFields() {
-        LinkedList<SubscriptionPlcField> fields = SUT.getSubscriptionFields();
+        List<SubscriptionPlcField> fields = SUT.getSubscriptionFields();
         assertThat(fields, notNullValue());
         assertThat(fields.size(), equalTo(1));
         SubscriptionPlcField field = fields.iterator().next();
@@ -114,7 +114,7 @@ class DefaultPlcSubscriptionRequestTest {
 
     @Test
     void getNamedFields() {
-        LinkedList<Pair<String, PlcField>> namedFields = SUT.getNamedFields();
+        List<Pair<String, PlcField>> namedFields = SUT.getNamedFields();
         assertThat(namedFields, notNullValue());
         assertThat(namedFields.size(), equalTo(1));
         Pair<String, PlcField> entry = namedFields.iterator().next();
@@ -124,7 +124,7 @@ class DefaultPlcSubscriptionRequestTest {
 
     @Test
     void getNamedSubscriptionFields() {
-        LinkedList<Pair<String, SubscriptionPlcField>> namedFields = SUT.getNamedSubscriptionFields();
+        List<Pair<String, SubscriptionPlcField>> namedFields = SUT.getNamedSubscriptionFields();
         assertThat(namedFields, notNullValue());
         assertThat(namedFields.size(), equalTo(1));
         Pair<String, SubscriptionPlcField> entry = namedFields.iterator().next();

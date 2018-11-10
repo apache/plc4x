@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.List;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -78,7 +78,7 @@ class DefaultPlcReadRequestTest {
 
     @Test
     void getFields() {
-        LinkedList<PlcField> fields = SUT.getFields();
+        List<PlcField> fields = SUT.getFields();
         assertThat(fields, notNullValue());
         assertThat(fields.size(), equalTo(1));
         PlcField field = fields.iterator().next();
@@ -87,7 +87,7 @@ class DefaultPlcReadRequestTest {
 
     @Test
     void getNamedFields() {
-        LinkedList<Pair<String, PlcField>> namedFields = SUT.getNamedFields();
+        List<Pair<String, PlcField>> namedFields = SUT.getNamedFields();
         assertThat(namedFields, notNullValue());
         assertThat(namedFields.size(), equalTo(1));
         Pair<String, PlcField> entry = namedFields.iterator().next();

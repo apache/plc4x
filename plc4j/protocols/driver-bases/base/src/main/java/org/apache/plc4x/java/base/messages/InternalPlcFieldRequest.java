@@ -22,10 +22,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public interface InternalPlcFieldRequest extends PlcFieldRequest, InternalPlcRequest {
 
-    LinkedList<Pair<String, PlcField>> getNamedFields();
+    List<Pair<String, PlcField>> getNamedFields();
 
 }

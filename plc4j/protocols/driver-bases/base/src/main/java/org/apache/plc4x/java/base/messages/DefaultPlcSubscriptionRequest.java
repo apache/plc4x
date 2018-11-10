@@ -68,12 +68,12 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
     }
 
     @Override
-    public LinkedList<PlcField> getFields() {
+    public List<PlcField> getFields() {
         return fields.values().stream().map(SubscriptionPlcField::getPlcField).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    public LinkedList<SubscriptionPlcField> getSubscriptionFields() {
+    public List<SubscriptionPlcField> getSubscriptionFields() {
         return new LinkedList<>(fields.values());
     }
 
@@ -83,7 +83,7 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
     }
 
     @Override
-    public LinkedList<Pair<String, PlcField>> getNamedFields() {
+    public List<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
             .stream()
             .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue().getPlcField()))
@@ -91,7 +91,7 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
     }
 
     @Override
-    public LinkedList<Pair<String, SubscriptionPlcField>> getNamedSubscriptionFields() {
+    public List<Pair<String, SubscriptionPlcField>> getNamedSubscriptionFields() {
         return fields.entrySet()
             .stream()
             .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))

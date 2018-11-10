@@ -21,7 +21,7 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface PlcFieldRequest extends PlcRequest {
@@ -35,6 +35,6 @@ public interface PlcFieldRequest extends PlcRequest {
 
     PlcField getField(String name);
 
-    LinkedList<PlcField> getFields();
+    List<PlcField> getFields();
 
 }
