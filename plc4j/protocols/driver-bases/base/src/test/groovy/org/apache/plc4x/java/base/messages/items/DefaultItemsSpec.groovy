@@ -18,7 +18,9 @@
  */
 package org.apache.plc4x.java.base.messages.items
 
-
+import nl.jqno.equalsverifier.EqualsVerifier
+import nl.jqno.equalsverifier.Warning
+import org.apache.commons.lang3.StringUtils
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -55,6 +57,8 @@ class DefaultItemsSpec extends Specification {
         assertItem(fieldItem, "Date", isValidDate)
         assertItem(fieldItem, "DateTime", isValidDateTime)
         assertItem(fieldItem, "ByteArray", isValidByteArray)
+        EqualsVerifier.forClass(fieldItemType).suppress(Warning.STRICT_INHERITANCE).verify()
+        assert StringUtils.isNotBlank(fieldItem.toString())
 
         where:
         fieldItemType                 | value                                          || isValidBoolean | isValidByte | isValidShort | isValidInteger | isValidLong | isValidBigInteger | isValidFloat | isValidDouble | isValidBigDecimal | isValidString | isValidTime | isValidDate | isValidDateTime | isValidByteArray
@@ -186,6 +190,7 @@ class DefaultItemsSpec extends Specification {
         } else {
             assert getExecutionException({ fieldItem."get$type"(0) }) instanceof PlcIncompatibleDatatypeException
         }
+        getExecutionException({ fieldItem."get$type"(42) }) instanceof PlcIncompatibleDatatypeException
         return true
     }
 

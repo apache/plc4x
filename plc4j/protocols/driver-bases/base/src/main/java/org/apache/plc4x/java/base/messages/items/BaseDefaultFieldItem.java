@@ -31,7 +31,7 @@ import java.util.Objects;
 
 public abstract class BaseDefaultFieldItem<T> {
 
-    private T[] values;
+    private final T[] values;
 
     protected BaseDefaultFieldItem(T[] values) {
         this.values = Objects.requireNonNull(values);
