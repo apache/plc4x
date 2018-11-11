@@ -33,7 +33,7 @@ public class DefaultStringFieldItem extends BaseDefaultFieldItem<String> {
 
     @Override
     public boolean isValidString(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override

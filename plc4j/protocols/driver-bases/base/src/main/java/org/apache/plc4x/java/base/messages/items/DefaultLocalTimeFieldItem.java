@@ -35,7 +35,7 @@ public class DefaultLocalTimeFieldItem extends BaseDefaultFieldItem<LocalTime> {
 
     @Override
     public boolean isValidTime(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override

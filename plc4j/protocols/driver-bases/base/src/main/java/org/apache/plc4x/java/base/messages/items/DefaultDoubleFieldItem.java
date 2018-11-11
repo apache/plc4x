@@ -36,7 +36,7 @@ public class DefaultDoubleFieldItem extends BaseDefaultFieldItem<Double> {
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class DefaultDoubleFieldItem extends BaseDefaultFieldItem<Double> {
 
     @Override
     public boolean isValidDouble(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override

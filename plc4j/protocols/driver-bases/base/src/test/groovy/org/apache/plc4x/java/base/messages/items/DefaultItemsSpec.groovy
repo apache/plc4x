@@ -38,11 +38,16 @@ class DefaultItemsSpec extends Specification {
         Boolean isValidString, Boolean isValidTime, Boolean isValidDate, Boolean isValidDateTime, Boolean isValidByteArray) {
 
         setup:
-        BaseDefaultFieldItem fieldItem = fieldItemType.newInstance(value)
+        Object[] values = new Object[2]
+        values[0] = value
+        values[1] = null
+        BaseDefaultFieldItem fieldItem = fieldItemType.newInstance(values)
 
         expect:
-        fieldItem.getObject(0) == value
-
+        assert fieldItem.getNumberOfValues() == 2
+        assert fieldItem.getObject(0) == value
+        assert fieldItem.getObject(1) == null
+        assert fieldItem.getValues()[0] == value
         assertItem(fieldItem, "Boolean", isValidBoolean)
         assertItem(fieldItem, "Byte", isValidByte)
         assertItem(fieldItem, "Short", isValidShort)
@@ -181,6 +186,9 @@ class DefaultItemsSpec extends Specification {
 
 //      fieldItemType              | value                                      || isValidBoolean | isValidByte | isValidShort | isValidInteger | isValidLong | isValidBigInteger | isValidFloat | isValidDouble | isValidBigDecimal | isValidString | isValidTime | isValidDate | isValidDateTime | isValidByteArray
         DefaultLocalDateTimeFieldItem | LocalDateTime.now()                            || false          | false       | false        | false          | false       | false             | false        | false         | false             | false         | true        | true        | true            | false
+
+//      fieldItemType              | value                                      || isValidBoolean | isValidByte | isValidShort | isValidInteger | isValidLong | isValidBigInteger | isValidFloat | isValidDouble | isValidBigDecimal | isValidString | isValidTime | isValidDate | isValidDateTime | isValidByteArray
+        DefaultStringFieldItem        | "foo"                                          || false          | false       | false        | false          | false       | false             | false        | false         | false             | false         | true        | false       | false           | false
     }
 
     Boolean assertItem(BaseDefaultFieldItem fieldItem, String type, Boolean expectedToBeValid) {
@@ -191,6 +199,7 @@ class DefaultItemsSpec extends Specification {
             assert getExecutionException({ fieldItem."get$type"(0) }) instanceof PlcIncompatibleDatatypeException
         }
         getExecutionException({ fieldItem."get$type"(42) }) instanceof PlcIncompatibleDatatypeException
+        getExecutionException({ fieldItem."get$type"(1) }) instanceof PlcIncompatibleDatatypeException
         return true
     }
 

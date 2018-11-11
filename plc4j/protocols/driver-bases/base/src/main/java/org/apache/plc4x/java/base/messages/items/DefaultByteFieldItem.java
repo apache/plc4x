@@ -36,7 +36,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -49,8 +49,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 
     @Override
     public boolean isValidByte(int index) {
-        Byte value = getValue(index);
-        return (value != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -63,8 +62,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 
     @Override
     public boolean isValidShort(int index) {
-        Byte value = getValue(index);
-        return (value != null);
+        return isValidByte(index);
     }
 
     @Override
@@ -77,8 +75,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 
     @Override
     public boolean isValidInteger(int index) {
-        Byte value = getValue(index);
-        return (value != null);
+        return isValidByte(index);
     }
 
     @Override
@@ -91,7 +88,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 
     @Override
     public boolean isValidLong(int index) {
-        return (getValue(index) != null);
+        return isValidByte(index);
     }
 
     @Override
@@ -103,8 +100,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
     }
 
     public boolean isValidBigInteger(int index) {
-        Byte value = getValue(index);
-        return value != null;
+        return isValidByte(index);
     }
 
     public BigInteger getBigInteger(int index) {
@@ -116,8 +112,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 
     @Override
     public boolean isValidFloat(int index) {
-        Byte value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
+        return isValidByte(index);
     }
 
     @Override
@@ -130,8 +125,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 
     @Override
     public boolean isValidDouble(int index) {
-        Byte value = getValue(index);
-        return (value != null) && (value <= Double.MAX_VALUE) && (value >= -Double.MAX_VALUE);
+        return isValidByte(index);
     }
 
     @Override
@@ -143,7 +137,7 @@ public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
     }
 
     public boolean isValidBigDecimal(int index) {
-        return getValue(index) != null;
+        return isValidByte(index);
     }
 
     public BigDecimal getBigDecimal(int index) {

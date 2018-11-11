@@ -36,7 +36,7 @@ public class DefaultShortFieldItem extends BaseDefaultFieldItem<Short> {
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -63,8 +63,7 @@ public class DefaultShortFieldItem extends BaseDefaultFieldItem<Short> {
 
     @Override
     public boolean isValidShort(int index) {
-        Short value = getValue(index);
-        return (value != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -77,8 +76,7 @@ public class DefaultShortFieldItem extends BaseDefaultFieldItem<Short> {
 
     @Override
     public boolean isValidInteger(int index) {
-        Short value = getValue(index);
-        return (value != null);
+        return isValidShort(index);
     }
 
     @Override
@@ -91,7 +89,7 @@ public class DefaultShortFieldItem extends BaseDefaultFieldItem<Short> {
 
     @Override
     public boolean isValidLong(int index) {
-        return (getValue(index) != null);
+        return isValidShort(index);
     }
 
     @Override
@@ -103,8 +101,7 @@ public class DefaultShortFieldItem extends BaseDefaultFieldItem<Short> {
     }
 
     public boolean isValidBigInteger(int index) {
-        Short value = getValue(index);
-        return value != null;
+        return isValidShort(index);
     }
 
     public BigInteger getBigInteger(int index) {
@@ -116,8 +113,7 @@ public class DefaultShortFieldItem extends BaseDefaultFieldItem<Short> {
 
     @Override
     public boolean isValidFloat(int index) {
-        Short value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
+        return isValidShort(index);
     }
 
     @Override
@@ -130,8 +126,7 @@ public class DefaultShortFieldItem extends BaseDefaultFieldItem<Short> {
 
     @Override
     public boolean isValidDouble(int index) {
-        Short value = getValue(index);
-        return (value != null) && (value <= Double.MAX_VALUE) && (value >= -Double.MAX_VALUE);
+        return isValidShort(index);
     }
 
     @Override
@@ -143,7 +138,7 @@ public class DefaultShortFieldItem extends BaseDefaultFieldItem<Short> {
     }
 
     public boolean isValidBigDecimal(int index) {
-        return getValue(index) != null;
+        return isValidShort(index);
     }
 
     public BigDecimal getBigDecimal(int index) {

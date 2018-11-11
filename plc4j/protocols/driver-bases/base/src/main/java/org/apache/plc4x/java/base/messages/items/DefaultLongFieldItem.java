@@ -36,7 +36,7 @@ public class DefaultLongFieldItem extends BaseDefaultFieldItem<Long> {
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class DefaultLongFieldItem extends BaseDefaultFieldItem<Long> {
 
     @Override
     public boolean isValidLong(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -103,8 +103,7 @@ public class DefaultLongFieldItem extends BaseDefaultFieldItem<Long> {
     }
 
     public boolean isValidBigInteger(int index) {
-        Long value = getValue(index);
-        return value != null;
+        return isValidLong(index);
     }
 
     public BigInteger getBigInteger(int index) {
@@ -116,8 +115,7 @@ public class DefaultLongFieldItem extends BaseDefaultFieldItem<Long> {
 
     @Override
     public boolean isValidFloat(int index) {
-        Long value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
+        return isValidLong(index);
     }
 
     @Override
@@ -130,8 +128,7 @@ public class DefaultLongFieldItem extends BaseDefaultFieldItem<Long> {
 
     @Override
     public boolean isValidDouble(int index) {
-        Long value = getValue(index);
-        return (value != null) && (value <= Double.MAX_VALUE) && (value >= -Double.MAX_VALUE);
+        return isValidLong(index);
     }
 
     @Override
@@ -143,7 +140,7 @@ public class DefaultLongFieldItem extends BaseDefaultFieldItem<Long> {
     }
 
     public boolean isValidBigDecimal(int index) {
-        return getValue(index) != null;
+        return isValidLong(index);
     }
 
     public BigDecimal getBigDecimal(int index) {

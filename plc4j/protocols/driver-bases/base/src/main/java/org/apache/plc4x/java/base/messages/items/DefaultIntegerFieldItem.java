@@ -36,7 +36,7 @@ public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -77,8 +77,7 @@ public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
 
     @Override
     public boolean isValidInteger(int index) {
-        Integer value = getValue(index);
-        return (value != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -91,7 +90,7 @@ public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
 
     @Override
     public boolean isValidLong(int index) {
-        return (getValue(index) != null);
+        return isValidInteger(index);
     }
 
     @Override
@@ -103,8 +102,7 @@ public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
     }
 
     public boolean isValidBigInteger(int index) {
-        Integer value = getValue(index);
-        return value != null;
+        return isValidInteger(index);
     }
 
     public BigInteger getBigInteger(int index) {
@@ -116,8 +114,7 @@ public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
 
     @Override
     public boolean isValidFloat(int index) {
-        Integer value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
+        return isValidInteger(index);
     }
 
     @Override
@@ -130,8 +127,7 @@ public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
 
     @Override
     public boolean isValidDouble(int index) {
-        Integer value = getValue(index);
-        return (value != null) && (value <= Double.MAX_VALUE) && (value >= -Double.MAX_VALUE);
+        return isValidInteger(index);
     }
 
     @Override
@@ -143,7 +139,7 @@ public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
     }
 
     public boolean isValidBigDecimal(int index) {
-        return getValue(index) != null;
+        return isValidInteger(index);
     }
 
     public BigDecimal getBigDecimal(int index) {

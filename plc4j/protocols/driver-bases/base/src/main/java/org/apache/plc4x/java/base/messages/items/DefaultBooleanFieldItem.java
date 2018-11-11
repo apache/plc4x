@@ -37,7 +37,7 @@ public class DefaultBooleanFieldItem extends BaseDefaultFieldItem<Boolean> {
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override

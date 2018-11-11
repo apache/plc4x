@@ -36,7 +36,7 @@ public class DefaultBigIntegerFieldItem extends BaseDefaultFieldItem<BigInteger>
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -108,8 +108,7 @@ public class DefaultBigIntegerFieldItem extends BaseDefaultFieldItem<BigInteger>
     }
 
     public boolean isValidBigInteger(int index) {
-        BigInteger value = getValue(index);
-        return value != null;
+        return getValue(index) != null;
     }
 
     public BigInteger getBigInteger(int index) {

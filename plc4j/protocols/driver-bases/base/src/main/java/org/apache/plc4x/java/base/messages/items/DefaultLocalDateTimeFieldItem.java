@@ -37,7 +37,7 @@ public class DefaultLocalDateTimeFieldItem extends BaseDefaultFieldItem<LocalDat
 
     @Override
     public boolean isValidTime(int index) {
-        return (getValue(index) != null);
+        return isValidDateTime(index);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DefaultLocalDateTimeFieldItem extends BaseDefaultFieldItem<LocalDat
 
     @Override
     public boolean isValidDate(int index) {
-        return (getValue(index) != null);
+        return isValidDateTime(index);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class DefaultLocalDateTimeFieldItem extends BaseDefaultFieldItem<LocalDat
 
     @Override
     public boolean isValidDateTime(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override

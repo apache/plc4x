@@ -36,7 +36,7 @@ public class DefaultFloatFieldItem extends BaseDefaultFieldItem<Float> {
 
     @Override
     public boolean isValidBoolean(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
@@ -104,8 +104,7 @@ public class DefaultFloatFieldItem extends BaseDefaultFieldItem<Float> {
     }
 
     public boolean isValidBigInteger(int index) {
-        Float value = getValue(index);
-        return value != null;
+        return getValue(index) != null;
     }
 
     public BigInteger getBigInteger(int index) {
@@ -117,8 +116,7 @@ public class DefaultFloatFieldItem extends BaseDefaultFieldItem<Float> {
 
     @Override
     public boolean isValidFloat(int index) {
-        Float value = getValue(index);
-        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
+        return getValue(index) != null;
     }
 
     @Override
@@ -131,8 +129,7 @@ public class DefaultFloatFieldItem extends BaseDefaultFieldItem<Float> {
 
     @Override
     public boolean isValidDouble(int index) {
-        // If it's a valid Float value it will also be a valid double one.
-        return (getValue(index) != null);
+        return isValidFloat(index);
     }
 
     @Override
@@ -144,7 +141,7 @@ public class DefaultFloatFieldItem extends BaseDefaultFieldItem<Float> {
     }
 
     public boolean isValidBigDecimal(int index) {
-        return getValue(index) != null;
+        return isValidFloat(index);
     }
 
     public BigDecimal getBigDecimal(int index) {

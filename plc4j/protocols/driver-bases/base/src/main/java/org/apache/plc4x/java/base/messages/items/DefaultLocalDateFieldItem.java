@@ -35,7 +35,7 @@ public class DefaultLocalDateFieldItem extends BaseDefaultFieldItem<LocalDate> {
 
     @Override
     public boolean isValidDate(int index) {
-        return (getValue(index) != null);
+        return getValue(index) != null;
     }
 
     @Override
