@@ -188,7 +188,7 @@ class DefaultItemsSpec extends Specification {
         DefaultLocalDateTimeFieldItem | LocalDateTime.now()                            || false          | false       | false        | false          | false       | false             | false        | false         | false             | false         | true        | true        | true            | false
 
 //      fieldItemType              | value                                      || isValidBoolean | isValidByte | isValidShort | isValidInteger | isValidLong | isValidBigInteger | isValidFloat | isValidDouble | isValidBigDecimal | isValidString | isValidTime | isValidDate | isValidDateTime | isValidByteArray
-        DefaultStringFieldItem        | "foo"                                          || false          | false       | false        | false          | false       | false             | false        | false         | false             | false         | true        | false       | false           | false
+        DefaultStringFieldItem        | "foo"                                          || false          | false       | false        | false          | false       | false             | false        | false         | false             | true         | false        | false       | false           | false
     }
 
     Boolean assertItem(BaseDefaultFieldItem fieldItem, String type, Boolean expectedToBeValid) {
