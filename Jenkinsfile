@@ -33,7 +33,7 @@ pipeline {
 
         PLC4X_BUILD_ON_JENKINS = true
         JENKINS_PROFILE = 'jenkins-build'
-        // On non master build we don't want to pollute the global m2 repo
+        // On non develop build we don't want to pollute the global m2 repo
         MVN_LOCAL_REPO_OPT = '-Dmaven.repo.local=.repository'
         // Testfails will be handled by the jenkins junit steps and mark the build as unstable.
         MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
@@ -77,7 +77,7 @@ pipeline {
         stage('Build') {
             when {
                 expression {
-                    env.BRANCH_NAME != 'master'
+                    env.BRANCH_NAME != 'develop'
                 }
             }
             steps {
@@ -92,9 +92,9 @@ pipeline {
             }
         }
 
-        stage('Build master') {
+        stage('Build develop') {
             when {
-                branch 'master'
+                branch 'develop'
             }
             steps {
                 echo 'Building'
@@ -119,7 +119,7 @@ pipeline {
         // Disabled till auth issues are resolved on infra.
         stage('Code Quality') {
             when {
-                branch 'master'
+                branch 'develop'
             }
             // Only the official build nodes have the credentials to deploy setup.
             /*agent {
@@ -137,7 +137,7 @@ pipeline {
 
         stage('Deploy') {
             when {
-                branch 'master'
+                branch 'develop'
             }
             // Only the official build nodes have the credentials to deploy setup.
             agent {
@@ -157,7 +157,7 @@ pipeline {
 
         stage('Build site') {
             when {
-                branch 'master'
+                branch 'develop'
             }
             steps {
                 echo 'Building Site'
@@ -167,7 +167,7 @@ pipeline {
 
         stage('Stage site') {
             when {
-                branch 'master'
+                branch 'develop'
             }
             steps {
                 echo 'Staging Site'
@@ -179,7 +179,7 @@ pipeline {
 
         stage('Deploy site') {
             when {
-                branch 'master'
+                branch 'develop'
             }
             // Only the nodes labeled 'git-websites' have the credentials to commit to the.
             agent {
