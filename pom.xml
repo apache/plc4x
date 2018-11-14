@@ -44,7 +44,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</developerConnection>
     <url>https://github.com/apache/incubator-plc4x</url>
-    <tag>HEAD</tag>
+    <tag>rel/0.2</tag>
   </scm>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
