@@ -65,12 +65,11 @@ There's a detailed description https://github.com/apache/incubator-pulsar/wiki/C
 
 === Preparing a release
 
-In order to prepare a release-candidate, the following command will prepare the repository:
+In order to prepare a release-candidate, the first step is switching to the corresponding release-branch.
+
+After that, the following command will to all preparation steps for the release:
 
    mvn release:prepare -DautoVersionSubmodules=true
-
-The parameter `autoVersionSubmodules` flag will tell the release plugin to release all modules with the same version.
-Otherwise we would have to define the release and development version for each module.
 
 In general the plugin will now ask you 3 questions:
 
@@ -78,19 +77,21 @@ In general the plugin will now ask you 3 questions:
 2. The name of the tag the release commit will be tagged with in the SCM (Name it `rel/{release-version}`
 3. The next development version (The version present in the pom after the release)
 
-That the plugin does, is:
+Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
+
+What the plugin now does, is automatically execute the following operations:
 
 1. Check we aren't referencing any `SNAPSHOT` dependencies.
 2. Update all pom versions to the release version.
 3. Run a build with all tests
-4. Commit the changes (labeled `[maven-release-plugin] prepare release {tagname}`)
+4. Commit the changes (commit message: `[maven-release-plugin] prepare release {tagname}`)
 5. Push the commit
 6. Tag the commit
 7. Update all poms to the next development version.
-8. Commit the changes (labeled `[maven-release-plugin] prepare for next development iteration`)
+8. Commit the changes (commit message: `[maven-release-plugin] prepare for next development iteration`)
 9. Push the commit
 
-However this just prepared the repository for the release, we have to perform the release to get the release artifacts.
+However this just prepared the git repository for the release, we have to perform the release to produce and stage the release artifacts.
 
 == What if something goes wrong?
 
