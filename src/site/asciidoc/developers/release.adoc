@@ -63,6 +63,61 @@ He can then sign your key and hereby enable you to sign Apache release artifacts
 
 There's a detailed description https://github.com/apache/incubator-pulsar/wiki/Create-GPG-keys-to-sign-release-artifacts[here].
 
+If you happen to have multiple keys, adding the following profile to your `settings.xml` should help:
+
+    <profile>
+      <id>apache-release</id>
+      <properties>
+        <gpg.keyname>5C60D6B9</gpg.keyname><!-- Your GPG Keyname here -->
+        <!-- Use an agent: Prevents being asked for the password during the build -->
+        <gpg.useagent>true</gpg.useagent>
+        <gpg.passphrase>topsecret-password</gpg.passphrase>
+      </properties>
+    </profile>
+
+=== Creating a release branch
+
+According to SemVer, we have: Major, Minor and Bugfix releases.
+
+For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
+
+So if currently the project version in develop is `0.2.0-SNAPSHOT`, we create a branch `rel/0.2`.
+
+When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
+
+This can and should be automated by the `maven-release-plugin`.
+
+Per default the plugin will ask for the working copy version during the build execution.
+This is the version the `develop` branch will be changed to.
+
+The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
+Otherwise we would have to define the working copy version for each module.
+
+   mvn release:branch -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
+
+Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
+So in case of preparing the release branch for `0.2.0-SNAPSHOT` the command would be the following:
+
+   mvn release:branch -DbranchName=rel/0.2 -DautoVersionSubmodules=true
+
+The plugin will then aks for the version:
+
+   What is the new working copy version for "PLC4X"? (org.apache.plc4x:plc4x-parent) 0.2.1-SNAPSHOT: : 0.3.0-SNAPSHOT
+
+Where the suggested default is manually overridden.
+
+This step now should perform quite quickly as no build and no tests are involved.
+
+However in the end the versions of the `develop` branch are updated and a new `rel/0.2` branch is created.
+
+=== Release stabilization phase
+
+Now usually comes a phase in which last tests and checks should be perfomed.
+
+If any problems are found they have to be fixed in the release branch.
+
+Changes should either be re applied in `develop` or `cherry-picked`, however merging things back can cause a lot of problems ans we no longer have the same versions.
+
 === Preparing a release
 
 In order to prepare a release-candidate, the first step is switching to the corresponding release-branch.

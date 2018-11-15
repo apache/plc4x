@@ -30,7 +30,7 @@ The same model is used for a wide variety of other projects, so it should be pre
 - A release branch is spawned from `develop` only
 - Bugfix releases don't have a dedicated release branch, they are just performed on the corresponding minor versions release branch
 
-// Use http://www.webgraphviz.com/ for checking this ...
+// Use http://www.webgraphviz.com/ for online editiing this ...
 [graphviz, plc4x-branching-model, png]
 ----
 digraph g{
