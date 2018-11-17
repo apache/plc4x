@@ -23,9 +23,6 @@ has been added, but is not yet a fully functional PLC4X
 driver. This is also a first test of our new `passive-
 mode-driver` concept.
 
-PLC4X-64	The Modbus connection string should be
-            extended with ENDIANESS Information
-
 Incompatible changes
 --------------------
 
