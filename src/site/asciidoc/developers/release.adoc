@@ -129,7 +129,7 @@ After that, the following command will to all preparation steps for the release:
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
-2. The name of the tag the release commit will be tagged with in the SCM (Name it `rel/{release-version}`
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `release/{release-version}`
 3. The next development version (The version present in the pom after the release)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
@@ -169,7 +169,7 @@ This executes automatically as all information it requires is located in the `re
 The first step is that the `perform` goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
-   mvn clean deploy -P apache release
+   mvn clean deploy -P apache-release
 
 This builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
 
@@ -221,7 +221,7 @@ It should contain all the information needed.
 Be sure to stage exactly the `README` and `RELEASE_NOTES` files contained in the root of your project.
 Ideally you just copy them there from there.
 
-All of the four `*-source-relese.zip*` artifacts should be located in the directory: `target/checkout/target`
+All of the three `*-source-relese.zip*` artifacts should be located in the directory: `target/checkout/target`
 
 So after committing these files to SVN you are ready to start the vote.
 
@@ -245,7 +245,7 @@ The following is the one used to do our first release:
    A minimum of 3 binding +1 votes and more binding +1 than binding -1
    are required to pass.
 
-   Release tag: rel/0.1.0
+   Release tag: release/0.1.0
    Hash for the release tag: 8c1e0c1b85ce15814f2c08e0eec5d593951d168d
 
    Per [3] "Before voting +1 [P]PMC members are required to download
@@ -260,8 +260,8 @@ The following is the one used to do our first release:
    [ ]  -1 reject (explanation required)
 
 
-   [1] https://repository.apache.org/content/repositories/orgapacheplc4x-1000
-   [2] https://dist.apache.org/repos/dist/dev/incubator/plc4x/0.1.0-incubating/rc1
+   [1] https://repository.apache.org/content/repositories/orgapacheplc4x-1003
+   [2] https://dist.apache.org/repos/dist/dev/incubator/plc4x/0.2.0-incubating/rc1
    [3] https://www.apache.org/dev/release.html#approving-a-release
    [4] https://cwiki.apache.org/confluence/display/PLC4X/Validating+a+staged+Release
 ```
