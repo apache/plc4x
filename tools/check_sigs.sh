@@ -42,18 +42,7 @@ function checkFile() {
     FILE="$1"
     echo
     echo "Checking $FILE..."
-    
-    HASH=`md5 -q "${FILE}"`
-    CHECK=`cat "${FILE}.md5"`
 
-    if [ "$HASH" != "$CHECK" ]
-    then
-        echo "${FILE} MD5 incorrect"
-        exit 1;
-    else
-       echo "${FILE} MD5 OK";
-    fi
-    
     HASH=`shasum -p -a 512 "${FILE}" | awk '{print$1}'`
     CHECK=`cat "${FILE}.sha512"`
 
