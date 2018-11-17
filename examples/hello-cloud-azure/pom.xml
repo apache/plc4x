@@ -23,7 +23,7 @@
   <parent>
     <artifactId>examples</artifactId>
     <groupId>org.apache.plc4x.examples</groupId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>hello-cloud-azure</artifactId>
