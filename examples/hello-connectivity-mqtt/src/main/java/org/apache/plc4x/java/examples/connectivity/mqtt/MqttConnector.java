@@ -35,7 +35,7 @@ import org.apache.plc4x.java.examples.connectivity.mqtt.model.Configuration;
 import org.apache.plc4x.java.examples.connectivity.mqtt.model.PlcFieldConfig;
 import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3RxClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
@@ -73,15 +73,15 @@ public class MqttConnector {
 
     private void run() throws PlcException {
         // Create a new MQTT client.
-        final Mqtt3Client client = MqttClient.builder()
+        final Mqtt3RxClient client = MqttClient.builder()
             .identifier(UUID.randomUUID().toString())
             .serverHost(config.getMqttConfig().getServerHost())
             .serverPort(config.getMqttConfig().getServerPort())
             .useMqttVersion3()
-            .buildReactive();
+            .buildRx();
 
         // Connect to the MQTT broker.
-        final Single<Mqtt3ConnAck> connAckSingle = client.connect().keepAlive(10, TimeUnit.SECONDS).done();
+        final Single<Mqtt3ConnAck> connAckSingle = client.connect().timeout(10, TimeUnit.SECONDS);
 
         // Connect to the PLC.
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(config.getPlcConfig().getConnection())) {
