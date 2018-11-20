@@ -126,20 +126,20 @@ public class S7PlcToGoogleIoTCoreSample {
     // [END iot_mqtt_configcallback]
 
 
-    private static void setConnectPassword(MqttExampleOptions options, MqttConnectOptions connectOptions)
+    private static void setConnectPassword(CliOptions options, MqttConnectOptions connectOptions)
         throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        switch (options.algorithm) {
+        switch (options.getAlgorithm()) {
             case "RS256":
                 connectOptions.setPassword(
-                    createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
+                    createJwtRsa(options.getProjectId(), options.getPrivateKeyFile()).toCharArray());
                 break;
             case "ES256":
                 connectOptions.setPassword(
-                    createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
+                    createJwtEs(options.getProjectId(), options.getPrivateKeyFile()).toCharArray());
                 break;
             default:
                 throw new IllegalArgumentException(
-                    "Invalid algorithm " + options.algorithm
+                    "Invalid algorithm " + options.getAlgorithm()
                         + ". Should be one of 'RS256' or 'ES256'.");
         }
     }
@@ -152,7 +152,7 @@ public class S7PlcToGoogleIoTCoreSample {
     public static void main(String[] args) throws Exception {
 
         // [START iot_mqtt_configuremqtt]
-        MqttExampleOptions options = MqttExampleOptions.fromFlags(args);
+        CliOptions options = CliOptions.fromFlags(args);
         if (options == null) {
             // Could not parse.
             System.exit(1);
@@ -162,13 +162,13 @@ public class S7PlcToGoogleIoTCoreSample {
         // connections are accepted. For server authentication, the JVM's root certificates
         // are used.
         final String mqttServerAddress =
-            String.format("ssl://%s:%s", options.mqttBridgeHostname, options.mqttBridgePort);
+            String.format("ssl://%s:%s", options.getMqttBridgeHostname(), options.getMqttBridgePort());
 
         // Create our MQTT client. The mqttClientId is a unique string that identifies this device. For
         // Google Cloud IoT Core, it must be in the format below.
         final String mqttClientId =
             String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-                options.projectId, options.cloudRegion, options.registryId, options.deviceId);
+                options.getProjectId(), options.getCloudRegion(), options.getRegistryId(), options.getDeviceId());
 
         MqttConnectOptions connectOptions = new MqttConnectOptions();
         // Note that the Google Cloud IoT Core only supports MQTT 3.1.1, and Paho requires that we
@@ -223,15 +223,15 @@ public class S7PlcToGoogleIoTCoreSample {
             }
         }
 
-        attachCallback(client, options.deviceId);
+        attachCallback(client, options.getDeviceId());
 
         // Publish to the events or state topic based on the flag.
-        String subTopic = "event".equals(options.messageType) ? "events" : options.messageType;
+        String subTopic = "event".equals(options.getMessageType()) ? "events" : options.getMessageType();
 
         // The MQTT topic that this device will publish telemetry data to. The MQTT topic name is
         // required to be in the format below. Note that this is not the same as the device registry's
         // Cloud Pub/Sub topic.
-        String mqttTopic = String.format("/devices/%s/%s", options.deviceId, subTopic);
+        String mqttTopic = String.format("/devices/%s/%s", options.getDeviceId(), subTopic);
 
         // Connect to Plc
         logger.info("Connecting to Plc");
@@ -247,13 +247,13 @@ public class S7PlcToGoogleIoTCoreSample {
                 // Refresh the connection credentials before the JWT expires.
                 // [START iot_mqtt_jwt_refresh]
                 long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
-                if (secsSinceRefresh > (options.tokenExpMins * 60)) {
+                if (secsSinceRefresh > (options.getTokenExpMins() * 60)) {
                     System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
                     iat = new DateTime();
                     setConnectPassword(options, connectOptions);
                     client.disconnect();
                     client.connect();
-                    attachCallback(client, options.deviceId);
+                    attachCallback(client, options.getDeviceId());
                 }
                 // [END iot_mqtt_jwt_refresh]
 
@@ -268,7 +268,7 @@ public class S7PlcToGoogleIoTCoreSample {
                     MqttMessage message = new MqttMessage(array);
                     message.setQos(1);
                     client.publish(mqttTopic, message);
-                    if ("event".equals(options.messageType)) {
+                    if ("event".equals(options.getMessageType())) {
                         // Send telemetry events every second
                         Thread.sleep(1000);
                     } else {
