@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.java.examples.helloplc4x;
+package org.apache.plc4x.java.examples.integration.edgent;
 
 import org.apache.commons.cli.*;
 
@@ -26,7 +26,8 @@ public class CliOptions {
     private static Options options;
 
     private final String connectionString;
-    private final String[] fieldAddress;
+    private final String fieldAddress;
+    private final int pollingInterval;
 
     public static CliOptions fromArgs(String[] args) {
         options = new Options();
@@ -42,9 +43,17 @@ public class CliOptions {
         options.addOption(
             Option.builder()
                 .type(String.class)
-                .longOpt("field-addresses")
+                .longOpt("field-address")
                 .hasArg()
-                .desc("Field Addresses (Space separated).")
+                .desc("Field Address.")
+                .required()
+                .build());
+        options.addOption(
+            Option.builder()
+                .type(Integer.class)
+                .longOpt("polling-interval")
+                .hasArg()
+                .desc("Polling Interval (milliseconds).")
                 .required()
                 .build());
 
@@ -54,9 +63,10 @@ public class CliOptions {
             commandLine = parser.parse(options, args);
 
             String connectionString = commandLine.getOptionValue("connection-string");
-            String[] fieldAddress = commandLine.getOptionValues("field-addresses");
+            String fieldAddress = commandLine.getOptionValue("field-address");
+            int pollingInterval = Integer.valueOf(commandLine.getOptionValue("polling-interval"));
 
-            return new CliOptions(connectionString, fieldAddress);
+            return new CliOptions(connectionString, fieldAddress, pollingInterval);
         } catch (ParseException e) {
             System.err.println(e.getMessage());
             return null;
@@ -65,20 +75,25 @@ public class CliOptions {
 
     public static void printHelp() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("HelloPlc4x", options);
+        formatter.printHelp("PlcLogger", options);
     }
 
-    public CliOptions(String connectionString, String[] fieldAddress) {
+    public CliOptions(String connectionString, String fieldAddress, int pollingInterval) {
         this.connectionString = connectionString;
         this.fieldAddress = fieldAddress;
+        this.pollingInterval = pollingInterval;
     }
 
     public String getConnectionString() {
         return connectionString;
     }
 
-    public String[] getFieldAddress() {
+    public String getFieldAddress() {
         return fieldAddress;
+    }
+
+    public int getPollingInterval() {
+        return pollingInterval;
     }
 
 }

@@ -23,13 +23,14 @@ import org.apache.commons.cli.*;
 
 public class CliOptions {
 
+    private static Options options;
+
     private final String plc4xConnectionString;
     private final String plc4xFieldAddress;
     private final String iotHubConnectionString;
 
-    /** Construct an MqttExampleOptions class from command line flags. */
-    public static CliOptions fromFlags(String[] args) {
-        org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
+    public static CliOptions fromArgs(String[] args) {
+        options = new Options();
         // Required arguments
         options.addOption(
             Option.builder()
@@ -70,6 +71,11 @@ public class CliOptions {
             System.err.println(e.getMessage());
             return null;
         }
+    }
+
+    public static void printHelp() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("S7PlcToAzureIoTHubSample", options);
     }
 
     public CliOptions(String plc4xConnectionString, String plc4xFieldAddress, String iotHubConnectionString) {

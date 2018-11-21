@@ -152,8 +152,9 @@ public class S7PlcToGoogleIoTCoreSample {
     public static void main(String[] args) throws Exception {
 
         // [START iot_mqtt_configuremqtt]
-        CliOptions options = CliOptions.fromFlags(args);
+        CliOptions options = CliOptions.fromArgs(args);
         if (options == null) {
+            CliOptions.printHelp();
             // Could not parse.
             System.exit(1);
         }

@@ -24,6 +24,8 @@ import org.apache.commons.cli.*;
 /** Command line options for the MQTT example. */
 public class CliOptions {
 
+    private static Options options;
+
     private final String projectId;
     private final String registryId;
     private final String deviceId;
@@ -35,9 +37,8 @@ public class CliOptions {
     private final short mqttBridgePort;
     private final String messageType;
 
-    /** Construct an MqttExampleOptions class from command line flags. */
-    public static CliOptions fromFlags(String[] args) {
-        org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
+    public static CliOptions fromArgs(String[] args) {
+        options = new Options();
         // Required arguments
         options.addOption(
             Option.builder()
@@ -156,6 +157,11 @@ public class CliOptions {
             System.err.println(e.getMessage());
             return null;
         }
+    }
+
+    public static void printHelp() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("S7PlcToGoogleIoTCoreSample", options);
     }
 
     public CliOptions(String projectId, String registryId, String deviceId, String privateKeyFile, String algorithm,

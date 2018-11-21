@@ -42,8 +42,9 @@ public class S7PlcToAzureIoTHubSample {
      * @param args Expected: [plc4x connection string, plc4x field address, IoT-Hub connection string].
      */
     public static void main(String[] args) throws Exception {
-        CliOptions options = CliOptions.fromFlags(args);
+        CliOptions options = CliOptions.fromArgs(args);
         if (options == null) {
+            CliOptions.printHelp();
             // Could not parse.
             System.exit(1);
         }

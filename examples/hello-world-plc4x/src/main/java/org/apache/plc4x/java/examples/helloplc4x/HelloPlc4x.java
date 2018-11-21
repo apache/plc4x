@@ -38,8 +38,9 @@ public class HelloPlc4x {
      * @param args ignored.
      */
     public static void main(String[] args) throws Exception {
-        CliOptions options = CliOptions.fromFlags(args);
+        CliOptions options = CliOptions.fromArgs(args);
         if (options == null) {
+            CliOptions.printHelp();
             // Could not parse.
             System.exit(1);
         }
