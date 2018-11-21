@@ -16,7 +16,7 @@ A new connection-pool was added, which allows automatic
 pooling and reuse of PLC connections.
 
 A new OPM module was added, which allows JPA like read-
-communication using POJOs, very similar to PJA.
+communication using POJOs, very similar to JPA.
 
 A stub of a new driver for the Emerson DeltaV protocol
 has been added, but is not yet a fully functional PLC4X
