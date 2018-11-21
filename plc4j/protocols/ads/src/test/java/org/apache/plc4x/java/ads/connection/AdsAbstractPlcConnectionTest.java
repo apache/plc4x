@@ -52,8 +52,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.*;
 
-import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")

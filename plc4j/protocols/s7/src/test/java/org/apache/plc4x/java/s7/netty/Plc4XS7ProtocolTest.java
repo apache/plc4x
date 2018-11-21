@@ -29,7 +29,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.netty.NettyTestBase;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
@@ -56,7 +55,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class Plc4XS7ProtocolTest extends NettyTestBase {
+public class Plc4XS7ProtocolTest {
 
     private EmbeddedChannel SUT;
     private PlcReadRequest.Builder readRequestBuilder =

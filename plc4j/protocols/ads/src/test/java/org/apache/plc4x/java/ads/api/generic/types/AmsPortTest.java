@@ -21,9 +21,9 @@ package org.apache.plc4x.java.ads.api.generic.types;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
-import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class AmsPortTest {

@@ -46,4 +46,5 @@ public class PlcInvalidFieldException extends PlcRuntimeException {
     public String getFieldToBeParsed() {
         return fieldToBeParsed;
     }
+
 }
