@@ -21,8 +21,7 @@ package org.apache.plc4x.java.s7.netty;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.isotp.netty.model.tpdus.DataTpdu;
-import org.apache.plc4x.java.netty.NettyTestBase;
+import org.apache.plc4x.java.isotp.protocol.model.tpdus.DataTpdu;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.SetupCommunicationRequestMessage;
 import org.apache.plc4x.java.s7.netty.model.params.CpuServicesRequestParameter;
@@ -49,7 +48,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class S7ProtocolTest extends NettyTestBase {
+public class S7ProtocolTest {
 
     private EmbeddedChannel SUT;
 

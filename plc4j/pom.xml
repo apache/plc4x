@@ -35,7 +35,7 @@
 
   <modules>
     <module>api</module>
-    <module>core</module>
+    <module>drivers</module>
     <module>protocols</module>
     <module>utils</module>
   </modules>

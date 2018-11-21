@@ -41,22 +41,17 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.3.0-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-core</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
-    </dependency>
 
     <!-- Required driver implementation -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-s7</artifactId>
+      <artifactId>plc4j-driver-s7</artifactId>
       <version>0.3.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-test</artifactId>
+      <artifactId>plc4j-driver-simulated</artifactId>
       <version>0.3.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -88,8 +83,8 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4j-protocol-s7</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-protocol-test</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>
