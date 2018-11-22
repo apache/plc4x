@@ -22,8 +22,6 @@ package org.apache.plc4x.java.opm;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.MethodDelegation;
-import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.PlcDriverManager;
@@ -41,6 +39,8 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
+import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
+import static net.bytebuddy.matcher.ElementMatchers.not;
 
 /**
  * Plc4x equivalent of Jpas EntityManager for implementing Object-Plc-Mapping.
@@ -74,7 +74,7 @@ import static net.bytebuddy.matcher.ElementMatchers.any;
  * A connected @{@link PlcEntity} can be disconnected calling {@link #disconnect(Object)}, then it behaves like the
  * regular Pojo it was before.
  * <p>
- * All invocations on the getters are forwarded to the {@link PlcEntityInterceptor#intercept(Object, Method, Callable, String, PlcDriverManager)}
+ * All invocations on the getters are forwarded to the {@link PlcEntityInterceptor#intercept(Object, Method, Callable, String, PlcDriverManager, AliasRegistry)}
  * method.
  */
 public class PlcEntityManager {
@@ -83,15 +83,22 @@ public class PlcEntityManager {
 
     public static final String PLC_ADDRESS_FIELD_NAME = "_plcAddress";
     static final String DRIVER_MANAGER_FIELD_NAME = "_driverManager";
+    static final String ALIAS_REGISTRY = "_aliasRegistry";
 
     private final PlcDriverManager driverManager;
+    private final SimpleAliasRegistry registry;
 
     public PlcEntityManager() {
-        this.driverManager = new PlcDriverManager();
+        this(new PlcDriverManager());
     }
 
     public PlcEntityManager(PlcDriverManager driverManager) {
+        this(driverManager, new SimpleAliasRegistry());
+    }
+
+    public PlcEntityManager(PlcDriverManager driverManager, SimpleAliasRegistry registry) {
         this.driverManager = driverManager;
+        this.registry = registry;
     }
 
     public <T> T read(Class<T> clazz, String address) throws OPMException {
@@ -109,7 +116,7 @@ public class PlcEntityManager {
                 .forEach(field ->
                     requestBuilder.addItem(
                         field.getDeclaringClass().getName() + "." + field.getName(),
-                        field.getAnnotation(PlcField.class).value()
+                        OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcField.class).value())
                     )
                 );
 
@@ -135,7 +142,7 @@ public class PlcEntityManager {
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
             throw new OPMException("Unable to fetch PlcEntity " + clazz.getName(), e);
         } catch (Exception e) {
-            throw new OPMException("Unknown Error", e);
+            throw new OPMException("Unexpected Exception: " + e.getMessage(), e);
         }
     }
 
@@ -156,7 +163,8 @@ public class PlcEntityManager {
                 .subclass(clazz)
                 .defineField(PLC_ADDRESS_FIELD_NAME, String.class, Visibility.PRIVATE)
                 .defineField(DRIVER_MANAGER_FIELD_NAME, PlcDriverManager.class, Visibility.PRIVATE)
-                .method(any()).intercept(MethodDelegation.to(PlcEntityInterceptor.class))
+                .defineField(ALIAS_REGISTRY, AliasRegistry.class, Visibility.PRIVATE)
+                .method(not(isDeclaredBy(Object.class))).intercept(MethodDelegation.to(PlcEntityInterceptor.class))
                 .make()
                 .load(Thread.currentThread().getContextClassLoader())
                 .getLoaded()
@@ -165,9 +173,10 @@ public class PlcEntityManager {
             // Set connection value into the private field
             FieldUtils.writeDeclaredField(instance, PLC_ADDRESS_FIELD_NAME, address, true);
             FieldUtils.writeDeclaredField(instance, DRIVER_MANAGER_FIELD_NAME, driverManager, true);
+            FieldUtils.writeDeclaredField(instance, ALIAS_REGISTRY, registry, true);
 
             // Initially fetch all values
-            PlcEntityInterceptor.refetchAllFields(instance, driverManager, address);
+            PlcEntityInterceptor.refetchAllFields(instance, driverManager, address, registry);
 
             return instance;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | IllegalAccessError e) {
@@ -193,7 +202,7 @@ public class PlcEntityManager {
             }
             FieldUtils.writeDeclaredField(entity, DRIVER_MANAGER_FIELD_NAME, null, true);
         } catch (IllegalAccessException e) {
-            throw new OPMException("Unbale to fetch driverManager instance on entity instance", e);
+            throw new OPMException("Unable to fetch driverManager instance on entity instance", e);
         }
     }
 

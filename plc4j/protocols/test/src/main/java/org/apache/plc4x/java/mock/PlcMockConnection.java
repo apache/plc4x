@@ -30,6 +30,8 @@ import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.PlcReader;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +40,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PlcMockConnection implements PlcConnection, PlcReader {
+
+    private static final Logger logger = LoggerFactory.getLogger(PlcMockConnection.class);
 
     private final String name;
     private final PlcAuthentication authentication;
@@ -55,6 +59,7 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
     }
 
     public void setDevice(MockDevice device) {
+        logger.info("Set Mock Devie on Mock Connection " + this + " with device " + device);
         this.device = device;
     }
 
@@ -65,14 +70,12 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
 
     @Override
     public boolean isConnected() {
-        // is connected if a device is set
-        return device != null;
+        return true;
     }
 
     @Override
     public void close() {
-        // unset device
-        this.device = null;
+        logger.info("Closing MockConnection with device " + device);
     }
 
     @Override
@@ -103,10 +106,16 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         return CompletableFuture.supplyAsync(new Supplier<PlcReadResponse>() {
+
             @Override
             public PlcReadResponse get() {
+                logger.debug("Sending read request to MockDevice");
                 Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> response = readRequest.getFieldNames().stream()
-                    .collect(Collectors.toMap(Function.identity(), name -> device.read(((MockField) readRequest.getField(name)).getFieldQuery())));
+                    .collect(Collectors.toMap(
+                        Function.identity(),
+                        name -> device.read(((MockField) readRequest.getField(name)).getFieldQuery())
+                        )
+                    );
                 return new DefaultPlcReadResponse((DefaultPlcReadRequest)readRequest, response);
             }
         });

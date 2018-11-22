@@ -49,7 +49,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Interceptor for dynamic functionality of @{@link PlcEntity}.
- * Basically, its {@link #intercept(Object, Method, Callable, String, PlcDriverManager)} method is called for each
+ * Basically, its {@link #intercept(Object, Method, Callable, String, PlcDriverManager, AliasRegistry)} method is called for each
  * invocation of a method on a connected @{@link PlcEntity} and does then the dynamic part.
  *
  * For those not too familiar with the JVM's dispatch on can roughly imagine the intercept method being a "regular"
@@ -71,9 +71,9 @@ public class PlcEntityInterceptor {
     /**
      * Basic Intersector for all methods on the proxy object.
      * It checks if the invoked method is a getter and if so, only retrieves the requested field, forwarding to
-     * the {@link #fetchValueForGetter(Method, PlcDriverManager,String)} method.
+     * the {@link #fetchValueForGetter(Method, PlcDriverManager, String, AliasRegistry)} method.
      * <p>
-     * If the field is no getter, then all fields are refreshed by calling {@link #refetchAllFields(Object, PlcDriverManager, String)}
+     * If the field is no getter, then all fields are refreshed by calling {@link #refetchAllFields(Object, PlcDriverManager, String, AliasRegistry)}
      * and then, the method is invoked.
      *
      * @param proxy    Object to intercept
@@ -87,8 +87,9 @@ public class PlcEntityInterceptor {
     @SuppressWarnings("unused")
     @RuntimeType
     public static Object intercept(@This Object proxy, @Origin Method method, @SuperCall Callable<?> callable,
-           @FieldValue(PlcEntityManager.PLC_ADDRESS_FIELD_NAME) String address,
-           @FieldValue(PlcEntityManager.DRIVER_MANAGER_FIELD_NAME) PlcDriverManager driverManager) throws OPMException {
+                                   @FieldValue(PlcEntityManager.PLC_ADDRESS_FIELD_NAME) String address,
+                                   @FieldValue(PlcEntityManager.DRIVER_MANAGER_FIELD_NAME) PlcDriverManager driverManager,
+                                   @FieldValue(PlcEntityManager.ALIAS_REGISTRY) AliasRegistry registry) throws OPMException {
         LOGGER.trace("Invoked method {} on connected PlcEntity {}", method.getName(), method.getDeclaringClass().getName());
 
         // If "detached" (i.e. _driverManager is null) simply forward the call
@@ -108,7 +109,7 @@ public class PlcEntityInterceptor {
             // Fetch single value
             LOGGER.trace("Invoked method {} is getter, trying to find annotated field and return requested value",
                 method.getName());
-            return fetchValueForGetter(method, driverManager, address);
+            return fetchValueForGetter(method, driverManager, address, registry);
         }
 
         if (method.getName().startsWith("is") && (method.getReturnType() == boolean.class || method.getReturnType() == Boolean.class)) {
@@ -118,13 +119,13 @@ public class PlcEntityInterceptor {
             // Fetch single value
             LOGGER.trace("Invoked method {} is boolean flag method, trying to find annotated field and return requested value",
                 method.getName());
-            return fetchValueForIsGetter(method, driverManager, address);
+            return fetchValueForIsGetter(method, driverManager, address, registry);
         }
 
         // Fetch all values, than invoke method
         try {
             LOGGER.trace("Invoked method is no getter, refetch all fields and invoke method {} then", method.getName());
-            refetchAllFields(proxy, driverManager, address);
+            refetchAllFields(proxy, driverManager, address, registry);
             return callable.call();
         } catch (Exception e) {
             throw new OPMException("Unable to forward invocation " + method.getName() + " on connected PlcEntity", e);
@@ -136,12 +137,14 @@ public class PlcEntityInterceptor {
      *
      * @param proxy Object to refresh the fields on.
      * @param driverManager
+     * @param registry
      * @throws OPMException on various errors.
      */
     @SuppressWarnings("squid:S1141") // Nested try blocks readability is okay, move to other method makes it imho worse
-    static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address) throws OPMException {
+    static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address, AliasRegistry registry) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
+        LOGGER.trace("Refetching all fields on proxy object of class " + entityClass);
         PlcEntity plcEntity = entityClass.getAnnotation(PlcEntity.class);
         if (plcEntity == null) {
             throw new OPMException("Non PlcEntity supplied");
@@ -157,11 +160,13 @@ public class PlcEntityInterceptor {
                 .forEach(field ->
                     requestBuilder.addItem(
                         field.getDeclaringClass().getName() + "." + field.getName(),
-                        field.getAnnotation(PlcField.class).value()
+                        OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcField.class).value())
                     )
                 );
 
             PlcReadRequest request = requestBuilder.build();
+
+            LOGGER.trace("Request for refetch of " + entityClass + " was build and is " + request.toString());
 
             PlcReadResponse response = getPlcReadResponse(request);
 
@@ -182,15 +187,16 @@ public class PlcEntityInterceptor {
         }
     }
 
-    private static Object fetchValueForIsGetter(Method m, PlcDriverManager driverManager, String address) throws OPMException {
-        return fetchValueForGetter(m, 2, driverManager, address);
+    private static Object fetchValueForIsGetter(Method m, PlcDriverManager driverManager, String address, AliasRegistry registry) throws OPMException {
+        return fetchValueForGetter(m, 2, driverManager, address, registry);
     }
 
-    private static Object fetchValueForGetter(Method m, PlcDriverManager driverManager, String address) throws OPMException {
-        return fetchValueForGetter(m, 3, driverManager, address);
+    private static Object fetchValueForGetter(Method m, PlcDriverManager driverManager, String address, AliasRegistry registry) throws OPMException {
+        return fetchValueForGetter(m, 3, driverManager, address, registry);
     }
 
-    private static Object fetchValueForGetter(Method m, int prefixLength, PlcDriverManager driverManager, String address) throws OPMException {
+    private static Object fetchValueForGetter(Method m, int prefixLength, PlcDriverManager driverManager,
+                                              String address, AliasRegistry registry) throws OPMException {
         String s = m.getName().substring(prefixLength);
         // First char to lower
         String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
@@ -210,7 +216,7 @@ public class PlcEntityInterceptor {
             String fqn = field.getDeclaringClass().getName() + "." + field.getName();
 
             PlcReadRequest request = connection.readRequestBuilder()
-                .addItem(fqn, annotation.value())
+                .addItem(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()))
                 .build();
 
             PlcReadResponse response = getPlcReadResponse(request);

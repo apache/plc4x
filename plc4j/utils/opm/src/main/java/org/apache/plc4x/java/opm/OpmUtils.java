@@ -19,10 +19,16 @@
 
 package org.apache.plc4x.java.opm;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Utility methods for usage with OPM.
  */
 public final class OpmUtils {
+
+    public static final String ADDRESS = "address";
+    static final Pattern pattern = Pattern.compile("^\\$\\{(?<" + ADDRESS + ">.*)\\}$");
 
     private OpmUtils() {
         // Util class
@@ -40,6 +46,46 @@ public final class OpmUtils {
             throw new IllegalArgumentException("Cannot use PlcEntity without default constructor", e);
         }
         return annotation;
+    }
+
+    static String getOrResolveAddress(AliasRegistry registry, String addressString) {
+        if (!OpmUtils.isValidExpression(addressString)) {
+            throw new IllegalArgumentException("Invalid Syntax, either use field address (no starting $) " +
+                "or an alias with Syntax ${xxx}. But given was '" + addressString + "'");
+        }
+        if (OpmUtils.isAlias(addressString)) {
+            String alias = OpmUtils.getAlias(addressString);
+            if (registry.canResolve(alias)) {
+                return registry.resolve(alias);
+            } else {
+                throw new IllegalArgumentException("Unable to resolve Alias '" + alias + "' in Schema Registry");
+            }
+        } else {
+            return addressString;
+        }
+    }
+
+    /**
+     * Checks whether a given String is a valid OPM Expression, this means
+     * either an Address or an alias ${xxx}.
+     *
+     * @param s
+     * @return
+     */
+    static boolean isValidExpression(String s) {
+        return (s.startsWith("$") && pattern.matcher(s).matches()) || s.startsWith("$") == false;
+    }
+
+    static boolean isAlias(String s) {
+        return s.startsWith("$") && pattern.matcher(s).matches();
+    }
+
+    static String getAlias(String s) {
+        Matcher matcher = pattern.matcher(s);
+        if (matcher.matches() == false) {
+            throw new IllegalArgumentException("Invalid Syntax, no Alias found in String '" + s + "'. Synatx is ${xxx}");
+        }
+        return matcher.group(ADDRESS);
     }
 
 }
