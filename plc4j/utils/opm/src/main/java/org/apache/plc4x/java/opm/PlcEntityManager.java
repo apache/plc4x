@@ -35,10 +35,12 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
 import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static net.bytebuddy.matcher.ElementMatchers.not;
 
@@ -74,7 +76,8 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  * A connected @{@link PlcEntity} can be disconnected calling {@link #disconnect(Object)}, then it behaves like the
  * regular Pojo it was before.
  * <p>
- * All invocations on the getters are forwarded to the {@link PlcEntityInterceptor#intercept(Object, Method, Callable, String, PlcDriverManager, AliasRegistry)}
+ * All invocations on the getters are forwarded to the
+ * {@link PlcEntityInterceptor#intercept(Object, Method, Callable, String, PlcDriverManager, AliasRegistry, Map)}
  * method.
  */
 public class PlcEntityManager {
@@ -84,6 +87,7 @@ public class PlcEntityManager {
     public static final String PLC_ADDRESS_FIELD_NAME = "_plcAddress";
     static final String DRIVER_MANAGER_FIELD_NAME = "_driverManager";
     static final String ALIAS_REGISTRY = "_aliasRegistry";
+    public static final String LAST_FETCHED = "_lastFetched";
 
     private final PlcDriverManager driverManager;
     private final SimpleAliasRegistry registry;
@@ -164,6 +168,7 @@ public class PlcEntityManager {
                 .defineField(PLC_ADDRESS_FIELD_NAME, String.class, Visibility.PRIVATE)
                 .defineField(DRIVER_MANAGER_FIELD_NAME, PlcDriverManager.class, Visibility.PRIVATE)
                 .defineField(ALIAS_REGISTRY, AliasRegistry.class, Visibility.PRIVATE)
+                .defineField(LAST_FETCHED, Map.class, Visibility.PRIVATE)
                 .method(not(isDeclaredBy(Object.class))).intercept(MethodDelegation.to(PlcEntityInterceptor.class))
                 .make()
                 .load(Thread.currentThread().getContextClassLoader())
@@ -174,9 +179,11 @@ public class PlcEntityManager {
             FieldUtils.writeDeclaredField(instance, PLC_ADDRESS_FIELD_NAME, address, true);
             FieldUtils.writeDeclaredField(instance, DRIVER_MANAGER_FIELD_NAME, driverManager, true);
             FieldUtils.writeDeclaredField(instance, ALIAS_REGISTRY, registry, true);
+            Map<String, Instant> lastFetched = new HashMap<>();
+            FieldUtils.writeDeclaredField(instance, LAST_FETCHED, lastFetched, true);
 
             // Initially fetch all values
-            PlcEntityInterceptor.refetchAllFields(instance, driverManager, address, registry);
+            PlcEntityInterceptor.refetchAllFields(instance, driverManager, address, registry, lastFetched);
 
             return instance;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | IllegalAccessError e) {
