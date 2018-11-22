@@ -38,10 +38,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +52,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Interceptor for dynamic functionality of @{@link PlcEntity}.
- * Basically, its {@link #intercept(Object, Method, Callable, String, PlcDriverManager, AliasRegistry)} method is called for each
+ * Basically, its {@link #intercept(Object, Method, Callable, String, PlcDriverManager, AliasRegistry, Map)} method is called for each
  * invocation of a method on a connected @{@link PlcEntity} and does then the dynamic part.
  *
  * For those not too familiar with the JVM's dispatch on can roughly imagine the intercept method being a "regular"
@@ -71,9 +74,9 @@ public class PlcEntityInterceptor {
     /**
      * Basic Intersector for all methods on the proxy object.
      * It checks if the invoked method is a getter and if so, only retrieves the requested field, forwarding to
-     * the {@link #fetchValueForGetter(Method, PlcDriverManager, String, AliasRegistry)} method.
+     * the {@link #fetchValueForGetter(Object, Method, PlcDriverManager, String, AliasRegistry, Map)} method.
      * <p>
-     * If the field is no getter, then all fields are refreshed by calling {@link #refetchAllFields(Object, PlcDriverManager, String, AliasRegistry)}
+     * If the field is no getter, then all fields are refreshed by calling {@link #refetchAllFields(Object, PlcDriverManager, String, AliasRegistry, Map)}
      * and then, the method is invoked.
      *
      * @param proxy    Object to intercept
@@ -89,7 +92,8 @@ public class PlcEntityInterceptor {
     public static Object intercept(@This Object proxy, @Origin Method method, @SuperCall Callable<?> callable,
                                    @FieldValue(PlcEntityManager.PLC_ADDRESS_FIELD_NAME) String address,
                                    @FieldValue(PlcEntityManager.DRIVER_MANAGER_FIELD_NAME) PlcDriverManager driverManager,
-                                   @FieldValue(PlcEntityManager.ALIAS_REGISTRY) AliasRegistry registry) throws OPMException {
+                                   @FieldValue(PlcEntityManager.ALIAS_REGISTRY) AliasRegistry registry,
+                                   @FieldValue(PlcEntityManager.LAST_FETCHED) Map<String, Instant> lastFetched) throws OPMException {
         LOGGER.trace("Invoked method {} on connected PlcEntity {}", method.getName(), method.getDeclaringClass().getName());
 
         // If "detached" (i.e. _driverManager is null) simply forward the call
@@ -109,7 +113,8 @@ public class PlcEntityInterceptor {
             // Fetch single value
             LOGGER.trace("Invoked method {} is getter, trying to find annotated field and return requested value",
                 method.getName());
-            return fetchValueForGetter(method, driverManager, address, registry);
+
+            return fetchValueForGetter(proxy, method, driverManager, address, registry, lastFetched);
         }
 
         if (method.getName().startsWith("is") && (method.getReturnType() == boolean.class || method.getReturnType() == Boolean.class)) {
@@ -119,13 +124,13 @@ public class PlcEntityInterceptor {
             // Fetch single value
             LOGGER.trace("Invoked method {} is boolean flag method, trying to find annotated field and return requested value",
                 method.getName());
-            return fetchValueForIsGetter(method, driverManager, address, registry);
+            return fetchValueForIsGetter(proxy, method, driverManager, address, registry, lastFetched);
         }
 
         // Fetch all values, than invoke method
         try {
             LOGGER.trace("Invoked method is no getter, refetch all fields and invoke method {} then", method.getName());
-            refetchAllFields(proxy, driverManager, address, registry);
+            refetchAllFields(proxy, driverManager, address, registry, lastFetched);
             return callable.call();
         } catch (Exception e) {
             throw new OPMException("Unable to forward invocation " + method.getName() + " on connected PlcEntity", e);
@@ -136,12 +141,13 @@ public class PlcEntityInterceptor {
      * Renews all values of all Fields that are annotated with {@link PlcEntity}.
      *
      * @param proxy Object to refresh the fields on.
-     * @param driverManager
-     * @param registry
+     * @param driverManager Driver Manager to use
+     * @param registry AliasRegistry to use
+     * @param lastFetched
      * @throws OPMException on various errors.
      */
     @SuppressWarnings("squid:S1141") // Nested try blocks readability is okay, move to other method makes it imho worse
-    static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address, AliasRegistry registry) throws OPMException {
+    static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
         LOGGER.trace("Refetching all fields on proxy object of class " + entityClass);
@@ -157,9 +163,10 @@ public class PlcEntityInterceptor {
 
             Arrays.stream(entityClass.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(PlcField.class))
+                .filter(field -> needsToBeFetched(lastFetched, field))
                 .forEach(field ->
                     requestBuilder.addItem(
-                        field.getDeclaringClass().getName() + "." + field.getName(),
+                        getFqn(field),
                         OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcField.class).value())
                     )
                 );
@@ -172,6 +179,9 @@ public class PlcEntityInterceptor {
 
             // Fill all requested fields
             for (String fieldName : response.getFieldNames()) {
+                // Fill into Cache
+                lastFetched.put(fieldName, Instant.now());
+
                 LOGGER.trace("Value for field {}  is {}", fieldName, response.getObject(fieldName));
                 String clazzFieldName = StringUtils.substringAfterLast(fieldName, ".");
                 try {
@@ -187,16 +197,33 @@ public class PlcEntityInterceptor {
         }
     }
 
-    private static Object fetchValueForIsGetter(Method m, PlcDriverManager driverManager, String address, AliasRegistry registry) throws OPMException {
-        return fetchValueForGetter(m, 2, driverManager, address, registry);
+    private static String getFqn(Field field) {
+        return field.getDeclaringClass().getName() + "." + field.getName();
     }
 
-    private static Object fetchValueForGetter(Method m, PlcDriverManager driverManager, String address, AliasRegistry registry) throws OPMException {
-        return fetchValueForGetter(m, 3, driverManager, address, registry);
+    /**
+     * Checks if a field needs to be refetched, i.e., the cached values are too old.
+     */
+    private static boolean needsToBeFetched(Map<String, Instant> lastFetched, Field field) {
+        long cacheDurationMillis = field.getAnnotation(PlcField.class).cacheDurationMillis();
+        String fqn = getFqn(field);
+        if (lastFetched.containsKey(fqn)) {
+            Instant last = lastFetched.get(fqn);
+            return Instant.now().minus(cacheDurationMillis, ChronoUnit.MILLIS).isAfter(last);
+        }
+        return true;
     }
 
-    private static Object fetchValueForGetter(Method m, int prefixLength, PlcDriverManager driverManager,
-                                              String address, AliasRegistry registry) throws OPMException {
+    private static Object fetchValueForIsGetter(Object proxy, Method m, PlcDriverManager driverManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
+        return fetchValueForGetter(proxy, m, 2, driverManager, address, registry, lastFetched);
+    }
+
+    private static Object fetchValueForGetter(Object proxy, Method m, PlcDriverManager driverManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
+        return fetchValueForGetter(proxy, m, 3, driverManager, address, registry, lastFetched);
+    }
+
+    private static Object fetchValueForGetter(Object proxy, Method m, int prefixLength, PlcDriverManager driverManager,
+                                              String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
         String s = m.getName().substring(prefixLength);
         // First char to lower
         String variable = s.substring(0, 1).toLowerCase().concat(s.substring(1));
@@ -209,17 +236,31 @@ public class PlcEntityInterceptor {
         } catch (NoSuchFieldException e) {
             throw new OPMException("Unable to identify field with name '" + variable + "' for call to '" + m.getName() + "'", e);
         }
+
+        // Use Fully qualified Name as field index
+        String fqn = getFqn(field);
+
+        // Check if cache is still active
+        if (!needsToBeFetched(lastFetched, field)) {
+            // Return the current value
+            try {
+                field.setAccessible(true);
+                return field.get(proxy);
+            } catch (IllegalAccessException e) {
+                throw new OPMException("Unable to restore cached (previous) value for field '" + field.getName() + "'", e);
+            }
+        }
         try (PlcConnection connection = driverManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
-
-            // Use Fully qualified Name as field index
-            String fqn = field.getDeclaringClass().getName() + "." + field.getName();
 
             PlcReadRequest request = connection.readRequestBuilder()
                 .addItem(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()))
                 .build();
 
             PlcReadResponse response = getPlcReadResponse(request);
+
+            // Fill into Cache
+            lastFetched.put(field.getName(), Instant.now());
 
             return getTyped(m.getReturnType(), response, fqn);
         } catch (ClassCastException e) {
@@ -238,8 +279,8 @@ public class PlcEntityInterceptor {
      * @param response        Response to fetch the response from
      * @param targetFieldName Name of the field in the object
      * @param sourceFieldName Name of the field in the response
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
+     * @throws NoSuchFieldException If a field is not present in entity
+     * @throws IllegalAccessException If a field in the entity cannot be accessed
      */
     static void setField(Class<?> clazz, Object o, PlcReadResponse response, String targetFieldName, String sourceFieldName) throws NoSuchFieldException, IllegalAccessException {
         LOGGER.debug("setField on clazz: {}, Object: {}, response: {}, targetFieldName: {}, sourceFieldName:{} ", clazz, o, response, targetFieldName, sourceFieldName);

@@ -36,18 +36,13 @@ public interface AliasRegistry {
     boolean canResolve(String connection, String alias);
 
     /**
-     * Resolves an alias to a valid PLC Field Adress
-     * @param alias
-     * @return
+     * Resolves an alias to a valid PLC Field Address
      */
     String resolve(String alias);
 
     /**
      * Resolves an alias to a valid PLC Field based on the connection.
      * This means that the same alias could be resolved to different Addresses for different connections.
-     * @param connection
-     * @param alias
-     * @return
      */
     String resolve(String connection, String alias);
 

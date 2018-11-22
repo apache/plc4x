@@ -25,10 +25,10 @@ import java.util.regex.Pattern;
 /**
  * Utility methods for usage with OPM.
  */
-public final class OpmUtils {
+final class OpmUtils {
 
-    public static final String ADDRESS = "address";
-    static final Pattern pattern = Pattern.compile("^\\$\\{(?<" + ADDRESS + ">.*)\\}$");
+    private static final String ADDRESS = "address";
+    static final Pattern pattern = Pattern.compile("^\\$\\{(?<" + ADDRESS + ">.*)}$");
 
     private OpmUtils() {
         // Util class
@@ -68,12 +68,9 @@ public final class OpmUtils {
     /**
      * Checks whether a given String is a valid OPM Expression, this means
      * either an Address or an alias ${xxx}.
-     *
-     * @param s
-     * @return
      */
     static boolean isValidExpression(String s) {
-        return (s.startsWith("$") && pattern.matcher(s).matches()) || s.startsWith("$") == false;
+        return !s.startsWith("$") || pattern.matcher(s).matches();
     }
 
     static boolean isAlias(String s) {
@@ -82,8 +79,8 @@ public final class OpmUtils {
 
     static String getAlias(String s) {
         Matcher matcher = pattern.matcher(s);
-        if (matcher.matches() == false) {
-            throw new IllegalArgumentException("Invalid Syntax, no Alias found in String '" + s + "'. Synatx is ${xxx}");
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid Syntax, no Alias found in String '" + s + "'. Syntax is ${xxx}");
         }
         return matcher.group(ADDRESS);
     }
