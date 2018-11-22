@@ -32,8 +32,10 @@ import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -49,12 +51,27 @@ public class PlcEntityInterceptorTest {
         PlcEntityInterceptor.getPlcReadResponse(request);
     }
 
-    @Test(expected = OPMException.class)
-    public void getPlcReadResponse_catchesInterruptedException_rethrows() throws OPMException, InterruptedException, ExecutionException, TimeoutException {
-        runGetPlcResponseWIthException(invocation -> {
-            throw new InterruptedException();
+    @Test
+    public void getPlcReadResponse_catchesInterruptedException_rethrows() throws InterruptedException {
+        AtomicBoolean exceptionWasThrown = new AtomicBoolean(false);
+        // Run in different Thread
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    runGetPlcResponseWIthException(invocation -> {
+                        throw new InterruptedException();
+                    });
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                } catch (OPMException e) {
+                    exceptionWasThrown.set(true);
+                }
+            }
         });
-        return;
+        thread.start();
+        thread.join();
+        assertTrue(exceptionWasThrown.get());
     }
 
     @Test(expected = OPMException.class)
