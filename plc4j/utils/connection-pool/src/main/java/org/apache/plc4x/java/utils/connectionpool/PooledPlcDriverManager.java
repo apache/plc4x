@@ -142,7 +142,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
     }
 
     @FunctionalInterface
-    interface PoolCreator {
+    public interface PoolCreator {
         KeyedObjectPool<PoolKey, PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory);
     }
 
