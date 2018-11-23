@@ -24,6 +24,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -150,7 +151,7 @@ public class PlcEntityInterceptor {
     static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
-        LOGGER.trace("Refetching all fields on proxy object of class " + entityClass);
+        LOGGER.trace("Refetching all fields on proxy object of class {}", entityClass);
         PlcEntity plcEntity = entityClass.getAnnotation(PlcEntity.class);
         if (plcEntity == null) {
             throw new OPMException("Non PlcEntity supplied");
@@ -173,7 +174,7 @@ public class PlcEntityInterceptor {
 
             PlcReadRequest request = requestBuilder.build();
 
-            LOGGER.trace("Request for refetch of " + entityClass + " was build and is " + request.toString());
+            LOGGER.trace("Request for refetch of {} was build and is {}", entityClass, request);
 
             PlcReadResponse response = getPlcReadResponse(request);
 
@@ -205,6 +206,7 @@ public class PlcEntityInterceptor {
      * Checks if a field needs to be refetched, i.e., the cached values are too old.
      */
     private static boolean needsToBeFetched(Map<String, Instant> lastFetched, Field field) {
+        Validate.notNull(field);
         long cacheDurationMillis = field.getAnnotation(PlcField.class).cacheDurationMillis();
         String fqn = getFqn(field);
         if (lastFetched.containsKey(fqn)) {

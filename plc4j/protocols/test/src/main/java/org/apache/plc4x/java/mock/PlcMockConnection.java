@@ -21,7 +21,6 @@ package org.apache.plc4x.java.mock;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
@@ -41,16 +40,13 @@ import java.util.stream.Collectors;
 
 public class PlcMockConnection implements PlcConnection, PlcReader {
 
-    private static final Logger logger = LoggerFactory.getLogger(PlcMockConnection.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcMockConnection.class);
 
-    private final String name;
     private final PlcAuthentication authentication;
 
-    private boolean isConnected = false;
     private MockDevice device;
 
-    PlcMockConnection(String name, PlcAuthentication authentication) {
-        this.name = name;
+    PlcMockConnection(PlcAuthentication authentication) {
         this.authentication = authentication;
     }
 
@@ -59,7 +55,7 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
     }
 
     public void setDevice(MockDevice device) {
-        logger.info("Set Mock Devie on Mock Connection " + this + " with device " + device);
+        LOGGER.info("Set Mock Devie on Mock Connection {} with device {}", this, device);
         this.device = device;
     }
 
@@ -75,7 +71,7 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
 
     @Override
     public void close() {
-        logger.info("Closing MockConnection with device " + device);
+        LOGGER.info("Closing MockConnection with device {}", device);
     }
 
     @Override
@@ -109,7 +105,7 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
 
             @Override
             public PlcReadResponse get() {
-                logger.debug("Sending read request to MockDevice");
+                LOGGER.debug("Sending read request to MockDevice");
                 Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> response = readRequest.getFieldNames().stream()
                     .collect(Collectors.toMap(
                         Function.identity(),
