@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,13 +37,21 @@ public class TestField implements PlcField {
 
     /**
      * Examples:
-     *  - {@code RANDOM/foo:INTEGER}
-     *  - {@code STDOUT/foo:STRING}
+     * - {@code RANDOM/foo:INTEGER}
+     * - {@code STDOUT/foo:STRING}
      */
     private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>.+)(\\[(?<numElements>\\d)])?$");
 
-    static boolean matches(String fieldString) {
-        return ADDRESS_PATTERN.matcher(fieldString).matches();
+    private final TestType type;
+    private final String name;
+    private final Class<?> dataType;
+    private final int numElements;
+
+    private TestField(TestType type, String name, Class<?> dataType, int numElements) {
+        this.type = type;
+        this.name = name;
+        this.dataType = dataType;
+        this.numElements = numElements;
     }
 
     public static TestField of(String fieldString) throws PlcInvalidFieldException {
@@ -66,16 +75,8 @@ public class TestField implements PlcField {
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
 
-    private final TestType type;
-    private final String name;
-    private final Class<?> dataType;
-    private final int numElements;
-
-    private TestField(TestType type, String name, Class<?> dataType, int numElements) {
-        this.type = type;
-        this.name = name;
-        this.dataType = dataType;
-        this.numElements = numElements;
+    static boolean matches(String fieldString) {
+        return ADDRESS_PATTERN.matcher(fieldString).matches();
     }
 
     public TestType getType() {
@@ -94,4 +95,33 @@ public class TestField implements PlcField {
         return numElements;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TestField)) {
+            return false;
+        }
+        TestField testField = (TestField) o;
+        return numElements == testField.numElements &&
+            type == testField.type &&
+            Objects.equals(name, testField.name) &&
+            Objects.equals(dataType, testField.dataType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, name, dataType, numElements);
+    }
+
+    @Override
+    public String toString() {
+        return "TestField{" +
+            "type=" + type +
+            ", name='" + name + '\'' +
+            ", dataType=" + dataType +
+            ", numElements=" + numElements +
+            '}';
+    }
 }

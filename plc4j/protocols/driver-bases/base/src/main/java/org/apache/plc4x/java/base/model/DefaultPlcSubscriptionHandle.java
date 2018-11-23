@@ -24,9 +24,9 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.base.messages.PlcSubscriber;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Consumer;
 
+// Warning: do not override equals and hashCode as these should not include the plcSubscriber.
 public class DefaultPlcSubscriptionHandle implements InternalPlcSubscriptionHandle {
 
     private final PlcSubscriber plcSubscriber;
@@ -41,20 +41,15 @@ public class DefaultPlcSubscriptionHandle implements InternalPlcSubscriptionHand
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof DefaultPlcSubscriptionHandle)) {
-            return false;
-        }
-        DefaultPlcSubscriptionHandle that = (DefaultPlcSubscriptionHandle) o;
-        return Objects.equals(plcSubscriber, that.plcSubscriber);
+    public boolean equals(Object obj) {
+        // A handle is unique therefore we use the default implementation from Object
+        return (this == obj);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(plcSubscriber);
+        // A handle is unique therefore we use the default implementation from Object
+        return System.identityHashCode(this);
     }
 
     @Override

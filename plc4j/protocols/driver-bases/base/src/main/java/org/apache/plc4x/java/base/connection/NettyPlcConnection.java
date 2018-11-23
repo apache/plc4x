@@ -110,21 +110,4 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
         // Implemented in sub-classes, if needed.
     }
 
-    /**
-     * Can be used to check and cast a parameter to its required internal type (can be used for general type checking too).
-     *
-     * @param o     the object to be checked against target {@code clazz}.
-     * @param clazz the expected {@code clazz}.
-     * @param <T>   the type of the expected {@code clazz}.
-     * @return the cast type of {@code clazz}.
-     */
-    protected <T> T checkInternal(Object o, Class<T> clazz) {
-        Objects.requireNonNull(o);
-        Objects.requireNonNull(clazz);
-        if (!clazz.isInstance(o)) {
-            throw new IllegalArgumentException("illegal type " + o.getClass() + ". Expected " + clazz);
-        }
-        return clazz.cast(o);
-    }
-
 }
