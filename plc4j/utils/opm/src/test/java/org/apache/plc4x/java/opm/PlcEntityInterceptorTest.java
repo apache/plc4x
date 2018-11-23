@@ -27,6 +27,8 @@ import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
@@ -41,6 +43,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class PlcEntityInterceptorTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptorTest.class);
 
     private void runGetPlcResponseWIthException(Answer a) throws InterruptedException, ExecutionException, TimeoutException, OPMException {
         PlcReadRequest request = Mockito.mock(PlcReadRequest.class);
@@ -63,7 +67,7 @@ public class PlcEntityInterceptorTest {
                         throw new InterruptedException();
                     });
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
+                    LOGGER.warn("Fetched exception", e);
                 } catch (OPMException e) {
                     exceptionWasThrown.set(true);
                 }

@@ -22,6 +22,7 @@ package org.apache.plc4x.java.opm;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Simple Map Based Implementation of {@link AliasRegistry}.
@@ -35,7 +36,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
     private final Map<String, String> aliasMap;
 
     public SimpleAliasRegistry() {
-        this(new HashMap<>());
+        this(new ConcurrentHashMap<>());
     }
 
     public SimpleAliasRegistry(Map<String, String> aliasMap) {
