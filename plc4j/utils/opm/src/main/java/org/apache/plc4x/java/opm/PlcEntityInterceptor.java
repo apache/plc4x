@@ -302,7 +302,7 @@ public class PlcEntityInterceptor {
         }
     }
 
-    @SuppressWarnings("squid:S3776") // Cognitive Complexity not too high, as highly structured
+    @SuppressWarnings({"squid:S3776", "squid:MethodCyclomaticComplexity"}) // Cognitive Complexity not too high, as highly structured
     static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
         LOGGER.debug("getTyped clazz: {}, response: {}, fieldName: {}", clazz, response, sourceFieldName);
         if (response.getResponseCode(sourceFieldName) != PlcResponseCode.OK) {
