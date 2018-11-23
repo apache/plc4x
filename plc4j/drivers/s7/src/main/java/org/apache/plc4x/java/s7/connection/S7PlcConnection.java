@@ -87,7 +87,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     private final int rack;
     private final int slot;
 
-    private final TpduSize paramPduSize;
+    private final short paramPduSize;
     private final short paramMaxAmqCaller;
     private final short paramMaxAmqCallee;
     private final S7ControllerType paramControllerType;
@@ -97,7 +97,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
         logger.info("Setting up S7cConnection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
                 "max-amq-callee {}", address.getHostAddress(), rack, slot,
-            paramPduSize.getValue(), paramMaxAmqCaller, paramMaxAmqCallee);
+            paramPduSize, paramMaxAmqCaller, paramMaxAmqCallee);
     }
 
     public S7PlcConnection(ChannelFactory channelFactory, int rack, int slot, String params) {
@@ -106,7 +106,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         this.rack = rack;
         this.slot = slot;
 
-        int curParamPduSize = 1024;
+        short curParamPduSize = 1024;
         short curParamMaxAmqCaller = 8;
         short curParamMaxAmqCallee = 8;
         S7ControllerType curParamControllerType = S7ControllerType.ANY;
@@ -119,7 +119,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                     String paramValue = paramElements[1];
                     switch (paramName) {
                         case "pdu-size":
-                            curParamPduSize = Integer.parseInt(paramValue);
+                            curParamPduSize = Short.parseShort(paramValue);
                             break;
                         case "max-amq-caller":
                             curParamMaxAmqCaller = Short.parseShort(paramValue);
@@ -148,7 +148,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
         // IsoTP uses pre defined sizes. Find the smallest box,
         // that would be able to contain the requested pdu size.
-        this.paramPduSize = TpduSize.valueForGivenSize(curParamPduSize);
+        this.paramPduSize = curParamPduSize;
         this.paramMaxAmqCaller = curParamMaxAmqCaller;
         this.paramMaxAmqCallee = curParamMaxAmqCallee;
         this.paramControllerType = curParamControllerType;
@@ -166,8 +166,8 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, 0, 0);
-        short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OTHERS, rack, slot);
+        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
+        short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, rack, slot);
 
         return new ChannelInitializer() {
             @Override
@@ -185,8 +185,8 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                     }
                 });
                 pipeline.addLast(new IsoOnTcpProtocol());
-                pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, paramPduSize));
-                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, (short) paramPduSize.getValue(),
+                pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, TpduSize.valueForGivenSize(paramPduSize)));
+                pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, paramPduSize, paramControllerType,
                     new DefaultS7MessageProcessor()));
                 pipeline.addLast(new Plc4XS7Protocol());
             }
@@ -207,7 +207,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         return slot;
     }
 
-    public TpduSize getParamPduSize() {
+    public short getParamPduSize() {
         return paramPduSize;
     }
 
