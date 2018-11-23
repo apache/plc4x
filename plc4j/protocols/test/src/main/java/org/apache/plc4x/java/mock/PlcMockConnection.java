@@ -34,6 +34,7 @@ import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PlcMockConnection implements PlcConnection, PlcReader {
@@ -101,9 +102,14 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> response = readRequest.getFieldNames().stream()
-            .collect(Collectors.toMap(Function.identity(), name -> device.read(((MockField) readRequest.getField(name)).getFieldQuery())));
-        return CompletableFuture.completedFuture(new DefaultPlcReadResponse((DefaultPlcReadRequest)readRequest, response));
+        return CompletableFuture.supplyAsync(new Supplier<PlcReadResponse>() {
+            @Override
+            public PlcReadResponse get() {
+                Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> response = readRequest.getFieldNames().stream()
+                    .collect(Collectors.toMap(Function.identity(), name -> device.read(((MockField) readRequest.getField(name)).getFieldQuery())));
+                return new DefaultPlcReadResponse((DefaultPlcReadRequest)readRequest, response);
+            }
+        });
     }
 
     @Override
