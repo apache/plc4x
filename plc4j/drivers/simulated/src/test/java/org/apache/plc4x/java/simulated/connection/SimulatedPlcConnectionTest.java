@@ -174,6 +174,7 @@ class SimulatedPlcConnectionTest implements WithAssertions {
             PlcConsumerRegistration stateRegistration = plcSubscriptionResponse.getSubscriptionHandle("state").register(stateQueue::add);
             Queue<PlcSubscriptionEvent> eventQueue = new ConcurrentLinkedQueue<>();
             PlcConsumerRegistration eventRegistration = plcSubscriptionResponse.getSubscriptionHandle("event").register(eventQueue::add);
+            assertThat(plcSubscriptionResponse.getFieldNames()).isNotEmpty();
             TimeUnit.SECONDS.sleep(10);
 
             PlcWriteRequest plcWriteRequest2 = SUT.writeRequestBuilder()
@@ -188,8 +189,14 @@ class SimulatedPlcConnectionTest implements WithAssertions {
             eventRegistration.unregister();
 
             assertThat(cyclicQueue).isNotEmpty();
+            cyclicQueue.forEach(plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("cyclic")
+            );
             assertThat(stateQueue).isNotEmpty();
+            stateQueue.forEach(plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("state")
+            );
             assertThat(eventQueue).isNotEmpty();
+            eventQueue.forEach(plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("event")
+            );
         }
     }
 

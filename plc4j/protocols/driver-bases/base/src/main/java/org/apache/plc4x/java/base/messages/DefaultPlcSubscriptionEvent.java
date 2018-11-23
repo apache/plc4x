@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -40,12 +39,12 @@ public class DefaultPlcSubscriptionEvent extends DefaultPlcReadResponse implemen
 
     @Override
     public Collection<String> getFieldNames() {
-        throw new NotImplementedException("not implemented");
+        return getValues().keySet();
     }
 
     @Override
     public PlcField getField(String name) {
-        throw new NotImplementedException("not implemented");
+        throw new UnsupportedOperationException("getField('" + name + "') not supported on " + this.getClass());
     }
 
     @Override
