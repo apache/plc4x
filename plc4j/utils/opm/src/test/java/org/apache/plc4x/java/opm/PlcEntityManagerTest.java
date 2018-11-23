@@ -35,13 +35,15 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PlcEntityManagerTest {
 
@@ -133,6 +135,66 @@ public class PlcEntityManagerTest {
         UninstantiableEntity entity = entityManager.connect(UninstantiableEntity.class, "mock:test");
     }
 
+    @Test
+    public void read_resolveAlias_works() throws OPMException, PlcConnectionException {
+        SimpleAliasRegistry registry = new SimpleAliasRegistry();
+        registry.register("alias", "real_field");
+
+        // Mock
+        PlcDriverManager driverManager = new PlcDriverManager();
+        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+        MockDevice mockDevice = Mockito.mock(MockDevice.class);
+        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("value")));
+        connection.setDevice(mockDevice);
+
+        PlcEntityManager entityManager = new PlcEntityManager(driverManager, registry);
+        entityManager.read(AliasEntity.class, "mock:test");
+
+        // Assert that "field" was queried
+        verify(mockDevice).read(eq("real_field"));
+    }
+
+    @Test
+    public void connect_resolveAlias_works() throws PlcConnectionException, OPMException {
+        SimpleAliasRegistry registry = new SimpleAliasRegistry();
+        registry.register("alias", "real_field");
+
+        // Mock
+        PlcDriverManager driverManager = new PlcDriverManager();
+        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+        MockDevice mockDevice = Mockito.mock(MockDevice.class);
+        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("value")));
+        connection.setDevice(mockDevice);
+
+        PlcEntityManager entityManager = new PlcEntityManager(driverManager, registry);
+        entityManager.connect(AliasEntity.class, "mock:test");
+
+        // Assert that "field" was queried
+        verify(mockDevice, times(1)).read(eq("real_field"));
+    }
+
+    @Test(expected = OPMException.class)
+    public void read_unknownAlias_throws() throws OPMException {
+        PlcEntityManager entityManager = new PlcEntityManager();
+
+        entityManager.read(AliasEntity.class, "mock:test");
+    }
+
+    @Test
+    public void read_badAlias_throws() {
+        PlcEntityManager entityManager = new PlcEntityManager();
+
+        String message = null;
+        try {
+            entityManager.read(BadAliasEntity.class, "mock:test");
+        } catch (OPMException e) {
+            message = e.getMessage();
+        }
+
+        assertNotNull(message);
+        assertTrue(message.contains("Invalid Syntax, either use field address (no starting $) or an alias with Syntax ${xxx}. But given was"));
+    }
+
     @PlcEntity
     private static class UninstantiableEntity {
 
@@ -154,6 +216,36 @@ public class PlcEntityManagerTest {
 
         public String getField1() {
             return field1;
+        }
+    }
+
+    @PlcEntity
+    public static class AliasEntity {
+
+        @PlcField("${alias}")
+        private String aliasedField;
+
+        public AliasEntity() {
+            // for OPM
+        }
+
+        public String getAliasedField() {
+            return aliasedField;
+        }
+    }
+
+    @PlcEntity
+    public static class BadAliasEntity {
+
+        @PlcField("${alias")
+        private String aliasedField;
+
+        public BadAliasEntity() {
+            // for OPM
+        }
+
+        public String getAliasedField() {
+            return aliasedField;
         }
     }
 

@@ -56,7 +56,7 @@ public class PlcMockDriver implements PlcDriver {
         if (deviceName.isEmpty()) {
             throw new PlcConnectionException("Invalid URL: no device name given.");
         }
-        return connectionMap.computeIfAbsent(deviceName, name -> new PlcMockConnection(name, authentication));
+        return connectionMap.computeIfAbsent(deviceName, name -> new PlcMockConnection(authentication));
     }
 
 }

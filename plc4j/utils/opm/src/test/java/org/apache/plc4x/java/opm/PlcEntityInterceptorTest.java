@@ -27,18 +27,24 @@ import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class PlcEntityInterceptorTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptorTest.class);
 
     private void runGetPlcResponseWIthException(Answer a) throws InterruptedException, ExecutionException, TimeoutException, OPMException {
         PlcReadRequest request = Mockito.mock(PlcReadRequest.class);
@@ -49,12 +55,27 @@ public class PlcEntityInterceptorTest {
         PlcEntityInterceptor.getPlcReadResponse(request);
     }
 
-    @Test(expected = OPMException.class)
-    public void getPlcReadResponse_catchesInterruptedException_rethrows() throws OPMException, InterruptedException, ExecutionException, TimeoutException {
-        runGetPlcResponseWIthException(invocation -> {
-            throw new InterruptedException();
+    @Test
+    public void getPlcReadResponse_catchesInterruptedException_rethrows() throws InterruptedException {
+        AtomicBoolean exceptionWasThrown = new AtomicBoolean(false);
+        // Run in different Thread
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    runGetPlcResponseWIthException(invocation -> {
+                        throw new InterruptedException();
+                    });
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    LOGGER.warn("Fetched exception", e);
+                } catch (OPMException e) {
+                    exceptionWasThrown.set(true);
+                }
+            }
         });
-        return;
+        thread.start();
+        thread.join();
+        assertTrue(exceptionWasThrown.get());
     }
 
     @Test(expected = OPMException.class)
