@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.java.base.messages;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -32,6 +31,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,12 +49,14 @@ class DefaultPlcSubscriptionEventTest {
 
     @Test
     void getFieldNames() {
-        assertThrows(NotImplementedException.class, () -> SUT.getFieldNames());
+        assertThat(SUT.getFieldNames(), notNullValue());
+        assertThat(SUT.getFieldNames().size(), equalTo(1));
+        assertThat(SUT.getFieldNames().iterator().next(), equalTo("foo"));
     }
 
     @Test
     void getField() {
-        assertThrows(NotImplementedException.class, () -> SUT.getField("foo"));
+        assertThrows(UnsupportedOperationException.class, () -> SUT.getField("foo"));
     }
 
     @Test
