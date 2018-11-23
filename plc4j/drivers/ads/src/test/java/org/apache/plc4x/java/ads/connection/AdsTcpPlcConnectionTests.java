@@ -1,21 +1,21 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
 
 package org.apache.plc4x.java.ads.connection;
 
@@ -47,6 +47,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.InetAddress;
@@ -81,7 +82,7 @@ class AdsTcpPlcConnectionTests implements WithAssertions {
     void setUp() throws Exception {
         SUT = AdsTcpPlcConnection.of(InetAddress.getByName("localhost"), AmsNetId.of("0.0.0.0.0.0"), AmsPort.of(13));
         // TODO: Refactor this to use the TestChannelFactory instead.
-        channelMock = mock(Channel.class, RETURNS_DEEP_STUBS);
+        channelMock = Mockito.mock(Channel.class, RETURNS_DEEP_STUBS);
         FieldUtils.writeField(SUT, "channel", channelMock, true);
         executorService = Executors.newFixedThreadPool(10);
     }
@@ -107,8 +108,8 @@ class AdsTcpPlcConnectionTests implements WithAssertions {
         void subscribe() {
             when(channelMock.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
                 PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
-                PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
-                AdsAddDeviceNotificationResponse adsAddDeviceNotificationResponse = mock(AdsAddDeviceNotificationResponse.class, RETURNS_DEEP_STUBS);
+                PlcProprietaryResponse plcProprietaryResponse = Mockito.mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
+                AdsAddDeviceNotificationResponse adsAddDeviceNotificationResponse = Mockito.mock(AdsAddDeviceNotificationResponse.class, RETURNS_DEEP_STUBS);
                 when(adsAddDeviceNotificationResponse.getResult()).thenReturn(Result.of(0));
                 when(adsAddDeviceNotificationResponse.getNotificationHandle()).thenReturn(NotificationHandle.of(1));
                 when(plcProprietaryResponse.getResponse()).thenReturn(adsAddDeviceNotificationResponse);
@@ -129,8 +130,8 @@ class AdsTcpPlcConnectionTests implements WithAssertions {
         void unsubscribe() {
             when(channelMock.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
                 PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
-                PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
-                AdsDeleteDeviceNotificationResponse adsDeleteDeviceNotificationResponse = mock(AdsDeleteDeviceNotificationResponse.class, RETURNS_DEEP_STUBS);
+                PlcProprietaryResponse plcProprietaryResponse = Mockito.mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
+                AdsDeleteDeviceNotificationResponse adsDeleteDeviceNotificationResponse = Mockito.mock(AdsDeleteDeviceNotificationResponse.class, RETURNS_DEEP_STUBS);
                 when(adsDeleteDeviceNotificationResponse.getResult()).thenReturn(Result.of(0));
                 when(plcProprietaryResponse.getResponse()).thenReturn(adsDeleteDeviceNotificationResponse);
                 plcRequestContainer.getResponseFuture().complete(plcProprietaryResponse);

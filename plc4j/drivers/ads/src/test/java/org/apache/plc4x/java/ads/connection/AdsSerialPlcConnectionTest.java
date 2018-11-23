@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -35,6 +35,7 @@ import org.apache.plc4x.java.base.connection.SerialChannelFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +48,6 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
 
 public class AdsSerialPlcConnectionTest {
 
@@ -85,10 +84,10 @@ public class AdsSerialPlcConnectionTest {
     private void prepareSerialSimulator() throws Exception {
         Field channelFactoryField = FieldUtils.getField(NettyPlcConnection.class, "channelFactory", true);
         SerialChannelFactory serialChannelFactory = (SerialChannelFactory) channelFactoryField.get(SUT);
-        SerialChannelFactory serialChannelFactorySpied = spy(serialChannelFactory);
+        SerialChannelFactory serialChannelFactorySpied = Mockito.spy(serialChannelFactory);
         EmbeddedChannel embeddedChannel = new EmbeddedChannel(SUT.getChannelHandler(null));
         embeddedChannel.connect(new JSerialCommDeviceAddress("/dev/tty0"));
-        doReturn(embeddedChannel).when(serialChannelFactorySpied).createChannel(any());
+        Mockito.doReturn(embeddedChannel).when(serialChannelFactorySpied).createChannel(any());
         channelFactoryField.set(SUT, serialChannelFactorySpied);
         SUT.connect();
         new SerialSimulator(embeddedChannel).start();

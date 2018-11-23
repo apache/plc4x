@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -24,6 +24,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -119,7 +120,7 @@ public class AdsConnectionFactoryTest {
         TcpSocketChannelFactory channelFactory = (TcpSocketChannelFactory) FieldUtils
             .getDeclaredField(NettyPlcConnection.class, "channelFactory", true)
             .get(adsTcpPlcConnection);
-        assertEquals(port, channelFactory.getPort());
+        Assert.assertEquals(port, channelFactory.getPort());
     }
 
     @Test
@@ -159,6 +160,6 @@ public class AdsConnectionFactoryTest {
         SerialChannelFactory channelFactory = (SerialChannelFactory) FieldUtils
             .getDeclaredField(NettyPlcConnection.class, "channelFactory", true)
             .get(adsSerialPlcConnection);
-        assertEquals(serialPort, channelFactory.getSerialPort());
+        Assert.assertEquals(serialPort, channelFactory.getSerialPort());
     }
 }

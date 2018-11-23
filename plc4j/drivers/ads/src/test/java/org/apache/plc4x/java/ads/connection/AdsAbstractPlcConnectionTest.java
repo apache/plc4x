@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -44,6 +44,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,8 +179,8 @@ class AdsAbstractPlcConnectionTest implements WithAssertions {
         void mapSingleField() {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
                 PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
-                PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
-                AdsReadWriteResponse adsReadWriteResponse = mock(AdsReadWriteResponse.class, RETURNS_DEEP_STUBS);
+                PlcProprietaryResponse plcProprietaryResponse = Mockito.mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
+                AdsReadWriteResponse adsReadWriteResponse = Mockito.mock(AdsReadWriteResponse.class, RETURNS_DEEP_STUBS);
                 when(adsReadWriteResponse.getResult()).thenReturn(Result.of(0));
                 when(adsReadWriteResponse.getData()).thenReturn(Data.of(new byte[]{1, 2, 3, 4}));
                 when(plcProprietaryResponse.getResponse()).thenReturn(adsReadWriteResponse);
@@ -198,8 +199,8 @@ class AdsAbstractPlcConnectionTest implements WithAssertions {
         void mapSingleFieldNegative() {
             when(channel.writeAndFlush(any(PlcRequestContainer.class))).then(invocation -> {
                 PlcRequestContainer plcRequestContainer = invocation.getArgument(0);
-                PlcProprietaryResponse plcProprietaryResponse = mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
-                AdsReadWriteResponse adsReadWriteResponse = mock(AdsReadWriteResponse.class, RETURNS_DEEP_STUBS);
+                PlcProprietaryResponse plcProprietaryResponse = Mockito.mock(InternalPlcProprietaryResponse.class, RETURNS_DEEP_STUBS);
+                AdsReadWriteResponse adsReadWriteResponse = Mockito.mock(AdsReadWriteResponse.class, RETURNS_DEEP_STUBS);
                 when(adsReadWriteResponse.getResult()).thenReturn(Result.of(1));
                 when(plcProprietaryResponse.getResponse()).thenReturn(adsReadWriteResponse);
                 plcRequestContainer.getResponseFuture().complete(plcProprietaryResponse);
