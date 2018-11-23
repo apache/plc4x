@@ -1,0 +1,73 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Object PLC Mapping
+
+
+=== What is Object PLC Mapping
+
+Object PLC Mapping (OPM) is heavily inspired by the Java Persistence API (JPA) [1].
+One of the main goal of the PLC4X Project is to make it easy to communicate with PLC devices to enable the development
+of applications that interact with PLCs.
+As many (or even most) of the application programmers are no experts in PLC Communication and protocols it should be as
+easy as possible to interact with PLCs without too much domain knowledge.
+This is exactly the reason why JPA was initialized many years ago to allow the interaction with a Database by simply
+calling methods on POJOs (Plain old Java Object).
+This is exactly what the OPM Module is for, to enable PLC communication by simply interacting with a POJO.
+
+=== Simple Example
+
+The following short code snippet shows how to read one value from a PLC via OPM.
+First, a _PlcEntityManager_ is instantiated, then a *connected* entity is fetched for a given PLC connection address.
+Connected means that all method calls of the entity are intersected and replaced by PLC calls.
+This is then used to print one value to the console.
+In the second snippet one can see how the Entity class looks. The address where to read the variable _pressure_ from is given
+in the _@PlcField_ annotation.
+[source,java]
+----
+public static void main(String[] args) {
+    PlcEntityManager em = new PlcEntityManager();
+    MyEntity entity = em.connect(MyEntity.class, "s7://...");
+    System.out.println(entity.getPressure());
+}
+----
+The class _MyEntity_ is given by
+[source,java]
+----
+@PlcEntity
+public class MyEntity {
+
+    @PlcField("DB01:DW01:LONG")
+    private double pressure;
+
+    public void MyEntity() {
+        // For OPM
+    }
+
+    public double getPressure() {
+        return pressure;
+    }
+}
+----
+
+=== Annotations
+
+=== More details
+
+=== References
+
+[1] https://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html
