@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.mock;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -66,7 +67,7 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
 
     @Override
     public boolean isConnected() {
-        return true;
+        return device != null;
     }
 
     @Override
@@ -105,6 +106,7 @@ public class PlcMockConnection implements PlcConnection, PlcReader {
 
             @Override
             public PlcReadResponse get() {
+                Validate.notNull(device, "No device is set in the mock connection!");
                 LOGGER.debug("Sending read request to MockDevice");
                 Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> response = readRequest.getFieldNames().stream()
                     .collect(Collectors.toMap(

@@ -109,7 +109,7 @@ public class PlcEntityInterceptorTest {
     @Test
     public void getterWithNoField() throws OPMException {
         PlcEntityManager entityManager = new PlcEntityManager();
-        BadEntity entity = entityManager.connect(BadEntity.class, "mock:test");
+        BadEntity entity = entityManager.connect(BadEntity.class, "test:test");
 
         String message = null;
         try {

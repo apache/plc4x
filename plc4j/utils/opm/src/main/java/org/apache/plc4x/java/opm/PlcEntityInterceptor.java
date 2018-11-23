@@ -157,6 +157,12 @@ public class PlcEntityInterceptor {
             throw new OPMException("Non PlcEntity supplied");
         }
 
+        // Check if all fields are valid
+        for (Field field : entityClass.getDeclaredFields()) {
+            if (field.isAnnotationPresent(PlcField.class)) {
+                OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcField.class).value());
+            }
+        }
         try (PlcConnection connection = driverManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
             // Build the query
@@ -296,7 +302,7 @@ public class PlcEntityInterceptor {
         }
     }
 
-    @SuppressWarnings("squid:S3776") // Cognitive Complexity not too high, as highly structured
+    @SuppressWarnings({"squid:S3776", "squid:MethodCyclomaticComplexity"}) // Cognitive Complexity not too high, as highly structured
     static Object getTyped(Class<?> clazz, PlcReadResponse response, String sourceFieldName) {
         LOGGER.debug("getTyped clazz: {}, response: {}, fieldName: {}", clazz, response, sourceFieldName);
         if (response.getResponseCode(sourceFieldName) != PlcResponseCode.OK) {

@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Mocking Driver that keeps a Map of references to Connections so that you can fetch a reference to a connection
@@ -33,7 +34,7 @@ import java.util.WeakHashMap;
  */
 public class PlcMockDriver implements PlcDriver {
 
-    private Map<String, PlcConnection> connectionMap = new WeakHashMap<>();
+    private Map<String, PlcConnection> connectionMap = new ConcurrentHashMap<>();
 
     @Override
     public String getProtocolCode() {

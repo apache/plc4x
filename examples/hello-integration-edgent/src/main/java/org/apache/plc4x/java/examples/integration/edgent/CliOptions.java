@@ -64,7 +64,7 @@ public class CliOptions {
 
             String connectionString = commandLine.getOptionValue("connection-string");
             String fieldAddress = commandLine.getOptionValue("field-address");
-            int pollingInterval = Integer.valueOf(commandLine.getOptionValue("polling-interval"));
+            int pollingInterval = Integer.parseInt(commandLine.getOptionValue("polling-interval"));
 
             return new CliOptions(connectionString, fieldAddress, pollingInterval);
         } catch (ParseException e) {

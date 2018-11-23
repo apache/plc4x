@@ -79,6 +79,12 @@
       <version>0.3.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-simulated</artifactId>
+      <version>0.3.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -86,12 +92,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <!--Currently commented out as the dependency is used "explicitly".-->
-        <!--<configuration>-->
-          <!--<usedDependencies combine.children="append">-->
-            <!--<usedDependency>org.apache.plc4x:plc4j-protocol-test</usedDependency>-->
-          <!--</usedDependencies>-->
-        <!--</configuration>-->
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+          </usedDependencies>
+        </configuration>
       </plugin>
     </plugins>
   </build>
