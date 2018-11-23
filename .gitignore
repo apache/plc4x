@@ -14,10 +14,6 @@
 # JIRA plugin
 atlassian-ide-plugin.xml
 
-### Scala template
-*.class
-*.log
-
 ### Java template
 # Compiled class file
 *.class
@@ -82,6 +78,6 @@ spock-reports
 
 # Other exclusions
 
-**/.DS_Store
+.DS_Store
 elasticsearch-data/
 jqassistant/
