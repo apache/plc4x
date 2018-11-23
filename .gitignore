@@ -79,3 +79,9 @@ local.properties
 .scannerwork
 
 spock-reports
+
+# Other exclusions
+
+.DS_Store
+elasticsearch-data/
+jqassistant/
