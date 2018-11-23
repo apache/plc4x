@@ -20,10 +20,11 @@ package org.apache.plc4x.java.s7.types;
 
 public enum S7ControllerType {
 
-    S7_ANY,
+    ANY,
     S7_300,
     S7_400,
     S7_1200,
-    S7_1500
+    S7_1500,
+    LOGO
 
 }

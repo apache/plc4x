@@ -99,10 +99,12 @@ public class S7Protocol extends ChannelDuplexHandler {
     private PendingWriteQueue queue;
     private Map<Short, DataTpdu> sentButUnacknowledgedTpdus;
 
-    public S7Protocol(short requestedMaxAmqCaller, short requestedMaxAmqCallee, short requestedPduSize, S7MessageProcessor messageProcessor) {
+    public S7Protocol(short requestedMaxAmqCaller, short requestedMaxAmqCallee, short requestedPduSize,
+                      S7ControllerType controllerType, S7MessageProcessor messageProcessor) {
         this.maxAmqCaller = requestedMaxAmqCaller;
         this.maxAmqCallee = requestedMaxAmqCallee;
         this.pduSize = requestedPduSize;
+        this.controllerType = controllerType;
         this.messageProcessor = messageProcessor;
         sentButUnacknowledgedTpdus = new HashMap<>();
     }
@@ -210,7 +212,8 @@ public class S7Protocol extends ChannelDuplexHandler {
             throw new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), message);
         } else {
             ChannelPromise subPromise = new DefaultChannelPromise(channel);
-            queue.add(new DataTpdu(true, (byte) 0x01, Collections.emptyList(), buf, message), subPromise);
+            // The tpduRef was 0x01 but had to be changed to 0x00 in order to support Siemens LOGO devices.
+            queue.add(new DataTpdu(true, (byte) 0x00, Collections.emptyList(), buf, message), subPromise);
             promiseCombiner.add((Future) subPromise);
             logger.debug("S7 Message with id {} queued", message.getTpduReference());
         }
@@ -522,18 +525,33 @@ public class S7Protocol extends ChannelDuplexHandler {
         logger.info("S7Connection established pdu-size {}, max-amq-caller {}, " +
                 "max-amq-callee {}", pduSize, maxAmqCaller, maxAmqCallee);
 
-        // Prepare a message to request the remote to identify itself.
-        S7RequestMessage identifyRemoteMessage = new S7RequestMessage(MessageType.USER_DATA, (short) 2,
-            Collections.singletonList(new CpuServicesRequestParameter(
-                CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
-                CpuServicesParameterSubFunctionGroup.READ_SSL, (byte) 0)),
-            Collections.singletonList(new CpuServicesPayload(DataTransportErrorCode.OK, SslId.MODULE_IDENTIFICATION,
-                (short) 0x0000)), null);
-        ctx.channel().writeAndFlush(identifyRemoteMessage);
+        // Only if the controller type is set to "ANY", then try to identify the PLC type.
+        if(controllerType == S7ControllerType.ANY) {
+            // Prepare a message to request the remote to identify itself.
+            S7RequestMessage identifyRemoteMessage = new S7RequestMessage(MessageType.USER_DATA, (short) 2,
+                Collections.singletonList(new CpuServicesRequestParameter(
+                    CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+                    CpuServicesParameterSubFunctionGroup.READ_SSL, (byte) 0)),
+                Collections.singletonList(new CpuServicesPayload(DataTransportErrorCode.OK, SslId.MODULE_IDENTIFICATION,
+                    (short) 0x0000)), null);
+            ctx.channel().writeAndFlush(identifyRemoteMessage);
+        }
+        // If a concrete type was specified, then we're done here.
+        else {
+            if(logger.isInfoEnabled()) {
+                logger.info(String.format("Successfully connected to S7: %s", controllerType.name()));
+                logger.info(String.format("- max amq caller: %s", maxAmqCaller));
+                logger.info(String.format("- max amq callee: %s", maxAmqCallee));
+                logger.info(String.format("- pdu size: %s", pduSize));
+            }
+
+            // Send an event that connection setup is complete.
+            ctx.channel().pipeline().fireUserEventTriggered(new S7ConnectedEvent());
+        }
     }
 
     private void handleIdentifyRemote(ChannelHandlerContext ctx, CpuServicesPayload cpuServicesPayload) {
-        controllerType = S7ControllerType.S7_ANY;
+        controllerType = S7ControllerType.ANY;
         for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
             if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
                 SslModuleIdentificationDataRecord sslModuleIdentificationDataRecord =
@@ -795,7 +813,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
     private S7ControllerType lookupControllerType(String articleNumber) {
         if(!articleNumber.startsWith("6ES7 ")) {
-            return S7ControllerType.S7_ANY;
+            return S7ControllerType.ANY;
         }
 
         String model = articleNumber.substring(articleNumber.indexOf(' ') + 1, articleNumber.indexOf(' ') + 2);
@@ -812,7 +830,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 if(logger.isInfoEnabled()) {
                     logger.info(String.format("Looking up unknown article number %s", articleNumber));
                 }
-                return S7ControllerType.S7_ANY;
+                return S7ControllerType.ANY;
         }
     }
 

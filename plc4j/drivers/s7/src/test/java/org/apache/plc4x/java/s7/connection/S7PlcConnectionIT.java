@@ -48,7 +48,7 @@ public class S7PlcConnectionIT {
     @Before
     public void setUp() {
         SUT = new S7PlcTestConnection(1, 2,
-            "pdu-size=1&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag", S7ControllerType.S7_1500);
+            "pdu-size=128&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag", S7ControllerType.S7_1500);
     }
 
     @After

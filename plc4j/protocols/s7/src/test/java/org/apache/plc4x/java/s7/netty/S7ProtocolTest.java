@@ -34,6 +34,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslModuleIdentificationDataRecord;
 import org.apache.plc4x.java.s7.netty.model.types.*;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,7 +55,7 @@ public class S7ProtocolTest {
 
     @Before
     public void setUp() {
-        SUT = new EmbeddedChannel(new S7Protocol((short) 10, (short) 10, (short) 50, null));
+        SUT = new EmbeddedChannel(new S7Protocol((short) 10, (short) 10, (short) 50, S7ControllerType.ANY, null));
     }
 
     /**

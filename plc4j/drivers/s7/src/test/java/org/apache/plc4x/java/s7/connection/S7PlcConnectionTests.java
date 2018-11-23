@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.s7.connection;
 
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.isotp.protocol.model.types.TpduSize;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.junit.After;
 import org.junit.Before;
@@ -38,7 +37,7 @@ public class S7PlcConnectionTests {
     @Before
     public void setUp() {
         SUT = new S7PlcTestConnection(1, 2,
-            "pdu-size=1&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag", S7ControllerType.S7_1200);
+            "pdu-size=128&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag", S7ControllerType.S7_1200);
     }
 
     @After
@@ -50,7 +49,7 @@ public class S7PlcConnectionTests {
     public void initialState() {
         assertThat("Rack is incorrect", SUT.getRack(), equalTo(1) );
         assertThat("Slot is incorrect", SUT.getSlot(), equalTo(2) );
-        assertThat("Pdu size is incorrect", SUT.getParamPduSize(), equalTo(TpduSize.SIZE_128));
+        assertThat("Pdu size is incorrect", SUT.getParamPduSize(), equalTo((short) 128));
         assertThat("Max AMQ Caller size is incorrect", SUT.getParamMaxAmqCaller(), equalTo(2) );
         assertThat("Max AMQ Callee size is incorrect", SUT.getParamMaxAmqCallee(), equalTo(3) );
     }

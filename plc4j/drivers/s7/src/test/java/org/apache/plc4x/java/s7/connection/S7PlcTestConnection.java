@@ -41,6 +41,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class S7PlcTestConnection extends S7PlcConnection {
 
@@ -182,8 +183,14 @@ public class S7PlcTestConnection extends S7PlcConnection {
             byte[] refData = new byte[request.readableBytes()];
             request.readBytes(refData);
 
-            // Compare the actual output to the reference output.
-            assertThat(Arrays.equals(actData, refData), equalTo(true));
+            // Compare the actual output to the reference output
+            if(!Arrays.equals(actData, refData)) {
+                for(int i = 0; i < actData.length; i++) {
+                    if(actData[i] != refData[i]) {
+                        fail("Mismatch at position " + i);
+                    }
+                }
+            }
         } catch (PcapNativeException | EOFException | TimeoutException | NotOpenException e) {
             throw new RuntimeException("Error sending pacap file " + filename, e);
         }

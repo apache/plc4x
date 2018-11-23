@@ -44,6 +44,7 @@ import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +90,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     private final TpduSize paramPduSize;
     private final short paramMaxAmqCaller;
     private final short paramMaxAmqCallee;
+    private final S7ControllerType paramControllerType;
 
     public S7PlcConnection(InetAddress address, int rack, int slot, String params) {
         this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);
@@ -107,6 +109,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         int curParamPduSize = 1024;
         short curParamMaxAmqCaller = 8;
         short curParamMaxAmqCallee = 8;
+        S7ControllerType curParamControllerType = S7ControllerType.ANY;
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
@@ -124,6 +127,9 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                         case "max-amq-callee":
                             curParamMaxAmqCallee = Short.parseShort(paramValue);
                             break;
+                        case "controller-type":
+                            curParamControllerType = S7ControllerType.valueOf(paramValue);
+                            break;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
                     }
@@ -133,11 +139,19 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             }
         }
 
+        // It seems that the LOGO devices are a little picky about the pdu-size.
+        // Instead of handling this out, they just hang up without any error message.
+        // So in case of a LOGO controller, set this to a known working value.
+        if(curParamControllerType == S7ControllerType.LOGO && curParamPduSize == 1024) {
+            curParamPduSize = 480;
+        }
+
         // IsoTP uses pre defined sizes. Find the smallest box,
         // that would be able to contain the requested pdu size.
         this.paramPduSize = TpduSize.valueForGivenSize(curParamPduSize);
         this.paramMaxAmqCaller = curParamMaxAmqCaller;
         this.paramMaxAmqCallee = curParamMaxAmqCallee;
+        this.paramControllerType = curParamControllerType;
     }
 
     @Override
