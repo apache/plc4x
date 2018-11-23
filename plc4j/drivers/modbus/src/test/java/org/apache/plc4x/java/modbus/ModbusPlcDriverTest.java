@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -61,8 +61,8 @@ public class ModbusPlcDriverTest {
     public void testDriverWithCompleteUrls() {
         ModbusPlcDriver SUT = new ModbusPlcDriver(mock(ModbusConnectionFactory.class));
         Stream.of(
-            "modbus:tcp://www.google.de",
-            "modbus:tcp://www.google.de:443",
+            "modbus:tcp://localhost",
+            "modbus:tcp://localhost:443",
             "modbus:serial:///dev/com1",
             "modbus:serial://COM1",
             "modbus:serial:///dev/ttyUSB0"

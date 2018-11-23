@@ -19,11 +19,11 @@ under the License.
 package org.apache.plc4x.java.modbus;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.spi.PlcDriver;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.modbus.connection.ModbusConnectionFactory;
+import org.apache.plc4x.java.spi.PlcDriver;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
