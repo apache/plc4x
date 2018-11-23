@@ -1,4 +1,16 @@
 ==============================================================
+(Unreleased) Apache PLC4X (incubating) 0.3.0-SNAPSHOT
+==============================================================
+
+Update Information:
+- The 'plc4j-core' module has been merged into 'plc4j-api'.
+  So there is no 'plc4j-core' module anymore. Just remove that
+  dependency.
+- The driver artifact names have changed so if you were using
+  a `plc4j-protocol-{name}` you now need to change this to
+  `plc4j-driver-{name}`
+
+==============================================================
 Apache PLC4X (incubating) 0.2.0
 ==============================================================
 
