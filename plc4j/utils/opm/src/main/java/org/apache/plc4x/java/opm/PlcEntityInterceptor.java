@@ -158,6 +158,18 @@ public class PlcEntityInterceptor {
                                          @FieldValue(PlcEntityManager.ALIAS_REGISTRY) AliasRegistry registry,
                                          @FieldValue(PlcEntityManager.LAST_FETCHED) Map<String, Instant> lastFetched,
                                          @Argument(0) Object argument) throws OPMException {
+        LOGGER.trace("Invoked method {} on connected PlcEntity {}", method.getName(), method.getDeclaringClass().getName());
+
+        // If "detached" (i.e. _driverManager is null) simply forward the call
+        if (driverManager == null) {
+            LOGGER.trace("Entity not connected, simply fowarding call");
+            try {
+                return callable.call();
+            } catch (Exception e) {
+                throw new OPMException("Exception during forwarding call", e);
+            }
+        }
+
         if (method.getName().startsWith("set")) {
             if (method.getParameterCount() != 1) {
                 throw new OPMException("Only setter with one arguments are supported");

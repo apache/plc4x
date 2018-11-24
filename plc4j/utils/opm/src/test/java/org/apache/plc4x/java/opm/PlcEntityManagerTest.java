@@ -178,13 +178,18 @@ public class PlcEntityManagerTest implements WithAssertions {
             AliasEntity connected = entityManager.write(AliasEntity.class, "mock:test", object);
             connected.setAliasedField("changed2");
             connected.getAliasedField();
+            verify(mockDevice, times(0)).read(eq("real_field"));
+            verify(mockDevice, times(1)).write(eq("real_field"), any());
+            AliasEntity merge = entityManager.merge(AliasEntity.class, "mock:test", connected);
+            merge.setAliasedField("changed2");
+            merge.getAliasedField();
 
             // Assert that "field" was queried
             verify(mockDevice, times(1)).read(eq("real_field"));
-            verify(mockDevice, times(2)).write(eq("real_field"), any());
+            verify(mockDevice, times(3)).write(eq("real_field"), any());
 
-            entityManager.disconnect(connected);
-            assertThat(connected.getAliasedField()).isEqualTo("value");
+            entityManager.disconnect(merge);
+            assertThat(merge.getAliasedField()).isEqualTo("value");
         }
 
         @Test
