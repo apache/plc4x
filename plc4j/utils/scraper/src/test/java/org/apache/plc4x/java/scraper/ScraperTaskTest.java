@@ -90,9 +90,10 @@ public class ScraperTaskTest implements WithAssertions {
             ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
                 1_000, ForkJoinPool.commonPool());
 
-            assertThatThrownBy(scraperTask::run)
-                .isInstanceOf(PlcRuntimeException.class)
-                .hasMessageContaining("Unable to fetch connection");
+            ScraperTask spy = spy(scraperTask);
+            spy.run();
+
+            verify(spy).handleException(any());
         }
 
         @Test

@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.scraper;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.pool2.KeyedObjectPool;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.plc4x.java.PlcDriverManager;
@@ -30,9 +29,9 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
 import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
-import org.apache.plc4x.java.utils.connectionpool.PoolKey;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcConnectionFactory;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -40,12 +39,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ScraperTest {
+class ScraperTest implements WithAssertions {
 
     @Mock
     MockDevice mockDevice;
@@ -57,6 +57,7 @@ class ScraperTest {
     public static final String FIELD_STRING_CH = "%DB3:DBD32:DINT";
 
     @Test
+    @Disabled
     void real_stuff() throws InterruptedException {
         PlcDriverManager driverManager = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
             GenericKeyedObjectPoolConfig<PlcConnection> config = new GenericKeyedObjectPoolConfig<>();
@@ -102,6 +103,74 @@ class ScraperTest {
             )
         ));
 
-        Thread.sleep(5_000);
+        scraper.start();
+
+        Thread.sleep(1_000);
+
+        // Assert that tasks got done.
+        assertThat(scraper.getScheduler()).isInstanceOf(ScheduledThreadPoolExecutor.class);
+        assertThat(scraper.getNumberOfActiveTasks())
+            .isEqualTo(2);
+        assertThat(((ScheduledThreadPoolExecutor) scraper.getScheduler()).getCompletedTaskCount())
+            .isGreaterThan(10);
+    }
+
+    @Test
+    void stop_stopsAllJobs() throws PlcConnectionException {
+        PlcDriverManager driverManager = new PlcDriverManager();
+        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:m1");
+        connection.setDevice(mockDevice);
+
+        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
+
+        Scraper scraper = new Scraper(driverManager, Collections.singletonList(
+            new Scraper.ScrapeJob("job1",
+                1,
+                Collections.singletonMap("m1", "mock:m1"),
+                Collections.singletonMap("field1", "qry1")
+            )
+        ));
+
+        scraper.start();
+
+        assertThat(scraper.getNumberOfActiveTasks())
+            .isEqualTo(1);
+
+        scraper.stop();
+
+        assertThat(scraper.getNumberOfActiveTasks())
+            .isZero();
+    }
+
+    @Test
+    void restart_works() throws PlcConnectionException {
+        PlcDriverManager driverManager = new PlcDriverManager();
+        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:m1");
+        connection.setDevice(mockDevice);
+
+        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
+
+        Scraper scraper = new Scraper(driverManager, Collections.singletonList(
+            new Scraper.ScrapeJob("job1",
+                1,
+                Collections.singletonMap("m1", "mock:m1"),
+                Collections.singletonMap("field1", "qry1")
+            )
+        ));
+
+        scraper.start();
+
+        assertThat(scraper.getNumberOfActiveTasks())
+            .isEqualTo(1);
+
+        scraper.stop();
+
+        assertThat(scraper.getNumberOfActiveTasks())
+            .isZero();
+
+        scraper.start();
+
+        assertThat(scraper.getNumberOfActiveTasks())
+            .isEqualTo(1);
     }
 }

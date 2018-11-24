@@ -31,11 +31,11 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
 /**
@@ -58,6 +58,7 @@ public class Scraper {
             .build()
     );
     private final MultiValuedMap<ScrapeJob, ScraperTask> tasks = new ArrayListValuedHashMap<>();
+    private final MultiValuedMap<ScraperTask, ScheduledFuture<?>> futures = new ArrayListValuedHashMap<>();
     private final PlcDriverManager driverManager;
     private final List<ScrapeJob> jobs;
 
@@ -65,9 +66,14 @@ public class Scraper {
         Validate.notEmpty(jobs);
         this.driverManager = driverManager;
         this.jobs = jobs;
+    }
 
+    /**
+     * Start the scraping.
+     */
+    public void start() {
         // Schedule all jobs
-        LOGGER.info("Registering jobs...");
+        LOGGER.info("Starting jobs...");
         jobs.stream()
             .flatMap(job -> job.connections.entrySet().stream()
                 .map(entry -> Triple.of(job, entry.getKey(), entry.getValue()))
@@ -83,8 +89,11 @@ public class Scraper {
                         handlerPool);
                     // Add task to internal list
                     tasks.put(tuple.getLeft(), task);
-                    scheduler.scheduleAtFixedRate(task,
+                    ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task,
                         0, tuple.getLeft().scrapeRate, TimeUnit.MILLISECONDS);
+
+                    // Store the handle for stopping, etc.
+                    futures.put(task, future);
                 }
             );
 
@@ -93,10 +102,32 @@ public class Scraper {
             for (Map.Entry<ScrapeJob, ScraperTask> entry : tasks.entries()) {
                 DescriptiveStatistics statistics = entry.getValue().getLatencyStatistics();
                 String msg = String.format(Locale.ENGLISH, "Job statistics (%s, %s) number of requests: %d (%d success, %.1f %% failed, %.1f %% too slow), mean latency: %.2f ms, median: %.2f ms",
-                    entry.getValue().getJobName(), entry.getValue().getConnectionAlias(), entry.getValue().getRequestCounter(), entry.getValue().getSuccessfullRequestCounter(), entry.getValue().getPercentageFailed(), statistics.apply(new PercentageAboveThreshold(entry.getKey().scrapeRate*1e6)), statistics.getMean()*1e-6, statistics.getPercentile(50)*1e-6);
+                    entry.getValue().getJobName(), entry.getValue().getConnectionAlias(), entry.getValue().getRequestCounter(), entry.getValue().getSuccessfullRequestCounter(), entry.getValue().getPercentageFailed(), statistics.apply(new PercentageAboveThreshold(entry.getKey().scrapeRate * 1e6)), statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
                 LOGGER.info(msg);
             }
         }, 1_000, 1_000, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * For testing.
+     */
+    ScheduledExecutorService getScheduler() {
+        return scheduler;
+    }
+
+    public int getNumberOfActiveTasks() {
+        return (int) futures.entries().stream().filter(entry -> !entry.getValue().isDone()).count();
+    }
+
+    public void stop() {
+        // Stop all futures
+        LOGGER.info("Stopping scraper...");
+        for (Map.Entry<ScraperTask, ScheduledFuture<?>> entry : futures.entries()) {
+            LOGGER.debug("Stopping task {}...", entry.getKey());
+            entry.getValue().cancel(true);
+        }
+        // Clear the map
+        futures.clear();
     }
 
     public static class ScrapeJob {
@@ -133,7 +164,7 @@ public class Scraper {
             long below = Arrays.stream(values)
                 .filter(val -> val <= threshold)
                 .count();
-            return (double)below/values.length;
+            return (double) below / values.length;
         }
 
         @Override
@@ -142,7 +173,7 @@ public class Scraper {
                 .mapToDouble(i -> values[i])
                 .filter(val -> val > threshold)
                 .count();
-            return 100.0*below/length;
+            return 100.0 * below / length;
         }
 
         @Override
