@@ -87,7 +87,7 @@ public class PlcEntityInterceptor {
      * @return possible result of the original methods invocation
      * @throws OPMException Problems with plc / proxying
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "squid:S00107"})
     @RuntimeType
     public static Object interceptGetter(@This Object proxy, @Origin Method method, @SuperCall Callable<?> callable,
                                          @FieldValue(PlcEntityManager.PLC_ADDRESS_FIELD_NAME) String address,
@@ -151,6 +151,7 @@ public class PlcEntityInterceptor {
         }
     }
 
+    @SuppressWarnings({"unused", "squid:S00107"})
     @RuntimeType
     public static Object interceptSetter(@This Object proxy, @Origin Method method, @SuperCall Callable<?> callable,
                                          @FieldValue(PlcEntityManager.PLC_ADDRESS_FIELD_NAME) String address,

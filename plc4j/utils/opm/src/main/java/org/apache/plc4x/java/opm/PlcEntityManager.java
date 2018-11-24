@@ -24,6 +24,7 @@ import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.MethodDelegation;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,7 +187,7 @@ public class PlcEntityManager {
         try {
             return field.get(object);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new PlcRuntimeException(e);
         }
     }
 
@@ -194,7 +195,7 @@ public class PlcEntityManager {
         try {
             field.set(object, value);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new PlcRuntimeException(e);
         }
     }
 

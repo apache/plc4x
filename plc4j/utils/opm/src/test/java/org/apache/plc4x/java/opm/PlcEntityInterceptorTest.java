@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,41 +36,30 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PlcEntityInterceptorTest implements WithAssertions {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptorTest.class);
 
-    private void runGetPlcResponseWIthException(Answer a) throws InterruptedException, ExecutionException, TimeoutException, OPMException {
-        PlcReadRequest request = Mockito.mock(PlcReadRequest.class);
-        CompletableFuture future = Mockito.mock(CompletableFuture.class);
-        when(future.get(anyLong(), any())).then(a);
-        when(request.execute()).thenReturn(future);
-
-        PlcEntityInterceptor.getPlcReadResponse(request);
-    }
-
     @Test
     public void getPlcReadResponse_catchesInterruptedException_rethrows() throws InterruptedException {
         AtomicBoolean exceptionWasThrown = new AtomicBoolean(false);
         // Run in different Thread
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    runGetPlcResponseWIthException(invocation -> {
-                        throw new InterruptedException();
-                    });
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    LOGGER.warn("Fetched exception", e);
-                } catch (OPMException e) {
-                    exceptionWasThrown.set(true);
-                }
+        Thread thread = new Thread(() -> {
+            try {
+                runGetPlcResponseWIthException(invocation -> {
+                    throw new InterruptedException();
+                });
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                LOGGER.warn("Fetched exception", e);
+                Thread.currentThread().interrupt();
+            } catch (OPMException e) {
+                exceptionWasThrown.set(true);
             }
         });
         thread.start();
@@ -89,9 +77,8 @@ public class PlcEntityInterceptorTest implements WithAssertions {
 
     @Test
     public void getPlcReadResponse_timeoutOnGet_rethrows() {
-        PlcReadRequest request = Mockito.mock(PlcReadRequest.class);
-        CompletableFuture future = new CompletableFuture<>();
-        when(request.execute()).thenReturn(future);
+        PlcReadRequest request = mock(PlcReadRequest.class);
+        when(request.execute()).thenReturn(new CompletableFuture<>());
 
         assertThatThrownBy(() -> PlcEntityInterceptor.getPlcReadResponse(request))
             .isInstanceOf(OPMException.class);
@@ -100,13 +87,9 @@ public class PlcEntityInterceptorTest implements WithAssertions {
     @Test
     public void getTyped_notOkResponse_throws() {
         DefaultPlcReadResponse response = new DefaultPlcReadResponse(null, Collections.singletonMap("field", Pair.of(PlcResponseCode.NOT_FOUND, null)));
-        String message = null;
-        try {
-            PlcEntityInterceptor.getTyped(Long.class, response, "field");
-        } catch (PlcRuntimeException e) {
-            message = e.getMessage();
-        }
-        assertEquals("Unable to read specified field 'field', response code was 'NOT_FOUND'", message);
+        assertThatThrownBy(() -> PlcEntityInterceptor.getTyped(Long.class, response, "field"))
+            .isInstanceOf(PlcRuntimeException.class)
+            .hasMessage("Unable to read specified field 'field', response code was 'NOT_FOUND'");
     }
 
     @Test
@@ -114,13 +97,18 @@ public class PlcEntityInterceptorTest implements WithAssertions {
         PlcEntityManager entityManager = new PlcEntityManager();
         BadEntity entity = entityManager.connect(BadEntity.class, "test:test");
 
-        String message = null;
-        try {
-            entity.getField1();
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-        assertEquals("Unable to identify field with name 'field1' for call to 'getField1'", message);
+        assertThatThrownBy(entity::getField1)
+            .isInstanceOf(OPMException.class)
+            .hasMessage("Unable to identify field with name 'field1' for call to 'getField1'");
+    }
+
+    private void runGetPlcResponseWIthException(Answer a) throws InterruptedException, ExecutionException, TimeoutException, OPMException {
+        PlcReadRequest request = mock(PlcReadRequest.class);
+        CompletableFuture future = mock(CompletableFuture.class);
+        when(future.get(anyLong(), any())).then(a);
+        when(request.execute()).thenReturn(future);
+
+        PlcEntityInterceptor.getPlcReadResponse(request);
     }
 
     @PlcEntity

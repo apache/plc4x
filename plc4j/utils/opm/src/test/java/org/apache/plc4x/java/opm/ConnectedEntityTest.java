@@ -21,13 +21,15 @@ package org.apache.plc4x.java.opm;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
 import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.IntStream;
 
@@ -38,55 +40,54 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for Connected Entities.
  */
+@ExtendWith(MockitoExtension.class)
 public class ConnectedEntityTest {
 
-    @Test
-    public void useCache() throws PlcConnectionException, OPMException {
-        // Mock
-        PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:cached");
-        MockDevice mock = Mockito.mock(MockDevice.class);
-        when(mock.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
-        connection.setDevice(mock);
-        PlcEntityManager entityManager = new PlcEntityManager(driverManager);
+    PlcDriverManager driverManager;
 
+    PlcMockConnection connection;
+
+    PlcEntityManager entityManager;
+
+    @Mock
+    MockDevice mockDevice;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        driverManager = new PlcDriverManager();
+        connection = (PlcMockConnection) driverManager.getConnection("mock:cached");
+        when(mockDevice.read(any()))
+            .thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
+        connection.setDevice(mockDevice);
+        entityManager = new PlcEntityManager(driverManager);
+    }
+
+    @Test
+    void useCache() throws OPMException {
         // Trigger a fetch
         CachingEntity entity = entityManager.connect(CachingEntity.class, "mock:cached");
         // Trigger second fetch
         assertEquals("hallo", entity.getField());
 
-        verify(mock, timeout(1_000).times(1)).read(any());
+        verify(mockDevice, timeout(1_000).times(1)).read(any());
     }
 
     @Test
-    public void useCache_timeout_refetches() throws PlcConnectionException, OPMException, InterruptedException {
-        // Mock
-        PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:cached");
-        MockDevice mock = Mockito.mock(MockDevice.class);
-        when(mock.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
-        connection.setDevice(mock);
-        PlcEntityManager entityManager = new PlcEntityManager(driverManager);
-
+    void useCache_timeout_refetches() throws OPMException, InterruptedException {
         // Trigger a fetch
         CachingEntity entity = entityManager.connect(CachingEntity.class, "mock:cached");
         Thread.sleep(500);
         // Trigger second fetch
         assertEquals("hallo", entity.getField());
 
-        verify(mock, timeout(1_000).times(2)).read(any());
+        verify(mockDevice, timeout(1_000).times(2)).read(any());
     }
 
     @Test
-    public void cache_manyRequests_onlyOneToPlc() throws PlcConnectionException, OPMException {
+    void cache_manyRequests_onlyOneToPlc() throws OPMException {
         // Mock
-        PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:cached");
-        MockDevice mock = Mockito.mock(MockDevice.class);
-        when(mock.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
-        when(mock.write(any(), any())).thenReturn(PlcResponseCode.OK);
-        connection.setDevice(mock);
-        PlcEntityManager entityManager = new PlcEntityManager(driverManager);
+        when(mockDevice.write(any(), any()))
+            .thenReturn(PlcResponseCode.OK);
 
         // Trigger a fetch
         CachingEntity entity = entityManager.connect(CachingEntity.class, "mock:cached");
@@ -94,7 +95,7 @@ public class ConnectedEntityTest {
         IntStream.range(1, 10).forEach(i -> entity.getField());
         IntStream.range(1, 10).forEach(i -> entity.dummyMethod());
 
-        verify(mock, timeout(1_000).times(1)).read(any());
+        verify(mockDevice, timeout(1_000).times(1)).read(any());
     }
 
     @PlcEntity

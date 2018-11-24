@@ -33,7 +33,9 @@ import org.apache.plc4x.java.mock.PlcMockConnection;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -41,6 +43,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class PlcEntityManagerTest implements WithAssertions {
 
     @Nested
