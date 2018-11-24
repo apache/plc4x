@@ -19,11 +19,13 @@
 
 package org.apache.plc4x.java.mock;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -31,6 +33,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PlcMockConnectionTest implements WithAssertions {
@@ -94,8 +100,9 @@ class PlcMockConnectionTest implements WithAssertions {
     }
 
     @Test
-    @Disabled("due to mysterious NPE")
     void write() throws Exception {
+        when(mockDevice.write(any(), any())).thenReturn(PlcResponseCode.OK);
+
         PlcWriteRequest plcWriteRequest = SUT.writeRequestBuilder()
             .addItem("asd", "asd", "asd")
             .build();
@@ -106,8 +113,9 @@ class PlcMockConnectionTest implements WithAssertions {
     }
 
     @Test
-    @Disabled("due to mysterious NPE")
     void subscribe() throws Exception {
+        when(mockDevice.subscribe(any())).thenReturn(Pair.of(PlcResponseCode.OK, mock(PlcSubscriptionHandle.class)));
+
         PlcSubscriptionRequest plcSubscriptionRequest = SUT.subscriptionRequestBuilder()
             .addChangeOfStateField("asd", "asd")
             .build();
