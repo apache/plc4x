@@ -24,7 +24,8 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
-import org.junit.Test;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class PlcEntityInterceptorTest {
+public class PlcEntityInterceptorTest implements WithAssertions {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptorTest.class);
 
@@ -78,20 +79,22 @@ public class PlcEntityInterceptorTest {
         assertTrue(exceptionWasThrown.get());
     }
 
-    @Test(expected = OPMException.class)
-    public void getPlcReadResponse_catchesExecutionException_rethrows() throws OPMException, InterruptedException, ExecutionException, TimeoutException {
-        runGetPlcResponseWIthException(invocation -> {
+    @Test
+    public void getPlcReadResponse_catchesExecutionException_rethrows() {
+        assertThatThrownBy(() -> runGetPlcResponseWIthException(invocation -> {
             throw new ExecutionException(new Exception());
-        });
+        }))
+            .isInstanceOf(OPMException.class);
     }
 
-    @Test(expected = OPMException.class)
-    public void getPlcReadResponse_timeoutOnGet_rethrows() throws OPMException {
+    @Test
+    public void getPlcReadResponse_timeoutOnGet_rethrows() {
         PlcReadRequest request = Mockito.mock(PlcReadRequest.class);
         CompletableFuture future = new CompletableFuture<>();
         when(request.execute()).thenReturn(future);
 
-        PlcEntityInterceptor.getPlcReadResponse(request);
+        assertThatThrownBy(() -> PlcEntityInterceptor.getPlcReadResponse(request))
+            .isInstanceOf(OPMException.class);
     }
 
     @Test
@@ -128,7 +131,6 @@ public class PlcEntityInterceptorTest {
         }
 
         // Getter with no field
-        @PlcField("field1")
         public String getField1() {
             return "";
         }

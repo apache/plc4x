@@ -22,6 +22,7 @@ package org.apache.plc4x.java.mock;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 public class MockFieldHandler extends DefaultPlcFieldHandler {
 
@@ -30,4 +31,73 @@ public class MockFieldHandler extends DefaultPlcFieldHandler {
         return new MockField(fieldQuery);
     }
 
+    @Override
+    public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeShort(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeLong(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeBigDecimal(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeString(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeTime(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeDate(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
+
+    @Override
+    public BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values) {
+        return new MockFieldItem(values);
+    }
 }

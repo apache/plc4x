@@ -17,19 +17,18 @@
  under the License.
  */
 
-package org.apache.plc4x.java.opm;
+package org.apache.plc4x.java.mock;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
-/**
- * Field that is mapped
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
-public @interface PlcField {
-    String value();
-    long cacheDurationMillis() default 1000;
+public class MockFieldItem extends BaseDefaultFieldItem<Object> {
+
+    public MockFieldItem(Object... values) {
+        super(values);
+    }
+
+    public Object getObject(int index) {
+        return getValue(index);
+    }
+
 }

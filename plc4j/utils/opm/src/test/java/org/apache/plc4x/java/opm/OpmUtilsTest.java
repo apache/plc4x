@@ -19,11 +19,12 @@
 
 package org.apache.plc4x.java.opm;
 
-import org.junit.Test;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
-public class OpmUtilsTest {
+public class OpmUtilsTest implements WithAssertions {
 
     @Test
     public void expression_matches() {
@@ -57,8 +58,9 @@ public class OpmUtilsTest {
         assertFalse(OpmUtils.isValidExpression("${hallo"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void getAlias_illegalString_throws() {
-        OpmUtils.getAlias("hallo");
+        assertThatThrownBy(() -> OpmUtils.getAlias("hallo"))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }

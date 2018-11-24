@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
 import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.stream.IntStream;
@@ -84,16 +84,17 @@ public class ConnectedEntityTest {
         PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:cached");
         MockDevice mock = Mockito.mock(MockDevice.class);
         when(mock.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
+        when(mock.write(any(), any())).thenReturn(PlcResponseCode.OK);
         connection.setDevice(mock);
         PlcEntityManager entityManager = new PlcEntityManager(driverManager);
 
         // Trigger a fetch
         CachingEntity entity = entityManager.connect(CachingEntity.class, "mock:cached");
         // Trigger Many Fetches via getter
-        IntStream.range(1,100).forEach(i -> entity.getField());
-        IntStream.range(1,100).forEach(i -> entity.dummyMethod());
+        IntStream.range(1, 100).forEach(i -> entity.getField());
+        IntStream.range(1, 100).forEach(i -> entity.dummyMethod());
 
-        verify(mock, timeout(1_000).times(1)).read(any());
+        verify(mock, timeout(1_000).times(2)).read(any());
     }
 
     @PlcEntity

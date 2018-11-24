@@ -19,14 +19,15 @@
 
 package org.apache.plc4x.java.opm;
 
-import org.junit.Test;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
-public class SimpleAliasRegistryTest {
+public class SimpleAliasRegistryTest implements WithAssertions {
 
     public static final String ADDRESS = "DB2:1234";
     public static final String ALIAS = "some_field";
@@ -57,11 +58,13 @@ public class SimpleAliasRegistryTest {
         assertFalse(registry.canResolve(ALIAS));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void resolve_unknownAlias_throws() {
         SimpleAliasRegistry registry = new SimpleAliasRegistry();
 
-        registry.resolve(ALIAS);
+        assertThatThrownBy(() -> registry.resolve(ALIAS))
+            .isInstanceOf(NoSuchElementException.class);
+
     }
 
     private void checkMethods(SimpleAliasRegistry registry) {

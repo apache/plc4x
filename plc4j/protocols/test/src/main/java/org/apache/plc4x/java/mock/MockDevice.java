@@ -20,9 +20,14 @@
 package org.apache.plc4x.java.mock;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * Mock Object to do assertions on.
@@ -31,7 +36,15 @@ public interface MockDevice {
 
     Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery);
 
-    // TODO Implement this
-    // void write(String fieldQuery, BaseDefaultFieldItem value);
+    PlcResponseCode write(String fieldQuery, Object value);
 
+    Pair<PlcResponseCode, PlcSubscriptionHandle> subscribe(String fieldQuery);
+
+    void unsubscribe();
+
+    // TODO: this might not be right here as you are not really register at the device, rather on the connection
+    PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles);
+
+    // TODO: this might not be right here as you are not really register at the device, rather on the connection
+    void unregister(PlcConsumerRegistration registration);
 }
