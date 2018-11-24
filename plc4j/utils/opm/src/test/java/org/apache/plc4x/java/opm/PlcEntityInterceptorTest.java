@@ -25,12 +25,17 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -42,6 +47,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class PlcEntityInterceptorTest implements WithAssertions {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptorTest.class);
@@ -100,6 +106,23 @@ public class PlcEntityInterceptorTest implements WithAssertions {
         assertThatThrownBy(entity::getField1)
             .isInstanceOf(OPMException.class)
             .hasMessage("Unable to identify field with name 'field1' for call to 'getField1'");
+    }
+
+    @Nested
+    class Misc {
+
+        @Mock
+        Callable callable;
+
+        @Test
+        void missingCases() throws Exception {
+            when(callable.call()).then(invocation -> {
+                throw new PlcRuntimeException("broken");
+            });
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, this.getClass().getDeclaredMethod("missingCases"), callable, null, null, null, null, null))
+                .isInstanceOf(OPMException.class)
+                .hasMessage("Exception during forwarding call");
+        }
     }
 
     private void runGetPlcResponseWIthException(Answer a) throws InterruptedException, ExecutionException, TimeoutException, OPMException {
