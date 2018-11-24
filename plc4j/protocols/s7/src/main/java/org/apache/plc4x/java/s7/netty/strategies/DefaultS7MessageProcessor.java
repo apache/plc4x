@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.netty.strategies;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.base.messages.PlcProtocolMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
@@ -31,6 +32,7 @@ import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
+import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.MessageType;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
@@ -116,26 +118,60 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         compositeRequestMessage.addRequestMessage(subMessage);
 
         // This calculates the size of the header for the request and response.
-        int curRequestSize = S7RequestSizeCalculator.getRequestMessageSize(subMessage);
-        int curResponseSize = S7ResponseSizeEstimator.getEstimatedResponseMessageSize(subMessage);
+        int initialRequestSize = S7RequestSizeCalculator.getRequestMessageSize(subMessage);
+        int curRequestSize = initialRequestSize;
+        int initialResponseSize = S7ResponseSizeEstimator.getEstimatedResponseMessageSize(subMessage);
+        int curResponseSize = initialResponseSize;
+
+        VarParameter preProcessedVarParameter = new VarParameter(varParameter.getType(), new LinkedList<>());
+        for (VarParameterItem varParameterItem : varParameter.getItems()) {
+            // Use the S7RequestSizeCalculator to calculate the actual and estimated item sizes.
+            int itemRequestSize = S7RequestSizeCalculator.getRequestItemTotalSize(
+                varParameterItem, null);
+            int itemResponseSize = S7ResponseSizeEstimator.getEstimatedResponseReadItemTotalSize(
+                varParameterItem, null);
+
+            // If the item would not fit into a separate message, we have to split it.
+            if((initialRequestSize + itemRequestSize > pduSize) || (initialResponseSize + itemResponseSize > pduSize)) {
+                // The max response size is the size of the empty response, plus the type and num-items (each one byte) of one VarParameter, plus the size of the header one VarPayloadItem
+                int maxResponseSize = pduSize - (initialResponseSize + 2 + 4);
+
+                S7AnyVarParameterItem s7AnyVarParameterItem = ((S7AnyVarParameterItem) varParameterItem);
+                int maxNumElements = (int) Math.floor(
+                    (double) maxResponseSize / (double) s7AnyVarParameterItem.getDataType().getSizeInBytes());
+                int sizeMaxNumElementInBytes = maxNumElements * s7AnyVarParameterItem.getDataType().getSizeInBytes();
+                int remainingNumElements = s7AnyVarParameterItem.getNumElements();
+                short curByteOffset = s7AnyVarParameterItem.getByteOffset();
+
+                while(remainingNumElements > 0) {
+                    int numCurElements = Math.min(remainingNumElements, maxNumElements);
+                    VarParameterItem subVarParameterItem = new S7AnyVarParameterItem(
+                        s7AnyVarParameterItem.getSpecificationType(), s7AnyVarParameterItem.getMemoryArea(),
+                        s7AnyVarParameterItem.getDataType(), numCurElements, s7AnyVarParameterItem.getDataBlockNumber(),
+                        curByteOffset, (byte) 0);
+                    preProcessedVarParameter.getItems().add(subVarParameterItem);
+
+                    remainingNumElements -= maxNumElements;
+                    curByteOffset += sizeMaxNumElementInBytes;
+                }
+            }
+            // In all other cases, just forward the item.
+            else {
+                preProcessedVarParameter.getItems().add(varParameterItem);
+            }
+        }
 
         // For each var item of the original request, try adding them to the current sub-message
         // as long as it or the resulting response does not exceed the max PDU size.
-        for (VarParameterItem varParameterItem : varParameter.getItems()) {
-            VarPayloadItem varPayloadItem = null;
-            Optional<VarPayloadItem> payloadItem = request.getPayload(VarPayloadItem.class);
-            if (payloadItem.isPresent()) {
-                varPayloadItem = payloadItem.get();
-            }
-
+        for (VarParameterItem varParameterItem : preProcessedVarParameter.getItems()) {
             // Use the S7RequestSizeCalculator to calculate the actual and estimated item sizes.
             int itemRequestSize = S7RequestSizeCalculator.getRequestItemTotalSize(
-                varParameterItem, varPayloadItem);
+                varParameterItem, null);
             int itemResponseSize = S7ResponseSizeEstimator.getEstimatedResponseReadItemTotalSize(
-                varParameterItem, varPayloadItem);
+                varParameterItem, null);
 
-            // When adding this item to the request we would exceed the pdu size in
-            // the request or response, so we have to create a new sub-message.
+            // If adding this item, would exceed either the request or response size,
+            // create a new sub-message and add this item to that.
             if ((curRequestSize + itemRequestSize > pduSize) || (curResponseSize + itemResponseSize > pduSize)) {
                 // Create a new var parameter without any items (yet).
                 subVarParameter = new VarParameter(varParameter.getType(), new LinkedList<>());
@@ -147,8 +183,8 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                     Collections.emptyList(), compositeRequestMessage);
 
                 // Reset the message size
-                curRequestSize = S7RequestSizeCalculator.getRequestMessageSize(subMessage);
-                curResponseSize = S7ResponseSizeEstimator.getEstimatedResponseMessageSize(subMessage);
+                curRequestSize = S7RequestSizeCalculator.getRequestMessageSize(subMessage) + itemRequestSize;
+                curResponseSize = S7ResponseSizeEstimator.getEstimatedResponseMessageSize(subMessage) + itemResponseSize;
 
                 // Add this new sub-message to the composite.
                 compositeRequestMessage.addRequestMessage(subMessage);
@@ -158,7 +194,6 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 curResponseSize += itemResponseSize;
             }
 
-            // Add the item to the current subVarParameter.
             subVarParameter.getItems().add(varParameterItem);
         }
         return compositeRequestMessage;
@@ -177,9 +212,10 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         List<VarParameterItem> parameterItems = varParameter.getItems();
         List<VarPayloadItem> payloadItems = varPayload.getItems();
 
-        for (int i1 = 0; i1 < parameterItems.size(); i1++) {
-            VarParameterItem varParameterItem = parameterItems.get(i1);
-            VarPayloadItem varPayloadItem = payloadItems.get(i1);
+        for (int i = 0; i < parameterItems.size(); i++) {
+            VarParameterItem varParameterItem = parameterItems.get(i);
+            VarPayloadItem varPayloadItem = payloadItems.get(i);
+
             if (varParameterItem instanceof S7AnyVarParameterItem) {
                 S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameterItem;
                 short byteOffset = s7AnyVarParameterItem.getByteOffset();
@@ -314,81 +350,96 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
     private S7ResponseMessage getMergedResponseMessage(S7RequestMessage requestMessage,
                                                        Collection<? extends S7ResponseMessage> responses) {
-
-        S7ResponseMessage firstResponse = null;
+        MessageType messageType = null;
         short tpduReference = requestMessage.getTpduReference();
         List<S7Parameter> s7Parameters = new LinkedList<>();
         List<S7Payload> s7Payloads = new LinkedList<>();
-        byte errorClass = 0;
-        byte errorCode = 0;
-        VarParameter readVarParameter = null;
-        VarParameter writeVarParameter = null;
-        VarPayload readVarPayload = null;
-        VarPayload writeVarPayload = null;
 
-        // TODO: We should change this code to not use the lists of the first parameter or payload as this can cause problems when using mutable lists.
-        for (S7ResponseMessage response : responses) {
-            if(firstResponse == null) {
-                firstResponse = response;
+        Optional<VarParameter> varParameterOptional = requestMessage.getParameter(VarParameter.class);
+
+        // This is neither a read request nor a write request, just merge all parameters together.
+        if(!varParameterOptional.isPresent()) {
+            for (S7ResponseMessage response : responses) {
+                messageType = response.getMessageType();
+                s7Parameters.addAll(response.getParameters());
+                s7Payloads.addAll(response.getPayloads());
             }
-            // Some parameters have to be merged. In case of read and write parameters
-            // their items have to be merged into one single parameter.
-            for(S7Parameter parameter : response.getParameters()) {
-                if (parameter.getType() == ParameterType.READ_VAR) {
-                    if (readVarParameter == null) {
-                        readVarParameter = (VarParameter) parameter;
-                        s7Parameters.add(parameter);
-                    } else {
-                        readVarParameter.mergeParameter((VarParameter) parameter);
+        }
+
+        // This is a read or write request, we have to merge all the items in the var parameter.
+        else {
+            List<VarParameterItem> parameterItems = new LinkedList<>();
+            List<VarPayloadItem> payloadItems = new LinkedList<>();
+            for (S7ResponseMessage response : responses) {
+                messageType = response.getMessageType();
+                parameterItems.addAll(response.getParameter(VarParameter.class)
+                    .orElseThrow(() -> new PlcRuntimeException(
+                        "Every response of a Read message should have a VarParameter instance")).getItems());
+                Optional<VarPayload> payload = response.getPayload(VarPayload.class);
+                payload.ifPresent(varPayload -> payloadItems.addAll(varPayload.getItems()));
+            }
+
+            List<VarParameterItem> mergedParameterItems = new LinkedList<>();
+            List<VarPayloadItem> mergedPayloadItems = new LinkedList<>();
+            VarParameter varParameter = varParameterOptional.get();
+
+            int responseOffset = 0;
+            for(int i = 0; i < varParameter.getItems().size(); i++) {
+                S7AnyVarParameterItem requestItem = (S7AnyVarParameterItem) varParameter.getItems().get(i);
+
+                // Get the pairs of corresponding parameter and payload items.
+                S7AnyVarParameterItem responseParameterItem = (S7AnyVarParameterItem) parameterItems.get(i + responseOffset);
+                VarPayloadItem responsePayloadItem = payloadItems.get(i + responseOffset);
+                int dataOffset = (responsePayloadItem.getData() != null) ? responsePayloadItem.getData().length : 0;
+
+                // The resulting parameter items is identical to the request parameter item.
+                mergedParameterItems.add(requestItem);
+
+                // The payload will have to be merged and the return codes will have to be examined.
+                if(requestItem.getNumElements() != responseParameterItem.getNumElements()) {
+                    int totalSizeInBytes = requestItem.getNumElements() * requestItem.getDataType().getSizeInBytes();
+                    byte[] data = new byte[totalSizeInBytes];
+                    System.arraycopy(responsePayloadItem.getData(), 0, data, 0, responsePayloadItem.getData().length);
+
+                    // Initialize the current size, this will be lower than the original, as the only
+                    // way to have different count, is if the request was split up.
+                    int curSize = responseParameterItem.getNumElements();
+
+                    // Now iterate over the succeeding pairs of parameters and payloads till we have
+                    // found the original number of elements.
+                    while(curSize < totalSizeInBytes) {
+                        responseOffset++;
+                        // No need to process the parameters, we only need them to get the number of items.
+                        responseParameterItem = (S7AnyVarParameterItem) parameterItems.get(i + responseOffset);
+                        curSize += responseParameterItem.getNumElements();
+
+                        // Get the next payload item in the list.
+                        responsePayloadItem = payloadItems.get(i + responseOffset);
+
+                        // Copy the data of this item behind the previous content.
+                        System.arraycopy(responsePayloadItem.getData(), 0, data, dataOffset, responsePayloadItem.getData().length);
+                        dataOffset += responsePayloadItem.getData().length;
                     }
-                } else if (parameter.getType() == ParameterType.WRITE_VAR) {
-                    if (writeVarParameter == null) {
-                        writeVarParameter = (VarParameter) parameter;
-                        s7Parameters.add(parameter);
-                    } else {
-                        writeVarParameter.mergeParameter((VarParameter) parameter);
-                    }
+
+                    mergedPayloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK,
+                        responsePayloadItem.getDataTransportSize(), data));
                 } else {
-                    s7Parameters.add(parameter);
+                    mergedPayloadItems.add(responsePayloadItem);
                 }
             }
 
-            // Some payloads have to be merged. In case of read and write payloads
-            // their items have to be merged into one single payload.
-            for(S7Payload payload : response.getPayloads()) {
-                if(payload.getType() == ParameterType.READ_VAR) {
-                    if (readVarPayload == null) {
-                        readVarPayload = (VarPayload) payload;
-                    } else {
-                        s7Payloads.remove(readVarPayload);
-                        readVarPayload = readVarPayload.mergePayload((VarPayload) payload);
-                    }
-                    s7Payloads.add(readVarPayload);
-                } else if(payload.getType() == ParameterType.WRITE_VAR) {
-                    if(writeVarPayload == null) {
-                        writeVarPayload = (VarPayload) payload;
-                    } else {
-                        s7Payloads.remove(writeVarPayload);
-                        writeVarPayload = writeVarPayload.mergePayload((VarPayload) payload);
-                    }
-                    s7Payloads.add(writeVarPayload);
-                } else {
-                    s7Payloads.add(payload);
-                }
-            }
+            s7Parameters.add(new VarParameter(varParameter.getType(), mergedParameterItems));
+            s7Payloads.add(new VarPayload(varParameter.getType(), mergedPayloadItems));
         }
-        if(firstResponse != null) {
-            MessageType messageType = firstResponse.getMessageType();
-            return new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode);
-        }
-        return null;
+        // TODO: The error codes are wrong
+        return new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, (byte) 0xFF, (byte) 0xFF);
     }
 
     static class S7CompositeRequestMessage implements PlcProtocolMessage {
 
         private S7RequestMessage originalRequest;
-        private Collection<S7RequestMessage> requestMessages;
-        private Collection<S7ResponseMessage> responseMessages;
+        private List<S7RequestMessage> requestMessages;
+        private List<S7ResponseMessage> responseMessages;
 
         S7CompositeRequestMessage(S7RequestMessage originalRequest) {
             this.originalRequest = originalRequest;
@@ -419,7 +470,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             requestMessages.add(requestMessage);
         }
 
-        private Collection<S7RequestMessage> getRequestMessages() {
+        public List<S7RequestMessage> getRequestMessages() {
             return requestMessages;
         }
 
@@ -427,7 +478,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             responseMessages.add(responseMessage);
         }
 
-        private Collection<S7ResponseMessage> getResponseMessages() {
+        public List<S7ResponseMessage> getResponseMessages() {
             return responseMessages;
         }
     }

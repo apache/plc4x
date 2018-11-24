@@ -26,11 +26,11 @@ import java.util.Map;
 
 public enum DataTransportErrorCode {
     RESERVED((byte) 0x00),
+    OK((byte) 0xFF),
     ACCESS_DENIED((byte) 0x03),
     INVALID_ADDRESS((byte) 0x05),
     DATA_TYPE_NOT_SUPPORTED((byte) 0x06),
-    NOT_FOUND((byte) 0x0A),
-    OK((byte) 0xFF);
+    NOT_FOUND((byte) 0x0A);
 
     private static final Logger logger = LoggerFactory.getLogger(DataTransportErrorCode.class);
 

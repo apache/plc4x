@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.s7.connection;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
@@ -225,7 +226,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             // Send the PLC a message that the connection is being closed.
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
                 (short) 0x0000, (short) 0x000F, DisconnectReason.NORMAL, Collections.emptyList(),
-                null);
+                Unpooled.EMPTY_BUFFER);
 
             // In case of an ISO TP Class 0 connection, the remote is usually expected to actively
             // close the connection. So we add a listener waiting for this to happen.

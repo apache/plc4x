@@ -681,7 +681,8 @@ public class S7Protocol extends ChannelDuplexHandler {
                 if (!isResponse) {
                     varParamameter = decodeReadWriteVarParameter(in, numItems);
                 } else {
-                    varParamameter = Collections.emptyList();
+                    varParamameter = Collections.singletonList(
+                        new S7AnyVarParameterItem(null, null, null, numItems, (short) 0, (short) 0, (byte) 0));
                 }
                 return new VarParameter(parameterType, varParamameter);
             case SETUP_COMMUNICATION:
