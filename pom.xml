@@ -433,6 +433,9 @@
 
             <!-- Data files created by examples running an embedded elasticsearch -->
             <exclude>elasticsearch-data/**</exclude>
+
+            <!-- JSON doesn't like comments -->
+            <exclude>**/*.json</exclude>
           </excludes>
         </configuration>
       </plugin>
