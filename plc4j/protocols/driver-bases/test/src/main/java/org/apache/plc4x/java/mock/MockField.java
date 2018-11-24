@@ -21,16 +21,29 @@ package org.apache.plc4x.java.mock;
 
 import org.apache.plc4x.java.api.model.PlcField;
 
+import java.util.List;
+
 public class MockField implements PlcField {
 
     private final String fieldQuery;
 
+    private final List<Object> values;
+
     public MockField(String fieldQuery) {
         this.fieldQuery = fieldQuery;
+        values = null;
+    }
+
+    public MockField(String fieldQuery, List<Object> values) {
+        this.fieldQuery = fieldQuery;
+        this.values = values;
     }
 
     public String getFieldQuery() {
         return fieldQuery;
     }
 
+    public List<Object> getValues() {
+        return values;
+    }
 }
