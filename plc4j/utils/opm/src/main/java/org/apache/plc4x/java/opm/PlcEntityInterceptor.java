@@ -60,6 +60,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @author julian
  */
+@SuppressWarnings({"common-java:DuplicatedBlocks", "Duplicates"})
 public class PlcEntityInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptor.class);

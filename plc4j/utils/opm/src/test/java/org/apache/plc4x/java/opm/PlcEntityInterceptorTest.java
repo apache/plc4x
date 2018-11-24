@@ -139,7 +139,12 @@ public class PlcEntityInterceptorTest implements WithAssertions {
             }
 
             public void setOk2(String ok) {
+            }
 
+            public void setOkOk(String ok, String ok2) {
+            }
+
+            public void someNotSetterMethod(String arg) {
             }
 
             public void something() {
@@ -170,6 +175,16 @@ public class PlcEntityInterceptorTest implements WithAssertions {
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
                 .hasStackTraceContaining(" Unable to read specified field 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOk2", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .isInstanceOf(OPMException.class)
+                .hasMessage("Problem during processing")
+                .hasStackTraceContaining(" Unable to read specified field 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOkOk", String.class, String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .isInstanceOf(OPMException.class)
+                .hasMessage("Only setter with one arguments are supported");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("someNotSetterMethod", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .isInstanceOf(OPMException.class)
+                .hasMessage("Unable to forward invocation someNotSetterMethod on connected PlcEntity");
         }
     }
 
