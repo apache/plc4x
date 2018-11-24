@@ -47,7 +47,7 @@ public class Scraper {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10,
         new BasicThreadFactory.Builder()
             .namingPattern("scheduler-thread-%d")
-            .daemon(true)
+            .daemon(false)
             .build()
     );
     private final ExecutorService handlerPool = Executors.newFixedThreadPool(4,
@@ -56,6 +56,9 @@ public class Scraper {
             .daemon(true)
             .build()
     );
+
+    private final ResultHandler resultHandler;
+
     private final MultiValuedMap<ScrapeJob, ScraperTask> tasks = new ArrayListValuedHashMap<>();
     private final MultiValuedMap<ScraperTask, ScheduledFuture<?>> futures = new ArrayListValuedHashMap<>();
     private final PlcDriverManager driverManager;
@@ -65,17 +68,20 @@ public class Scraper {
      * Creates a Scraper instance from a configuration.
      * By default a {@link PooledPlcDriverManager} is used.
      * @param config Configuration to use.
+     * @param resultHandler
      */
-    public Scraper(ScraperConfiguration config) {
-        this(new PooledPlcDriverManager(), config.getJobs());
+    public Scraper(ScraperConfiguration config, ResultHandler resultHandler) {
+        this(resultHandler, new PooledPlcDriverManager(), config.getJobs());
     }
 
     /**
      *
+     * @param resultHandler
      * @param driverManager
      * @param jobs
      */
-    public Scraper(PlcDriverManager driverManager, List<ScrapeJob> jobs) {
+    public Scraper(ResultHandler resultHandler, PlcDriverManager driverManager, List<ScrapeJob> jobs) {
+        this.resultHandler = resultHandler;
         Validate.notEmpty(jobs);
         this.driverManager = driverManager;
         this.jobs = jobs;
@@ -99,7 +105,7 @@ public class Scraper {
                         tuple.getLeft().getName(), tuple.getMiddle(), tuple.getRight(),
                         tuple.getLeft().getFields(),
                         1_000,
-                        handlerPool);
+                        handlerPool, resultHandler);
                     // Add task to internal list
                     tasks.put(tuple.getLeft(), task);
                     ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task,
@@ -141,6 +147,13 @@ public class Scraper {
         }
         // Clear the map
         futures.clear();
+    }
+
+    @FunctionalInterface
+    public interface ResultHandler {
+
+        void handle(Map<String, Object> results);
+
     }
 
 }

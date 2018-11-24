@@ -22,7 +22,6 @@ package org.apache.plc4x.java.scraper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
 import org.apache.plc4x.java.mock.MockDevice;
@@ -35,7 +34,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +54,7 @@ public class ScraperTaskTest implements WithAssertions {
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
 
         ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
-            1_000, ForkJoinPool.commonPool());
+            1_000, ForkJoinPool.commonPool(), m -> {});
 
         scraperTask.run();
     }
@@ -73,7 +71,7 @@ public class ScraperTaskTest implements WithAssertions {
             when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.NOT_FOUND, new DefaultStringFieldItem("hallo")));
 
             ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1",
-                "mock:scraper", Collections.singletonMap("a", "b"), 1_000, ForkJoinPool.commonPool());
+                "mock:scraper", Collections.singletonMap("a", "b"), 1_000, ForkJoinPool.commonPool(), m -> {});
 
             // When
             scraperTask.run();
@@ -88,7 +86,7 @@ public class ScraperTaskTest implements WithAssertions {
             when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
 
             ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
-                1_000, ForkJoinPool.commonPool());
+                1_000, ForkJoinPool.commonPool(), m -> {});
 
             ScraperTask spy = spy(scraperTask);
             spy.run();
@@ -101,7 +99,7 @@ public class ScraperTaskTest implements WithAssertions {
             when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
             ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
             ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
-                1_000, ForkJoinPool.commonPool());
+                1_000, ForkJoinPool.commonPool(), m -> {});
 
             Future<?> future = pool.scheduleAtFixedRate(scraperTask, 0, 10, TimeUnit.MILLISECONDS);
 

@@ -1,0 +1,25 @@
+sources:
+  S7_TIM: s7://10.10.64.22/0/1
+  S7_CHRIS: s7://10.10.64.20/0/1
+
+jobs:
+  - name: pressure-job
+    scrapeRate: 10
+    sources:
+    - S7_TIM
+    fields:
+      pressure: '%DB225:DBW0:INT'
+
+  - name: another-job
+    scrapeRate: 100
+    sources:
+    - S7_TIM
+    fields:
+      temperature: '%DB225:DBW0:INT'
+
+  - name: counter-job
+    scrapeRate: 100
+    sources:
+    - S7_CHRIS
+    fields:
+      counter: '%DB3:DBD32:DINT'
