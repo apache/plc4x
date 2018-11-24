@@ -39,6 +39,7 @@
     <module>apache-kafka</module>
     <module>apache-mynewt</module>
     <module>apache-nifi</module>
+    <module>apache-karaf</module>
   </modules>
 
 </project>
