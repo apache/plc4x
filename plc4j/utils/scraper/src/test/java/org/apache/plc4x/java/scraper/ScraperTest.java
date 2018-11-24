@@ -60,6 +60,7 @@ class ScraperTest {
     void real_stuff() throws InterruptedException {
         PlcDriverManager driverManager = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
             GenericKeyedObjectPoolConfig<PlcConnection> config = new GenericKeyedObjectPoolConfig<>();
+            config.setJmxEnabled(true);
             config.setMaxWaitMillis(-1);
             config.setMaxTotal(3);
             config.setMinIdlePerKey(0);
@@ -82,7 +83,7 @@ class ScraperTest {
             )
         ));
 
-        Thread.sleep(300_000);
+        Thread.sleep(30_000_000);
     }
 
     @Test
