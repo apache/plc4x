@@ -116,12 +116,8 @@ class ScraperTest implements WithAssertions {
     }
 
     @Test
-    void stop_stopsAllJobs() throws PlcConnectionException {
+    void stop_stopsAllJobs() {
         PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:m1");
-        connection.setDevice(mockDevice);
-
-        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
 
         Scraper scraper = new Scraper(driverManager, Collections.singletonList(
             new Scraper.ScrapeJob("job1",
