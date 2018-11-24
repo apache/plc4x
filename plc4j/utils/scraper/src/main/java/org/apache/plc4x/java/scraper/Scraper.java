@@ -120,8 +120,12 @@ public class Scraper {
         scheduler.scheduleAtFixedRate(() -> {
             for (Map.Entry<ScrapeJob, ScraperTask> entry : tasks.entries()) {
                 DescriptiveStatistics statistics = entry.getValue().getLatencyStatistics();
-                String msg = String.format(Locale.ENGLISH, "Job statistics (%s, %s) number of requests: %d (%d success, %.1f %% failed, %.1f %% too slow), mean latency: %.2f ms, median: %.2f ms",
-                    entry.getValue().getJobName(), entry.getValue().getConnectionAlias(), entry.getValue().getRequestCounter(), entry.getValue().getSuccessfullRequestCounter(), entry.getValue().getPercentageFailed(), statistics.apply(new PercentageAboveThreshold(entry.getKey().getScrapeRate() * 1e6)), statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
+                String msg = String.format(Locale.ENGLISH, "Job statistics (%s, %s) number of requests: %d (%d success, %.1f %% failed, %.1f %% too slow), min latency: %.2f ms, mean latency: %.2f ms, median: %.2f ms",
+                    entry.getValue().getJobName(), entry.getValue().getConnectionAlias(),
+                    entry.getValue().getRequestCounter(), entry.getValue().getSuccessfullRequestCounter(),
+                    entry.getValue().getPercentageFailed(),
+                    statistics.apply(new PercentageAboveThreshold(entry.getKey().getScrapeRate() * 1e6)),
+                    statistics.getMin() * 1e-6, statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
                 LOGGER.info(msg);
             }
         }, 1_000, 1_000, TimeUnit.MILLISECONDS);
