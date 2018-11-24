@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.opm;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -28,13 +29,17 @@ import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -114,14 +119,57 @@ public class PlcEntityInterceptorTest implements WithAssertions {
         @Mock
         Callable callable;
 
+        @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+        PlcDriverManager plcDriverManager;
+
+        class MiscEntity {
+
+            @PlcField("asd")
+            private String ok2;
+
+            public void getTest(String a) {
+            }
+
+            public String getOk() {
+                return "";
+            }
+
+            public String getOk2() {
+                return ok2;
+            }
+
+            public void setOk2(String ok) {
+
+            }
+
+            public void something() {
+
+            }
+        }
+
         @Test
         void missingCases() throws Exception {
             when(callable.call()).then(invocation -> {
                 throw new PlcRuntimeException("broken");
             });
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, this.getClass().getDeclaredMethod("missingCases"), callable, null, null, null, null, null))
+            Map<String, Instant> lastFetched = new HashMap<>();
+            Map<String, Instant> lastWritten = new HashMap<>();
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("something"), callable, null, null, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Exception during forwarding call");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getTest", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .isInstanceOf(OPMException.class)
+                .hasMessage("Only getter with no arguments are supported");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .isInstanceOf(OPMException.class)
+                .hasMessageMatching("Unable to identify field with name .*");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .isInstanceOf(OPMException.class)
+                .hasMessage("Problem during processing");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .isInstanceOf(OPMException.class)
+                .hasMessage("Problem during processing")
+                .hasStackTraceContaining(" Unable to read specified field 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
         }
     }
 
