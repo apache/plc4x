@@ -47,4 +47,11 @@ class SimulatedPlcDriverTest implements WithAssertions {
     void connect_secure() {
         assertThatThrownBy(() -> SUT.connect(null, null)).isInstanceOf(PlcConnectionException.class);
     }
+
+    @Test
+    void wrongUrl() {
+        assertThatThrownBy(() -> SUT.connect("test:"))
+            .isInstanceOf(PlcConnectionException.class)
+            .hasMessage("Invalid URL: no device name given.");
+    }
 }

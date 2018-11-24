@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -19,17 +19,13 @@
 
 package org.apache.plc4x.java.simulated.connection;
 
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.Test;
 
-public class TestFieldItem<T> extends BaseDefaultFieldItem<T> {
+class TestFieldItemTest implements WithAssertions {
 
-    public TestFieldItem(T... values) {
-        super(values);
+    @Test
+    void getObject() {
+        assertThat(new TestFieldItem<String>("").getObject(0)).isNotNull();
     }
-
-    @Override
-    public Object getObject(int index) {
-        return getValue(index);
-    }
-
 }
