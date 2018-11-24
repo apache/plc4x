@@ -49,7 +49,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-connectionString-pool</artifactId>
+      <artifactId>plc4j-connection-pool</artifactId>
       <version>0.3.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
@@ -58,6 +58,19 @@
       <artifactId>plc4j-protocol-test</artifactId>
       <version>0.3.0-SNAPSHOT</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <!--TODO Remove this-->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
     </dependency>
   </dependencies>
 

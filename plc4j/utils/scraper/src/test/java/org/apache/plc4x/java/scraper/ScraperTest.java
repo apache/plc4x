@@ -20,57 +20,81 @@
 package org.apache.plc4x.java.scraper;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.pool2.KeyedObjectPool;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
 import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
-import org.junit.Test;
-import org.mockito.Mockito;
+import org.apache.plc4x.java.utils.connectionpool.PoolKey;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcConnectionFactory;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class ScraperTest {
+@ExtendWith(MockitoExtension.class)
+class ScraperTest {
+
+    @Mock
+    MockDevice mockDevice;
+
+    public static final String CONN_STRING_TIM = "s7://10.10.64.22/0/1";
+    public static final String FIELD_STRING_TIM = "%DB225:DBW0:INT";
+
+        public static final String CONN_STRING_CH = "s7://10.10.64.20/0/1";
+    public static final String FIELD_STRING_CH = "%DB3:DBD32:DINT";
 
     @Test
-    public void scrape() throws PlcConnectionException {
-        PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:scraper");
-        MockDevice mockDevice = Mockito.mock(MockDevice.class);
-        connection.setDevice(mockDevice);
-        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
-
-        Scraper scraper = new Scraper(driverManager, "mock:scraper", 1_000, new Scraper.ResultHandler() {
+    void real_stuff() throws InterruptedException {
+        PlcDriverManager driverManager = new PooledPlcDriverManager(new PooledPlcDriverManager.PoolCreator() {
             @Override
-            public void handle(Map<String, Object> result) {
-                System.out.println(result);
-            }
-
-            @Override
-            public void handleException(Exception e) {
-                System.err.println(e);
+            public KeyedObjectPool<PoolKey, PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory) {
+                return null;
             }
         });
 
-        scraper.run();
+        Scraper scraper = new Scraper(driverManager, Arrays.asList(
+            new Scraper.ScrapeJob("job1",
+                10,
+                Collections.singletonMap("tim", CONN_STRING_TIM),
+                Collections.singletonMap("distance", FIELD_STRING_TIM)
+            ),
+            new Scraper.ScrapeJob("job2",
+                10,
+                Collections.singletonMap("chris", CONN_STRING_CH),
+                Collections.singletonMap("counter", FIELD_STRING_CH)
+            )
+        ));
+
+        Thread.sleep(300_000);
     }
 
     @Test
-    public void scrape_badResponseCode_shouldHandleException() throws PlcConnectionException {
+    void scraper_schedulesJob() throws InterruptedException, PlcConnectionException {
         PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:scraper");
-        MockDevice mockDevice = Mockito.mock(MockDevice.class);
+        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
-        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.NOT_FOUND, new DefaultStringFieldItem("hallo")));
 
-        Scraper.ResultHandler handler = Mockito.mock(Scraper.ResultHandler.class);
+        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
 
-        Scraper scraper = new Scraper(driverManager, "mock:scraper", 1_000, null);
+        Scraper scraper = new Scraper(driverManager, Collections.singletonList(
+            new Scraper.ScrapeJob("job1",
+                10,
+                Collections.singletonMap("m1", "mock:m1"),
+                Collections.singletonMap("field1", "qry1")
+            )
+        ));
 
-        scraper.run();
+        Thread.sleep(5_000);
     }
 }

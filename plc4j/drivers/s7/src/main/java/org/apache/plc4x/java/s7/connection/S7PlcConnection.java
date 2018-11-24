@@ -242,7 +242,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             // If the remote didn't close the connection within the given time-frame, we have to take
             // care of closing the connection.
             catch (TimeoutException e) {
-                logger.info("Remote didn't close connection within the configured timeout of {}ms, shutting down actively.", CLOSE_DEVICE_TIMEOUT_MS, e);
+                logger.debug("Remote didn't close connection within the configured timeout of {} ms, shutting down actively.", CLOSE_DEVICE_TIMEOUT_MS, e);
                 channel.close();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
