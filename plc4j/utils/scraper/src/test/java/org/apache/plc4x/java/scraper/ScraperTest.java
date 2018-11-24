@@ -21,6 +21,8 @@ package org.apache.plc4x.java.scraper;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.pool2.KeyedObjectPool;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -51,16 +53,20 @@ class ScraperTest {
     public static final String CONN_STRING_TIM = "s7://10.10.64.22/0/1";
     public static final String FIELD_STRING_TIM = "%DB225:DBW0:INT";
 
-        public static final String CONN_STRING_CH = "s7://10.10.64.20/0/1";
+    public static final String CONN_STRING_CH = "s7://10.10.64.20/0/1";
     public static final String FIELD_STRING_CH = "%DB3:DBD32:DINT";
 
     @Test
     void real_stuff() throws InterruptedException {
-        PlcDriverManager driverManager = new PooledPlcDriverManager(new PooledPlcDriverManager.PoolCreator() {
-            @Override
-            public KeyedObjectPool<PoolKey, PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory) {
-                return null;
-            }
+        PlcDriverManager driverManager = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
+            GenericKeyedObjectPoolConfig<PlcConnection> config = new GenericKeyedObjectPoolConfig<>();
+            config.setMaxWaitMillis(-1);
+            config.setMaxTotal(3);
+            config.setMinIdlePerKey(0);
+            config.setBlockWhenExhausted(true);
+            config.setTestOnBorrow(true);
+            config.setTestOnReturn(true);
+            return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, config);
         });
 
         Scraper scraper = new Scraper(driverManager, Arrays.asList(

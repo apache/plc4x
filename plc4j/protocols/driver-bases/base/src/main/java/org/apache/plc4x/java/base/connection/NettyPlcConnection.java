@@ -97,7 +97,7 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
 
     @Override
     public boolean isConnected() {
-        return connected;
+        return connected && channel.isActive();
     }
 
     public Channel getChannel() {

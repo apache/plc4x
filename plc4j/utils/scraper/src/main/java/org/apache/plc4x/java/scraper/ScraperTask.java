@@ -24,6 +24,8 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -83,7 +85,16 @@ public class ScraperTask implements Runnable {
         requestCounter.incrementAndGet();
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        try (PlcConnection connection = driverManager.getConnection(connectionString)) {
+        PlcConnection connection = null;
+        try {
+            CompletableFuture<PlcConnection> future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return driverManager.getConnection(connectionString);
+                } catch (PlcConnectionException e) {
+                    throw new PlcRuntimeException(e);
+                }
+            }, handlerService);
+            connection = future.get(10*requestTimeoutMs, TimeUnit.MILLISECONDS);
             LOGGER.trace("Connection to {} established: {}", connectionString, connection);
             PlcReadResponse response;
             try {
@@ -111,9 +122,16 @@ public class ScraperTask implements Runnable {
             // Handle response (Async)
             CompletableFuture.runAsync(() -> handle(transformResponseToMap(response)), handlerService);
         } catch (Exception e) {
-            failedStatistics.addValue(1.0);
             LOGGER.debug("Exception during scrape", e);
             handleException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Exception e) {
+                    // intentionally do nothing
+                }
+            }
         }
     }
 
@@ -166,6 +184,7 @@ public class ScraperTask implements Runnable {
     }
 
     public void handleException(Exception e) {
+        LOGGER.debug("Exception: ", e);
         failedStatistics.addValue(1.0);
     }
 
