@@ -24,19 +24,18 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.math3.stat.descriptive.UnivariateStatistic;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.util.PercentageAboveThreshold;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.stream.IntStream;
 
 /**
  * Main class that orchestrates scraping.
@@ -62,6 +61,20 @@ public class Scraper {
     private final PlcDriverManager driverManager;
     private final List<ScrapeJob> jobs;
 
+    /**
+     * Creates a Scraper instance from a configuration.
+     * By default a {@link PooledPlcDriverManager} is used.
+     * @param config Configuration to use.
+     */
+    public Scraper(ScraperConfiguration config) {
+        this(new PooledPlcDriverManager(), config.getJobs());
+    }
+
+    /**
+     *
+     * @param driverManager
+     * @param jobs
+     */
     public Scraper(PlcDriverManager driverManager, List<ScrapeJob> jobs) {
         Validate.notEmpty(jobs);
         this.driverManager = driverManager;
@@ -75,22 +88,22 @@ public class Scraper {
         // Schedule all jobs
         LOGGER.info("Starting jobs...");
         jobs.stream()
-            .flatMap(job -> job.connections.entrySet().stream()
+            .flatMap(job -> job.getConnections().entrySet().stream()
                 .map(entry -> Triple.of(job, entry.getKey(), entry.getValue()))
             )
             .forEach(
                 tuple -> {
                     LOGGER.debug("Register task for job {} for conn {} ({}) at rate {} ms",
-                        tuple.getLeft().name, tuple.getMiddle(), tuple.getRight(), tuple.getLeft().scrapeRate);
+                        tuple.getLeft().getName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate());
                     ScraperTask task = new ScraperTask(driverManager,
-                        tuple.getLeft().name, tuple.getMiddle(), tuple.getRight(),
-                        tuple.getLeft().fields,
+                        tuple.getLeft().getName(), tuple.getMiddle(), tuple.getRight(),
+                        tuple.getLeft().getFields(),
                         1_000,
                         handlerPool);
                     // Add task to internal list
                     tasks.put(tuple.getLeft(), task);
                     ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task,
-                        0, tuple.getLeft().scrapeRate, TimeUnit.MILLISECONDS);
+                        0, tuple.getLeft().getScrapeRate(), TimeUnit.MILLISECONDS);
 
                     // Store the handle for stopping, etc.
                     futures.put(task, future);
@@ -102,7 +115,7 @@ public class Scraper {
             for (Map.Entry<ScrapeJob, ScraperTask> entry : tasks.entries()) {
                 DescriptiveStatistics statistics = entry.getValue().getLatencyStatistics();
                 String msg = String.format(Locale.ENGLISH, "Job statistics (%s, %s) number of requests: %d (%d success, %.1f %% failed, %.1f %% too slow), mean latency: %.2f ms, median: %.2f ms",
-                    entry.getValue().getJobName(), entry.getValue().getConnectionAlias(), entry.getValue().getRequestCounter(), entry.getValue().getSuccessfullRequestCounter(), entry.getValue().getPercentageFailed(), statistics.apply(new PercentageAboveThreshold(entry.getKey().scrapeRate * 1e6)), statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
+                    entry.getValue().getJobName(), entry.getValue().getConnectionAlias(), entry.getValue().getRequestCounter(), entry.getValue().getSuccessfullRequestCounter(), entry.getValue().getPercentageFailed(), statistics.apply(new PercentageAboveThreshold(entry.getKey().getScrapeRate() * 1e6)), statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
                 LOGGER.info(msg);
             }
         }, 1_000, 1_000, TimeUnit.MILLISECONDS);
@@ -130,55 +143,4 @@ public class Scraper {
         futures.clear();
     }
 
-    public static class ScrapeJob {
-
-        private final String name;
-        private final long scrapeRate;
-        /**
-         * alias -> connection-string
-         */
-        private final Map<String, String> connections;
-        /**
-         * alias -> field-query
-         */
-        private final Map<String, String> fields;
-
-        public ScrapeJob(String name, long scrapeRate, Map<String, String> connections, Map<String, String> fields) {
-            this.name = name;
-            this.scrapeRate = scrapeRate;
-            this.connections = connections;
-            this.fields = fields;
-        }
-    }
-
-    private static class PercentageAboveThreshold implements UnivariateStatistic {
-
-        private final double threshold;
-
-        public PercentageAboveThreshold(double threshold) {
-            this.threshold = threshold;
-        }
-
-        @Override
-        public double evaluate(double[] values) throws MathIllegalArgumentException {
-            long below = Arrays.stream(values)
-                .filter(val -> val <= threshold)
-                .count();
-            return (double) below / values.length;
-        }
-
-        @Override
-        public double evaluate(double[] values, int begin, int length) throws MathIllegalArgumentException {
-            long below = IntStream.range(begin, length)
-                .mapToDouble(i -> values[i])
-                .filter(val -> val > threshold)
-                .count();
-            return 100.0 * below / length;
-        }
-
-        @Override
-        public UnivariateStatistic copy() {
-            return new PercentageAboveThreshold(threshold);
-        }
-    }
 }

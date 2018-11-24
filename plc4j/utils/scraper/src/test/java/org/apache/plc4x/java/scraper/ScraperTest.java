@@ -72,12 +72,12 @@ class ScraperTest implements WithAssertions {
         });
 
         Scraper scraper = new Scraper(driverManager, Arrays.asList(
-            new Scraper.ScrapeJob("job1",
+            new ScrapeJob("job1",
                 10,
                 Collections.singletonMap("tim", CONN_STRING_TIM),
                 Collections.singletonMap("distance", FIELD_STRING_TIM)
             ),
-            new Scraper.ScrapeJob("job2",
+            new ScrapeJob("job2",
                 10,
                 Collections.singletonMap("chris", CONN_STRING_CH),
                 Collections.singletonMap("counter", FIELD_STRING_CH)
@@ -96,7 +96,7 @@ class ScraperTest implements WithAssertions {
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
 
         Scraper scraper = new Scraper(driverManager, Collections.singletonList(
-            new Scraper.ScrapeJob("job1",
+            new ScrapeJob("job1",
                 10,
                 Collections.singletonMap("m1", "mock:m1"),
                 Collections.singletonMap("field1", "qry1")
@@ -120,7 +120,7 @@ class ScraperTest implements WithAssertions {
         PlcDriverManager driverManager = new PlcDriverManager();
 
         Scraper scraper = new Scraper(driverManager, Collections.singletonList(
-            new Scraper.ScrapeJob("job1",
+            new ScrapeJob("job1",
                 1,
                 Collections.singletonMap("m1", "mock:m1"),
                 Collections.singletonMap("field1", "qry1")
@@ -147,7 +147,7 @@ class ScraperTest implements WithAssertions {
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
 
         Scraper scraper = new Scraper(driverManager, Collections.singletonList(
-            new Scraper.ScrapeJob("job1",
+            new ScrapeJob("job1",
                 1,
                 Collections.singletonMap("m1", "mock:m1"),
                 Collections.singletonMap("field1", "qry1")

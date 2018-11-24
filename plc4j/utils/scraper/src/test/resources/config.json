@@ -1,0 +1,18 @@
+{
+    "sources": {
+        "a": "b"
+    },
+    "jobs": [
+        {
+            "name": "job1",
+            "scrapeRate": 10,
+            "sources": [
+                "a"
+            ],
+            "fields": {
+                "a": "DBasdf",
+                "b": "DBbsdf"
+            }
+        }
+    ]
+}
