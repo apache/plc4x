@@ -17,7 +17,8 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -322,7 +323,7 @@
                 </requireJavaVersion>
                 <!-- Disabled for now as it breaks the ability to build single modules -->
                 <!--reactorModuleConvergence/-->
-                <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies" />
+                <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies"/>
               </rules>
             </configuration>
           </execution>
@@ -334,6 +335,28 @@
             <version>1.0.0</version>
           </dependency>
         </dependencies>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- Plugin for analysing the project based on neo4j queries -->
@@ -531,7 +554,9 @@
             </goals>
             <configuration>
               <url>https://stackpath.bootstrapcdn.com/bootswatch/${bootstrap.version}/flatly/bootstrap.min.css</url>
-              <outputDirectory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/</outputDirectory>
+              <outputDirectory>
+                ${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/
+              </outputDirectory>
               <outputFileName>bootstrap.min.css</outputFileName>
             </configuration>
           </execution>
@@ -542,7 +567,9 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip</url>
+              <url>
+                https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip
+              </url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
             </configuration>
@@ -564,14 +591,18 @@
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/anchorjs/${anchorjs.version}</directory>
+                  <directory>
+                    ${project.build.directory}/dependency/META-INF/resources/webjars/anchorjs/${anchorjs.version}
+                  </directory>
                   <targetPath>${project.build.directory}/site/js</targetPath>
                   <includes>
                     <include>anchor.min.js</include>
                   </includes>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}</directory>
+                  <directory>
+                    ${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}
+                  </directory>
                   <includes>
                     <include>css/bootstrap.min.css</include>
                     <include>js/bootstrap.min.js</include>
@@ -579,17 +610,22 @@
                   </includes>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web</directory>
+                  <directory>
+                    ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web
+                  </directory>
                   <includes>
                     <include>css/all.min.css</include>
                   </includes>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts</directory>
+                  <directory>
+                    ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts
+                  </directory>
                   <targetPath>${project.build.directory}/site/fonts</targetPath>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/${jquery.version}</directory>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/${jquery.version}
+                  </directory>
                   <targetPath>${project.build.directory}/site/js</targetPath>
                   <includes>
                     <include>jquery.min.js</include>
@@ -725,19 +761,6 @@
             <testTarget>${java.version}</testTarget>
           </configuration>
         </plugin>
-
-        <!--plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <dependencies>
-            <!- Try to get rid of out of heap errors on travis. ->
-            <dependency>
-              <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-archiver</artifactId>
-              <version>3.3</version>
-            </dependency>
-          </dependencies>
-        </plugin-->
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -901,7 +924,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore />
+                    <ignore/>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
