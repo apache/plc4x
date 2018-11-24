@@ -31,5 +31,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 public @interface PlcField {
     String value();
-    long cacheDurationMillis() default 1000;
+    long cacheDurationMillis() default -1;
 }

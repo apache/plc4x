@@ -325,6 +325,9 @@ public class PlcEntityInterceptor {
     private static boolean needsToBeSynced(Map<String, Instant> lastSynced, Field field) {
         Validate.notNull(field);
         long cacheDurationMillis = field.getAnnotation(PlcField.class).cacheDurationMillis();
+        if (cacheDurationMillis < 0) {
+            return true;
+        }
         String fqn = getFqn(field);
         if (lastSynced.containsKey(fqn)) {
             Instant last = lastSynced.get(fqn);

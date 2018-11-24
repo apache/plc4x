@@ -91,16 +91,16 @@ public class ConnectedEntityTest {
         // Trigger a fetch
         CachingEntity entity = entityManager.connect(CachingEntity.class, "mock:cached");
         // Trigger Many Fetches via getter
-        IntStream.range(1, 100).forEach(i -> entity.getField());
-        IntStream.range(1, 100).forEach(i -> entity.dummyMethod());
+        IntStream.range(1, 10).forEach(i -> entity.getField());
+        IntStream.range(1, 10).forEach(i -> entity.dummyMethod());
 
-        verify(mock, timeout(1_000).times(2)).read(any());
+        verify(mock, timeout(1_000).times(1)).read(any());
     }
 
     @PlcEntity
     public static class CachingEntity {
 
-        @PlcField(value = "address", cacheDurationMillis = 100)
+        @PlcField(value = "address", cacheDurationMillis = 500)
         private String field;
 
         public CachingEntity() {
