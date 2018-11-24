@@ -220,6 +220,10 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         return paramMaxAmqCallee;
     }
 
+    public S7ControllerType getParamControllerType() {
+        return paramControllerType;
+    }
+
     @Override
     public void close() throws PlcConnectionException {
         if ((channel != null) && channel.isOpen()) {

@@ -24,7 +24,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,7 +47,7 @@ public class S7PlcConnectionIT {
     @Before
     public void setUp() {
         SUT = new S7PlcTestConnection(1, 2,
-            "pdu-size=128&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag", S7ControllerType.S7_1500);
+            "pdu-size=128&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag");
     }
 
     @After

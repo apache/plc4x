@@ -21,8 +21,13 @@ package org.apache.plc4x.java.base.connection;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.base.messages.PlcReader;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 class AbstractPlcConnectionTest implements WithAssertions {
 
@@ -82,4 +87,15 @@ class AbstractPlcConnectionTest implements WithAssertions {
     void unsubscriptionRequestBuilder() {
         assertThatThrownBy(() -> SUT.unsubscriptionRequestBuilder()).isInstanceOf(PlcUnsupportedOperationException.class);
     }
+
+    @Test
+    void checkInternalTest() {
+        assertThrows(IllegalArgumentException.class, () -> SUT.checkInternal("Test", DefaultPlcReadRequest.class));
+        DefaultPlcReadRequest readRequest = SUT.checkInternal(
+            new DefaultPlcReadRequest.Builder(mock(PlcReader.class), mock(PlcFieldHandler.class)).build(),
+            DefaultPlcReadRequest.class);
+        assertThat(readRequest).isNotNull();
+    }
+
+
 }

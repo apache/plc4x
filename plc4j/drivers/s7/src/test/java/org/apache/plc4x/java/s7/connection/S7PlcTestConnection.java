@@ -24,7 +24,6 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.base.connection.TestChannelFactory;
-import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNativeException;
@@ -45,11 +44,8 @@ import static org.junit.Assert.fail;
 
 public class S7PlcTestConnection extends S7PlcConnection {
 
-    private S7ControllerType controllerType;
-
-    public S7PlcTestConnection(int rack, int slot, String params, S7ControllerType controllerType) {
+    public S7PlcTestConnection(int rack, int slot, String params) {
         super(new TestChannelFactory(), rack, slot, params);
-        this.controllerType = controllerType;
     }
 
     /*
@@ -117,7 +113,7 @@ public class S7PlcTestConnection extends S7PlcConnection {
         byte[] cpuFunctionsResponse = readPcapFile(
             "org/apache/plc4x/java/s7/connection/s7-cpu-functions-response.pcap");
         // Override the type of reported S7 device.
-        switch (controllerType) {
+        switch (getParamControllerType()) {
             case S7_1200:
                 cpuFunctionsResponse[48] = '2';
                 break;

@@ -40,7 +40,7 @@ public class TestField implements PlcField {
      * - {@code RANDOM/foo:INTEGER}
      * - {@code STDOUT/foo:STRING}
      */
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>.+)(\\[(?<numElements>\\d)])?$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>[a-zA-Z]++)(\\[(?<numElements>\\d+)])?$");
 
     private final TestType type;
     private final String name;
@@ -100,7 +100,7 @@ public class TestField implements PlcField {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TestField)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         TestField testField = (TestField) o;
@@ -124,4 +124,5 @@ public class TestField implements PlcField {
             ", numElements=" + numElements +
             '}';
     }
+
 }

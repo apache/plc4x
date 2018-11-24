@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.base.messages.InternalPlcMessage;
 
 import java.util.Objects;
 
@@ -84,7 +85,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
      * @param <T>   the type of the expected {@code clazz}.
      * @return the cast type of {@code clazz}.
      */
-    protected <T> T checkInternal(Object o, Class<T> clazz) {
+    protected <T extends InternalPlcMessage> T checkInternal(Object o, Class<T> clazz) {
         Objects.requireNonNull(o);
         Objects.requireNonNull(clazz);
         if (!clazz.isInstance(o)) {
