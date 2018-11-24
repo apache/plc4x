@@ -25,7 +25,8 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -36,14 +37,18 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+/**
+ * Manual Test.
+ */
+@Disabled
 public class ManualS7PlcDriverMT {
 
     public static final String CONN_STRING = "s7://10.10.64.22/0/1";
     public static final String FIELD_STRING = "%DB225:DBW0:INT";
 
-
-//    public static final String CONN_STRING = "s7://10.10.64.20/0/1";
+    //    public static final String CONN_STRING = "s7://10.10.64.20/0/1";
 //    public static final String FIELD_STRING = "%DB3:DBD32:DINT";
+
     @Test
     public void simpleLoop() {
         PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
@@ -79,13 +84,48 @@ public class ManualS7PlcDriverMT {
         executorService.awaitTermination(100, TimeUnit.SECONDS);
     }
 
+    @Test
+    public void parallelScheduledLoop() throws InterruptedException {
+        int period = 5;
+        PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+        DescriptiveStatistics statistics1 = new DescriptiveStatistics();
+        DescriptiveStatistics statistics2 = new DescriptiveStatistics();
+
+        int numberOfRuns = 1000;
+        AtomicInteger counter1 = new AtomicInteger(0);
+        AtomicInteger counter2 = new AtomicInteger(0);
+        executorService.scheduleAtFixedRate(() -> {
+            // System.out.println("Run: " + counter.get());
+            double timeNs = runSingleRequest(plcDriverManager);
+            statistics1.addValue(timeNs);
+            if (counter1.getAndIncrement() >= numberOfRuns) {
+                executorService.shutdown();
+            }
+        }, 0, period, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(() -> {
+            // System.out.println("Run: " + counter.get());
+            double timeNs = runSingleRequest(plcDriverManager);
+            statistics2.addValue(timeNs);
+            if (counter2.getAndIncrement() >= numberOfRuns) {
+                executorService.shutdown();
+            }
+        }, 0, period, TimeUnit.MILLISECONDS);
+
+        executorService.awaitTermination(100, TimeUnit.SECONDS);
+        System.out.println("Statistics 1");
+        printStatistics(statistics1);
+        System.out.println("Statistics 2");
+        printStatistics(statistics2);
+    }
+
     private static Stream<Arguments> periodAndRus() {
         return Stream.of(
             Arguments.of(10, 100),
             Arguments.of(10, 1000),
             Arguments.of(100, 100),
             Arguments.of(100, 1000)
-            );
+        );
     }
 
     @ParameterizedTest
@@ -122,7 +162,6 @@ public class ManualS7PlcDriverMT {
                     }
                     if (counter.getAndIncrement() >= numberOfRuns) {
                         executorService.shutdown();
-                        ManualS7PlcDriverMT.this.printStatistics(statistics);
                     }
                 }, period, TimeUnit.MILLISECONDS);
             }
@@ -130,11 +169,14 @@ public class ManualS7PlcDriverMT {
 
         executorService.scheduleAtFixedRate(iteration, 0, period, TimeUnit.MILLISECONDS);
         executorService.awaitTermination(100, TimeUnit.SECONDS);
+        // Print statistics
+        ManualS7PlcDriverMT.this.printStatistics(statistics);
     }
 
     private double runSingleRequest(PlcDriverManager plcDriverManager) {
         long start = System.nanoTime();
         try (PlcConnection connection = plcDriverManager.getConnection(CONN_STRING)) {
+            System.out.println("Connection: " + connection);
             CompletableFuture<? extends PlcReadResponse> future = connection.readRequestBuilder()
                 .addItem("distance", FIELD_STRING)
                 .build()
