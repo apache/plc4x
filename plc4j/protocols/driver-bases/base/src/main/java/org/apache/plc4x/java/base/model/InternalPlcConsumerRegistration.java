@@ -19,10 +19,11 @@
 package org.apache.plc4x.java.base.model;
 
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.base.messages.InternalPlcMessage;
 
 import java.util.Collection;
 
-public interface InternalPlcConsumerRegistration extends PlcConsumerRegistration {
+public interface InternalPlcConsumerRegistration extends PlcConsumerRegistration, InternalPlcMessage {
 
     int getConsumerHash();
 
