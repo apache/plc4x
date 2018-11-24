@@ -110,7 +110,7 @@ class ScraperTest implements WithAssertions {
         // Assert that tasks got done.
         assertThat(scraper.getScheduler()).isInstanceOf(ScheduledThreadPoolExecutor.class);
         assertThat(scraper.getNumberOfActiveTasks())
-            .isEqualTo(2);
+            .isEqualTo(1);
         assertThat(((ScheduledThreadPoolExecutor) scraper.getScheduler()).getCompletedTaskCount())
             .isGreaterThan(10);
     }
