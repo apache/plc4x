@@ -87,15 +87,15 @@ function dieSuperceeded { # no args
   die "This tool is superceeded with the new maven build tooling.  See src/site/asciidoc/releasing.adoc."
 }
 
-function checkPLX4XSourceRootGitDie { # no args; dies if !ok
-  [ -d "${PLC4X_ROOT_DIR}/.git" ] || die "Not an PLX4X source root git directory \"${PLC4X_ROOT_DIR}\""
+function checkPLC4XSourceRootGitDie { # no args; dies if !ok
+  [ -d "${PLC4X_ROOT_DIR}/.git" ] || die "Not an PLC4X source root git directory \"${PLC4X_ROOT_DIR}\""
 }
 
 function checkUsingMgmtCloneWarn() { # no args; warns if plc4x root isn't a mgmt clone
   CLONE_DIR=`cd ${PLC4X_ROOT_DIR}; pwd`
   CLONE_DIRNAME=`basename $CLONE_DIR`
   if [ ! `echo $CLONE_DIRNAME | grep -o -E '^mgmt-plc4x'` ]; then
-    echo "Warning: the PLX4X root dir \"${PLC4X_ROOT_DIR}\" is not a release mgmt clone!"
+    echo "Warning: the PLC4X root dir \"${PLC4X_ROOT_DIR}\" is not a release mgmt clone!"
     return 1
   else
     return 0
@@ -147,14 +147,14 @@ function getReleaseProperty {  # <property-name>
   echo ${VAL}
 }
 
-function getPLX4XVer() {  # [$1 == "bundle"]
-  MSG="getPLX4XVer(): unknown mode \"$1\""
+function getPLC4XVer() {  # [$1 == "bundle"]
+  MSG="getPLC4XVer(): unknown mode \"$1\""
   VER=""
   if [ "$1" == "" ]; then
     VER=`getReleaseProperty releaseNum`
     MSG="Unable to identify the release version id from ${RELEASE_PROP_FILE}"
   elif [ $1 == "gradle" ]; then
-    die "'getPLX4XVer() gradle' is no longer supported"
+    die "'getPLC4XVer() gradle' is no longer supported"
     # Get the X.Y.Z version from gradle build info
     PROPS=${PLC4X_ROOT_DIR}/gradle.properties
     VER=`grep build_version ${PROPS} | grep -o -E '\d+\.\d+\.\d+'`
@@ -198,5 +198,5 @@ function getReleaseTagComment() {  # $1: X.Y.Z  [$2: rc-num]
   if [ $# -gt 0 ] && [ "$1" != "" ]; then
     RC_SFX=" RC$1"
   fi
-  echo "Apache PLX4X ${VER}-incubating${RC_SFX}"
+  echo "Apache PLC4X ${VER}-incubating${RC_SFX}"
 }
