@@ -27,20 +27,23 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Locale;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 public class ManualS7PlcDriverMT {
 
     public static final String CONN_STRING = "s7://10.10.64.22/0/1";
     public static final String FIELD_STRING = "%DB225:DBW0:INT";
 
+
 //    public static final String CONN_STRING = "s7://10.10.64.20/0/1";
 //    public static final String FIELD_STRING = "%DB3:DBD32:DINT";
-
     @Test
     public void simpleLoop() {
         PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
@@ -76,14 +79,23 @@ public class ManualS7PlcDriverMT {
         executorService.awaitTermination(100, TimeUnit.SECONDS);
     }
 
-    @Test
-    public void scheduledCancellingLoop() throws InterruptedException, PlcConnectionException {
+    private static Stream<Arguments> periodAndRus() {
+        return Stream.of(
+            Arguments.of(10, 100),
+            Arguments.of(10, 1000),
+            Arguments.of(100, 100),
+            Arguments.of(100, 1000)
+            );
+    }
+
+    @ParameterizedTest
+    @MethodSource("periodAndRus")
+    public void scheduledCancellingLoop(int period, int numberOfRuns) throws InterruptedException, PlcConnectionException {
+        System.out.println("Starting iteration with period " + period + " and " + numberOfRuns + " runs.");
         PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
         DescriptiveStatistics statistics = new DescriptiveStatistics();
 
-        final int period = 10;
-        int numberOfRuns = 1000;
         AtomicInteger counter = new AtomicInteger(0);
 
         // Warmup
@@ -92,16 +104,16 @@ public class ManualS7PlcDriverMT {
         Runnable iteration = new Runnable() {
             @Override
             public void run() {
-                System.out.println("Setting a request / guard...");
+//                System.out.println("Setting a request / guard...");
                 CompletableFuture<Double> requestFuture = CompletableFuture.supplyAsync(
                     () -> ManualS7PlcDriverMT.this.runSingleRequest(plcDriverManager)
                 );
                 executorService.schedule(() -> {
                     if (!requestFuture.isDone()) {
                         requestFuture.cancel(true);
-                        System.err.println("Cancel a future!");
+                        System.out.print("!");
                     } else {
-                        System.out.println("Request finished successfully");
+                        System.out.print(".");
                         try {
                             statistics.addValue(requestFuture.get());
                         } catch (InterruptedException | ExecutionException e) {
