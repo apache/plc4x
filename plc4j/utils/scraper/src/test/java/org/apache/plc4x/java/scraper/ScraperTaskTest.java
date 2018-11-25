@@ -54,7 +54,7 @@ public class ScraperTaskTest implements WithAssertions {
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
 
         ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
-            1_000, ForkJoinPool.commonPool(), m -> {});
+            1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
         scraperTask.run();
     }
@@ -71,7 +71,7 @@ public class ScraperTaskTest implements WithAssertions {
             when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.NOT_FOUND, new DefaultStringFieldItem("hallo")));
 
             ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1",
-                "mock:scraper", Collections.singletonMap("a", "b"), 1_000, ForkJoinPool.commonPool(), m -> {});
+                "mock:scraper", Collections.singletonMap("a", "b"), 1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
             // When
             scraperTask.run();
@@ -86,7 +86,7 @@ public class ScraperTaskTest implements WithAssertions {
             when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
 
             ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
-                1_000, ForkJoinPool.commonPool(), m -> {});
+                1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
             ScraperTask spy = spy(scraperTask);
             spy.run();
@@ -99,7 +99,7 @@ public class ScraperTaskTest implements WithAssertions {
             when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
             ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
             ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
-                1_000, ForkJoinPool.commonPool(), m -> {});
+                1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
             Future<?> future = pool.scheduleAtFixedRate(scraperTask, 0, 10, TimeUnit.MILLISECONDS);
 

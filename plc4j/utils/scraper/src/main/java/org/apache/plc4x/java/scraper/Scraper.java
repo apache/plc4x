@@ -153,11 +153,4 @@ public class Scraper {
         futures.clear();
     }
 
-    @FunctionalInterface
-    public interface ResultHandler {
-
-        void handle(Map<String, Object> results);
-
-    }
-
 }

@@ -71,7 +71,7 @@ class ScraperTest implements WithAssertions {
             return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, config);
         });
 
-        Scraper scraper = new Scraper(m -> {}, driverManager, Arrays.asList(
+        Scraper scraper = new Scraper((j,a,m) -> {}, driverManager, Arrays.asList(
             new ScrapeJob("job1",
                 10,
                 Collections.singletonMap("tim", CONN_STRING_TIM),
@@ -95,7 +95,7 @@ class ScraperTest implements WithAssertions {
 
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
 
-        Scraper scraper = new Scraper(m -> {}, driverManager, Collections.singletonList(
+        Scraper scraper = new Scraper((j,a,m) -> {}, driverManager, Collections.singletonList(
             new ScrapeJob("job1",
                 10,
                 Collections.singletonMap("m1", "mock:m1"),
@@ -119,7 +119,7 @@ class ScraperTest implements WithAssertions {
     void stop_stopsAllJobs() {
         PlcDriverManager driverManager = new PlcDriverManager();
 
-        Scraper scraper = new Scraper(m -> {}, driverManager, Collections.singletonList(
+        Scraper scraper = new Scraper((j,a,m) -> {}, driverManager, Collections.singletonList(
             new ScrapeJob("job1",
                 1,
                 Collections.singletonMap("m1", "mock:m1"),
@@ -146,7 +146,7 @@ class ScraperTest implements WithAssertions {
 
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
 
-        Scraper scraper = new Scraper(m -> {}, driverManager, Collections.singletonList(
+        Scraper scraper = new Scraper((j,a,m) -> {}, driverManager, Collections.singletonList(
             new ScrapeJob("job1",
                 1,
                 Collections.singletonMap("m1", "mock:m1"),

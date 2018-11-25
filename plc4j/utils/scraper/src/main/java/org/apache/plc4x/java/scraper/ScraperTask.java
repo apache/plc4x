@@ -55,7 +55,7 @@ public class ScraperTask implements Runnable {
     private final Map<String, String> fields;
     private final long requestTimeoutMs;
     private final ExecutorService handlerService;
-    private final Scraper.ResultHandler resultHandler;
+    private final ResultHandler resultHandler;
 
     private final AtomicLong requestCounter = new AtomicLong(0);
     private final AtomicLong successCounter = new AtomicLong(0);
@@ -63,7 +63,7 @@ public class ScraperTask implements Runnable {
     private final DescriptiveStatistics failedStatistics = new DescriptiveStatistics(1000);
 
     public ScraperTask(PlcDriverManager driverManager, String jobName, String connectionAlias, String connectionString,
-                       Map<String, String> fields, long requestTimeoutMs, ExecutorService handlerService, Scraper.ResultHandler resultHandler) {
+                       Map<String, String> fields, long requestTimeoutMs, ExecutorService handlerService, ResultHandler resultHandler) {
         Validate.notNull(driverManager);
         Validate.notBlank(jobName);
         Validate.notBlank(connectionAlias);
@@ -123,7 +123,7 @@ public class ScraperTask implements Runnable {
             // Validate response
             validateResponse(response);
             // Handle response (Async)
-            CompletableFuture.runAsync(() -> resultHandler.handle(transformResponseToMap(response)), handlerService);
+            CompletableFuture.runAsync(() -> resultHandler.handle(jobName, connectionAlias, transformResponseToMap(response)), handlerService);
         } catch (Exception e) {
             LOGGER.debug("Exception during scrape", e);
             handleException(e);

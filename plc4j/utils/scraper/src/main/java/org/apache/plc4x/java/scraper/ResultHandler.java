@@ -19,20 +19,20 @@
 
 package org.apache.plc4x.java.scraper;
 
-import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
 
-import java.io.IOException;
+/**
+ * Callback interface to handle results of one run of a {@link ScraperTask}.
+ */
+@FunctionalInterface
+public interface ResultHandler {
 
-public class ScraperRunner {
+    /**
+     * Callback handler.
+     * @param job name of the job (from config)
+     * @param alias alias of the connection (<b>not</b> connection String)
+     * @param results Results in the form alias to result value
+     */
+    void handle(String job, String alias, Map<String, Object> results);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScraperRunner.class);
-
-    public static void main(String[] args) throws IOException {
-        ScraperConfiguration configuration = ScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example.yml");
-        Scraper scraper = new Scraper(configuration, (j, a, m) -> LOGGER.info("Results from {}/{}: {}", j, a, m));
-
-        scraper.start();
-    }
 }
