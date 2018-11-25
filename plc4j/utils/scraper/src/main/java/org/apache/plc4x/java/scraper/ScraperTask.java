@@ -42,7 +42,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Plc Scraper that scrapes one source.
+ * Plc Scraper Task that scrapes one source.
+ * One {@link ScrapeJob} gets split into multiple tasks.
+ * One task for each source that is defined in the {@link org.apache.plc4x.java.scraper.config.JobConfiguration}.
  */
 public class ScraperTask implements Runnable {
 

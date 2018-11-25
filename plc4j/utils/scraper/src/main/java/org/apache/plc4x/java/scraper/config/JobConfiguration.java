@@ -21,14 +21,13 @@ package org.apache.plc4x.java.scraper.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Configuration for one {@link org.apache.plc4x.java.scraper.ScrapeJob} in the @{@link ScraperConfiguration}.
+ */
 public class JobConfiguration {
 
     private final String name;
@@ -36,6 +35,13 @@ public class JobConfiguration {
     private final List<String> sources;
     private final Map<String, String> fields;
 
+    /**
+     * Default construcotr
+     * @param name Job Name / identifier
+     * @param scrapeRate Scrape rate in ms
+     * @param sources source alias (<b>not</b> connection string but the alias (from @{@link ScraperConfiguration}).
+     * @param fields Map from field alias (how it is named in the result map) to plc4x field query
+     */
     @JsonCreator
     JobConfiguration(@JsonProperty(value = "name", required = true) String name,
                             @JsonProperty(value = "scrapeRate", required = true) int scrapeRate,

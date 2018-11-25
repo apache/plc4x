@@ -21,6 +21,11 @@ package org.apache.plc4x.java.scraper;
 
 import java.util.Map;
 
+/**
+ * POJO Object to transport all Job informtation.
+ * Is generated from {@link org.apache.plc4x.java.scraper.config.ScraperConfiguration} by
+ * merging the sources and the {@link org.apache.plc4x.java.scraper.config.JobConfiguration}.
+ */
 public class ScrapeJob {
 
     private final String name;

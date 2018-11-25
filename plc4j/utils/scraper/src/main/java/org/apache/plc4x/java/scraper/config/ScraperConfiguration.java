@@ -39,12 +39,16 @@ import java.util.stream.Collectors;
 /**
  * Configuration class for {@link Scraper}.
  */
-
 public class ScraperConfiguration {
 
     private final Map<String, String> sources;
     private final List<JobConfiguration> jobConfigurations;
 
+    /**
+     * Default constructor.
+     * @param sources Map from connection alias to connection string
+     * @param jobConfigurations List of configurations one for each Job
+     */
     @JsonCreator
     ScraperConfiguration(@JsonProperty(value = "sources", required = true) Map<String, String> sources,
                          @JsonProperty(value = "jobs", required = true) List<JobConfiguration> jobConfigurations) {
