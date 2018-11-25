@@ -22,6 +22,7 @@ package org.apache.plc4x.java.scraper.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -29,10 +30,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ScraperConfigurationBuilderTest {
+class ScraperConfigurationBuilderTest implements WithAssertions {
 
     @Test
-    void checkSyntax() throws JsonProcessingException {
+    void builder_usage_example() throws JsonProcessingException {
         ScraperConfigurationBuilder builder = new ScraperConfigurationBuilder();
         List<String> sources = Arrays.asList("s1", "s2");
         List<String> jobs = Arrays.asList("j1", "j2");
@@ -41,7 +42,7 @@ class ScraperConfigurationBuilderTest {
         for (String job : jobs) {
             JobConfigurationBuilder jobConfigurationBuilder = builder.job(job, 10);
             sources.forEach(jobConfigurationBuilder::source);
-            for (int i = 1; i <= 100; i++) {
+            for (int i = 1; i <= 10; i++) {
                 jobConfigurationBuilder.field("f" + i, "qry" + i);
             }
             jobConfigurationBuilder.build();
@@ -50,10 +51,22 @@ class ScraperConfigurationBuilderTest {
         ScraperConfiguration configuration = builder.build();
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-
         String s = mapper.writeValueAsString(configuration);
 
-        // TODO add assert.
-        System.out.println(s);
+        assertThat(configuration.getJobConfigurations())
+            .hasSize(2);
+        assertThat(configuration.getSources())
+            .hasSize(2);
+        assertThat(s).contains("sources:\n" +
+                                "  s1: \"s1\"\n" +
+                                "  s2: \"s2\"\n" +
+                                "jobs:\n" +
+                                "- name: \"j1\"\n" +
+                                "  scrapeRate: 10\n" +
+                                "  connections:\n" +
+                                "    s1: \"s1\"\n" +
+                                "    s2: \"s2\"\n" +
+                                "  fields:");
+
     }
 }
