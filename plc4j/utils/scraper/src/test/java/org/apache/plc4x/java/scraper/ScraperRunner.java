@@ -31,7 +31,7 @@ public class ScraperRunner {
 
     public static void main(String[] args) throws IOException {
         ScraperConfiguration configuration = ScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example.yml");
-        Scraper scraper = new Scraper(configuration, m -> LOGGER.info("Results: {}", m));
+        Scraper scraper = new Scraper(configuration, m -> {}/*LOGGER.info("Results: {}", m)*/);
 
         scraper.start();
     }

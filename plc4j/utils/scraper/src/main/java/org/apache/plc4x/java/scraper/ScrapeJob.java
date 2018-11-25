@@ -44,14 +44,14 @@ public class ScrapeJob {
     }
 
     /**
-     * alias -> connection-string
+     * alias -&gt; connection-string
      */
     public Map<String, String> getConnections() {
         return connections;
     }
 
     /**
-     * alias -> field-query
+     * alias -&gt; field-query
      */
     public Map<String, String> getFields() {
         return fields;
