@@ -61,6 +61,8 @@ public class NettyPlcConnectionTest implements WithAssertions {
     @Test
     public void connect() throws Exception {
         SUT.connect();
+        Channel channel = SUT.getChannel();
+        assertThat(channel).isNotNull();
     }
 
     @Test
@@ -71,12 +73,6 @@ public class NettyPlcConnectionTest implements WithAssertions {
     @Test
     public void isConnected() {
         SUT.isConnected();
-    }
-
-    @Test
-    public void getChannel() {
-        Channel channel = SUT.getChannel();
-        assertThat(channel).isNotNull();
     }
 
 }
