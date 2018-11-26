@@ -42,17 +42,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.features</groupId>
-      <artifactId>framework</artifactId>
-      <version>${karaf.version}</version>
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.karaf.features</groupId>
       <artifactId>standard</artifactId>
       <version>${karaf.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -97,30 +91,25 @@
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
         <configuration>
-          <bootFeatures>
-            <feature>framework</feature>
-            <feature>shell</feature>
-            <feature>shell-compat</feature>
-            <feature>feature</feature>
-            <feature>jaas</feature>
-            <feature>ssh</feature>
-            <feature>management</feature>
-            <feature>bundle</feature>
-            <feature>config</feature>
-            <feature>deployer</feature>
-            <feature>diagnostic</feature>
-            <feature>feature</feature>
-            <feature>instance</feature>
-            <feature>kar</feature>
-            <feature>log</feature>
+          <startupFeatures>
             <feature>wrap</feature>
-            <feature>package</feature>
-            <feature>service</feature>
-            <feature>system</feature>
+          </startupFeatures>
+          <bootFeatures>
+            <feature>standard</feature>
           </bootFeatures>
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.karaf.tooling</groupId>
+          <artifactId>karaf-maven-plugin</artifactId>
+          <version>${karaf-maven-plugin.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
 </project>
