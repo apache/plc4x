@@ -33,6 +33,9 @@
   <artifactId>apache-karaf</artifactId>
   <packaging>pom</packaging>
 
+  <name>Integrations: Apache Karaf</name>
+  <description>Integration module for integrating PLC4X into Apache Karaf.</description>
+
   <properties>
     <karaf.version>4.2.1</karaf.version>
     <karaf-maven-plugin.version>${karaf.version}</karaf-maven-plugin.version>
