@@ -388,7 +388,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 S7AnyVarParameterItem requestItem = (S7AnyVarParameterItem) varParameter.getItems().get(i);
 
                 // Get the pairs of corresponding parameter and payload items.
-                S7AnyVarParameterItem responseParameterItem = (S7AnyVarParameterItem) parameterItems.get(i + responseOffset);
+                S7AnyVarParameterItem responseParameterItem = (S7AnyVarParameterItem) parameterItems.get(0);
                 VarPayloadItem responsePayloadItem = payloadItems.get(i + responseOffset);
                 int dataOffset = (responsePayloadItem.getData() != null) ? responsePayloadItem.getData().length : 0;
 
