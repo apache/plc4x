@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.rules.Timeout;
 
 import java.util.concurrent.CompletableFuture;
@@ -86,6 +87,24 @@ public class S7PlcConnectionIT {
         assertThat(response, notNullValue());
 
         SUT.close();
+    }
+
+    /**
+     * In case of a slow network connection Netty tends to call the IsoOnTcpProtocol decode method
+     * prior to reading the full packet. Therefor we usually check if enough bytes have been read.
+     * If not we give up and wait for Netty to call again.
+     *
+     * In case of a fast connection with large response sizes it seems that Netty splits up the
+     * responses into 512 byte chunks.
+     */
+    @Test
+    @Disabled
+    public void readLargeResponse() throws Exception {
+        SUT.connect();
+        EmbeddedChannel channel = (EmbeddedChannel) SUT.getChannel();
+        assertThat("No outbound messages should exist.", channel.outboundMessages().size(), equalTo(0));
+
+        SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-read-large-response.pcapng");
     }
 
     @Test
