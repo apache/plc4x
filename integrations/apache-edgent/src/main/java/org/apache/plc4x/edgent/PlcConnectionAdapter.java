@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 
@@ -116,7 +117,14 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 PlcConnection connection = null;
                 try {
                     connection = getConnection();
-                    return readRequest.execute().get();
+                    LocalDateTime start = LocalDateTime.now();
+                    PlcReadResponse plcReadResponse = readRequest.execute().get();
+                    LocalDateTime end = LocalDateTime.now();
+                    if(logger.isTraceEnabled()) {
+                        long diff = ChronoUnit.MILLIS.between(start, end);
+                        logger.trace("Processed request in " + diff + "ms");
+                    }
+                    return plcReadResponse;
                 } catch (Exception e) {
                     logger.error("reading from plc device {} {} failed", connection, readRequest, e);
                     return null;
