@@ -147,6 +147,10 @@ pipeline {
             }
             steps {
                 echo 'Deploying'
+                // Clean up the snapshots directory.
+                dir("plc4x-build-snapshots") {
+                    deleteDir()
+                }
                 // Unstash the previously stashed build results.
                 unstash name: 'plc4x-build-snapshots'
 
