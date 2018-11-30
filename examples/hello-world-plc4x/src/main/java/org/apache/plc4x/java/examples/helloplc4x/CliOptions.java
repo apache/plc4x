@@ -43,7 +43,7 @@ public class CliOptions {
             Option.builder()
                 .type(String.class)
                 .longOpt("field-addresses")
-                .hasArg()
+                .hasArgs()
                 .desc("Field Addresses (Space separated).")
                 .required()
                 .build());

@@ -30,6 +30,9 @@
 
   <artifactId>plc4j-scraper</artifactId>
 
+  <name>PLC4J: Utils: Scraper</name>
+  <description>Utility to efficiently collect a large number of items on multiple devices in multiple intervals.</description>
+
   <dependencies>
     <!--Jackson-->
     <dependency>

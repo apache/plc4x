@@ -28,7 +28,8 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.scraper.ScrapeJob;
 import org.apache.plc4x.java.scraper.Scraper;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class ScraperConfiguration {
      * @param jobConfigurations List of configurations one for each Job
      */
     @JsonCreator
-    ScraperConfiguration(@JsonProperty(value = "sources", required = true) Map<String, String> sources,
+    public ScraperConfiguration(@JsonProperty(value = "sources", required = true) Map<String, String> sources,
                          @JsonProperty(value = "jobs", required = true) List<JobConfiguration> jobConfigurations) {
         checkNoUnreferencedSources(sources, jobConfigurations);
         // TODO Warning on too many sources?!
