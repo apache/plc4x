@@ -18,12 +18,16 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,17 +38,23 @@ public class Plc4xSourceConnector extends SourceConnector {
     private static final String QUERIES_CONFIG = "queries";
     private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
 
+    private static final String JSON_CONFIG = "json.url";
+    private static final String JSON_DEFAULT = "";
+    private static final String JSON_DOC = "JSON configuration";
+
     private static final String RATE_CONFIG = "rate";
     private static final Integer RATE_DEFAULT = 1000;
     private static final String RATE_DOC = "Polling rate";
 
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
-        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC)
+        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, new LinkedList<>(), ConfigDef.Importance.HIGH, QUERIES_DOC)
+        .define(JSON_CONFIG, ConfigDef.Type.STRING, JSON_DEFAULT, ConfigDef.Importance.HIGH, JSON_DOC)
         .define(RATE_CONFIG, ConfigDef.Type.INT, RATE_DEFAULT, ConfigDef.Importance.MEDIUM, RATE_DOC);
 
     private String topic;
     private List<String> queries;
+    private String json;
     private Integer rate;
 
     @Override
@@ -55,23 +65,57 @@ public class Plc4xSourceConnector extends SourceConnector {
     @Override
     public List<Map<String, String>> taskConfigs(int maxTasks) {
         List<Map<String, String>> configs = new LinkedList<>();
-        Map<String, List<String>> groupedByHost = new HashMap<>();
-        queries.stream().map(query -> query.split("#", 2)).collect(Collectors.groupingBy(parts -> parts[0])).forEach((host, queries) -> {
-            groupedByHost.put(host, queries.stream().map(parts -> parts[1]).collect(Collectors.toList()));
-        });
-        if (groupedByHost.size() > maxTasks) {
-            // Not enough tasks
-            // TODO: throw exception?
-            return Collections.emptyList();
+        if (json.equals("")) {
+            Map<String, List<String>> groupedByHost = new HashMap<>();
+            queries.stream().map(query -> query.split("#", 2)).collect(Collectors.groupingBy(parts -> parts[0])).forEach((host, queries) -> {
+                groupedByHost.put(host, queries.stream().map(parts -> parts[1]).collect(Collectors.toList()));
+            });
+            if (groupedByHost.size() > maxTasks) {
+                // Not enough tasks
+                // TODO: throw exception?
+                return Collections.emptyList();
+            }
+            groupedByHost.forEach((host, qs) -> {
+                Map<String, String> taskConfig = new HashMap<>();
+                taskConfig.put(Plc4xSourceTask.TOPIC_CONFIG, topic);
+                taskConfig.put(Plc4xSourceTask.URL_CONFIG, host);
+                taskConfig.put(Plc4xSourceTask.QUERIES_CONFIG, String.join(",", qs));
+                taskConfig.put(Plc4xSourceTask.RATE_CONFIG, rate.toString());
+                configs.add(taskConfig);
+            });
+        } else {
+            try {
+                // TODO
+                String config =  new Scanner(new URL(json).openStream(), "UTF-8").useDelimiter("\\A").next();
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, Object> values = mapper.readValue(config, new TypeReference<Map<String, Object>>() {});
+                List<Map<String, Object>> plcs = (List<Map<String, Object>>) values.get("PLCs");
+                System.out.println("TASKS REQUIRED: " + plcs.size());
+                if (plcs.size() > maxTasks) {
+                    // not enough tasks
+                    System.out.println("NOT ENOUGH TASKS!");
+                    return Collections.emptyList();
+                }
+                for (Map<String, Object> plc : plcs) {
+                    Map<String, String> taskConfig = new HashMap<>();
+                    String ip = plc.get("IP").toString();
+                    String topic = ip;
+                    String url = "s7://" + ip + "/1/" + plc.get("Slot");
+                    List<String> queries = new LinkedList<>();
+                    for (Map<String, Object> operand : (List<Map<String, Object>>)plc.get("operands")) {
+                        String query = "%" + operand.get("Operand") + ":" + operand.get("Datatype");
+                        queries.add(query);
+                    }
+                    taskConfig.put(Plc4xSourceTask.TOPIC_CONFIG, topic);
+                    taskConfig.put(Plc4xSourceTask.URL_CONFIG, url);
+                    taskConfig.put(RATE_CONFIG, rate.toString());
+                    taskConfig.put(Plc4xSourceTask.QUERIES_CONFIG, String.join(",", queries));
+                    configs.add(taskConfig);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        groupedByHost.forEach((host, qs) -> {
-            Map<String, String> taskConfig = new HashMap<>();
-            taskConfig.put(Plc4xSourceTask.TOPIC_CONFIG, topic);
-            taskConfig.put(Plc4xSourceTask.URL_CONFIG, host);
-            taskConfig.put(Plc4xSourceTask.QUERIES_CONFIG, String.join(",", qs));
-            taskConfig.put(Plc4xSourceTask.RATE_CONFIG, rate.toString());
-            configs.add(taskConfig);
-        });
         return configs;
     }
 
@@ -81,6 +125,7 @@ public class Plc4xSourceConnector extends SourceConnector {
         topic = config.getString(TOPIC_CONFIG);
         queries = config.getList(QUERIES_CONFIG);
         rate = config.getInt(RATE_CONFIG);
+        json = config.getString(JSON_CONFIG);
     }
 
     @Override
