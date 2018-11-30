@@ -404,14 +404,16 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                     // Initialize the current size, this will be lower than the original, as the only
                     // way to have different count, is if the request was split up.
                     int curSize = responseParameterItem.getNumElements();
+                    int curSizeInBytes = curSize * requestItem.getDataType().getSizeInBytes();
 
                     // Now iterate over the succeeding pairs of parameters and payloads till we have
                     // found the original number of elements.
-                    while(curSize < totalSizeInBytes) {
+                    while(curSizeInBytes < totalSizeInBytes) {
                         responseOffset++;
                         // No need to process the parameters, we only need them to get the number of items.
                         responseParameterItem = (S7AnyVarParameterItem) parameterItems.get(i + responseOffset);
                         curSize += responseParameterItem.getNumElements();
+                        curSizeInBytes = curSize * requestItem.getDataType().getSizeInBytes();
 
                         // Get the next payload item in the list.
                         responsePayloadItem = payloadItems.get(i + responseOffset);
