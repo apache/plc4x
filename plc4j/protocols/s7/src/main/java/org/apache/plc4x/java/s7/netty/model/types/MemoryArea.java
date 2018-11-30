@@ -75,6 +75,7 @@ public enum MemoryArea {
         }
         return null;
     }
+
     public static MemoryArea valueOf(byte code) {
         return map.get(code);
     }
