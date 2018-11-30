@@ -399,7 +399,6 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         Object[] castedValues;
         switch (s7Field.getDataType()) {
             case REAL:
-                // Yes this is actually correct, if I set min to Float.MIN_VALUE (0.0 < Float.MIN_VALUE = true)
                 minValue = (double) -Float.MAX_VALUE;
                 maxValue = (double) Float.MAX_VALUE;
                 fieldType = DefaultFloatFieldItem.class;
@@ -407,7 +406,6 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 castedValues = new Float[values.length];
                 break;
             case LREAL:
-                // Yes this is actually correct, if I set min to Double.MIN_VALUE (0.0 < Double.MIN_VALUE = true)
                 minValue = -Double.MAX_VALUE;
                 maxValue = Double.MAX_VALUE;
                 fieldType = DefaultDoubleFieldItem.class;
