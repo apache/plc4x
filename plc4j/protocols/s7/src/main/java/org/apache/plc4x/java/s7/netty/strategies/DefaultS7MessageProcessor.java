@@ -397,14 +397,14 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
                 // The payload will have to be merged and the return codes will have to be examined.
                 if(requestItem.getNumElements() != responseParameterItem.getNumElements()) {
-                    int totalSizeInBytes = requestItem.getNumElements() * requestItem.getDataType().getSizeInBytes();
+                    int itemSizeInBytes = requestItem.getDataType().getSizeInBytes();
+                    int totalSizeInBytes = requestItem.getNumElements() * itemSizeInBytes;
                     byte[] data = new byte[totalSizeInBytes];
                     System.arraycopy(responsePayloadItem.getData(), 0, data, 0, responsePayloadItem.getData().length);
 
                     // Initialize the current size, this will be lower than the original, as the only
                     // way to have different count, is if the request was split up.
-                    int curSize = responseParameterItem.getNumElements();
-                    int curSizeInBytes = curSize * requestItem.getDataType().getSizeInBytes();
+                    int curSizeInBytes = responseParameterItem.getNumElements() * itemSizeInBytes;
 
                     // Now iterate over the succeeding pairs of parameters and payloads till we have
                     // found the original number of elements.
@@ -412,8 +412,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                         responseOffset++;
                         // No need to process the parameters, we only need them to get the number of items.
                         responseParameterItem = (S7AnyVarParameterItem) parameterItems.get(i + responseOffset);
-                        curSize += responseParameterItem.getNumElements();
-                        curSizeInBytes = curSize * requestItem.getDataType().getSizeInBytes();
+                        curSizeInBytes += responseParameterItem.getNumElements() * itemSizeInBytes;
 
                         // Get the next payload item in the list.
                         responsePayloadItem = payloadItems.get(i + responseOffset);
