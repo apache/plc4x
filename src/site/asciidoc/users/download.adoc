@@ -21,6 +21,19 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
+0.2.0
+Official https://www.apache.org/dyn/closer.lua/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip[source release] [ https://www.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.asc[ASC] ]
+
+Changes:
+
+* Changed API: instead of passing request object to `read({read-request})`, `write({write-request})` or `subscribe({subscribe-request})` methods now the `execute()` method is called on the request itself
+* New Connection Pool component
+* New OPM (Object PLC Mapping) component (JPA for PLCs)
+* Bug fixes
+
+
+=== Previous Releases
+
 0.1.0
 Official https://www.apache.org/dyn/closer.lua/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip[source release] [ https://www.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.asc[ASC] ]
 
