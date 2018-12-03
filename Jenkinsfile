@@ -121,12 +121,6 @@ pipeline {
             when {
                 branch 'develop'
             }
-            // Only the official build nodes have the credentials to deploy setup.
-            /*agent {
-                node {
-                    label 'ubuntu && !H32'
-                }
-            }*/
             steps {
                 echo 'Checking Code Quality'
                 withSonarQubeEnv('ASF Sonar Analysis') {
@@ -148,7 +142,7 @@ pipeline {
             steps {
                 echo 'Deploying'
                 // Clean up the snapshots directory.
-                dir("plc4x-build-snapshots") {
+                dir("./local-snapshots-dir") {
                     deleteDir()
                 }
                 // Unstash the previously stashed build results.
@@ -199,6 +193,24 @@ pipeline {
                 sh 'mvn -P${JENKINS_PROFILE} scm-publish:publish-scm'
             }
         }
-
     }
+
+    // Send out notifications on unsuccessfull builds.
+    post {
+         failure {
+            //slackSend (
+            //    color: '#FFFF00',
+            //    message: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+
+            emailext (
+                subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                body: """<p>BUILD-FAILURE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':</p><p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"</p>""",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+            )
+        }
+        unstable {
+            sh 'echo "This will run only if the run was marked as unstable"'
+        }
+    }
+
 }

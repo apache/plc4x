@@ -25,6 +25,8 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
 import org.apache.plc4x.kafka.util.VersionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,6 +34,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Plc4xSourceConnector extends SourceConnector {
+
+    private static final Logger log = LoggerFactory.getLogger(Plc4xSourceConnector.class);
+
     private static final String TOPIC_CONFIG = "topic";
     private static final String TOPIC_DOC = "Kafka topic to publish to";
 
@@ -63,13 +68,13 @@ public class Plc4xSourceConnector extends SourceConnector {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Map<String, String>> taskConfigs(int maxTasks) {
         List<Map<String, String>> configs = new LinkedList<>();
-        if (json.equals("")) {
+        if (json.isEmpty()) {
             Map<String, List<String>> groupedByHost = new HashMap<>();
-            queries.stream().map(query -> query.split("#", 2)).collect(Collectors.groupingBy(parts -> parts[0])).forEach((host, queries) -> {
-                groupedByHost.put(host, queries.stream().map(parts -> parts[1]).collect(Collectors.toList()));
-            });
+            queries.stream().map(query -> query.split("#", 2)).collect(Collectors.groupingBy(parts -> parts[0])).forEach((host, q) ->
+                groupedByHost.put(host, q.stream().map(parts -> parts[1]).collect(Collectors.toList())));
             if (groupedByHost.size() > maxTasks) {
                 // Not enough tasks
                 // TODO: throw exception?
@@ -90,10 +95,10 @@ public class Plc4xSourceConnector extends SourceConnector {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> values = mapper.readValue(config, new TypeReference<Map<String, Object>>() {});
                 List<Map<String, Object>> plcs = (List<Map<String, Object>>) values.get("PLCs");
-                System.out.println("TASKS REQUIRED: " + plcs.size());
+                log.info("TASKS REQUIRED: " + plcs.size());
                 if (plcs.size() > maxTasks) {
                     // not enough tasks
-                    System.out.println("NOT ENOUGH TASKS!");
+                    log.warn("NOT ENOUGH TASKS!");
                     return Collections.emptyList();
                 }
                 for (Map<String, Object> plc : plcs) {
@@ -113,7 +118,7 @@ public class Plc4xSourceConnector extends SourceConnector {
                     configs.add(taskConfig);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("ERROR CONFIGURING TASK", e);
             }
         }
         return configs;
