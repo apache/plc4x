@@ -198,10 +198,6 @@ pipeline {
     // Send out notifications on unsuccessfull builds.
     post {
          failure {
-            //slackSend (
-            //    color: '#FFFF00',
-            //    message: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-
             emailext (
                 subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
                 body: """<p>BUILD-FAILURE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':</p><p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"</p>""",
