@@ -152,9 +152,7 @@ pipeline {
                 }
 
                 // Unstash the previously stashed build results.
-                dir("hurz") {
-                    unstash name: 'plc4x-build-snapshots'
-                }
+                unstash name: 'plc4x-build-snapshots'
 
                 // Deploy the artifacts using the wagon-maven-plugin.
                 sh 'mvn -f jenkins.pom -X -P deploy-snapshots wagon:upload'
