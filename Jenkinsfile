@@ -64,6 +64,12 @@ pipeline {
             steps {
                 echo 'Cleaning up the workspace'
                 deleteDir()
+
+                // Clean up the snapshots directory.
+                dir("local-snapshots-dir/") {
+                    deleteDir()
+                }
+
             }
         }
 
@@ -116,7 +122,6 @@ pipeline {
             }
         }
 
-        // Disabled till auth issues are resolved on infra.
         stage('Code Quality') {
             when {
                 branch 'develop'
@@ -142,11 +147,14 @@ pipeline {
             steps {
                 echo 'Deploying'
                 // Clean up the snapshots directory.
-                dir("./local-snapshots-dir") {
+                dir("local-snapshots-dir/") {
                     deleteDir()
                 }
+
                 // Unstash the previously stashed build results.
-                unstash name: 'plc4x-build-snapshots'
+                dir("hurz") {
+                    unstash name: 'plc4x-build-snapshots'
+                }
 
                 // Deploy the artifacts using the wagon-maven-plugin.
                 sh 'mvn -f jenkins.pom -X -P deploy-snapshots wagon:upload'
