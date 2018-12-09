@@ -64,12 +64,6 @@ pipeline {
             steps {
                 echo 'Cleaning up the workspace'
                 deleteDir()
-
-                // Clean up the snapshots directory.
-                dir("local-snapshots-dir/") {
-                    deleteDir()
-                }
-
             }
         }
 
