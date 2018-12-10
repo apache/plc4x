@@ -208,7 +208,7 @@ pipeline {
                                  "BUILD_URL"   : env.BUILD_URL]
                 emailext(
                     subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                    body: helper.renderEmail('${FILE, path="tools/jenkins/failure-email-template.html"}', variables),
+                    body: helper.renderEmail('tools/jenkins/failure-email-template.html', variables),
                     to: "dev@plc4x.apache.org",
                     recipientProviders: [[$class: 'DevelopersRecipientProvider']]
                 )
@@ -225,7 +225,7 @@ pipeline {
                                  "BUILD_URL"   : env.BUILD_URL]
                 emailext(
                     subject: "[BUILD-UNSTABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                    body: helper.renderEmail('${FILE, path="tools/jenkins/failure-email-template.html"}', variables),
+                    body: helper.renderEmail('tools/jenkins/failure-email-template.html', variables),
                     to: "dev@plc4x.apache.org",
                     recipientProviders: [[$class: 'DevelopersRecipientProvider']]
                 )
@@ -243,7 +243,7 @@ pipeline {
                                      "BUILD_URL"   : env.BUILD_URL]
                     emailext (
                         subject: "[BUILD-STABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                        body: helper.renderEmail('${FILE, path="tools/jenkins/success-email-template.html"}', variables),
+                        body: helper.renderEmail('tools/jenkins/success-email-template.html', variables),
                         to: "dev@plc4x.apache.org",
                         recipientProviders: [[$class: 'DevelopersRecipientProvider']]
                     )
