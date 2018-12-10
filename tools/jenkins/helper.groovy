@@ -20,7 +20,11 @@
 import groovy.text.StreamingTemplateEngine
 
 def renderEmail(emailTemplate, variables) {
-    def engine = new StreamingTemplateEngine()
-    return engine.createTemplate(input).make(variables).toString()
+    StreamingTemplateEngine engine = new StreamingTemplateEngine()
+    return engine.createTemplate(emailTemplate).make(variables).toString()
 }
+
+return [
+    renderEmail: this.&renderEmail
+]
 
