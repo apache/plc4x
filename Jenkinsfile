@@ -225,7 +225,7 @@ pipeline {
                     body: '${FILE, path="$WORKSPACE/tools/success-email-template.html"}',
                     to: "dev@plc4x.apache.org",
                     recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-                }
+                )
             }
         }
     }
