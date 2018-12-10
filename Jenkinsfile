@@ -219,13 +219,15 @@ pipeline {
 
         // Send an email, if the last build was not SUCCESSfull and this one is.
         success {
-            if (currentBuild.previousBuild != null && currentBuild.previousBuild.result != 'SUCCESS') {
-                emailext (
-                    subject: "[BUILD-STABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                    body: '${FILE, path="$WORKSPACE/tools/success-email-template.html"}',
-                    to: "dev@plc4x.apache.org",
-                    recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-                )
+            script {
+                if (currentBuild.previousBuild != null && currentBuild.previousBuild.result != 'SUCCESS') {
+                    emailext (
+                        subject: "[BUILD-STABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                        body: '${FILE, path="$WORKSPACE/tools/success-email-template.html"}',
+                        to: "dev@plc4x.apache.org",
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                    )
+                }
             }
         }
     }
