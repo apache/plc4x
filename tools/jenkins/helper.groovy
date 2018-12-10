@@ -24,7 +24,4 @@ def renderEmail(String emailTemplate, Map variables) {
     return engine.createTemplate(emailTemplate).make(variables).toString()
 }
 
-return [
-    renderEmail: this.&renderEmail
-]
-
+return this
