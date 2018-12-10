@@ -201,11 +201,17 @@ pipeline {
             emailext (
                 subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
                 body: """<p>BUILD-FAILURE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':</p><p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"</p>""",
+                to: "dev@plc4x.apache.org",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
         }
         unstable {
-            sh 'echo "This will run only if the run was marked as unstable"'
+            emailext (
+                subject: "[BUILD-UNSTABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                body: """<p>BUILD-UNSTABLE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':</p><p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"</p>""",
+                to: "dev@plc4x.apache.org",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+            )
         }
     }
 
