@@ -24,16 +24,16 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.base.connection.TestChannelFactory;
-import org.pcap4j.core.NotOpenException;
-import org.pcap4j.core.PcapHandle;
-import org.pcap4j.core.PcapNativeException;
-import org.pcap4j.core.Pcaps;
+import org.junit.jupiter.api.TestInfo;
+import org.pcap4j.core.*;
 import org.pcap4j.packet.Packet;
+import org.pcap4j.packet.namednumber.DataLinkType;
 
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
@@ -160,34 +160,43 @@ public class S7PlcTestConnection extends S7PlcConnection {
         }
     }
 
-    public void verifyPcapFile(String filename) {
+    public void verifyPcapFile(String filename, TestInfo testInfo) {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
             File file = new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
             PcapHandle responsePcap = Pcaps.openOffline(file.getAbsolutePath());
             Packet packet = responsePcap.getNextPacketEx();
-            byte[] actData = packet.getPayload().getPayload().getPayload().getRawData();
+            byte[] refData = packet.getPayload().getPayload().getPayload().getRawData();
 
             // Get the systems output.
             EmbeddedChannel channel = (EmbeddedChannel) getChannel();
             ByteBuf request = channel.readOutbound();
 
             // Check the sizes are equal.
-            assertThat(actData.length, equalTo(request.readableBytes()));
+            assertThat(refData.length, equalTo(request.readableBytes()));
 
             // Read the raw data sent to the output.
-            byte[] refData = new byte[request.readableBytes()];
-            request.readBytes(refData);
+            byte[] actData = new byte[request.readableBytes()];
+            request.readBytes(actData);
 
             // Compare the actual output to the reference output
             if(!Arrays.equals(actData, refData)) {
-                for(int i = 0; i < actData.length; i++) {
-                    if(actData[i] != refData[i]) {
+                String currentWorkingDir = System.getProperty("user.dir");
+                Class<?> testClass = testInfo.getTestClass().orElse(Object.class);
+                Method testMethod = testInfo.getTestMethod().orElse(null);
+                String fileName = currentWorkingDir + "/target/failsafe-reports/failure-" + testClass.getSimpleName() + "-"  + testMethod.getName() + ".pcapng";
+                try (PcapHandle handle = Pcaps.openDead(DataLinkType.EN10MB, 65536)) {
+                    PcapDumper dumper = handle.dumpOpen(fileName);
+                    dumper.dumpRaw(actData);
+                    dumper.flush();
+                }
+                for (int i = 0; i < actData.length; i++) {
+                    if (actData[i] != refData[i]) {
                         fail("Mismatch at position " + i);
                     }
                 }
             }
-        } catch (PcapNativeException | EOFException | TimeoutException | NotOpenException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Error sending pacap file " + filename, e);
         }
     }

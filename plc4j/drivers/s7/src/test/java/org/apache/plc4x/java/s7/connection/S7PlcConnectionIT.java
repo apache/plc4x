@@ -24,11 +24,8 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.*;
 import org.junit.rules.Timeout;
 
 import java.util.concurrent.CompletableFuture;
@@ -45,13 +42,13 @@ public class S7PlcConnectionIT {
 
     private S7PlcTestConnection SUT;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         SUT = new S7PlcTestConnection(1, 2,
             "pdu-size=128&max-amq-caller=2&max-amq-callee=3&unknown=parameter&unknown-flag");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws PlcConnectionException{
         if(SUT.isConnected()) {
             SUT.close();
@@ -66,7 +63,7 @@ public class S7PlcConnectionIT {
     }
 
     @Test
-    public void read() throws Exception {
+    public void read(TestInfo testInfo) throws Exception {
         SUT.connect();
         EmbeddedChannel channel = (EmbeddedChannel) SUT.getChannel();
         assertThat("No outbound messages should exist.", channel.outboundMessages().size(), equalTo(0));
@@ -76,7 +73,7 @@ public class S7PlcConnectionIT {
         // Check that one message has been sent.
         assertThat("Exactly one outbound message should exist after sending.",
             channel.outboundMessages().size(), equalTo(1));
-        SUT.verifyPcapFile("org/apache/plc4x/java/s7/connection/s7-read-var-request.pcapng");
+        SUT.verifyPcapFile("org/apache/plc4x/java/s7/connection/s7-read-var-request.pcapng", testInfo);
 
         // Manually feed a packet response into the channel.
         SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-read-var-response.pcapng");
@@ -108,7 +105,7 @@ public class S7PlcConnectionIT {
     }
 
     @Test
-    public void write() throws Exception {
+    public void write(TestInfo testInfo) throws Exception {
         SUT.connect();
         EmbeddedChannel channel = (EmbeddedChannel) SUT.getChannel();
         assertThat("No outbound messages should exist.", channel.outboundMessages().size(), equalTo(0));
@@ -118,7 +115,7 @@ public class S7PlcConnectionIT {
         // Check that one message has been sent.
         assertThat("Exactly one outbound message should exist after sending.",
             channel.outboundMessages().size(), equalTo(1));
-        SUT.verifyPcapFile("org/apache/plc4x/java/s7/connection/s7-write-var-request.pcapng");
+        SUT.verifyPcapFile("org/apache/plc4x/java/s7/connection/s7-write-var-request.pcapng", testInfo);
 
         // Manually feed a packet response into the channel.
         SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-write-var-response.pcapng");
