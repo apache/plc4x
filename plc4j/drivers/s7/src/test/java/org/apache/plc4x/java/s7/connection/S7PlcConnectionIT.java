@@ -127,7 +127,7 @@ public class S7PlcConnectionIT {
 
         SUT.close();
 
-        //fail("Intentionally failing this test in order to test the email notifications");
+        fail("Intentionally failing this test in order to test the email notifications");
     }
 
 }

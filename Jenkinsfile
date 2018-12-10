@@ -197,21 +197,36 @@ pipeline {
 
     // Send out notifications on unsuccessfull builds.
     post {
-         failure {
+        // If this build failed, send an email to the list.
+        failure {
             emailext (
                 subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                body: """<p>BUILD-FAILURE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':</p><p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"</p>""",
+                body: ${FILE,path="tools/failure-email-template.html"},
                 to: "dev@plc4x.apache.org",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
         }
+
+        // If this build didn't fail, but there were failling tests, send an email to the list.
         unstable {
             emailext (
                 subject: "[BUILD-UNSTABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                body: """<p>BUILD-UNSTABLE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':</p><p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"</p>""",
+                body: ${FILE,path="tools/failure-email-template.html"},
                 to: "dev@plc4x.apache.org",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
+        }
+
+        // Send an email, if the last build was not SUCCESSfull and this one is.
+        success {
+            if (currentBuild.previousBuild != null && currentBuild.previousBuild.result != 'SUCCESS') {
+                emailext (
+                    subject: "[BUILD-STABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                    body: ${FILE,path="tools/success-email-template.html"},
+                    to: "dev@plc4x.apache.org",
+                    recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                }
+            }
         }
     }
 
