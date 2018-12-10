@@ -198,36 +198,49 @@ pipeline {
 
     // Send out notifications on unsuccessfull builds.
     post {
-        def helper = load "tools/jenkins/helper.groovy"
-        def variables = [ "JOB_NAME": env.JOB_NAME,
-                      "BRANCH_NAME": env.BRANCH_NAME,
-                      "BUILD_NUMBER": env.BUILD_NUMBER,
-                      "BUILD_URL": env.BUILD_URL]
-
         // If this build failed, send an email to the list.
         failure {
-            emailext (
-                subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                body: helper.renderEmail('${FILE, path="tools/jenkins/failure-email-template.html"}', variables),
-                to: "dev@plc4x.apache.org",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-            )
+            script {
+                def helper = load "tools/jenkins/helper.groovy"
+                def variables = ["JOB_NAME"    : env.JOB_NAME,
+                                 "BRANCH_NAME" : env.BRANCH_NAME,
+                                 "BUILD_NUMBER": env.BUILD_NUMBER,
+                                 "BUILD_URL"   : env.BUILD_URL]
+                emailext(
+                    subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                    body: helper.renderEmail('${FILE, path="tools/jenkins/failure-email-template.html"}', variables),
+                    to: "dev@plc4x.apache.org",
+                    recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                )
+            }
         }
 
         // If this build didn't fail, but there were failling tests, send an email to the list.
         unstable {
-            emailext (
-                subject: "[BUILD-UNSTABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                body: helper.renderEmail('${FILE, path="tools/jenkins/failure-email-template.html"}', variables),
-                to: "dev@plc4x.apache.org",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-            )
+            script {
+                def helper = load "tools/jenkins/helper.groovy"
+                def variables = ["JOB_NAME"    : env.JOB_NAME,
+                                 "BRANCH_NAME" : env.BRANCH_NAME,
+                                 "BUILD_NUMBER": env.BUILD_NUMBER,
+                                 "BUILD_URL"   : env.BUILD_URL]
+                emailext(
+                    subject: "[BUILD-UNSTABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                    body: helper.renderEmail('${FILE, path="tools/jenkins/failure-email-template.html"}', variables),
+                    to: "dev@plc4x.apache.org",
+                    recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                )
+            }
         }
 
         // Send an email, if the last build was not SUCCESSfull and this one is.
         success {
             script {
                 if (currentBuild.previousBuild != null && currentBuild.previousBuild.result != 'SUCCESS') {
+                    def helper = load "tools/jenkins/helper.groovy"
+                    def variables = ["JOB_NAME"    : env.JOB_NAME,
+                                     "BRANCH_NAME" : env.BRANCH_NAME,
+                                     "BUILD_NUMBER": env.BUILD_NUMBER,
+                                     "BUILD_URL"   : env.BUILD_URL]
                     emailext (
                         subject: "[BUILD-STABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
                         body: helper.renderEmail('${FILE, path="tools/jenkins/success-email-template.html"}', variables),
