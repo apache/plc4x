@@ -39,10 +39,10 @@ public class PlcDriverManager {
         this(Thread.currentThread().getContextClassLoader());
     }
 
-    public PlcDriverManager(ClassLoader classLoader)
-        this.classLoader = classLoader
-    driverMap = new HashMap<>()
-    ServiceLoader<PlcDriver> plcDriverLoader = ServiceLoader.load(PlcDriver.class, classLoader);
+    public PlcDriverManager(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        driverMap = new HashMap<>();
+        ServiceLoader<PlcDriver> plcDriverLoader = ServiceLoader.load(PlcDriver.class, classLoader);
         for (PlcDriver driver : plcDriverLoader) {
             if (driverMap.containsKey(driver.getProtocolCode())) {
                 throw new IllegalStateException(
