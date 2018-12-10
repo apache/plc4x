@@ -19,7 +19,7 @@
 
 import groovy.text.StreamingTemplateEngine
 
-def renderEmail(emailTemplate, variables) {
+def renderEmail(String emailTemplate, Map variables) {
     StreamingTemplateEngine engine = new StreamingTemplateEngine()
     return engine.createTemplate(emailTemplate).make(variables).toString()
 }
