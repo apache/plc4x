@@ -199,7 +199,7 @@ pipeline {
     // Send out notifications on unsuccessfull builds.
     post {
         def helper = load "tools/jenkins/helper.groovy"
-        variables = [ "JOB_NAME": env.JOB_NAME,
+        def variables = [ "JOB_NAME": env.JOB_NAME,
                       "BRANCH_NAME": env.BRANCH_NAME,
                       "BUILD_NUMBER": env.BUILD_NUMBER,
                       "BUILD_URL": env.BUILD_URL]
