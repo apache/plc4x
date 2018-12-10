@@ -237,7 +237,6 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                                          S7AnyVarParameterItem s7AnyVarParameterItem, VarPayloadItem varPayloadItem,
                                          short byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
         short curParameterByteOffset = byteOffset;
-        short curPayloadByteOffset = 0;
         byte curParameterBitOffset = s7AnyVarParameterItem.getBitOffset();
         byte curPayloadBitOffset = 0;
         for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
@@ -254,7 +253,8 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             // Create a one-byte byte array and set it to 0x01, if the corresponding bit
             // was 1 else set it to 0x00.
             byte[] elementData = new byte[1];
-            elementData[0] = (byte) ((varPayloadItem.getData()[i] >> curPayloadBitOffset) & 0x01);
+            short curPayloadByteOffset = (short) ((short) i / 8);
+            elementData[0] = (byte) ((varPayloadItem.getData()[curPayloadByteOffset] >> curPayloadBitOffset) & 0x01);
 
             // Create the new payload item.
             VarPayloadItem itemPayload = new VarPayloadItem(
