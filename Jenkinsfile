@@ -201,7 +201,7 @@ pipeline {
         failure {
             emailext (
                 subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                body: '${FILE, path="$WORKSPACE/tools/failure-email-template.html"}',
+                body: '${FILE, path="tools/failure-email-template.html"}',
                 to: "dev@plc4x.apache.org",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
@@ -211,7 +211,7 @@ pipeline {
         unstable {
             emailext (
                 subject: "[BUILD-UNSTABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                body: '${FILE, path="$WORKSPACE/tools/failure-email-template.html"}',
+                body: '${FILE, path="tools/failure-email-template.html"}',
                 to: "dev@plc4x.apache.org",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
@@ -223,7 +223,7 @@ pipeline {
                 if (currentBuild.previousBuild != null && currentBuild.previousBuild.result != 'SUCCESS') {
                     emailext (
                         subject: "[BUILD-STABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
-                        body: '${FILE, path="$WORKSPACE/tools/success-email-template.html"}',
+                        body: '${FILE, path="tools/success-email-template.html"}',
                         to: "dev@plc4x.apache.org",
                         recipientProviders: [[$class: 'DevelopersRecipientProvider']]
                     )
