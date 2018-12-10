@@ -302,7 +302,8 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
             bitSet.set(i, fieldItem.getBoolean(i));
         }
-        System.arraycopy(bitSet.toByteArray(), 0, byteData, 0, numBytes);
+        byte[] src = bitSet.toByteArray();
+        System.arraycopy(src, 0, byteData, 0, Math.min(src.length, numBytes));
         return byteData;
     }
 

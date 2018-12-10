@@ -236,8 +236,10 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     private void processBooleanWriteVarParameter(S7RequestMessage request, VarParameter varParameter, VarPayload varPayload,
                                          S7AnyVarParameterItem s7AnyVarParameterItem, VarPayloadItem varPayloadItem,
                                          short byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
-        short curByteOffset = byteOffset;
-        byte curBitOffset = 0;
+        short curParameterByteOffset = byteOffset;
+        short curPayloadByteOffset = 0;
+        byte curParameterBitOffset = s7AnyVarParameterItem.getBitOffset();
+        byte curPayloadBitOffset = 0;
         for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
             // Create a new message with only one single value item in the var parameter.
             VarParameterItem item = new S7AnyVarParameterItem(
@@ -245,14 +247,14 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 s7AnyVarParameterItem.getMemoryArea(),
                 s7AnyVarParameterItem.getDataType(), (short) 1,
                 s7AnyVarParameterItem.getDataBlockNumber(),
-                curByteOffset, curBitOffset);
+                curParameterByteOffset, curParameterBitOffset);
             S7Parameter subVarParameter = new VarParameter(varParameter.getType(),
                 Collections.singletonList(item));
 
             // Create a one-byte byte array and set it to 0x01, if the corresponding bit
             // was 1 else set it to 0x00.
             byte[] elementData = new byte[1];
-            elementData[0] = (byte) ((varPayloadItem.getData()[curByteOffset] >> curBitOffset) & 0x01);
+            elementData[0] = (byte) ((varPayloadItem.getData()[i] >> curPayloadBitOffset) & 0x01);
 
             // Create the new payload item.
             VarPayloadItem itemPayload = new VarPayloadItem(
@@ -272,10 +274,15 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             compositeRequestMessage.addRequestMessage(subMessage);
 
             // Calculate the new memory and bit offset.
-            curBitOffset++;
-            if ((i > 0) && ((curBitOffset % 8) == 0)) {
-                curByteOffset++;
-                curBitOffset = 0;
+            curParameterBitOffset++;
+            if ((i > 0) && ((curParameterBitOffset % 8) == 0)) {
+                curParameterByteOffset++;
+                curParameterBitOffset = 0;
+            }
+            curPayloadBitOffset++;
+            if ((i > 0) && ((curPayloadBitOffset % 8) == 0)) {
+                curPayloadByteOffset++;
+                curPayloadBitOffset = 0;
             }
         }
     }
@@ -399,8 +406,11 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 if(requestItem.getNumElements() != responseParameterItem.getNumElements()) {
                     int itemSizeInBytes = requestItem.getDataType().getSizeInBytes();
                     int totalSizeInBytes = requestItem.getNumElements() * itemSizeInBytes;
-                    byte[] data = new byte[totalSizeInBytes];
-                    System.arraycopy(responsePayloadItem.getData(), 0, data, 0, responsePayloadItem.getData().length);
+                    byte[] data = null;
+                    if(varParameter.getType() == ParameterType.READ_VAR) {
+                        data = new byte[totalSizeInBytes];
+                        System.arraycopy(responsePayloadItem.getData(), 0, data, 0, responsePayloadItem.getData().length);
+                    }
 
                     // Initialize the current size, this will be lower than the original, as the only
                     // way to have different count, is if the request was split up.
@@ -418,8 +428,10 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                         responsePayloadItem = payloadItems.get(i + responseOffset);
 
                         // Copy the data of this item behind the previous content.
-                        System.arraycopy(responsePayloadItem.getData(), 0, data, dataOffset, responsePayloadItem.getData().length);
-                        dataOffset += responsePayloadItem.getData().length;
+                        if(varParameter.getType() == ParameterType.READ_VAR) {
+                            System.arraycopy(responsePayloadItem.getData(), 0, data, dataOffset, responsePayloadItem.getData().length);
+                            dataOffset += responsePayloadItem.getData().length;
+                        }
                     }
 
                     mergedPayloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK,
