@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class S7PlcConnectionIT {
 
@@ -128,7 +127,7 @@ public class S7PlcConnectionIT {
 
         SUT.close();
 
-        fail("Intentionally failing this test in order to test the email notifications");
+        //fail("Intentionally failing this test in order to test the email notifications");
     }
 
 }
