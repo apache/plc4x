@@ -23,14 +23,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.scraper.ScrapeJob;
 import org.apache.plc4x.java.scraper.Scraper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,12 +47,13 @@ public class ScraperConfiguration {
 
     /**
      * Default constructor.
-     * @param sources Map from connection alias to connection string
+     *
+     * @param sources           Map from connection alias to connection string
      * @param jobConfigurations List of configurations one for each Job
      */
     @JsonCreator
     public ScraperConfiguration(@JsonProperty(value = "sources", required = true) Map<String, String> sources,
-                         @JsonProperty(value = "jobs", required = true) List<JobConfiguration> jobConfigurations) {
+                                @JsonProperty(value = "jobs", required = true) List<JobConfiguration> jobConfigurations) {
         checkNoUnreferencedSources(sources, jobConfigurations);
         // TODO Warning on too many sources?!
         this.sources = sources;
@@ -65,7 +66,7 @@ public class ScraperConfiguration {
             .filter(source -> !sources.containsKey(source))
             .collect(Collectors.toSet());
         if (!unreferencedSources.isEmpty()) {
-            throw new PlcRuntimeException("There are the following unreferenced sources: " + unreferencedSources);
+            throw new ScraperConfigurationException("There are the following unreferenced sources: " + unreferencedSources);
         }
     }
 
@@ -74,7 +75,7 @@ public class ScraperConfiguration {
         try {
             return mapper.readValue(yaml, ScraperConfiguration.class);
         } catch (IOException e) {
-            throw new PlcRuntimeException("Unable to parse given yaml configuration!", e);
+            throw new ScraperConfigurationException("Unable to parse given yaml configuration!", e);
         }
     }
 
@@ -83,7 +84,7 @@ public class ScraperConfiguration {
         try {
             return mapper.readValue(json, ScraperConfiguration.class);
         } catch (IOException e) {
-            throw new PlcRuntimeException("Unable to parse given json configuration!", e);
+            throw new ScraperConfigurationException("Unable to parse given json configuration!", e);
         }
     }
 
@@ -94,9 +95,15 @@ public class ScraperConfiguration {
         } else if (path.endsWith("yml") || path.endsWith("yaml")) {
             mapper = new ObjectMapper(new YAMLFactory());
         } else {
-            throw new InvalidParameterException("Only files with extensions json, yml or yaml can be read");
+            throw new ScraperConfigurationException("Only files with extensions json, yml or yaml can be read");
         }
-        return mapper.readValue(new File(path), ScraperConfiguration.class);
+        try {
+            return mapper.readValue(new File(path), ScraperConfiguration.class);
+        } catch (FileNotFoundException e) {
+            throw new ScraperConfigurationException("Unable to find configuration given configuration file at '" + path + "'", e);
+        } catch (MismatchedInputException e) {
+            throw new ScraperConfigurationException("Given configuration is in wrong format!", e);
+        }
     }
 
     public Map<String, String> getSources() {

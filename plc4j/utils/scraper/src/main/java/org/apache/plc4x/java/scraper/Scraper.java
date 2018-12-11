@@ -126,7 +126,7 @@ public class Scraper {
                     entry.getValue().getPercentageFailed(),
                     statistics.apply(new PercentageAboveThreshold(entry.getKey().getScrapeRate() * 1e6)),
                     statistics.getMin() * 1e-6, statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
-                LOGGER.info(msg);
+                LOGGER.debug(msg);
             }
         }, 1_000, 1_000, TimeUnit.MILLISECONDS);
     }

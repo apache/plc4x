@@ -96,6 +96,7 @@ public class ScraperTask implements Runnable {
                 try {
                     return driverManager.getConnection(connectionString);
                 } catch (PlcConnectionException e) {
+                    LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
                     throw new PlcRuntimeException(e);
                 }
             }, handlerService);
