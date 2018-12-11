@@ -202,7 +202,7 @@ pipeline {
         }
     }
 
-    // Send out notifications on unsuccessfull builds.
+    // Send out notifications on unsuccessful builds.
     post {
         // If this build failed, send an email to the list.
         failure {
@@ -222,7 +222,7 @@ Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANC
             }
         }
 
-        // If this build didn't fail, but there were failling tests, send an email to the list.
+        // If this build didn't fail, but there were failing tests, send an email to the list.
         unstable {
             script {
                 if(env.BRANCH_NAME == "develop") {
@@ -240,7 +240,7 @@ Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANC
             }
         }
 
-        // Send an email, if the last build was not SUCCESSfull and this one is.
+        // Send an email, if the last build was not successful and this one is.
         success {
             script {
                 if ((env.BRANCH_NAME == "develop") && (currentBuild.previousBuild != null) && (currentBuild.previousBuild.result != 'SUCCESS')) {
