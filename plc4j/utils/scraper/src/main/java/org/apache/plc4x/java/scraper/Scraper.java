@@ -25,7 +25,10 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.util.PercentageAboveThreshold;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
@@ -71,7 +74,22 @@ public class Scraper {
      * @param resultHandler
      */
     public Scraper(ScraperConfiguration config, ResultHandler resultHandler) {
-        this(resultHandler, new PooledPlcDriverManager(), config.getJobs());
+        this(resultHandler, createPooledDriverManager(), config.getJobs());
+    }
+
+    /**
+     * Min Idle per Key is set to 1 for situations where the network is broken.
+     * Then, on reconnect we can fail all getConnection calls (in the ScraperTask) fast until
+     * (in the background) the idle connection is created and the getConnection call returns fast.
+     */
+    private static PooledPlcDriverManager createPooledDriverManager() {
+        return new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
+            GenericKeyedObjectPoolConfig<PlcConnection> poolConfig = new GenericKeyedObjectPoolConfig<>();
+            poolConfig.setMinIdlePerKey(1);  // This should avoid problems with long running connect attempts??
+            poolConfig.setTestOnBorrow(true);
+            poolConfig.setTestOnReturn(true);
+            return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, poolConfig);
+        });
     }
 
     /**
