@@ -22,6 +22,8 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.spi.PlcDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,6 +32,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 public class PlcDriverManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcDriverManager.class);
 
     protected ClassLoader classLoader;
 
@@ -40,15 +44,18 @@ public class PlcDriverManager {
     }
 
     public PlcDriverManager(ClassLoader classLoader) {
+        LOGGER.info("Instantiating new PLC Driver Manager with class loader {}", classLoader);
         this.classLoader = classLoader;
         driverMap = new HashMap<>();
         ServiceLoader<PlcDriver> plcDriverLoader = ServiceLoader.load(PlcDriver.class, classLoader);
+        LOGGER.info("Registering available drivers...");
         for (PlcDriver driver : plcDriverLoader) {
             if (driverMap.containsKey(driver.getProtocolCode())) {
                 throw new IllegalStateException(
                     "Multiple driver implementations available for protocol code '" +
                         driver.getProtocolCode() + "'");
             }
+            LOGGER.info("Registering driver for Protocol {} ({})", driver.getProtocolCode(), driver.getProtocolName());
             driverMap.put(driver.getProtocolCode(), driver);
         }
     }
