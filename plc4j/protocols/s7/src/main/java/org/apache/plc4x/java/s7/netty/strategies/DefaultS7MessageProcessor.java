@@ -281,7 +281,6 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             }
             curPayloadBitOffset++;
             if ((i > 0) && ((curPayloadBitOffset % 8) == 0)) {
-                curPayloadByteOffset++;
                 curPayloadBitOffset = 0;
             }
         }
