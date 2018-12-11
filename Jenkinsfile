@@ -99,8 +99,10 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                // Make sure the directory is wiped.
-                sh 'rm -rf ./local-snapshots-dir'
+                // Clean up the snapshots directory.
+                dir("local-snapshots-dir/") {
+                    deleteDir()
+                }
 
                 // We'll deploy to a relative directory so we can save
                 // that and deploy in a later step on a different node
@@ -188,10 +190,14 @@ pipeline {
             }
             steps {
                 echo 'Deploying Site'
+                // Clean up the site directory.
+                dir("ltarget/staging") {
+                    deleteDir()
+                }
                 // Unstash the previously stashed site.
                 unstash 'plc4x-site'
                 // Publish the site with the scm-publish plugin.
-                sh 'mvn -P${JENKINS_PROFILE} scm-publish:publish-scm'
+                sh 'mvn -f jenkins.pom -X -P deploy-site scm-publish:publish-scm'
             }
         }
     }
