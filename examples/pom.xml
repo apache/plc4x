@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
   </parent>
 
   <groupId>org.apache.plc4x.examples</groupId>
@@ -39,7 +39,8 @@
     <module>hello-cloud-azure</module>
     <module>hello-cloud-google</module>
     <module>hello-connectivity-kafka</module>
-    <module>hello-connectivity-mqtt</module>
+    <!-- Disabled for release as it contains SNAPSHOT dependencies -->
+    <!--module>hello-connectivity-mqtt</module-->
     <module>hello-integration-edgent</module>
     <module>hello-opm</module>
     <module>hello-storage-elasticsearch</module>

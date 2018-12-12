@@ -1,5 +1,63 @@
+==============================================================
+Apache PLC4X (incubating) 0.2.0
+==============================================================
+
+This is the second official release of Apache PLC4X.
+
+Especially have we addressed all issues reported during
+our first release, that were of non-technical nature.
+These were tracked in:
+
+PLC4X-60	Fix findings by the last release
+
+New Features
+------------
+A new connection-pool was added, which allows automatic
+pooling and reuse of PLC connections.
+
+A new OPM module was added, which allows JPA like read-
+communication using POJOs, very similar to PJA.
+
+A stub of a new driver for the Emerson DeltaV protocol
+has been added, but is not yet a fully functional PLC4X
+driver. This is also a first test of our new `passive-
+mode-driver` concept.
+
+Incompatible changes
+--------------------
+
+We have refactored the API in order to eliminate the
+need of passing `x-requests` to `x-methods` and added
+an `execute` method to each request type. This greatly
+simplifies the client code. However this requires
+refactoring of applications using the direct PLC4X API.
+
+Miscellaneous changes
+---------------------
+
+We have increased the test coverage greatly and fixed
+a lot of little errors we found on the way.
+
+Known Issues
+------------
+
+Bug Fixes
+---------
+
+PLC4X-56	[S7] S7Field does not recognize addresses
+            with numElements present
+PLC4X-57	[S7] Response for address with numElements
+            contains only first item
+PLC4X-61	Installation fails plc4j-protocoll-ethernetip
+            needs license
+PLC4X-62	Modbus results deliver null-Value due to missing
+            implementation of getShort, getLong ...
+
+
+
+==============================================================
 Apache PLC4X (incubating) 0.1.0
-===============================
+==============================================================
 
 This is the first official release of Apache PLC4X.
 It contains drivers for the following protocols:
