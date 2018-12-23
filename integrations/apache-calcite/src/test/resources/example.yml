@@ -19,12 +19,14 @@
 ---
 sources:
   test: test:test
+  test2: test:test2
 
 jobs:
   - name: job1
-    scrapeRate: 1000
+    scrapeRate: 10
     sources:
     - test
+    - test2
     fields:
       test: 'RANDOM/test:Integer'
       test2: 'RANDOM/test:String'

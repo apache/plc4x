@@ -21,14 +21,16 @@ package org.apache.plc4x;
 import org.apache.calcite.DataContext;
 import org.apache.calcite.linq4j.Enumerable;
 import org.apache.calcite.schema.ScannableTable;
+import org.apache.calcite.schema.StreamableTable;
+import org.apache.calcite.schema.Table;
 import org.apache.plc4x.java.scraper.config.JobConfiguration;
 
 import java.util.concurrent.BlockingQueue;
 
-public class Plc4xTable extends Plc4xBaseTable implements ScannableTable {
+public class Plc4xStreamTable extends Plc4xBaseTable implements ScannableTable, StreamableTable {
 
-    public Plc4xTable(BlockingQueue<Plc4xSchema.Record> queue, JobConfiguration conf, long tableCutoff) {
-        super(queue, conf, tableCutoff);
+    public Plc4xStreamTable(BlockingQueue<Plc4xSchema.Record> queue, JobConfiguration conf) {
+        super(queue, conf, -1L);
     }
 
     @Override
@@ -36,4 +38,8 @@ public class Plc4xTable extends Plc4xBaseTable implements ScannableTable {
         return super.scanInternal(root);
     }
 
+    @Override
+    public Table stream() {
+        return this;
+    }
 }
