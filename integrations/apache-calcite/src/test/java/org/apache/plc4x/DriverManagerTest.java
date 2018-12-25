@@ -50,10 +50,9 @@ public class DriverManagerTest implements WithAssertions {
     @Test
     void query2() throws IOException, SQLException {
         Driver driver = new Driver();
-        Connection connection = driver.connect("jdbc:calcite:model=src/test/resources/model.yml;lex=MYSQL_ANSI", new Properties());
+        Connection connection = driver.connect("jdbc:calcite:model=src/test/resources/model.json", new Properties());
 
-        // ResultSet rs = connection.prepareStatement("SELECT STREAM \"test\", \"test\" * 2, \"test2\" FROM \"plc4x\".\"job1\"").executeQuery();
-        ResultSet rs = connection.prepareStatement("SELECT * FROM \"plc4x-tables\".\"job1\"").executeQuery();
+        ResultSet rs = connection.prepareStatement("SELECT * FROM \"PLC4X-TABLES\".\"job1\"").executeQuery();
 
         validateResult(rs);
 
