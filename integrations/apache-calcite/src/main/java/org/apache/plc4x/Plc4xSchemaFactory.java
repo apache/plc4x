@@ -39,7 +39,7 @@ public class Plc4xSchemaFactory implements SchemaFactory {
         try {
             configuration = ScraperConfiguration.fromFile(config.toString());
         } catch (IOException e) {
-            throw new RuntimeException("Unable to load configuration file!", e);
+            throw new IllegalArgumentException("Unable to load configuration file!", e);
         }
 
         // Fetch limit
@@ -49,7 +49,7 @@ public class Plc4xSchemaFactory implements SchemaFactory {
         try {
             parsedLimit = Long.parseLong(limit.toString());
         } catch (NumberFormatException e) {
-            throw new RuntimeException("Given limit '" + limit + "' cannot be parsed to valid long!", e);
+            throw new IllegalArgumentException("Given limit '" + limit + "' cannot be parsed to valid long!", e);
         }
         // Pass the configuration to the Schema
         return new Plc4xSchema(configuration, parsedLimit);

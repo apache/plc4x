@@ -43,6 +43,6 @@ class Plc4XBaseTableTest implements WithAssertions {
         Enumerator<Object[]> enumerator = table.scan(null).enumerator();
 
         assertThat(enumerator.moveNext()).isTrue();
-        assertThat(enumerator.current()).containsExactly("value");
+        assertThat(enumerator.current()).contains("value");
     }
 }

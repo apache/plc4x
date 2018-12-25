@@ -43,6 +43,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Base for Stream and "Table" version of the Plc4xTable.
+ * Needs to be subclassed due to usage of "instanceof" in Calcites internals.
+ */
 public abstract class Plc4xBaseTable extends AbstractTable {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4xBaseTable.class);
@@ -123,7 +127,7 @@ public abstract class Plc4xBaseTable extends AbstractTable {
     /**
      * if tableCutoff is positive, then the row gets limited to that.
      */
-    public Enumerable<Object[]> scanInternal(DataContext root) {
+    public Enumerable<Object[]> scan(DataContext root) {
         return new AbstractEnumerable<Object[]>() {
             @Override
             public Enumerator<Object[]> enumerator() {

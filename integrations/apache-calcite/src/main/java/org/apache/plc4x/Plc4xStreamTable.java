@@ -35,7 +35,7 @@ public class Plc4xStreamTable extends Plc4xBaseTable implements ScannableTable, 
 
     @Override
     public Enumerable<Object[]> scan(DataContext root) {
-        return super.scanInternal(root);
+        return super.scan(root);
     }
 
     @Override

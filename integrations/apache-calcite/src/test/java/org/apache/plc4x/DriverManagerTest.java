@@ -21,70 +21,66 @@ package org.apache.plc4x;
 import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.calcite.jdbc.Driver;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DriverManagerTest {
+public class DriverManagerTest implements WithAssertions {
 
     @Test
-    void instanciateJdbcConnection() throws SQLException, IOException {
+    void query() throws SQLException, IOException {
         Driver driver = new Driver();
-        Connection connection = driver.connect("jdbc:calcite://asdf;config=abc;lex=MYSQL_ANSI", new Properties());
+        Connection connection = driver.connect("jdbc:calcite:asdf;lex=MYSQL_ANSI", new Properties());
 
         CalciteConnection calciteConnection = connection.unwrap(CalciteConnection.class);
-        calciteConnection.getRootSchema().add("plc4x", new Plc4xSchema(ScraperConfiguration.fromFile("src/test/resources/example.yml"), 10));
+        calciteConnection.getRootSchema().add("plc4x", new Plc4xSchema(ScraperConfiguration.fromFile("src/test/resources/example.yml"), 100));
 
-        // ResultSet rs = connection.prepareStatement("SELECT STREAM \"test\", \"test\" * 2, \"test2\" FROM \"plc4x\".\"job1\"").executeQuery();
-        ResultSet rs = connection.prepareStatement("SELECT STREAM * FROM \"plc4x\".\"job1\" WHERE source = 'test'").executeQuery();
-
-        // Print the header
-        int count = rs.getMetaData().getColumnCount();
-        for (int i = 1; i <= count; i++) {
-            System.out.print(rs.getMetaData().getColumnLabel(i) + "(" + rs.getMetaData().getColumnTypeName(i) + ")" + "\t");
-        }
-        System.out.println("");
-
-        while (rs.next()) {
-            for (int i = 1; i <= count; i++) {
-                System.out.print(rs.getString(i) + "\t");
-            }
-            System.out.println("");
-        }
+        ResultSet rs = connection.prepareStatement("SELECT * FROM \"plc4x\".\"job1\"").executeQuery();
+        validateResult(rs);
 
         connection.close();
     }
 
     @Test
-    void instantiateDirect() throws IOException, SQLException {
+    void query2() throws IOException, SQLException {
         Driver driver = new Driver();
         Connection connection = driver.connect("jdbc:calcite:model=src/test/resources/model.yml;lex=MYSQL_ANSI", new Properties());
 
         // ResultSet rs = connection.prepareStatement("SELECT STREAM \"test\", \"test\" * 2, \"test2\" FROM \"plc4x\".\"job1\"").executeQuery();
         ResultSet rs = connection.prepareStatement("SELECT * FROM \"plc4x-tables\".\"job1\"").executeQuery();
 
-        // Print the header
-        int count = rs.getMetaData().getColumnCount();
-        for (int i = 1; i <= count; i++) {
-            System.out.print(rs.getMetaData().getColumnLabel(i) + "(" + rs.getMetaData().getColumnTypeName(i) + ")" + "\t");
-        }
-        System.out.println("");
-
-        int row = 1;
-
-        while (rs.next()) {
-            System.out.print(row++ + "\t");
-            for (int i = 1; i <= count; i++) {
-                System.out.print(rs.getString(i) + "\t");
-            }
-            System.out.println("");
-        }
+        validateResult(rs);
 
         connection.close();
+    }
+
+    private void validateResult(ResultSet rs) throws SQLException {
+        // Assert columns
+        ResultSetMetaData metadata = rs.getMetaData();
+        assertThat(metadata.getColumnCount()).isEqualTo(4);
+        // Column names
+        assertThat(metadata.getColumnName(1)).isEqualTo("timestamp");
+        assertThat(metadata.getColumnName(2)).isEqualTo("source");
+        assertThat(metadata.getColumnName(3)).isEqualTo("test");
+        assertThat(metadata.getColumnName(4)).isEqualTo("test2");
+        // Column types
+        assertThat(metadata.getColumnTypeName(1)).isEqualTo("TIMESTAMP");
+        assertThat(metadata.getColumnTypeName(2)).isEqualTo("VARCHAR");
+        assertThat(metadata.getColumnTypeName(3)).isEqualTo("INTEGER");
+        assertThat(metadata.getColumnTypeName(4)).isEqualTo("VARCHAR");
+
+        int rowCount = 0;
+        while (rs.next()) {
+            rowCount++;
+        }
+
+        assertThat(rowCount).isEqualTo(100);
     }
 
 }

@@ -33,7 +33,7 @@ public class Plc4xTable extends Plc4xBaseTable implements ScannableTable {
 
     @Override
     public Enumerable<Object[]> scan(DataContext root) {
-        return super.scanInternal(root);
+        return super.scan(root);
     }
 
 }
