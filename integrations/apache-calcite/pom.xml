@@ -30,16 +30,20 @@
 
   <artifactId>apache-calcite</artifactId>
 
+  <properties>
+    <calcite-core.version>1.17.0</calcite-core.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.calcite</groupId>
       <artifactId>calcite-core</artifactId>
-      <version>1.18.0-SNAPSHOT</version>
+      <version>${calcite-core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.calcite</groupId>
       <artifactId>calcite-linq4j</artifactId>
-      <version>1.18.0-SNAPSHOT</version>
+      <version>${calcite-core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
