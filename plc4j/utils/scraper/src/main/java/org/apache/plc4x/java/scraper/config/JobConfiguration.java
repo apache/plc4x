@@ -43,7 +43,7 @@ public class JobConfiguration {
      * @param fields Map from field alias (how it is named in the result map) to plc4x field query
      */
     @JsonCreator
-    JobConfiguration(@JsonProperty(value = "name", required = true) String name,
+    public JobConfiguration(@JsonProperty(value = "name", required = true) String name,
                             @JsonProperty(value = "scrapeRate", required = true) int scrapeRate,
                             @JsonProperty(value = "sources", required = true) List<String> sources,
                             @JsonProperty(value = "fields", required = true) Map<String, String> fields) {
