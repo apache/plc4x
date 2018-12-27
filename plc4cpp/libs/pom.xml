@@ -130,8 +130,11 @@
                 <configuration>
                   <executable>${boost.build.executable}</executable>
                   <arguments>
+                    <!-- Have the build install the built libraries -->
                     <argument>install</argument>
+                    <!-- Tell it where to install the libraries and header files -->
                     <argument>--prefix=${project.basedir}/libs/boost</argument>
+                    <!-- On Windows machines the build failed, if this was not explicitly set -->
                     <argument>address-model=64</argument>
                   </arguments>
                   <workingDirectory>${project.build.directory}/libs/boost_${boost.version.underline}</workingDirectory>

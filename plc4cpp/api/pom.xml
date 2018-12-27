@@ -33,31 +33,15 @@
   <description>Central API Module.</description>
 
   <build>
+    <!-- This is probably not required, however it helps IntelliJ detect the files as sources -->
     <sourceDirectory>${project.basedir}/src/main/cpp</sourceDirectory>
     <plugins>
-      <!--plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>native-maven-plugin</artifactId>
-        <version>1.0-alpha-9</version>
-        <extensions>true</extensions>
-        <configuration>
-          <sources>
-            <source>
-              <directory>${project.basedir}/src/main/cpp</directory>
-              <includes>
-                <include>**/*.cpp</include>
-              </includes>
-            </source>
-          </sources>
-          <!- Tell the compiler where to find the header files ->
-          <compilerStartOptions>-I${project.basedir}/../libs/libs/boost-${boost.version}-${os.suffix}/include</compilerStartOptions>
-        </configuration>
-      </plugin-->
       <plugin>
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
         <version>3.7.2-b1</version>
         <executions>
+          <!-- Uses a CMake generator to generate the build using the build tool of choice -->
           <execution>
             <id>cmake-generate</id>
             <phase>process-sources</phase>
@@ -65,23 +49,29 @@
               <goal>generate</goal>
             </goals>
             <configuration>
+              <!--
+                Actually the path to the CMakeList.txt file which then again
+                tells to tool where to find the sources.
+              -->
               <sourcePath>${project.basedir}/src/main/cpp</sourcePath>
+              <!--
+                Path to where the build configuration is generated
+                (This directory is then used in the compile step to actually perform the build)
+              -->
               <targetPath>${project.build.directory}/make</targetPath>
+              <!--
+                Name of the generator the compile step will be executing.
+              -->
               <generator>${cmake.generator}</generator>
-              <!-- The classifier of the current platform. One of [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64]. -->
+              <!--
+                The classifier of the current platform. One of
+                [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
+                It defines the version and type of the cmake installation to download.
+              -->
               <classifier>${os.classifier}</classifier>
-              <!--environmentVariables>
-                <key>value</key>
-              </environmentVariables-->
-              <!--options>
-                <!-
-                  Optional: One or more options found at https://cmake.org/cmake/help/v3.7/manual/cmake.1.html
-                  For example:
-                ->
-                <option>-DBUILD_THIRDPARTY:bool=on</option>
-              </options-->
             </configuration>
           </execution>
+          <!-- Actually executes the build -->
           <execution>
             <id>cmake-compile</id>
             <phase>compile</phase>
@@ -89,6 +79,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
+              <!-- The directory where the "generate" step generated the build configuration -->
               <projectDirectory>${project.build.directory}/make</projectDirectory>
               <classifier>${os.classifier}</classifier>
             </configuration>
