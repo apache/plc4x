@@ -81,3 +81,6 @@ spock-reports
 .DS_Store
 elasticsearch-data/
 jqassistant/
+
+# Exclude the C++ libs
+plc4cpp/libs/libs/
