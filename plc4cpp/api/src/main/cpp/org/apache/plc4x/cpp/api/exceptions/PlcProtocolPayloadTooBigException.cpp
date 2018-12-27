@@ -32,7 +32,7 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcProtocolPayloadTooBigException::PlcProtocolPayloadTooBigException(std::string protocolName, int maxSize, int actualSize, std::vector<char> payload) :
+						PlcProtocolPayloadTooBigException::PlcProtocolPayloadTooBigException(const std::string &protocolName, int maxSize, int actualSize, std::vector<char> payload) :
 							PlcProtocolException("Payload for protocol '" + protocolName + "' with size " + std::to_string(actualSize) + " exceeded allowed maximum of " + std::to_string(maxSize))
 						{
 							_protocolName = protocolName;

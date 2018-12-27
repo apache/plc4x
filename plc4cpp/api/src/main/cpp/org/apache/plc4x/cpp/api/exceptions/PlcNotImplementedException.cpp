@@ -32,11 +32,6 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcNotImplementedException::PlcNotImplementedException::PlcNotImplementedException(std::string message) : 
-							PlcRuntimeException(message)
-						{
-						}
-
 					}
 				}
 			}

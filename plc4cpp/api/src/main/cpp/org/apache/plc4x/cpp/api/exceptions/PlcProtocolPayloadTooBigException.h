@@ -40,7 +40,7 @@ namespace org
 						class PlcProtocolPayloadTooBigException : public PlcProtocolException
 						{
 							public:
-								PlcProtocolPayloadTooBigException(std::string, int, int, std::vector<char>);
+								PlcProtocolPayloadTooBigException(const std::string &protocolName, int, int, std::vector<char>);
 
 								std::string getProtocolName();
 								int getMaxSize();

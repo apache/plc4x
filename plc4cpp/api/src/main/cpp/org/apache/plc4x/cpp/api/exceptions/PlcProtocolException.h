@@ -43,10 +43,9 @@ namespace org
 						class PlcProtocolException : public PlcException
 						{
 							public:
-								PlcProtocolException(std::string);
-								PlcProtocolException(std::string, std::exception&);
-								PlcProtocolException(std::exception&);
-								PlcProtocolException(std::string, std::exception&, bool, bool);
+								explicit PlcProtocolException(const std::string &message): PlcException(message){}
+								PlcProtocolException(const std::string &message, const std::exception &exception): PlcException(message, exception){};
+								explicit PlcProtocolException(const std::exception &exception): PlcException(exception){}
 						};
 					}
 				}

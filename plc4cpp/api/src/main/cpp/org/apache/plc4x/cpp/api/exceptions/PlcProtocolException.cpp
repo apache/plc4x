@@ -32,26 +32,6 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcProtocolException::PlcProtocolException(std::string message) : 
-							PlcException(message)
-						{
-						}
-
-						PlcProtocolException::PlcProtocolException(std::string message, std::exception& x) : 
-							PlcException(message, x)
-						{
-						}
-
-						PlcProtocolException::PlcProtocolException(std::exception& x) : 
-							PlcException(x)
-						{
-						}
-
-						PlcProtocolException::PlcProtocolException(std::string message, std::exception& x, bool enableSuppression, bool writableStackTrace) : 
-							PlcException(message, x, enableSuppression, writableStackTrace)
-						{
-						}
-
 					}
 				}
 			}

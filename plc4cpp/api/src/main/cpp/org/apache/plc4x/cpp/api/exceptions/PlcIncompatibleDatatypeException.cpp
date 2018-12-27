@@ -32,7 +32,7 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcIncompatibleDatatypeException::PlcIncompatibleDatatypeException(std::string dataTypeName, int index) :
+						PlcIncompatibleDatatypeException::PlcIncompatibleDatatypeException(const std::string &dataTypeName, int index) :
 							PlcRuntimeException("Incompatible Datatype" + dataTypeName + " at index " + std::to_string(index))
 						{
 						}

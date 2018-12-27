@@ -33,25 +33,14 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcRuntimeException::PlcRuntimeException(std::string message) : 
-							exception(message.c_str())
+						PlcRuntimeException::PlcRuntimeException(const std::string &message, const std::exception &exception) :
+							runtime_error(message) // message suppressed, as no matching constructor is available
 						{
 						}
 
-						PlcRuntimeException::PlcRuntimeException(std::string message, std::exception& x) : 
-							exception(x) // message suppressed, as no matching constructor is available
+						PlcRuntimeException::PlcRuntimeException(const std::exception &ex) :
+						    runtime_error("error")
 						{
-						}
-
-						PlcRuntimeException::PlcRuntimeException(std::exception& x) : 
-							exception(x)
-						{
-						}
-
-						PlcRuntimeException::PlcRuntimeException(std::string message, std::exception& x, bool enableSuppression, bool writableStackTrace)
-						{
-							// TODO: implement stacktrace 
-							throw PlcNotImplementedException("PlcException(string, exception&, bool, bool) not implemented / TODO implement stacktrace");
 						}
 
 					}

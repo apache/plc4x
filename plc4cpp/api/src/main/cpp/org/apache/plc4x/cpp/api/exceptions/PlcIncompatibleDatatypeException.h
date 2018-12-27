@@ -37,7 +37,7 @@ namespace org
 						class PlcIncompatibleDatatypeException : public PlcRuntimeException
 						{
 							public:
-								PlcIncompatibleDatatypeException(std::string, int);
+								PlcIncompatibleDatatypeException(const std::string &dataTypeName, int);
 						};
 					}
 				}

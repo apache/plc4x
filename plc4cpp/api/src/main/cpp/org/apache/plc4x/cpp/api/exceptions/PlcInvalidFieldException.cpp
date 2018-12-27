@@ -32,19 +32,19 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcInvalidFieldException::PlcInvalidFieldException(std::string fieldToBeParsed) : 
+						PlcInvalidFieldException::PlcInvalidFieldException(const std::string &fieldToBeParsed) :
 							PlcRuntimeException(fieldToBeParsed + " invalid")
 						{
 							_fieldToBeParsed = fieldToBeParsed;
 						}
 
-						PlcInvalidFieldException::PlcInvalidFieldException(std::string fieldToBeParsed, std::string pattern) : 
+						PlcInvalidFieldException::PlcInvalidFieldException(const std::string &fieldToBeParsed, const std::string &pattern) :
 							PlcRuntimeException(fieldToBeParsed + " doesn't match " + pattern)
 						{
 							_fieldToBeParsed = fieldToBeParsed;
 						}
 
-						PlcInvalidFieldException::PlcInvalidFieldException(std::string fieldToBeParsed, std::string pattern, std::string readablePattern) : 
+						PlcInvalidFieldException::PlcInvalidFieldException(const std::string &fieldToBeParsed, const std::string &pattern, const std::string &readablePattern) :
 							PlcRuntimeException(fieldToBeParsed + " doesn't match " + readablePattern + '(' + pattern + ')')
 						{							
 							_fieldToBeParsed = fieldToBeParsed;

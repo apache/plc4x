@@ -20,8 +20,6 @@ under the License.
 #ifndef _PLC_CONNECTION_EXCEPTION
 #define _PLC_CONNECTION_EXCEPTION
 
-#include <string>
-
 #include "PlcException.h"
 
 namespace org
@@ -39,10 +37,10 @@ namespace org
 						class PlcConnectionException : public PlcException
 						{
 							public:
-								PlcConnectionException();
-								PlcConnectionException(std::string);							
-								PlcConnectionException(std::string, std::exception&);
-								PlcConnectionException(std::exception&);
+								PlcConnectionException(): PlcException() {}
+                                explicit PlcConnectionException(const std::string &message): PlcException(message){}
+								PlcConnectionException(const std::string &message, const std::exception &exception): PlcException(message, exception){}
+                                explicit PlcConnectionException(const std::exception &exception): PlcException(exception){}
 						};
 					}
 				}

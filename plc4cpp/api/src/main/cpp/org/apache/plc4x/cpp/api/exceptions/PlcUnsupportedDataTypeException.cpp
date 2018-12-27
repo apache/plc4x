@@ -32,26 +32,6 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcUnsupportedDataTypeException::PlcUnsupportedDataTypeException(std::string message) : 
-							PlcRuntimeException(message)
-						{							
-						}
-
-						PlcUnsupportedDataTypeException::PlcUnsupportedDataTypeException(std::string message, std::exception& x) : 
-							PlcRuntimeException(message, x)
-						{
-						}
-
-						PlcUnsupportedDataTypeException::PlcUnsupportedDataTypeException(std::exception& x) : 
-							PlcRuntimeException(x)
-						{
-						}
-
-						PlcUnsupportedDataTypeException::PlcUnsupportedDataTypeException(std::string message, std::exception x, bool enableSuppression, bool writableStackTrace)
-							: PlcRuntimeException(message, x, enableSuppression, writableStackTrace)
-						{
-						}
-
 					}
 				}
 			}

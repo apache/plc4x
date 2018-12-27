@@ -21,7 +21,7 @@ under the License.
 #define _PLC_EXCEPTION
 
 #include <string>
-#include <exception>
+#include <stdexcept>
 #include <iostream>
 
 namespace org
@@ -40,14 +40,13 @@ namespace org
 						 * Most generic type of plc4x exception. All plc4x exceptions are derived from
 						 * PlcException.
 						 */
-						class PlcException : public std::exception
+						class PlcException : public std::logic_error
 						{
 							public:
 								PlcException();
-								PlcException(std::string);
-								PlcException(std::string, std::exception&);
-								PlcException(std::exception&);
-								PlcException(std::string, std::exception&, bool, bool);
+								explicit PlcException(const std::string &message): std::logic_error(message.c_str()){}
+								PlcException(const std::string &message, const std::exception &exception);
+								explicit PlcException(const std::exception &exception);
 						};
 					}
 				}

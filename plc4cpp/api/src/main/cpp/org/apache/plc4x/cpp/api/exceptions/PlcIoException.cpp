@@ -33,27 +33,6 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcIoException::PlcIoException(std::string message) : 
-							PlcException(message)
-						{
-						}
-
-						PlcIoException::PlcIoException(std::string message, std::exception& x) : 
-							PlcException(message, x)
-						{
-						}
-
-						PlcIoException::PlcIoException(std::exception& x) : 
-							PlcException(x)
-						{
-						}
-
-						PlcIoException::PlcIoException(std::string, std::exception& x, bool enableSuppression, bool writableStackTrace) :PlcException(x)
-						{
-							// TODO: implement stacktrace 
-							throw PlcNotImplementedException("PlcException(string, exception&, bool, bool) not implemented / TODO implement stacktrace");
-						}
-
 					}
 				}
 			}

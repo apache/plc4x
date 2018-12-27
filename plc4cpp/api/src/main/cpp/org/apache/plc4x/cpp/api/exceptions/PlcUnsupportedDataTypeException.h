@@ -39,14 +39,10 @@ namespace org
 						 */
 						class PlcUnsupportedDataTypeException : public PlcRuntimeException
 						{
-							public:							
-								PlcUnsupportedDataTypeException(std::string);
-								PlcUnsupportedDataTypeException(std::string, std::exception&);
-								PlcUnsupportedDataTypeException(std::exception&);
-								// PlcUnsupportedDataTypeException(Class< ? > dataType) not supported in C++
-								// please see https://en.cppreference.com/w/cpp/types/type_info/name
-								// and use typeid("Classname").name() and the Constructor .. (std::string)
-								PlcUnsupportedDataTypeException(std::string, std::exception, bool, bool);
+							public:
+								explicit PlcUnsupportedDataTypeException(const std::string &message): PlcRuntimeException(message){}
+								PlcUnsupportedDataTypeException(const std::string &message, const std::exception &exception): PlcRuntimeException(message, exception){}
+								explicit PlcUnsupportedDataTypeException(const std::exception &exception): PlcRuntimeException(exception){}
 						};
 					}
 				}

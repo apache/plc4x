@@ -33,8 +33,15 @@
   <name>PLC4Cpp</name>
   <description>Implementation of the protocol adapters for usage as C++ library.</description>
 
+  <properties>
+    <boost.version>1.69.0</boost.version>
+    <boost.version.underline>1_69_0</boost.version.underline>
+    <boost.working-directory>${project.build.directory}/libs/boost_${boost.version.underline}</boost.working-directory>
+  </properties>
+
   <modules>
-    <!--module>api</module-->
+    <module>libs</module>
+    <module>api</module>
   </modules>
 
   <build>
@@ -47,8 +54,77 @@
             <skip>true</skip>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.1.0</version>
+          <configuration>
+            <skipAssembly>true</skipAssembly>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
+
+  <profiles>
+    <!-- Profile for linux -->
+    <profile>
+      <id>unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>linux</os.suffix>
+        <os.classifier>linux-x86_64</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
+        <boost.build.executable>./b2</boost.build.executable>
+      </properties>
+    </profile>
+    <!-- Profile for mac -->
+    <profile>
+      <id>max</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>mac</os.suffix>
+        <os.classifier>mac-x86_64</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
+        <boost.build.executable>./b2</boost.build.executable>
+      </properties>
+    </profile>
+    <!-- profile for windows -->
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>win</os.suffix>
+        <os.classifier>windows-x86_64</os.classifier>
+        <cmake.generator>MinGW Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
+        <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
+        <boost.build.executable>${boost.working-directory}/b2.exe</boost.build.executable>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

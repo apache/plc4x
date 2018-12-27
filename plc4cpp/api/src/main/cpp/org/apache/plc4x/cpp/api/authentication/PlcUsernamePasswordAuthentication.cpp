@@ -39,7 +39,7 @@ namespace org
 						{																					
 							// Check isNull (Java) not required, is every time a valid string
 							this->username = username;
-							this->password == password;
+							this->password = password;
 						}
 						PlcUsernamePasswordAuthentication::~PlcUsernamePasswordAuthentication()
 						{

@@ -23,6 +23,8 @@ under the License.
 #include "PlcResponse.h"
 #include "../types/PlcResponseCode.h"
 #include "../model/PlcField.h"
+
+#include <string>
 #include <vector>
 
 using namespace org::apache::plc4x::cpp::api::model;

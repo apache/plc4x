@@ -40,10 +40,9 @@ namespace org
 						class PlcIoException : public PlcException
 						{
 							public:
-								PlcIoException(std::string);
-								PlcIoException(std::string, std::exception&);
-								PlcIoException(std::exception&);
-								PlcIoException(std::string, std::exception&, bool enableSuppression, bool writableStackTrace);
+								explicit PlcIoException(const std::string &message): PlcException(message) {}
+								PlcIoException(const std::string &message, const std::exception &exception): PlcException(message, exception){}
+								explicit PlcIoException(const std::exception &exception): PlcException(exception){}
 						};
 
 					}

@@ -33,30 +33,19 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcException::PlcException() : 
-							exception()
+						PlcException::PlcException() :
+								logic_error("error")
 						{
 						}
 
-						PlcException::PlcException(std::string message) : 
-							exception(message.c_str())
+						PlcException::PlcException(const std::string &message, const std::exception &exception) :
+								logic_error(message) // message suppressed, as no matching constructor is available
 						{
 						}
 
-						PlcException::PlcException(std::string message, std::exception& x) : 
-							exception(x) // message suppressed as no exception ctor available
-						{								
-						}
-
-						PlcException::PlcException(std::exception& x) : 
-							exception(x) 
+						PlcException::PlcException(const std::exception &ex) :
+								logic_error("error")
 						{
-						}
-
-						PlcException::PlcException(std::string message, std::exception& x, bool enableSuppression, bool writableStackTrace)
-						{
-							// TODO: implement stacktrace 
-							throw PlcNotImplementedException("PlcException(string, exception&, bool, bool) not implemented / TODO implement stacktrace");
 						}
 
 					}

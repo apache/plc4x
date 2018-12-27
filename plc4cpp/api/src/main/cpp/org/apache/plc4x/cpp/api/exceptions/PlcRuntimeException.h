@@ -21,7 +21,7 @@ under the License.
 #define _PLC_RUNTIME_EXCEPTION
 
 #include <string>
-#include <exception>
+#include <stdexcept>
 #include <iostream>
 
 namespace org
@@ -41,13 +41,12 @@ namespace org
 						 * Most generic type of plc4x runtime exception. All plc4x exceptions are derived from
 						 * PlcException.
 						 */
-						class PlcRuntimeException : public std::exception
+						class PlcRuntimeException : public std::runtime_error
 						{
 							public:
-								PlcRuntimeException(std::string);
-								PlcRuntimeException(std::string, std::exception&);
-								PlcRuntimeException(std::exception&);
-								PlcRuntimeException(std::string, std::exception&, bool, bool);
+                                explicit PlcRuntimeException(const std::string &message): std::runtime_error(message.c_str()){}
+								PlcRuntimeException(const std::string &message, const std::exception &exception);
+                                explicit PlcRuntimeException(const std::exception &exception);
 						};
 					}
 				}

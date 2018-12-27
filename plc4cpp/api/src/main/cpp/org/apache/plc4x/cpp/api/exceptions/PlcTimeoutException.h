@@ -48,7 +48,7 @@ namespace org
 								*
 								* @param timeout in nanoseconds.
 								*/
-								PlcTimeoutException(long);
+								explicit PlcTimeoutException(long);
 
 								long getTimeout();
 

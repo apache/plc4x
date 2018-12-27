@@ -32,26 +32,6 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcConnectionException::PlcConnectionException() : 
-							PlcException()
-						{
-						}
-
-						PlcConnectionException::PlcConnectionException(std::string message) : 
-							PlcException(message)	
-						{
-						}
-
-						PlcConnectionException::PlcConnectionException(std::string message, std::exception& x) : 
-							PlcException(message, x) 
-						{
-						}
-
-						PlcConnectionException::PlcConnectionException(std::exception& x) : 
-							PlcException(x)
-						{
-						}
-
 					}
 				}
 			}
