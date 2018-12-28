@@ -51,6 +51,7 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
     }
 
     stages {
