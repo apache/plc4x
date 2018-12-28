@@ -253,6 +253,9 @@ Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANC
 
         // Send an email, if the last build was not successful and this one is.
         success {
+            // Cleanup the build directory if the build was successful
+            // (in this cae we probably don't have to do any post-build analysis)
+            deleteDir()
             script {
                 if ((env.BRANCH_NAME == "develop") && (currentBuild.previousBuild != null) && (currentBuild.previousBuild.result != 'SUCCESS')) {
                     emailext (
