@@ -20,6 +20,7 @@ package org.apache.plc4x;
 
 import org.apache.calcite.schema.Table;
 import org.apache.calcite.schema.impl.AbstractSchema;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.scraper.ResultHandler;
 import org.apache.plc4x.java.scraper.Scraper;
 import org.apache.plc4x.java.scraper.config.JobConfiguration;
@@ -93,7 +94,8 @@ public class Plc4xSchema extends AbstractSchema {
                 Record record = new Record(Instant.now(), alias, results);
                 queues.get(job).put(record);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                throw new PlcRuntimeException("Handling got interrupted", e);
             }
         }
 

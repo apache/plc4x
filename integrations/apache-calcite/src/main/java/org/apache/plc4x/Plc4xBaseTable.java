@@ -28,6 +28,7 @@ import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.schema.Statistic;
 import org.apache.calcite.schema.impl.AbstractTable;
 import org.apache.calcite.util.ImmutableBitSet;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.scraper.config.JobConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,9 +103,9 @@ public abstract class Plc4xBaseTable extends AbstractTable {
             first = future.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Thread was interrupted!", e);
+            throw new PlcRuntimeException("Thread was interrupted!", e);
         } catch (ExecutionException | TimeoutException e) {
-            throw new RuntimeException("Unable to fetch first record and infer arguments!");
+            throw new PlcRuntimeException("Unable to fetch first record and infer arguments!", e);
         }
         logger.info("Inferring types for Table '{}' based on values: {}", conf.getName(), first.values);
         // Extract types
