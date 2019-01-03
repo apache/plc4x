@@ -35,9 +35,10 @@
 
   <properties>
     <boost.version>1.69.0</boost.version>
-    <boost.version.underline>1_69_0</boost.version.underline>
     <boost.version.underline-short>1_69</boost.version.underline-short>
+    <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <boost.working-directory>${project.build.directory}/libs/boost_${boost.version.underline}</boost.working-directory>
+    <boost.include-directory>libs/libs/boost/include</boost.include-directory>
   </properties>
 
   <modules>
@@ -124,6 +125,7 @@
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
         <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
         <boost.build.executable>${boost.working-directory}/b2.exe</boost.build.executable>
+        <boost.include-directory>libs/libs/boost/include/boost-${boost.version.underline-short}</boost.include-directory>
       </properties>
     </profile>
     <!--

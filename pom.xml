@@ -1082,6 +1082,14 @@
   </reporting>
 
   <profiles>
+    <!-- Build PLC4X including the CPP modules -->
+    <profile>
+      <id>with-cpp</id>
+      <modules>
+        <module>plc4cpp</module>
+      </modules>
+    </profile>
+
     <profile>
       <id>debug-pom</id>
       <build>

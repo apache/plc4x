@@ -70,12 +70,7 @@ add_library(api ../../src/main/cpp/org/apache/plc4x/cpp/api/PlcConnection.cpp
         )
 
 #[[
-    Import for non-windows systems
+    Import the boost headers
 ]]
-target_include_directories (api PUBLIC ../../../libs/libs/boost/include)
-
-#[[
-    Import for windows systems
-]]
-target_include_directories (api PUBLIC ../../../libs/libs/boost/include/boost-${boost.version.underline-short})
+target_include_directories (api PUBLIC ../../../${boost.include-directory})
 
