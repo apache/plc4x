@@ -33,12 +33,12 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.examples.connectivity.mqtt.model.Configuration;
 import org.apache.plc4x.java.examples.connectivity.mqtt.model.PlcFieldConfig;
-import org.mqttbee.api.mqtt.MqttClient;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3RxClient;
-import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
+import org.mqttbee.mqtt.MqttClient;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.mqtt3.Mqtt3RxClient;
+import org.mqttbee.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
+import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
