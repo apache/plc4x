@@ -134,6 +134,8 @@
                     <argument>install</argument>
                     <!-- Tell it where to install the libraries and header files -->
                     <argument>--prefix=${project.basedir}/libs/boost</argument>
+                    <!-- Build only the system module (speeds up build-time drastically) -->
+                    <argument>--with-system</argument>
                     <!-- On Windows machines the build failed, if this was not explicitly set -->
                     <argument>address-model=64</argument>
                   </arguments>

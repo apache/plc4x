@@ -36,6 +36,7 @@
   <properties>
     <boost.version>1.69.0</boost.version>
     <boost.version.underline>1_69_0</boost.version.underline>
+    <boost.version.underline-short>1_69</boost.version.underline-short>
     <boost.working-directory>${project.build.directory}/libs/boost_${boost.version.underline}</boost.working-directory>
   </properties>
 
@@ -124,6 +125,94 @@
         <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
         <boost.build.executable>${boost.working-directory}/b2.exe</boost.build.executable>
       </properties>
+    </profile>
+    <!--
+      Profile inherited and automatically activated as soon as a directory contains a
+      src/main/cmake directory.
+    -->
+    <profile>
+      <id>cmake-module</id>
+      <activation>
+        <file>
+          <exists>src/main/cmake</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>process-cmake-files</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>resources</goal>
+                </goals>
+                <configuration>
+                  <resources>
+                    <resource>
+                      <directory>src/main/cmake</directory>
+                      <filtering>true</filtering>
+                    </resource>
+                  </resources>
+                  <outputDirectory>${project.build.directory}/cmake</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.googlecode.cmake-maven-project</groupId>
+            <artifactId>cmake-maven-plugin</artifactId>
+            <version>3.7.2-b1</version>
+            <executions>
+              <!-- Uses a CMake generator to generate the build using the build tool of choice -->
+              <execution>
+                <id>cmake-generate</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <configuration>
+                  <!--
+                    Actually the path to the CMakeList.txt file which then again
+                    tells to tool where to find the sources.
+                  -->
+                  <sourcePath>${project.build.directory}/cmake</sourcePath>
+                  <!--
+                    Path to where the build configuration is generated
+                    (This directory is then used in the compile step to actually perform the build)
+                  -->
+                  <targetPath>${project.build.directory}/make</targetPath>
+                  <!--
+                    Name of the generator the compile step will be executing.
+                  -->
+                  <generator>${cmake.generator}</generator>
+                  <!--
+                    The classifier of the current platform. One of
+                    [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
+                    It defines the version and type of the cmake installation to download.
+                  -->
+                  <classifier>${os.classifier}</classifier>
+                </configuration>
+              </execution>
+              <!-- Actually executes the build -->
+              <execution>
+                <id>cmake-compile</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <!-- The directory where the "generate" step generated the build configuration -->
+                  <projectDirectory>${project.build.directory}/make</projectDirectory>
+                  <classifier>${os.classifier}</classifier>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
