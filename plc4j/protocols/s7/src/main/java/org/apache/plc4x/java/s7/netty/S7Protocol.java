@@ -676,15 +676,15 @@ public class S7Protocol extends ChannelDuplexHandler {
                 return decodeCpuServicesParameter(in);
             case READ_VAR:
             case WRITE_VAR:
-                List<VarParameterItem> varParamameter;
+                List<VarParameterItem> varParameterItems;
                 byte numItems = in.readByte();
                 if (!isResponse) {
-                    varParamameter = decodeReadWriteVarParameter(in, numItems);
+                    varParameterItems = decodeReadWriteVarParameter(in, numItems);
                 } else {
-                    varParamameter = Collections.singletonList(
+                    varParameterItems = Collections.singletonList(
                         new S7AnyVarParameterItem(null, null, null, numItems, (short) 0, (short) 0, (byte) 0));
                 }
-                return new VarParameter(parameterType, varParamameter);
+                return new VarParameter(parameterType, varParameterItems);
             case SETUP_COMMUNICATION:
                 // Reserved (is always constant 0x00)
                 in.readByte();

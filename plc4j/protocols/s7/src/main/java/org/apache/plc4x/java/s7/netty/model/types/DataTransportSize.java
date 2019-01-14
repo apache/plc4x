@@ -27,11 +27,11 @@ import java.util.Map;
 public enum DataTransportSize {
     NULL((byte) 0x00, false, false),
     BIT((byte) 0x03, true, true),
-    BYTE_WORD_DWORD((byte) 0x04, true, true),
+    BYTE_WORD_DWORD((byte) 0x04, true, false),
     INTEGER((byte) 0x05, true, false),
     DINTEGER((byte) 0x06, false, false),
     REAL((byte) 0x07, false, false),
-    OCTET_STRING((byte) 0x09, false, true);
+    OCTET_STRING((byte) 0x09, false, false);
 
     private static final Map<Byte, DataTransportSize> map;
     static {
