@@ -104,6 +104,7 @@ public class S7Field implements PlcField {
             if(matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
+            numElements = calcNumberOfElementsForStringTypes(numElements,dataType);
             if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
@@ -126,6 +127,7 @@ public class S7Field implements PlcField {
                 if(matcher.group(NUM_ELEMENTS) != null) {
                     numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
                 }
+                numElements = calcNumberOfElementsForStringTypes(numElements,dataType);
                 if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
                     throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                         "' doesn't match specified data type '" + dataType.name() + "'");
@@ -134,6 +136,25 @@ public class S7Field implements PlcField {
             }
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+    }
+
+    /**
+     * correct the storage of "array"-like variables like STRING
+     * @param numElements auto-detected numElements (1 if no numElements in brackets has been given, x if a specific number has been given)
+     * @param dataType detected Transport-Size that represents the data-type
+     * @return corrected numElements if nessesary
+     */
+    private static int calcNumberOfElementsForStringTypes(int numElements,TransportSize dataType){
+        //if no String nothing has to be done
+        if(!dataType.equals(TransportSize.STRING)){
+            return numElements;
+        }
+        //on valid String-length add two byte because of S7-representation of Strings
+        if(numElements>1 && numElements<=254){
+            return numElements+2;
+        }
+        //connection String usage with "STRING" only --> numElements=1 --> enter default value
+        return 256;
     }
 
 }
