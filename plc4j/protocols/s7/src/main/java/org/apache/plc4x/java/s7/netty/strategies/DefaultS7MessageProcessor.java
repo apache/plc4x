@@ -141,7 +141,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                     (double) maxResponseSize / (double) s7AnyVarParameterItem.getDataType().getSizeInBytes());
                 int sizeMaxNumElementInBytes = maxNumElements * s7AnyVarParameterItem.getDataType().getSizeInBytes();
                 int remainingNumElements = s7AnyVarParameterItem.getNumElements();
-                short curByteOffset = s7AnyVarParameterItem.getByteOffset();
+                int curByteOffset = s7AnyVarParameterItem.getByteOffset();
 
                 while(remainingNumElements > 0) {
                     int numCurElements = Math.min(remainingNumElements, maxNumElements);
@@ -218,7 +218,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
             if (varParameterItem instanceof S7AnyVarParameterItem) {
                 S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameterItem;
-                short byteOffset = s7AnyVarParameterItem.getByteOffset();
+                int byteOffset = s7AnyVarParameterItem.getByteOffset();
                 if (s7AnyVarParameterItem.getDataType() == TransportSize.BOOL) {
                     processBooleanWriteVarParameter(request, varParameter, varPayload, s7AnyVarParameterItem,
                         varPayloadItem, byteOffset, compositeRequestMessage);
@@ -235,8 +235,8 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
     private void processBooleanWriteVarParameter(S7RequestMessage request, VarParameter varParameter, VarPayload varPayload,
                                          S7AnyVarParameterItem s7AnyVarParameterItem, VarPayloadItem varPayloadItem,
-                                         short byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
-        short curParameterByteOffset = byteOffset;
+                                         int byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
+        int curParameterByteOffset = byteOffset;
         byte curParameterBitOffset = s7AnyVarParameterItem.getBitOffset();
         byte curPayloadBitOffset = 0;
         for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
@@ -288,8 +288,8 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
     private void processNonBooleanWriteVarParameter(S7RequestMessage request, VarParameter varParameter, VarPayload varPayload,
                                             S7AnyVarParameterItem s7AnyVarParameterItem, VarPayloadItem varPayloadItem,
-                                            short byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
-        short curByteOffset = byteOffset;
+                                            int byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
+        int curByteOffset = byteOffset;
         int payloadPosition = 0;
         for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
             int elementSize = s7AnyVarParameterItem.getDataType().getSizeInBytes();
