@@ -346,40 +346,6 @@
 
   <build>
     <plugins>
-      <!-- As some plugins require a minimum version of maven, check that this requirement is meet. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M1</version> <!--$NO-MVN-MAN-VER$-->
-        <executions>
-          <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
-          <execution>
-            <id>vulnerability-checks</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <version>1.8.0</version>
-                </requireJavaVersion>
-                <!-- Disabled for now as it breaks the ability to build single modules -->
-                <!--reactorModuleConvergence/-->
-                <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies"/>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.sonatype.ossindex.maven</groupId>
-            <artifactId>ossindex-maven-enforcer-rules</artifactId>
-            <version>1.0.0</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -1090,6 +1056,12 @@
       </modules>
     </profile>
 
+    <!--
+      This profile is intended to help when having problems with Maven.
+      When enabled, it automatically generates an "effective.pom" in the target directory.
+      This version is the fully expanded version where all inherited configuration is in
+      place and all variables are resolved and profile configuration is included.
+    -->
     <profile>
       <id>debug-pom</id>
       <build>
@@ -1114,10 +1086,57 @@
       </build>
     </profile>
 
+    <!--
+      This profile adds some additional configuration that should only be applied when running on jenkins.
+    -->
     <profile>
       <id>jenkins-build</id>
       <properties>
       </properties>
+    </profile>
+
+    <!--
+      This profile adds some additional checks and settings that should apply during development,
+      but could cause problems after that. As an example it would be impossible to build a released
+      version, if after the release CVEs were reported for one of its dependencies.
+    -->
+    <profile>
+      <id>development</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>3.0.0-M1</version> <!--$NO-MVN-MAN-VER$-->
+            <executions>
+              <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
+              <execution>
+                <id>vulnerability-checks</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <version>1.8.0</version>
+                    </requireJavaVersion>
+                    <reactorModuleConvergence/>
+                    <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies"/>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.sonatype.ossindex.maven</groupId>
+                <artifactId>ossindex-maven-enforcer-rules</artifactId>
+                <version>1.0.0</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
     <!--
@@ -1379,6 +1398,11 @@
       </build>
     </profile>
 
+    <!--
+      This profile extends the default "apache-release" configuration with automatic checksum-
+      generation for the release source artifact. It is automatically activated during the
+      release build and only needed there.
+    -->
     <profile>
       <id>apache-release</id>
       <build>
