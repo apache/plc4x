@@ -128,8 +128,8 @@ public class Plc4XS7ProtocolTest {
         S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameter.getItems().get(0);
         assertThat(s7AnyVarParameterItem.getSpecificationType(), equalTo(SpecificationType.VARIABLE_SPECIFICATION));
         assertThat(s7AnyVarParameterItem.getMemoryArea(), equalTo(MemoryArea.OUTPUTS));
-        assertThat(s7AnyVarParameterItem.getDataBlockNumber(), equalTo((short) 0));
-        assertThat(s7AnyVarParameterItem.getByteOffset(), equalTo((short) 0));
+        assertThat(s7AnyVarParameterItem.getDataBlockNumber(), equalTo(0));
+        assertThat(s7AnyVarParameterItem.getByteOffset(), equalTo(0));
         assertThat(s7AnyVarParameterItem.getBitOffset(), equalTo((byte) 0));
         assertThat(s7AnyVarParameterItem.getNumElements(), equalTo(1));
         assertThat(s7AnyVarParameterItem.getDataType(), equalTo(TransportSize.BYTE));
@@ -163,8 +163,8 @@ public class Plc4XS7ProtocolTest {
         S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameter.getItems().get(0);
         assertThat(s7AnyVarParameterItem.getSpecificationType(), equalTo(SpecificationType.VARIABLE_SPECIFICATION));
         assertThat(s7AnyVarParameterItem.getMemoryArea(), equalTo(MemoryArea.OUTPUTS));
-        assertThat(s7AnyVarParameterItem.getDataBlockNumber(), equalTo((short) 0));
-        assertThat(s7AnyVarParameterItem.getByteOffset(), equalTo((short) 0));
+        assertThat(s7AnyVarParameterItem.getDataBlockNumber(), equalTo(0));
+        assertThat(s7AnyVarParameterItem.getByteOffset(), equalTo(0));
         assertThat(s7AnyVarParameterItem.getBitOffset(), equalTo((byte) 0));
         assertThat(s7AnyVarParameterItem.getNumElements(), equalTo(1));
         assertThat(s7AnyVarParameterItem.getDataType(), equalTo(TransportSize.BYTE));

@@ -396,7 +396,7 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createWriteMessage(
             Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    TransportSize.BYTE, (short) 10, (short) 1, (short) 0, (byte) 0)),
+                    TransportSize.BYTE, 10, 1, (short) 0, (byte) 0)),
             Collections.singletonList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A}))
@@ -404,9 +404,9 @@ public class DefaultS7MessageProcessorTest {
         Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         // Initialize a set of expected fields.
-        Set<Short> expectedFields = new HashSet<>(10);
+        Set<Integer> expectedFields = new HashSet<>(10);
         for(int i = 0; i < 10; i++) {
-            expectedFields.add((short) i);
+            expectedFields.add(i);
         }
 
         // We are expecting to receive 10 messages as we had an array of 10 items.
@@ -475,9 +475,9 @@ public class DefaultS7MessageProcessorTest {
         Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         // Initialize a set of expected fields.
-        Set<Short> expectedFields = new HashSet<>(10);
+        Set<Integer> expectedFields = new HashSet<>(10);
         for(int i = 0; i < 10; i++) {
-            expectedFields.add((short) (i * 4));
+            expectedFields.add((i * 4));
         }
 
         // We are expecting to receive 10 messages as we had an array of 10 items.
