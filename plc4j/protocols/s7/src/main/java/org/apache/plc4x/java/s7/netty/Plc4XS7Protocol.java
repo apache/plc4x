@@ -195,7 +195,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
 
             // The number of elements provided in the request must match the number defined in the field, or
             // bad things are going to happen.
-            if (writeRequest.getNumberOfValues(fieldName) != s7Field.getNumElements()) {
+            // An exception is STRINGS, as they are implemented as byte arrays
+            if (s7Field.getDataType() != TransportSize.STRING &&
+                writeRequest.getNumberOfValues(fieldName) != s7Field.getNumElements()) {
                 throw new PlcException("The number of values provided doesn't match the number specified by the field.");
             }
             VarParameterItem varParameterItem = new S7AnyVarParameterItem(
