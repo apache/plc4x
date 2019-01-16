@@ -19,9 +19,11 @@
 
 package org.apache.plc4x.java.issues;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -33,11 +35,47 @@ public class PLC4X56 {
     void name() {
         S7Field field = S7Field.of("%DB56.DBB100:SINT[25]");
         assertThat(field.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
-        assertThat(field.getBlockNumber(), equalTo((short) 56));
-        assertThat(field.getByteOffset(), equalTo((short) 100));
+        assertThat(field.getBlockNumber(), equalTo(56));
+        assertThat(field.getByteOffset(), equalTo(100));
         assertThat(field.getBitOffset(), equalTo((short) 0));
         assertThat(field.getDataType(), equalTo(TransportSize.SINT));
         assertThat(field.getNumElements(), equalTo(25));
+    }
+
+    @Test
+    public void invalidBlockLengthThrowsException() throws Exception {
+        try {
+            S7Field field = S7Field.of("%DB2000.DBB8000000:SINT[25]");
+            Assert.fail();
+        }
+        catch (PlcInvalidFieldException e){
+            e.printStackTrace();
+            // exception thrown --> Test Ok
+        }
+    }
+
+    @Test
+    public void invalidBlockNumber1ThrowsException() throws Exception {
+        try {
+            S7Field field = S7Field.of("%DB0.DBB800:SINT[25]");
+            Assert.fail();
+        }
+        catch (PlcInvalidFieldException e){
+            e.printStackTrace();
+            // exception thrown --> Test Ok
+        }
+    }
+
+    @Test
+    public void invalidBlockNumber2ThrowsException() throws Exception {
+        try {
+            S7Field field = S7Field.of("%DB80000.DBB800:SINT[25]");
+            Assert.fail();
+        }
+        catch (PlcInvalidFieldException e){
+            e.printStackTrace();
+            // exception thrown --> Test Ok
+        }
     }
 
 }

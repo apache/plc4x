@@ -20,8 +20,8 @@ package org.apache.plc4x.java.s7.netty.model.params.items;
 
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.SpecificationType;
-import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
+import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 
 /**
  * "Low-level" description of S7 Address range and the necessary size for transportation of values.
@@ -44,11 +44,11 @@ public class S7AnyVarParameterItem implements VarParameterItem {
     private final MemoryArea memoryArea;
     private final TransportSize dataType;
     private final int numElements;
-    private final short dataBlockNumber;
-    private final short byteOffset;
+    private final int dataBlockNumber;
+    private final int byteOffset;
     private final byte bitOffset;
 
-    public S7AnyVarParameterItem(SpecificationType specificationType, MemoryArea memoryArea, TransportSize dataType, int numElements, short dataBlockNumber, short byteOffset, byte bitOffset) {
+    public S7AnyVarParameterItem(SpecificationType specificationType, MemoryArea memoryArea, TransportSize dataType, int numElements, int dataBlockNumber, int byteOffset, byte bitOffset) {
         this.specificationType = specificationType;
         this.memoryArea = memoryArea;
         this.dataType = dataType;
@@ -79,11 +79,11 @@ public class S7AnyVarParameterItem implements VarParameterItem {
         return numElements;
     }
 
-    public short getDataBlockNumber() {
+    public int getDataBlockNumber() {
         return dataBlockNumber;
     }
 
-    public short getByteOffset() {
+    public int getByteOffset() {
         return byteOffset;
     }
 
