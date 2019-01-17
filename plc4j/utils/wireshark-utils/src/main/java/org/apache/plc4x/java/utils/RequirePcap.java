@@ -28,6 +28,6 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(RequirePcapNgCondition.class)
-public @interface RequirePcapNg {
+@ExtendWith(RequirePcapCondition.class)
+public @interface RequirePcap {
 }

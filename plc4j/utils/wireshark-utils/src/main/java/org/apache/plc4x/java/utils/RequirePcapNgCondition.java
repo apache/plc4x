@@ -29,7 +29,7 @@ import org.pcap4j.core.Pcaps;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DisableOnMissingOrTooOldLibpcapVersion implements ExecutionCondition {
+public class RequirePcapNgCondition implements ExecutionCondition {
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {

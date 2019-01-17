@@ -15,6 +15,7 @@
  */
 package org.apache.plc4x.java.utils.rawsockets;
 
+import org.apache.plc4x.java.utils.RequirePcap;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.pcap4j.core.PcapAddress;
@@ -35,6 +36,7 @@ public class RawIpSocketTest {
 
     @Test
     @Ignore("Need to make tests run in Docker container first as this test requires libpcap or the entrie application to be run as 'root'")
+    @RequirePcap
     public void testPingPacket() throws Exception {
         // TODO: cdutz: jenkins won't allow access on the inet device. Maybe try to fix this on a branch.
         assumeThat(System.getenv("PLC4X_BUILD_ON_JENKINS"), is(not(equalToIgnoringCase("true"))));
