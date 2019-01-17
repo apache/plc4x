@@ -24,17 +24,18 @@ import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.pcap4j.core.Pcaps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RequirePcapCondition implements ExecutionCondition {
 
+    private static final Logger logger = LoggerFactory.getLogger(RequirePcapCondition.class);
+
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {
-        // Mac: "libpcap version 1.8.1 -- Apple version 79.200.4";
-        // Linux: ""
-        // Windows: "WinPcap version 4.1.3 (packet.dll version 4.1.0.2980), based on libpcap version 1.0 branch 1_0_rel0b (20091008)"
         try {
             String libVersion = Pcaps.libVersion();
             Pattern pattern = Pattern.compile("^libpcap version (?<version>\\d+\\.\\d+(\\.\\d+)?).*$");
@@ -44,8 +45,7 @@ public class RequirePcapCondition implements ExecutionCondition {
                 return ConditionEvaluationResult.enabled("Found libpcap version " + versionString);
             }
         } catch(Exception e) {
-            e.printStackTrace();
-            // Ignore this ...
+            logger.info("Error detecting libpcap version.", e);
         }
         if(SystemUtils.IS_OS_WINDOWS) {
             return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid WinPcap version. Please install from here: https://sourceforge.net/projects/winpcap413-176/ as this version supports all needed freatures.");
