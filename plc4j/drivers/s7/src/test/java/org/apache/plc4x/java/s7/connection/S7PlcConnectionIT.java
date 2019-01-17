@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.utils.RequirePcapNg;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.rules.Timeout;
@@ -63,6 +64,7 @@ public class S7PlcConnectionIT {
     }
 
     @Test
+    @RequirePcapNg
     public void read(TestInfo testInfo) throws Exception {
         SUT.connect();
         EmbeddedChannel channel = (EmbeddedChannel) SUT.getChannel();
@@ -96,6 +98,7 @@ public class S7PlcConnectionIT {
      */
     @Test
     @Disabled
+    @RequirePcapNg
     public void readLargeResponse() throws Exception {
         SUT.connect();
         EmbeddedChannel channel = (EmbeddedChannel) SUT.getChannel();
@@ -105,6 +108,7 @@ public class S7PlcConnectionIT {
     }
 
     @Test
+    @RequirePcapNg
     public void write(TestInfo testInfo) throws Exception {
         SUT.connect();
         EmbeddedChannel channel = (EmbeddedChannel) SUT.getChannel();
