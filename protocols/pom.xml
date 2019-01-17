@@ -23,39 +23,27 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-drivers</artifactId>
+    <artifactId>plc4x-parent</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-driver-simulated</artifactId>
-  <name>PLC4J: Driver: Simulated</name>
-  <description>Implementation of a PLC4X driver able to speak a simulated device.</description>
+  <artifactId>protocols</artifactId>
+
+  <name>Protocols</name>
+  <description>General Protocol Descriptions.</description>
+
+  <build>
+    <!-- This project should only contain the DFDL definitions for our protocols -->
+    <sourceDirectory>src/main/dfdl</sourceDirectory>
+  </build>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-text</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>nl.jqno.equalsverifier</groupId>
-      <artifactId>equalsverifier</artifactId>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-tdml_2.12</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
 
 </project>

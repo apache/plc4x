@@ -54,13 +54,11 @@
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-core</artifactId>
-      <version>${jmh.version}</version>
     </dependency>
     <!-- GNU General Public License (GPL), version 2, with the Classpath exception see https://commons.apache.org/proper/commons-lang/dependencies.html-->
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-generator-annprocess</artifactId>
-      <version>${jmh.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

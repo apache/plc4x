@@ -94,7 +94,6 @@
     <dependency>
       <groupId>se.koc</groupId>
       <artifactId>netty-transport-jserialcomm</artifactId>
-      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

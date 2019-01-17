@@ -89,7 +89,6 @@
     <dependency>
       <groupId>com.athaydes</groupId>
       <artifactId>spock-reports</artifactId>
-      <version>1.6.1</version>
       <scope>test</scope>
     </dependency>
 

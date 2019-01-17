@@ -73,7 +73,6 @@
     <dependency>
       <groupId>com.github.snksoft</groupId>
       <artifactId>crc</artifactId>
-      <version>1.0.1</version>
     </dependency>
 
     <dependency>
@@ -105,7 +104,6 @@
     <dependency>
       <groupId>com.athaydes</groupId>
       <artifactId>spock-reports</artifactId>
-      <version>1.6.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
