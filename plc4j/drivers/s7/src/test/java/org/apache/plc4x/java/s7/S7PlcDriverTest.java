@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.s7.connection.S7PlcConnection;
 import org.apache.plc4x.test.FastTests;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,6 +54,7 @@ public class S7PlcDriverTest {
 
     @Test(expected = PlcConnectionException.class)
     @Category(FastTests.class)
+    @Ignore("This test tends to fail on systems with DNS providers that proivde default IPs")
     public void getConnectionToUnknownHost() throws PlcException {
         new S7PlcDriver().connect("s7://IHopeThisHostDoesntExistAAAAAAAAhhhhhhh/1/2");
     }
