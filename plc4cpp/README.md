@@ -22,7 +22,8 @@ On mac and linux machines there should not be a requirement to install any prere
 In general the build requires `gcc` being installed.
 
 On Windows machines, you might need to install it manually.
-He have tested everything with the bundle of http://win-builds.org/doku.php
+He have tested everything with the bundle of 
+http://win-builds.org/doku.php/download_and_installation_from_windows
 Make sure the `bin` directory containing the executable `mingw32-make.exe` is on your systems `PATH`.
 
 In the `plc4cpp-libs` module all third party dependencies will be built that are needed by any of the other plc4cpp modules.
