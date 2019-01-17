@@ -101,7 +101,7 @@ public class ModbusPlcDriverTest {
 
     @Test(expected = PlcConnectionException.class)
     public void getConnectionUnknownPort() throws Exception {
-        new PlcDriverManager().getConnection("modbus:tcp://nowhere:unknown");
+        new PlcDriverManager().getConnection("modbus:tcp://localhost:unknown");
     }
 
     /**
