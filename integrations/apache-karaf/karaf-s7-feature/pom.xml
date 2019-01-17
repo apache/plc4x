@@ -30,6 +30,8 @@
   <artifactId>karaf-s7-feature</artifactId>
   <packaging>feature</packaging>
 
+  <name>Integrations: Apache Karaf: S7</name>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

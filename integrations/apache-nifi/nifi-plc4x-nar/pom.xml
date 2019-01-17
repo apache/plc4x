@@ -25,6 +25,8 @@
   <artifactId>nifi-plc4x-nar</artifactId>
   <packaging>nar</packaging>
 
+  <name>Integrations: Apache Nifi: NAR</name>
+
   <properties>
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <source.skip>true</source.skip>

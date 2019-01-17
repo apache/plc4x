@@ -28,6 +28,8 @@
 
   <artifactId>apache-calcite</artifactId>
 
+  <name>Integrations: Apache Calcite</name>
+
   <properties>
     <calcite-core.version>1.17.0</calcite-core.version>
   </properties>

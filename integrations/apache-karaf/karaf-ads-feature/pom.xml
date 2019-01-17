@@ -30,6 +30,8 @@
   <artifactId>karaf-ads-feature</artifactId>
   <packaging>feature</packaging>
 
+  <name>Integrations: Apache Karaf: ADS</name>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

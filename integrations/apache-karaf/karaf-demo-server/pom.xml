@@ -31,6 +31,8 @@
   <artifactId>karaf-demo-server</artifactId>
   <packaging>karaf-assembly</packaging>
 
+  <name>Integrations: Apache Karaf: Demo Server</name>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.karaf.features</groupId>
