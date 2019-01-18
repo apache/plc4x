@@ -1332,7 +1332,7 @@
             <executions>
               <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
               <execution>
-                <id>vulnerability-checks</id>
+                <id>sanity-checks</id>
                 <phase>validate</phase>
                 <goals>
                   <goal>enforce</goal>
@@ -1343,18 +1343,23 @@
                       <version>1.8.0</version>
                     </requireJavaVersion>
                     <reactorModuleConvergence />
-                    <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies" />
                   </rules>
                 </configuration>
               </execution>
             </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.sonatype.ossindex.maven</groupId>
-                <artifactId>ossindex-maven-enforcer-rules</artifactId>
-                <version>1.0.0</version>
-              </dependency>
-            </dependencies>
+          </plugin>
+
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>4.0.2</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

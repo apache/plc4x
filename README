@@ -61,8 +61,14 @@ Building the C++ libraries
 
 When building the C++ libraries we require an installed `gcc` compiler.
 On Mac and Linux this is usually the case.
+On a minimal Ubuntu Linux system the following modules needed to be installed
+manually:
 
-On Windows this usually is not.
+- gcc
+- g++
+- make
+
+On Windows the required compiler is generally not available per default.
 The build is optimized for using a gcc-port called MinGW, available from
 http://win-builds.org/doku.php/download_and_installation_from_windows
 Make sure the `bin` directory containing the executable `mingw32-make.exe`
