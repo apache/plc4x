@@ -96,7 +96,7 @@ public class ScraperTaskTest implements WithAssertions {
 
         @Test
         void runByScheduler_handledGracefully() throws PlcConnectionException {
-            //when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
+            when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
             ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
             ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
                 1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
