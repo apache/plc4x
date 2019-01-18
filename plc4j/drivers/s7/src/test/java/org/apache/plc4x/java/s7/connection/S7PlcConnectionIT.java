@@ -75,10 +75,10 @@ public class S7PlcConnectionIT {
         // Check that one message has been sent.
         assertThat("Exactly one outbound message should exist after sending.",
             channel.outboundMessages().size(), equalTo(1));
-        SUT.verifyPcapFile("org/apache/plc4x/java/s7/connection/s7-read-var-request.pcapng", testInfo);
+        SUT.verifyPcapFile("org/apache/plc4x/java/s7/connection/s7-read-var-request.pcap", testInfo);
 
         // Manually feed a packet response into the channel.
-        SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-read-var-response.pcapng");
+        SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-read-var-response.pcap");
 
         // Now get the response as it was processed by the connection.
         PlcReadResponse response = responseFuture.get(200, TimeUnit.MILLISECONDS);
@@ -104,7 +104,7 @@ public class S7PlcConnectionIT {
         EmbeddedChannel channel = (EmbeddedChannel) SUT.getChannel();
         assertThat("No outbound messages should exist.", channel.outboundMessages().size(), equalTo(0));
 
-        SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-read-large-response.pcapng");
+        SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-read-large-response.pcap");
     }
 
     @Test
@@ -119,10 +119,10 @@ public class S7PlcConnectionIT {
         // Check that one message has been sent.
         assertThat("Exactly one outbound message should exist after sending.",
             channel.outboundMessages().size(), equalTo(1));
-        SUT.verifyPcapFile("org/apache/plc4x/java/s7/connection/s7-write-var-request.pcapng", testInfo);
+        SUT.verifyPcapFile("org/apache/plc4x/java/s7/connection/s7-write-var-request.pcap", testInfo);
 
         // Manually feed a packet response into the channel.
-        SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-write-var-response.pcapng");
+        SUT.sendPcapFile("org/apache/plc4x/java/s7/connection/s7-write-var-response.pcap");
 
         // Now get the response as it was processed by the connection.
         PlcWriteResponse response = responseFuture.get(200, TimeUnit.MILLISECONDS);

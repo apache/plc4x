@@ -19,23 +19,21 @@ under the License.
 package org.apache.plc4x.java.utils;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.ByteBuffer;
 
 public class PcapngUtils {
 
     private PcapngUtils() {
-      throw new IllegalStateException("Utility class!");
+        throw new IllegalStateException("Utility class!");
     }
 
     public static void dumpPacket(ByteBuffer data, int length, String name) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(out);
-        byte[] pcapngHeader = {
+        byte[] pcapHeader = {
             // PCAP header
             // Global Header:
             //  magic number
@@ -97,10 +95,34 @@ public class PcapngUtils {
         };
 
 
-        dos.write(pcapngHeader);
+        dos.write(pcapHeader);
         dos.write(data.array(), 0, length);
         File output = new File(name);
         FileUtils.writeByteArrayToFile(output, out.toByteArray());
+    }
+
+    public static byte[] readPcapFile(String filename) {
+        try {
+            InputStream in = PcapngUtils.class.getClassLoader().getResourceAsStream(filename);
+            byte[] pcap = IOUtils.toByteArray(in);
+            byte[] data = new byte[pcap.length - 94];
+            System.arraycopy(pcap, 94, data, 0, pcap.length - 94);
+            return data;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static byte[] readPcapngFile(String filename) {
+        try {
+            InputStream in = PcapngUtils.class.getClassLoader().getResourceAsStream(filename);
+            byte[] pcap = IOUtils.toByteArray(in);
+            byte[] data = new byte[pcap.length - 94];
+            System.arraycopy(pcap, 94, data, 0, pcap.length - 94);
+            return data;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

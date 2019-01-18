@@ -184,7 +184,7 @@ public class S7PlcTestConnection extends S7PlcConnection {
                 String currentWorkingDir = System.getProperty("user.dir");
                 Class<?> testClass = testInfo.getTestClass().orElse(Object.class);
                 Method testMethod = testInfo.getTestMethod().orElse(null);
-                String fileName = currentWorkingDir + "/target/failsafe-reports/failure-" + testClass.getSimpleName() + "-"  + testMethod.getName() + ".pcapng";
+                String fileName = currentWorkingDir + "/target/failsafe-reports/failure-" + testClass.getSimpleName() + "-"  + testMethod.getName() + ".pcap";
                 try (PcapHandle handle = Pcaps.openDead(DataLinkType.EN10MB, 65536)) {
                     PcapDumper dumper = handle.dumpOpen(fileName);
                     dumper.dumpRaw(actData);

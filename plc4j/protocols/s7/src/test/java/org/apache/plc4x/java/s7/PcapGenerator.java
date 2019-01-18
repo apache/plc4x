@@ -33,9 +33,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Little helper class used to generate pcapng files for usage in Wireshark.
+ * Little helper class used to generate pcap files for usage in Wireshark.
  * As I can't use the WireShark code to define the constant values for the s7 protocol as
- * this code is licensed under GPL, with this tool, I'll simply generate loads of pcapng files
+ * this code is licensed under GPL, with this tool, I'll simply generate loads of pcap files
  * each with slightly different values and hereby find out the constant values.
  */
 public class PcapGenerator {
@@ -292,7 +292,7 @@ public class PcapGenerator {
             // Generate a packet.
             byte[] copy = Arrays.copyOf(template, template.length);
             copy[byteIndex] = (byte) i;
-            File output = new File(testDir, i + ".pcapng");
+            File output = new File(testDir, i + ".pcap");
             FileUtils.writeByteArrayToFile(output, copy);
 
             // Use WireShark to decode the packet to an xml form.

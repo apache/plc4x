@@ -30,7 +30,7 @@
   <artifactId>plc4j-utils-wireshark-utils</artifactId>
 
   <name>PLC4J: Utils: WireShark Utils</name>
-  <description>A set of helper utilities that allow reading and writing of `pcapng` files so they can be inspected with WireShark.</description>
+  <description>A set of helper utilities that allow reading and writing of `pcap` files so they can be inspected with WireShark.</description>
 
   <dependencies>
     <dependency>

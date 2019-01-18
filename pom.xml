@@ -648,7 +648,7 @@
             <exclude>**/*.iml</exclude>
 
             <!-- Wireshark Captures -->
-            <exclude>**/*.pcapng</exclude>
+            <exclude>**/*.pcap</exclude>
 
             <!-- Asciidoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>

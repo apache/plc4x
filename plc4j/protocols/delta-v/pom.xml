@@ -95,7 +95,7 @@
 
   <!--
 
-    This profile starts the application with a provided pcapng file instead of capturing real traffic.
+    This profile starts the application with a provided pcap file instead of capturing real traffic.
 
     Run With
     mvn exec:java -P dummy -Dpcapng.file.path="/path/to/mycool.pcapng"
