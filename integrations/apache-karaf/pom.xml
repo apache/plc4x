@@ -72,10 +72,11 @@
           </configuration>
           <executions>
             <execution>
-              <id>generate-features-file</id>
-              <phase>generate-resources</phase>
+              <id>default-features-generate-descriptor</id>
+              <phase>package</phase>
               <goals>
                 <goal>features-generate-descriptor</goal>
+                <goal>verify</goal>
               </goals>
             </execution>
           </executions>
