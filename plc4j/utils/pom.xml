@@ -38,7 +38,6 @@
     <module>opm</module>
     <module>raw-sockets</module>
     <module>test-utils</module>
-    <module>wireshark-utils</module>
     <module>scraper</module>
   </modules>
 

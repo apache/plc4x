@@ -15,7 +15,7 @@
  */
 package org.apache.plc4x.java.utils.rawsockets;
 
-import org.apache.plc4x.java.utils.RequirePcap;
+import org.apache.plc4x.test.RequirePcap;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.pcap4j.core.PcapAddress;

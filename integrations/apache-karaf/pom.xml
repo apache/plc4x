@@ -35,7 +35,7 @@
   <description>Integration module for integrating PLC4X into Apache Karaf.</description>
 
   <properties>
-    <karaf.version>4.2.1</karaf.version>
+    <karaf.version>4.2.2</karaf.version>
     <karaf-maven-plugin.version>${karaf.version}</karaf-maven-plugin.version>
   </properties>
 
@@ -54,7 +54,7 @@
       <plugin>
         <groupId>com.buschmais.jqassistant</groupId>
         <artifactId>jqassistant-maven-plugin</artifactId>
-        <version>1.5.0</version>
+        <version>1.6.0</version>
         <configuration>
           <skip>true</skip>
         </configuration>

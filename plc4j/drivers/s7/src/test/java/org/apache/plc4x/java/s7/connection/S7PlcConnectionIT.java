@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.utils.RequirePcapNg;
+import org.apache.plc4x.test.RequirePcapNg;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.rules.Timeout;

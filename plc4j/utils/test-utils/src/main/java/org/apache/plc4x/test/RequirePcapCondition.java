@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.java.utils;
+package org.apache.plc4x.test;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
