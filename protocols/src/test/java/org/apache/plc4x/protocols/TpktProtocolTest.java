@@ -22,17 +22,23 @@ package org.apache.plc4x.protocols;
 import org.apache.daffodil.tdml.DFDLTestSuite;
 import org.apache.daffodil.tdml.Runner;
 import org.apache.daffodil.util.Misc;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CotpProtocolTest {
+public class TpktProtocolTest {
 
-    private String cotpProtocolTestCases = "org/apache/plc4x/protocols/cotp-protocol.tdml";
-    private DFDLTestSuite testSuite = new DFDLTestSuite(Misc.getRequiredResource(cotpProtocolTestCases), true, true, false,
-        Runner.defaultRoundTripDefaultDefault(), Runner.defaultValidationDefaultDefault());
+    private DFDLTestSuite testSuite;
+
+    @BeforeEach
+    public void setup() {
+        String tpktProtocolTestCases = "org/apache/plc4x/protocols/tpkt-protocol.tdml";
+        testSuite = new DFDLTestSuite(Misc.getRequiredResource(tpktProtocolTestCases), true, true, false,
+            Runner.defaultRoundTripDefaultDefault(), Runner.defaultValidationDefaultDefault());
+    }
 
     @Test
-    public void simpleS7Message() {
-        testSuite.runOneTest("cotpConnectResponseInTkptPacket", scala.Option.apply(null), false);
+    public void tpktPacketContainingCotpConnectResponse() {
+        testSuite.runOneTest("tpktPacketContainingCotpConnectResponse", scala.Option.apply(null), false);
     }
 
 }

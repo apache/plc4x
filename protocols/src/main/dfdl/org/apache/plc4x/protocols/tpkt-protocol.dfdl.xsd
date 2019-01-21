@@ -24,19 +24,22 @@
     <xs:annotation>
         <xs:appinfo source="http://www.ogf.org/dfdl/">
             <dfdl:defineVariable name="messageType" type="xs:string"/>
-            <dfdl:format representation="binary"
-                         binaryNumberRep="binary"
-                         byteOrder="bigEndian"
-                         lengthKind="implicit" lengthUnits="bytes" length="0"
-                         occursCountKind="implicit"
-                         textOutputMinLength="0"
-                         alignment="1" alignmentUnits="bits"
-                         leadingSkip="0" trailingSkip="0"
-                         textPadKind="none" ignoreCase="no"
-                         encoding="utf-8" truncateSpecifiedLengthString="no"
-                         initiator="" terminator=""
-                         sequenceKind="ordered" separator=""
-                         escapeSchemeRef=""  initiatedContent="no"/>
+            <dfdl:defineFormat name="tpktFormat">
+                <dfdl:format representation="binary"
+                             binaryNumberRep="binary"
+                             byteOrder="bigEndian"
+                             lengthKind="implicit" lengthUnits="bytes" length="0"
+                             occursCountKind="implicit"
+                             textOutputMinLength="0"
+                             alignment="1" alignmentUnits="bits"
+                             leadingSkip="0" trailingSkip="0"
+                             textPadKind="none" ignoreCase="no"
+                             encoding="utf-8" truncateSpecifiedLengthString="no"
+                             initiator="" terminator=""
+                             sequenceKind="ordered" separator=""
+                             escapeSchemeRef=""  initiatedContent="no"/>
+            </dfdl:defineFormat>
+            <dfdl:format ref="tpkt:tpktFormat"/>
         </xs:appinfo>
     </xs:annotation>
 
@@ -60,25 +63,25 @@
 
     -->
 
-    <xs:element name="TpktMessage">
-        <xs:complexType>
-            <xs:sequence>
-                <!-- TPKT Magic Byte always 0x03 -->
-                <xs:element name="magicByte" type="tpkt:byte">
-                    <xs:annotation>
-                        <xs:appinfo source="http://www.ogf.org/dfdl/">
-                            <dfdl:assert message="Magic number was not 0x03."
-                                         test="{. eq 3}" />
-                        </xs:appinfo>
-                    </xs:annotation>
-                </xs:element>
-                <xs:element name="reserved" type="tpkt:byte"/>
-                <xs:element name="length" type="tpkt:short"/>
-                <xs:element name="userData" type="xs:hexBinary"
-                            dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
-                            dfdl:length="{../length - 4}"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <xs:element name="TpktMessage" type="tpkt:TpktMessageType"/>
+
+    <xs:complexType name="TpktMessageType">
+        <xs:sequence>
+            <!-- TPKT Magic Byte always 0x03 -->
+            <xs:element name="magicByte" type="tpkt:byte">
+                <xs:annotation>
+                    <xs:appinfo source="http://www.ogf.org/dfdl/">
+                        <dfdl:assert message="Magic number was not 0x03."
+                                     test="{. eq 3}" />
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="reserved" type="tpkt:byte"/>
+            <xs:element name="length" type="tpkt:short"/>
+            <xs:element name="userData" type="xs:hexBinary"
+                        dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
+                        dfdl:length="{../length - 4}"/>
+        </xs:sequence>
+    </xs:complexType>
 
 </xs:schema>
