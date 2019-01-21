@@ -34,13 +34,23 @@
 
   <build>
     <!-- This project should only contain the DFDL definitions for our protocols -->
-    <sourceDirectory>src/main/dfdl</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/dfdl</directory>
+      </resource>
+    </resources>
   </build>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.daffodil</groupId>
       <artifactId>daffodil-tdml_2.12</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
