@@ -39,6 +39,10 @@
         <xs:element name="tpktMessage" type="tpkt:TpktMessageType"/>
     </tdml:defineSchema>
 
+    <!--
+        In this test-case the data should be parsable to a valid result.
+        It's a TPKT package containing a COTP connection-response payload.
+    -->
     <tdml:parserTestCase name="tpktPacketContainingCotpConnectResponse"
                          root="tpktMessage"
                          model="tkptSchema"
@@ -60,6 +64,47 @@
                 </test:tpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <!--
+        In this test-case the packet doesn't start with the required magic byte 0x03.
+    -->
+    <tdml:parserTestCase name="invalidMagicByte">
+        <tdml:document>
+            <tdml:documentPart type="byte">0400001611D00001000200C00109C1020100C2020102</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:errors>
+            <tdml:error>Schema Definition Error</tdml:error>
+        </tdml:errors>
+    </tdml:parserTestCase>
+
+    <!--
+        In this test-case the payload of the packet doesn't match the
+        length provided in the packet header (Too short)
+    -->
+    <tdml:parserTestCase name="tooShortPayload">
+        <tdml:document>
+            <tdml:documentPart type="byte">0300001611D00001000200C00109C102010</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:errors>
+            <tdml:error>Schema Definition Error</tdml:error>
+        </tdml:errors>
+    </tdml:parserTestCase>
+
+    <!--
+        In this test-case the payload of the packet doesn't match the
+        length provided in the packet header (Too long)
+    -->
+    <tdml:parserTestCase name="tooLongPayload">
+´        <tdml:document>
+            <tdml:documentPart type="byte">0300001611D00001000200C00109C1020100C20201021234567890</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:errors>
+            <tdml:error>Schema Definition Error</tdml:error>
+        </tdml:errors>
     </tdml:parserTestCase>
 
 </testSuite>
