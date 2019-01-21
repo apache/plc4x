@@ -10,9 +10,12 @@ We are planning on shipping libraries for usage in:
 
 As well as provide direct integration into other Apache projects, such as:
 
-1) Apache Camel
-2) Apache Edgent
-3) Apache Kafka-Connect
+1) Apache Calcite
+2) Apache Camel
+3) Apache Edgent
+4) Apache Kafka-Connect
+5) Apache Karaf
+6) Apache NiFi
 
 
 Environment
@@ -21,7 +24,8 @@ Environment
 Currently the project is configured to require the following software:
 
 1) Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to point to that.
-2) (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
+2) libpcap/WinPcap for raw socket tests
+3) (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
 
 
 Getting Started
@@ -40,14 +44,35 @@ are a good place to start and are available inside the `examples`
 directory.
 
 
-Additional Information
-----------------------
+Installing libpcap/WinPcap
+--------------------------
 
 Some parts of PLC4X, especially the raw socket support, require installed versions
-of libpcap/WinPcap. 
+of libpcap/WinPcap.
 
 You can download the Mac/Linux version from: http://www.tcpdump.org/
-The windows version can be found here: https://www.winpcap.org/install/
+The windows version can be found here: https://sourceforge.net/projects/winpcap413-176/
+(In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
+Windows version is 1.0. At this location is a patched version based on libpcap 1.7.4)
+
+
+Building the C++ libraries
+--------------------------
+
+When building the C++ libraries we require an installed `gcc` compiler.
+On Mac and Linux this is usually the case.
+On a minimal Ubuntu Linux system the following modules needed to be installed
+manually:
+
+- gcc
+- g++
+- make
+
+On Windows the required compiler is generally not available per default.
+The build is optimized for using a gcc-port called MinGW, available from
+http://win-builds.org/doku.php/download_and_installation_from_windows
+Make sure the `bin` directory containing the executable `mingw32-make.exe`
+is on your systems `PATH`.
 
 
 Licensing

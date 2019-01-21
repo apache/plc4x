@@ -28,7 +28,6 @@ import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -172,8 +171,8 @@ public class S7MessageTests {
         MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
         TransportSize dataType = TransportSize.INT;
         int numElements = 1;
-        byte dataBlock = (byte) 0x1;
-        byte byteOffset = (byte) 0x10;
+        int dataBlock = 0x1;
+        int byteOffset = 0x10;
         byte bitOffset = (byte) 0x0;
 
         S7AnyVarParameterItem parameterItem = new S7AnyVarParameterItem(
@@ -183,8 +182,8 @@ public class S7MessageTests {
         assertThat("Unexpected memory area", parameterItem.getMemoryArea(), equalTo(MemoryArea.DATA_BLOCKS));
         assertThat("Unexpected transport size", parameterItem.getDataType(), equalTo(dataType));
         assertThat("Unexpected number elements", parameterItem.getNumElements(), equalTo(numElements));
-        assertThat("Unexpected data block", parameterItem.getDataBlockNumber(), equalTo((short) dataBlock));
-        assertThat("Unexpected byte offset", parameterItem.getByteOffset(), equalTo((short) byteOffset));
+        assertThat("Unexpected data block", parameterItem.getDataBlockNumber(), equalTo(dataBlock));
+        assertThat("Unexpected byte offset", parameterItem.getByteOffset(), equalTo(byteOffset));
         assertThat("Unexpected bit offset", parameterItem.getBitOffset(), equalTo(bitOffset));
         assertThat("Unexpected adressing mode", parameterItem.getAddressingMode(), equalTo(VariableAddressingMode.S7ANY));
     }

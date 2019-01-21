@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-utils-test-utils</artifactId>
@@ -33,6 +33,26 @@
   <description>A set of test utils. Especially defining the test-categories used to categorize tests.</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+    </dependency>
+
+    <!-- Needed for the version comparison -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

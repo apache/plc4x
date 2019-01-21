@@ -28,8 +28,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.base.connection.tcp.TcpHexDumper;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.plc4x.test.RequireInternetConnection;
+import org.junit.jupiter.api.*;
 
 import java.net.ConnectException;
 import java.util.regex.Pattern;
@@ -42,8 +42,17 @@ import static org.mockito.Mockito.mock;
 
 public class AdsPlcDriverTest {
 
-    @Rule
     public TcpHexDumper tcpHexDumper = new TcpHexDumper(0, 2);
+
+    @BeforeEach
+    public void before() throws Throwable {
+        tcpHexDumper.before();
+    }
+
+    @AfterEach
+    public void after() {
+        tcpHexDumper.after();
+    }
 
     @Test
     public void testAdsAddressPattern() {
@@ -69,6 +78,7 @@ public class AdsPlcDriverTest {
     }
 
     @Test
+    @RequireInternetConnection
     public void testDriverWithCompleteUrls() {
         AdsPlcDriver SUT = new AdsPlcDriver(mock(AdsConnectionFactory.class));
         Stream.of(
@@ -101,10 +111,12 @@ public class AdsPlcDriverTest {
         adsConnection.close();
     }
 
-    @Test(expected = PlcConnectionException.class)
+    @Test
     public void getConnectionNoAuthSupported() throws Exception {
-        new PlcDriverManager().getConnection("ads:tcp://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13",
-            new PlcUsernamePasswordAuthentication("admin", "admin"));
+        Assertions.assertThrows(PlcConnectionException.class, () ->
+            new PlcDriverManager().getConnection("ads:tcp://localhost:" + tcpHexDumper.getPort() + "/0.0.0.0.0.0:13",
+                new PlcUsernamePasswordAuthentication("admin", "admin"))
+        );
     }
 
     @Test
@@ -122,9 +134,11 @@ public class AdsPlcDriverTest {
         }
     }
 
-    @Test(expected = PlcConnectionException.class)
+    @Test
     public void getConnectionUnknownPort() throws Exception {
-        new PlcDriverManager().getConnection("ads:tcp://nowhere:unknown/0.0.0.0.0.0:13");
+        Assertions.assertThrows(PlcConnectionException.class, () ->
+            new PlcDriverManager().getConnection("ads:tcp://nowhere:unknown/0.0.0.0.0.0:13")
+        );
     }
 
     /**
@@ -132,9 +146,11 @@ public class AdsPlcDriverTest {
      *
      * @throws PlcException something went wrong
      */
-    @Test(expected = PlcConnectionException.class)
+    @Test
     public void getConnectionInvalidUrl() throws PlcException {
-        new PlcDriverManager().getConnection("ads:tcp://localhost/hurz/2");
+        Assertions.assertThrows(PlcConnectionException.class, () ->
+            new PlcDriverManager().getConnection("ads:tcp://localhost/hurz/2")
+        );
     }
 
     @Test

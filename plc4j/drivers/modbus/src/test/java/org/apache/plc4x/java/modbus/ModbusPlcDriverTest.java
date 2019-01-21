@@ -96,12 +96,12 @@ public class ModbusPlcDriverTest {
 
     @Test(expected = PlcConnectionException.class)
     public void getConnectionUnknownHost() throws Exception {
-        new PlcDriverManager().getConnection("modbus:tcp://nowhere:8080");
+        new PlcDriverManager().getConnection("modbus:tcp://IHopeThisHostDoesntExistAAAAAAAAhhhhhhh:8080");
     }
 
     @Test(expected = PlcConnectionException.class)
     public void getConnectionUnknownPort() throws Exception {
-        new PlcDriverManager().getConnection("modbus:tcp://nowhere:unknown");
+        new PlcDriverManager().getConnection("modbus:tcp://localhost:unknown");
     }
 
     /**

@@ -68,6 +68,8 @@ public class S7PlcDriver implements PlcDriver {
             return new S7PlcConnection(serverInetAddress, rack, slot, params);
         } catch (UnknownHostException e) {
             throw new PlcConnectionException("Error parsing address", e);
+        } catch (Exception e) {
+            throw new PlcConnectionException("Error connecting to host", e);
         }
     }
 

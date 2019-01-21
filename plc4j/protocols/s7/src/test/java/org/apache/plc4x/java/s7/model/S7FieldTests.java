@@ -33,9 +33,7 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 class S7FieldTests {
 
@@ -70,8 +68,8 @@ class S7FieldTests {
         assertThat(field, notNullValue());
         assertThat(field.getDataType(), equalTo(expectedClientType));
         assertThat(field.getMemoryArea(), equalTo(expectedMemoryArea));
-        assertThat(field.getBlockNumber(), equalTo((short) expectedMemoryBlockNumber));
-        assertThat(field.getByteOffset(), equalTo((short) expectedByteOffset));
+        assertThat(field.getBlockNumber(), equalTo(expectedMemoryBlockNumber));
+        assertThat(field.getByteOffset(), equalTo(expectedByteOffset));
         assertThat(field.getBitOffset(), equalTo((short) expectedBitOffset));
     }
 

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-protocols</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-protocol-delta-v</artifactId>
@@ -36,25 +36,21 @@
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>
-      <version>1.7.3</version>
     </dependency>
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-packetfactory-static</artifactId>
-      <version>1.7.3</version>
       <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>4.1.23.Final</version>
     </dependency>
 
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.11</version>
     </dependency>
 
     <!-- InfluxDB dependencies -->
@@ -68,13 +64,11 @@
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>6.4.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.elasticsearch.plugin</groupId>
       <artifactId>transport-netty4-client</artifactId>
-      <version>6.4.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -101,7 +95,7 @@
 
   <!--
 
-    This profile starts the application with a provided pcapng file instead of capturing real traffic.
+    This profile starts the application with a provided pcap file instead of capturing real traffic.
 
     Run With
     mvn exec:java -P dummy -Dpcapng.file.path="/path/to/mycool.pcapng"

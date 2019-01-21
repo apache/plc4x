@@ -25,11 +25,13 @@
   <parent>
     <artifactId>apache-karaf</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>karaf-demo-server</artifactId>
   <packaging>karaf-assembly</packaging>
+
+  <name>Integrations: Apache Karaf: Demo Server</name>
 
   <dependencies>
     <dependency>
@@ -49,35 +51,35 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>karaf-ads-feature</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.4.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>karaf-ethernet-ip-feature</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.4.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>karaf-modbus-feature</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.4.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>karaf-s7-feature</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.4.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>karaf-simulated-feature</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.4.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>

@@ -75,6 +75,15 @@ If you happen to have multiple keys, adding the following profile to your `setti
       </properties>
     </profile>
 
+=== Preparing the codebase for a release
+
+Usually you will have to update the RELEASE_NOTES document to the new version.
+I would suggest doing this prior to the branch as otherwise you will definitely have to port it back to `develop`.
+So remove the `SNAPSHOT` and `(Unreleased)` markers from the file and add missing parts.
+
+Also if you are doing the first release in a new year, it is advisable to search for the old year and check if any occurrences are ok the way they are.
+Usually the `NOTICE` file has to be adjusted.
+
 === Creating a release branch
 
 According to SemVer, we have: Major, Minor and Bugfix releases.
@@ -109,6 +118,34 @@ Where the suggested default is manually overridden.
 This step now should perform quite quickly as no build and no tests are involved.
 
 However in the end the versions of the `develop` branch are updated and a new `rel/0.2` branch is created.
+
+=== Preparing `develop` for the next iteration
+
+Now is a good time to add a new section to the `RELEASE_NOTES` document for the new `SNAPSHOT` version.
+
+Here comes a template:
+
+```
+==============================================================
+(Unreleased) Apache PLC4X (incubating) 0.X.0-SNAPSHOT
+==============================================================
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+// Rest of the file
+
+```
+
+Also be sure to do a quick full-text-search to check if the version was updated correctly everywhere.
+
+WARNING: If you find anything here, you will need to pay attention during the release.
 
 === Release stabilization phase
 

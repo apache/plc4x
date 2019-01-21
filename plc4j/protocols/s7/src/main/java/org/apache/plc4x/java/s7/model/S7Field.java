@@ -28,10 +28,13 @@ import java.util.regex.Pattern;
 
 public class S7Field implements PlcField {
 
+    //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,5})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+
+    //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,4}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,5})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
     private static final String DATA_TYPE = "dataType";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
@@ -43,12 +46,12 @@ public class S7Field implements PlcField {
 
     private final TransportSize dataType;
     private final MemoryArea memoryArea;
-    private final short blockNumber;
-    private final short byteOffset;
+    private final int blockNumber;
+    private final int byteOffset;
     private final short bitOffset;
     private final int numElements;
 
-    private S7Field(TransportSize dataType, MemoryArea memoryArea, short blockNumber, short byteOffset, short bitOffset, int numElements) {
+    private S7Field(TransportSize dataType, MemoryArea memoryArea, int blockNumber, int byteOffset, short bitOffset, int numElements) {
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
@@ -65,11 +68,11 @@ public class S7Field implements PlcField {
         return memoryArea;
     }
 
-    public short getBlockNumber() {
+    public int getBlockNumber() {
         return blockNumber;
     }
 
-    public short getByteOffset() {
+    public int getByteOffset() {
         return byteOffset;
     }
 
@@ -92,8 +95,11 @@ public class S7Field implements PlcField {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             String transferSizeCode = matcher.group(TRANSFER_SIZE_CODE);
-            short blockNumber = Short.parseShort(matcher.group(BLOCK_NUMBER));
-            short byteOffset = Short.parseShort(matcher.group(BYTE_OFFSET));
+
+            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+
+            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
+
             short bitOffset = 0;
             if(matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Short.parseShort(matcher.group(BIT_OFFSET));
@@ -116,7 +122,9 @@ public class S7Field implements PlcField {
                 TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
                 MemoryArea memoryArea = MemoryArea.valueOfShortName(matcher.group(MEMORY_AREA));
                 String transferSizeCode = matcher.group(TRANSFER_SIZE_CODE);
-                short byteOffset = Short.parseShort(matcher.group(BYTE_OFFSET));
+
+                int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
+
                 short bitOffset = 0;
                 if(matcher.group(BIT_OFFSET) != null) {
                     bitOffset = Short.parseShort(matcher.group(BIT_OFFSET));
@@ -136,6 +144,32 @@ public class S7Field implements PlcField {
             }
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+    }
+
+    /**
+     * checks if DatablockNumber of S7Field is in valid range
+     * @param blockNumber given DatablockNumber
+     * @return given blockNumber if Ok, throws PlcInvalidFieldException otherwise
+     */
+    private static int checkDatablockNumber(int blockNumber){
+        //ToDo check the value or add reference - limit eventually depending on active S7 --> make a case selection
+        if(blockNumber>64000 || blockNumber<1){
+            throw new PlcInvalidFieldException("Datablock numbers larger than 64000 or smaller than 1 are not supported.");
+        }
+        return blockNumber;
+    }
+
+    /**
+     * checks if ByteOffset from S7Field is in valid range
+     * @param byteOffset given byteOffset
+     * @return given byteOffset if Ok, throws PlcInvalidFieldException otherwise
+     */
+    private static int checkByteOffset(int byteOffset){
+        //ToDo check the value or add reference
+        if(byteOffset>2097151 || byteOffset<0){
+            throw new PlcInvalidFieldException("ByteOffset must be smaller than 2097151 and positive.");
+        }
+        return byteOffset;
     }
 
     /**
