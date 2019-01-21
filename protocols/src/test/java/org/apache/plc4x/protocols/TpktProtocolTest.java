@@ -31,6 +31,7 @@ public class TpktProtocolTest {
 
     @BeforeEach
     public void setup() {
+        System.out.println("Starting");
         String tpktProtocolTestCases = "org/apache/plc4x/protocols/tpkt-protocol.tdml";
         testSuite = new DFDLTestSuite(Misc.getRequiredResource(tpktProtocolTestCases), true, true, false,
             Runner.defaultRoundTripDefaultDefault(), Runner.defaultValidationDefaultDefault());
@@ -38,7 +39,9 @@ public class TpktProtocolTest {
 
     @Test
     public void tpktPacketContainingCotpConnectResponse() {
+        System.out.println("Running");
         testSuite.runOneTest("tpktPacketContainingCotpConnectResponse", scala.Option.apply(null), false);
+        System.out.println("Done");
     }
 
 }

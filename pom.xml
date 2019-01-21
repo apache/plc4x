@@ -126,6 +126,7 @@
     <netty.version>4.1.23.Final</netty.version>
     <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
     <pcap4j.version>1.7.3</pcap4j.version>
+    <scala.version>2.12.6</scala.version>
     <slf4j.version>1.7.25</slf4j.version>
     <snakeyaml.version>1.23</snakeyaml.version>
     <spock-reports.version>1.6.1</spock-reports.version>
@@ -354,6 +355,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.daffodil</groupId>
+        <artifactId>daffodil-lib_2.12</artifactId>
+        <version>${daffodil.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.daffodil</groupId>
         <artifactId>daffodil-tdml_2.12</artifactId>
         <version>${daffodil.version}</version>
       </dependency>
@@ -564,6 +570,11 @@
         <groupId>org.pcap4j</groupId>
         <artifactId>pcap4j-packetfactory-static</artifactId>
         <version>${pcap4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>${scala.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>

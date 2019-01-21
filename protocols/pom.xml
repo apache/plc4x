@@ -47,13 +47,16 @@
       <artifactId>daffodil-tdml_2.12</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-lib_2.12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 
 </project>
