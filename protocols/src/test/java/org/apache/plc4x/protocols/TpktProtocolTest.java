@@ -19,41 +19,13 @@
 
 package org.apache.plc4x.protocols;
 
-import org.apache.daffodil.tdml.DFDLTestSuite;
-import org.apache.daffodil.tdml.Runner;
-import org.apache.daffodil.util.Misc;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+/**
+ * Executes all tests for the ISO on TCP / TPKT protocol.
+ */
+public class TpktProtocolTest extends AbstractProtocolTest {
 
-public class TpktProtocolTest {
-
-    private DFDLTestSuite testSuite;
-
-    @BeforeEach
-    public void setup() {
-        String tpktProtocolTestCases = "org/apache/plc4x/protocols/tpkt-protocol.tdml";
-        testSuite = new DFDLTestSuite(Misc.getRequiredResource(tpktProtocolTestCases), true, true, false,
-            Runner.defaultRoundTripDefaultDefault(), Runner.defaultValidationDefaultDefault());
-    }
-
-    @Test
-    public void tpktPacketContainingCotpConnectResponse() {
-        testSuite.runOneTest("tpktPacketContainingCotpConnectResponse", scala.Option.apply(null), false);
-    }
-
-    @Test
-    public void invalidMagicByte() {
-        testSuite.runOneTest("invalidMagicByte", scala.Option.apply(null), false);
-    }
-
-    @Test
-    public void tooShortPayload() {
-        testSuite.runOneTest("tooShortPayload", scala.Option.apply(null), false);
-    }
-
-    @Test
-    public void tooLongPayload() {
-        testSuite.runOneTest("tooLongPayload", scala.Option.apply(null), false);
+    public TpktProtocolTest() {
+        super("org/apache/plc4x/protocols/tpkt-protocol.tdml");
     }
 
 }
