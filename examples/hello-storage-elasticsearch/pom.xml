@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>examples</artifactId>
-    <version>0.3.0</version>
+    <version>0.3.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>hello-elasticsearch</artifactId>
@@ -39,12 +39,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.3.0</version>
+      <version>0.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>apache-edgent</artifactId>
-      <version>0.3.0</version>
+      <version>0.3.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -81,7 +81,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.3.0</version>
+      <version>0.3.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
 
