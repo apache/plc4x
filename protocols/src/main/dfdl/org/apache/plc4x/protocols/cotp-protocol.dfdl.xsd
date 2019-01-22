@@ -57,6 +57,71 @@
         <xs:restriction base="xs:unsignedShort"/>
     </xs:simpleType>
 
+    <xs:simpleType name="tpduType">
+        <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration id="tpduTypeConnectionRequest" value="224">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">ConnectionRequest</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration id="tpduTypeConnectionResponse" value="208">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">ConnectionResponse</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="128">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">DisconnectRequest</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="192">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">DisconnectResponse</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="112">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">Error</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="240">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">Data</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="parameterType">
+        <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="192">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">TpduSize</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="193">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">CallingTsap</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="194">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">CalledTsap</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="195">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">Checksum</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="224">
+                <xs:annotation>
+                    <xs:appinfo source="http://plc4x.apache.org/">DisconnectAdditionalInformation</xs:appinfo>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
     <!--
 
         ISO 8073/X.224 - ISO-TP - COTP - Connection-Oriented Transport Protocol Messages
@@ -69,7 +134,7 @@
         <xs:sequence>
             <!-- Length of the COTP header data -->
             <xs:element name="headerLength" type="cotp:byte"/>
-            <xs:element name="type" type="cotp:byte"/>
+            <xs:element name="type" type="cotp:tpduType"/>
             <xs:choice dfdl:choiceDispatchKey="{type}">
                 <xs:element dfdl:choiceBranchKey="224" ref="cotp:CotpTpduConnectionRequest"/>
                 <xs:element dfdl:choiceBranchKey="208" ref="cotp:CotpTpduConnectionResponse"/>
@@ -165,7 +230,7 @@
                 <xs:element name="parameter" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="type" type="cotp:byte"/>
+                            <xs:element name="type" type="cotp:parameterType"/>
                             <xs:element name="parameterLength" type="cotp:byte"/>
                             <xs:choice dfdl:choiceDispatchKey="{type}">
                                 <xs:element dfdl:choiceBranchKey="192" ref="cotp:CotpParameterTpduSize"/>
