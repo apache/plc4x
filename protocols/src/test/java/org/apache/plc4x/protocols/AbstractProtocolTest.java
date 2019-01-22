@@ -45,7 +45,8 @@ public abstract class AbstractProtocolTest {
         Iterator<String> iterator = testSuite.testCaseMap().keySet().iterator();
         while(iterator.hasNext()) {
             String testcaseName = iterator.next();
-            DynamicTest test = DynamicTest.dynamicTest(testcaseName, () ->
+            String testcaseLabel = testSuite.suiteName() + ": " + testcaseName;
+            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, () ->
                 testSuite.runOneTest(testcaseName, scala.Option.apply(null), false)
             );
             dynamicTests.add(test);
