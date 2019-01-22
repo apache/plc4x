@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: img/
+:imagesdir: ../img/
 :icons: font
 
 == Releasing PLC4X
@@ -184,6 +184,27 @@ What the plugin now does, is automatically execute the following operations:
 9. Push the commit
 
 However this just prepared the git repository for the release, we have to perform the release to produce and stage the release artifacts.
+
+Please verify the git repository at: https://gitbox.apache.org/repos/asf?p=incubator-plc4x.git
+is in the correct state. Please select the release branch and verify the commit log looks similar to this
+
+image::release-git-history.png[]
+
+It is important that the commit with the message "[maven-release-plugin] prepare release XXX" is tagged with the release tag (in this case release/0.3.0)
+
+If you check the commit itself, it should mainly consist of version updates like this:
+
+image::release-git-diff-prepare-release.png[]
+
+The root pom has a few more changes, but in general this should be what you are seeing.
+
+After that should come a second commit:
+
+image::release-git-diff-next-development-iteration.png[]
+
+This now updates the versions again, but this time from the release version to the one we selected for the next development iteration (in this case 0.3.1-SNAPSHOT)
+
+NOTE: If the commit history doesn't look like this, something went wrong.
 
 == What if something goes wrong?
 
