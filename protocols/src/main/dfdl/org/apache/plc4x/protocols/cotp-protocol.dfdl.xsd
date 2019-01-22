@@ -207,8 +207,8 @@
                 <xs:element name="destinationReference" type="cotp:short"/>
                 <xs:element name="rejectCause" type="cotp:byte"/>
                 <xs:element ref="cotp:parameters" minOccurs="0"
-                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 3}"
-                            dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../headerLength gt 3) then 1 else 0}"/>
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 4}"
+                            dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../headerLength gt 4) then 1 else 0}"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -274,7 +274,7 @@
     <xs:element name="CotpParameterChecksum">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="tsapId" type="cotp:byte"/>
+                <xs:element name="checksum" type="cotp:byte"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

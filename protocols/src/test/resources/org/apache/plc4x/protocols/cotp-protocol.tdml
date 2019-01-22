@@ -39,7 +39,427 @@
         <xs:element name="cotpMessage" type="cotp:CotpMessageType"/>
     </tdml:defineSchema>
 
-    <tdml:parserTestCase name="minimalCotpMessage"
+    <!--
+
+        Tests for the basic TPDU types (no parameters)
+
+    -->
+
+    <tdml:parserTestCase name="typeConnectionRequest"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="Minimal valid COTP Connection Request TPDU">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">06E00001000200</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>6</headerLength>
+                    <type>224</type>
+                    <CotpTpduConnectionRequest>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <protocolClass>0</protocolClass>
+                    </CotpTpduConnectionRequest>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="typeConnectionResponse"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="Minimal valid COTP Connection Response TPDU">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">06D00001000200</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>6</headerLength>
+                    <type>208</type>
+                    <CotpTpduConnectionResponse>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <protocolClass>0</protocolClass>
+                    </CotpTpduConnectionResponse>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="typeDisconnectionRequest"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="Minimal valid COTP Disconnection Request TPDU">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">06800001000200</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>6</headerLength>
+                    <type>128</type>
+                    <CotpTpduDisconnectRequest>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <disconnectReason>0</disconnectReason>
+                    </CotpTpduDisconnectRequest>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="typeDisconnectionResponse"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="Minimal valid COTP Disconnection Response TPDU">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">05C000010002</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>5</headerLength>
+                    <type>192</type>
+                    <CotpTpduDisconnectResponse>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                    </CotpTpduDisconnectResponse>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="typeError"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="Minimal valid COTP Error TPDU">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">0470000102</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>4</headerLength>
+                    <type>112</type>
+                    <CotpTpduError>
+                        <destinationReference>1</destinationReference>
+                        <rejectCause>2</rejectCause>
+                    </CotpTpduError>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="typeData"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="Minimal valid COTP Data TPDU">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">02F002</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>2</headerLength>
+                    <type>240</type>
+                    <CotpTpduData>
+                        <endOfTransmission>0</endOfTransmission>
+                        <tpduRef>2</tpduRef>
+                    </CotpTpduData>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="typeDataEndOfTransmission"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="Minimal valid COTP Data (End Of Transmission) TPDU">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">02F082</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>2</headerLength>
+                    <type>240</type>
+                    <CotpTpduData>
+                        <endOfTransmission>1</endOfTransmission>
+                        <tpduRef>2</tpduRef>
+                    </CotpTpduData>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <!--
+
+        Tests for the parameter types.
+
+    -->
+
+    <tdml:parserTestCase name="parameterTpduSize"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="parameterTpduSize">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">09E00001000200C00109</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>9</headerLength>
+                    <type>224</type>
+                    <CotpTpduConnectionRequest>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <protocolClass>0</protocolClass>
+                        <parameters>
+                            <parameter>
+                                <type>192</type>
+                                <parameterLength>1</parameterLength>
+                                <CotpParameterTpduSize>
+                                    <tpduSize>9</tpduSize>
+                                </CotpParameterTpduSize>
+                            </parameter>
+                        </parameters>
+                    </CotpTpduConnectionRequest>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="parameterCallingTsap"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="parameterCallingTsap">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">0AE00001000200C1020009</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>10</headerLength>
+                    <type>224</type>
+                    <CotpTpduConnectionRequest>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <protocolClass>0</protocolClass>
+                        <parameters>
+                            <parameter>
+                                <type>193</type>
+                                <parameterLength>2</parameterLength>
+                                <CotpParameterCallingTsap>
+                                    <tsapId>9</tsapId>
+                                </CotpParameterCallingTsap>
+                            </parameter>
+                        </parameters>
+                    </CotpTpduConnectionRequest>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="parameterCalledTsap"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="parameterCalledTsap">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">0AE00001000200C2020009</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>10</headerLength>
+                    <type>224</type>
+                    <CotpTpduConnectionRequest>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <protocolClass>0</protocolClass>
+                        <parameters>
+                            <parameter>
+                                <type>194</type>
+                                <parameterLength>2</parameterLength>
+                                <CotpParameterCalledTsap>
+                                    <tsapId>9</tsapId>
+                                </CotpParameterCalledTsap>
+                            </parameter>
+                        </parameters>
+                    </CotpTpduConnectionRequest>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="parameterChecksum"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="parameterChecksum">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">09E00001000200C30109</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>9</headerLength>
+                    <type>224</type>
+                    <CotpTpduConnectionRequest>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <protocolClass>0</protocolClass>
+                        <parameters>
+                            <parameter>
+                                <type>195</type>
+                                <parameterLength>1</parameterLength>
+                                <CotpParameterChecksum>
+                                    <checksum>9</checksum>
+                                </CotpParameterChecksum>
+                            </parameter>
+                        </parameters>
+                    </CotpTpduConnectionRequest>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="parameterDisconnectAdditionalInformation"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="parameterDisconnectAdditionalInformation">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">0EE00001000200E006010203040506</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>14</headerLength>
+                    <type>224</type>
+                    <CotpTpduConnectionRequest>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <protocolClass>0</protocolClass>
+                        <parameters>
+                            <parameter>
+                                <type>224</type>
+                                <parameterLength>6</parameterLength>
+                                <CotpParameterDisconnectAdditionalInformation>
+                                    <data>010203040506</data>
+                                </CotpParameterDisconnectAdditionalInformation>
+                            </parameter>
+                        </parameters>
+                    </CotpTpduConnectionRequest>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <!--
+
+        Tests for typical packets used in PLC4X
+
+    -->
+
+    <tdml:parserTestCase name="scenarioConnectionRequest"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="COTP Connection request used for initiating an S7 protocol connection.">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">11E00001000200C1020100C2020102c0010a</tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>17</headerLength>
+                    <type>224</type>
+                    <CotpTpduConnectionRequest>
+                        <destinationReference>1</destinationReference>
+                        <sourceReference>2</sourceReference>
+                        <protocolClass>0</protocolClass>
+                        <parameters>
+                            <parameter>
+                                <type>193</type>
+                                <parameterLength>2</parameterLength>
+                                <CotpParameterCallingTsap>
+                                    <tsapId>256</tsapId>
+                                </CotpParameterCallingTsap>
+                            </parameter>
+                            <parameter>
+                                <type>194</type>
+                                <parameterLength>2</parameterLength>
+                                <CotpParameterCalledTsap>
+                                    <tsapId>258</tsapId>
+                                </CotpParameterCalledTsap>
+                            </parameter>
+                            <parameter>
+                                <type>192</type>
+                                <parameterLength>1</parameterLength>
+                                <CotpParameterTpduSize>
+                                    <tpduSize>10</tpduSize>
+                                </CotpParameterTpduSize>
+                            </parameter>
+                        </parameters>
+                    </CotpTpduConnectionRequest>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="scenarioConnectionResponse"
                          root="cotpMessage"
                          model="cotpSchema"
                          description="Minimal valid COTP Message">
@@ -82,6 +502,32 @@
                             </parameter>
                         </parameters>
                     </CotpTpduConnectionResponse>
+                    <userData/>
+                </test:cotpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="scenarioDataTpdu"
+                         root="cotpMessage"
+                         model="cotpSchema"
+                         description="Typical Data TPDU used for transferring S7 packets.">
+        <!-- Define the input -->
+        <tdml:document>
+            <!-- TODO: Comment in the S7 payload as soon as the schema is fixed -->
+            <tdml:documentPart type="byte">02F080<!--320700000300000800080001120411440100ff09000401320004--></tdml:documentPart>
+        </tdml:document>
+
+        <!-- Define the expected output -->
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:cotpMessage>
+                    <headerLength>2</headerLength>
+                    <type>240</type>
+                    <CotpTpduData>
+                        <endOfTransmission>1</endOfTransmission>
+                        <tpduRef>0</tpduRef>
+                    </CotpTpduData>
                     <userData/>
                 </test:cotpMessage>
             </tdml:dfdlInfoset>
