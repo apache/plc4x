@@ -24,19 +24,22 @@
     <xs:annotation>
         <xs:appinfo source="http://www.ogf.org/dfdl/">
             <dfdl:defineVariable name="messageType" type="xs:string"/>
-            <dfdl:format representation="binary"
-                         binaryNumberRep="binary"
-                         byteOrder="bigEndian"
-                         lengthKind="implicit" lengthUnits="bytes" length="0"
-                         occursCountKind="implicit"
-                         textOutputMinLength="0"
-                         alignment="1" alignmentUnits="bits"
-                         leadingSkip="0" trailingSkip="0"
-                         textPadKind="none" ignoreCase="no"
-                         encoding="utf-8" truncateSpecifiedLengthString="no"
-                         initiator="" terminator=""
-                         sequenceKind="ordered" separator=""
-                         escapeSchemeRef=""  initiatedContent="no"/>
+            <dfdl:defineFormat name="cotpFormat">
+                <dfdl:format representation="binary"
+                             binaryNumberRep="binary"
+                             byteOrder="bigEndian"
+                             lengthKind="implicit" lengthUnits="bytes" length="0"
+                             occursCountKind="implicit"
+                             textOutputMinLength="0"
+                             alignment="1" alignmentUnits="bits"
+                             leadingSkip="0" trailingSkip="0"
+                             textPadKind="none" ignoreCase="no"
+                             encoding="utf-8" truncateSpecifiedLengthString="no"
+                             initiator="" terminator=""
+                             sequenceKind="ordered" separator=""
+                             escapeSchemeRef="" initiatedContent="no"/>
+            </dfdl:defineFormat>
+            <dfdl:format ref="cotp:cotpFormat"/>
         </xs:appinfo>
     </xs:annotation>
 
@@ -60,27 +63,27 @@
 
     -->
 
-    <xs:element name="CotpTPDU">
-        <xs:complexType>
-            <xs:sequence>
-                <!-- Length of the COTP header data -->
-                <xs:element name="headerLength" type="cotp:byte"/>
-                <xs:element name="type" type="cotp:byte"/>
-                <xs:choice dfdl:choiceDispatchKey="{type}">
-                    <xs:element dfdl:choiceBranchKey="224" ref="cotp:CotpTpduConnectionRequest"/>
-                    <xs:element dfdl:choiceBranchKey="208" ref="cotp:CotpTpduConnectionResponse"/>
-                    <xs:element dfdl:choiceBranchKey="128" ref="cotp:CotpTpduDisconnectRequest"/>
-                    <xs:element dfdl:choiceBranchKey="192" ref="cotp:CotpTpduDisconnectResponse"/>
-                    <xs:element dfdl:choiceBranchKey="112" ref="cotp:CotpTpduError"/>
-                    <xs:element dfdl:choiceBranchKey="240" ref="cotp:CotpTpduData"/>
-                </xs:choice>
-                <!-- TODO: add the entire rest of the input to the user-data -->
-                <xs:element name="userData" type="xs:hexBinary"
-                            dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
-                            dfdl:length="{totalInputSize - (2 + 1 + ../headerLength}"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <xs:element name="CoTpTPDU" type="cotp:CotpMessageType"/>
+
+    <xs:complexType name="CotpMessageType">
+        <xs:sequence>
+            <!-- Length of the COTP header data -->
+            <xs:element name="headerLength" type="cotp:byte"/>
+            <xs:element name="type" type="cotp:byte"/>
+            <xs:choice dfdl:choiceDispatchKey="{type}">
+                <xs:element dfdl:choiceBranchKey="224" ref="cotp:CotpTpduConnectionRequest"/>
+                <xs:element dfdl:choiceBranchKey="208" ref="cotp:CotpTpduConnectionResponse"/>
+                <xs:element dfdl:choiceBranchKey="128" ref="cotp:CotpTpduDisconnectRequest"/>
+                <xs:element dfdl:choiceBranchKey="192" ref="cotp:CotpTpduDisconnectResponse"/>
+                <xs:element dfdl:choiceBranchKey="112" ref="cotp:CotpTpduError"/>
+                <xs:element dfdl:choiceBranchKey="240" ref="cotp:CotpTpduData"/>
+            </xs:choice>
+            <!-- TODO: add the entire rest of the input to the user-data -->
+            <xs:element name="userData" type="xs:hexBinary"
+                        dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
+                        dfdl:length="0"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:element name="CotpTpduConnectionRequest">
         <xs:complexType>
@@ -88,7 +91,9 @@
                 <xs:element name="destinationReference" type="cotp:short"/>
                 <xs:element name="sourceReference" type="cotp:short"/>
                 <xs:element name="protocolClass" type="cotp:byte"/>
-                <xs:element ref="cotp:parameters"/>
+                <xs:element ref="cotp:parameters" minOccurs="0"
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 6}"
+                            dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../headerLength gt 6) then 1 else 0}"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -99,7 +104,9 @@
                 <xs:element name="destinationReference" type="cotp:short"/>
                 <xs:element name="sourceReference" type="cotp:short"/>
                 <xs:element name="protocolClass" type="cotp:byte"/>
-                <xs:element ref="cotp:parameters"/>
+                <xs:element ref="cotp:parameters" minOccurs="0"
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 6}"
+                            dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../headerLength gt 6) then 1 else 0}"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -110,7 +117,9 @@
                 <xs:element name="destinationReference" type="cotp:short"/>
                 <xs:element name="sourceReference" type="cotp:short"/>
                 <xs:element name="disconnectReason" type="cotp:byte"/>
-                <xs:element ref="cotp:parameters"/>
+                <xs:element ref="cotp:parameters" minOccurs="0"
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 6}"
+                            dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../headerLength gt 6) then 1 else 0}"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -120,7 +129,9 @@
             <xs:sequence>
                 <xs:element name="destinationReference" type="cotp:short"/>
                 <xs:element name="sourceReference" type="cotp:short"/>
-                <xs:element ref="cotp:parameters"/>
+                <xs:element ref="cotp:parameters" minOccurs="0"
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 5}"
+                            dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../headerLength gt 5) then 1 else 0}"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -130,7 +141,9 @@
             <xs:sequence>
                 <xs:element name="destinationReference" type="cotp:short"/>
                 <xs:element name="rejectCause" type="cotp:byte"/>
-                <xs:element ref="cotp:parameters"/>
+                <xs:element ref="cotp:parameters" minOccurs="0"
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 3}"
+                            dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../headerLength gt 3) then 1 else 0}"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -149,7 +162,7 @@
     <xs:element name="parameters">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="parameter">
+                <xs:element name="parameter" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="type" type="cotp:byte"/>
@@ -159,7 +172,8 @@
                                 <xs:element dfdl:choiceBranchKey="193" ref="cotp:CotpParameterCallingTsap"/>
                                 <xs:element dfdl:choiceBranchKey="194" ref="cotp:CotpParameterCalledTsap"/>
                                 <xs:element dfdl:choiceBranchKey="195" ref="cotp:CotpParameterChecksum"/>
-                                <xs:element dfdl:choiceBranchKey="224" ref="cotp:CotpParameterDisconnectAdditionalInformation"/>
+                                <xs:element dfdl:choiceBranchKey="224"
+                                            ref="cotp:CotpParameterDisconnectAdditionalInformation"/>
                             </xs:choice>
                         </xs:sequence>
                     </xs:complexType>
@@ -205,7 +219,7 @@
             <xs:sequence>
                 <xs:element name="data" type="xs:hexBinary"
                             dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
-                            dfdl:length="{../../../parameterLength}"/>
+                            dfdl:length="{../../parameterLength}"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

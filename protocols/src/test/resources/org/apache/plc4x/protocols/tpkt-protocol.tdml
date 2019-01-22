@@ -23,7 +23,7 @@
            xmlns:tdml="http://www.ibm.com/xmlns/dfdl/testData"
            xmlns:tpkt="http://plc4x.apache.org/tpkt"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           suiteName="plc4x-tpkt"
+           suiteName="TPKT protocol (ISO-on-TCP)"
            description="Testsuite for the TPKT protocol"
            defaultRoundTrip="true">
 
