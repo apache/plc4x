@@ -143,10 +143,9 @@
                 <xs:element dfdl:choiceBranchKey="112" ref="cotp:CotpTpduError"/>
                 <xs:element dfdl:choiceBranchKey="240" ref="cotp:CotpTpduData"/>
             </xs:choice>
-            <!-- TODO: add the entire rest of the input to the user-data -->
             <xs:element name="userData" type="xs:hexBinary"
-                        dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
-                        dfdl:length="0"/>
+                        dfdl:byteOrder="bigEndian" dfdl:lengthKind="delimited"
+                        dfdl:encoding="ISO-8859-1" dfdl:textTrimKind="none" />
         </xs:sequence>
     </xs:complexType>
 

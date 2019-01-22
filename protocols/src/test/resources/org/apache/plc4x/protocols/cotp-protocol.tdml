@@ -514,8 +514,7 @@
                          description="Typical Data TPDU used for transferring S7 packets.">
         <!-- Define the input -->
         <tdml:document>
-            <!-- TODO: Comment in the S7 payload as soon as the schema is fixed -->
-            <tdml:documentPart type="byte">02F080<!--320700000300000800080001120411440100ff09000401320004--></tdml:documentPart>
+            <tdml:documentPart type="byte">02F080320700000300000800080001120411440100ff09000401320004</tdml:documentPart>
         </tdml:document>
 
         <!-- Define the expected output -->
@@ -528,7 +527,7 @@
                         <endOfTransmission>1</endOfTransmission>
                         <tpduRef>0</tpduRef>
                     </CotpTpduData>
-                    <userData/>
+                    <userData>320700000300000800080001120411440100FF09000401320004</userData>
                 </test:cotpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
