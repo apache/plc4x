@@ -46,7 +46,9 @@ pipeline {
     }
 
     options {
-        timeout(time: 1, unit: 'HOURS')
+        // Kill this job after one hour.
+        // TODO: Disabled for finding out if this is what's randomly killing jobs ...
+        //timeout(time: 1, unit: 'HOURS')
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
