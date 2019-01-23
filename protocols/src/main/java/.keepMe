@@ -14,3 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
+This file is required to force the existence of the src/main/java directory
+which activates the "java-module" maven profile.
+
+PLEASE DO NOT DELETE ... it will break the build.

@@ -20,6 +20,8 @@
        uri="org/apache/plc4x/protocols/tpkt-protocol.dfdl.xsd"/>
   <uri name="http://plc4x.apache.org/cotp"
        uri="org/apache/plc4x/protocols/cotp-protocol.dfdl.xsd"/>
-  <uri name="http://plc4x.apache.org/cotp"
+  <uri name="http://plc4x.apache.org/s7"
        uri="org/apache/plc4x/protocols/s7-protocol.dfdl.xsd"/>
+  <uri name="http://plc4x.apache.org/s7-full"
+       uri="org/apache/plc4x/protocols/s7-full-stack-protocol.dfdl.xsd"/>
 </catalog>

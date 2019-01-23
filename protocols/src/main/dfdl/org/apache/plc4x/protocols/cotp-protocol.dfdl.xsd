@@ -57,7 +57,7 @@
         <xs:restriction base="xs:unsignedShort"/>
     </xs:simpleType>
 
-    <xs:simpleType name="tpduType">
+    <xs:simpleType name="CotpTpduType">
         <xs:restriction base="xs:unsignedByte">
             <xs:enumeration id="tpduTypeConnectionRequest" value="224">
                 <xs:annotation>
@@ -92,7 +92,7 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="parameterType">
+    <xs:simpleType name="CotpParameterType">
         <xs:restriction base="xs:unsignedByte">
             <xs:enumeration value="192">
                 <xs:annotation>
@@ -134,7 +134,7 @@
         <xs:sequence>
             <!-- Length of the COTP header data -->
             <xs:element name="headerLength" type="cotp:byte"/>
-            <xs:element name="type" type="cotp:tpduType"/>
+            <xs:element name="type" type="cotp:CotpTpduType"/>
             <xs:choice dfdl:choiceDispatchKey="{type}">
                 <xs:element dfdl:choiceBranchKey="224" ref="cotp:CotpTpduConnectionRequest"/>
                 <xs:element dfdl:choiceBranchKey="208" ref="cotp:CotpTpduConnectionResponse"/>
@@ -229,7 +229,7 @@
                 <xs:element name="parameter" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="type" type="cotp:parameterType"/>
+                            <xs:element name="type" type="cotp:CotpParameterType"/>
                             <xs:element name="parameterLength" type="cotp:byte"/>
                             <xs:choice dfdl:choiceDispatchKey="{type}">
                                 <xs:element dfdl:choiceBranchKey="192" ref="cotp:CotpParameterTpduSize"/>
