@@ -689,7 +689,13 @@
 
     -->
 
-    <xs:element name="S7GeneralPayloadSetupCommunication" type="xs:byte" dfdl:lengthKind="explicit" dfdl:length="0"/>
+    <xs:element name="S7GeneralPayloadSetupCommunication">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="payload" type="s7f:byte" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
     <xs:element name="S7RequestPayloadCpuServices">
         <xs:complexType>
@@ -749,7 +755,13 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="S7RequestPayloadReadVar" type="xs:byte" dfdl:lengthKind="explicit" dfdl:length="0"/>
+    <xs:element name="S7RequestPayloadReadVar">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="payload" type="s7f:byte" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
     <xs:element name="S7ResponsePayloadReadVar">
         <xs:complexType>

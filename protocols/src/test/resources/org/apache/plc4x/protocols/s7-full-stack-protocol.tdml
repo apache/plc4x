@@ -670,22 +670,23 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <!--tdml:parserTestCase name="COTP: scenarioDataTpdu"
+    <tdml:parserTestCase name="COTP: scenarioDataTpdu"
                          root="tpktMessage"
                          model="s7Schema"
                          description="Typical Data TPDU used for transferring S7 packets.">
-        <!- Define the input ->
+        <!-- Define the input -->
         <tdml:document>
-            <tdml:documentPart type="byte">0300001f02f080320100000001000e00000401120a10010001000082000004</tdml:documentPart>
+            <tdml:documentPart type="byte">0300001f02f080320100000001000e00000401120a10010001000082000004
+            </tdml:documentPart>
         </tdml:document>
 
-        <!- Define the expected output ->
+        <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
                 <test:tpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
-                    <length>29</length>
+                    <length>31</length>
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
@@ -693,11 +694,49 @@
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
                         </CotpTpduData>
+                        <userData>
+                            <magicByte>50</magicByte>
+                            <type>1</type>
+                            <S7RequestMessage>
+                                <reserved>0</reserved>
+                                <tpduReference>1</tpduReference>
+                                <parametersLength>14</parametersLength>
+                                <payloadsLength>0</payloadsLength>
+                                <parameters>
+                                    <parameter>
+                                        <type>4</type>
+                                        <S7RequestParameterReadVar>
+                                            <numItems>1</numItems>
+                                            <items>
+                                                <item>
+                                                    <type>18</type>
+                                                    <S7RequestParameterReadVarAnyItem>
+                                                        <paramLength>10</paramLength>
+                                                        <addressingMode>16</addressingMode>
+                                                        <dataType>1</dataType>
+                                                        <numElements>1</numElements>
+                                                        <dataBlockNumber>0</dataBlockNumber>
+                                                        <memoryArea>130</memoryArea>
+                                                        <byteOffset>0</byteOffset>
+                                                        <bitOffset>4</bitOffset>
+                                                    </S7RequestParameterReadVarAnyItem>
+                                                </item>
+                                            </items>
+                                        </S7RequestParameterReadVar>
+                                    </parameter>
+                                </parameters>
+                                <payloads>
+                                    <payload>
+                                        <S7RequestPayloadReadVar/>
+                                    </payload>
+                                </payloads>
+                            </S7RequestMessage>
+                        </userData>
                     </userData>
                 </test:tpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
-    </tdml:parserTestCase-->
+    </tdml:parserTestCase>
 
 </testSuite>
 
