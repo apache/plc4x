@@ -96,7 +96,6 @@ function mywget() {
 function getSignedBundle() {
   mywget ${1}
   mywget ${1}.asc
-  mywget ${1}.md5
   mywget ${1}.sha512
 }
 
