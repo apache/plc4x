@@ -43,7 +43,7 @@ public abstract class AbstractProtocolTest {
             Runner.defaultRoundTripDefaultDefault(), Runner.defaultValidationDefaultDefault());
         List<DynamicTest> dynamicTests = new LinkedList<>();
         Iterator<String> iterator = testSuite.testCaseMap().keySet().iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             String testcaseName = iterator.next();
             String testcaseLabel = testSuite.suiteName() + ": " + testcaseName;
             DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, () ->

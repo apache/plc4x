@@ -415,12 +415,12 @@
 
     -->
 
-    <xs:element name="S7GeneralPayloadSetupCommunication">
-        <xs:complexType>
+    <xs:element name="S7GeneralPayloadSetupCommunication" type="xs:hexBinary" dfdl:length="0">
+        <!--xs:complexType>
             <xs:sequence>
                 <xs:element name="payload" type="s7f:byte" minOccurs="0"/>
             </xs:sequence>
-        </xs:complexType>
+        </xs:complexType-->>
     </xs:element>
 
     <xs:element name="S7RequestPayloadCpuServices">

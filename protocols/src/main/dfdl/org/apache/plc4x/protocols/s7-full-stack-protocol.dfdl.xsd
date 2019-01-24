@@ -176,7 +176,8 @@
                 <xs:element dfdl:choiceBranchKey="240" ref="s7f:CotpTpduData"/>
             </xs:choice>
             <xs:element name="userData" type="s7f:S7MessageType" minOccurs="0"
-                        dfdl:occursCountKind="expression" dfdl:occursCount="{if((../../length - (../headerLength + 1)) gt 0) then 1 else 0}"/>
+                        dfdl:occursCountKind="expression"
+                        dfdl:occursCount="{if((../../length - (../headerLength + 1)) gt 0) then 1 else 0}"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -348,14 +349,10 @@
                 (no error code or error class). As mapping to the same type is not allowed,
                 we map to strings and use that as choice-key.
             -->
-            <xs:choice dfdl:choiceDispatchKey="{
-                                if(type eq 1) then 'request'
-                                else if(type eq 3) then 'response'
-                                else if(type eq 7) then 'response'
-                                else 'unknown'
-                            }">
-                <xs:element dfdl:choiceBranchKey="request" ref="s7f:S7RequestMessage"/>
-                <xs:element dfdl:choiceBranchKey="response" ref="s7f:S7ResponseMessage"/>
+            <xs:choice dfdl:choiceDispatchKey="{type}">
+                <xs:element dfdl:choiceBranchKey="1" ref="s7f:S7RequestMessage"/>
+                <xs:element dfdl:choiceBranchKey="3" ref="s7f:S7ResponseMessage"/>
+                <xs:element dfdl:choiceBranchKey="7" ref="s7f:S7UserDataMessage"/>
             </xs:choice>
         </xs:sequence>
     </xs:complexType>
@@ -381,8 +378,6 @@
                                         <xs:choice dfdl:choiceDispatchKey="{type}">
                                             <xs:element dfdl:choiceBranchKey="240"
                                                         ref="s7f:S7GeneralParameterSetupCommunication"/>
-                                            <xs:element dfdl:choiceBranchKey="0"
-                                                        ref="s7f:SS7RequestParameterCPUService"/>
                                             <xs:element dfdl:choiceBranchKey="4" ref="s7f:S7RequestParameterReadVar"/>
                                             <xs:element dfdl:choiceBranchKey="5" ref="s7f:S7RequestParameterWriteVar"/>
                                         </xs:choice>
@@ -406,7 +401,7 @@
                             <!--
                                 For every parameter we'll be outputting a payload block, even if this might be empty.
                                 This is required in order to find the matching parameter for every payload we might
-                                be having. We need to match these as otherwise we couldn't determin the type of a
+                                be having. We need to match these as otherwise we couldn't determine the type of a
                                 payload as this has no type information and we need to be able to access the number
                                 of items for a read/write request in order to process the correct number of items in
                                 the payload.
@@ -416,10 +411,10 @@
                                         dfdl:occursCount="{fn:count(../../parameters[1]/parameter)}">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:choice dfdl:choiceDispatchKey="{../../parameters[1]/parameter[dfdl:occursIndex()]/type}">
+                                        <xs:choice
+                                            dfdl:choiceDispatchKey="{../../parameters[1]/parameter[dfdl:occursIndex()]/type}">
                                             <xs:element dfdl:choiceBranchKey="240"
                                                         ref="s7f:S7GeneralPayloadSetupCommunication"/>
-                                            <xs:element dfdl:choiceBranchKey="0" ref="s7f:S7RequestPayloadCpuServices"/>
                                             <xs:element dfdl:choiceBranchKey="4" ref="s7f:S7RequestPayloadReadVar"/>
                                             <xs:element dfdl:choiceBranchKey="5" ref="s7f:S7RequestPayloadWriteVar"/>
                                         </xs:choice>
@@ -459,8 +454,6 @@
                                         <xs:choice dfdl:choiceDispatchKey="{type}">
                                             <xs:element dfdl:choiceBranchKey="240"
                                                         ref="s7f:S7GeneralParameterSetupCommunication"/>
-                                            <xs:element dfdl:choiceBranchKey="0"
-                                                        ref="s7f:S7ResponseParameterCPUService"/>
                                             <xs:element dfdl:choiceBranchKey="4" ref="s7f:S7ResponseParameterReadVar"/>
                                             <xs:element dfdl:choiceBranchKey="5" ref="s7f:S7ResponseParameterWriteVar"/>
                                         </xs:choice>
@@ -498,9 +491,76 @@
                                             dfdl:choiceDispatchKey="{../../parameters[1]/parameter[dfdl:occursIndex()]/type}">
                                             <xs:element dfdl:choiceBranchKey="240"
                                                         ref="s7f:S7GeneralPayloadSetupCommunication"/>
-                                            <xs:element dfdl:choiceBranchKey="0" ref="s7f:S7ResponsePayloadCpuServices"/>
                                             <xs:element dfdl:choiceBranchKey="4" ref="s7f:S7ResponsePayloadReadVar"/>
                                             <xs:element dfdl:choiceBranchKey="5" ref="s7f:S7ResponsePayloadWriteVar"/>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="S7UserDataMessage">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Reserved value always 0x0000 -->
+                <xs:element name="reserved" type="s7f:short" fixed="0"/>
+                <xs:element name="tpduReference" type="s7f:short"/>
+                <xs:element name="parametersLength" type="s7f:short"/>
+                <xs:element name="payloadsLength" type="s7f:short"/>
+                <xs:element name="parameters" minOccurs="0"
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../parametersLength}"
+                            dfdl:occursCountKind="expression"
+                            dfdl:occursCount="{if(../parametersLength gt 0) then 1 else 0}">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="parameter" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="type" type="s7f:byte"/>
+                                        <xs:choice dfdl:choiceDispatchKey="{type}">
+                                            <xs:element dfdl:choiceBranchKey="0"
+                                                        ref="s7f:S7UserDataParameterCPUService"/>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <!--
+                   As we might be outputting an empty payload block for a parameter that might not have a payload,
+                   we have to output this element if the parameters are not empty. The case that the payloads are
+                   not empty but the parameters are can't happen during normal operation.
+               -->
+                <xs:element name="payloads" minOccurs="0"
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../payloadsLength}"
+                            dfdl:occursCountKind="expression"
+                            dfdl:occursCount="{if(../parametersLength gt 0) then 1 else 0}">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <!--
+                                For every parameter we'll be outputting a payload block, even if this might be empty.
+                                This is required in order to find the matching parameter for every payload we might
+                                be having. We need to match these as otherwise we couldn't determine the type of a
+                                payload as this has no type information and we need to be able to access the number
+                                of items for a read/write request in order to process the correct number of items in
+                                the payload.
+                            -->
+                            <xs:element name="payload" maxOccurs="unbounded"
+                                        dfdl:occursCountKind="expression"
+                                        dfdl:occursCount="{fn:count(../../parameters[1]/parameter)}">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:choice
+                                            dfdl:choiceDispatchKey="{../../parameters[1]/parameter[dfdl:occursIndex()]/type}">
+                                            <xs:element dfdl:choiceBranchKey="0"
+                                                        ref="s7f:S7UserDataPayloadCpuServices"/>
                                         </xs:choice>
                                     </xs:sequence>
                                 </xs:complexType>
@@ -530,39 +590,31 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="SS7RequestParameterCPUService">
+    <xs:element name="S7UserDataParameterCPUService">
         <xs:complexType>
             <xs:sequence>
                 <!-- Fixed header 0x0112 274 -> -->
                 <xs:element name="header" type="s7f:short"/><!-- fixed="274"-->
-                <xs:element name="length" type="s7f:byte"/><!-- fixed="4"-->
+                <xs:element name="paramLength" type="s7f:byte"/><!-- fixed="4"-->
                 <!-- Request: 0x11 -> 17 -->
                 <xs:element name="typeCode" type="s7f:byte"/><!-- fixed="17"-->
+                <xs:element name="type" type="xs:unsignedByte" dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                            dfdl:length="4"/>
                 <!-- First 4 bits: Request 0x40, last 4 bits: Function Group 0x04 = 0x44 -> 68 -->
-                <xs:element name="functionGroup" type="s7f:byte"/><!-- fixed="68"-->
+                <xs:element name="functionGroup" type="xs:unsignedByte" dfdl:lengthKind="explicit"
+                            dfdl:lengthUnits="bits" dfdl:length="4"/><!-- fixed="68"-->
                 <!-- READ SSL = 0x01 -->
                 <xs:element name="subFunctionGroup" type="s7f:byte"/><!-- fixed="1"-->
                 <xs:element name="sequenceNumber" type="s7f:byte"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="S7ResponseParameterCPUService">
-        <xs:complexType>
-            <xs:sequence>
-                <!-- Fixed header 0x0112 274 -> -->
-                <xs:element name="header" type="s7f:short"/><!-- fixed="274"-->
-                <xs:element name="paramLength" type="s7f:byte"/><!-- fixed="8"-->
-                <!-- Response: 0x12 -> 18 -->
-                <xs:element name="typeCode" type="s7f:byte"/><!-- fixed="18"-->
-                <!-- First 4 bits: Response 0x80, last 4 bits: Function Group 0x04 = 0x84 -> 132 -->
-                <xs:element name="functionGroup" type="s7f:byte"/><!-- fixed="132"-->
-                <!-- READ SSL = 0x01 -->
-                <xs:element name="subFunctionGroup" type="s7f:byte"/><!-- fixed="1"-->
-                <xs:element name="sequenceNumber" type="s7f:byte"/>
-                <xs:element name="dataUnitReferenceNumber" type="s7f:byte"/>
-                <xs:element name="lastDataUnit" type="s7f:byte"/>
-                <xs:element name="error" type="s7f:short"/>
+                <xs:element name="dataUnitReferenceNumber" type="s7f:byte" minOccurs="0"
+                            dfdl:occursCountKind="expression"
+                            dfdl:occursCount="{if(../sequenceNumber eq 2) then 1 else 0}"/>
+                <xs:element name="lastDataUnit" type="s7f:byte" minOccurs="0"
+                            dfdl:occursCountKind="expression"
+                            dfdl:occursCount="{if(../sequenceNumber eq 2) then 1 else 0}"/>
+                <xs:element name="errorCode" type="s7f:short" minOccurs="0"
+                            dfdl:occursCountKind="expression"
+                            dfdl:occursCount="{if(../sequenceNumber eq 2) then 1 else 0}"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -689,49 +741,41 @@
 
     -->
 
-    <xs:element name="S7GeneralPayloadSetupCommunication">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="payload" type="s7f:byte" minOccurs="0"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <xs:element name="S7GeneralPayloadSetupCommunication"
+                type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="0"/>
 
-    <xs:element name="S7RequestPayloadCpuServices">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="transportSize" type="s7f:byte"/><!-- fixed="9"-->
-                <xs:element name="length" type="s7f:byte"/>
-                <xs:element name="sslId" type="s7f:short"/>
-                <xs:element name="sslIndex" type="s7f:short"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="S7ResponsePayloadCpuServices">
+    <xs:element name="S7UserDataPayloadCpuServices">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="returnCode" type="s7f:byte"/>
-                <!-- Transport Size: Octet String = 0x09 -> 9 -->
                 <xs:element name="transportSize" type="s7f:byte"/><!-- fixed="9"-->
                 <xs:element name="length" type="s7f:short"/>
-                <xs:element name="sslId" type="s7f:short"/>
-                <xs:element name="sslIndex" type="s7f:short"/>
+                <xs:element name="sslId" type="s7f:short" minOccurs="0"
+                            dfdl:occursCountKind="expression"
+                            dfdl:occursCount="{if(../returnCode eq 255) then 1 else 0}"/>
+                <xs:element name="sslIndex" type="s7f:short" minOccurs="0"
+                            dfdl:occursCountKind="expression"
+                            dfdl:occursCount="{if(../returnCode eq 255) then 1 else 0}"/>
                 <xs:element name="partialList" minOccurs="0"
-                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../length - 4}"
-                            dfdl:occursCountKind="expression" dfdl:occursCount="{../length gt 4}">
+                            dfdl:occursCountKind="expression" dfdl:occursCount="{if((../returnCode eq 255) and (../length gt 4)) then 1 else 0}">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="partialListLengthInWords" type="s7f:short"/>
+                            <xs:element name="partialListLengthInBytes" type="s7f:short"/>
                             <xs:element name="partialListCount" type="s7f:short"/>
                             <xs:element name="sslDataRecords">
                                 <xs:complexType>
-                                    <xs:sequence dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
-                                                 dfdl:length="{../length - 8}">
-                                        <xs:choice>
-                                            <xs:element
-                                                ref="s7f:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification"/>
-                                        </xs:choice>
+                                    <xs:sequence>
+                                        <xs:element name="sslDataRecord" maxOccurs="unbounded"
+                                                    dfdl:occursCountKind="expression" dfdl:occursCount="{../../partialListCount}">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:choice dfdl:choiceDispatchKey="{../../../sslId[1]}">
+                                                        <xs:element dfdl:choiceBranchKey="17"
+                                                                    ref="s7f:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification"/>
+                                                    </xs:choice>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
@@ -746,8 +790,8 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="index" type="s7f:short"/>
-                <xs:element name="articleNumber" type="xs:unsignedByte"
-                            dfdl:lengthUnits="bytes" dfdl:length="20" dfdl:lengthKind="explicit"/>
+                <xs:element name="articleNumber" type="xs:string" dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes"
+                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="20"/>
                 <xs:element name="bgType" type="s7f:short"/>
                 <xs:element name="moduleOrOsVersion" type="s7f:short"/>
                 <xs:element name="pgDescriptionFileVersion" type="s7f:short"/>
@@ -755,13 +799,8 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="S7RequestPayloadReadVar">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="payload" type="s7f:byte" minOccurs="0"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <xs:element name="S7RequestPayloadReadVar"
+                type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="0"/>
 
     <xs:element name="S7ResponsePayloadReadVar">
         <xs:complexType>
@@ -793,12 +832,12 @@
                                 Transport sizes: BIT, BYTE_WORD_DWORD and OCTET_STRING require a blank byte.
                                 However only if this is not the last item in the result.
                             -->
-                            <xs:element name="reserved" type="s7f:byte" minOccurs="0"
+                            <!--xs:element name="reserved" type="s7f:byte" minOccurs="0"
                                         dfdl:occursCountKind="expression" dfdl:occursCount="{
                                             if(((../transportSize eq 3) or
                                                 (../transportSize eq 4) or
                                                 (../transportSize eq 9)) and
-                                                (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/>
+                                                (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/-->
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -839,12 +878,12 @@
                                 Actually the S7 device will never process data that contains more
                                 than one item in a write request, so this is rather a cosmetic fine-tuning.
                             -->
-                            <xs:element name="reserved" type="s7f:byte" minOccurs="0"
+                            <!--xs:element name="reserved" type="s7f:byte" minOccurs="0"
                                         dfdl:occursCountKind="expression" dfdl:occursCount="{
                                             if(((../transportSize eq 3) or
                                                 (../transportSize eq 4) or
                                                 (../transportSize eq 9)) and
-                                                (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/>
+                                                (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/-->
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
