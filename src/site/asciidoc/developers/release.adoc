@@ -161,8 +161,9 @@ In order to prepare a release-candidate, the first step is switching to the corr
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -DautoVersionSubmodules=true
+   mvn release:prepare -P with-cpp -DautoVersionSubmodules=true
 
+(The `-P with-cpp` tells maven to activace the `with-cpp` profile which also enables the C++ modules and makes sure the versions of these modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
