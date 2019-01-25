@@ -1,4 +1,20 @@
 ==============================================================
+(Unreleased) Apache PLC4X (incubating) 0.3.1
+==============================================================
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+- The S7 driver didn't correctly handle "fill-bytes" in multi-
+item read-responses and multi-item write-requests
+
+
+==============================================================
 Apache PLC4X (incubating) 0.3.0
 ==============================================================
 
