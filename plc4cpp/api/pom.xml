@@ -34,7 +34,7 @@
 
   <build>
     <!-- This is probably not required, however it helps IntelliJ detect the files as sources -->
-    <sourceDirectory>${project.basedir}/src/main/cpp</sourceDirectory>
+    <sourceDirectory>src/main/cpp</sourceDirectory>
   </build>
 
   <dependencies>

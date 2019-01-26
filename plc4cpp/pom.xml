@@ -49,24 +49,32 @@
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
+        <!--plugin>
           <groupId>com.buschmais.jqassistant</groupId>
           <artifactId>jqassistant-maven-plugin</artifactId>
           <configuration>
             <skip>true</skip>
           </configuration>
-        </plugin>
-        <plugin>
+        </plugin-->
+        <!--plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>3.1.0</version>
           <configuration>
             <skipAssembly>true</skipAssembly>
           </configuration>
-        </plugin>
-        <plugin>
+        </plugin-->
+        <!--plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin-->
+        <!-- As the resulting libraries are highly platform dependent, it doesn't make sense do deploy them -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
           <configuration>
             <skip>true</skip>
           </configuration>
