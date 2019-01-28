@@ -23,18 +23,40 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4x-protocols</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4x-protocols</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4x-protocols-s7</artifactId>
 
-  <name>Protocols</name>
-  <description>Base protocol specifications.</description>
+  <name>Protocols: S7</name>
+  <description>Base protocol specifications for the Siemens S7 protocol</description>
 
-  <modules>
-    <module>s7</module>
-  </modules>
+  <build>
+    <!-- This project should only contain the DFDL definitions for our protocols -->
+    <resources>
+      <resource>
+        <directory>src/main/dfdl</directory>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-tdml_2.12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-lib_2.12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>
