@@ -35,13 +35,19 @@ You must have Java 8 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). Maven will be automatically
 downloaded and installed by the maven wrapper `mvnw`.
 
-Build PLC4X jars and install them in your local maven repository
+Build PLC4X Java jars and install them in your local maven repository
 
 $ ./mvnw install  # add -DskipTests to omit running the tests
 
-You can now construct applications that use PLC4X. The PLC4X samples
+You can now construct Java applications that use PLC4X. The PLC4X samples
 are a good place to start and are available inside the `examples`
 directory.
+
+If you want to also build the C++ libraries, this has to be enabled by activating
+
+the `with-cpp` profile
+
+$ ./mvnw -P with-cpp install  # add -DskipTests to omit running the tests
 
 
 Installing libpcap/WinPcap

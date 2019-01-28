@@ -84,3 +84,5 @@ jqassistant/
 
 # Exclude the C++ libs
 plc4cpp/libs/libs/
+plc4cpp/.idea/
+plc4cpp/cmake-build-debug/

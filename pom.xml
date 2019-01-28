@@ -790,7 +790,7 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
         <executions>
           <execution>
             <id>get-flatly-bootstrap-theme</id>
@@ -920,7 +920,7 @@
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
-        <version>1.5.6</version>
+        <version>1.5.7.1</version>
         <executions>
           <execution>
             <id>generate-asciidoc</id>
@@ -946,17 +946,17 @@
           <dependency>
             <groupId>org.jruby</groupId>
             <artifactId>jruby-complete</artifactId>
-            <version>9.1.13.0</version>
+            <version>9.2.5.0</version>
           </dependency>
           <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj</artifactId>
-            <version>1.5.6</version>
+            <version>1.6.1</version>
           </dependency>
           <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj-diagram</artifactId>
-            <version>1.5.4.1</version>
+            <version>1.5.12</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -1045,7 +1045,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.1.1</version>
           <configuration>
             <finalName>apache-plc4x-incubating-${project.version}</finalName>
           </configuration>
@@ -1235,7 +1235,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.5</version>
+        <version>3.0.0</version>
       </plugin>
 
       <!-- Generate javadoc documentation -->
@@ -1347,7 +1347,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <version>3.0.0-M1</version> <!--$NO-MVN-MAN-VER$-->
+            <version>3.0.0-M2</version> <!--$NO-MVN-MAN-VER$-->
             <executions>
               <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
               <execution>
@@ -1687,7 +1687,7 @@
           <plugin>
             <groupId>net.nicoulaj.maven.plugins</groupId>
             <artifactId>checksum-maven-plugin</artifactId>
-            <version>1.7</version>
+            <version>1.8</version>
             <executions>
               <execution>
                 <goals>
