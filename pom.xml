@@ -153,6 +153,9 @@
     <!-- Integration modules for other frameworks -->
     <module>integrations</module>
 
+    <!-- Sandbox for testing new stuff -->
+    <module>sandbox</module>
+
     <!-- Examples -->
     <module>examples</module>
   </modules>
