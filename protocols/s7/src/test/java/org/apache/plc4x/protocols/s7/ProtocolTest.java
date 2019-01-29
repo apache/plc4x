@@ -17,15 +17,17 @@
  under the License.
  */
 
-package org.apache.plc4x.protocols;
+package org.apache.plc4x.protocols.s7;
+
+import org.apache.plc4x.protocols.AbstractProtocolTest;
 
 /**
  * Executes all tests for the ISO on TCP / TPKT protocol.
  */
-public class CotpProtocolTest extends AbstractProtocolTest {
+public class ProtocolTest extends AbstractProtocolTest {
 
-    public CotpProtocolTest() {
-        super("org/apache/plc4x/protocols/cotp-protocol.tdml");
+    public ProtocolTest() {
+        super("org/apache/plc4x/protocols/s7/protocol.tdml");
     }
 
 }

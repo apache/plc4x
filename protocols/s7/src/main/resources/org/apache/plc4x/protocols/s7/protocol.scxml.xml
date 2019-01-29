@@ -1,0 +1,432 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       version="1.0"
+       xmlns:plc4x="https://plc4x.apache.org/scxml-extension"
+       xmlns:s7="http://plc4x.apache.org/s7"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       initial="init"
+       datamodel="jexl"
+       xsi:schemaLocation="http://www.w3.org/2005/07/scxml http://www.w3.org/2011/04/SCXML/scxml.xsd">
+
+  <state id="init">
+    <onentry>
+      <!-- Setup the initial content of the connection context (Callback in the driver) -->
+      <plc4x:initContext/>
+      <plc4x:connect type="tcp" host="{connection-host}" port="{connection-port}"/>
+    </onentry>
+    <initial>
+      <transition target="connect"/>
+    </initial>
+    <onentry>
+      <log expr="'Connecting'"/>
+    </onentry>
+  </state>
+
+  <state id="connect">
+    <initial>
+      <transition target="sendCotpConnectionRequest"/>
+    </initial>
+
+    <state id="sendCotpConnectionRequest">
+      <onentry>
+        <plc4x:send>
+          <s7:tpktMessage>
+            <magicByte>3</magicByte>
+            <reserved>0</reserved>
+            <length>18</length>
+            <userData>
+              <headerLength>17</headerLength>
+              <type>224</type>
+              <CotpTpduConnectionRequest>
+                <destinationReference>1</destinationReference>
+                <!-- Insert the value for "cotp-local-reference" as short here -->
+                <sourceReference><plc4x:insert type="s7:short" name="cotp-local-reference"/></sourceReference>
+                <protocolClass>0</protocolClass>
+                <parameters>
+                  <parameter>
+                    <type>193</type>
+                    <parameterLength>2</parameterLength>
+                    <CotpParameterCallingTsap>
+                      <tsapId><plc4x:insert type="s7:short" name="cotp-calling-tsap"/></tsapId>
+                    </CotpParameterCallingTsap>
+                  </parameter>
+                  <parameter>
+                    <type>194</type>
+                    <parameterLength>2</parameterLength>
+                    <CotpParameterCalledTsap>
+                      <tsapId><plc4x:insert type="s7:short" name="cotp-called-tsap"/></tsapId>
+                    </CotpParameterCalledTsap>
+                  </parameter>
+                  <parameter>
+                    <type>192</type>
+                    <parameterLength>1</parameterLength>
+                    <CotpParameterTpduSize>
+                      <tpduSize><plc4x:insert type="s7:byte" name="cotp-tpdu-size"/></tpduSize>
+                    </CotpParameterTpduSize>
+                  </parameter>
+                </parameters>
+              </CotpTpduConnectionRequest>
+            </userData>
+          </s7:tpktMessage>
+        </plc4x:send>
+      </onentry>
+      <transition target="receiveCotpConnectionResponse"/>
+    </state>
+
+    <state id="receiveCotpConnectionResponse">
+      <onentry>
+        <plc4x:receive timeout="5000">
+          <s7:tpktMessage>
+            <magicByte>3</magicByte>
+            <reserved>0</reserved>
+            <!-- Just ignore the content of this field, we don't care about it as it's only required for parsing. -->
+            <length><plc4x:ignore/></length>
+            <userData>
+              <!-- Just ignore the content of this field, we don't care about it as it's only required for parsing. -->
+              <headerLength><plc4x:ignore/></headerLength>
+              <type>208</type>
+              <CotpTpduConnectionResponse>
+                <!-- Make sure the reply uses the same reference as we used in the request. -->
+                <destinationReference><plc4x:verify type="s7:short" name="cotp-local-reference"/></destinationReference>
+                <!-- Extract the reference the remote would like us to use in this session. -->
+                <sourceReference><plc4x:extract type="s7:short" name="cotp-remote-reference"/></sourceReference>
+                <protocolClass>0</protocolClass>
+                <parameters>
+                  <!--
+                    These elements might be transferred in alternate order, we just care about all of them being
+                    transferred.
+                  -->
+                  <plc4x:unordered>
+                    <parameter>
+                      <type>192</type>
+                      <parameterLength>1</parameterLength>
+                      <CotpParameterTpduSize>
+                        <tpduSize><plc4x:extract type="s7:byte" name="cotp-tpdu-size"/></tpduSize>
+                      </CotpParameterTpduSize>
+                    </parameter>
+                    <parameter>
+                      <type>193</type>
+                      <parameterLength>2</parameterLength>
+                      <CotpParameterCallingTsap>
+                        <tsapId><plc4x:extract type="s7:short" name="cotp-calling-tsap"/></tsapId>
+                      </CotpParameterCallingTsap>
+                    </parameter>
+                    <parameter>
+                      <type>194</type>
+                      <parameterLength>2</parameterLength>
+                      <CotpParameterCalledTsap>
+                        <tsapId><plc4x:extract type="s7:short" name="cotp-called-tsap"/></tsapId>
+                      </CotpParameterCalledTsap>
+                    </parameter>
+                    <!-- The remote might be passing other parameters, we'll just ignore them for now -->
+                    <plc4x:ignore/>
+                  </plc4x:unordered>
+                </parameters>
+              </CotpTpduConnectionResponse>
+            </userData>
+          </s7:tpktMessage>
+        </plc4x:receive>
+      </onentry>
+      <transition cond="" target="sendS7SetupCommunicationRequest"/>
+      <transition cond="" target="error"/>
+    </state>
+
+    <state id="sendS7SetupCommunicationRequest">
+      <onentry>
+        <plc4x:send>
+          <s7:tpktMessage>
+            <magicByte>3</magicByte>
+            <reserved>0</reserved>
+            <length>25</length>
+            <userData>
+              <headerLength>2</headerLength>
+              <type>240</type>
+              <CotpTpduData>
+                <endOfTransmission>1</endOfTransmission>
+                <tpduRef>0</tpduRef>
+              </CotpTpduData>
+              <userData>
+                <magicByte>50</magicByte>
+                <type>1</type>
+                <S7RequestMessage>
+                  <reserved>0</reserved>
+                  <tpduReference>0</tpduReference>
+                  <parametersLength>8</parametersLength>
+                  <payloadsLength>0</payloadsLength>
+                  <parameters>
+                    <parameter>
+                      <type>240</type>
+                      <S7GeneralParameterSetupCommunication>
+                        <reserved>0</reserved>
+                        <maxAmqCaller><plc4x:insert type="s7:short" name="s7-max-amq-caller"/></maxAmqCaller>
+                        <maxAmqCallee><plc4x:insert type="s7:short" name="s7-max-amq-callee"/></maxAmqCallee>
+                        <pduLength><plc4x:insert type="s7:short" name="s7-pdu-length"/></pduLength>
+                      </S7GeneralParameterSetupCommunication>
+                    </parameter>
+                  </parameters>
+                  <payloads>
+                    <payload>
+                      <S7GeneralPayloadSetupCommunication/>
+                    </payload>
+                  </payloads>
+                </S7RequestMessage>
+              </userData>
+            </userData>
+          </s7:tpktMessage>
+        </plc4x:send>
+      </onentry>
+      <transition target="receiveS7SetupCommunicationResponse"/>
+    </state>
+
+    <state id="receiveS7SetupCommunicationResponse">
+      <onentry>
+        <plc4x:receive timeout="5000">
+          <s7:tpktMessage>
+            <magicByte>3</magicByte>
+            <reserved>0</reserved>
+            <length><plc4x:ignore/></length>
+            <userData>
+              <headerLength>2</headerLength>
+              <type>240</type>
+              <CotpTpduData>
+                <endOfTransmission>1</endOfTransmission>
+                <tpduRef>0</tpduRef>
+              </CotpTpduData>
+              <userData>
+                <magicByte>50</magicByte>
+                <type>3</type>
+                <S7ResponseMessage>
+                  <reserved>0</reserved>
+                  <tpduReference>0</tpduReference>
+                  <parametersLength><plc4x:ignore/></parametersLength>
+                  <payloadsLength>0</payloadsLength>
+                  <errorClass><plc4x:ignore/></errorClass>
+                  <errorCode><plc4x:extract/></errorCode>
+                  <parameters>
+                    <plc4x:unordered>
+                      <parameter>
+                        <type>240</type>
+                        <S7GeneralParameterSetupCommunication>
+                          <reserved>0</reserved>
+                          <maxAmqCaller><plc4x:extract type="s7:short" name="s7-max-amq-caller"/></maxAmqCaller>
+                          <maxAmqCallee><plc4x:extract type="s7:short" name="s7-max-amq-callee"/></maxAmqCallee>
+                          <pduLength><plc4x:extract type="s7:short" name="s7-pdu-length"/></pduLength>
+                        </S7GeneralParameterSetupCommunication>
+                      </parameter>
+                      <plc4x:ignore/>
+                    </plc4x:unordered>
+                  </parameters>
+                  <payloads>
+                    <payload>
+                      <S7GeneralPayloadSetupCommunication/>
+                    </payload>
+                  </payloads>
+                </S7ResponseMessage>
+              </userData>
+            </userData>
+          </s7:tpktMessage>
+        </plc4x:receive>
+      </onentry>
+      <transition cond="{type == null}" target="sendS7IdentificationRequest"/>
+      <transition cond="{type != null}" target="connected"/>
+      <transition cond="" target="error"/>
+    </state>
+
+    <state id="sendS7IdentificationRequest">
+      <onentry>
+        <plc4x:send>
+          <s7:tpktMessage>
+            <magicByte>3</magicByte>
+            <reserved>0</reserved>
+            <length>33</length>
+            <userData>
+              <headerLength>2</headerLength>
+              <type>240</type>
+              <CotpTpduData>
+                <endOfTransmission>1</endOfTransmission>
+                <tpduRef>0</tpduRef>
+              </CotpTpduData>
+              <userData>
+                <magicByte>50</magicByte>
+                <type>7</type>
+                <S7UserDataMessage>
+                  <reserved>0</reserved>
+                  <tpduReference>256</tpduReference>
+                  <parametersLength>8</parametersLength>
+                  <payloadsLength>8</payloadsLength>
+                  <parameters>
+                    <parameter>
+                      <type>0</type>
+                      <S7UserDataParameterCPUService>
+                        <header>274</header>
+                        <paramLength>4</paramLength>
+                        <typeCode>17</typeCode>
+                        <type>4</type>
+                        <functionGroup>4</functionGroup>
+                        <subFunctionGroup>1</subFunctionGroup>
+                        <sequenceNumber>0</sequenceNumber>
+                      </S7UserDataParameterCPUService>
+                    </parameter>
+                  </parameters>
+                  <payloads>
+                    <payload>
+                      <S7UserDataPayloadCpuServices>
+                        <returnCode>255</returnCode>
+                        <transportSize>9</transportSize>
+                        <length>4</length>
+                        <sslId>17</sslId>
+                        <sslIndex>0</sslIndex>
+                      </S7UserDataPayloadCpuServices>
+                    </payload>
+                  </payloads>
+                </S7UserDataMessage>
+              </userData>
+            </userData>
+          </s7:tpktMessage>
+        </plc4x:send>
+      </onentry>
+      <transition target="receiveS7IdentificationRequest"/>
+    </state>
+
+    <state id="receiveS7IdentificationRequest">
+      <onentry>
+        <plc4x:receive>
+          <s7:tpktMessage>
+            <magicByte>3</magicByte>
+            <reserved>0</reserved>
+            <length><plc4x:ignore/></length>
+            <userData>
+              <headerLength>2</headerLength>
+              <type>240</type>
+              <CotpTpduData>
+                <endOfTransmission>1</endOfTransmission>
+                <tpduRef>0</tpduRef>
+              </CotpTpduData>
+              <userData>
+                <magicByte>50</magicByte>
+                <type>7</type>
+                <S7UserDataMessage>
+                  <reserved>0</reserved>
+                  <tpduReference>256</tpduReference>
+                  <parametersLength><plc4x:ignore/></parametersLength>
+                  <payloadsLength><plc4x:ignore/></payloadsLength>
+                  <parameters>
+                    <plc4x:unordered>
+                      <parameter>
+                        <type>0</type>
+                        <S7UserDataParameterCPUService>
+                          <header>274</header>
+                          <paramLength>8</paramLength>
+                          <typeCode>18</typeCode>
+                          <type>8</type>
+                          <functionGroup>4</functionGroup>
+                          <subFunctionGroup>1</subFunctionGroup>
+                          <sequenceNumber>2</sequenceNumber>
+                          <dataUnitReferenceNumber>0</dataUnitReferenceNumber>
+                          <lastDataUnit>0</lastDataUnit>
+                          <errorCode>0</errorCode>
+                        </S7UserDataParameterCPUService>
+                      </parameter>
+                      <plc4x:ignore/>
+                    </plc4x:unordered>
+                  </parameters>
+                  <payloads>
+                    <plc4x:unordered>
+                      <payload>
+                        <S7UserDataPayloadCpuServices>
+                          <returnCode>255</returnCode>
+                          <transportSize>9</transportSize>
+                          <length>120</length>
+                          <sslId>17</sslId>
+                          <sslIndex>0</sslIndex>
+                          <partialList>
+                            <partialListLengthInBytes>28</partialListLengthInBytes>
+                            <partialListCount>4</partialListCount>
+                            <sslDataRecords>
+                              <plc4x:unordered>
+                                <sslDataRecord>
+                                  <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                    <index>1</index>
+                                    <articleNumber><plc4x:extract type="s7:short" name="s7-ssl-1"/></articleNumber>
+                                    <bgType>192</bgType>
+                                    <moduleOrOsVersion>3</moduleOrOsVersion>
+                                    <pgDescriptionFileVersion>1</pgDescriptionFileVersion>
+                                  </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                </sslDataRecord>
+                                <sslDataRecord>
+                                  <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                    <index>6</index>
+                                    <articleNumber><plc4x:extract type="s7:short" name="s7-ssl-6"/></articleNumber>
+                                    <bgType>192</bgType>
+                                    <moduleOrOsVersion>3</moduleOrOsVersion>
+                                    <pgDescriptionFileVersion>1</pgDescriptionFileVersion>
+                                  </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                </sslDataRecord>
+                                <sslDataRecord>
+                                  <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                    <index>7</index>
+                                    <articleNumber><plc4x:extract type="s7:short" name="s7-ssl-7"/></articleNumber>
+                                    <bgType>192</bgType>
+                                    <moduleOrOsVersion>22019</moduleOrOsVersion>
+                                    <pgDescriptionFileVersion>519</pgDescriptionFileVersion>
+                                  </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                </sslDataRecord>
+                                <sslDataRecord>
+                                  <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                    <index>129</index>
+                                    <articleNumber><plc4x:extract type="s7:short" name="s7-ssl-129"/></articleNumber>
+                                    <bgType>0</bgType>
+                                    <moduleOrOsVersion>16672</moduleOrOsVersion>
+                                    <pgDescriptionFileVersion>2313</pgDescriptionFileVersion>
+                                  </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                </sslDataRecord>
+                                <plc4x:ignore/>
+                              </plc4x:unordered>
+                            </sslDataRecords>
+                          </partialList>
+                        </S7UserDataPayloadCpuServices>
+                      </payload>
+                      <plc4x:ignore/>
+                    </plc4x:unordered>
+                  </payloads>
+                </S7UserDataMessage>
+              </userData>
+            </userData>
+          </s7:tpktMessage>
+        </plc4x:receive>
+      </onentry>
+      <transition cond="" target="connected"/>
+      <transition cond="" target="error"/>
+    </state>
+
+    <final id="connected">
+      <onentry>
+        <log expr="'Connected'"/>
+      </onentry>
+    </final>
+
+    <final id="error">
+      <onentry>
+        <log expr="'Error connecting'"/>
+      </onentry>
+    </final>
+  </state>
+
+</scxml>

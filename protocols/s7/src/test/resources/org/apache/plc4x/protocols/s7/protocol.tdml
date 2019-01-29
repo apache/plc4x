@@ -21,16 +21,16 @@
 <testSuite xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
            xmlns:test="plc4x-protocol-test"
            xmlns:tdml="http://www.ibm.com/xmlns/dfdl/testData"
-           xmlns:s7="http://plc4x.apache.org/s7-full"
+           xmlns:s7="http://plc4x.apache.org/s7"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            suiteName="S7 protocol (Full-Stack)"
            description="Testsuite for the full stack of the S7 protocol"
-           defaultRoundTrip="true">
+           defaultRoundTrip="onePass">
 
     <tdml:defineSchema name="s7Schema" elementFormDefault="unqualified">
         <!-- Import the Schema -->
-        <xs:import namespace="http://plc4x.apache.org/s7-full"
-                   schemaLocation="s7-full-stack-protocol.dfdl.xsd"/>
+        <xs:import namespace="http://plc4x.apache.org/s7"
+                   schemaLocation="protocol.dfdl.xsd"/>
 
         <!-- Import the format settings -->
         <dfdl:format ref="s7:s7FullFormat"/>

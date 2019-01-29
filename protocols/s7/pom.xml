@@ -32,15 +32,6 @@
   <name>Protocols: S7</name>
   <description>Base protocol specifications for the Siemens S7 protocol</description>
 
-  <build>
-    <!-- This project should only contain the DFDL definitions for our protocols -->
-    <resources>
-      <resource>
-        <directory>src/main/dfdl</directory>
-      </resource>
-    </resources>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.daffodil</groupId>
