@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<j:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:j="library://ns.apache.org/royale/jewel"
+               xmlns:js="library://ns.apache.org/royale/basic"
+               xmlns:service="service.*">
+
+    <j:beads>
+        <js:ContainerDataBinding/>
+        <service:RobotService id="robotService" success="onSuccess(event)"/>
+    </j:beads>
+
+
+    <fx:Script>
+        <![CDATA[
+        import org.apache.royale.events.Event;
+        import org.apache.royale.events.MouseEvent;
+
+        public function move(event:MouseEvent):void {
+            if (event.target == moveForwardLeftButton) {
+                robotService.moveForwardLeft();
+            } else if (event.target == moveForwardButton) {
+                robotService.moveForward();
+            } else if (event.target == moveForwardRightButton) {
+                robotService.moveForwardRight();
+            } else if (event.target == turnLeftButton) {
+                robotService.turnLeft();
+            } else if (event.target == stopButton) {
+                robotService.stop();
+            } else if (event.target == turnRightButton) {
+                robotService.turnRight();
+            } else if (event.target == moveBackwardLeftButton) {
+                robotService.moveBackwardLeft();
+            } else if (event.target == moveBackwardButton) {
+                robotService.moveBackward();
+            } else if (event.target == moveBackwardRightButton) {
+                robotService.moveBackwardRight();
+            }
+        }
+
+        public function onSuccess(event:Event):void {
+
+        }
+        ]]>
+    </fx:Script>
+
+    <j:initialView>
+        <j:View width="100%" height="100%">
+            <j:HGroup width="100%" height="100%">
+                <j:VGroup width="33%" height="100%">
+                    <j:Button id="moveForwardLeftButton" text="Left Forward"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                    <j:Button id="turnLeftButton" text="Left"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                    <j:Button id="moveBackwardLeftButton" text="Left Backward"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                </j:VGroup>
+                <j:VGroup width="33%" height="100%">
+                    <j:Button id="moveForwardButton" text="Forward"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                    <j:Button id="stopButton" text="Stop"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                    <j:Button id="moveBackwardButton" text="Backward"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                </j:VGroup>
+                <j:VGroup width="33%" height="100%">
+                    <j:Button id="moveForwardRightButton" text="Right Forward"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                    <j:Button id="turnRightButton" text="Right"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                    <j:Button id="moveBackwardRightButton" text="Right Backward"
+                              click="move(event)"
+                              width="100%" height="33%"/>
+                </j:VGroup>
+            </j:HGroup>
+        </j:View>
+    </j:initialView>
+
+</j:Application>

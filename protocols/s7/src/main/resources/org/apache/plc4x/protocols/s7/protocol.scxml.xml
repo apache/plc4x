@@ -29,7 +29,6 @@
     <onentry>
       <!-- Setup the initial content of the connection context (Callback in the driver) -->
       <plc4x:initContext/>
-      <plc4x:connect type="tcp" host="{connection-host}" port="{connection-port}"/>
     </onentry>
     <initial>
       <transition target="connect"/>
@@ -41,8 +40,16 @@
 
   <state id="connect">
     <initial>
-      <transition target="sendCotpConnectionRequest"/>
+      <transition target="establishNetworkConnection"/>
     </initial>
+
+    <state id="establishNetworkConnection">
+      <onentry>
+        <!-- Initialize the network connection to the remote host using the tcp adapter with a given host and port -->
+        <plc4x:connect type="tcp" host="{connection-host}" port="{connection-port}"/>
+      </onentry>
+      <transition target="sendCotpConnectionRequest"/>
+    </state>
 
     <state id="sendCotpConnectionRequest">
       <onentry>
