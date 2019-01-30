@@ -32,6 +32,7 @@
   <packaging>pom</packaging>
 
   <properties>
+    <royale.version>0.9.4</royale.version>
     <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
   </properties>
 
