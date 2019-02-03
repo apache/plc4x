@@ -33,7 +33,7 @@ public class RobotService extends EventDispatcher {
     /**
      * constructor
      */
-    public function RobotService():void {
+    public function RobotService() {
         remoteService = new HTTPService();
         remoteService.addEventListener(HTTPConstants.COMPLETE, completeHandler);
         _url = "api/robot/move";

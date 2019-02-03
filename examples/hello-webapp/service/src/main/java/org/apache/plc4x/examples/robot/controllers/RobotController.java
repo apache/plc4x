@@ -41,10 +41,10 @@ public class RobotController {
 
     private static final Logger logger = LoggerFactory.getLogger(RobotController.class);
 
-    private static byte MOTOR_RIGHT_BACKWARDS = 0x01;
-    private static byte MOTOR_RIGHT_ON = 0x02;
-    private static byte MOTOR_LEFT_BACKWARDS = 0x04;
-    private static byte MOTOR_LEFT_ON = 0x08;
+    private static final byte MOTOR_RIGHT_BACKWARDS = 0x01;
+    private static final byte MOTOR_RIGHT_ON = 0x02;
+    private static final byte MOTOR_LEFT_BACKWARDS = 0x04;
+    private static final byte MOTOR_LEFT_ON = 0x08;
 
     @Value("${plc4x.connection-string}")
     private String connectionString;
@@ -62,7 +62,7 @@ public class RobotController {
     @RequestMapping("move")
     public boolean move(@RequestParam(value="direction", defaultValue="stop") String direction) {
         logger.info("Move in direction: " + direction);
-        byte state = 0;
+        byte state;
         switch (direction) {
             case "forward-right":
                 state = MOTOR_LEFT_ON;
@@ -87,6 +87,9 @@ public class RobotController {
                 break;
             case "backward-left":
                 state = (byte) (MOTOR_RIGHT_BACKWARDS | MOTOR_RIGHT_ON);
+                break;
+            default:
+                state = 0;
                 break;
         }
         try {
