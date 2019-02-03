@@ -153,9 +153,6 @@
     <!-- Integration modules for other frameworks -->
     <module>integrations</module>
 
-    <!-- Sandbox for testing new stuff -->
-    <module>sandbox</module>
-
     <!-- Examples -->
     <module>examples</module>
   </modules>
@@ -1290,12 +1287,34 @@
     </plugins>
   </reporting>
 
+  <!-- Make Snapshots of Apache projects available -->
+  <repositories>
+    <repository>
+      <id>apache-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <profiles>
     <!-- Build PLC4X including the CPP modules -->
     <profile>
       <id>with-cpp</id>
       <modules>
         <module>plc4cpp</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the CPP modules -->
+    <profile>
+      <id>with-sandbox</id>
+      <modules>
+        <module>sandbox</module>
       </modules>
     </profile>
 

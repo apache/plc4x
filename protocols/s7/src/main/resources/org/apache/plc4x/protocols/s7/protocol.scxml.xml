@@ -16,89 +16,95 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<scxml xmlns="http://www.w3.org/2005/07/scxml"
-       version="1.0"
-       xmlns:plc4x="https://plc4x.apache.org/scxml-extension"
-       xmlns:s7="http://plc4x.apache.org/s7"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       initial="init"
-       datamodel="jexl"
-       xsi:schemaLocation="http://www.w3.org/2005/07/scxml http://www.w3.org/2011/04/SCXML/scxml.xsd">
+<sc:scxml version="1.0"
+          xmlns:plc4x="https://plc4x.apache.org/scxml-extension"
+          xmlns:sc="http://www.w3.org/2005/07/scxml"
+          xmlns:s7="http://plc4x.apache.org/s7"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          initial="init"
+          datamodel="jexl"
+          xsi:schemaLocation="http://www.w3.org/2005/07/scxml http://www.w3.org/2011/04/SCXML/scxml.xsd">
 
-  <state id="init">
-    <onentry>
+  <sc:datamodel>
+    <sc:data id="args"/>
+    <sc:data id="connection"/>
+  </sc:datamodel>
+
+  <sc:state id="init">
+    <sc:onentry>
       <!-- Setup the initial content of the connection context (Callback in the driver) -->
       <plc4x:initContext/>
-    </onentry>
-    <initial>
-      <transition target="connect"/>
-    </initial>
-    <onentry>
-      <log expr="'Connecting'"/>
-    </onentry>
-  </state>
+    </sc:onentry>
+    <sc:transition event="success" target="connect">
+      <sc:assign location="args" expr="_event.data"/>
+    </sc:transition>
+  </sc:state>
 
-  <state id="connect">
-    <initial>
-      <transition target="establishNetworkConnection"/>
-    </initial>
+  <sc:state id="connect">
+    <sc:initial>
+      <sc:transition target="establishNetworkConnection"/>
+    </sc:initial>
 
-    <state id="establishNetworkConnection">
-      <onentry>
+    <sc:state id="establishNetworkConnection">
+      <sc:onentry>
         <!-- Initialize the network connection to the remote host using the tcp adapter with a given host and port -->
-        <plc4x:connect type="tcp" host="{connection-host}" port="{connection-port}"/>
-      </onentry>
-      <transition target="sendCotpConnectionRequest"/>
-    </state>
+        <plc4x:connect type="tcp" host="10.10.64.20" port="102"/>
+      </sc:onentry>
+      <sc:transition event="success" target="sendCotpConnectionRequest">
+        <sc:assign location="connection" expr="_event.data"/>
+      </sc:transition>
+      <sc:transition event="failure" target="error"/>
+    </sc:state>
 
-    <state id="sendCotpConnectionRequest">
-      <onentry>
-        <plc4x:send>
-          <s7:tpktMessage>
+    <sc:state id="sendCotpConnectionRequest">
+      <sc:onentry>
+        <plc4x:send socket="connection">
+          <s7:TpktMessage>
             <magicByte>3</magicByte>
             <reserved>0</reserved>
-            <length>18</length>
+            <length>22</length>
             <userData>
               <headerLength>17</headerLength>
               <type>224</type>
-              <CotpTpduConnectionRequest>
-                <destinationReference>1</destinationReference>
+              <s7:CotpTpduConnectionRequest>
+                <destinationReference>0</destinationReference>
                 <!-- Insert the value for "cotp-local-reference" as short here -->
-                <sourceReference><plc4x:insert type="s7:short" name="cotp-local-reference"/></sourceReference>
+                <sourceReference>16</sourceReference><!--plc4x:insert type="s7:short" name="cotp-local-reference"/-->
                 <protocolClass>0</protocolClass>
-                <parameters>
+                <s7:parameters>
                   <parameter>
                     <type>193</type>
                     <parameterLength>2</parameterLength>
-                    <CotpParameterCallingTsap>
-                      <tsapId><plc4x:insert type="s7:short" name="cotp-calling-tsap"/></tsapId>
-                    </CotpParameterCallingTsap>
+                    <s7:CotpParameterCallingTsap>
+                      <tsapId>256</tsapId><!--plc4x:insert type="s7:short" name="cotp-calling-tsap"/-->
+                    </s7:CotpParameterCallingTsap>
                   </parameter>
                   <parameter>
                     <type>194</type>
                     <parameterLength>2</parameterLength>
-                    <CotpParameterCalledTsap>
-                      <tsapId><plc4x:insert type="s7:short" name="cotp-called-tsap"/></tsapId>
-                    </CotpParameterCalledTsap>
+                    <s7:CotpParameterCalledTsap>
+                      <tsapId>258</tsapId><!--plc4x:insert type="s7:short" name="cotp-called-tsap"/-->
+                    </s7:CotpParameterCalledTsap>
                   </parameter>
                   <parameter>
                     <type>192</type>
                     <parameterLength>1</parameterLength>
-                    <CotpParameterTpduSize>
-                      <tpduSize><plc4x:insert type="s7:byte" name="cotp-tpdu-size"/></tpduSize>
-                    </CotpParameterTpduSize>
+                    <s7:CotpParameterTpduSize>
+                      <tpduSize>10</tpduSize><!--plc4x:insert type="s7:byte" name="cotp-tpdu-size"/-->
+                    </s7:CotpParameterTpduSize>
                   </parameter>
-                </parameters>
-              </CotpTpduConnectionRequest>
+                </s7:parameters>
+              </s7:CotpTpduConnectionRequest>
             </userData>
-          </s7:tpktMessage>
+          </s7:TpktMessage>
         </plc4x:send>
-      </onentry>
-      <transition target="receiveCotpConnectionResponse"/>
-    </state>
+      </sc:onentry>
+      <sc:transition event="success" target="receiveCotpConnectionResponse"/>
+      <sc:transition event="failure" target="error"/>
+    </sc:state>
 
-    <state id="receiveCotpConnectionResponse">
-      <onentry>
+    <sc:state id="receiveCotpConnectionResponse">
+      <sc:onentry>
         <plc4x:receive timeout="5000">
           <s7:tpktMessage>
             <magicByte>3</magicByte>
@@ -150,13 +156,13 @@
             </userData>
           </s7:tpktMessage>
         </plc4x:receive>
-      </onentry>
-      <transition cond="" target="sendS7SetupCommunicationRequest"/>
-      <transition cond="" target="error"/>
-    </state>
+      </sc:onentry>
+      <sc:transition event="success" target="sendS7SetupCommunicationRequest"/>
+      <sc:transition event="failure" target="error"/>
+    </sc:state>
 
-    <state id="sendS7SetupCommunicationRequest">
-      <onentry>
+    <sc:state id="sendS7SetupCommunicationRequest">
+      <sc:onentry>
         <plc4x:send>
           <s7:tpktMessage>
             <magicByte>3</magicByte>
@@ -198,12 +204,13 @@
             </userData>
           </s7:tpktMessage>
         </plc4x:send>
-      </onentry>
-      <transition target="receiveS7SetupCommunicationResponse"/>
-    </state>
+      </sc:onentry>
+      <sc:transition event="success" target="receiveS7SetupCommunicationResponse"/>
+      <sc:transition event="failure" target="error"/>
+    </sc:state>
 
-    <state id="receiveS7SetupCommunicationResponse">
-      <onentry>
+    <sc:state id="receiveS7SetupCommunicationResponse">
+      <sc:onentry>
         <plc4x:receive timeout="5000">
           <s7:tpktMessage>
             <magicByte>3</magicByte>
@@ -250,14 +257,14 @@
             </userData>
           </s7:tpktMessage>
         </plc4x:receive>
-      </onentry>
-      <transition cond="{type == null}" target="sendS7IdentificationRequest"/>
-      <transition cond="{type != null}" target="connected"/>
-      <transition cond="" target="error"/>
-    </state>
+      </sc:onentry>
+      <sc:transition event="" target="sendS7IdentificationRequest"/>
+      <sc:transition event="success" target="connected"/>
+      <sc:transition event="failure" target="error"/>
+    </sc:state>
 
-    <state id="sendS7IdentificationRequest">
-      <onentry>
+    <sc:state id="sendS7IdentificationRequest">
+      <sc:onentry>
         <plc4x:send>
           <s7:tpktMessage>
             <magicByte>3</magicByte>
@@ -308,12 +315,13 @@
             </userData>
           </s7:tpktMessage>
         </plc4x:send>
-      </onentry>
-      <transition target="receiveS7IdentificationRequest"/>
-    </state>
+      </sc:onentry>
+      <sc:transition event="success" target="receiveS7IdentificationRequest"/>
+      <sc:transition event="failure" target="error"/>
+    </sc:state>
 
-    <state id="receiveS7IdentificationRequest">
-      <onentry>
+    <sc:state id="receiveS7IdentificationRequest">
+      <sc:onentry>
         <plc4x:receive>
           <s7:tpktMessage>
             <magicByte>3</magicByte>
@@ -418,22 +426,26 @@
             </userData>
           </s7:tpktMessage>
         </plc4x:receive>
-      </onentry>
-      <transition cond="" target="connected"/>
-      <transition cond="" target="error"/>
-    </state>
+      </sc:onentry>
+      <sc:transition event="success" target="connected"/>
+      <sc:transition event="failure" target="error"/>
+    </sc:state>
 
-    <final id="connected">
-      <onentry>
-        <log expr="'Connected'"/>
-      </onentry>
-    </final>
+    <sc:state id="connected">
+      <sc:onentry>
+        <sc:log expr="'Connected'"/>
+      </sc:onentry>
+    </sc:state>
 
-    <final id="error">
-      <onentry>
-        <log expr="'Error connecting'"/>
-      </onentry>
-    </final>
-  </state>
+    <sc:final id="disconnected">
 
-</scxml>
+    </sc:final>
+
+    <sc:final id="error">
+      <sc:onentry>
+        <sc:log expr="'Error connecting'"/>
+      </sc:onentry>
+    </sc:final>
+  </sc:state>
+
+</sc:scxml>
