@@ -23,6 +23,8 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,6 +38,8 @@ import java.util.concurrent.TimeoutException;
 @RestController
 @RequestMapping("api/robot")
 public class RobotController {
+
+    private static final Logger logger = LoggerFactory.getLogger(RobotController.class);
 
     private static byte MOTOR_RIGHT_BACKWARDS = 0x01;
     private static byte MOTOR_RIGHT_ON = 0x02;
@@ -57,7 +61,7 @@ public class RobotController {
 
     @RequestMapping("move")
     public boolean move(@RequestParam(value="direction", defaultValue="stop") String direction) {
-        System.out.println("Move in direction: " + direction);
+        logger.info("Move in direction: " + direction);
         byte state = 0;
         switch (direction) {
             case "forward-right":
@@ -90,7 +94,7 @@ public class RobotController {
             updateRequest.execute().get(2000, TimeUnit.MILLISECONDS);
             return true;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
+            logger.error("Caught Exception:", e);
             return false;
         }
     }
