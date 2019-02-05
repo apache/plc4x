@@ -22,11 +22,13 @@
   <skin>
     <groupId>io.github.devacfr.maven.skins</groupId>
     <artifactId>reflow-maven-skin</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
   </skin>
 
   <!-- Hide the publish date as this will cause changes on every generated page every day -->
   <publishDate position="none"/>
+  <!-- Hide the version as we are usually deploying the develop version -->
+  <version position="none" />
 
   <!--
       Details on how to configure the reflow skin:
