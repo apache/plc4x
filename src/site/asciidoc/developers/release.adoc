@@ -495,6 +495,17 @@ All release artifacts released to the Apache release repo, will automatically be
 1. Set the released version to "released" and set the "release-date"
 2. Add the next version to the versions.
 
+=== Update the download site
+
+The URL http://plc4x.apache.org/users/download.html has to be changed and the current release
+has to be listed there.
+This is done by changing the `download.adoc` under `src/site/users/`.
+
+1. Copy the last release down to _Previous Releases_
+2. Add the new Release under _Current Releases_ and change all links.
+3. Update the sections for the changes according to the _RELEASE_NOTES_ from the release
+_Note: Transfer all to ascii-doc notation to ensure correct rendering of the site_
+
 === Notifying the world
 
 Make sure you have given the Apache mirrors time to fetch the release files by waiting at least 24 hours after moving the release candidate to the release part of the SVN.

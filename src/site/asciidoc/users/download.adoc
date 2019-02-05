@@ -21,18 +21,46 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
+0.3.0
+Official https://www.apache.org/dyn/closer.lua/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip[source release] [ https://www.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.asc[ASC] ]
+
+==== New Features
+
+- Object PLC Mapping (OPM) now has a Alias Registry to allow
+  variable substitution at runtime and write support
+- New module `plc-scraper` for applications that have to
+  scrape a lot of sps fields with high frequency
+- New integration `apache-karaf` to enable plc4j in a karaf
+  runtime environment
+
+==== Incompatible changes
+
+- The 'plc4j-core' module has been merged into 'plc4j-api'.
+  So there is no 'plc4j-core' module anymore. Just remove that
+  dependency.
+- The driver artifact names have changed so if you were using
+  a `plc4j-protocol-{name}` you now need to change this to
+  `plc4j-driver-{name}`
+
+==== Bug Fixes
+
+- Fixing dependency to the wrap url-handler
+- When receiving responses with more than 512 byte, the IsoOnTcp protocol doesn't work
+- When the last item in a request is a DINT, the DefaultS7MessageProcessor dies
+- Write operations seem to fail
+- Fixed a Bug where S7 was not able to read arrays.
+
+=== Previous Releases
+
 0.2.0
 Official https://www.apache.org/dyn/closer.lua/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip[source release] [ https://www.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.asc[ASC] ]
 
-Changes:
+==== Changes:
 
 * Changed API: instead of passing request object to `read({read-request})`, `write({write-request})` or `subscribe({subscribe-request})` methods now the `execute()` method is called on the request itself
 * New Connection Pool component
 * New OPM (Object PLC Mapping) component (JPA for PLCs)
 * Bug fixes
-
-
-=== Previous Releases
 
 0.1.0
 Official https://www.apache.org/dyn/closer.lua/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip[source release] [ https://www.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.asc[ASC] ]
