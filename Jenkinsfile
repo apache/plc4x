@@ -36,7 +36,7 @@ pipeline {
         JENKINS_PROFILE = 'jenkins-build'
         // On non develop build we don't want to pollute the global m2 repo
         MVN_LOCAL_REPO_OPT = '-Dmaven.repo.local=.repository'
-        // Testfails will be handled by the jenkins junit steps and mark the build as unstable.
+        // Test failures will be handled by the jenkins junit steps and mark the build as unstable.
         MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
     }
 
@@ -47,8 +47,7 @@ pipeline {
 
     options {
         // Kill this job after one hour.
-        // TODO: Disabled for finding out if this is what's randomly killing jobs ...
-        //timeout(time: 1, unit: 'HOURS')
+        timeout(time: 1, unit: 'HOURS')
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
