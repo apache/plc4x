@@ -80,6 +80,7 @@
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4x-protocols-s7</usedDependency>
             <usedDependency>org.apache.commons:commons-jexl3</usedDependency>
+            <usedDependency>org.slf4j:slf4j-simple</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
