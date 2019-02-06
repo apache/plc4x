@@ -22,13 +22,13 @@ package org.apache.plc4x.sandbox.java.s7.actions;
 import org.apache.commons.scxml2.ActionExecutionContext;
 import org.apache.commons.scxml2.EventBuilder;
 import org.apache.commons.scxml2.TriggerEvent;
-import org.apache.commons.scxml2.model.Action;
 import org.apache.commons.scxml2.model.ParsedValue;
-import org.apache.commons.scxml2.model.ParsedValueContainer;
-import org.apache.daffodil.japi.Compiler;
-import org.apache.daffodil.japi.*;
+import org.apache.daffodil.japi.DataProcessor;
+import org.apache.daffodil.japi.UnparseResult;
 import org.apache.daffodil.japi.infoset.InfosetInputter;
 import org.apache.daffodil.japi.infoset.W3CDOMInfosetInputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -38,88 +38,58 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
-import java.util.List;
 
-public class SendAction extends Action implements ParsedValueContainer {
-
-    private ParsedValue message;
+public class SendAction extends BasePlc4xAction {
 
     @Override
-    public ParsedValue getParsedValue() {
-        return message;
-    }
-
-    @Override
-    public void setParsedValue(ParsedValue parsedValue) {
-        message = parsedValue;
+    protected Logger getLogger() {
+        return LoggerFactory.getLogger(SendAction.class);
     }
 
     @Override
     public void execute(ActionExecutionContext ctx) {
-        if(message != null) {
-            if(message.getType() == ParsedValue.ValueType.NODE) {
+        ctx.getAppLog().info("Sending.");
+        if(getParsedValue() != null) {
+            if(getParsedValue().getType() == ParsedValue.ValueType.NODE) {
                 try {
-                    Node messageTemplate = (Node) message.getValue();
+                    Node messageTemplate = (Node) getParsedValue().getValue();
                     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                     DocumentBuilder builder = dbf.newDocumentBuilder();
                     Document doc = builder.newDocument();
                     Node messageTemplateClone = doc.importNode(messageTemplate, true);
                     doc.appendChild(messageTemplateClone);
-                    Compiler c = Daffodil.compiler();
-                    c.setValidateDFDLSchemas(true);
-                    URL shemaUrl = SendAction.class.getClassLoader().getResource("org/apache/plc4x/protocols/s7/protocol.dfdl.xsd");
-                    if(shemaUrl != null) {
-                        URI schemaUri = shemaUrl.toURI();
-                        ProcessorFactory pf = c.compileSource(schemaUri);
-                        if(pf.isError()) {
-                            List<Diagnostic> diags = pf.getDiagnostics();
-                            for (Diagnostic d : diags) {
-                                System.err.println(d.getSomeMessage());
-                            }
-                            return;
-                        }
-                        DataProcessor dp = pf.onPath("/");
-                        if(dp.isError()) {
-                            List<Diagnostic> diags = dp.getDiagnostics();
-                            for (Diagnostic d : diags) {
-                                System.err.println(d.getSomeMessage());
-                            }
-                            return;
-                        }
-                        InfosetInputter inputter = new W3CDOMInfosetInputter(doc);
 
-                        Socket connection = (Socket) ctx.getGlobalContext().get("connection");
-                        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                        WritableByteChannel wbc = Channels.newChannel(outputStream);
-
-                        UnparseResult byteMessage = dp.unparse(inputter, wbc);
-                        if(byteMessage.isError()) {
-                            List<Diagnostic> diags = byteMessage.getDiagnostics();
-                            for (Diagnostic d : diags) {
-                                System.err.println(d.getSomeMessage());
-                            }
-                            return;
-                        }
-
-                        outputStream.flush();
+                    DataProcessor dp = getDaffodilDataProcessor(ctx);
+                    if(dp == null) {
+                        TriggerEvent event = new EventBuilder("failure", TriggerEvent.SIGNAL_EVENT).
+                            data("Couldn't initialize daffodil data processor.").build();
+                        ctx.getInternalIOProcessor().addEvent(event);
+                        return;
                     }
-                } catch(URISyntaxException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParserConfigurationException e) {
+                    InfosetInputter inputter = new W3CDOMInfosetInputter(doc);
+
+                    Socket connection = getSocket(ctx);
+                    DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                    WritableByteChannel wbc = Channels.newChannel(outputStream);
+                    UnparseResult byteMessage = dp.unparse(inputter, wbc);
+                    if(byteMessage.isError()) {
+                        logDiagnosticInformation(byteMessage);
+                        return;
+                    }
+                    outputStream.flush();
+                    ctx.getAppLog().info("Successfully sent message.");
+                } catch(IOException | ParserConfigurationException e) {
                     e.printStackTrace();
                 }
-            } else if(message.getType() == ParsedValue.ValueType.JSON) {
-
+            } else {
+                TriggerEvent event = new EventBuilder("failure", TriggerEvent.SIGNAL_EVENT).
+                    data("type '" + getParsedValue().getType() + "' not supported").build();
+                ctx.getInternalIOProcessor().addEvent(event);
+                return;
             }
         }
-        ctx.getAppLog().info("Sending.");
         TriggerEvent event = new EventBuilder("success", TriggerEvent.SIGNAL_EVENT).build();
         ctx.getInternalIOProcessor().addEvent(event);
     }

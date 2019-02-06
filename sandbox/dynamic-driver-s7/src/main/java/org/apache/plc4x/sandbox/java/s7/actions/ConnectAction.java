@@ -59,17 +59,18 @@ public class ConnectAction extends Action {
 
     @Override
     public void execute(ActionExecutionContext ctx) {
-        ctx.getAppLog().info("Connecting.");
+        ctx.getAppLog().info("Connecting...");
         try {
             if ("TCP".equalsIgnoreCase(type)) {
                 Socket socket = new Socket(host, Integer.parseInt(port));
-                TriggerEvent event = new EventBuilder("success", TriggerEvent.SIGNAL_EVENT).data(socket).build();
+                ctx.getGlobalContext().set("connection", socket);
+                TriggerEvent event = new EventBuilder("success", TriggerEvent.SIGNAL_EVENT).build();
                 ctx.getInternalIOProcessor().addEvent(event);
+                ctx.getAppLog().info("Connected.");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return;
     }
 
 }

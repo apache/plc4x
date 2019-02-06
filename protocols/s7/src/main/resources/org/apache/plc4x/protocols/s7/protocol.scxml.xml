@@ -27,7 +27,6 @@
 
   <sc:datamodel>
     <sc:data id="args"/>
-    <sc:data id="connection"/>
   </sc:datamodel>
 
   <sc:state id="init">
@@ -50,15 +49,13 @@
         <!-- Initialize the network connection to the remote host using the tcp adapter with a given host and port -->
         <plc4x:connect type="tcp" host="10.10.64.20" port="102"/>
       </sc:onentry>
-      <sc:transition event="success" target="sendCotpConnectionRequest">
-        <sc:assign location="connection" expr="_event.data"/>
-      </sc:transition>
+      <sc:transition event="success" target="sendCotpConnectionRequest"/>
       <sc:transition event="failure" target="error"/>
     </sc:state>
 
     <sc:state id="sendCotpConnectionRequest">
       <sc:onentry>
-        <plc4x:send socket="connection">
+        <plc4x:send socketParameterName="connection">
           <s7:TpktMessage>
             <magicByte>3</magicByte>
             <reserved>0</reserved>
@@ -69,22 +66,22 @@
               <s7:CotpTpduConnectionRequest>
                 <destinationReference>0</destinationReference>
                 <!-- Insert the value for "cotp-local-reference" as short here -->
-                <sourceReference>16</sourceReference><!--plc4x:insert type="s7:short" name="cotp-local-reference"/-->
+                <sourceReference>15</sourceReference><!--plc4x:insert type="s7:short" name="cotp-local-reference"/-->
                 <protocolClass>0</protocolClass>
                 <s7:parameters>
-                  <parameter>
-                    <type>193</type>
-                    <parameterLength>2</parameterLength>
-                    <s7:CotpParameterCallingTsap>
-                      <tsapId>256</tsapId><!--plc4x:insert type="s7:short" name="cotp-calling-tsap"/-->
-                    </s7:CotpParameterCallingTsap>
-                  </parameter>
                   <parameter>
                     <type>194</type>
                     <parameterLength>2</parameterLength>
                     <s7:CotpParameterCalledTsap>
-                      <tsapId>258</tsapId><!--plc4x:insert type="s7:short" name="cotp-called-tsap"/-->
+                      <tsapId>512</tsapId><!--plc4x:insert type="s7:short" name="cotp-called-tsap"/-->
                     </s7:CotpParameterCalledTsap>
+                  </parameter>
+                  <parameter>
+                    <type>193</type>
+                    <parameterLength>2</parameterLength>
+                    <s7:CotpParameterCallingTsap>
+                      <tsapId>273</tsapId><!--plc4x:insert type="s7:short" name="cotp-calling-tsap"/-->
+                    </s7:CotpParameterCallingTsap>
                   </parameter>
                   <parameter>
                     <type>192</type>
@@ -105,56 +102,12 @@
 
     <sc:state id="receiveCotpConnectionResponse">
       <sc:onentry>
-        <plc4x:receive timeout="5000">
-          <s7:tpktMessage>
-            <magicByte>3</magicByte>
-            <reserved>0</reserved>
-            <!-- Just ignore the content of this field, we don't care about it as it's only required for parsing. -->
-            <length><plc4x:ignore/></length>
-            <userData>
-              <!-- Just ignore the content of this field, we don't care about it as it's only required for parsing. -->
-              <headerLength><plc4x:ignore/></headerLength>
-              <type>208</type>
-              <CotpTpduConnectionResponse>
-                <!-- Make sure the reply uses the same reference as we used in the request. -->
-                <destinationReference><plc4x:verify type="s7:short" name="cotp-local-reference"/></destinationReference>
-                <!-- Extract the reference the remote would like us to use in this session. -->
-                <sourceReference><plc4x:extract type="s7:short" name="cotp-remote-reference"/></sourceReference>
-                <protocolClass>0</protocolClass>
-                <parameters>
-                  <!--
-                    These elements might be transferred in alternate order, we just care about all of them being
-                    transferred.
-                  -->
-                  <plc4x:unordered>
-                    <parameter>
-                      <type>192</type>
-                      <parameterLength>1</parameterLength>
-                      <CotpParameterTpduSize>
-                        <tpduSize><plc4x:extract type="s7:byte" name="cotp-tpdu-size"/></tpduSize>
-                      </CotpParameterTpduSize>
-                    </parameter>
-                    <parameter>
-                      <type>193</type>
-                      <parameterLength>2</parameterLength>
-                      <CotpParameterCallingTsap>
-                        <tsapId><plc4x:extract type="s7:short" name="cotp-calling-tsap"/></tsapId>
-                      </CotpParameterCallingTsap>
-                    </parameter>
-                    <parameter>
-                      <type>194</type>
-                      <parameterLength>2</parameterLength>
-                      <CotpParameterCalledTsap>
-                        <tsapId><plc4x:extract type="s7:short" name="cotp-called-tsap"/></tsapId>
-                      </CotpParameterCalledTsap>
-                    </parameter>
-                    <!-- The remote might be passing other parameters, we'll just ignore them for now -->
-                    <plc4x:ignore/>
-                  </plc4x:unordered>
-                </parameters>
-              </CotpTpduConnectionResponse>
-            </userData>
-          </s7:tpktMessage>
+        <plc4x:receive socketParameterName="connection" timeout="5000">
+          <verification name="cotp-local-reference" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/destinationReference"/>
+          <extraction name="cotp-remote-reference" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/sourceReference"/>
+          <extraction name="cotp-tpdu-size" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterTpduSize/tpduSize"/>
+          <extraction name="cotp-calling-tsap" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterCallingTsap/tsapId"/>
+          <extraction name="cotp-called-tsap" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterCalledTsap/tsapId"/>
         </plc4x:receive>
       </sc:onentry>
       <sc:transition event="success" target="sendS7SetupCommunicationRequest"/>
@@ -163,46 +116,46 @@
 
     <sc:state id="sendS7SetupCommunicationRequest">
       <sc:onentry>
-        <plc4x:send>
-          <s7:tpktMessage>
+        <plc4x:send socketParameterName="connection">
+          <s7:TpktMessage>
             <magicByte>3</magicByte>
             <reserved>0</reserved>
             <length>25</length>
             <userData>
               <headerLength>2</headerLength>
               <type>240</type>
-              <CotpTpduData>
+              <s7:CotpTpduData>
                 <endOfTransmission>1</endOfTransmission>
                 <tpduRef>0</tpduRef>
-              </CotpTpduData>
+              </s7:CotpTpduData>
               <userData>
                 <magicByte>50</magicByte>
                 <type>1</type>
-                <S7RequestMessage>
+                <s7:S7RequestMessage>
                   <reserved>0</reserved>
                   <tpduReference>0</tpduReference>
                   <parametersLength>8</parametersLength>
                   <payloadsLength>0</payloadsLength>
-                  <parameters>
+                  <s7:parameters>
                     <parameter>
                       <type>240</type>
-                      <S7GeneralParameterSetupCommunication>
+                      <s7:S7GeneralParameterSetupCommunication>
                         <reserved>0</reserved>
-                        <maxAmqCaller><plc4x:insert type="s7:short" name="s7-max-amq-caller"/></maxAmqCaller>
-                        <maxAmqCallee><plc4x:insert type="s7:short" name="s7-max-amq-callee"/></maxAmqCallee>
-                        <pduLength><plc4x:insert type="s7:short" name="s7-pdu-length"/></pduLength>
-                      </S7GeneralParameterSetupCommunication>
+                        <maxAmqCaller>10</maxAmqCaller><!--plc4x:insert type="s7:short" name="s7-max-amq-caller"/-->
+                        <maxAmqCallee>10</maxAmqCallee><!--plc4x:insert type="s7:short" name="s7-max-amq-callee"/-->
+                        <pduLength>1024</pduLength><!--plc4x:insert type="s7:short" name="s7-pdu-length"/-->
+                      </s7:S7GeneralParameterSetupCommunication>
                     </parameter>
-                  </parameters>
+                  </s7:parameters>
                   <payloads>
                     <payload>
-                      <S7GeneralPayloadSetupCommunication/>
+                      <s7:S7GeneralPayloadSetupCommunication/>
                     </payload>
                   </payloads>
-                </S7RequestMessage>
+                </s7:S7RequestMessage>
               </userData>
             </userData>
-          </s7:tpktMessage>
+          </s7:TpktMessage>
         </plc4x:send>
       </sc:onentry>
       <sc:transition event="success" target="receiveS7SetupCommunicationResponse"/>
@@ -211,51 +164,12 @@
 
     <sc:state id="receiveS7SetupCommunicationResponse">
       <sc:onentry>
-        <plc4x:receive timeout="5000">
-          <s7:tpktMessage>
-            <magicByte>3</magicByte>
-            <reserved>0</reserved>
-            <length><plc4x:ignore/></length>
-            <userData>
-              <headerLength>2</headerLength>
-              <type>240</type>
-              <CotpTpduData>
-                <endOfTransmission>1</endOfTransmission>
-                <tpduRef>0</tpduRef>
-              </CotpTpduData>
-              <userData>
-                <magicByte>50</magicByte>
-                <type>3</type>
-                <S7ResponseMessage>
-                  <reserved>0</reserved>
-                  <tpduReference>0</tpduReference>
-                  <parametersLength><plc4x:ignore/></parametersLength>
-                  <payloadsLength>0</payloadsLength>
-                  <errorClass><plc4x:ignore/></errorClass>
-                  <errorCode><plc4x:extract/></errorCode>
-                  <parameters>
-                    <plc4x:unordered>
-                      <parameter>
-                        <type>240</type>
-                        <S7GeneralParameterSetupCommunication>
-                          <reserved>0</reserved>
-                          <maxAmqCaller><plc4x:extract type="s7:short" name="s7-max-amq-caller"/></maxAmqCaller>
-                          <maxAmqCallee><plc4x:extract type="s7:short" name="s7-max-amq-callee"/></maxAmqCallee>
-                          <pduLength><plc4x:extract type="s7:short" name="s7-pdu-length"/></pduLength>
-                        </S7GeneralParameterSetupCommunication>
-                      </parameter>
-                      <plc4x:ignore/>
-                    </plc4x:unordered>
-                  </parameters>
-                  <payloads>
-                    <payload>
-                      <S7GeneralPayloadSetupCommunication/>
-                    </payload>
-                  </payloads>
-                </S7ResponseMessage>
-              </userData>
-            </userData>
-          </s7:tpktMessage>
+        <plc4x:receive socketParameterName="connection" timeout="5000">
+          <verification name="cotp-local-reference" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/destinationReference"/>
+          <extraction name="returnCode" xpath="s7:TpktMessage/userData/userData/s7:S7ResponseMessage/errorCode"/>
+          <extraction name="s7-max-amq-caller" xpath="s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/s7:S7GeneralParameterSetupCommunication/maxAmqCaller"/>
+          <extraction name="s7-max-amq-callee" xpath="s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/s7:S7GeneralParameterSetupCommunication/maxAmqCallee"/>
+          <extraction name="s7-pdu-length" xpath="s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/s7:S7GeneralParameterSetupCommunication/pduLength"/>
         </plc4x:receive>
       </sc:onentry>
       <sc:transition event="" target="sendS7IdentificationRequest"/>
@@ -265,30 +179,30 @@
 
     <sc:state id="sendS7IdentificationRequest">
       <sc:onentry>
-        <plc4x:send>
-          <s7:tpktMessage>
+        <plc4x:send socketParameterName="connection">
+          <s7:TpktMessage>
             <magicByte>3</magicByte>
             <reserved>0</reserved>
             <length>33</length>
             <userData>
               <headerLength>2</headerLength>
               <type>240</type>
-              <CotpTpduData>
+              <s7:CotpTpduData>
                 <endOfTransmission>1</endOfTransmission>
                 <tpduRef>0</tpduRef>
-              </CotpTpduData>
+              </s7:CotpTpduData>
               <userData>
                 <magicByte>50</magicByte>
                 <type>7</type>
-                <S7UserDataMessage>
+                <s7:S7UserDataMessage>
                   <reserved>0</reserved>
                   <tpduReference>256</tpduReference>
                   <parametersLength>8</parametersLength>
                   <payloadsLength>8</payloadsLength>
-                  <parameters>
+                  <s7:parameters>
                     <parameter>
                       <type>0</type>
-                      <S7UserDataParameterCPUService>
+                      <s7:S7UserDataParameterCPUService>
                         <header>274</header>
                         <paramLength>4</paramLength>
                         <typeCode>17</typeCode>
@@ -296,24 +210,24 @@
                         <functionGroup>4</functionGroup>
                         <subFunctionGroup>1</subFunctionGroup>
                         <sequenceNumber>0</sequenceNumber>
-                      </S7UserDataParameterCPUService>
+                      </s7:S7UserDataParameterCPUService>
                     </parameter>
-                  </parameters>
+                  </s7:parameters>
                   <payloads>
                     <payload>
-                      <S7UserDataPayloadCpuServices>
+                      <s7:S7UserDataPayloadCpuServices>
                         <returnCode>255</returnCode>
                         <transportSize>9</transportSize>
                         <length>4</length>
                         <sslId>17</sslId>
                         <sslIndex>0</sslIndex>
-                      </S7UserDataPayloadCpuServices>
+                      </s7:S7UserDataPayloadCpuServices>
                     </payload>
                   </payloads>
-                </S7UserDataMessage>
+                </s7:S7UserDataMessage>
               </userData>
             </userData>
-          </s7:tpktMessage>
+          </s7:TpktMessage>
         </plc4x:send>
       </sc:onentry>
       <sc:transition event="success" target="receiveS7IdentificationRequest"/>
@@ -322,27 +236,27 @@
 
     <sc:state id="receiveS7IdentificationRequest">
       <sc:onentry>
-        <plc4x:receive>
-          <s7:tpktMessage>
+        <plc4x:receive socketParameterName="connection">
+          <s7:TpktMessage>
             <magicByte>3</magicByte>
             <reserved>0</reserved>
             <length><plc4x:ignore/></length>
             <userData>
               <headerLength>2</headerLength>
               <type>240</type>
-              <CotpTpduData>
+              <s7:CotpTpduData>
                 <endOfTransmission>1</endOfTransmission>
                 <tpduRef>0</tpduRef>
-              </CotpTpduData>
+              </s7:CotpTpduData>
               <userData>
                 <magicByte>50</magicByte>
                 <type>7</type>
-                <S7UserDataMessage>
+                <s7:S7UserDataMessage>
                   <reserved>0</reserved>
                   <tpduReference>256</tpduReference>
                   <parametersLength><plc4x:ignore/></parametersLength>
                   <payloadsLength><plc4x:ignore/></payloadsLength>
-                  <parameters>
+                  <s7:parameters>
                     <plc4x:unordered>
                       <parameter>
                         <type>0</type>
@@ -361,7 +275,7 @@
                       </parameter>
                       <plc4x:ignore/>
                     </plc4x:unordered>
-                  </parameters>
+                  </s7:parameters>
                   <payloads>
                     <plc4x:unordered>
                       <payload>
@@ -421,10 +335,10 @@
                       <plc4x:ignore/>
                     </plc4x:unordered>
                   </payloads>
-                </S7UserDataMessage>
+                </s7:S7UserDataMessage>
               </userData>
             </userData>
-          </s7:tpktMessage>
+          </s7:TpktMessage>
         </plc4x:receive>
       </sc:onentry>
       <sc:transition event="success" target="connected"/>

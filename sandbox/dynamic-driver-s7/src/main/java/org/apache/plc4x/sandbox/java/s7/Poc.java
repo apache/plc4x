@@ -38,8 +38,8 @@ public class Poc {
 
     private SCXMLExecutor executor;
 
-    public Poc() throws Exception {
-
+    private Poc() throws Exception {
+        // Initialize our PLC4X specific actions.
         List<CustomAction> customActions = new LinkedList<>();
         customActions.add(
             new CustomAction("https://plc4x.apache.org/scxml-extension", "initContext", InitContextAction.class));
@@ -50,15 +50,19 @@ public class Poc {
         customActions.add(
             new CustomAction("https://plc4x.apache.org/scxml-extension", "receive", ReceiveAction.class));
 
+        // Initialize the state-machine with the definition from the protocol module.
         SCXML scxml = SCXMLReader.read(
             Poc.class.getClassLoader().getResource("org/apache/plc4x/protocols/s7/protocol.scxml.xml"),
             new SCXMLReader.Configuration(null, null, customActions));
+
+        // Create an executor for running the state-machine.
         executor = new SCXMLExecutor(null, new SimpleDispatcher(), new SimpleErrorReporter());
         executor.setStateMachine(scxml);
         executor.registerInvokerClass("scxml", SimpleSCXMLInvoker.class);
     }
 
-    protected void run() throws Exception {
+    private void run() throws Exception {
+        // Run the state-machine.
         executor.go();
     }
 
