@@ -27,16 +27,17 @@
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-dynamic-driver-s7</artifactId>
-  <name>Sandbox: Dynamic-Driver: S7</name>
-  <description>Implementation of a S7 driver based on definitions provided by DFDL and SCXML.</description>
+  <artifactId>plc4j-dynamic-driver-base</artifactId>
+  <name>Sandbox: Dynamic-Driver: (Base)</name>
+  <description>Base Implementation of a driver based on definitions provided by DFDL and SCXML.</description>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>plc4j-dynamic-driver-base</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
       <version>0.4.0-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-scxml2</artifactId>
@@ -51,10 +52,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-jexl3</artifactId>
       <version>3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <dependency>
@@ -72,29 +69,43 @@
       <artifactId>jaxen</artifactId>
       <version>1.1.6</version>
     </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.4.6</version>
+        <executions>
+          <execution>
+            <id>add-scala-sources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sourceDir>src/main/scala</sourceDir>
+            </configuration>
+          </execution>
+          <execution>
+            <id>compile-scala</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <outputDir>${project.build.outputDirectory}</outputDir>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-protocols-s7</usedDependency>
             <usedDependency>org.apache.commons:commons-jexl3</usedDependency>
-            <usedDependency>org.slf4j:slf4j-simple</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

@@ -68,6 +68,7 @@
       </sc:onentry>
       <sc:transition event="success" target="sendCotpConnectionRequest"/>
       <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
     </sc:state>
 
     <!--
@@ -126,6 +127,7 @@
       </sc:onentry>
       <sc:transition event="success" target="receiveCotpConnectionResponse"/>
       <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
     </sc:state>
 
     <!--
@@ -145,6 +147,7 @@
       </sc:onentry>
       <sc:transition event="success" target="sendS7SetupCommunicationRequest"/>
       <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
     </sc:state>
 
     <!--
@@ -198,6 +201,7 @@
       </sc:onentry>
       <sc:transition event="success" target="receiveS7SetupCommunicationResponse"/>
       <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
     </sc:state>
 
     <!--
@@ -222,6 +226,7 @@
       <sc:transition event="success" cond="plcType == null" target="sendS7IdentificationRequest"/>
       <sc:transition event="success" cond="plcType != null" target="connected"/>
       <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
     </sc:state>
 
     <!--
@@ -284,6 +289,7 @@
       </sc:onentry>
       <sc:transition event="success" target="receiveS7IdentificationRequest"/>
       <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
     </sc:state>
 
     <!--
@@ -304,7 +310,8 @@
         <plc4x:S7DecodeArticleNumber articleNumberParameterName="s7ArticleNumber" plcTypeParameterName="plcType"/>
       </sc:transition>
       <sc:transition event="failure" target="error"/>
-    </sc:state>
+      <sc:transition event="disconnect" target="disconnect"/>
+   </sc:state>
 
     <!--
       Default state after connecting to a PLC.
@@ -313,6 +320,14 @@
       <sc:onentry>
         <sc:log expr="'Connected to PLC of type: ' + plcType"/>
       </sc:onentry>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <!--
+      Initiate disconnecting.
+    -->
+    <sc:state id="disconnect">
+      <sc:transition event="disconnect" target="disconnected"/>
     </sc:state>
 
     <!--

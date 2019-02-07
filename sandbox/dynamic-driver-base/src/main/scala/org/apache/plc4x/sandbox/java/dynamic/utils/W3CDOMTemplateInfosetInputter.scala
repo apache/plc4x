@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.s7.utils
+package org.apache.plc4x.sandbox.java.dynamic.utils
 
 import org.apache.commons.scxml2.Context
 import org.apache.daffodil.dpath.NodeInfo

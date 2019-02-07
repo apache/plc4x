@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.s7.actions;
+package org.apache.plc4x.sandbox.java.dynamic.actions;
 
 import org.apache.commons.scxml2.ActionExecutionContext;
 import org.apache.commons.scxml2.EventBuilder;

@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.s7;
+package org.apache.plc4x.sandbox.java.dynamic.s7;
 
 import org.apache.commons.scxml2.SCXMLExecutor;
 import org.apache.commons.scxml2.env.SimpleDispatcher;
@@ -26,11 +26,12 @@ import org.apache.commons.scxml2.invoke.SimpleSCXMLInvoker;
 import org.apache.commons.scxml2.io.SCXMLReader;
 import org.apache.commons.scxml2.model.CustomAction;
 import org.apache.commons.scxml2.model.SCXML;
-import org.apache.plc4x.sandbox.java.s7.actions.ConnectAction;
-import org.apache.plc4x.sandbox.java.s7.actions.InitContextAction;
-import org.apache.plc4x.sandbox.java.s7.actions.ReceiveAction;
-import org.apache.plc4x.sandbox.java.s7.actions.SendAction;
-import org.apache.plc4x.sandbox.java.s7.actions.s7.S7DecodeArticleNumber;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.sandbox.java.dynamic.actions.ConnectAction;
+import org.apache.plc4x.sandbox.java.dynamic.actions.InitContextAction;
+import org.apache.plc4x.sandbox.java.dynamic.actions.ReceiveAction;
+import org.apache.plc4x.sandbox.java.dynamic.actions.SendAction;
+import org.apache.plc4x.sandbox.java.dynamic.s7.actions.S7DecodeArticleNumber;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -89,10 +90,13 @@ public class Poc {
     }
 
     public static void main(String[] args) throws Exception {
-        Poc poc = new Poc(
+        /*Poc poc = new Poc(
             "org/apache/plc4x/protocols/s7/protocol.scxml.xml",
             "org/apache/plc4x/protocols/s7/protocol.dfdl.xsd");
-        poc.run();
+        poc.run();*/
+
+        PlcConnection connection = new DynamicS7Driver().connect("s7://10.10.64.20/1/1");
+        connection.isConnected();
     }
 
 }

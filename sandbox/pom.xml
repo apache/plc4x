@@ -35,6 +35,7 @@
   <description>Place where new stuff is located before it is regarded production-quality.</description>
 
   <modules>
+    <module>dynamic-driver-base</module>
     <module>dynamic-driver-s7</module>
   </modules>
 

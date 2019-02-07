@@ -16,19 +16,30 @@
  specific language governing permissions and limitations
  under the License.
  */
+package org.apache.plc4x.sandbox.java.dynamic.s7.utils;
 
-package org.apache.plc4x.sandbox.java.s7.actions;
+public class S7TsapIdEncoder {
 
-import org.apache.commons.scxml2.ActionExecutionContext;
+    private S7TsapIdEncoder() {
+        // Prevent this from being instantiated.
+    }
 
-import java.net.Socket;
+    public static short encodeS7TsapId(byte deviceGroup, int rack, int slot) {
+        short firstByte = (short) (deviceGroup << 8);
+        short secondByte = (short) ((rack << 4) | (slot & 0x0F));
+        return (short) (firstByte | secondByte);
+    }
 
-public abstract class BaseConnectedAction extends BasePlc4xAction {
+    public static byte decodeDeviceGroup(short tsapId) {
+        return (byte) ((tsapId >> 8) & (0xFF));
+    }
 
-    public static final String SOCKET_PARAMETER_NAME="connection";
+    public static int decodeRack(short tsapId) {
+        return (tsapId >> 4) & 0xF;
+    }
 
-    protected Socket getSocket(ActionExecutionContext ctx) {
-        return (Socket) ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
+    public static int decodeSlot(short tsapId) {
+        return tsapId & 0xF;
     }
 
 }

@@ -17,11 +17,11 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.s7.actions.s7;
+package org.apache.plc4x.sandbox.java.dynamic.s7.actions;
 
 import org.apache.commons.scxml2.ActionExecutionContext;
 import org.apache.commons.scxml2.model.ActionExecutionError;
-import org.apache.plc4x.sandbox.java.s7.actions.BasePlc4xAction;
+import org.apache.plc4x.sandbox.java.dynamic.actions.BasePlc4xAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

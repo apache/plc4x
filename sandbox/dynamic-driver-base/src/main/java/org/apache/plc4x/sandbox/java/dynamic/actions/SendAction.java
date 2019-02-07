@@ -17,14 +17,14 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.s7.actions;
+package org.apache.plc4x.sandbox.java.dynamic.actions;
 
 import org.apache.commons.scxml2.ActionExecutionContext;
 import org.apache.commons.scxml2.model.ParsedValue;
 import org.apache.daffodil.japi.DataProcessor;
 import org.apache.daffodil.japi.UnparseResult;
 import org.apache.daffodil.japi.infoset.InfosetInputter;
-import org.apache.plc4x.sandbox.java.s7.utils.W3CDOMTemplateInfosetInputter;
+import org.apache.plc4x.sandbox.java.dynamic.utils.W3CDOMTemplateInfosetInputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
