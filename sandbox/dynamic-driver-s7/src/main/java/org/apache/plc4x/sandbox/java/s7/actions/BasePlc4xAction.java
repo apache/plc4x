@@ -20,57 +20,33 @@
 package org.apache.plc4x.sandbox.java.s7.actions;
 
 import org.apache.commons.scxml2.ActionExecutionContext;
+import org.apache.commons.scxml2.EventBuilder;
+import org.apache.commons.scxml2.TriggerEvent;
 import org.apache.commons.scxml2.model.Action;
-import org.apache.commons.scxml2.model.ParsedValue;
-import org.apache.commons.scxml2.model.ParsedValueContainer;
-import org.apache.daffodil.japi.DataProcessor;
-import org.apache.daffodil.japi.Diagnostic;
-import org.apache.daffodil.japi.WithDiagnostics;
 import org.slf4j.Logger;
 
-import java.net.Socket;
-import java.util.List;
-
-public abstract class BasePlc4xAction extends Action implements ParsedValueContainer {
-
-
-
-    private String socketParameterName;
-    private ParsedValue message;
-
-    public String getSocketParameterName() {
-        return socketParameterName;
-    }
-
-    public void setSocketParameterName(String socketParameterName) {
-        this.socketParameterName = socketParameterName;
-    }
-
-    @Override
-    public ParsedValue getParsedValue() {
-        return message;
-    }
-
-    @Override
-    public void setParsedValue(ParsedValue parsedValue) {
-        this.message = parsedValue;
-    }
+public abstract class BasePlc4xAction extends Action {
 
     protected abstract Logger getLogger();
 
-    protected Socket getSocket(ActionExecutionContext ctx) {
-        return (Socket) ctx.getGlobalContext().get(getSocketParameterName());
-    }
-
-    protected DataProcessor getDaffodilDataProcessor(ActionExecutionContext ctx) {
-        return (DataProcessor) ctx.getGlobalContext().get("dfdl");
-    }
-
-    protected void logDiagnosticInformation(WithDiagnostics withDiagnostics) {
-        List<Diagnostic> diags = withDiagnostics.getDiagnostics();
-        for (Diagnostic d : diags) {
-            getLogger().error(d.getSomeMessage());
+    protected String getStateName() {
+        try {
+            return getParentEnterableState().getId();
+        } catch (Exception e) {
+            getLogger().error("Unable to get state.");
         }
+        return "unknown";
+    }
+
+    protected void fireFailureEvent(ActionExecutionContext ctx, String message) {
+        TriggerEvent event = new EventBuilder("failure", TriggerEvent.SIGNAL_EVENT).
+            data(getStateName() + ": " + message).build();
+        ctx.getInternalIOProcessor().addEvent(event);
+    }
+
+    protected void fireSuccessEvent(ActionExecutionContext ctx) {
+        TriggerEvent event = new EventBuilder("success", TriggerEvent.SIGNAL_EVENT).data(getStateName()).build();
+        ctx.getInternalIOProcessor().addEvent(event);
     }
 
 }

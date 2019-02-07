@@ -177,7 +177,7 @@
             </xs:choice>
             <xs:element name="userData" type="s7:S7MessageType" minOccurs="0"
                         dfdl:occursCountKind="expression"
-                        dfdl:occursCount="{if((../../length - (../headerLength + 1)) gt 0) then 1 else 0}"/>
+                        dfdl:occursCount="{if((../../length - (../headerLength + 5)) gt 0) then 1 else 0}"/>
         </xs:sequence>
     </xs:complexType>
 

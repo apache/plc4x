@@ -30,15 +30,22 @@ import org.apache.plc4x.sandbox.java.s7.actions.ConnectAction;
 import org.apache.plc4x.sandbox.java.s7.actions.InitContextAction;
 import org.apache.plc4x.sandbox.java.s7.actions.ReceiveAction;
 import org.apache.plc4x.sandbox.java.s7.actions.SendAction;
+import org.apache.plc4x.sandbox.java.s7.actions.s7.S7DecodeArticleNumber;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Poc {
 
+    private String dataFormatURI;
+
     private SCXMLExecutor executor;
 
-    private Poc() throws Exception {
+    private Poc(String stateMachineURI, String dataFormatURI) throws Exception {
+        this.dataFormatURI = dataFormatURI;
+
         // Initialize our PLC4X specific actions.
         List<CustomAction> customActions = new LinkedList<>();
         customActions.add(
@@ -49,10 +56,12 @@ public class Poc {
             new CustomAction("https://plc4x.apache.org/scxml-extension", "send", SendAction.class));
         customActions.add(
             new CustomAction("https://plc4x.apache.org/scxml-extension", "receive", ReceiveAction.class));
+        customActions.add(
+            new CustomAction("https://plc4x.apache.org/scxml-extension", "S7DecodeArticleNumber", S7DecodeArticleNumber.class));
 
         // Initialize the state-machine with the definition from the protocol module.
         SCXML scxml = SCXMLReader.read(
-            Poc.class.getClassLoader().getResource("org/apache/plc4x/protocols/s7/protocol.scxml.xml"),
+            Poc.class.getClassLoader().getResource(stateMachineURI),
             new SCXMLReader.Configuration(null, null, customActions));
 
         // Create an executor for running the state-machine.
@@ -62,12 +71,27 @@ public class Poc {
     }
 
     private void run() throws Exception {
+        Map<String, Object> context = new HashMap<>();
+        context.put("protocolDaffodilSchema", dataFormatURI);
+
+        context.put("cotpLocalReference", "15");
+        context.put("cotpCalledTsap", "512");
+        context.put("cotpCallingTsap", "273");
+        context.put("cotpTpduSize", "10");
+        context.put("s7MaxAmqCaller", "10");
+        context.put("s7MaxAmqCallee", "10");
+        context.put("s7PduLength", "1024");
+
+        //context.put("plcType", "HURZ");
+
         // Run the state-machine.
-        executor.go();
+        executor.go(context);
     }
 
     public static void main(String[] args) throws Exception {
-        Poc poc = new Poc();
+        Poc poc = new Poc(
+            "org/apache/plc4x/protocols/s7/protocol.scxml.xml",
+            "org/apache/plc4x/protocols/s7/protocol.dfdl.xsd");
         poc.run();
     }
 

@@ -20,14 +20,13 @@
 package org.apache.plc4x.sandbox.java.s7.actions;
 
 import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.commons.scxml2.EventBuilder;
-import org.apache.commons.scxml2.TriggerEvent;
-import org.apache.commons.scxml2.model.Action;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
 
-public class ConnectAction extends Action {
+public class ConnectAction extends BasePlc4xAction {
 
     private String type;
     private String host;
@@ -58,18 +57,24 @@ public class ConnectAction extends Action {
     }
 
     @Override
+    protected Logger getLogger() {
+        return LoggerFactory.getLogger(ConnectAction.class);
+    }
+
+    @Override
     public void execute(ActionExecutionContext ctx) {
-        ctx.getAppLog().info("Connecting...");
+        ctx.getAppLog().info(getStateName() + ": Connecting...");
         try {
             if ("TCP".equalsIgnoreCase(type)) {
                 Socket socket = new Socket(host, Integer.parseInt(port));
-                ctx.getGlobalContext().set("connection", socket);
-                TriggerEvent event = new EventBuilder("success", TriggerEvent.SIGNAL_EVENT).build();
-                ctx.getInternalIOProcessor().addEvent(event);
+                ctx.getGlobalContext().set(BaseConnectedAction.SOCKET_PARAMETER_NAME, socket);
+
                 ctx.getAppLog().info("Connected.");
+
+                fireSuccessEvent(ctx);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().error("Error connecting to remote.", e);
         }
     }
 

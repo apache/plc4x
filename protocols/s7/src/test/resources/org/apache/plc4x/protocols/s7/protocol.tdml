@@ -49,7 +49,7 @@
                          description="Simple TKPT packet which contains a COTP Connection-Response as payload.">
         <!-- Define the input -->
         <tdml:document>
-            <tdml:documentPart type="byte">0300001211D00001000200C00109C1020100C2020102</tdml:documentPart>
+            <tdml:documentPart type="byte">0300001611D00001000200C00109C1020100C2020102</tdml:documentPart>
         </tdml:document>
 
         <!-- Define the expected output -->
@@ -59,7 +59,7 @@
                 <test:tpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
-                    <length>18</length>
+                    <length>22</length>
                     <userData>
                         <headerLength>17</headerLength>
                         <type>208</type>

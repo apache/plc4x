@@ -25,25 +25,42 @@
           datamodel="jexl"
           xsi:schemaLocation="http://www.w3.org/2005/07/scxml http://www.w3.org/2011/04/SCXML/scxml.xsd">
 
+  <!-- Define all the variables we're going to use -->
   <sc:datamodel>
-    <sc:data id="args"/>
+    <sc:data id="protocolDaffodilSchema"/>
+    <sc:data id="cotpLocalReference"/>
+    <sc:data id="cotpCalledTsap"/>
+    <sc:data id="cotpCallingTsap"/>
+    <sc:data id="cotpTpduSize"/>
+    <sc:data id="s7MaxAmqCaller"/>
+    <sc:data id="s7MaxAmqCallee"/>
+    <sc:data id="s7PduLength"/>
+    <sc:data id="s7ArticleNumber"/>
+    <sc:data id="plcType"/>
   </sc:datamodel>
 
+  <!--
+    Setup the initial state ... this usually just initializes the Daffodil subsystem.
+  -->
   <sc:state id="init">
     <sc:onentry>
       <!-- Setup the initial content of the connection context (Callback in the driver) -->
-      <plc4x:initContext/>
+      <plc4x:initContext protocolDaffodilSchemaName="protocolDaffodilSchema"/>
     </sc:onentry>
     <sc:transition event="success" target="connect">
       <sc:assign location="args" expr="_event.data"/>
     </sc:transition>
   </sc:state>
 
+  <!--
+    Sub-Statemachine handling the connection establishment.
+  -->
   <sc:state id="connect">
     <sc:initial>
       <sc:transition target="establishNetworkConnection"/>
     </sc:initial>
 
+    <!-- This step establishes the physical connection to the remote -->
     <sc:state id="establishNetworkConnection">
       <sc:onentry>
         <!-- Initialize the network connection to the remote host using the tcp adapter with a given host and port -->
@@ -53,9 +70,20 @@
       <sc:transition event="failure" target="error"/>
     </sc:state>
 
+    <!--
+      First we have to connect on COTP level, so send CTOP connection request first.
+      Some parameters we are sending are a suggestion from our side, the remote will
+      respond with values it sees more fitting.
+
+      For example the "called-tsap" we just make up an id and the remote will respond
+      with its real id.
+
+      The pdu size is the one is the maximum PDU size we can live with, the remote
+      will respond with a size that is at most this big (usually it's smaller).
+    -->
     <sc:state id="sendCotpConnectionRequest">
       <sc:onentry>
-        <plc4x:send socketParameterName="connection">
+        <plc4x:send>
           <s7:TpktMessage>
             <magicByte>3</magicByte>
             <reserved>0</reserved>
@@ -65,29 +93,29 @@
               <type>224</type>
               <s7:CotpTpduConnectionRequest>
                 <destinationReference>0</destinationReference>
-                <!-- Insert the value for "cotp-local-reference" as short here -->
-                <sourceReference>15</sourceReference><!--plc4x:insert type="s7:short" name="cotp-local-reference"/-->
+                <!-- Insert the value for "cotpLocalReference" as short here -->
+                <sourceReference>${cotpLocalReference}</sourceReference>
                 <protocolClass>0</protocolClass>
                 <s7:parameters>
                   <parameter>
                     <type>194</type>
                     <parameterLength>2</parameterLength>
                     <s7:CotpParameterCalledTsap>
-                      <tsapId>512</tsapId><!--plc4x:insert type="s7:short" name="cotp-called-tsap"/-->
+                      <tsapId>${cotpCalledTsap}</tsapId>
                     </s7:CotpParameterCalledTsap>
                   </parameter>
                   <parameter>
                     <type>193</type>
                     <parameterLength>2</parameterLength>
                     <s7:CotpParameterCallingTsap>
-                      <tsapId>273</tsapId><!--plc4x:insert type="s7:short" name="cotp-calling-tsap"/-->
+                      <tsapId>${cotpCallingTsap}</tsapId>
                     </s7:CotpParameterCallingTsap>
                   </parameter>
                   <parameter>
                     <type>192</type>
                     <parameterLength>1</parameterLength>
                     <s7:CotpParameterTpduSize>
-                      <tpduSize>10</tpduSize><!--plc4x:insert type="s7:byte" name="cotp-tpdu-size"/-->
+                      <tpduSize>${cotpTpduSize}</tpduSize>
                     </s7:CotpParameterTpduSize>
                   </parameter>
                 </s7:parameters>
@@ -100,23 +128,33 @@
       <sc:transition event="failure" target="error"/>
     </sc:state>
 
+    <!--
+      If everything wen't fine, the remote should respond with a connection response.
+      As mentioned before we now have to update some of the values with the ones the
+      remote responded with.
+    -->
     <sc:state id="receiveCotpConnectionResponse">
       <sc:onentry>
-        <plc4x:receive socketParameterName="connection" timeout="5000">
-          <verification name="cotp-local-reference" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/destinationReference"/>
-          <extraction name="cotp-remote-reference" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/sourceReference"/>
-          <extraction name="cotp-tpdu-size" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterTpduSize/tpduSize"/>
-          <extraction name="cotp-calling-tsap" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterCallingTsap/tsapId"/>
-          <extraction name="cotp-called-tsap" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterCalledTsap/tsapId"/>
+        <plc4x:receive timeout="5000" packetLengthStartPosition="2" packetLengthSizeInBytes="2">
+          <verification name="cotpLocalReference" xpath-expression="/s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/destinationReference/text()[1]"/>
+          <extraction name="cotpRemoteReference" xpath-expression="/s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/sourceReference/text()[1]"/>
+          <extraction name="cotpTpduSize" xpath-expression="/s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterTpduSize/tpduSize/text()[1]"/>
+          <extraction name="cotpCallingTsap" xpath-expression="/s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterCallingTsap/tsapId/text()[1]"/>
+          <extraction name="cotpCalledTsap" xpath-expression="/s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/s7:parameters/parameter/s7:CotpParameterCalledTsap/tsapId/text()[1]"/>
         </plc4x:receive>
       </sc:onentry>
       <sc:transition event="success" target="sendS7SetupCommunicationRequest"/>
       <sc:transition event="failure" target="error"/>
     </sc:state>
 
+    <!--
+      After the connection is established on COTP level, we now do the same on the S7
+      protocol level. Again we will be sending values we think are ok and in the
+      response the remote will tell us what it can live with.
+    -->
     <sc:state id="sendS7SetupCommunicationRequest">
       <sc:onentry>
-        <plc4x:send socketParameterName="connection">
+        <plc4x:send>
           <s7:TpktMessage>
             <magicByte>3</magicByte>
             <reserved>0</reserved>
@@ -136,17 +174,17 @@
                   <tpduReference>0</tpduReference>
                   <parametersLength>8</parametersLength>
                   <payloadsLength>0</payloadsLength>
-                  <s7:parameters>
+                  <parameters>
                     <parameter>
                       <type>240</type>
                       <s7:S7GeneralParameterSetupCommunication>
                         <reserved>0</reserved>
-                        <maxAmqCaller>10</maxAmqCaller><!--plc4x:insert type="s7:short" name="s7-max-amq-caller"/-->
-                        <maxAmqCallee>10</maxAmqCallee><!--plc4x:insert type="s7:short" name="s7-max-amq-callee"/-->
-                        <pduLength>1024</pduLength><!--plc4x:insert type="s7:short" name="s7-pdu-length"/-->
+                        <maxAmqCaller>${s7MaxAmqCaller}</maxAmqCaller>
+                        <maxAmqCallee>${s7MaxAmqCallee}</maxAmqCallee>
+                        <pduLength>${s7PduLength}</pduLength>
                       </s7:S7GeneralParameterSetupCommunication>
                     </parameter>
-                  </s7:parameters>
+                  </parameters>
                   <payloads>
                     <payload>
                       <s7:S7GeneralPayloadSetupCommunication/>
@@ -162,24 +200,38 @@
       <sc:transition event="failure" target="error"/>
     </sc:state>
 
+    <!--
+      If everything wen't fine, the remote should respond with a connection response.
+      As mentioned before we now have to update some of the values with the ones the
+      remote responded with.
+
+      If a "plcType" was provided, we are now connected.
+
+      If no "plcType" was provided, the type has to be discovered by sending another
+      request and processing that response first.
+    -->
     <sc:state id="receiveS7SetupCommunicationResponse">
       <sc:onentry>
-        <plc4x:receive socketParameterName="connection" timeout="5000">
-          <verification name="cotp-local-reference" xpath="s7:TpktMessage/userData/s7:CotpTpduConnectionResponse/destinationReference"/>
-          <extraction name="returnCode" xpath="s7:TpktMessage/userData/userData/s7:S7ResponseMessage/errorCode"/>
-          <extraction name="s7-max-amq-caller" xpath="s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/s7:S7GeneralParameterSetupCommunication/maxAmqCaller"/>
-          <extraction name="s7-max-amq-callee" xpath="s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/s7:S7GeneralParameterSetupCommunication/maxAmqCallee"/>
-          <extraction name="s7-pdu-length" xpath="s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/s7:S7GeneralParameterSetupCommunication/pduLength"/>
+        <plc4x:receive timeout="5000" packetLengthStartPosition="2" packetLengthSizeInBytes="2">
+          <extraction name="returnCode" xpath-expression="/s7:TpktMessage/userData/userData/s7:S7ResponseMessage/errorCode/text()[1]"/>
+          <extraction name="s7MaxAmqCaller" xpath-expression="/s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/parameter/s7:S7GeneralParameterSetupCommunication/maxAmqCaller/text()[1]"/>
+          <extraction name="s7MaxAmqCallee" xpath-expression="/s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/parameter/s7:S7GeneralParameterSetupCommunication/maxAmqCallee/text()[1]"/>
+          <extraction name="s7PduLength" xpath-expression="/s7:TpktMessage/userData/userData/s7:S7ResponseMessage/parameters/parameter/s7:S7GeneralParameterSetupCommunication/pduLength/text()[1]"/>
         </plc4x:receive>
       </sc:onentry>
-      <sc:transition event="" target="sendS7IdentificationRequest"/>
-      <sc:transition event="success" target="connected"/>
+      <sc:transition event="success" cond="plcType == null" target="sendS7IdentificationRequest"/>
+      <sc:transition event="success" cond="plcType != null" target="connected"/>
       <sc:transition event="failure" target="error"/>
     </sc:state>
 
+    <!--
+      If no "plcType" was provided, an S7 identification request will ask the
+      remote to send back so-called SSLs. These contain information on the type
+      and version of the remote PLC.
+    -->
     <sc:state id="sendS7IdentificationRequest">
       <sc:onentry>
-        <plc4x:send socketParameterName="connection">
+        <plc4x:send>
           <s7:TpktMessage>
             <magicByte>3</magicByte>
             <reserved>0</reserved>
@@ -199,7 +251,7 @@
                   <tpduReference>256</tpduReference>
                   <parametersLength>8</parametersLength>
                   <payloadsLength>8</payloadsLength>
-                  <s7:parameters>
+                  <parameters>
                     <parameter>
                       <type>0</type>
                       <s7:S7UserDataParameterCPUService>
@@ -212,7 +264,7 @@
                         <sequenceNumber>0</sequenceNumber>
                       </s7:S7UserDataParameterCPUService>
                     </parameter>
-                  </s7:parameters>
+                  </parameters>
                   <payloads>
                     <payload>
                       <s7:S7UserDataPayloadCpuServices>
@@ -234,130 +286,50 @@
       <sc:transition event="failure" target="error"/>
     </sc:state>
 
+    <!--
+      As we're currently only interested in the type of the PLC, we simply
+      take the article number returned and decode that in a S7 specific
+      custom action.
+    -->
     <sc:state id="receiveS7IdentificationRequest">
       <sc:onentry>
-        <plc4x:receive socketParameterName="connection">
-          <s7:TpktMessage>
-            <magicByte>3</magicByte>
-            <reserved>0</reserved>
-            <length><plc4x:ignore/></length>
-            <userData>
-              <headerLength>2</headerLength>
-              <type>240</type>
-              <s7:CotpTpduData>
-                <endOfTransmission>1</endOfTransmission>
-                <tpduRef>0</tpduRef>
-              </s7:CotpTpduData>
-              <userData>
-                <magicByte>50</magicByte>
-                <type>7</type>
-                <s7:S7UserDataMessage>
-                  <reserved>0</reserved>
-                  <tpduReference>256</tpduReference>
-                  <parametersLength><plc4x:ignore/></parametersLength>
-                  <payloadsLength><plc4x:ignore/></payloadsLength>
-                  <s7:parameters>
-                    <plc4x:unordered>
-                      <parameter>
-                        <type>0</type>
-                        <S7UserDataParameterCPUService>
-                          <header>274</header>
-                          <paramLength>8</paramLength>
-                          <typeCode>18</typeCode>
-                          <type>8</type>
-                          <functionGroup>4</functionGroup>
-                          <subFunctionGroup>1</subFunctionGroup>
-                          <sequenceNumber>2</sequenceNumber>
-                          <dataUnitReferenceNumber>0</dataUnitReferenceNumber>
-                          <lastDataUnit>0</lastDataUnit>
-                          <errorCode>0</errorCode>
-                        </S7UserDataParameterCPUService>
-                      </parameter>
-                      <plc4x:ignore/>
-                    </plc4x:unordered>
-                  </s7:parameters>
-                  <payloads>
-                    <plc4x:unordered>
-                      <payload>
-                        <S7UserDataPayloadCpuServices>
-                          <returnCode>255</returnCode>
-                          <transportSize>9</transportSize>
-                          <length>120</length>
-                          <sslId>17</sslId>
-                          <sslIndex>0</sslIndex>
-                          <partialList>
-                            <partialListLengthInBytes>28</partialListLengthInBytes>
-                            <partialListCount>4</partialListCount>
-                            <sslDataRecords>
-                              <plc4x:unordered>
-                                <sslDataRecord>
-                                  <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
-                                    <index>1</index>
-                                    <articleNumber><plc4x:extract type="s7:short" name="s7-ssl-1"/></articleNumber>
-                                    <bgType>192</bgType>
-                                    <moduleOrOsVersion>3</moduleOrOsVersion>
-                                    <pgDescriptionFileVersion>1</pgDescriptionFileVersion>
-                                  </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
-                                </sslDataRecord>
-                                <sslDataRecord>
-                                  <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
-                                    <index>6</index>
-                                    <articleNumber><plc4x:extract type="s7:short" name="s7-ssl-6"/></articleNumber>
-                                    <bgType>192</bgType>
-                                    <moduleOrOsVersion>3</moduleOrOsVersion>
-                                    <pgDescriptionFileVersion>1</pgDescriptionFileVersion>
-                                  </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
-                                </sslDataRecord>
-                                <sslDataRecord>
-                                  <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
-                                    <index>7</index>
-                                    <articleNumber><plc4x:extract type="s7:short" name="s7-ssl-7"/></articleNumber>
-                                    <bgType>192</bgType>
-                                    <moduleOrOsVersion>22019</moduleOrOsVersion>
-                                    <pgDescriptionFileVersion>519</pgDescriptionFileVersion>
-                                  </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
-                                </sslDataRecord>
-                                <sslDataRecord>
-                                  <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
-                                    <index>129</index>
-                                    <articleNumber><plc4x:extract type="s7:short" name="s7-ssl-129"/></articleNumber>
-                                    <bgType>0</bgType>
-                                    <moduleOrOsVersion>16672</moduleOrOsVersion>
-                                    <pgDescriptionFileVersion>2313</pgDescriptionFileVersion>
-                                  </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
-                                </sslDataRecord>
-                                <plc4x:ignore/>
-                              </plc4x:unordered>
-                            </sslDataRecords>
-                          </partialList>
-                        </S7UserDataPayloadCpuServices>
-                      </payload>
-                      <plc4x:ignore/>
-                    </plc4x:unordered>
-                  </payloads>
-                </s7:S7UserDataMessage>
-              </userData>
-            </userData>
-          </s7:TpktMessage>
+        <plc4x:receive timeout="5000" packetLengthStartPosition="2" packetLengthSizeInBytes="2">
+          <!-- Ensure everything is ok -->
+          <!--verification value="255" xpath-expression="/s7:TpktMessage/userData/userData/s7:S7UserDataMessage/payloads/payload/s7:S7UserDataPayloadCpuServices/returnCode/text()"/-->
+          <!-- Extract the article-number of the SslDataRecordModuleIdentification with the index 1 -->
+          <extraction name="s7ArticleNumber" xpath-expression="/s7:TpktMessage/userData/userData/s7:S7UserDataMessage/payloads/payload/s7:S7UserDataPayloadCpuServices/partialList/sslDataRecords/sslDataRecord//s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification[index='1']/articleNumber/text()"/>
         </plc4x:receive>
       </sc:onentry>
-      <sc:transition event="success" target="connected"/>
+      <sc:transition event="success" target="connected">
+        <plc4x:S7DecodeArticleNumber articleNumberParameterName="s7ArticleNumber" plcTypeParameterName="plcType"/>
+      </sc:transition>
       <sc:transition event="failure" target="error"/>
     </sc:state>
 
+    <!--
+      Default state after connecting to a PLC.
+    -->
     <sc:state id="connected">
       <sc:onentry>
-        <sc:log expr="'Connected'"/>
+        <sc:log expr="'Connected to PLC of type: ' + plcType"/>
       </sc:onentry>
     </sc:state>
 
+    <!--
+      Final state of this state-machine, after any of the parties disconnected.
+    -->
     <sc:final id="disconnected">
-
+      <sc:onentry>
+        <sc:log expr="'Disconnected'"/>
+      </sc:onentry>
     </sc:final>
 
+    <!--
+      Error state in case of any form of error during the processing of data.
+    -->
     <sc:final id="error">
       <sc:onentry>
-        <sc:log expr="'Error connecting'"/>
+        <sc:log expr="'Error'"/>
       </sc:onentry>
     </sc:final>
   </sc:state>

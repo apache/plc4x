@@ -20,13 +20,11 @@
 package org.apache.plc4x.sandbox.java.s7.actions;
 
 import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.commons.scxml2.EventBuilder;
-import org.apache.commons.scxml2.TriggerEvent;
 import org.apache.commons.scxml2.model.ParsedValue;
 import org.apache.daffodil.japi.DataProcessor;
 import org.apache.daffodil.japi.UnparseResult;
 import org.apache.daffodil.japi.infoset.InfosetInputter;
-import org.apache.daffodil.japi.infoset.W3CDOMInfosetInputter;
+import org.apache.plc4x.sandbox.java.s7.utils.W3CDOMTemplateInfosetInputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -41,7 +39,7 @@ import java.net.Socket;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 
-public class SendAction extends BasePlc4xAction {
+public class SendAction extends BaseDaffodilAction {
 
     @Override
     protected Logger getLogger() {
@@ -50,7 +48,8 @@ public class SendAction extends BasePlc4xAction {
 
     @Override
     public void execute(ActionExecutionContext ctx) {
-        ctx.getAppLog().info("Sending.");
+        ctx.getAppLog().info(getStateName() + ": Sending...");
+
         if(getParsedValue() != null) {
             if(getParsedValue().getType() == ParsedValue.ValueType.NODE) {
                 try {
@@ -63,12 +62,10 @@ public class SendAction extends BasePlc4xAction {
 
                     DataProcessor dp = getDaffodilDataProcessor(ctx);
                     if(dp == null) {
-                        TriggerEvent event = new EventBuilder("failure", TriggerEvent.SIGNAL_EVENT).
-                            data("Couldn't initialize daffodil data processor.").build();
-                        ctx.getInternalIOProcessor().addEvent(event);
+                        fireFailureEvent(ctx, "Couldn't initialize daffodil data processor.");
                         return;
                     }
-                    InfosetInputter inputter = new W3CDOMInfosetInputter(doc);
+                    InfosetInputter inputter = new W3CDOMTemplateInfosetInputter(doc, ctx.getGlobalContext());
 
                     Socket connection = getSocket(ctx);
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
@@ -79,19 +76,17 @@ public class SendAction extends BasePlc4xAction {
                         return;
                     }
                     outputStream.flush();
-                    ctx.getAppLog().info("Successfully sent message.");
                 } catch(IOException | ParserConfigurationException e) {
                     e.printStackTrace();
                 }
             } else {
-                TriggerEvent event = new EventBuilder("failure", TriggerEvent.SIGNAL_EVENT).
-                    data("type '" + getParsedValue().getType() + "' not supported").build();
-                ctx.getInternalIOProcessor().addEvent(event);
+                fireFailureEvent(ctx, "type '" + getParsedValue().getType() + "' not supported");
                 return;
             }
         }
-        TriggerEvent event = new EventBuilder("success", TriggerEvent.SIGNAL_EVENT).build();
-        ctx.getInternalIOProcessor().addEvent(event);
+
+        ctx.getAppLog().info("Sent.");
+        fireSuccessEvent(ctx);
     }
 
 }
