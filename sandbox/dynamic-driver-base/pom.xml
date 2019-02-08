@@ -53,6 +53,21 @@
       <artifactId>commons-jexl3</artifactId>
       <version>3.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <version>2.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-runtime1_2.12</artifactId>
+      <version>2.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>2.12.6</version>
+    </dependency>
 
     <dependency>
       <groupId>commons-logging</groupId>
@@ -106,6 +121,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
+            <usedDependency>jaxen:jaxen</usedDependency>
             <usedDependency>org.apache.commons:commons-jexl3</usedDependency>
           </usedDependencies>
         </configuration>
