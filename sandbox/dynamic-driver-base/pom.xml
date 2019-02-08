@@ -90,7 +90,8 @@
           </execution>
           <execution>
             <id>compile-scala</id>
-            <phase>compile</phase>
+            <!-- Intentionally bound to this phase as we need the scala code compiled first. -->
+            <phase>process-sources</phase>
             <goals>
               <goal>compile</goal>
             </goals>
