@@ -33,6 +33,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.4.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
       <artifactId>plc4j-dynamic-driver-base</artifactId>
       <version>0.4.0-SNAPSHOT</version>
@@ -43,11 +49,6 @@
       <version>2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.daffodil</groupId>
-      <artifactId>daffodil-japi_2.12</artifactId>
-      <version>2.2.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-jexl3</artifactId>
       <version>3.1</version>
@@ -55,22 +56,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1.3</version>
-    </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>1.4.01</version>
-    </dependency>
-    <dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen</artifactId>
-      <version>1.1.6</version>
     </dependency>
 
     <dependency>
