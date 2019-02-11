@@ -39,7 +39,7 @@ public abstract class BasePlc4xAction extends Action {
     }
 
     protected void fireFailureEvent(ActionExecutionContext ctx, String message) {
-        TriggerEvent event = new EventBuilder("failure", TriggerEvent.SIGNAL_EVENT).
+        TriggerEvent event = new EventBuilder("failure", TriggerEvent.ERROR_EVENT).
             data(getStateName() + ": " + message).build();
         ctx.getInternalIOProcessor().addEvent(event);
     }

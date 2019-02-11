@@ -24,6 +24,7 @@ import org.apache.commons.scxml2.EventBuilder;
 import org.apache.commons.scxml2.TriggerEvent;
 import org.apache.daffodil.japi.Compiler;
 import org.apache.daffodil.japi.*;
+import org.apache.plc4x.sandbox.java.dynamic.utils.RequestRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,16 @@ import java.util.List;
 
 public class InitContextAction extends BasePlc4xAction {
 
+    private long maxRequestId;
     private String protocolDaffodilSchemaName;
+
+    public String getMaxRequestId() {
+        return Long.toString(maxRequestId);
+    }
+
+    public void setMaxRequestId(String maxRequestId) {
+        this.maxRequestId = Long.valueOf(maxRequestId);
+    }
 
     public String getProtocolDaffodilSchemaName() {
         return protocolDaffodilSchemaName;
@@ -52,6 +62,8 @@ public class InitContextAction extends BasePlc4xAction {
     public void execute(ActionExecutionContext ctx) {
         ctx.getAppLog().info(getStateName() + ": Initializing Context...");
 
+        // Initialize the Daffodil system for parsing and serializing the
+        // protocol messages.
         try {
             Compiler c = Daffodil.compiler();
             c.setValidateDFDLSchemas(true);
@@ -72,7 +84,12 @@ public class InitContextAction extends BasePlc4xAction {
             return;
         }
 
+        // Create a new request-registry that will be used for matching
+        // requests and responses.
+        ctx.getGlobalContext().set("requestRegistry", new RequestRegistry(maxRequestId));
+
         ctx.getAppLog().info("Context initialized.");
+
         fireSuccessEvent(ctx);
     }
 

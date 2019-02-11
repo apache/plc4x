@@ -32,16 +32,14 @@ import org.apache.commons.scxml2.model.SCXML;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
-import org.apache.plc4x.sandbox.java.dynamic.actions.ConnectAction;
-import org.apache.plc4x.sandbox.java.dynamic.actions.InitContextAction;
-import org.apache.plc4x.sandbox.java.dynamic.actions.ReceiveAction;
-import org.apache.plc4x.sandbox.java.dynamic.actions.SendAction;
+import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.sandbox.java.dynamic.actions.*;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.*;
 
-public abstract class DynamicDriverConnectionBase implements PlcConnection {
+public abstract class DynamicDriverConnectionBase extends AbstractPlcConnection implements PlcConnection {
 
     private String stateMachineURI;
     private String dataFormatURI;
@@ -62,7 +60,9 @@ public abstract class DynamicDriverConnectionBase implements PlcConnection {
         customActions.add(
             new CustomAction("https://plc4x.apache.org/scxml-extension", "send", SendAction.class));
         customActions.add(
-            new CustomAction("https://plc4x.apache.org/scxml-extension", "receive", ReceiveAction.class));
+            new CustomAction("https://plc4x.apache.org/scxml-extension", "receiveExtractVerify", ReceiveExtractVerifyAction.class));
+        customActions.add(
+            new CustomAction("https://plc4x.apache.org/scxml-extension", "sendRequest", SendRequestAction.class));
         customActions.addAll(getAdditionalCustomActions());
 
         try {
@@ -78,6 +78,10 @@ public abstract class DynamicDriverConnectionBase implements PlcConnection {
         } catch (XMLStreamException | IOException | ModelException e) {
             throw new PlcConnectionException("Error initializing driver state-machine", e);
         }
+    }
+
+    protected SCXMLExecutor getExecutor() {
+        return executor;
     }
 
     protected Collection<CustomAction> getAdditionalCustomActions() {
@@ -123,12 +127,27 @@ public abstract class DynamicDriverConnectionBase implements PlcConnection {
         if(executor == null) {
             return;
         }
-        executor.triggerEvent(new EventBuilder(getDisconnectTransitionName(), TriggerEvent.SIGNAL_EVENT).build());
+        executor.triggerEvent(new EventBuilder(getDisconnectTransitionName(), TriggerEvent.CALL_EVENT).build());
     }
 
     @Override
     public PlcConnectionMetadata getMetadata() {
-        return null;
+        return new PlcConnectionMetadata() {
+            @Override
+            public boolean canRead() {
+                return true;
+            }
+
+            @Override
+            public boolean canWrite() {
+                return false;
+            }
+
+            @Override
+            public boolean canSubscribe() {
+                return false;
+            }
+        };
     }
 
 }

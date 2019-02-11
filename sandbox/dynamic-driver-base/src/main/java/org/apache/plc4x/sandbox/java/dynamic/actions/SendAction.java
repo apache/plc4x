@@ -24,15 +24,13 @@ import org.apache.commons.scxml2.model.ParsedValue;
 import org.apache.daffodil.japi.DataProcessor;
 import org.apache.daffodil.japi.UnparseResult;
 import org.apache.daffodil.japi.infoset.InfosetInputter;
-import org.apache.plc4x.sandbox.java.dynamic.utils.W3CDOMTemplateInfosetInputter;
+import org.apache.plc4x.sandbox.java.dynamic.utils.JDOMTemplateInfosetInputter;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.DOMBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -41,9 +39,21 @@ import java.nio.channels.WritableByteChannel;
 
 public class SendAction extends BaseDaffodilAction {
 
+    private Document messageTemplate;
+
     @Override
     protected Logger getLogger() {
         return LoggerFactory.getLogger(SendAction.class);
+    }
+
+    @Override
+    public void setParsedValue(ParsedValue parsedValue) {
+        super.setParsedValue(parsedValue);
+
+        // Convert the W3C Dom implementation into JDom2.
+        Element element = new DOMBuilder().build(
+            (org.w3c.dom.Element) getParsedValue().getValue());
+        messageTemplate = element.getDocument();
     }
 
     @Override
@@ -53,19 +63,15 @@ public class SendAction extends BaseDaffodilAction {
         if(getParsedValue() != null) {
             if(getParsedValue().getType() == ParsedValue.ValueType.NODE) {
                 try {
-                    Node messageTemplate = (Node) getParsedValue().getValue();
-                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder = dbf.newDocumentBuilder();
-                    Document doc = builder.newDocument();
-                    Node messageTemplateClone = doc.importNode(messageTemplate, true);
-                    doc.appendChild(messageTemplateClone);
+                    // Do any form of processing.
+                    processMessage(messageTemplate, ctx);
 
                     DataProcessor dp = getDaffodilDataProcessor(ctx);
                     if(dp == null) {
                         fireFailureEvent(ctx, "Couldn't initialize daffodil data processor.");
                         return;
                     }
-                    InfosetInputter inputter = new W3CDOMTemplateInfosetInputter(doc, ctx.getGlobalContext());
+                    InfosetInputter inputter = new JDOMTemplateInfosetInputter(messageTemplate, ctx.getGlobalContext());
 
                     Socket connection = getSocket(ctx);
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
@@ -76,7 +82,7 @@ public class SendAction extends BaseDaffodilAction {
                         return;
                     }
                     outputStream.flush();
-                } catch(IOException | ParserConfigurationException e) {
+                } catch(IOException e) {
                     e.printStackTrace();
                 }
             } else {
@@ -87,6 +93,9 @@ public class SendAction extends BaseDaffodilAction {
 
         ctx.getAppLog().info("Sent.");
         fireSuccessEvent(ctx);
+    }
+
+    protected void processMessage(Document message, ActionExecutionContext ctx) {
     }
 
 }

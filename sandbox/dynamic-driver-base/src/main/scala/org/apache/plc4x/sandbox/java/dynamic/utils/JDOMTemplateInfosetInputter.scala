@@ -20,21 +20,24 @@
 package org.apache.plc4x.sandbox.java.dynamic.utils
 
 import org.apache.commons.scxml2.Context
+import org.apache.commons.scxml2.env.jexl.JexlEvaluator
 import org.apache.daffodil.dpath.NodeInfo
-import org.apache.daffodil.japi.infoset.{InfosetInputterProxy, W3CDOMInfosetInputter}
+import org.apache.daffodil.infoset.JDOMInfosetInputter
+import org.apache.daffodil.japi.infoset.InfosetInputterProxy
+import org.jdom2.Document
 
-class W3CDOMTemplateInfosetInputter(document: org.w3c.dom.Document, context: Context) extends InfosetInputterProxy {
+class JDOMTemplateInfosetInputter(document: Document, context: Context) extends InfosetInputterProxy {
 
-    override val infosetInputter = new W3CDOMInfosetInputter(document)
+    override val infosetInputter = new JDOMInfosetInputter(document)
+
+    val evaluator = new JexlEvaluator()
 
     override def getSimpleText(primType: NodeInfo.Kind): String = {
         val value = super.getSimpleText(primType)
         if(value.startsWith("${") && value.endsWith("}")) {
             val varName = value.substring(2, value.length - 1)
-            val varValue = context.get(varName)
-            if(varValue.isInstanceOf[String]) {
-                return varValue.toString
-            }
+            val varValue = evaluator.eval(context, varName)
+            return varValue.toString
         }
         value
     }

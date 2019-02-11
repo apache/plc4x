@@ -59,9 +59,7 @@ public class DynamicS7Driver implements PlcDriver {
 
         try {
             InetAddress serverInetAddress = InetAddress.getByName(host);
-            DynamicS7Connection connection = new DynamicS7Connection(serverInetAddress, rack, slot, params);
-            connection.connect();
-            return connection;
+            return new DynamicS7Connection(serverInetAddress, rack, slot, params);
         } catch (UnknownHostException e) {
             throw new PlcConnectionException("Error parsing address", e);
         } catch (Exception e) {
@@ -72,6 +70,11 @@ public class DynamicS7Driver implements PlcDriver {
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("Basic S7 connections don't support authentication.");
+    }
+
+    public static void main(String[] args) throws Exception {
+        PlcConnection connection = new DynamicS7Driver().connect("s7://10.10.64.20/1/1");
+        connection.isConnected();
     }
 
 }

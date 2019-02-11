@@ -22,9 +22,6 @@ package org.apache.plc4x.sandbox.java.dynamic.actions;
 import org.apache.commons.scxml2.ActionExecutionContext;
 import org.apache.commons.scxml2.EventBuilder;
 import org.apache.commons.scxml2.TriggerEvent;
-import org.apache.commons.scxml2.model.NodeListValue;
-import org.apache.commons.scxml2.model.NodeValue;
-import org.apache.commons.scxml2.model.ParsedValue;
 import org.apache.daffodil.japi.DataProcessor;
 import org.apache.daffodil.japi.ParseResult;
 import org.apache.daffodil.japi.infoset.JDOMInfosetOutputter;
@@ -38,33 +35,20 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class ReceiveAction extends BaseDaffodilAction {
+public abstract class ReceiveAction extends BaseDaffodilAction {
 
     private long timeout = 5000;
     private int packetLengthStartPosition;
     private int packetLengthSizeInBytes;
     private int packetLengthOffset = 0;
-
-    private final Map<String, String> verificationRules;
-    private final Map<String, String> extractionRules;
-
-    public ReceiveAction() {
-        verificationRules = new HashMap<>();
-        extractionRules = new HashMap<>();
-    }
 
     @Override
     protected Logger getLogger() {
@@ -101,36 +85,6 @@ public class ReceiveAction extends BaseDaffodilAction {
 
     public void setTimeout(String timeout) {
         this.timeout = Long.valueOf(timeout);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void setParsedValue(ParsedValue parsedValue) {
-        super.setParsedValue(parsedValue);
-        if(parsedValue != null) {
-            if(parsedValue instanceof NodeListValue) {
-                List<Node> ruleList = (List<Node>) parsedValue.getValue();
-                for (Node node : ruleList) {
-                    if(node instanceof Element) {
-                        parseElement((Element) node);
-                    }
-                }
-            } else if(parsedValue instanceof NodeValue) {
-                parseElement((Element) parsedValue.getValue());
-            }
-        }
-    }
-
-    private void parseElement(Element ruleElement) {
-        String name = ruleElement.getAttribute("name");
-        String expression = ruleElement.getAttribute("xpath-expression");
-        if ("verification".equals(ruleElement.getTagName())) {
-            verificationRules.put(name, expression);
-        } else if ("extraction".equals(ruleElement.getTagName())) {
-            extractionRules.put(name, expression);
-        } else {
-            getLogger().error("unsupported rule type: " + ruleElement.getTagName());
-        }
     }
 
     @Override
@@ -178,7 +132,7 @@ public class ReceiveAction extends BaseDaffodilAction {
             // Go back to the beginning of the packet.
             inputStream.reset();
 
-            // Eventually wait till the entire packet is available.
+            // Wait till the entire packet is available.
             while(inputStream.available() < packetLength) {
                 waitWithTimeout(ctx, startTime, timeout);
             }
@@ -203,38 +157,19 @@ public class ReceiveAction extends BaseDaffodilAction {
             // Get the resulting XML document from the parser.
             Document message = outputter.getResult();
 
-            // First verify all verification conditions.
-            for (Map.Entry<String, String> rule : verificationRules.entrySet()) {
-                Object reference = ctx.getGlobalContext().get(rule.getKey());
-                String current = getRuleText(message, rule.getValue());
-                if(current == null) {
-                    fireFailureEvent(ctx, "Error verifying. Expected: " + reference.toString() + " got null value");
-                    return;
-                }
-                if(!current.equals(reference)) {
-                    fireFailureEvent(ctx, "Error verifying. Expected: " + reference.toString() + " got: " + current);
-                    return;
-                }
-            }
-
-            // Then extract data from the document.
-            for (Map.Entry<String, String> rule : extractionRules.entrySet()) {
-                String current = getRuleText(message, rule.getValue());
-                if(current == null) {
-                    fireFailureEvent(ctx, "Error extracting. Got null value");
-                    return;
-                }
-                ctx.getGlobalContext().set(rule.getKey(), current);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            // Do any form of processing.
+            processMessage(message, ctx);
+        } catch (Exception e) {
+            fireFailureEvent(ctx, e.getMessage());
         }
 
         ctx.getAppLog().info("Received.");
         fireSuccessEvent(ctx);
     }
 
-    private String getRuleText(Document message, String xpathExpression) {
+    protected abstract void processMessage(Document message, ActionExecutionContext ctx);
+
+    String getRuleText(Document message, String xpathExpression) {
         // Get the namespace definitions from the input document.
         List<Namespace> namespaces = message.getRootElement().getNamespacesInScope();
 

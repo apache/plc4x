@@ -20,25 +20,32 @@
 package org.apache.plc4x.sandbox.java.dynamic.s7.connection;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.scxml2.EventBuilder;
+import org.apache.commons.scxml2.TriggerEvent;
 import org.apache.commons.scxml2.model.CustomAction;
-import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
+import org.apache.commons.scxml2.model.ModelException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.sandbox.java.dynamic.connection.DynamicDriverConnectionBase;
 import org.apache.plc4x.sandbox.java.dynamic.s7.actions.S7DecodeArticleNumber;
+import org.apache.plc4x.sandbox.java.dynamic.s7.actions.S7DecodeReadResponseAction;
+import org.apache.plc4x.sandbox.java.dynamic.s7.actions.S7DecodeWriteResponseAction;
+import org.apache.plc4x.sandbox.java.dynamic.s7.utils.S7PlcFieldHandler;
 import org.apache.plc4x.sandbox.java.dynamic.s7.utils.S7TsapIdEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-public class DynamicS7Connection extends DynamicDriverConnectionBase {
+public class DynamicS7Connection extends DynamicDriverConnectionBase implements PlcReader {
 
     private static final Logger logger = LoggerFactory.getLogger(DynamicS7Connection.class);
 
@@ -119,9 +126,14 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase {
 
     @Override
     protected Collection<CustomAction> getAdditionalCustomActions() {
-        return Collections.singleton(
+        return Arrays.asList(
             new CustomAction("https://plc4x.apache.org/scxml-extension", "S7DecodeArticleNumber",
-                S7DecodeArticleNumber.class));
+                S7DecodeArticleNumber.class),
+            new CustomAction("https://plc4x.apache.org/scxml-extension", "S7DecodeReadResponse",
+                S7DecodeReadResponseAction.class),
+            new CustomAction("https://plc4x.apache.org/scxml-extension", "S7DecodeWriteResponse",
+                S7DecodeWriteResponseAction.class)
+            );
     }
 
     @Override
@@ -145,23 +157,30 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase {
     }
 
     @Override
+    public PlcConnectionMetadata getMetadata() {
+        return super.getMetadata();
+    }
+
+    @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        throw new PlcUnsupportedOperationException("The connection does not support reading");
+        return new DefaultPlcReadRequest.Builder(this, new S7PlcFieldHandler());
     }
 
     @Override
-    public PlcWriteRequest.Builder writeRequestBuilder() {
-        throw new PlcUnsupportedOperationException("The connection does not support writing");
-    }
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        InternalPlcReadRequest internalReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
+        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
+            new PlcRequestContainer<>(internalReadRequest, future);
 
-    @Override
-    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        throw new PlcUnsupportedOperationException("The connection does not support subscription");
-    }
+        try {
+            getExecutor().triggerEvent(
+                new EventBuilder("read", TriggerEvent.CALL_EVENT).data(container).build());
+        } catch (ModelException e) {
+            throw new PlcRuntimeException("Error reading.", e);
+        }
 
-    @Override
-    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-        throw new PlcUnsupportedOperationException("The connection does not support subscription");
+        return future.thenApply(PlcReadResponse.class::cast);
     }
 
 }
