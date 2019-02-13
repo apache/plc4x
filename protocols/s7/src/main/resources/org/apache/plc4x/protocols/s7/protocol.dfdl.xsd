@@ -471,7 +471,7 @@
                 <xs:element name="payloads" minOccurs="0"
                             dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../payloadsLength}"
                             dfdl:occursCountKind="expression"
-                            dfdl:occursCount="{if(../payloadsLength gt 0) then 1 else 0}">
+                            dfdl:occursCount="{if(../parametersLength gt 0) then 1 else 0}">
                     <xs:complexType>
                         <xs:sequence>
                             <!--
