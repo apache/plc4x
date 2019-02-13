@@ -1426,6 +1426,85 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
+    <tdml:parserTestCase name="S7: Read Var Response (Mixed Items with odd number of bytes)"
+                         root="tpktMessage"
+                         model="s7Schema">
+        <!-- Define the input -->
+        <tdml:document>
+            <tdml:documentPart type="byte">
+                0300002802f0803203000000010002001300000403ff040018AABBCC00ff0400080000ff03000100
+            </tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <test:tpktMessage>
+                    <magicByte>3</magicByte>
+                    <reserved>0</reserved>
+                    <length>40</length>
+                    <userData>
+                        <headerLength>2</headerLength>
+                        <type>240</type>
+                        <CotpTpduData>
+                            <endOfTransmission>1</endOfTransmission>
+                            <tpduRef>0</tpduRef>
+                        </CotpTpduData>
+                        <userData>
+                            <magicByte>50</magicByte>
+                            <type>3</type>
+                            <S7ResponseMessage>
+                                <reserved>0</reserved>
+                                <tpduReference>1</tpduReference>
+                                <parametersLength>2</parametersLength>
+                                <payloadsLength>19</payloadsLength>
+                                <errorClass>0</errorClass>
+                                <errorCode>0</errorCode>
+                                <parameters>
+                                    <parameter>
+                                        <type>4</type>
+                                        <S7ResponseParameterReadVar>
+                                            <numItems>3</numItems>
+                                        </S7ResponseParameterReadVar>
+                                    </parameter>
+                                </parameters>
+                                <payloads>
+                                    <payload>
+                                        <S7ResponsePayloadReadVar>
+                                            <numItems>3</numItems>
+                                            <item>
+                                                <returnCode>255</returnCode>
+                                                <transportSize>4</transportSize>
+                                                <rawLength>24</rawLength>
+                                                <lengthInBytes>3</lengthInBytes>
+                                                <data>AABBCC</data>
+                                                <fillByte>0</fillByte>
+                                            </item>
+                                            <item>
+                                                <returnCode>255</returnCode>
+                                                <transportSize>4</transportSize>
+                                                <rawLength>8</rawLength>
+                                                <lengthInBytes>1</lengthInBytes>
+                                                <data>00</data>
+                                                <fillByte>0</fillByte>
+                                            </item>
+                                            <item>
+                                                <returnCode>255</returnCode>
+                                                <transportSize>3</transportSize>
+                                                <rawLength>1</rawLength>
+                                                <lengthInBytes>1</lengthInBytes>
+                                                <data>00</data>
+                                            </item>
+                                        </S7ResponsePayloadReadVar>
+                                    </payload>
+                                </payloads>
+                            </S7ResponseMessage>
+                        </userData>
+                    </userData>
+                </test:tpktMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
     <tdml:parserTestCase name="S7: Read Var Request (No Filling Bytes)"
                          root="tpktMessage"
                          model="s7Schema">

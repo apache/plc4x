@@ -471,7 +471,7 @@
                 <xs:element name="payloads" minOccurs="0"
                             dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../payloadsLength}"
                             dfdl:occursCountKind="expression"
-                            dfdl:occursCount="{if(../parametersLength gt 0) then 1 else 0}">
+                            dfdl:occursCount="{if(../payloadsLength gt 0) then 1 else 0}">
                     <xs:complexType>
                         <xs:sequence>
                             <!--
@@ -834,7 +834,7 @@
                             -->
                             <xs:element name="fillByte" type="s7:byte" minOccurs="0"
                                         dfdl:occursCountKind="expression" dfdl:occursCount="{
-                                            if((../lengthInBytes eq 1) and
+                                            if(((../lengthInBytes mod 2) eq 1) and
                                                 (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/>
                         </xs:sequence>
                     </xs:complexType>
@@ -870,15 +870,12 @@
                                         dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
                                         dfdl:length="{../lengthInBytes}"/>
                             <!--
-                                Transport sizes: BIT, BYTE_WORD_DWORD and OCTET_STRING require a blank byte.
-                                However only if this is not the last item in the result.
-
-                                Actually the S7 device will never process data that contains more
-                                than one item in a write request, so this is rather a cosmetic fine-tuning.
+                                It seems that the item payload must always be an even number of bytes. So if it's
+                                not an even number, add a fill byte.
                             -->
                             <xs:element name="fillByte" type="s7:byte" minOccurs="0"
                                         dfdl:occursCountKind="expression" dfdl:occursCount="{
-                                            if((../lengthInBytes eq 1) and
+                                            if(((../lengthInBytes mod 2) eq 1) and
                                                 (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/>
                         </xs:sequence>
                     </xs:complexType>
