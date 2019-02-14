@@ -78,7 +78,12 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
 
     @Override
     public Object getObject(String name) {
-        return getObject(name, 0);
+        if(getFieldInternal(name).getNumberOfValues()>1) {
+            return getAllObjects(name);
+        }
+        else{
+            return getObject(name, 0);
+        }
     }
 
     @Override
@@ -91,11 +96,11 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     public Collection<Object> getAllObjects(String name) {
         BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
         int num = fieldInternal.getNumberOfValues();
-        List<Object> values = new ArrayList<>(num);
+        List<Object> objectList = new ArrayList<>(num);
         for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getObject(i));
+            objectList.add(fieldInternal.getObject(i));
         }
-        return values;
+        return objectList;
     }
 
     @Override

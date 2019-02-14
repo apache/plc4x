@@ -19,21 +19,18 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>apache-nifi</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
   </parent>
 
   <artifactId>nifi-plc4x-processors</artifactId>
+
+  <name>Integrations: Apache Nifi: Processors</name>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-core</artifactId>
-      <version>0.2.0</version>
+      <version>0.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.nifi</groupId>

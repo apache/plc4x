@@ -30,26 +30,24 @@ import java.util.concurrent.TimeUnit;
 public class PlcLogger {
 
     public static void main(String[] args) throws Exception {
-        if(args.length != 3) {
-            System.out.println("Usage: PlcLogger {connection-string} {resource-address-string} {interval-ms}");
-            System.out.println("Example: PlcLogger s7://10.10.64.20/0/0 INPUTS/0 10");
+        CliOptions options = CliOptions.fromArgs(args);
+        if (options == null) {
+            CliOptions.printHelp();
+            // Could not parse.
+            System.exit(1);
         }
 
-        String connectionString = args[0];
-        String addressString = args[1];
-        Integer interval = Integer.valueOf(args[2]);
-
         // Get a plc connection.
-        try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter(connectionString)) {
+        try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter(options.getConnectionString())) {
             // Initialize the Edgent core.
             DirectProvider dp = new DirectProvider();
             Topology top = dp.newTopology();
 
             // Define the event stream.
             // 1) PLC4X source generating a stream of bytes.
-            Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, addressString);
+            Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter, options.getFieldAddress());
             // 2) Use polling to get an item from the byte-stream in regular intervals.
-            TStream<Byte> source = top.poll(plcSupplier, interval, TimeUnit.MILLISECONDS);
+            TStream<Byte> source = top.poll(plcSupplier, options.getPollingInterval(), TimeUnit.MILLISECONDS);
             // 3) Output the events in the stream on the console.
             source.print();
 

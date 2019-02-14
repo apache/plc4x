@@ -102,6 +102,7 @@
     <menu name="Users">
       <item name="Download" href="users/download.html"/>
       <item name="Getting Started" href="users/gettingstarted.html"/>
+      <item name="Object PLC Mapping (OPM)" href="users/opm.html"/>
       <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
       <item name="Security" href="users/security.html"/>
     </menu>

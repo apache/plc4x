@@ -19,6 +19,7 @@
  *
  */
 pipeline {
+
     agent {
         node {
             label 'plc4x'
@@ -37,8 +38,6 @@ pipeline {
         MVN_LOCAL_REPO_OPT = '-Dmaven.repo.local=.repository'
         // Testfails will be handled by the jenkins junit steps and mark the build as unstable.
         MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
-        // Make JQAssistant run with Neo4j 3.1.3 instead of 2.x
-        JQASSISTANT_NEO4J_VERSION = '-Djqassistant.neo4jVersion=3'
     }
 
     tools {
@@ -50,6 +49,7 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
     }
 
     stages {
@@ -98,12 +98,14 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                // Make sure the directory is wiped.
-                sh 'rm -rf ./local-snapshots-dir'
+                // Clean up the snapshots directory.
+                dir("local-snapshots-dir/") {
+                    deleteDir()
+                }
 
                 // We'll deploy to a relative directory so we can save
                 // that and deploy in a later step on a different node
-                sh 'mvn -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                sh 'mvn -P${JENKINS_PROFILE},development ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
 
                 // Stash the build results so we can deploy them on another node
                 stash name: 'plc4x-build-snapshots', includes: 'local-snapshots-dir/**'
@@ -116,17 +118,10 @@ pipeline {
             }
         }
 
-        // Disabled till auth issues are resolved on infra.
         stage('Code Quality') {
             when {
                 branch 'develop'
             }
-            // Only the official build nodes have the credentials to deploy setup.
-            /*agent {
-                node {
-                    label 'ubuntu && !H32'
-                }
-            }*/
             steps {
                 echo 'Checking Code Quality'
                 withSonarQubeEnv('ASF Sonar Analysis') {
@@ -147,11 +142,21 @@ pipeline {
             }
             steps {
                 echo 'Deploying'
+                // Clean up the snapshots directory.
+                dir("local-snapshots-dir/") {
+                    deleteDir()
+                }
+
                 // Unstash the previously stashed build results.
                 unstash name: 'plc4x-build-snapshots'
 
                 // Deploy the artifacts using the wagon-maven-plugin.
                 sh 'mvn -f jenkins.pom -X -P deploy-snapshots wagon:upload'
+
+                // Clean up the snapshots directory (freeing up more space after deploying).
+                dir("local-snapshots-dir/") {
+                    deleteDir()
+                }
             }
         }
 
@@ -189,12 +194,99 @@ pipeline {
             }
             steps {
                 echo 'Deploying Site'
+                // Clean up the site directory.
+                dir("target/staging") {
+                    deleteDir()
+                }
+
                 // Unstash the previously stashed site.
                 unstash 'plc4x-site'
                 // Publish the site with the scm-publish plugin.
-                sh 'mvn -P${JENKINS_PROFILE} scm-publish:publish-scm'
+                sh 'mvn -f jenkins.pom -X -P deploy-site scm-publish:publish-scm'
+
+                // Clean up the snapshots directory (freeing up more space after deploying).
+                dir("target/staging") {
+                    deleteDir()
+                }
+            }
+        }
+    }
+
+    // Send out notifications on unsuccessful builds.
+    post {
+        // If this build failed, send an email to the list.
+        failure {
+            script {
+                if(env.BRANCH_NAME == "develop") {
+                    emailext(
+                        subject: "[BUILD-FAILURE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                        body: """
+BUILD-FAILURE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':
+
+Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"
+""",
+                        to: "dev@plc4x.apache.org",
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                    )
+                }
             }
         }
 
+        // If this build didn't fail, but there were failing tests, send an email to the list.
+        unstable {
+            script {
+                if(env.BRANCH_NAME == "develop") {
+                    emailext(
+                        subject: "[BUILD-UNSTABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                        body: """
+BUILD-UNSTABLE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':
+
+Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"
+""",
+                        to: "dev@plc4x.apache.org",
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                    )
+                }
+            }
+        }
+
+        // Send an email, if the last build was not successful and this one is.
+        success {
+            // Cleanup the build directory if the build was successful
+            // (in this cae we probably don't have to do any post-build analysis)
+            deleteDir()
+            script {
+                if ((env.BRANCH_NAME == "develop") && (currentBuild.previousBuild != null) && (currentBuild.previousBuild.result != 'SUCCESS')) {
+                    emailext (
+                        subject: "[BUILD-STABLE]: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]'",
+                        body: """
+BUILD-STABLE: Job '${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]':
+
+Is back to normal.
+""",
+                        to: "dev@plc4x.apache.org",
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                    )
+                }
+            }
+        }
+
+        always {
+            script {
+                if(env.BRANCH_NAME == "master") {
+                    emailext(
+                        subject: "[COMMIT-TO-MASTER]: A commit to the master branch was made'",
+                        body: """
+COMMIT-TO-MASTER: A commit to the master branch was made:
+
+Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"
+""",
+                        to: "dev@plc4x.apache.org",
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                    )
+                }
+            }
+        }
     }
+
 }

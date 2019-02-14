@@ -28,10 +28,8 @@ import java.lang.annotation.Target;
  * Field that is mapped
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.FIELD})
 public @interface PlcField {
     String value();
-    // TODO enable both annotation values in the Interceptor / Entitymanager
-    long cacheDurationMillis() default 1000;
-    boolean throwOnUnavailable() default true;
+    long cacheDurationMillis() default -1;
 }

@@ -138,7 +138,7 @@ class Plc4XS7ProtocolSpec extends Specification {
         "%Q3:ULINT"         | (long) 4223123      || true            | MemoryArea.OUTPUTS | 0               | 3          | 0         | 1        | TransportSize.ULINT
         "%Q3:REAL"          | (float) 42.312      || true            | MemoryArea.OUTPUTS | 0               | 3          | 0         | 1        | TransportSize.REAL
         "%Q3:LREAL"         | (double) 42.32      || true            | MemoryArea.OUTPUTS | 0               | 3          | 0         | 1        | TransportSize.LREAL
-        "%Q3:STRING"        | "foo"               || true            | MemoryArea.OUTPUTS | 0               | 3          | 0         | 1        | TransportSize.STRING
+        "%Q3:STRING"        | "foo"               || true            | MemoryArea.OUTPUTS | 0               | 3          | 0         | 256      | TransportSize.STRING
         "%Q3:WSTRING"       | "bar"               || true            | MemoryArea.OUTPUTS | 0               | 3          | 0         | 1        | TransportSize.WSTRING
         //"%Q3:DATE_AND_TIME" | LocalDateTime.now() || false           | MemoryArea.OUTPUTS | 0               | 3          | 0         | 1        | TransportSize.DATE_AND_TIME
     }

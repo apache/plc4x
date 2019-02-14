@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
   </parent>
 
   <artifactId>plc4j-protocols</artifactId>
@@ -38,10 +38,11 @@
 
     <module>ads</module>
     <module>delta-v</module>
-    <module>ethernetip</module>
+    <module>ethernet-ip</module>
+    <module>iso-on-tcp</module>
+    <module>iso-tp</module>
     <module>modbus</module>
     <module>s7</module>
-    <module>test</module>
 
     <module>benchmarks</module>
   </modules>

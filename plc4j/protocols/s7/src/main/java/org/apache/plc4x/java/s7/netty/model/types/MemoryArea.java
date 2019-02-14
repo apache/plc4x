@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * (Values determined by evaluating generated ".pcapng" files)
+ * (Values determined by evaluating generated ".pcap" files)
  */
 public enum MemoryArea {
     COUNTERS("C", (byte) 0x1C), /* Renamed from "S7 Counters" */ // TODO: Double check shortName
@@ -75,6 +75,7 @@ public enum MemoryArea {
         }
         return null;
     }
+
     public static MemoryArea valueOf(byte code) {
         return map.get(code);
     }

@@ -19,85 +19,227 @@
 
 package org.apache.plc4x.java.opm;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
-import org.junit.Test;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
+import org.apache.plc4x.java.mock.MockDevice;
+import org.apache.plc4x.java.mock.PlcMockConnection;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class PlcEntityManagerTest {
+@ExtendWith(MockitoExtension.class)
+public class PlcEntityManagerTest implements WithAssertions {
 
-    @Test
-    public void read_throwsInvalidFieldException_rethrows() throws PlcConnectionException {
-        // Prepare the Mock
-        PlcDriverManager driverManager = Mockito.mock(PlcDriverManager.class);
-        PlcConnection connection = Mockito.mock(PlcConnection.class);
-        PlcConnectionMetadata metadata = Mockito.mock(PlcConnectionMetadata.class);
-        PlcReadRequest.Builder builder = Mockito.mock(PlcReadRequest.Builder.class);
-        when(metadata.canRead()).thenReturn(true);
-        when(connection.readRequestBuilder()).thenReturn(builder);
-        when(connection.getMetadata()).thenReturn(metadata);
-        when(builder.build()).thenThrow(new PlcInvalidFieldException("field1"));
-        when(driverManager.getConnection(any())).thenReturn(connection);
+    @Nested
+    class Read {
 
-        // Create Entity Manager
-        PlcEntityManager entityManager = new PlcEntityManager(driverManager);
+        @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+        PlcDriverManager driverManager;
 
-        // Issue Call to trigger interception
-        String message = null;
-        try {
-            BadEntity entity = entityManager.read(BadEntity.class, "mock:test");
-        } catch (Exception e) {
-            message = e.getMessage();
+        @Test
+        public void throwsInvalidFieldException_rethrows() throws PlcConnectionException {
+            // Prepare the Mock
+            when(driverManager.getConnection(any()).readRequestBuilder().build())
+                .thenThrow(new PlcInvalidFieldException("field1"));
+
+            // Create Entity Manager
+            PlcEntityManager entityManager = new PlcEntityManager(driverManager);
+
+            // Issue Call to trigger interception
+            assertThatThrownBy(() -> entityManager.read(BadEntity.class, "mock:test"))
+                .hasCauseInstanceOf(PlcInvalidFieldException.class)
+                .hasStackTraceContaining("field1 invalid");
         }
 
-        assertEquals("Unable to parse field 'field1'", message);
-    }
+        @Test
+        public void unableToConnect_rethrows() throws PlcConnectionException {
+            // Prepare the Mock
+            when(driverManager.getConnection(any()))
+                .thenThrow(new PlcConnectionException(""));
 
-    @Test
-    public void read_unableToConnect_rethrows() throws PlcConnectionException {
-        // Prepare the Mock
-        PlcDriverManager driverManager = Mockito.mock(PlcDriverManager.class);
-        when(driverManager.getConnection(any())).thenThrow(new PlcConnectionException(""));
+            // Create Entity Manager
+            PlcEntityManager entityManager = new PlcEntityManager(driverManager);
 
-        // Create Entity Manager
-        PlcEntityManager entityManager = new PlcEntityManager(driverManager);
-
-        // Issue Call to trigger interception
-        String message = null;
-        try {
-            BadEntity entity = entityManager.read(BadEntity.class, "mock:test");
-        } catch (Exception e) {
-            message = e.getMessage();
+            // Issue Call to trigger interception
+            assertThatThrownBy(() -> entityManager.read(BadEntity.class, "mock:test"))
+                .hasCauseInstanceOf(PlcConnectionException.class)
+                .hasStackTraceContaining("Problem during processing");
         }
 
-        assertEquals("Unable to get connection with url 'mock:test'", message);
+        @Test
+        public void timeoutOnGet_throwsException() throws PlcConnectionException {
+            // Prepare the Mock
+            MockDevice mockDevice = Mockito.mock(MockDevice.class);
+            PlcDriverManager driverManager = new PlcDriverManager();
+            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            when(mockDevice.read(any())).thenAnswer(invocation -> {
+                // Sleep for 3s
+                Thread.sleep(3_000);
+                return Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("Hallo"));
+            });
+            connection.setDevice(mockDevice);
+
+            // Create Entity Manager
+            PlcEntityManager entityManager = new PlcEntityManager(driverManager);
+
+            // Issue Call which SHOULD timeout
+            assertThatThrownBy(() -> entityManager.read(BadEntity.class, "mock:test"))
+                .isInstanceOf(OPMException.class);
+        }
+
+        @Test
+        public void uninstantiableEntity_throws() {
+            PlcEntityManager entityManager = new PlcEntityManager();
+
+            assertThatThrownBy(() -> entityManager.read(UninstantiableEntity.class, "mock:test"))
+                .isInstanceOf(OPMException.class);
+        }
+
+        @Test
+        public void resolveAlias_works() throws OPMException, PlcConnectionException {
+            SimpleAliasRegistry registry = new SimpleAliasRegistry();
+            registry.register("alias", "real_field");
+
+            // Mock
+            PlcDriverManager driverManager = new PlcDriverManager();
+            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockDevice mockDevice = Mockito.mock(MockDevice.class);
+            when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("value")));
+            connection.setDevice(mockDevice);
+
+            PlcEntityManager entityManager = new PlcEntityManager(driverManager, registry);
+            entityManager.read(AliasEntity.class, "mock:test");
+
+            // Assert that "field" was queried
+            verify(mockDevice).read(eq("real_field"));
+        }
+
+
+        @Test
+        public void unknownAlias_throws() {
+            PlcEntityManager entityManager = new PlcEntityManager();
+
+            assertThatThrownBy(() -> entityManager.read(AliasEntity.class, "mock:test"))
+                .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        public void badAlias_throws() {
+            PlcEntityManager entityManager = new PlcEntityManager();
+
+            String message = null;
+            try {
+                entityManager.read(BadAliasEntity.class, "mock:test");
+            } catch (IllegalArgumentException e) {
+                message = e.getMessage();
+            } catch (OPMException e) {
+                fail("Unexpected Exception" + e);
+            }
+
+            assertNotNull(message);
+            assertTrue(message.contains("Invalid Syntax, either use field address (no starting $) or an alias with Syntax ${xxx}. But given was"));
+        }
     }
 
-    @Test(expected = OPMException.class)
-    public void read_uninstantiableEntity_throws() throws OPMException {
-        PlcEntityManager entityManager = new PlcEntityManager();
+    @Nested
+    class Write {
 
-        UninstantiableEntity entity = entityManager.read(UninstantiableEntity.class, "mock:test");
+        @Test
+        void simpleWrite() throws Exception {
+            SimpleAliasRegistry registry = new SimpleAliasRegistry();
+            registry.register("alias", "real_field");
+
+            // Mock
+            PlcDriverManager driverManager = new PlcDriverManager();
+            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockDevice mockDevice = Mockito.mock(MockDevice.class);
+            when(mockDevice.write(anyString(), any())).thenReturn(PlcResponseCode.OK);
+            when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("value")));
+            connection.setDevice(mockDevice);
+
+            PlcEntityManager entityManager = new PlcEntityManager(driverManager, registry);
+            AliasEntity object = new AliasEntity();
+            object.setAliasedField("changed");
+            AliasEntity connected = entityManager.write(AliasEntity.class, "mock:test", object);
+            connected.setAliasedField("changed2");
+            connected.getAliasedField();
+            verify(mockDevice, times(0)).read(eq("real_field"));
+            verify(mockDevice, times(1)).write(eq("real_field"), any());
+            AliasEntity merge = entityManager.merge(AliasEntity.class, "mock:test", connected);
+            merge.setAliasedField("changed2");
+            merge.getAliasedField();
+
+            // Assert that "field" was queried
+            verify(mockDevice, times(1)).read(eq("real_field"));
+            verify(mockDevice, times(3)).write(eq("real_field"), any());
+
+            entityManager.disconnect(merge);
+            assertThat(merge.getAliasedField()).isEqualTo("value");
+        }
+
+        @Test
+        void simpleWrite_uses_getter() throws Exception {
+            // Mock
+            PlcDriverManager driverManager = new PlcDriverManager();
+            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockDevice mockDevice = Mockito.mock(MockDevice.class);
+            when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("value")));
+            connection.setDevice(mockDevice);
+
+            PlcEntityManager entityManager = new PlcEntityManager(driverManager);
+            CustomGetterEntity connect = entityManager.connect(CustomGetterEntity.class, "mock:test");
+            assertThat(connect.getAsd()).isEqualTo("value!");
+        }
     }
 
-    /**
-     * Class is private, so EntityManager has no access to it
-     * @throws OPMException
-     */
-    @Test(expected = OPMException.class)
-    public void connect_uninstantiableEntity_throws() throws OPMException {
-        PlcEntityManager entityManager = new PlcEntityManager();
+    @Nested
+    class Lifecycle {
+        /**
+         * Class is private, so EntityManager has no access to it
+         *
+         * @throws OPMException
+         */
+        @Test
+        public void connect_uninstantiableEntity_throws() {
+            PlcEntityManager entityManager = new PlcEntityManager();
 
-        UninstantiableEntity entity = entityManager.connect(UninstantiableEntity.class, "mock:test");
+            assertThatThrownBy(() -> entityManager.connect(UninstantiableEntity.class, "mock:test"))
+                .isInstanceOf(OPMException.class);
+        }
+
+        @Test
+        public void connect_resolveAlias_works() throws PlcConnectionException, OPMException {
+            SimpleAliasRegistry registry = new SimpleAliasRegistry();
+            registry.register("alias", "real_field");
+
+            // Mock
+            PlcDriverManager driverManager = new PlcDriverManager();
+            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockDevice mockDevice = Mockito.mock(MockDevice.class);
+            when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("value")));
+            connection.setDevice(mockDevice);
+
+            PlcEntityManager entityManager = new PlcEntityManager(driverManager, registry);
+            entityManager.connect(AliasEntity.class, "mock:test");
+
+            // Assert that "field" was queried
+            verify(mockDevice, times(1)).read(eq("real_field"));
+        }
     }
 
     @PlcEntity
@@ -123,4 +265,54 @@ public class PlcEntityManagerTest {
             return field1;
         }
     }
+
+    @PlcEntity
+    public static class AliasEntity {
+
+        @PlcField("${alias}")
+        private String aliasedField;
+
+        public AliasEntity() {
+            // for OPM
+        }
+
+        public String getAliasedField() {
+            return aliasedField;
+        }
+
+        public void setAliasedField(String aliasedField) {
+            this.aliasedField = aliasedField;
+        }
+    }
+
+    @PlcEntity
+    public static class BadAliasEntity {
+
+        @PlcField("${alias")
+        private String aliasedField;
+
+        public BadAliasEntity() {
+            // for OPM
+        }
+
+        public String getAliasedField() {
+            return aliasedField;
+        }
+    }
+
+    @PlcEntity
+    public static class CustomGetterEntity {
+
+        @PlcField("asd")
+        private String asd;
+
+        public CustomGetterEntity() {
+            // for OPM
+        }
+
+        public String getAsd() {
+            return asd + "!";
+        }
+    }
+
 }

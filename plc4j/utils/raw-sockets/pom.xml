@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
   </parent>
 
   <artifactId>plc4j-utils-raw-sockets</artifactId>
@@ -42,6 +42,7 @@
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-packetfactory-static</artifactId>
@@ -56,6 +57,13 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
+      <version>0.3.0</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

@@ -29,7 +29,7 @@
 
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
   <packaging>pom</packaging>
 
   <name>PLC4X</name>
@@ -44,14 +44,14 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</developerConnection>
     <url>https://github.com/apache/incubator-plc4x</url>
-    <tag>release/0.2.0</tag>
+    <tag>release/0.3.0</tag>
   </scm>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</url>
+      <url>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x-website.git</url>
     </site>
   </distributionManagement>
 
@@ -88,23 +88,49 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
+    <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
-    <commons-io.version>2.6</commons-io.version>
+    <bouncycastle.version>1.60</bouncycastle.version>
+    <byte-buddy.version>1.8.21</byte-buddy.version>
     <commons-codec.version>1.11</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
+    <commons-configuration2.version>2.2</commons-configuration2.version>
+    <commons-io.version>2.6</commons-io.version>
     <commons-lang.version>2.6</commons-lang.version>
+    <commons-lang3.version>3.7</commons-lang3.version>
+    <commons-math3.version>3.5</commons-math3.version>
+    <commons-pool2.version>2.6.0</commons-pool2.version>
+    <commons-text.version>1.4</commons-text.version>
+    <crc.version>1.0.1</crc.version>
+    <daffodil.version>2.2.0</daffodil.version>
+    <elasticsearch.version>6.4.2</elasticsearch.version>
+    <equalsverifier.version>3.0.2</equalsverifier.version>
+    <findbugs.version>3.0.1</findbugs.version>
     <groovy.version>2.5.3</groovy.version>
     <gson.version>2.8.0</gson.version>
+    <guava.version>27.0.1-jre</guava.version>
     <hamcrest.version>1.3</hamcrest.version>
-    <junit.version>4.12</junit.version>
+    <jackson.version>2.9.7</jackson.version>
+    <jna.version>4.5.1</jna.version>
+    <joda-time.version>2.10</joda-time.version>
+    <jopt-simple.version>5.0.2</jopt-simple.version>
     <junit.jupiter.version>5.2.0</junit.jupiter.version>
     <junit.platform.version>1.2.0</junit.platform.version>
+    <junit.version>4.12</junit.version>
+    <log4j.version>2.11.1</log4j.version>
     <logback.version>1.2.3</logback.version>
+    <lucene.version>7.4.0</lucene.version>
+    <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.22.0</mockito.version>
     <netty.version>4.1.23.Final</netty.version>
+    <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
     <pcap4j.version>1.7.3</pcap4j.version>
+    <scala.version>2.12.6</scala.version>
     <slf4j.version>1.7.25</slf4j.version>
+    <snakeyaml.version>1.23</snakeyaml.version>
+    <spock-reports.version>1.6.1</spock-reports.version>
     <spock.version>1.2-groovy-2.5</spock.version>
+    <t-digest.version>3.2</t-digest.version>
 
     <!-- Site properties -->
     <bootstrap.version>3.3.7</bootstrap.version>
@@ -114,8 +140,12 @@
   </properties>
 
   <modules>
+    <!-- Definition of the protocol message formats -->
+    <module>protocols</module>
+
     <!-- Core PLC4X modules -->
     <module>plc4c</module>
+    <!--module>plc4cpp</module-->
     <module>plc4j</module>
     <module>plc4s</module>
 
@@ -148,9 +178,64 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>com.athaydes</groupId>
+        <artifactId>spock-reports</artifactId>
+        <version>${spock-reports.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-cbor</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-smile</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>${findbugs.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
         <version>${gson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.tdunning</groupId>
+        <artifactId>t-digest</artifactId>
+        <version>${t-digest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons-codec.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -158,14 +243,9 @@
         <version>${commons-io.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-collections4</artifactId>
-        <version>${commons-collections4.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-codec</groupId>
-        <artifactId>commons-codec</artifactId>
-        <version>${commons-codec.version}</version>
+        <groupId>io.dropwizard</groupId>
+        <artifactId>metrics-core</artifactId>
+        <version>${metrics-core.version}</version>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
@@ -208,29 +288,222 @@
         <version>${netty.version}</version>
       </dependency>
       <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda-time.version}</version>
+      </dependency>
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>${junit.jupiter.version}</version>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${byte-buddy.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-params</artifactId>
-        <version>${junit.jupiter.version}</version>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy-agent</artifactId>
+        <version>${byte-buddy.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junit.jupiter.version}</version>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>${jna.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${junit.jupiter.version}</version>
+        <groupId>net.sf.jopt-simple</groupId>
+        <artifactId>jopt-simple</artifactId>
+        <version>${jopt-simple.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>nl.jqno.equalsverifier</groupId>
+        <artifactId>equalsverifier</artifactId>
+        <version>${equalsverifier.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>${commons-collections4.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-configuration2</artifactId>
+        <version>${commons-configuration2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${commons-math3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-pool2</artifactId>
+        <version>${commons-pool2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>${commons-text.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.daffodil</groupId>
+        <artifactId>daffodil-lib_2.12</artifactId>
+        <version>${daffodil.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.daffodil</groupId>
+        <artifactId>daffodil-tdml_2.12</artifactId>
+        <version>${daffodil.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-common</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-backward-codecs</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-grouping</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-highlighter</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-join</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-memory</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-misc</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queries</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-sandbox</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial3d</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial-extras</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-suggest</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${maven.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcmail-jdk15on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcpkix-jdk15on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk15on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-test-junit5</artifactId>
+        <version>${groovy.version}</version>
+        <!-- Ensure we only use this in test -->
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.elasticsearch</groupId>
+        <artifactId>elasticsearch</artifactId>
+        <version>${elasticsearch.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.elasticsearch</groupId>
+        <artifactId>elasticsearch-x-content</artifactId>
+        <version>${elasticsearch.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.elasticsearch.plugin</groupId>
+        <artifactId>transport-netty4-client</artifactId>
+        <version>${elasticsearch.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.snksoft</groupId>
+        <artifactId>crc</artifactId>
+        <version>${crc.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
@@ -243,6 +516,26 @@
         <version>${hamcrest.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit.jupiter.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit.jupiter.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit.jupiter.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>${junit.jupiter.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${mockito.version}</version>
@@ -253,25 +546,19 @@
         <version>${mockito.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
-        <scope>test</scope>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>${jmh.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>${jmh.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.7</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-configuration2</artifactId>
-        <version>2.2</version>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${asm.version}</version>
       </dependency>
       <dependency>
         <groupId>org.pcap4j</groupId>
@@ -283,13 +570,15 @@
         <artifactId>pcap4j-packetfactory-static</artifactId>
         <version>${pcap4j.version}</version>
       </dependency>
-
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-test-junit5</artifactId>
-        <version>${groovy.version}</version>
-        <!-- Ensure we only use this in test -->
-        <scope>test</scope>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>${scala.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.spockframework</groupId>
@@ -297,50 +586,26 @@
         <version>${spock.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${snakeyaml.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>se.koc</groupId>
+        <artifactId>netty-transport-jserialcomm</artifactId>
+        <version>${netty-transport-jserialcomm.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <build>
     <plugins>
-      <!-- As some plugins require a minimum version of maven, check that this requirement is meet. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M1</version> <!--$NO-MVN-MAN-VER$-->
-        <executions>
-          <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
-          <execution>
-            <id>vulnerability-checks</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <version>1.8.0</version>
-                </requireJavaVersion>
-                <!-- Disabled for now as it breaks the ability to build single modules -->
-                <!--reactorModuleConvergence/-->
-                <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies" />
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.sonatype.ossindex.maven</groupId>
-            <artifactId>ossindex-maven-enforcer-rules</artifactId>
-            <version>1.0.0</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
       <!-- Plugin for analysing the project based on neo4j queries -->
       <plugin>
         <groupId>com.buschmais.jqassistant</groupId>
         <artifactId>jqassistant-maven-plugin</artifactId>
-        <version>1.5.0</version>
+        <version>1.6.0</version>
         <executions>
           <execution>
             <goals>
@@ -393,7 +658,7 @@
             <exclude>**/*.iml</exclude>
 
             <!-- Wireshark Captures -->
-            <exclude>**/*.pcapng</exclude>
+            <exclude>**/*.pcap</exclude>
 
             <!-- Asciidoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>
@@ -403,6 +668,9 @@
 
             <!-- Data files created by examples running an embedded elasticsearch -->
             <exclude>elasticsearch-data/**</exclude>
+
+            <!-- JSON doesn't like comments -->
+            <exclude>**/*.json</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -531,7 +799,9 @@
             </goals>
             <configuration>
               <url>https://stackpath.bootstrapcdn.com/bootswatch/${bootstrap.version}/flatly/bootstrap.min.css</url>
-              <outputDirectory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/</outputDirectory>
+              <outputDirectory>
+                ${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/
+              </outputDirectory>
               <outputFileName>bootstrap.min.css</outputFileName>
             </configuration>
           </execution>
@@ -542,7 +812,9 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip</url>
+              <url>
+                https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip
+              </url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
             </configuration>
@@ -564,14 +836,18 @@
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/anchorjs/${anchorjs.version}</directory>
+                  <directory>
+                    ${project.build.directory}/dependency/META-INF/resources/webjars/anchorjs/${anchorjs.version}
+                  </directory>
                   <targetPath>${project.build.directory}/site/js</targetPath>
                   <includes>
                     <include>anchor.min.js</include>
                   </includes>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}</directory>
+                  <directory>
+                    ${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}
+                  </directory>
                   <includes>
                     <include>css/bootstrap.min.css</include>
                     <include>js/bootstrap.min.js</include>
@@ -579,17 +855,22 @@
                   </includes>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web</directory>
+                  <directory>
+                    ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web
+                  </directory>
                   <includes>
                     <include>css/all.min.css</include>
                   </includes>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts</directory>
+                  <directory>
+                    ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts
+                  </directory>
                   <targetPath>${project.build.directory}/site/fonts</targetPath>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/${jquery.version}</directory>
+                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/${jquery.version}
+                  </directory>
                   <targetPath>${project.build.directory}/site/js</targetPath>
                   <includes>
                     <include>jquery.min.js</include>
@@ -710,6 +991,18 @@
         </plugin>
 
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <version>1.4</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>4.1.0</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.8.2</version>
@@ -725,19 +1018,6 @@
             <testTarget>${java.version}</testTarget>
           </configuration>
         </plugin>
-
-        <!--plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <dependencies>
-            <!- Try to get rid of out of heap errors on travis. ->
-            <dependency>
-              <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-archiver</artifactId>
-              <version>3.3</version>
-            </dependency>
-          </dependencies>
-        </plugin-->
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -773,7 +1053,7 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.5.0.1254</version>
+          <version>3.6.0.1398</version>
         </plugin>
 
         <!-- Configure the Site generation -->
@@ -1007,6 +1287,20 @@
   </reporting>
 
   <profiles>
+    <!-- Build PLC4X including the CPP modules -->
+    <profile>
+      <id>with-cpp</id>
+      <modules>
+        <module>plc4cpp</module>
+      </modules>
+    </profile>
+
+    <!--
+      This profile is intended to help when having problems with Maven.
+      When enabled, it automatically generates an "effective.pom" in the target directory.
+      This version is the fully expanded version where all inherited configuration is in
+      place and all variables are resolved and profile configuration is included.
+    -->
     <profile>
       <id>debug-pom</id>
       <build>
@@ -1031,10 +1325,62 @@
       </build>
     </profile>
 
+    <!--
+      This profile adds some additional configuration that should only be applied when running on jenkins.
+    -->
     <profile>
       <id>jenkins-build</id>
       <properties>
       </properties>
+    </profile>
+
+    <!--
+      This profile adds some additional checks and settings that should apply during development,
+      but could cause problems after that. As an example it would be impossible to build a released
+      version, if after the release CVEs were reported for one of its dependencies.
+    -->
+    <profile>
+      <id>development</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>3.0.0-M1</version> <!--$NO-MVN-MAN-VER$-->
+            <executions>
+              <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
+              <execution>
+                <id>sanity-checks</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <version>1.8.0</version>
+                    </requireJavaVersion>
+                    <reactorModuleConvergence />
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>4.0.2</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
     <!--
@@ -1272,6 +1618,35 @@
           </plugin>
 
           <!--
+            Generate an OSGI compatible MANIFEST file.
+          -->
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>bundle-manifest</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>manifest</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!--
+            Use the MANIFEST file generated by the maven-bundle-plugin.
+          -->
+          <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+              <archive>
+                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+              </archive>
+            </configuration>
+          </plugin>
+
+          <!--
             Make the failsafe execute all integration-tests
           -->
           <plugin>
@@ -1296,6 +1671,11 @@
       </build>
     </profile>
 
+    <!--
+      This profile extends the default "apache-release" configuration with automatic checksum-
+      generation for the release source artifact. It is automatically activated during the
+      release build and only needed there.
+    -->
     <profile>
       <id>apache-release</id>
       <build>

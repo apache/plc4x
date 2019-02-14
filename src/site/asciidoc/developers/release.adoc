@@ -63,34 +63,127 @@ He can then sign your key and hereby enable you to sign Apache release artifacts
 
 There's a detailed description https://github.com/apache/incubator-pulsar/wiki/Create-GPG-keys-to-sign-release-artifacts[here].
 
+If you happen to have multiple keys, adding the following profile to your `settings.xml` should help:
+
+    <profile>
+      <id>apache-release</id>
+      <properties>
+        <gpg.keyname>5C60D6B9</gpg.keyname><!-- Your GPG Keyname here -->
+        <!-- Use an agent: Prevents being asked for the password during the build -->
+        <gpg.useagent>true</gpg.useagent>
+        <gpg.passphrase>topsecret-password</gpg.passphrase>
+      </properties>
+    </profile>
+
+=== Preparing the codebase for a release
+
+Usually you will have to update the RELEASE_NOTES document to the new version.
+I would suggest doing this prior to the branch as otherwise you will definitely have to port it back to `develop`.
+So remove the `SNAPSHOT` and `(Unreleased)` markers from the file and add missing parts.
+
+Also if you are doing the first release in a new year, it is advisable to search for the old year and check if any occurrences are ok the way they are.
+Usually the `NOTICE` file has to be adjusted.
+
+=== Creating a release branch
+
+According to SemVer, we have: Major, Minor and Bugfix releases.
+
+For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
+
+So if currently the project version in develop is `0.2.0-SNAPSHOT`, we create a branch `rel/0.2`.
+
+When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
+
+This can and should be automated by the `maven-release-plugin`.
+
+Per default the plugin will ask for the working copy version during the build execution.
+This is the version the `develop` branch will be changed to.
+
+The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
+Otherwise we would have to define the working copy version for each module.
+
+   mvn release:branch -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
+
+Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
+So in case of preparing the release branch for `0.2.0-SNAPSHOT` the command would be the following:
+
+   mvn release:branch -DbranchName=rel/0.2 -DautoVersionSubmodules=true
+
+The plugin will then aks for the version:
+
+   What is the new working copy version for "PLC4X"? (org.apache.plc4x:plc4x-parent) 0.2.1-SNAPSHOT: : 0.3.0-SNAPSHOT
+
+Where the suggested default is manually overridden.
+
+This step now should perform quite quickly as no build and no tests are involved.
+
+However in the end the versions of the `develop` branch are updated and a new `rel/0.2` branch is created.
+
+=== Preparing `develop` for the next iteration
+
+Now is a good time to add a new section to the `RELEASE_NOTES` document for the new `SNAPSHOT` version.
+
+Here comes a template:
+
+```
+==============================================================
+(Unreleased) Apache PLC4X (incubating) 0.X.0-SNAPSHOT
+==============================================================
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+// Rest of the file
+
+```
+
+Also be sure to do a quick full-text-search to check if the version was updated correctly everywhere.
+
+WARNING: If you find anything here, you will need to pay attention during the release.
+
+=== Release stabilization phase
+
+Now usually comes a phase in which last tests and checks should be perfomed.
+
+If any problems are found they have to be fixed in the release branch.
+
+Changes should either be re applied in `develop` or `cherry-picked`, however merging things back can cause a lot of problems ans we no longer have the same versions.
+
 === Preparing a release
 
-In order to prepare a release-candidate, the following command will prepare the repository:
+In order to prepare a release-candidate, the first step is switching to the corresponding release-branch.
+
+After that, the following command will to all preparation steps for the release:
 
    mvn release:prepare -DautoVersionSubmodules=true
-
-The parameter `autoVersionSubmodules` flag will tell the release plugin to release all modules with the same version.
-Otherwise we would have to define the release and development version for each module.
 
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
-2. The name of the tag the release commit will be tagged with in the SCM (Name it `rel/{release-version}`
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `release/{release-version}`
 3. The next development version (The version present in the pom after the release)
 
-That the plugin does, is:
+Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
+
+What the plugin now does, is automatically execute the following operations:
 
 1. Check we aren't referencing any `SNAPSHOT` dependencies.
 2. Update all pom versions to the release version.
 3. Run a build with all tests
-4. Commit the changes (labeled `[maven-release-plugin] prepare release {tagname}`)
+4. Commit the changes (commit message: `[maven-release-plugin] prepare release {tagname}`)
 5. Push the commit
 6. Tag the commit
 7. Update all poms to the next development version.
-8. Commit the changes (labeled `[maven-release-plugin] prepare for next development iteration`)
+8. Commit the changes (commit message: `[maven-release-plugin] prepare for next development iteration`)
 9. Push the commit
 
-However this just prepared the repository for the release, we have to perform the release to get the release artifacts.
+However this just prepared the git repository for the release, we have to perform the release to produce and stage the release artifacts.
 
 == What if something goes wrong?
 
@@ -113,7 +206,7 @@ This executes automatically as all information it requires is located in the `re
 The first step is that the `perform` goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
-   mvn clean deploy -P apache release
+   mvn clean deploy -P apache-release
 
 This builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
 
@@ -165,7 +258,7 @@ It should contain all the information needed.
 Be sure to stage exactly the `README` and `RELEASE_NOTES` files contained in the root of your project.
 Ideally you just copy them there from there.
 
-All of the four `*-source-relese.zip*` artifacts should be located in the directory: `target/checkout/target`
+All of the three `*-source-relese.zip*` artifacts should be located in the directory: `target/checkout/target`
 
 So after committing these files to SVN you are ready to start the vote.
 
@@ -189,7 +282,7 @@ The following is the one used to do our first release:
    A minimum of 3 binding +1 votes and more binding +1 than binding -1
    are required to pass.
 
-   Release tag: rel/0.1.0
+   Release tag: release/0.1.0
    Hash for the release tag: 8c1e0c1b85ce15814f2c08e0eec5d593951d168d
 
    Per [3] "Before voting +1 [P]PMC members are required to download
@@ -204,8 +297,8 @@ The following is the one used to do our first release:
    [ ]  -1 reject (explanation required)
 
 
-   [1] https://repository.apache.org/content/repositories/orgapacheplc4x-1000
-   [2] https://dist.apache.org/repos/dist/dev/incubator/plc4x/0.1.0-incubating/rc1
+   [1] https://repository.apache.org/content/repositories/orgapacheplc4x-1003
+   [2] https://dist.apache.org/repos/dist/dev/incubator/plc4x/0.2.0-incubating/rc1
    [3] https://www.apache.org/dev/release.html#approving-a-release
    [4] https://cwiki.apache.org/confluence/display/PLC4X/Validating+a+staged+Release
 ```

@@ -20,5 +20,5 @@ package org.apache.plc4x.java.base.messages;
 
 import org.apache.plc4x.java.api.messages.PlcRequest;
 
-public interface InternalPlcRequest extends PlcRequest {
+public interface InternalPlcRequest extends PlcRequest, InternalPlcMessage {
 }

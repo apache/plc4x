@@ -26,11 +26,11 @@ Just like OPC-UA, but totally different.
 
 We are currently probably experiencing the greatest advances in the way we process information in human history.
 
-While these advances are taking over more and more parts of our world, it seems one large segment has been continuously been missing out all the fun.
+While these advances are taking over more and more parts of our world, it seems one large segment has continuously been missing out all the fun.
 
 As everyone is talking about IoT, virtualization, BigData, FastData and machine-learning, the manufacturing industry has seemed to been stuck in a closed-source proprietary world.
 
-Unfortunately the industries Programmable Logic Controllers (PLCs) communicate in large set of usually incompatible protocols.
+Unfortunately the industry's Programmable Logic Controllers (PLCs) communicate with a large number of usually incompatible protocols.
 This has made it difficult to create applications that integrate these systems with the new world.
 
 This is where PLC4X comes in:

@@ -1,4 +1,46 @@
 ==============================================================
+Apache PLC4X (incubating) 0.3.0
+==============================================================
+
+This is the third official release of Apache PLC4X.
+
+Some new features have been added (e.g. plc-scraper) multiple
+new integrations are included (apache-karaf, apache-calcite)
+and a lot of (technical) refactoring has been done to prepare
+future work on adapters in different languages.
+
+New Features
+------------
+
+- Object PLC Mapping (OPM) now has a Alias Registry to allow
+  variable substitution at runtime and write support
+- New module `plc-scraper` for applications that have to
+  scrape a lot of sps fields with high frequency
+- New integration `apache-karaf` to enable plc4j in a karaf
+  runtime environment
+
+Incompatible changes
+--------------------
+- The 'plc4j-core' module has been merged into 'plc4j-api'.
+  So there is no 'plc4j-core' module anymore. Just remove that
+  dependency.
+- The driver artifact names have changed so if you were using
+  a `plc4j-protocol-{name}` you now need to change this to
+  `plc4j-driver-{name}`
+
+Bug Fixes
+---------
+
+PLC4X-75    Fixing dependency to the wrap url-handler
+PLC4X-76    When receiving responses with more than 512 byte,
+            the IsoOnTcp protocol doesn't work
+PLC4X-77    When the last item in a request is a DINT, the
+            DefaultS7MessageProcessor dies
+PLC4X-78    Write operations seem to fail
+-           Fixed a Bug where S7 was not able to read arrays.
+
+
+==============================================================
 Apache PLC4X (incubating) 0.2.0
 ==============================================================
 
@@ -16,7 +58,7 @@ A new connection-pool was added, which allows automatic
 pooling and reuse of PLC connections.
 
 A new OPM module was added, which allows JPA like read-
-communication using POJOs, very similar to PJA.
+communication using POJOs, very similar to JPA.
 
 A stub of a new driver for the Emerson DeltaV protocol
 has been added, but is not yet a fully functional PLC4X

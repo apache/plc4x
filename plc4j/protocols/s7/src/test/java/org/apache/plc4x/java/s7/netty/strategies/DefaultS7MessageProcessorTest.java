@@ -21,9 +21,11 @@ package org.apache.plc4x.java.s7.netty.strategies;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
+import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
@@ -33,6 +35,7 @@ import org.junit.Test;
 
 import java.util.*;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -256,6 +259,36 @@ public class DefaultS7MessageProcessorTest {
     }
 
     /**
+     * In this request, the request size itself is way within the bounds set by the PDU size parameter,
+     * however the estimated size of the response would exceed this greatly. In contrast to the test above
+     * a single item is too large for being sent at all. So in this case the item should be split up into
+     * multiple element and joined together after all sub-messages are returned.
+     *
+     * @throws PlcException something went wrong.
+     */
+    @Test
+    public void readMessageWithTooLargeResponseSize() throws PlcException {
+        S7RequestMessage request = createReadMessage(
+            Collections.singletonList(
+                new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                    TransportSize.REAL, (short) 400, (short) 1, (short) 0, (byte) 0)));
+        Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 256);
+
+        assertThat(processedRequests, notNullValue());
+        assertThat(processedRequests, hasSize(7));
+
+        int totalNumItems = 0;
+        for (S7RequestMessage requestMessage : processedRequests) {
+            Optional<VarParameter> parameter = requestMessage.getParameter(VarParameter.class);
+            assertThat(parameter.isPresent(), is(true));
+            VarParameter varParameter = parameter.get();
+            assertThat(varParameter.getItems(), hasSize(1));
+            totalNumItems += ((S7AnyVarParameterItem) varParameter.getItems().iterator().next()).getNumElements();
+        }
+        assertThat(totalNumItems, equalTo(400));
+    }
+
+    /**
      * In this request, we only send one single element to one single field. Nothing should be changed.
      *
      * @throws PlcException something went wrong.
@@ -310,7 +343,7 @@ public class DefaultS7MessageProcessorTest {
         // Initialize a set of expected fields.
         Set<String> expectedFields = new HashSet<>(10);
         for(int i = 0; i < 10; i++) {
-            expectedFields.add(Integer.toString(i / 8) + "/" + Integer.toString(i % 8));
+            expectedFields.add(i / 8 + "/" + i % 8);
         }
 
         // We are expecting to receive 10 messages as we had an array of 10 items.
@@ -334,8 +367,7 @@ public class DefaultS7MessageProcessorTest {
             assertThat(s7AnyParameterItem.getMemoryArea(), is(MemoryArea.DATA_BLOCKS));
             assertThat(s7AnyParameterItem.getDataType(), is(TransportSize.BOOL));
             assertThat(s7AnyParameterItem.getNumElements(), is(1));
-            String fieldString = Short.toString(
-                s7AnyParameterItem.getByteOffset()) + "/" + Byte.toString(s7AnyParameterItem.getBitOffset());
+            String fieldString = s7AnyParameterItem.getByteOffset() + "/" + s7AnyParameterItem.getBitOffset();
             assertThat(expectedFields, IsCollectionContaining.hasItem(fieldString));
 
             VarPayloadItem payloadItem = varPayload.getItems().iterator().next();
@@ -364,7 +396,7 @@ public class DefaultS7MessageProcessorTest {
         S7RequestMessage request = createWriteMessage(
             Collections.singletonList(
                 new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                    TransportSize.BYTE, (short) 10, (short) 1, (short) 0, (byte) 0)),
+                    TransportSize.BYTE, 10, 1, (short) 0, (byte) 0)),
             Collections.singletonList(
                 new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[] {
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A}))
@@ -372,9 +404,9 @@ public class DefaultS7MessageProcessorTest {
         Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         // Initialize a set of expected fields.
-        Set<Short> expectedFields = new HashSet<>(10);
+        Set<Integer> expectedFields = new HashSet<>(10);
         for(int i = 0; i < 10; i++) {
-            expectedFields.add((short) i);
+            expectedFields.add(i);
         }
 
         // We are expecting to receive 10 messages as we had an array of 10 items.
@@ -443,9 +475,9 @@ public class DefaultS7MessageProcessorTest {
         Collection<S7RequestMessage> processedRequests = SUT.processRequest(request, 250);
 
         // Initialize a set of expected fields.
-        Set<Short> expectedFields = new HashSet<>(10);
+        Set<Integer> expectedFields = new HashSet<>(10);
         for(int i = 0; i < 10; i++) {
-            expectedFields.add((short) (i * 4));
+            expectedFields.add((i * 4));
         }
 
         // We are expecting to receive 10 messages as we had an array of 10 items.
@@ -600,15 +632,42 @@ public class DefaultS7MessageProcessorTest {
     @Test
     public void processCompositeMessageReadResponse() throws PlcException {
         S7RequestMessage originalRequestMessage = new S7RequestMessage(MessageType.JOB, (short) 1,
-            Collections.emptyList(), Collections.emptyList(), null);
+            Collections.singletonList(
+                new VarParameter(ParameterType.READ_VAR,
+                    Arrays.asList(
+                        new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                            TransportSize.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0),
+                        new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                            TransportSize.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))
+                )
+            ),
+            Collections.emptyList(),
+            null);
         DefaultS7MessageProcessor.S7CompositeRequestMessage compositeRequestMessage =
             new DefaultS7MessageProcessor.S7CompositeRequestMessage(originalRequestMessage);
 
-        S7RequestMessage fragment1RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 2,
-            Collections.emptyList(), Collections.emptyList(), compositeRequestMessage);
+        S7RequestMessage fragment1RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 1,
+            Collections.singletonList(
+                new VarParameter(ParameterType.READ_VAR,
+                    Arrays.asList(
+                        new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                            TransportSize.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0))
+                )
+            ),
+            Collections.emptyList(),
+            compositeRequestMessage);
         compositeRequestMessage.addRequestMessage(fragment1RequestMessage);
+
         S7RequestMessage fragment2RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 3,
-            Collections.emptyList(), Collections.emptyList(), compositeRequestMessage);
+            Collections.singletonList(
+                new VarParameter(ParameterType.READ_VAR,
+                    Arrays.asList(
+                        new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                            TransportSize.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))
+                )
+            ),
+            Collections.emptyList(),
+            compositeRequestMessage);
         compositeRequestMessage.addRequestMessage(fragment2RequestMessage);
 
         // Virtually add a response for the first response.
@@ -658,22 +717,81 @@ public class DefaultS7MessageProcessorTest {
 
     /**
      * This test handles the special case in which a response is part of a single request message.
-     * This means that it is immediatly finished and is hereby immediatly processed.
+     * This means that it is immediately finished and is hereby immediately processed.
+     *
+     * @throws PlcException
+     */
+    @Test
+    public void processCompositeMessageMergedReadResponse() throws PlcException {
+        // Produce a composite request, consisting of an original request reading 4*10=40 items.
+        // Where this is split up into 4 sub-messages with each 10 items.
+        DefaultS7MessageProcessor.S7CompositeRequestMessage compositeRequestMessage = createCompositeReadMessage(4, 10);
+
+        List<S7RequestMessage> requestMessages = compositeRequestMessage.getRequestMessages();
+        // Generate dummy responses for each sub request.
+        List<S7ResponseMessage> responseMessages = createResponseMessages(requestMessages);
+
+        // Iterate over all pairs of requests and responses and have the processor process that.
+        S7ResponseMessage processedResponse = null;
+        int size = requestMessages.size();
+        for (int i = 0; i < size; i++) {
+            S7RequestMessage requestMessage = requestMessages.get(i);
+            S7ResponseMessage responseMessage = responseMessages.get(i);
+            requestMessage.setAcknowledged(true);
+
+            processedResponse = SUT.processResponse(requestMessage, responseMessage);
+            // Only after processing the least response, should the processor return something not null.
+            if(i < size - 1) {
+                assertThat(processedResponse, nullValue());
+            }
+        }
+
+        // Check the content.
+        assertThat(processedResponse, notNullValue());
+        assertThat(processedResponse.getParameters(), hasSize(1));
+        assertThat(processedResponse.getParameter(VarParameter.class).isPresent(), is(true));
+        VarParameter varParameter = processedResponse.getParameter(VarParameter.class).get();
+        assertThat(varParameter.getItems(), hasSize(1));
+
+        assertThat(processedResponse.getPayloads(), hasSize(1));
+        assertThat(processedResponse.getPayload(VarPayload.class).isPresent(), is(true));
+
+        VarPayload varPayload = processedResponse.getPayload(VarPayload.class).get();
+        assertThat(varPayload.getItems(), hasSize(1));
+    }
+
+    /**
+     * This test handles the special case in which a response is part of a single request message.
+     * This means that it is immediately finished and is hereby immediately processed.
      *
      * @throws PlcException
      */
     @Test
     public void processCompositeMessageWriteResponse() throws PlcException {
         S7RequestMessage originalRequestMessage = new S7RequestMessage(MessageType.JOB, (short) 1,
-            Collections.emptyList(), Collections.emptyList(), null);
+            Collections.singletonList(
+                new VarParameter(ParameterType.WRITE_VAR, new LinkedList<>(Arrays.asList(
+                    new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0),
+                    new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 3, (byte) 0))))),
+            Collections.emptyList(), null);
         DefaultS7MessageProcessor.S7CompositeRequestMessage compositeRequestMessage =
             new DefaultS7MessageProcessor.S7CompositeRequestMessage(originalRequestMessage);
 
         S7RequestMessage fragment1RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 2,
-            Collections.emptyList(), Collections.emptyList(), compositeRequestMessage);
+            Collections.singletonList(
+                new VarParameter(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
+                    new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 2, (byte) 0))))),
+            Collections.emptyList(), compositeRequestMessage);
         compositeRequestMessage.addRequestMessage(fragment1RequestMessage);
         S7RequestMessage fragment2RequestMessage = new S7RequestMessage(MessageType.JOB, (short) 3,
-            Collections.emptyList(), Collections.emptyList(), compositeRequestMessage);
+            Collections.singletonList(
+                new VarParameter(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
+                    new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 3, (byte) 0))))),
+            Collections.emptyList(), compositeRequestMessage);
         compositeRequestMessage.addRequestMessage(fragment2RequestMessage);
 
         // Virtually add a response for the first response.
@@ -697,14 +815,16 @@ public class DefaultS7MessageProcessorTest {
             Collections.singletonList(
                 new VarParameter(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
                     new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
-                        TransportSize.BYTE, (short) 1, (short) 3, (short) 4, (byte) 0))))),
+                        TransportSize.BYTE, (short) 1, (short) 1, (short) 3, (byte) 0))))),
             Collections.singletonList(
                 new VarPayload(ParameterType.WRITE_VAR, new LinkedList<>(Collections.singletonList(
                     new VarPayloadItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, new byte[]{0x23}))))),
             (byte) 0x00, (byte) 0x00);
+
         // This time we expect all messages of the composite to be acknowledged and the processResponse should
         // return a merged version of the individual responses content.
         processedResponse = SUT.processResponse(fragment2RequestMessage, fragment2ResponseMessage);
+
         // As this is the last request being responded, the result should be not null this time.
         assertThat(processedResponse, notNullValue());
 
@@ -739,6 +859,73 @@ public class DefaultS7MessageProcessorTest {
             Collections.singletonList(
                 new VarPayload(ParameterType.WRITE_VAR, payloadItems)),
             null);
+    }
+
+    private DefaultS7MessageProcessor.S7CompositeRequestMessage createCompositeReadMessage(int numSubMessages, int numItemsPerSubMessage) {
+        int totalItems = numSubMessages * numItemsPerSubMessage;
+        S7RequestMessage originalRequestMessage = new S7RequestMessage(MessageType.JOB, (short) 1,
+            Collections.singletonList(
+                new VarParameter(ParameterType.READ_VAR,
+                    Collections.singletonList(
+                        new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                            TransportSize.BYTE, (short) totalItems, (short) 1, (short) 0, (byte) 0))
+                )
+            ),
+            Collections.emptyList(),
+            null);
+        DefaultS7MessageProcessor.S7CompositeRequestMessage compositeRequestMessage =
+            new DefaultS7MessageProcessor.S7CompositeRequestMessage(originalRequestMessage);
+
+        int curPos = 0;
+        for(int i = 0; i < numSubMessages; i++) {
+            S7RequestMessage subMessage = new S7RequestMessage(MessageType.JOB, (short) 1,
+                Collections.singletonList(
+                    new VarParameter(ParameterType.READ_VAR,
+                        Collections.singletonList(
+                            new S7AnyVarParameterItem(SpecificationType.VARIABLE_SPECIFICATION, MemoryArea.DATA_BLOCKS,
+                                TransportSize.BYTE, (short) numItemsPerSubMessage, (short) 1, (short) curPos, (byte) 0))
+                    )
+                ),
+                Collections.emptyList(),
+                compositeRequestMessage);
+            curPos += numItemsPerSubMessage;
+            compositeRequestMessage.addRequestMessage(subMessage);
+        }
+
+        return compositeRequestMessage;
+    }
+
+    private DefaultS7MessageProcessor.S7CompositeRequestMessage createCompositeWriteMessage() {
+        return null;
+    }
+
+    private List<S7ResponseMessage> createResponseMessages(Collection<S7RequestMessage> requests) {
+        List<S7ResponseMessage> responses = new ArrayList<>(requests.size());
+        byte counter = 0;
+        for (S7RequestMessage request : requests) {
+            List<S7Payload> payloads = new ArrayList<>(request.getParameters().size());
+            for (S7Parameter parameter : request.getParameters()) {
+                VarParameter varParameter = (VarParameter) parameter;
+                List<VarPayloadItem> varPayloadItems = new ArrayList<>(varParameter.getItems().size());
+                for (VarParameterItem item : varParameter.getItems()) {
+                    S7AnyVarParameterItem anyVarParameterItem = (S7AnyVarParameterItem) item;
+                    byte[] data = new byte[
+                        anyVarParameterItem.getDataType().getSizeInBytes() * anyVarParameterItem.getNumElements()];
+                    for(int i = 0; i < data.length; i++) {
+                        data[i] = counter++;
+                    }
+                    VarPayloadItem payloadItem = new VarPayloadItem(DataTransportErrorCode.OK,
+                        anyVarParameterItem.getDataType().getDataTransportSize(), data);
+                    varPayloadItems.add(payloadItem);
+                }
+                S7Payload payload = new VarPayload(parameter.getType(), varPayloadItems);
+                payloads.add(payload);
+            }
+            S7ResponseMessage response = new S7ResponseMessage(request.getMessageType(), request.getTpduReference(),
+                request.getParameters(), payloads, (byte) 0xFF, (byte) 0xFF);
+            responses.add(response);
+        }
+        return responses;
     }
 
 }

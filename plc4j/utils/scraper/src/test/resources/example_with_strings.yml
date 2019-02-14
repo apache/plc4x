@@ -1,0 +1,41 @@
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+---
+sources:
+  S7_TIM: s7://192.168.167.210/0/1
+
+jobs:
+  - name: pressure-job
+    scrapeRate: 1000
+    sources:
+    - S7_TIM
+    fields:
+      test1: '%DB810:DBW0:INT'
+      test2: '%DB810:DBX6:STRING'
+      test3: '%DB810:DBX266:STRING'
+      test4: '%DB810:DBX526:STRING'
+      test5: '%DB810:DBX786:STRING'
+      test6: '%DB810:DBX46806:STRING'
+      test7: '%DB810:DBD2:REAL'
+      test8: '%DB811:DBX12:STRING'
+      test9: '%DB811:DBX280:STRING'
+      test10: '%DB811:DBB1000:BYTE[8]'
+      test11: '%DB811:DBX268.3:BOOL'
+      test12: '%DB811:DBB270:BYTE[8]'
+

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>examples</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
   </parent>
 
   <artifactId>hello-elasticsearch</artifactId>
@@ -39,12 +39,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.2.0</version>
+      <version>0.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>apache-edgent</artifactId>
-      <version>0.2.0</version>
+      <version>0.3.0</version>
     </dependency>
 
     <dependency>
@@ -67,19 +67,21 @@
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>6.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch-x-content</artifactId>
     </dependency>
     <dependency>
       <groupId>org.elasticsearch.plugin</groupId>
       <artifactId>transport-netty4-client</artifactId>
-      <version>6.2.4</version>
     </dependency>
 
     <!-- Required driver implementation -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-s7</artifactId>
-      <version>0.2.0</version>
+      <artifactId>plc4j-driver-s7</artifactId>
+      <version>0.3.0</version>
       <scope>runtime</scope>
     </dependency>
 
@@ -105,7 +107,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4j-protocol-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>

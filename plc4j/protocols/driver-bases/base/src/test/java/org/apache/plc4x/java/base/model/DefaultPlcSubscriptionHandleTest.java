@@ -65,8 +65,9 @@ class DefaultPlcSubscriptionHandleTest {
 
     @Test
     void equals() {
-        EqualsVerifier.forClass(DefaultPlcSubscriptionHandle.class)
-            .suppress(Warning.STRICT_INHERITANCE).verify();
+        EqualsVerifier.forClass(DefaultPlcSubscriptionHandle.class).usingGetClass()
+            .suppress(Warning.STRICT_INHERITANCE).suppress(Warning.IDENTICAL_COPY)
+            .suppress(Warning.ALL_FIELDS_SHOULD_BE_USED).verify();
     }
 
 }

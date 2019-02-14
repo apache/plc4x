@@ -23,10 +23,10 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.ads.api.tcp.types.TcpLength;
 import org.junit.Test;
 
-import static org.apache.plc4x.java.base.util.Junit5Backport.assertThrows;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class TcpLengthTest {

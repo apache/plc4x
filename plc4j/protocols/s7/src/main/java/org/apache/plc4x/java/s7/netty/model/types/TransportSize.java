@@ -30,14 +30,14 @@ public enum TransportSize {
     // -----------------------------------------
     // Single bit
     // -----------------------------------------
-    BOOL(0x01, "X", 1, null, DataTransportSize.BIT, S7ControllerType.S7_ANY),
+    BOOL(0x01, "X", 1, null, DataTransportSize.BIT, S7ControllerType.ANY),
 
     // -----------------------------------------
     // Bit strings
     // -----------------------------------------
-    BYTE(0x02, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
-    WORD(0x04, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
-    DWORD(0x06, "D", 4, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    BYTE(0x02, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
+    WORD(0x04, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
+    DWORD(0x06, "D", 4, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Only got a basic TIA license (S7-1500 needed to find this out)
     // TODO: Find the code
     LWORD(0x00, "X", 8, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
@@ -46,7 +46,7 @@ public enum TransportSize {
     // Integers
     // -----------------------------------------
     // Signed Int
-    INT(0x05, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    INT(0x05, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Unsigned Int
     UINT(0x05, "W", 2, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // (Signed) Small Int
@@ -54,7 +54,7 @@ public enum TransportSize {
     // Unsigned Small Int
     USINT(0x02, "B", 1, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Double Precision Int
-    DINT(0x07, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    DINT(0x07, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Unsigned Double Precision Int
     UDINT(0x07, "D", 4, INT, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
@@ -67,7 +67,7 @@ public enum TransportSize {
     // -----------------------------------------
     // Reals
     // -----------------------------------------
-    REAL(0x08, "D", 4, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    REAL(0x08, "D", 4, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // TODO: Find the code
     LREAL(0x00, "X", 8, REAL, null, S7ControllerType.S7_1200, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
 
@@ -75,7 +75,7 @@ public enum TransportSize {
     // Durations
     // -----------------------------------------
     // IEC time
-    TIME(0x0B, "X", 4, null, null, S7ControllerType.S7_ANY),
+    TIME(0x0B, "X", 4, null, null, S7ControllerType.ANY),
     // TODO: Find the code
     LTIME(0x00, "X", 8, TIME, null, S7ControllerType.S7_1500),
 
@@ -84,32 +84,32 @@ public enum TransportSize {
     // -----------------------------------------
     // IEC date (yyyy-m-d)
     // TODO: Find the code
-    DATE(0x00, "X", 2, null, null, S7ControllerType.S7_ANY),
+    DATE(0x00, "X", 2, null, null, S7ControllerType.ANY),
 
     // -----------------------------------------
     // Time of day
     // -----------------------------------------
     // Time (hh:mm:ss.S)
-    TIME_OF_DAY(0x0A, "X", 4, null, null, S7ControllerType.S7_ANY),
+    TIME_OF_DAY(0x0A, "X", 4, null, null, S7ControllerType.ANY),
 
     // -----------------------------------------
     // Date and time of day
     // -----------------------------------------
-    DATE_AND_TIME(0x0F, "X", 8, null, null, S7ControllerType.S7_ANY),
+    DATE_AND_TIME(0x0F, "X", 8, null, null, S7ControllerType.ANY),
 
     // -----------------------------------------
     // ASCII Strings
     // -----------------------------------------
     // Single-byte character
-    CHAR(0x03, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_ANY),
+    CHAR(0x03, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Double-byte character
+    // TODO: Find the code (Eventually 0x13)
     WCHAR(0x13, "X", 2, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Variable-length single-byte character string
-    // TODO: Find the code (Eventually 0x03)
-    STRING(0x00, "X", -1, null, null, S7ControllerType.S7_ANY),
+    STRING(0x03, "X", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Variable-length double-byte character string
     // TODO: Find the code (Eventually 0x13)
-    WSTRING(0x00, "X", -1, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500);
+    WSTRING(0x00, "X", 1, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500);
 
     /* TO BE CONTINUED */
 

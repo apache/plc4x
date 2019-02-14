@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 public class PoolKeyFactory {
 
+    // TODO 11.12.18 jf: add a property to the drivers to keep this generic
     public PoolKey getPoolKey(String url, PlcAuthentication plcAuthentication) throws PlcConnectionException {
         Objects.requireNonNull(url);
         URI connectionUri;

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.base.model;
 
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.base.messages.InternalPlcMessage;
 
-public interface InternalPlcSubscriptionHandle extends PlcSubscriptionHandle {
+public interface InternalPlcSubscriptionHandle extends PlcSubscriptionHandle, InternalPlcMessage {
 }

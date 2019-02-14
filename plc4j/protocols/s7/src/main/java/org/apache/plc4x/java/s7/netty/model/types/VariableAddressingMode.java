@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * (Values determined by evaluating generated ".pcapng" files)
+ * (Values determined by evaluating generated ".pcap" files)
  * Renamed from "SyntaxId".
  */
 public enum VariableAddressingMode {

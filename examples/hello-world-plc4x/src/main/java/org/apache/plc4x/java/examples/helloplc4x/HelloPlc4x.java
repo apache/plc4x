@@ -38,14 +38,15 @@ public class HelloPlc4x {
      * @param args ignored.
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            logger.info("Usage: HelloPlc4x {connection-string} {address-string}+");
-            logger.info("Example: HelloPlc4x test:plc4x-example-mqtt RANDOM/foo:INTEGER RANDOM/bar:INTEGER");
-            return;
+        CliOptions options = CliOptions.fromArgs(args);
+        if (options == null) {
+            CliOptions.printHelp();
+            // Could not parse.
+            System.exit(1);
         }
 
         // Establish a connection to the plc using the url provided as first argument
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(args[0])) {
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getConnectionString())) {
 
             // Check if this connection support reading of data.
             if (!plcConnection.getMetadata().canRead()) {
@@ -56,8 +57,8 @@ public class HelloPlc4x {
             // Create a new read request:
             // - Give the single item requested the alias name "value"
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            for (int i = 1; i < args.length; i++) {
-                builder.addItem("value-" + i, args[i]);
+            for (int i = 0; i < options.getFieldAddress().length; i++) {
+                builder.addItem("value-" + i, options.getFieldAddress()[i]);
             }
             PlcReadRequest readRequest = builder.build();
 

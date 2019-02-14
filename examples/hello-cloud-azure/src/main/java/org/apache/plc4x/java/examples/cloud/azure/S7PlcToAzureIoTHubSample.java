@@ -42,26 +42,26 @@ public class S7PlcToAzureIoTHubSample {
      * @param args Expected: [plc4x connection string, plc4x field address, IoT-Hub connection string].
      */
     public static void main(String[] args) throws Exception {
-        if (args.length != 3) {
-            System.out.println("Usage: S7PlcToAzureIoTHubSample " +
-                "{plc4x-connection-string} {plc4x-field-address} {iot-hub-connection-string}");
-            return;
+        CliOptions options = CliOptions.fromArgs(args);
+        if (options == null) {
+            CliOptions.printHelp();
+            // Could not parse.
+            System.exit(1);
         }
 
-        String plc4xConnectionString = args[0];
-        String addressString = args[1];
-        String iotConnectionString = args[2];
-        LOGGER.info("Connecting {}, {}, {}", plc4xConnectionString, addressString, iotConnectionString);
+        LOGGER.info("Connecting {}, {}, {}", options.getPlc4xConnectionString(), options.getPlc4xFieldAddress(),
+            options.getIotHubConnectionString());
 
         // Open both a connection to the remote PLC as well as a connection to the cloud service.
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(plc4xConnectionString);
-             DeviceClient client = new DeviceClient(iotConnectionString, IotHubClientProtocol.MQTT)) {
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getPlc4xConnectionString());
+             DeviceClient client = new DeviceClient(options.getIotHubConnectionString(), IotHubClientProtocol.MQTT)) {
             LOGGER.info("Connected");
 
             client.open();
 
             // Prepare a read request.
-            PlcReadRequest request = plcConnection.readRequestBuilder().addItem(FIELD_NAME, addressString).build();
+            PlcReadRequest request = plcConnection.readRequestBuilder()
+                .addItem(FIELD_NAME, options.getPlc4xFieldAddress()).build();
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
@@ -82,4 +82,5 @@ public class S7PlcToAzureIoTHubSample {
             }
         }
     }
+
 }

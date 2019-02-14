@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * (Values determined by evaluating generated ".pcapng" files)
+ * (Values determined by evaluating generated ".pcap" files)
  */
 public enum ParameterType {
     CPU_SERVICES((byte) 0x00),

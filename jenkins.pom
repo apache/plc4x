@@ -37,6 +37,13 @@
     <name>PLC4X: Jenkins Tools</name>
     <description>Set of helpers to do individual tasks only needed on our Jenkins build.</description>
 
+    <distributionManagement>
+        <site>
+            <id>apache.website</id>
+            <url>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x-website.git</url>
+        </site>
+    </distributionManagement>
+
     <profiles>
         <!--
             This profile is used to deploy all the artifacts in the
@@ -55,6 +62,23 @@
                             <includes>**</includes>
                             <serverId>apache.snapshots.https</serverId>
                             <url>${distMgmtSnapshotsUrl}</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>deploy-site</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
+                        <configuration>
+                            <!-- mono-module doesn't require site:stage -->
+                            <content>${project.build.directory}/staging</content>
+                            <!-- branch where to deploy -->
+                            <scmBranch>asf-site</scmBranch>
                         </configuration>
                     </plugin>
                 </plugins>

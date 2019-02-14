@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PlcInvalidFieldExceptionTest {
@@ -46,6 +48,12 @@ class PlcInvalidFieldExceptionTest {
         assertThrows(PlcInvalidFieldException.class, () -> {
             throw new PlcInvalidFieldException("Pattern", Pattern.compile("foo"), "readable");
         });
+    }
+
+    @Test
+    public void getFieldToBeParsed() {
+        PlcInvalidFieldException ex = new PlcInvalidFieldException("Pattern");
+        assertThat(ex.getFieldToBeParsed(), equalTo("Pattern"));
     }
 
 }

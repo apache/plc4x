@@ -36,7 +36,7 @@
   - Usage of default implementations does cause more problems than it solves in this case. 
 
 ## IDE specific
-- For formatting there is a .editorconfig defined. Intellij Idea come with a plugin for this preinstalled, for eclipse an installation is required (http://editorconfig.org/).
+- For formatting there is a .editorconfig defined. Intellij Idea come with a plugin for this pre-installed, for eclipse an installation is required (http://editorconfig.org/).
 - Import organizing uses the Intellij Idea default:
   - Import order
     - all other imports

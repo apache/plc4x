@@ -25,17 +25,14 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.base.messages.PlcReader;
+import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.*;
+import org.assertj.core.api.WithAssertions;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
@@ -56,22 +53,24 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 
-public class PlcEntityManagerComplexTest {
+public class PlcEntityManagerComplexTest implements WithAssertions {
 
     private PlcDriverManager driverManager;
 
-    @Test(expected = IllegalArgumentException.class)
-    public void noEntity_throws() throws OPMException {
+    @Test
+    public void noEntity_throws() {
         PlcEntityManager manager = new PlcEntityManager();
 
-        manager.read(NoEntity.class, "s7://localhost:5555/0/0");
+        assertThatThrownBy(() -> manager.read(NoEntity.class, "s7://localhost:5555/0/0"))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void noValidConstructor_throws() throws OPMException {
+    @Test
+    public void noValidConstructor_throws() {
         PlcEntityManager manager = new PlcEntityManager();
 
-        manager.read(EntityWithBadConstructor.class, "s7://localhost:5555/0/0");
+        assertThatThrownBy(() -> manager.read(EntityWithBadConstructor.class, "s7://localhost:5555/0/0"))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -174,14 +173,15 @@ public class PlcEntityManagerComplexTest {
         assertNotNull(connected.getByteVar());
     }
 
-    @Test(expected = OPMException.class)
+    @Test
     public void disconnectTwice_throwsException() throws PlcConnectionException, OPMException {
-        PlcEntityManager manager = getPlcEntityManager(new HashMap<>());
+        PlcEntityManager manager = getInitializedEntityManager();
 
         ConnectedEntity connected = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
         manager.disconnect(connected);
-        manager.disconnect(connected);
+        assertThatThrownBy(() -> manager.disconnect(connected))
+            .isInstanceOf(OPMException.class);
     }
 
     private PlcEntityManager getPlcEntityManager(final Map<String, BaseDefaultFieldItem> responses) throws PlcConnectionException {
@@ -216,6 +216,15 @@ public class PlcEntityManagerComplexTest {
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, map));
         };
         when(connection.readRequestBuilder()).then(invocation -> new DefaultPlcReadRequest.Builder(reader, getFieldHandler()));
+        PlcWriter writer = writeRequest -> {
+            Map<String, PlcResponseCode> map = writeRequest.getFieldNames().stream()
+                .collect(Collectors.toMap(
+                    Function.identity(),
+                    s -> PlcResponseCode.OK
+                ));
+            return CompletableFuture.completedFuture(new DefaultPlcWriteResponse((InternalPlcWriteRequest) writeRequest, map));
+        };
+        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getFieldHandler()));
 
         return new PlcEntityManager(mock);
     }

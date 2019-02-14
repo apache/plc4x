@@ -146,6 +146,7 @@ public class S7RequestSizeCalculator {
     private static short getRequestWriteVarPayloadItemSize(VarPayloadItem varPayloadItem) {
         // A var payload item always has a minimum size of 4 bytes (return code, transport size, size (two bytes))
         short length = 4;
+        // Data is a byte array ... so there is no need to translate this into number of bytes.
         length += varPayloadItem.getData().length;
         // It seems that bit payloads need a additional separating 0x00 byte.
         if(varPayloadItem.getDataTransportSize().isSizeInBits()) {

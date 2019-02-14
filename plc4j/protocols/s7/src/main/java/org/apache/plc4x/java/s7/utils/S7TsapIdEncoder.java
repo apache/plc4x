@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.utils;
 
-import org.apache.plc4x.java.isotp.netty.model.types.DeviceGroup;
+import org.apache.plc4x.java.isotp.protocol.model.types.DeviceGroup;
 
 public class S7TsapIdEncoder {
 

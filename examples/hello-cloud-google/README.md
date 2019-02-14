@@ -16,7 +16,7 @@
   limitations under the License.
 
 -->
-# Plc to Goolgle IoT Core Adapter
+# Plc to Google IoT Core Adapter
 
 This Adapter opens a MQTT Bridge to Google Cloud IoT Core.
 
@@ -27,11 +27,11 @@ https://cloud.google.com/iot/docs/how-tos/devices
 Then, you can run the PlcToGoogleIoTCoreSample to connect tho google and send some values into the cloud.
 Some sample arguments:
 
-    -project_id=myprojectname
-    -registry_id=plc4x-test
-    -cloud_region=europe-west1
-    -device_id=plc4x-test-device
-    -private_key_file=../../../rsa_private_pkcs8
+    -project-id=myprojectname
+    -registry-id=plc4x-test
+    -cloud-region=europe-west1
+    -device-id=plc4x-test-device
+    -private-key-file=../../../rsa_private_pkcs8
     -algorithm=RS256
 
 Some documentation can be found here:
@@ -39,7 +39,7 @@ https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/iot/api-cli
 This code was adapted from:
 https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/iot/api-client/manager#cloud-iot-core-java-mqtt-example
 
-To retrive the messages, you can subscribe to Cloud Pub/Sub.
+To retrieve the messages, you can subscribe to Cloud Pub/Sub.
 For example, you could install the google cloud sdk (gcloud) and run:
 
     gcloud auth login

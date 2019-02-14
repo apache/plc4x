@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
   </parent>
 
   <artifactId>plc4j-utils</artifactId>
@@ -38,7 +38,7 @@
     <module>opm</module>
     <module>raw-sockets</module>
     <module>test-utils</module>
-    <module>wireshark-utils</module>
+    <module>scraper</module>
   </modules>
 
 </project>

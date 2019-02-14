@@ -14,10 +14,6 @@
 # JIRA plugin
 atlassian-ide-plugin.xml
 
-### Scala template
-*.class
-*.log
-
 ### Java template
 # Compiled class file
 *.class
@@ -79,3 +75,12 @@ local.properties
 .scannerwork
 
 spock-reports
+
+# Other exclusions
+
+.DS_Store
+elasticsearch-data/
+jqassistant/
+
+# Exclude the C++ libs
+plc4cpp/libs/libs/

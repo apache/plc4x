@@ -25,6 +25,9 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.base.messages.InternalPlcMessage;
+
+import java.util.Objects;
 
 /**
  * Base class for implementing connections.
@@ -72,6 +75,23 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
         throw new PlcUnsupportedOperationException("The connection does not support subscription");
+    }
+
+    /**
+     * Can be used to check and cast a parameter to its required internal type (can be used for general type checking too).
+     *
+     * @param o     the object to be checked against target {@code clazz}.
+     * @param clazz the expected {@code clazz}.
+     * @param <T>   the type of the expected {@code clazz}.
+     * @return the cast type of {@code clazz}.
+     */
+    protected <T extends InternalPlcMessage> T checkInternal(Object o, Class<T> clazz) {
+        Objects.requireNonNull(o);
+        Objects.requireNonNull(clazz);
+        if (!clazz.isInstance(o)) {
+            throw new IllegalArgumentException("illegal type " + o.getClass() + ". Expected " + clazz);
+        }
+        return clazz.cast(o);
     }
 
 }
