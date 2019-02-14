@@ -490,6 +490,24 @@ This will move all artifacts into the Apache release repository and delete the s
 
 All release artifacts released to the Apache release repo, will automatically be synced to Maven central.
 
+=== Merge back release version to master branch
+
+The master branch should always point to the last released version.
+This has to be done with git
+
+```
+git checkout master
+git merge {tag-of-release}
+```
+
+When there are conflicts it could help to use the "theirs" merge strategy, i.e.,
+```
+git merge -X theirs {tag-of-release}
+```
+
+Possibly a manual conflict resolution has to be done afterwards. After that, changes need to
+be pushed.
+
 === Updating Jira
 
 1. Set the released version to "released" and set the "release-date"
