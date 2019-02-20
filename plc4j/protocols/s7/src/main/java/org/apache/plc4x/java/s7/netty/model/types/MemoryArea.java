@@ -30,7 +30,7 @@ public enum MemoryArea {
     DIRECT_PERIPHERAL_ACCESS("D", (byte) 0x80), // TODO: Double check shortName
     INPUTS("I", (byte) 0x81),
     OUTPUTS("Q", (byte) 0x82),
-    FLAGS("F", (byte) 0x83), // TODO: Double check shortName
+    FLAGS_MARKERS("M", (byte) 0x83),
     DATA_BLOCKS("DB", (byte) 0x84),
     INSTANCE_DATA_BLOCKS("DBI", (byte) 0x85), // TODO: Double check shortName
     LOCAL_DATA("LD", (byte) 0x86); // TODO: Double check shortName
