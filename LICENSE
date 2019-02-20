@@ -209,3 +209,10 @@ plc4j/utils/raw-sockets/src/main/java/org/apache/plc4x/java/utils/rawsockets/Raw
 plc4j/utils/raw-sockets/src/main/java/org/apache/plc4x/java/utils/rawsockets/RawSocketException.java
 plc4j/utils/raw-sockets/src/main/java/org/apache/plc4x/java/utils/rawsockets/RawSocketListener.java
 Are copyrighted by the The Netty Project which is distributed under the Apache 2.0 license.
+
+The Files:
+.mvn/wrapper/MavenWrapperDownloader.java
+mvnw
+mvnw.cmd
+Are provided from the Github Project: https://github.com/takari/maven-wrapper
+which is distributed under the Apache 2.0 license.
