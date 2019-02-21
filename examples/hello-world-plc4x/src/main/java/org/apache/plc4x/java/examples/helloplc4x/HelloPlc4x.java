@@ -78,7 +78,7 @@ public class HelloPlc4x {
             CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
             asyncResponse.whenComplete((readResponse, throwable) -> {
                 if (readResponse != null) {
-                    printResponse(syncResponse);
+                    printResponse(readResponse);
                 } else {
                     logger.error("An error occurred: " + throwable.getMessage(), throwable);
                 }
