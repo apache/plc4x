@@ -28,6 +28,7 @@ import io.netty.util.concurrent.PromiseCombiner;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.isotp.protocol.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.protocol.events.IsoTPConnectedEvent;
 import org.apache.plc4x.java.isotp.protocol.model.IsoTPMessage;
@@ -757,7 +758,11 @@ public class S7Protocol extends ChannelDuplexHandler {
                 TransportSize dataType = TransportSize.valueOf(in.readByte());
                 short length = in.readShort();
                 short dbNumber = in.readShort();
-                MemoryArea memoryArea = MemoryArea.valueOf(in.readByte());
+                byte memoryAreaCode = in.readByte();
+                MemoryArea memoryArea = MemoryArea.valueOf(memoryAreaCode);
+                if(memoryArea == null) {
+                    throw new PlcRuntimeException("Unknown memory area '" + memoryAreaCode + "'");
+                }
                 short byteAddress = (short) (in.readShort() << 5);
                 byte tmp = in.readByte();
                 // Only the least 3 bits are the bit address, the
