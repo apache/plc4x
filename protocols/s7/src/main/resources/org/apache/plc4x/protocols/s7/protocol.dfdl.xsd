@@ -35,10 +35,12 @@
                              alignment="1" alignmentUnits="bits"
                              leadingSkip="0" trailingSkip="0"
                              textPadKind="none" ignoreCase="no"
+                             textBidi="no" floating="no"
                              encoding="utf-8" truncateSpecifiedLengthString="no"
                              initiator="" terminator=""
                              sequenceKind="ordered" separator=""
-                             escapeSchemeRef="" initiatedContent="no"/>
+                             escapeSchemeRef="" initiatedContent="no"
+                             encodingErrorPolicy="replace"/>
             </dfdl:defineFormat>
             <dfdl:format ref="s7:s7FullFormat"/>
         </xs:appinfo>
@@ -167,7 +169,7 @@
             <!-- Length of the COTP header data -->
             <xs:element name="headerLength" type="s7:byte"/>
             <xs:element name="type" type="s7:CotpTpduType"/>
-            <xs:choice dfdl:choiceDispatchKey="{type}">
+            <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                 <xs:element dfdl:choiceBranchKey="224" ref="s7:CotpTpduConnectionRequest"/>
                 <xs:element dfdl:choiceBranchKey="208" ref="s7:CotpTpduConnectionResponse"/>
                 <xs:element dfdl:choiceBranchKey="128" ref="s7:CotpTpduDisconnectRequest"/>
@@ -268,7 +270,7 @@
                         <xs:sequence>
                             <xs:element name="type" type="s7:CotpParameterType"/>
                             <xs:element name="parameterLength" type="s7:byte"/>
-                            <xs:choice dfdl:choiceDispatchKey="{type}">
+                            <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                 <xs:element dfdl:choiceBranchKey="192" ref="s7:CotpParameterTpduSize"/>
                                 <xs:element dfdl:choiceBranchKey="193" ref="s7:CotpParameterCallingTsap"/>
                                 <xs:element dfdl:choiceBranchKey="194" ref="s7:CotpParameterCalledTsap"/>
@@ -349,7 +351,7 @@
                 (no error code or error class). As mapping to the same type is not allowed,
                 we map to strings and use that as choice-key.
             -->
-            <xs:choice dfdl:choiceDispatchKey="{type}">
+            <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                 <xs:element dfdl:choiceBranchKey="1" ref="s7:S7RequestMessage"/>
                 <xs:element dfdl:choiceBranchKey="3" ref="s7:S7ResponseMessage"/>
                 <xs:element dfdl:choiceBranchKey="7" ref="s7:S7UserDataMessage"/>
@@ -375,7 +377,7 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="type" type="s7:byte"/>
-                                        <xs:choice dfdl:choiceDispatchKey="{type}">
+                                        <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                             <xs:element dfdl:choiceBranchKey="240"
                                                         ref="s7:S7GeneralParameterSetupCommunication"/>
                                             <xs:element dfdl:choiceBranchKey="4" ref="s7:S7RequestParameterReadVar"/>
@@ -412,7 +414,7 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:choice
-                                            dfdl:choiceDispatchKey="{../../parameters[1]/parameter[dfdl:occursIndex()]/type}">
+                                            dfdl:choiceDispatchKey="{xs:string(../../parameters[1]/parameter[dfdl:occursIndex()]/type)}">
                                             <xs:element dfdl:choiceBranchKey="240"
                                                         ref="s7:S7GeneralPayloadSetupCommunication"/>
                                             <xs:element dfdl:choiceBranchKey="4" ref="s7:S7RequestPayloadReadVar"/>
@@ -451,7 +453,7 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="type" type="s7:byte"/>
-                                        <xs:choice dfdl:choiceDispatchKey="{type}">
+                                        <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                             <xs:element dfdl:choiceBranchKey="240"
                                                         ref="s7:S7GeneralParameterSetupCommunication"/>
                                             <xs:element dfdl:choiceBranchKey="4" ref="s7:S7ResponseParameterReadVar"/>
@@ -488,7 +490,7 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:choice
-                                            dfdl:choiceDispatchKey="{../../parameters[1]/parameter[dfdl:occursIndex()]/type}">
+                                            dfdl:choiceDispatchKey="{xs:string(../../parameters[1]/parameter[dfdl:occursIndex()]/type)}">
                                             <xs:element dfdl:choiceBranchKey="240"
                                                         ref="s7:S7GeneralPayloadSetupCommunication"/>
                                             <xs:element dfdl:choiceBranchKey="4" ref="s7:S7ResponsePayloadReadVar"/>
@@ -523,7 +525,7 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="type" type="s7:byte"/>
-                                        <xs:choice dfdl:choiceDispatchKey="{type}">
+                                        <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                             <xs:element dfdl:choiceBranchKey="0"
                                                         ref="s7:S7UserDataParameterCPUService"/>
                                         </xs:choice>
@@ -558,7 +560,7 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:choice
-                                            dfdl:choiceDispatchKey="{../../parameters[1]/parameter[dfdl:occursIndex()]/type}">
+                                            dfdl:choiceDispatchKey="{xs:string(../../parameters[1]/parameter[dfdl:occursIndex()]/type)}">
                                             <xs:element dfdl:choiceBranchKey="0"
                                                         ref="s7:S7UserDataPayloadCpuServices"/>
                                         </xs:choice>
@@ -632,7 +634,7 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="type" type="s7:byte"/>
-                                        <xs:choice dfdl:choiceDispatchKey="{type}">
+                                        <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                             <xs:element dfdl:choiceBranchKey="18"
                                                         ref="s7:S7RequestParameterReadVarAnyItem"/>
                                         </xs:choice>
@@ -690,7 +692,7 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="type" type="s7:byte"/>
-                                        <xs:choice dfdl:choiceDispatchKey="{type}">
+                                        <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                             <xs:element dfdl:choiceBranchKey="18"
                                                         ref="s7:S7RequestParameterWriteVarAnyItem"/>
                                         </xs:choice>
@@ -769,7 +771,7 @@
                                                     dfdl:occursCountKind="expression" dfdl:occursCount="{../../partialListCount}">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                    <xs:choice dfdl:choiceDispatchKey="{../../../sslId[1]}">
+                                                    <xs:choice dfdl:choiceDispatchKey="{xs:string(../../../sslId[1])}">
                                                         <xs:element dfdl:choiceBranchKey="17"
                                                                     ref="s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification"/>
                                                     </xs:choice>
@@ -822,9 +824,9 @@
                                 the rest is transferred in "bytes"
                             -->
                             <xs:element name="lengthInBytes" type="s7:short" dfdl:inputValueCalc="{
-                                    if((../transportSize eq 3) or (../transportSize eq 4) or (../transportSize eq 5))
-                                            then fn:ceiling(../rawLength div 8)
-                                            else ../rawLength}"/>
+                                    xs:unsignedShort(if((../transportSize eq 3) or (../transportSize eq 4) or (../transportSize eq 5))
+                                            then fn:ceiling(xs:double(../rawLength div 8))
+                                            else ../rawLength)}"/>
                             <xs:element name="data" type="xs:hexBinary"
                                         dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
                                         dfdl:length="{../lengthInBytes}"/>
@@ -863,9 +865,9 @@
                                 the rest is transferred in "bytes"
                             -->
                             <xs:element name="lengthInBytes" type="s7:short" dfdl:inputValueCalc="{
-                                    if((../transportSize eq 3) or (../transportSize eq 4) or (../transportSize eq 5))
+                                    xs:unsignedShort(if((../transportSize eq 3) or (../transportSize eq 4) or (../transportSize eq 5))
                                             then fn:ceiling(../rawLength div 8)
-                                            else ../rawLength}"/>
+                                            else ../rawLength)}"/>
                             <xs:element name="data" type="xs:hexBinary"
                                         dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
                                         dfdl:length="{../lengthInBytes}"/>

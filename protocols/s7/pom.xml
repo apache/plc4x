@@ -35,7 +35,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.daffodil</groupId>
-      <artifactId>daffodil-tdml_2.12</artifactId>
+      <artifactId>daffodil-tdml-lib_2.12</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -44,9 +44,29 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-tdml-lib_2.12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-japi_2.12</artifactId>
+      <version>${daffodil.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-tdml-processor_2.12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
     </dependency>
   </dependencies>
 

@@ -40,7 +40,11 @@ public abstract class AbstractProtocolTest {
     @TestFactory
     public List<DynamicTest> getTestsuiteTests() {
         DFDLTestSuite testSuite = new DFDLTestSuite(Misc.getRequiredResource(testsuiteName), true, true, false,
-            Runner.defaultRoundTripDefaultDefault(), Runner.defaultValidationDefaultDefault());
+            Runner.defaultRoundTripDefaultDefault(),
+            Runner.defaultValidationDefaultDefault(),
+            Runner.defaultImplementationsDefaultDefault(),
+            Runner.defaultShouldDoErrorComparisonOnCrossTests(),
+            Runner.defaultShouldDoWarningComparisonOnCrossTests());
         List<DynamicTest> dynamicTests = new LinkedList<>();
         Iterator<String> iterator = testSuite.testCaseMap().keySet().iterator();
         while (iterator.hasNext()) {

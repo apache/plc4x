@@ -19,7 +19,6 @@
   -->
 
 <testSuite xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
-           xmlns:test="plc4x-protocol-test"
            xmlns:tdml="http://www.ibm.com/xmlns/dfdl/testData"
            xmlns:s7="http://plc4x.apache.org/s7"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -36,7 +35,7 @@
         <dfdl:format ref="s7:s7FullFormat"/>
 
         <!-- Define the root element name and type -->
-        <xs:element name="tpktMessage" type="s7:TpktMessageType"/>
+        <!--xs:element name="TpktMessage" type="s7:TpktMessageType"/-->
     </tdml:defineSchema>
 
     <!--
@@ -44,7 +43,7 @@
         It's a TPKT package containing a COTP connection-response payload.
     -->
     <tdml:parserTestCase name="TPKT: tpktPacketContainingCotpConnectResponse"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Simple TKPT packet which contains a COTP Connection-Response as payload.">
         <!-- Define the input -->
@@ -56,7 +55,7 @@
         <tdml:infoset>
             <tdml:dfdlInfoset>
                 <!-- Referencing what we defined as root element in the defineSchema section -->
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>22</length>
@@ -92,7 +91,7 @@
                             </parameters>
                         </CotpTpduConnectionResponse>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
@@ -101,7 +100,7 @@
         In this test-case the packet doesn't start with the required magic byte 0x03.
     -->
     <tdml:parserTestCase name="TPKT: invalidMagicByte"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <tdml:document>
             <tdml:documentPart type="byte">0400001611D00001000200C00109C1020100C2020102</tdml:documentPart>
@@ -117,7 +116,7 @@
         length provided in the packet header (Too short)
     -->
     <tdml:parserTestCase name="TPKT: tooShortPayload"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <tdml:document>
             <tdml:documentPart type="byte">0300001611D00001000200C00109C102010</tdml:documentPart>
@@ -133,7 +132,7 @@
         length provided in the packet header (Too long)
     -->
     <tdml:parserTestCase name="TPKT: tooLongPayload"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <tdml:document>
             <tdml:documentPart type="byte">0300001611D00001000200C00109C1020100C20201021234567890</tdml:documentPart>
@@ -151,7 +150,7 @@
     -->
 
     <tdml:parserTestCase name="COTP: typeConnectionRequest"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Connection Request TPDU">
         <tdml:document>
@@ -160,7 +159,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>7</length>
@@ -173,13 +172,13 @@
                             <protocolClass>0</protocolClass>
                         </CotpTpduConnectionRequest>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: typeConnectionResponse"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Connection Response TPDU">
         <tdml:document>
@@ -188,7 +187,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>7</length>
@@ -201,13 +200,13 @@
                             <protocolClass>0</protocolClass>
                         </CotpTpduConnectionResponse>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: typeDisconnectionRequest"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Disconnection Request TPDU">
         <!-- Define the input -->
@@ -218,7 +217,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>7</length>
@@ -231,13 +230,13 @@
                             <disconnectReason>0</disconnectReason>
                         </CotpTpduDisconnectRequest>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: typeDisconnectionResponse"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Disconnection Response TPDU">
         <!-- Define the input -->
@@ -248,7 +247,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>6</length>
@@ -260,13 +259,13 @@
                             <sourceReference>2</sourceReference>
                         </CotpTpduDisconnectResponse>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: typeError"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Error TPDU">
         <!-- Define the input -->
@@ -277,7 +276,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>5</length>
@@ -289,13 +288,13 @@
                             <rejectCause>2</rejectCause>
                         </CotpTpduError>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: typeData"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Data TPDU">
         <!-- Define the input -->
@@ -306,7 +305,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>3</length>
@@ -318,13 +317,13 @@
                             <tpduRef>2</tpduRef>
                         </CotpTpduData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: typeDataEndOfTransmission"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Data (End Of Transmission) TPDU">
         <!-- Define the input -->
@@ -335,7 +334,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>3</length>
@@ -347,13 +346,13 @@
                             <tpduRef>2</tpduRef>
                         </CotpTpduData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: invalid type"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Invalid type code">
         <tdml:document>
@@ -372,7 +371,7 @@
     -->
 
     <tdml:parserTestCase name="COTP: parameterTpduSize"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="parameterTpduSize">
         <!-- Define the input -->
@@ -383,7 +382,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>10</length>
@@ -405,13 +404,13 @@
                             </parameters>
                         </CotpTpduConnectionRequest>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: parameterCallingTsap"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="parameterCallingTsap">
         <!-- Define the input -->
@@ -422,7 +421,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>11</length>
@@ -444,13 +443,13 @@
                             </parameters>
                         </CotpTpduConnectionRequest>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: parameterCalledTsap"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="parameterCalledTsap">
         <!-- Define the input -->
@@ -461,7 +460,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>11</length>
@@ -483,13 +482,13 @@
                             </parameters>
                         </CotpTpduConnectionRequest>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: parameterChecksum"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="parameterChecksum">
         <!-- Define the input -->
@@ -500,7 +499,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>10</length>
@@ -522,13 +521,13 @@
                             </parameters>
                         </CotpTpduConnectionRequest>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: parameterDisconnectAdditionalInformation"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="parameterDisconnectAdditionalInformation">
         <!-- Define the input -->
@@ -539,7 +538,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>15</length>
@@ -561,13 +560,13 @@
                             </parameters>
                         </CotpTpduConnectionRequest>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: invalid parameter type"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Invalid parameter type">
         <tdml:document>
@@ -586,7 +585,7 @@
     -->
 
     <tdml:parserTestCase name="COTP: scenarioConnectionRequest"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="COTP Connection request used for initiating an S7 protocol connection.">
         <!-- Define the input -->
@@ -597,7 +596,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>18</length>
@@ -633,13 +632,13 @@
                             </parameters>
                         </CotpTpduConnectionRequest>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: scenarioConnectionResponse"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Message">
         <!-- Define the input -->
@@ -650,7 +649,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>18</length>
@@ -686,13 +685,13 @@
                             </parameters>
                         </CotpTpduConnectionResponse>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="COTP: scenarioDataTpdu"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema"
                          description="Typical Data TPDU used for transferring S7 packets.">
         <!-- Define the input -->
@@ -704,7 +703,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>31</length>
@@ -754,13 +753,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Setup Communication Request"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -770,7 +769,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>25</length>
@@ -808,13 +807,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Setup Communication Response"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -824,7 +823,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>27</length>
@@ -864,13 +863,13 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read SZL CPU Function Request"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -881,7 +880,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>33</length>
@@ -928,13 +927,13 @@
                             </S7UserDataMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read SZL CPU Function Response"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -946,7 +945,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>153</length>
@@ -1038,13 +1037,13 @@
                             </S7UserDataMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Request (Single Item)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1055,7 +1054,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>31</length>
@@ -1105,13 +1104,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Response (Single Item)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1122,7 +1121,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>29</length>
@@ -1168,13 +1167,13 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Request (Mixed Items)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1185,7 +1184,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>103</length>
@@ -1313,13 +1312,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Response (Mixed Items)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1330,7 +1329,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>64</length>
@@ -1421,13 +1420,13 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Response (Mixed Items with odd number of bytes)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1438,7 +1437,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>40</length>
@@ -1500,13 +1499,13 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Request (No Filling Bytes)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1517,7 +1516,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>55</length>
@@ -1593,13 +1592,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Response (No Filling Bytes)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1610,7 +1609,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>41</length>
@@ -1670,13 +1669,13 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Request (With Filling Bytes)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1687,7 +1686,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>67</length>
@@ -1776,13 +1775,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Response (With Filling Bytes)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1793,7 +1792,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>44</length>
@@ -1863,13 +1862,13 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Write Var Request (Single Item)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1881,7 +1880,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>39</length>
@@ -1940,13 +1939,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Write Var Response (Single Item)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -1956,7 +1955,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>22</length>
@@ -1998,13 +1997,13 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Request (Multiple Items)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -2016,7 +2015,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>79</length>
@@ -2118,13 +2117,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Read Var Response (Multiple Items)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -2136,7 +2135,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>121</length>
@@ -2210,13 +2209,13 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Write Var Request (Multiple Items)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -2228,7 +2227,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>195</length>
@@ -2367,13 +2366,13 @@
                             </S7RequestMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
     <tdml:parserTestCase name="S7: Write Var Response (Multiple Items)"
-                         root="tpktMessage"
+                         root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
         <tdml:document>
@@ -2383,7 +2382,7 @@
         <!-- Define the expected output -->
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <test:tpktMessage>
+                <s7:TpktMessage>
                     <magicByte>3</magicByte>
                     <reserved>0</reserved>
                     <length>26</length>
@@ -2437,7 +2436,7 @@
                             </S7ResponseMessage>
                         </userData>
                     </userData>
-                </test:tpktMessage>
+                </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
