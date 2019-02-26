@@ -480,6 +480,16 @@ This will make the release artifacts available and will trigger them being copie
 
 This is also the reason why you should wait at least 24 hours before sending out the release notification emails.
 
+=== Cleaning up older release versions
+
+As a lot of mirrors are serving our releases, it is the Apache policy to clean old releases from the repo if newer versions are released.
+
+This can be done like this:
+
+    svn delete https://dist.apache.org/repos/dist/release/incubator/plc4x/0.2.0-incubating/ -m"deleted version 0.2.0"
+
+After this https://dist.apache.org/repos/dist/release/incubator/plc4x should only contain the latest release directory.
+
 === Releasing the Maven artifacts
 
 The probably simplest part is releasing the Maven artifacts.
