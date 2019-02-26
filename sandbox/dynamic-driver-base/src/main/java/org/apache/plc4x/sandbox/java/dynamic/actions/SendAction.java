@@ -58,7 +58,7 @@ public class SendAction extends BaseDaffodilAction {
 
     @Override
     public void execute(ActionExecutionContext ctx) {
-        ctx.getAppLog().info(getStateName() + ": Sending...");
+        getLogger().info(getStateName() + ": Sending...");
 
         if(getParsedValue() != null) {
             if(getParsedValue().getType() == ParsedValue.ValueType.NODE) {
@@ -91,7 +91,7 @@ public class SendAction extends BaseDaffodilAction {
             }
         }
 
-        ctx.getAppLog().info("Sent.");
+        getLogger().info("Sent.");
         fireSuccessEvent(ctx);
     }
 

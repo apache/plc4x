@@ -89,7 +89,7 @@ public abstract class ReceiveAction extends BaseDaffodilAction {
 
     @Override
     public void execute(ActionExecutionContext ctx) {
-        ctx.getAppLog().info(getStateName() + ": Receiving...");
+        getLogger().info(getStateName() + ": Receiving...");
 
         try {
             DataProcessor dp = getDaffodilDataProcessor(ctx);
@@ -163,7 +163,7 @@ public abstract class ReceiveAction extends BaseDaffodilAction {
             fireFailureEvent(ctx, e.getMessage());
         }
 
-        ctx.getAppLog().info("Received.");
+        getLogger().info("Received.");
         fireSuccessEvent(ctx);
     }
 

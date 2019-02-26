@@ -63,13 +63,13 @@ public class ConnectAction extends BasePlc4xAction {
 
     @Override
     public void execute(ActionExecutionContext ctx) {
-        ctx.getAppLog().info(getStateName() + ": Connecting...");
+        getLogger().info(getStateName() + ": Connecting...");
         try {
             if ("TCP".equalsIgnoreCase(type)) {
                 Socket socket = new Socket(host, Integer.parseInt(port));
                 ctx.getGlobalContext().set(BaseConnectedAction.SOCKET_PARAMETER_NAME, socket);
 
-                ctx.getAppLog().info("Connected.");
+                getLogger().info("Connected.");
 
                 fireSuccessEvent(ctx);
             }

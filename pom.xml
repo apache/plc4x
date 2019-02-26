@@ -108,6 +108,7 @@
     <commons-lang3.version>3.7</commons-lang3.version>
     <commons-math3.version>3.5</commons-math3.version>
     <commons-pool2.version>2.6.0</commons-pool2.version>
+    <commons-scxml.version>2.0-SNAPSHOT</commons-scxml.version>
     <commons-text.version>1.4</commons-text.version>
     <crc.version>1.0.1</crc.version>
     <daffodil.version>2.3.0</daffodil.version>
@@ -296,6 +297,11 @@
         <version>${netty.version}</version>
       </dependency>
       <dependency>
+        <groupId>jaxen</groupId>
+        <artifactId>jaxen</artifactId>
+        <version>1.1.6</version>
+      </dependency>
+      <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>${joda-time.version}</version>
@@ -342,6 +348,17 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
+        <artifactId>commons-jexl3</artifactId>
+        <version>3.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons-lang3.version}</version>
       </dependency>
@@ -357,12 +374,33 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
+        <artifactId>commons-scxml2</artifactId>
+        <version>${commons-scxml.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>${commons-text.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.daffodil</groupId>
+        <artifactId>daffodil-japi_2.12</artifactId>
+        <version>${daffodil.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.daffodil</groupId>
         <artifactId>daffodil-lib_2.12</artifactId>
+        <version>${daffodil.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.daffodil</groupId>
+        <artifactId>daffodil-runtime1_2.12</artifactId>
         <version>${daffodil.version}</version>
       </dependency>
       <dependency>
@@ -529,6 +567,11 @@
         <version>${hamcrest.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom2</artifactId>
+        <version>2.0.6</version>
+      </dependency>
+      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
         <version>${junit.jupiter.version}</version>
@@ -613,6 +656,11 @@
         <groupId>se.koc</groupId>
         <artifactId>netty-transport-jserialcomm</artifactId>
         <version>${netty-transport-jserialcomm.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>1.4.01</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

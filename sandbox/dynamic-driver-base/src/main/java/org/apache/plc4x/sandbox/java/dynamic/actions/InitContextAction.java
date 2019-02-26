@@ -60,7 +60,7 @@ public class InitContextAction extends BasePlc4xAction {
 
     @Override
     public void execute(ActionExecutionContext ctx) {
-        ctx.getAppLog().info(getStateName() + ": Initializing Context...");
+        getLogger().info(getStateName() + ": Initializing Context...");
 
         // Initialize the Daffodil system for parsing and serializing the
         // protocol messages.
@@ -88,7 +88,7 @@ public class InitContextAction extends BasePlc4xAction {
         // requests and responses.
         ctx.getGlobalContext().set("requestRegistry", new RequestRegistry(maxRequestId));
 
-        ctx.getAppLog().info("Context initialized.");
+        getLogger().info("Context initialized.");
 
         fireSuccessEvent(ctx);
     }
