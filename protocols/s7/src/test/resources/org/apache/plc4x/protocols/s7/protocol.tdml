@@ -18,13 +18,13 @@
   under the License.
   -->
 
-<testSuite xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
-           xmlns:tdml="http://www.ibm.com/xmlns/dfdl/testData"
-           xmlns:s7="http://plc4x.apache.org/s7"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           suiteName="S7 protocol (Full-Stack)"
-           description="Testsuite for the full stack of the S7 protocol"
-           defaultRoundTrip="onePass">
+<tdml:testSuite xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+                xmlns:tdml="http://www.ibm.com/xmlns/dfdl/testData"
+                xmlns:s7="http://plc4x.apache.org/s7"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                suiteName="S7 protocol (Full-Stack)"
+                description="Testsuite for the full stack of the S7 protocol"
+                defaultRoundTrip="onePass">
 
     <tdml:defineSchema name="s7Schema" elementFormDefault="unqualified">
         <!-- Import the Schema -->
@@ -35,14 +35,14 @@
         <dfdl:format ref="s7:s7FullFormat"/>
 
         <!-- Define the root element name and type -->
-        <!--xs:element name="TpktMessage" type="s7:TpktMessageType"/-->
+        <xs:element name="TpktMessage" type="s7:TpktMessageType"/>
     </tdml:defineSchema>
 
     <!--
         In this test-case the data should be parsable to a valid result.
         It's a TPKT package containing a COTP connection-response payload.
     -->
-    <tdml:parserTestCase name="TPKT: tpktPacketContainingCotpConnectResponse"
+    <tdml:parserTestCase name="TPKT-tpktPacketContainingCotpConnectResponse"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Simple TKPT packet which contains a COTP Connection-Response as payload.">
@@ -62,34 +62,34 @@
                     <userData>
                         <headerLength>17</headerLength>
                         <type>208</type>
-                        <CotpTpduConnectionResponse>
+                        <s7:CotpTpduConnectionResponse>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <parameters>
+                            <s7:parameters>
                                 <parameter>
                                     <type>192</type>
                                     <parameterLength>1</parameterLength>
-                                    <CotpParameterTpduSize>
+                                    <s7:CotpParameterTpduSize>
                                         <tpduSize>9</tpduSize>
-                                    </CotpParameterTpduSize>
+                                    </s7:CotpParameterTpduSize>
                                 </parameter>
                                 <parameter>
                                     <type>193</type>
                                     <parameterLength>2</parameterLength>
-                                    <CotpParameterCallingTsap>
+                                    <s7:CotpParameterCallingTsap>
                                         <tsapId>256</tsapId>
-                                    </CotpParameterCallingTsap>
+                                    </s7:CotpParameterCallingTsap>
                                 </parameter>
                                 <parameter>
                                     <type>194</type>
                                     <parameterLength>2</parameterLength>
-                                    <CotpParameterCalledTsap>
+                                    <s7:CotpParameterCalledTsap>
                                         <tsapId>258</tsapId>
-                                    </CotpParameterCalledTsap>
+                                    </s7:CotpParameterCalledTsap>
                                 </parameter>
-                            </parameters>
-                        </CotpTpduConnectionResponse>
+                            </s7:parameters>
+                        </s7:CotpTpduConnectionResponse>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -99,7 +99,7 @@
     <!--
         In this test-case the packet doesn't start with the required magic byte 0x03.
     -->
-    <tdml:parserTestCase name="TPKT: invalidMagicByte"
+    <tdml:parserTestCase name="TPKT-invalidMagicByte"
                          root="TpktMessage"
                          model="s7Schema">
         <tdml:document>
@@ -115,7 +115,7 @@
         In this test-case the payload of the packet doesn't match the
         length provided in the packet header (Too short)
     -->
-    <tdml:parserTestCase name="TPKT: tooShortPayload"
+    <tdml:parserTestCase name="TPKT-tooShortPayload"
                          root="TpktMessage"
                          model="s7Schema">
         <tdml:document>
@@ -131,7 +131,7 @@
         In this test-case the payload of the packet doesn't match the
         length provided in the packet header (Too long)
     -->
-    <tdml:parserTestCase name="TPKT: tooLongPayload"
+    <tdml:parserTestCase name="TPKT-tooLongPayload"
                          root="TpktMessage"
                          model="s7Schema">
         <tdml:document>
@@ -139,7 +139,7 @@
         </tdml:document>
 
         <tdml:errors>
-            <tdml:error>Parse Error</tdml:error>
+            <tdml:error>Left over data.</tdml:error>
         </tdml:errors>
     </tdml:parserTestCase>
 
@@ -149,7 +149,7 @@
 
     -->
 
-    <tdml:parserTestCase name="COTP: typeConnectionRequest"
+    <tdml:parserTestCase name="COTP-typeConnectionRequest"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Connection Request TPDU">
@@ -166,18 +166,18 @@
                     <userData>
                         <headerLength>6</headerLength>
                         <type>224</type>
-                        <CotpTpduConnectionRequest>
+                        <s7:CotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                        </CotpTpduConnectionRequest>
+                        </s7:CotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: typeConnectionResponse"
+    <tdml:parserTestCase name="COTP-typeConnectionResponse"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Connection Response TPDU">
@@ -194,18 +194,18 @@
                     <userData>
                         <headerLength>6</headerLength>
                         <type>208</type>
-                        <CotpTpduConnectionResponse>
+                        <s7:CotpTpduConnectionResponse>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                        </CotpTpduConnectionResponse>
+                        </s7:CotpTpduConnectionResponse>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: typeDisconnectionRequest"
+    <tdml:parserTestCase name="COTP-typeDisconnectionRequest"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Disconnection Request TPDU">
@@ -224,18 +224,18 @@
                     <userData>
                         <headerLength>6</headerLength>
                         <type>128</type>
-                        <CotpTpduDisconnectRequest>
+                        <s7:CotpTpduDisconnectRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <disconnectReason>0</disconnectReason>
-                        </CotpTpduDisconnectRequest>
+                        </s7:CotpTpduDisconnectRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: typeDisconnectionResponse"
+    <tdml:parserTestCase name="COTP-typeDisconnectionResponse"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Disconnection Response TPDU">
@@ -254,17 +254,17 @@
                     <userData>
                         <headerLength>5</headerLength>
                         <type>192</type>
-                        <CotpTpduDisconnectResponse>
+                        <s7:CotpTpduDisconnectResponse>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
-                        </CotpTpduDisconnectResponse>
+                        </s7:CotpTpduDisconnectResponse>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: typeError"
+    <tdml:parserTestCase name="COTP-typeError"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Error TPDU">
@@ -283,17 +283,17 @@
                     <userData>
                         <headerLength>4</headerLength>
                         <type>112</type>
-                        <CotpTpduError>
+                        <s7:CotpTpduError>
                             <destinationReference>1</destinationReference>
                             <rejectCause>2</rejectCause>
-                        </CotpTpduError>
+                        </s7:CotpTpduError>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: typeData"
+    <tdml:parserTestCase name="COTP-typeData"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Data TPDU">
@@ -312,17 +312,17 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>0</endOfTransmission>
                             <tpduRef>2</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: typeDataEndOfTransmission"
+    <tdml:parserTestCase name="COTP-typeDataEndOfTransmission"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Data (End Of Transmission) TPDU">
@@ -341,17 +341,17 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>2</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: invalid type"
+    <tdml:parserTestCase name="COTP-invalidType"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Invalid type code">
@@ -370,7 +370,7 @@
 
     -->
 
-    <tdml:parserTestCase name="COTP: parameterTpduSize"
+    <tdml:parserTestCase name="COTP-parameterTpduSize"
                          root="TpktMessage"
                          model="s7Schema"
                          description="parameterTpduSize">
@@ -389,27 +389,27 @@
                     <userData>
                         <headerLength>9</headerLength>
                         <type>224</type>
-                        <CotpTpduConnectionRequest>
+                        <s7:CotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <parameters>
+                            <s7:parameters>
                                 <parameter>
                                     <type>192</type>
                                     <parameterLength>1</parameterLength>
-                                    <CotpParameterTpduSize>
+                                    <s7:CotpParameterTpduSize>
                                         <tpduSize>9</tpduSize>
-                                    </CotpParameterTpduSize>
+                                    </s7:CotpParameterTpduSize>
                                 </parameter>
-                            </parameters>
-                        </CotpTpduConnectionRequest>
+                            </s7:parameters>
+                        </s7:CotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: parameterCallingTsap"
+    <tdml:parserTestCase name="COTP-parameterCallingTsap"
                          root="TpktMessage"
                          model="s7Schema"
                          description="parameterCallingTsap">
@@ -428,27 +428,27 @@
                     <userData>
                         <headerLength>10</headerLength>
                         <type>224</type>
-                        <CotpTpduConnectionRequest>
+                        <s7:CotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <parameters>
+                            <s7:parameters>
                                 <parameter>
                                     <type>193</type>
                                     <parameterLength>2</parameterLength>
-                                    <CotpParameterCallingTsap>
+                                    <s7:CotpParameterCallingTsap>
                                         <tsapId>9</tsapId>
-                                    </CotpParameterCallingTsap>
+                                    </s7:CotpParameterCallingTsap>
                                 </parameter>
-                            </parameters>
-                        </CotpTpduConnectionRequest>
+                            </s7:parameters>
+                        </s7:CotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: parameterCalledTsap"
+    <tdml:parserTestCase name="COTP-parameterCalledTsap"
                          root="TpktMessage"
                          model="s7Schema"
                          description="parameterCalledTsap">
@@ -467,27 +467,27 @@
                     <userData>
                         <headerLength>10</headerLength>
                         <type>224</type>
-                        <CotpTpduConnectionRequest>
+                        <s7:CotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <parameters>
+                            <s7:parameters>
                                 <parameter>
                                     <type>194</type>
                                     <parameterLength>2</parameterLength>
-                                    <CotpParameterCalledTsap>
+                                    <s7:CotpParameterCalledTsap>
                                         <tsapId>9</tsapId>
-                                    </CotpParameterCalledTsap>
+                                    </s7:CotpParameterCalledTsap>
                                 </parameter>
-                            </parameters>
-                        </CotpTpduConnectionRequest>
+                            </s7:parameters>
+                        </s7:CotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: parameterChecksum"
+    <tdml:parserTestCase name="COTP-parameterChecksum"
                          root="TpktMessage"
                          model="s7Schema"
                          description="parameterChecksum">
@@ -506,27 +506,27 @@
                     <userData>
                         <headerLength>9</headerLength>
                         <type>224</type>
-                        <CotpTpduConnectionRequest>
+                        <s7:CotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <parameters>
+                            <s7:parameters>
                                 <parameter>
                                     <type>195</type>
                                     <parameterLength>1</parameterLength>
-                                    <CotpParameterChecksum>
+                                    <s7:CotpParameterChecksum>
                                         <checksum>9</checksum>
-                                    </CotpParameterChecksum>
+                                    </s7:CotpParameterChecksum>
                                 </parameter>
-                            </parameters>
-                        </CotpTpduConnectionRequest>
+                            </s7:parameters>
+                        </s7:CotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: parameterDisconnectAdditionalInformation"
+    <tdml:parserTestCase name="COTP-parameterDisconnectAdditionalInformation"
                          root="TpktMessage"
                          model="s7Schema"
                          description="parameterDisconnectAdditionalInformation">
@@ -545,27 +545,27 @@
                     <userData>
                         <headerLength>14</headerLength>
                         <type>224</type>
-                        <CotpTpduConnectionRequest>
+                        <s7:CotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <parameters>
+                            <s7:parameters>
                                 <parameter>
                                     <type>224</type>
                                     <parameterLength>6</parameterLength>
-                                    <CotpParameterDisconnectAdditionalInformation>
+                                    <s7:CotpParameterDisconnectAdditionalInformation>
                                         <data>010203040506</data>
-                                    </CotpParameterDisconnectAdditionalInformation>
+                                    </s7:CotpParameterDisconnectAdditionalInformation>
                                 </parameter>
-                            </parameters>
-                        </CotpTpduConnectionRequest>
+                            </s7:parameters>
+                        </s7:CotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: invalid parameter type"
+    <tdml:parserTestCase name="COTP-invalidParameterType"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Invalid parameter type">
@@ -584,7 +584,7 @@
 
     -->
 
-    <tdml:parserTestCase name="COTP: scenarioConnectionRequest"
+    <tdml:parserTestCase name="COTP-scenarioConnectionRequest"
                          root="TpktMessage"
                          model="s7Schema"
                          description="COTP Connection request used for initiating an S7 protocol connection.">
@@ -603,41 +603,41 @@
                     <userData>
                         <headerLength>17</headerLength>
                         <type>224</type>
-                        <CotpTpduConnectionRequest>
+                        <s7:CotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <parameters>
+                            <s7:parameters>
                                 <parameter>
                                     <type>193</type>
                                     <parameterLength>2</parameterLength>
-                                    <CotpParameterCallingTsap>
+                                    <s7:CotpParameterCallingTsap>
                                         <tsapId>256</tsapId>
-                                    </CotpParameterCallingTsap>
+                                    </s7:CotpParameterCallingTsap>
                                 </parameter>
                                 <parameter>
                                     <type>194</type>
                                     <parameterLength>2</parameterLength>
-                                    <CotpParameterCalledTsap>
+                                    <s7:CotpParameterCalledTsap>
                                         <tsapId>258</tsapId>
-                                    </CotpParameterCalledTsap>
+                                    </s7:CotpParameterCalledTsap>
                                 </parameter>
                                 <parameter>
                                     <type>192</type>
                                     <parameterLength>1</parameterLength>
-                                    <CotpParameterTpduSize>
+                                    <s7:CotpParameterTpduSize>
                                         <tpduSize>10</tpduSize>
-                                    </CotpParameterTpduSize>
+                                    </s7:CotpParameterTpduSize>
                                 </parameter>
-                            </parameters>
-                        </CotpTpduConnectionRequest>
+                            </s7:parameters>
+                        </s7:CotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: scenarioConnectionResponse"
+    <tdml:parserTestCase name="COTP-scenarioConnectionResponse"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Minimal valid COTP Message">
@@ -656,41 +656,41 @@
                     <userData>
                         <headerLength>17</headerLength>
                         <type>208</type>
-                        <CotpTpduConnectionResponse>
+                        <s7:CotpTpduConnectionResponse>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <parameters>
+                            <s7:parameters>
                                 <parameter>
                                     <type>192</type>
                                     <parameterLength>1</parameterLength>
-                                    <CotpParameterTpduSize>
+                                    <s7:CotpParameterTpduSize>
                                         <tpduSize>9</tpduSize>
-                                    </CotpParameterTpduSize>
+                                    </s7:CotpParameterTpduSize>
                                 </parameter>
                                 <parameter>
                                     <type>193</type>
                                     <parameterLength>2</parameterLength>
-                                    <CotpParameterCallingTsap>
+                                    <s7:CotpParameterCallingTsap>
                                         <tsapId>256</tsapId>
-                                    </CotpParameterCallingTsap>
+                                    </s7:CotpParameterCallingTsap>
                                 </parameter>
                                 <parameter>
                                     <type>194</type>
                                     <parameterLength>2</parameterLength>
-                                    <CotpParameterCalledTsap>
+                                    <s7:CotpParameterCalledTsap>
                                         <tsapId>258</tsapId>
-                                    </CotpParameterCalledTsap>
+                                    </s7:CotpParameterCalledTsap>
                                 </parameter>
-                            </parameters>
-                        </CotpTpduConnectionResponse>
+                            </s7:parameters>
+                        </s7:CotpTpduConnectionResponse>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="COTP: scenarioDataTpdu"
+    <tdml:parserTestCase name="COTP-scenarioDataTpdu"
                          root="TpktMessage"
                          model="s7Schema"
                          description="Typical Data TPDU used for transferring S7 packets.">
@@ -710,14 +710,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>14</parametersLength>
@@ -725,12 +725,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7RequestParameterReadVar>
+                                        <s7:S7RequestParameterReadVar>
                                             <numItems>1</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>1</dataType>
@@ -739,18 +739,18 @@
                                                         <memoryArea>130</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>4</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </S7RequestParameterReadVar>
+                                        </s7:S7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7RequestPayloadReadVar/>
+                                        <s7:S7RequestPayloadReadVar/>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -758,7 +758,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Setup Communication Request"
+    <tdml:parserTestCase name="S7-Setup-Communication-Request"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -776,14 +776,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>0</tpduReference>
                                 <parametersLength>8</parametersLength>
@@ -791,20 +791,20 @@
                                 <parameters>
                                     <parameter>
                                         <type>240</type>
-                                        <S7GeneralParameterSetupCommunication>
+                                        <s7:S7GeneralParameterSetupCommunication>
                                             <reserved>0</reserved>
                                             <maxAmqCaller>1</maxAmqCaller>
                                             <maxAmqCallee>1</maxAmqCallee>
                                             <pduLength>480</pduLength>
-                                        </S7GeneralParameterSetupCommunication>
+                                        </s7:S7GeneralParameterSetupCommunication>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7GeneralPayloadSetupCommunication/>
+                                        <s7:S7GeneralPayloadSetupCommunication/>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -812,7 +812,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Setup Communication Response"
+    <tdml:parserTestCase name="S7-SetupCommunicationResponse"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -830,14 +830,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>0</tpduReference>
                                 <parametersLength>8</parametersLength>
@@ -847,20 +847,20 @@
                                 <parameters>
                                     <parameter>
                                         <type>240</type>
-                                        <S7GeneralParameterSetupCommunication>
+                                        <s7:S7GeneralParameterSetupCommunication>
                                             <reserved>0</reserved>
                                             <maxAmqCaller>1</maxAmqCaller>
                                             <maxAmqCallee>1</maxAmqCallee>
                                             <pduLength>240</pduLength>
-                                        </S7GeneralParameterSetupCommunication>
+                                        </s7:S7GeneralParameterSetupCommunication>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7GeneralPayloadSetupCommunication/>
+                                        <s7:S7GeneralPayloadSetupCommunication/>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -868,7 +868,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read SZL CPU Function Request"
+    <tdml:parserTestCase name="S7-ReadSZLCPUFunctionRequest"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -887,14 +887,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>7</type>
-                            <S7UserDataMessage>
+                            <s7:S7UserDataMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>256</tpduReference>
                                 <parametersLength>8</parametersLength>
@@ -902,7 +902,7 @@
                                 <parameters>
                                     <parameter>
                                         <type>0</type>
-                                        <S7UserDataParameterCPUService>
+                                        <s7:S7UserDataParameterCPUService>
                                             <header>274</header>
                                             <paramLength>4</paramLength>
                                             <typeCode>17</typeCode>
@@ -910,21 +910,21 @@
                                             <functionGroup>4</functionGroup>
                                             <subFunctionGroup>1</subFunctionGroup>
                                             <sequenceNumber>0</sequenceNumber>
-                                        </S7UserDataParameterCPUService>
+                                        </s7:S7UserDataParameterCPUService>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7UserDataPayloadCpuServices>
+                                        <s7:S7UserDataPayloadCpuServices>
                                             <returnCode>255</returnCode>
                                             <transportSize>9</transportSize>
                                             <length>4</length>
                                             <sslId>17</sslId>
                                             <sslIndex>0</sslIndex>
-                                        </S7UserDataPayloadCpuServices>
+                                        </s7:S7UserDataPayloadCpuServices>
                                     </payload>
                                 </payloads>
-                            </S7UserDataMessage>
+                            </s7:S7UserDataMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -932,7 +932,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read SZL CPU Function Response"
+    <tdml:parserTestCase name="S7-ReadSZLCPUFunctionResponse"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -952,14 +952,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>7</type>
-                            <S7UserDataMessage>
+                            <s7:S7UserDataMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>256</tpduReference>
                                 <parametersLength>12</parametersLength>
@@ -967,7 +967,7 @@
                                 <parameters>
                                     <parameter>
                                         <type>0</type>
-                                        <S7UserDataParameterCPUService>
+                                        <s7:S7UserDataParameterCPUService>
                                             <header>274</header>
                                             <paramLength>8</paramLength>
                                             <typeCode>18</typeCode>
@@ -978,12 +978,12 @@
                                             <dataUnitReferenceNumber>0</dataUnitReferenceNumber>
                                             <lastDataUnit>0</lastDataUnit>
                                             <errorCode>0</errorCode>
-                                        </S7UserDataParameterCPUService>
+                                        </s7:S7UserDataParameterCPUService>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7UserDataPayloadCpuServices>
+                                        <s7:S7UserDataPayloadCpuServices>
                                             <returnCode>255</returnCode>
                                             <transportSize>9</transportSize>
                                             <length>120</length>
@@ -994,47 +994,47 @@
                                                 <partialListCount>4</partialListCount>
                                                 <sslDataRecords>
                                                     <sslDataRecord>
-                                                        <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        <s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                             <index>1</index>
                                                             <articleNumber><![CDATA[6ES7 315-2EH14-0AB0 ]]></articleNumber>
                                                             <bgType>192</bgType>
                                                             <moduleOrOsVersion>3</moduleOrOsVersion>
                                                             <pgDescriptionFileVersion>1</pgDescriptionFileVersion>
-                                                        </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        </s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                     </sslDataRecord>
                                                     <sslDataRecord>
-                                                        <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        <s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                             <index>6</index>
                                                             <articleNumber><![CDATA[6ES7 315-2EH14-0AB0 ]]></articleNumber>
                                                             <bgType>192</bgType>
                                                             <moduleOrOsVersion>3</moduleOrOsVersion>
                                                             <pgDescriptionFileVersion>1</pgDescriptionFileVersion>
-                                                        </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        </s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                     </sslDataRecord>
                                                     <sslDataRecord>
-                                                        <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        <s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                             <index>7</index>
                                                             <articleNumber><![CDATA[                    ]]></articleNumber>
                                                             <bgType>192</bgType>
                                                             <moduleOrOsVersion>22019</moduleOrOsVersion>
                                                             <pgDescriptionFileVersion>519</pgDescriptionFileVersion>
-                                                        </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        </s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                     </sslDataRecord>
                                                     <sslDataRecord>
-                                                        <S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        <s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                             <index>129</index>
                                                             <articleNumber><![CDATA[Boot Loader         ]]></articleNumber>
                                                             <bgType>0</bgType>
                                                             <moduleOrOsVersion>16672</moduleOrOsVersion>
                                                             <pgDescriptionFileVersion>2313</pgDescriptionFileVersion>
-                                                        </S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        </s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                     </sslDataRecord>
                                                 </sslDataRecords>
                                             </partialList>
-                                        </S7UserDataPayloadCpuServices>
+                                        </s7:S7UserDataPayloadCpuServices>
                                     </payload>
                                 </payloads>
-                            </S7UserDataMessage>
+                            </s7:S7UserDataMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1042,7 +1042,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Request (Single Item)"
+    <tdml:parserTestCase name="S7-ReadVarRequestSingleItem"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1061,14 +1061,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6400</tpduReference>
                                 <parametersLength>14</parametersLength>
@@ -1076,12 +1076,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7RequestParameterReadVar>
+                                        <s7:S7RequestParameterReadVar>
                                             <numItems>1</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>8</dataType>
@@ -1090,18 +1090,18 @@
                                                         <memoryArea>131</memoryArea>
                                                         <byteOffset>16</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </S7RequestParameterReadVar>
+                                        </s7:S7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7RequestPayloadReadVar/>
+                                        <s7:S7RequestPayloadReadVar/>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1109,7 +1109,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Response (Single Item)"
+    <tdml:parserTestCase name="S7-ReadVarResponseSingleItem"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1128,14 +1128,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6400</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1145,14 +1145,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7ResponseParameterReadVar>
+                                        <s7:S7ResponseParameterReadVar>
                                             <numItems>1</numItems>
-                                        </S7ResponseParameterReadVar>
+                                        </s7:S7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7ResponsePayloadReadVar>
+                                        <s7:S7ResponsePayloadReadVar>
                                             <numItems>1</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1161,10 +1161,10 @@
                                                 <lengthInBytes>4</lengthInBytes>
                                                 <data>00000000</data>
                                             </item>
-                                        </S7ResponsePayloadReadVar>
+                                        </s7:S7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1172,7 +1172,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Request (Mixed Items)"
+    <tdml:parserTestCase name="S7-ReadVarRequestMixedItems"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1191,14 +1191,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>86</parametersLength>
@@ -1206,12 +1206,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7RequestParameterReadVar>
+                                        <s7:S7RequestParameterReadVar>
                                             <numItems>7</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>6</dataType>
@@ -1220,11 +1220,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>44</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1233,11 +1233,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>52</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>1</dataType>
@@ -1246,11 +1246,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>53</byteOffset>
                                                         <bitOffset>1</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>5</dataType>
@@ -1259,11 +1259,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>42</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1272,11 +1272,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>51</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>4</dataType>
@@ -1285,11 +1285,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>40</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1298,18 +1298,18 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>50</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </S7RequestParameterReadVar>
+                                        </s7:S7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7RequestPayloadReadVar/>
+                                        <s7:S7RequestPayloadReadVar/>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1317,7 +1317,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Response (Mixed Items)"
+    <tdml:parserTestCase name="S7-ReadVarResponseMixedItems"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1336,14 +1336,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1353,14 +1353,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7ResponseParameterReadVar>
+                                        <s7:S7ResponseParameterReadVar>
                                             <numItems>7</numItems>
-                                        </S7ResponseParameterReadVar>
+                                        </s7:S7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7ResponsePayloadReadVar>
+                                        <s7:S7ResponsePayloadReadVar>
                                             <numItems>7</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1414,10 +1414,10 @@
                                                 <lengthInBytes>1</lengthInBytes>
                                                 <data>00</data>
                                             </item>
-                                        </S7ResponsePayloadReadVar>
+                                        </s7:S7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1425,7 +1425,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Response (Mixed Items with odd number of bytes)"
+    <tdml:parserTestCase name="S7-ReadVarResponseMixedItemsWithOddNumberOfBytes"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1444,14 +1444,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1461,14 +1461,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7ResponseParameterReadVar>
+                                        <s7:S7ResponseParameterReadVar>
                                             <numItems>3</numItems>
-                                        </S7ResponseParameterReadVar>
+                                        </s7:S7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7ResponsePayloadReadVar>
+                                        <s7:S7ResponsePayloadReadVar>
                                             <numItems>3</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1493,10 +1493,10 @@
                                                 <lengthInBytes>1</lengthInBytes>
                                                 <data>00</data>
                                             </item>
-                                        </S7ResponsePayloadReadVar>
+                                        </s7:S7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1504,7 +1504,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Request (No Filling Bytes)"
+    <tdml:parserTestCase name="S7-ReadVarRequestNoFillingBytes"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1523,14 +1523,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>38</parametersLength>
@@ -1538,12 +1538,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7RequestParameterReadVar>
+                                        <s7:S7RequestParameterReadVar>
                                             <numItems>3</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>6</dataType>
@@ -1552,11 +1552,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>44</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>5</dataType>
@@ -1565,11 +1565,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>42</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>4</dataType>
@@ -1578,18 +1578,18 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>40</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </S7RequestParameterReadVar>
+                                        </s7:S7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7RequestPayloadReadVar/>
+                                        <s7:S7RequestPayloadReadVar/>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1597,7 +1597,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Response (No Filling Bytes)"
+    <tdml:parserTestCase name="S7-ReadVarResponseNoFillingBytes"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1616,14 +1616,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1633,14 +1633,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7ResponseParameterReadVar>
+                                        <s7:S7ResponseParameterReadVar>
                                             <numItems>3</numItems>
-                                        </S7ResponseParameterReadVar>
+                                        </s7:S7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7ResponsePayloadReadVar>
+                                        <s7:S7ResponsePayloadReadVar>
                                             <numItems>3</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1663,10 +1663,10 @@
                                                 <lengthInBytes>2</lengthInBytes>
                                                 <data>0000</data>
                                             </item>
-                                        </S7ResponsePayloadReadVar>
+                                        </s7:S7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1674,7 +1674,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Request (With Filling Bytes)"
+    <tdml:parserTestCase name="S7-ReadVarRequestWithFillingBytes"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1693,14 +1693,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>50</parametersLength>
@@ -1708,12 +1708,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7RequestParameterReadVar>
+                                        <s7:S7RequestParameterReadVar>
                                             <numItems>4</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1722,11 +1722,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>42</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>1</dataType>
@@ -1735,11 +1735,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>43</byteOffset>
                                                         <bitOffset>1</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1748,11 +1748,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>41</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1761,18 +1761,18 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>40</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </S7RequestParameterReadVar>
+                                        </s7:S7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7RequestPayloadReadVar/>
+                                        <s7:S7RequestPayloadReadVar/>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1780,7 +1780,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Response (With Filling Bytes)"
+    <tdml:parserTestCase name="S7-ReadVarResponseWithFillingBytes"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1799,14 +1799,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1816,14 +1816,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7ResponseParameterReadVar>
+                                        <s7:S7ResponseParameterReadVar>
                                             <numItems>4</numItems>
-                                        </S7ResponseParameterReadVar>
+                                        </s7:S7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7ResponsePayloadReadVar>
+                                        <s7:S7ResponsePayloadReadVar>
                                             <numItems>4</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1856,10 +1856,10 @@
                                                 <lengthInBytes>1</lengthInBytes>
                                                 <data>00</data>
                                             </item>
-                                        </S7ResponsePayloadReadVar>
+                                        </s7:S7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1867,7 +1867,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Write Var Request (Single Item)"
+    <tdml:parserTestCase name="S7-WriteVarRequestSingleItem"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1887,14 +1887,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6144</tpduReference>
                                 <parametersLength>14</parametersLength>
@@ -1902,12 +1902,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>5</type>
-                                        <S7RequestParameterWriteVar>
+                                        <s7:S7RequestParameterWriteVar>
                                             <numItems>1</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterWriteVarAnyItem>
+                                                    <s7:S7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>8</dataType>
@@ -1916,15 +1916,15 @@
                                                         <memoryArea>131</memoryArea>
                                                         <byteOffset>16</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterWriteVarAnyItem>
+                                                    </s7:S7RequestParameterWriteVarAnyItem>
                                                 </item>
                                             </items>
-                                        </S7RequestParameterWriteVar>
+                                        </s7:S7RequestParameterWriteVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7RequestPayloadWriteVar>
+                                        <s7:S7RequestPayloadWriteVar>
                                             <numItems>1</numItems>
                                             <item>
                                                 <returnCode>0</returnCode>
@@ -1933,10 +1933,10 @@
                                                 <lengthInBytes>4</lengthInBytes>
                                                 <data>79E9F642</data>
                                             </item>
-                                        </S7RequestPayloadWriteVar>
+                                        </s7:S7RequestPayloadWriteVar>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1944,7 +1944,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Write Var Response (Single Item)"
+    <tdml:parserTestCase name="S7-WriteVarResponseSingleItem"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -1962,14 +1962,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6144</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1979,22 +1979,22 @@
                                 <parameters>
                                     <parameter>
                                         <type>5</type>
-                                        <S7ResponseParameterWriteVar>
+                                        <s7:S7ResponseParameterWriteVar>
                                             <numItems>1</numItems>
-                                        </S7ResponseParameterWriteVar>
+                                        </s7:S7ResponseParameterWriteVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7ResponsePayloadWriteVar>
+                                        <s7:S7ResponsePayloadWriteVar>
                                             <numItems>1</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
                                             </item>
-                                        </S7ResponsePayloadWriteVar>
+                                        </s7:S7ResponsePayloadWriteVar>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2002,7 +2002,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Request (Multiple Items)"
+    <tdml:parserTestCase name="S7-ReadVarRequestMultipleItems"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -2022,14 +2022,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6912</tpduReference>
                                 <parametersLength>62</parametersLength>
@@ -2037,12 +2037,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7RequestParameterReadVar>
+                                        <s7:S7RequestParameterReadVar>
                                             <numItems>5</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2051,11 +2051,11 @@
                                                         <memoryArea>131</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2064,11 +2064,11 @@
                                                         <memoryArea>129</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2077,11 +2077,11 @@
                                                         <memoryArea>130</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>29</dataType>
@@ -2090,11 +2090,11 @@
                                                         <memoryArea>29</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterReadVarAnyItem>
+                                                    <s7:S7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>28</dataType>
@@ -2103,18 +2103,18 @@
                                                         <memoryArea>28</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterReadVarAnyItem>
+                                                    </s7:S7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </S7RequestParameterReadVar>
+                                        </s7:S7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7RequestPayloadReadVar/>
+                                        <s7:S7RequestPayloadReadVar/>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2122,7 +2122,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Read Var Response (Multiple Items)"
+    <tdml:parserTestCase name="S7-ReadVarResponseMultipleItems"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -2142,14 +2142,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6912</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -2159,14 +2159,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <S7ResponseParameterReadVar>
+                                        <s7:S7ResponseParameterReadVar>
                                             <numItems>5</numItems>
-                                        </S7ResponseParameterReadVar>
+                                        </s7:S7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7ResponsePayloadReadVar>
+                                        <s7:S7ResponsePayloadReadVar>
                                             <numItems>5</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -2203,10 +2203,10 @@
                                                 <lengthInBytes>16</lengthInBytes>
                                                 <data>00110000000000000000000000000000</data>
                                             </item>
-                                        </S7ResponsePayloadReadVar>
+                                        </s7:S7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2214,7 +2214,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Write Var Request (Multiple Items)"
+    <tdml:parserTestCase name="S7-WriteVarRequestMultipleItems"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -2234,14 +2234,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <S7RequestMessage>
+                            <s7:S7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6656</tpduReference>
                                 <parametersLength>62</parametersLength>
@@ -2249,12 +2249,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>5</type>
-                                        <S7RequestParameterWriteVar>
+                                        <s7:S7RequestParameterWriteVar>
                                             <numItems>5</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterWriteVarAnyItem>
+                                                    <s7:S7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>4</dataType>
@@ -2263,11 +2263,11 @@
                                                         <memoryArea>131</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterWriteVarAnyItem>
+                                                    </s7:S7RequestParameterWriteVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterWriteVarAnyItem>
+                                                    <s7:S7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2276,11 +2276,11 @@
                                                         <memoryArea>129</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterWriteVarAnyItem>
+                                                    </s7:S7RequestParameterWriteVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterWriteVarAnyItem>
+                                                    <s7:S7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2289,11 +2289,11 @@
                                                         <memoryArea>130</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterWriteVarAnyItem>
+                                                    </s7:S7RequestParameterWriteVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterWriteVarAnyItem>
+                                                    <s7:S7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>29</dataType>
@@ -2302,11 +2302,11 @@
                                                         <memoryArea>29</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterWriteVarAnyItem>
+                                                    </s7:S7RequestParameterWriteVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <S7RequestParameterWriteVarAnyItem>
+                                                    <s7:S7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>28</dataType>
@@ -2315,15 +2315,15 @@
                                                         <memoryArea>28</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </S7RequestParameterWriteVarAnyItem>
+                                                    </s7:S7RequestParameterWriteVarAnyItem>
                                                 </item>
                                             </items>
-                                        </S7RequestParameterWriteVar>
+                                        </s7:S7RequestParameterWriteVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7RequestPayloadWriteVar>
+                                        <s7:S7RequestPayloadWriteVar>
                                             <numItems>5</numItems>
                                             <item>
                                                 <returnCode>0</returnCode>
@@ -2360,10 +2360,10 @@
                                                 <lengthInBytes>16</lengthInBytes>
                                                 <data>FECAFECAFECAFECAFECAFECAFECAFECA</data>
                                             </item>
-                                        </S7RequestPayloadWriteVar>
+                                        </s7:S7RequestPayloadWriteVar>
                                     </payload>
                                 </payloads>
-                            </S7RequestMessage>
+                            </s7:S7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2371,7 +2371,7 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="S7: Write Var Response (Multiple Items)"
+    <tdml:parserTestCase name="S7-WriteVarResponseMultipleItems"
                          root="TpktMessage"
                          model="s7Schema">
         <!-- Define the input -->
@@ -2389,14 +2389,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <CotpTpduData>
+                        <s7:CotpTpduData>
                             <endOfTransmission>1</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </CotpTpduData>
+                        </s7:CotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <S7ResponseMessage>
+                            <s7:S7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6656</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -2406,14 +2406,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>5</type>
-                                        <S7ResponseParameterWriteVar>
+                                        <s7:S7ResponseParameterWriteVar>
                                             <numItems>5</numItems>
-                                        </S7ResponseParameterWriteVar>
+                                        </s7:S7ResponseParameterWriteVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <S7ResponsePayloadWriteVar>
+                                        <s7:S7ResponsePayloadWriteVar>
                                             <numItems>5</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -2430,10 +2430,10 @@
                                             <item>
                                                 <returnCode>3</returnCode>
                                             </item>
-                                        </S7ResponsePayloadWriteVar>
+                                        </s7:S7ResponsePayloadWriteVar>
                                     </payload>
                                 </payloads>
-                            </S7ResponseMessage>
+                            </s7:S7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2441,6 +2441,6 @@
         </tdml:infoset>
     </tdml:parserTestCase>
 
-</testSuite>
+</tdml:testSuite>
 
 

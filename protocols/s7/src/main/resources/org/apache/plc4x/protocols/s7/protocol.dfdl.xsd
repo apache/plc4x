@@ -629,7 +629,7 @@
                             dfdl:occursCountKind="expression" dfdl:occursCount="{if(../numItems gt 0) then 1 else 0}">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="item" minOccurs="0"
+                            <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
                                         dfdl:occursCountKind="expression" dfdl:occursCount="{../../numItems}">
                                 <xs:complexType>
                                     <xs:sequence>
@@ -687,7 +687,7 @@
                             dfdl:occursCountKind="expression" dfdl:occursCount="{if(../numItems gt 0) then 1 else 0}">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="item" minOccurs="0"
+                            <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
                                         dfdl:occursCountKind="expression" dfdl:occursCount="{../../numItems}">
                                 <xs:complexType>
                                     <xs:sequence>
@@ -812,7 +812,7 @@
                             dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7:S7ResponseParameterReadVar/numItems
                             }"/>
-                <xs:element name="item" minOccurs="0"
+                <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
                             dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
                     <xs:complexType>
                         <xs:sequence>
@@ -853,7 +853,7 @@
                             dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7:S7RequestParameterWriteVar/numItems
                             }"/>
-                <xs:element name="item" minOccurs="0"
+                <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
                             dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
                     <xs:complexType>
                         <xs:sequence>
@@ -894,7 +894,7 @@
                             dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7:S7ResponseParameterWriteVar/numItems
                             }"/>
-                <xs:element name="item" minOccurs="0"
+                <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
                             dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
                     <xs:complexType>
                         <xs:sequence>
