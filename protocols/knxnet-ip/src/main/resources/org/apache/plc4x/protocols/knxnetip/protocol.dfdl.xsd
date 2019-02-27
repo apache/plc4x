@@ -1,0 +1,114 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+           xmlns:knx="http://plc4x.apache.org/knxnet-ip"
+           targetNamespace="http://plc4x.apache.org/knxnet-ip">
+
+    <xs:annotation>
+        <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:defineVariable name="messageType" type="xs:string"/>
+            <dfdl:defineFormat name="knxNetIpFullFormat">
+                <dfdl:format representation="binary"
+                             binaryNumberRep="binary"
+                             byteOrder="bigEndian"
+                             lengthKind="implicit" lengthUnits="bytes" length="0"
+                             occursCountKind="implicit"
+                             textOutputMinLength="0"
+                             alignment="1" alignmentUnits="bits"
+                             leadingSkip="0" trailingSkip="0"
+                             textPadKind="none" ignoreCase="no"
+                             textBidi="no" floating="no"
+                             encoding="utf-8" truncateSpecifiedLengthString="no"
+                             initiator="" terminator=""
+                             sequenceKind="ordered" separator=""
+                             escapeSchemeRef="" initiatedContent="no"
+                             encodingErrorPolicy="replace"/>
+            </dfdl:defineFormat>
+            <dfdl:format ref="knx:knxNetIpFullFormat"/>
+        </xs:appinfo>
+    </xs:annotation>
+
+    <!--
+
+        Simple type definition.
+
+    -->
+
+    <xs:simpleType name="bit" dfdl:lengthUnits="bits" dfdl:length="1" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:boolean"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="byte" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="short" dfdl:lengthUnits="bytes" dfdl:length="2" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedShort"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="hexByte" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+    <!--
+
+        TPKT - Iso-On-TCP
+
+    -->
+
+    <xs:element name="KNXNetIPMessage" type="knx:KNXNetIPMessageType"/>
+
+    <xs:complexType name="KNXNetIPMessageType">
+        <xs:sequence>
+            <xs:element name="header">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="headerLength" type="knx:byte" fixed="06"/>
+                        <xs:element name="protocolVersion" type="knx:byte" fixed="10"/>
+                        <xs:element name="serviceTypeIdentifier" type="knx:short"/>
+                        <!-- length of the entire message (including header) -->
+                        <xs:element name="totalLength" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="body">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="cEMIFrame" type="knx:cEMIFrameType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    http://www.eb-systeme.de/?page_id=479
+    <xs:complexType name="cEMIFrameType">
+        <xs:sequence>
+            <xs:element name="structureLength" type="knx:byte"/>
+            <xs:element name="descriptionType" type="knx:byte"/>
+            <xs:choice dfdl:choiceDispatchKey="{descriptionType}">
+                <xs:element dfdl:choiceBranchKey="" ref="knx:blah"/>
+                <xs:element dfdl:choiceBranchKey="" ref="knx:blah"/>
+                <xs:element dfdl:choiceBranchKey="" ref="knx:blah"/>
+                <xs:element dfdl:choiceBranchKey="" ref="knx:blah"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
