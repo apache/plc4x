@@ -91,14 +91,14 @@
             <xs:element name="body">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="cEMIFrame" type="knx:cEMIFrameType"/>
+                        <xs:element name="cEMIFrame" type="knx:CEMIFrameType"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    http://www.eb-systeme.de/?page_id=479
-    <xs:complexType name="cEMIFrameType">
+
+    <xs:complexType name="CEMIFrameType">
         <xs:sequence>
             <xs:element name="structureLength" type="knx:byte"/>
             <xs:element name="descriptionType" type="knx:byte"/>
