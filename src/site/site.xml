@@ -43,8 +43,7 @@
       <toc>top</toc>
       <bottomNav maxSpan="9">
         <column>reports</column>
-        <!--column>parent</column-->
-        <column>Infrastructure</column>
+        <column>Apache</column>
         <column>Protocols</column>
         <column>modules</column>
       </bottomNav>
@@ -54,6 +53,9 @@
       </brand>
       <bottomDescription>
         <![CDATA[
+          <p id="apacheTrademarks">
+          Apache PLC4X, PLC4X, Apache, the Apache feather logo, and the Apache PLC4X project logo are either registered trademarks or trademarks of The Apache Software Foundation in the United States and other countries. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+          </p>
           <p id="bottomNote">
           Apache PLC4X is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
           </p>
@@ -134,7 +136,7 @@
     <menu name="Apache" inherit="bottom">
       <item name="Apache Software Foundation" href="http://www.apache.org/"/>
       <item name="How Apache Works" href="https://www.apache.org/foundation/how-it-works.html"/>
-      <item name="Apache License" href="http://www.apache.org/licenses/"/>
+      <item name="License" href="http://www.apache.org/licenses/"/>
       <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
       <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
     </menu>
