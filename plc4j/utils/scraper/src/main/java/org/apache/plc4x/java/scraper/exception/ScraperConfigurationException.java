@@ -17,18 +17,27 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.scraper.config;
+package org.apache.plc4x.java.scraper.exception;
 
-import java.util.List;
-import java.util.Map;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 /**
- * Created by timbo on 2019-03-05
+ * Is thrown when there is a problem with the Configuration.
  */
-public interface JobConfiguration {
-    String getName();
+public class ScraperConfigurationException extends PlcRuntimeException {
+    public ScraperConfigurationException(String message) {
+        super(message);
+    }
 
-    List<String> getSources();
+    public ScraperConfigurationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    Map<String, String> getFields();
+    public ScraperConfigurationException(Throwable cause) {
+        super(cause);
+    }
+
+    public ScraperConfigurationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

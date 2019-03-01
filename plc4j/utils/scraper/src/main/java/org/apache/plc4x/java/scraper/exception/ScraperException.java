@@ -17,27 +17,21 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.scraper.config;
-
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+package org.apache.plc4x.java.scraper.exception;
 
 /**
- * Is thrown when there is a problem with the Configuration.
+ * Created by timbo on 2019-03-04
  */
-public class ScraperConfigurationException extends PlcRuntimeException {
-    public ScraperConfigurationException(String message) {
+public class ScraperException extends Exception {
+    /**
+     * Constructs a new exception with the specified detail message.  The
+     * cause is not initialized, and may subsequently be initialized by
+     * a call to {@link #initCause}.
+     *
+     * @param message the detail message. The detail message is saved for
+     *                later retrieval by the {@link #getMessage()} method.
+     */
+    public ScraperException(String message) {
         super(message);
-    }
-
-    public ScraperConfigurationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ScraperConfigurationException(Throwable cause) {
-        super(cause);
-    }
-
-    public ScraperConfigurationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

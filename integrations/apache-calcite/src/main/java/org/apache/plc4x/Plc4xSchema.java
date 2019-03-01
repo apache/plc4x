@@ -23,8 +23,10 @@ import org.apache.calcite.schema.impl.AbstractSchema;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.scraper.ResultHandler;
 import org.apache.plc4x.java.scraper.Scraper;
+import org.apache.plc4x.java.scraper.ScraperImpl;
 import org.apache.plc4x.java.scraper.config.JobConfiguration;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
 
 import java.time.Instant;
 import java.util.Map;
@@ -40,10 +42,10 @@ public class Plc4xSchema extends AbstractSchema {
     protected final Map<String, BlockingQueue<Record>> queues;
     protected final Map<String, Table> tableMap;
 
-    public Plc4xSchema(ScraperConfiguration configuration, long tableCutoff) {
+    public Plc4xSchema(ScraperConfiguration configuration, long tableCutoff) throws ScraperException {
         this.configuration = configuration;
         this.handler = new QueueHandler();
-        this.scraper = new Scraper(configuration, handler);
+        this.scraper = new ScraperImpl(configuration, handler);
         this.queues = configuration.getJobConfigurations().stream()
             .collect(Collectors.toMap(
                 JobConfiguration::getName,

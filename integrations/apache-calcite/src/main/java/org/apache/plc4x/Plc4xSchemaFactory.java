@@ -23,6 +23,7 @@ import org.apache.calcite.schema.SchemaFactory;
 import org.apache.calcite.schema.SchemaPlus;
 import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -52,7 +53,12 @@ public class Plc4xSchemaFactory implements SchemaFactory {
             throw new IllegalArgumentException("Given limit '" + limit + "' cannot be parsed to valid long!", e);
         }
         // Pass the configuration to the Schema
-        return new Plc4xSchema(configuration, parsedLimit);
+        try {
+            return new Plc4xSchema(configuration, parsedLimit);
+        } catch (ScraperException e) {
+            //ToDo Exception, but interface does not accept ... null is fishy
+            return null;
+        }
     }
 
 }

@@ -19,20 +19,26 @@
 
 package org.apache.plc4x.java.scraper;
 
-import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfiguration;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
+
+
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class ScraperRunner {
+public class TriggeredScraperRunner {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScraperRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperRunner.class);
 
+    /**
+     * testing of TriggeredScraper vs real device
+     */
     public static void main(String[] args) throws IOException, ScraperException {
-        ScraperConfiguration configuration = ScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example.yml");
-        Scraper scraper = new ScraperImpl(configuration, (j, a, m) -> LOGGER.info("Results from {}/{}: {}", j, a, m));
+        TriggeredScraperConfiguration configuration = TriggeredScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example_triggered_scraper.yml");
+        TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (j, a, m) -> LOGGER.info("Results from {}/{}: {}", j, a, m));
 
         scraper.start();
     }

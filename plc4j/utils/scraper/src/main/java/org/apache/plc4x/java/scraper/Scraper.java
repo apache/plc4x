@@ -19,156 +19,23 @@
 
 package org.apache.plc4x.java.scraper;
 
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.lang3.tuple.Triple;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
-import org.apache.plc4x.java.scraper.util.PercentageAboveThreshold;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.*;
-
 /**
- * Main class that orchestrates scraping.
+ * Main interface that orchestrates scraping.
  */
-public class Scraper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Scraper.class);
-
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10,
-        new BasicThreadFactory.Builder()
-            .namingPattern("scheduler-thread-%d")
-            .daemon(false)
-            .build()
-    );
-    private final ExecutorService handlerPool = Executors.newFixedThreadPool(4,
-        new BasicThreadFactory.Builder()
-            .namingPattern("handler-thread-%d")
-            .daemon(true)
-            .build()
-    );
-
-    private final ResultHandler resultHandler;
-
-    private final MultiValuedMap<ScrapeJob, ScraperTask> tasks = new ArrayListValuedHashMap<>();
-    private final MultiValuedMap<ScraperTask, ScheduledFuture<?>> futures = new ArrayListValuedHashMap<>();
-    private final PlcDriverManager driverManager;
-    private final List<ScrapeJob> jobs;
-
-    /**
-     * Creates a Scraper instance from a configuration.
-     * By default a {@link PooledPlcDriverManager} is used.
-     * @param config Configuration to use.
-     * @param resultHandler
-     */
-    public Scraper(ScraperConfiguration config, ResultHandler resultHandler) {
-        this(resultHandler, createPooledDriverManager(), config.getJobs());
-    }
-
-    /**
-     * Min Idle per Key is set to 1 for situations where the network is broken.
-     * Then, on reconnect we can fail all getConnection calls (in the ScraperTask) fast until
-     * (in the background) the idle connection is created and the getConnection call returns fast.
-     */
-    private static PooledPlcDriverManager createPooledDriverManager() {
-        return new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
-            GenericKeyedObjectPoolConfig<PlcConnection> poolConfig = new GenericKeyedObjectPoolConfig<>();
-            poolConfig.setMinIdlePerKey(1);  // This should avoid problems with long running connect attempts??
-            poolConfig.setTestOnBorrow(true);
-            poolConfig.setTestOnReturn(true);
-            return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, poolConfig);
-        });
-    }
-
-    /**
-     *
-     * @param resultHandler
-     * @param driverManager
-     * @param jobs
-     */
-    public Scraper(ResultHandler resultHandler, PlcDriverManager driverManager, List<ScrapeJob> jobs) {
-        this.resultHandler = resultHandler;
-        Validate.notEmpty(jobs);
-        this.driverManager = driverManager;
-        this.jobs = jobs;
-    }
-
+public interface Scraper {
     /**
      * Start the scraping.
      */
-    public void start() {
-        // Schedule all jobs
-        LOGGER.info("Starting jobs...");
-        jobs.stream()
-            .flatMap(job -> job.getConnections().entrySet().stream()
-                .map(entry -> Triple.of(job, entry.getKey(), entry.getValue()))
-            )
-            .forEach(
-                tuple -> {
-                    LOGGER.debug("Register task for job {} for conn {} ({}) at rate {} ms",
-                        tuple.getLeft().getName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate());
-                    ScraperTask task = new ScraperTask(driverManager,
-                        tuple.getLeft().getName(), tuple.getMiddle(), tuple.getRight(),
-                        tuple.getLeft().getFields(),
-                        1_000,
-                        handlerPool, resultHandler);
-                    // Add task to internal list
-                    tasks.put(tuple.getLeft(), task);
-                    ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task,
-                        0, tuple.getLeft().getScrapeRate(), TimeUnit.MILLISECONDS);
-
-                    // Store the handle for stopping, etc.
-                    futures.put(task, future);
-                }
-            );
-
-        // Add statistics tracker
-        scheduler.scheduleAtFixedRate(() -> {
-            for (Map.Entry<ScrapeJob, ScraperTask> entry : tasks.entries()) {
-                DescriptiveStatistics statistics = entry.getValue().getLatencyStatistics();
-                String msg = String.format(Locale.ENGLISH, "Job statistics (%s, %s) number of requests: %d (%d success, %.1f %% failed, %.1f %% too slow), min latency: %.2f ms, mean latency: %.2f ms, median: %.2f ms",
-                    entry.getValue().getJobName(), entry.getValue().getConnectionAlias(),
-                    entry.getValue().getRequestCounter(), entry.getValue().getSuccessfullRequestCounter(),
-                    entry.getValue().getPercentageFailed(),
-                    statistics.apply(new PercentageAboveThreshold(entry.getKey().getScrapeRate() * 1e6)),
-                    statistics.getMin() * 1e-6, statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
-                LOGGER.debug(msg);
-            }
-        }, 1_000, 1_000, TimeUnit.MILLISECONDS);
-    }
+    void start();
 
     /**
-     * For testing.
+     * retrieves active tasks used for scraping
+     * @return number of active tasks
      */
-    ScheduledExecutorService getScheduler() {
-        return scheduler;
-    }
+    int getNumberOfActiveTasks();
 
-    public int getNumberOfActiveTasks() {
-        return (int) futures.entries().stream().filter(entry -> !entry.getValue().isDone()).count();
-    }
-
-    public void stop() {
-        // Stop all futures
-        LOGGER.info("Stopping scraper...");
-        for (Map.Entry<ScraperTask, ScheduledFuture<?>> entry : futures.entries()) {
-            LOGGER.debug("Stopping task {}...", entry.getKey());
-            entry.getValue().cancel(true);
-        }
-        // Clear the map
-        futures.clear();
-    }
-
+    /**
+     * stops active scraping processes
+     */
+    void stop();
 }
