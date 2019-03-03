@@ -27,34 +27,46 @@
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4x-protocols-s7</artifactId>
+  <artifactId>plc4x-protocols-test-utils</artifactId>
 
-  <name>Protocols: S7</name>
-  <description>Base protocol specifications for the Siemens S7 protocol</description>
+  <name>Protocols: Test-Utils</name>
+  <description>Test utils for protocols</description>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-test-utils</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-      <scope>test</scope>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-tdml-lib_2.12</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.apache.daffodil</groupId>
-      <artifactId>daffodil-japi_2.12</artifactId>
-      <scope>test</scope>
+      <artifactId>daffodil-lib_2.12</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <scope>test</scope>
+      <groupId>org.apache.daffodil</groupId>
+      <artifactId>daffodil-tdml-processor_2.12</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jdom</groupId>
-      <artifactId>jdom2</artifactId>
-      <scope>test</scope>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.daffodil:daffodil-tdml-processor_2.12</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

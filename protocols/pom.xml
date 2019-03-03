@@ -36,6 +36,8 @@
   <modules>
     <module>knxnet-ip</module>
     <module>s7</module>
+
+    <module>test-utils</module>
   </modules>
 
 </project>
