@@ -25,7 +25,7 @@
   <parent>
     <artifactId>integrations</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.3.1</version>
+    <version>0.3.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>apache-karaf</artifactId>
