@@ -57,7 +57,7 @@ If it's information you have and you want to inform us about something or are in
 
 In order to sign up, just send an empty email to dev-subscribe@plc4x.apache.org and as soon as you are subscribed, send what you want to dev@plc4x.apache.org.
 
-You can always read the mailinglist content via our link:++https://lists.apache.org/list.html?dev@plc4x.apache.org++[Apache list archive.] We're a friendly bunch, so don't be afraid :-)
+You can always read the mailinglist content via our link:++https://lists.apache.org/list.html?dev@plc4x.apache.org++[Apache email list archive.] We're a friendly bunch, so don't be afraid :-)
 
 ==== Jira
 
