@@ -116,6 +116,7 @@
       <item name="Code Analysis" href="developers/sonar.html"/>
       <item name="Continuous Integration" href="developers/ci.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
+      <!--item name="Decision Making" href="developers/decisions.html"/-->
       <item name="JQassistant" href="developers/jqassistant.html"/>
       <item name="Releasing" href="developers/release.html"/>
       <item name="VM Access" href="developers/vm.html"/>
