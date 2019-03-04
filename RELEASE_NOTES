@@ -1,17 +1,12 @@
 ==============================================================
-(Unreleased) Apache PLC4X (incubating) 0.3.1
+Apache PLC4X (incubating) 0.3.1
 ==============================================================
 
-New Features
-------------
-
-Incompatible changes
---------------------
+This is a bugfix-release, that fixes some problems with S7 driver.
 
 Bug Fixes
 ---------
-- The S7 driver didn't correctly handle "fill-bytes" in multi-
-item read-responses and multi-item write-requests
+- The S7 driver didn't correctly handle "fill-bytes" in multi-item read-responses and multi-item write-requests
 - PLC4X-83: fixed NPE when reading odd-length array of one-byte base types
 - PLC4X-82: renamed flags "F" to Siemens Standard "M" (Marker)
 - PLC4X-84: Fixed a bug in the DefaultS7MessageProcessor which didn't correctly merge together split up items
