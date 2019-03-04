@@ -12,6 +12,7 @@ Bug Fixes
 ---------
 - The S7 driver didn't correctly handle "fill-bytes" in multi-
 item read-responses and multi-item write-requests
+- fixed NPE when reading odd-length array of one-byte base types
 
 
 ==============================================================
