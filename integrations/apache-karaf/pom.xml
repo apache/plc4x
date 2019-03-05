@@ -54,7 +54,6 @@
       <plugin>
         <groupId>com.buschmais.jqassistant</groupId>
         <artifactId>jqassistant-maven-plugin</artifactId>
-        <version>1.6.0</version>
         <configuration>
           <skip>true</skip>
         </configuration>

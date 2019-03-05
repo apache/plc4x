@@ -32,6 +32,20 @@
     <source.skip>true</source.skip>
   </properties>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <configuration>
+            <suppressionFiles>${project.basedir}/false-positives.xml</suppressionFiles>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

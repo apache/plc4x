@@ -119,7 +119,7 @@
     <gson.version>2.8.0</gson.version>
     <guava.version>27.0.1-jre</guava.version>
     <hamcrest.version>1.3</hamcrest.version>
-    <jackson.version>2.9.7</jackson.version>
+    <jackson.version>2.9.8</jackson.version>
     <jna.version>4.5.1</jna.version>
     <joda-time.version>2.10</joda-time.version>
     <jopt-simple.version>5.0.2</jopt-simple.version>
@@ -133,6 +133,7 @@
     <mockito.version>2.24.5</mockito.version>
     <netty.version>4.1.33.Final</netty.version>
     <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
+    <owasp-dependency-check.version>5.0.0-M1</owasp-dependency-check.version>
     <pcap4j.version>1.7.3</pcap4j.version>
     <scala.version>2.12.6</scala.version>
     <slf4j.version>1.7.25</slf4j.version>
@@ -1143,6 +1144,18 @@
           <artifactId>maven-changelog-plugin</artifactId>
           <version>2.3</version>
         </plugin>
+
+        <plugin>
+          <groupId>com.buschmais.jqassistant</groupId>
+          <artifactId>jqassistant-maven-plugin</artifactId>
+          <version>1.6.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${owasp-dependency-check.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -1224,6 +1237,19 @@
           <!-- Automatically link Jira issues -->
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
         </configuration>
+      </plugin>
+
+      <!-- Generates a dependency vulnerability -->
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
@@ -1344,7 +1370,6 @@
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
-            <version>4.0.2</version>
             <executions>
               <execution>
                 <goals>
@@ -1352,6 +1377,9 @@
                 </goals>
               </execution>
             </executions>
+            <configuration>
+              <failBuildOnCVSS>8</failBuildOnCVSS>
+            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -1653,7 +1681,6 @@
           <plugin>
             <groupId>com.buschmais.jqassistant</groupId>
             <artifactId>jqassistant-maven-plugin</artifactId>
-            <version>1.6.0</version>
             <executions>
               <execution>
                 <goals>

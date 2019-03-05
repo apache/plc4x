@@ -28,6 +28,10 @@
   <name>Integrations: Apache Nifi</name>
   <description>Integration module for integrating PLC4X into Apache Nifi.</description>
 
+  <properties>
+    <nifi.version>1.9.0</nifi.version>
+  </properties>
+
   <modules>
     <module>nifi-plc4x-processors</module>
     <module>nifi-plc4x-nar</module>
@@ -68,7 +72,6 @@
       <plugin>
         <groupId>com.buschmais.jqassistant</groupId>
         <artifactId>jqassistant-maven-plugin</artifactId>
-        <version>1.5.0</version>
         <configuration>
           <skip>true</skip>
         </configuration>
@@ -81,14 +84,29 @@
       <dependency>
         <groupId>org.apache.nifi</groupId>
         <artifactId>nifi</artifactId>
-        <version>1.7.1</version>
+        <version>${nifi.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.nifi</groupId>
+        <artifactId>nifi-api</artifactId>
+        <version>${nifi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.nifi</groupId>
+        <artifactId>nifi-utils</artifactId>
+        <version>${nifi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.nifi</groupId>
+        <artifactId>nifi-mock</artifactId>
+        <version>${nifi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.nifi</groupId>
         <artifactId>nifi-nar-bundles</artifactId>
-        <version>1.7.1</version>
+        <version>${nifi.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
