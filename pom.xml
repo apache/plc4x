@@ -99,7 +99,7 @@
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
     <bouncycastle.version>1.60</bouncycastle.version>
-    <byte-buddy.version>1.8.21</byte-buddy.version>
+    <byte-buddy.version>1.9.10</byte-buddy.version>
     <commons-codec.version>1.11</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
     <commons-configuration2.version>2.2</commons-configuration2.version>
@@ -130,8 +130,8 @@
     <logback.version>1.2.3</logback.version>
     <lucene.version>7.4.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
-    <mockito.version>2.22.0</mockito.version>
-    <netty.version>4.1.23.Final</netty.version>
+    <mockito.version>2.24.5</mockito.version>
+    <netty.version>4.1.33.Final</netty.version>
     <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
     <pcap4j.version>1.7.3</pcap4j.version>
     <scala.version>2.12.6</scala.version>
@@ -667,31 +667,6 @@
 
   <build>
     <plugins>
-      <!-- Plugin for analysing the project based on neo4j queries -->
-      <plugin>
-        <groupId>com.buschmais.jqassistant</groupId>
-        <artifactId>jqassistant-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>scan</goal>
-              <goal>analyze</goal>
-            </goals>
-            <configuration>
-              <rulesDirectory>${project.basedir}/src/jqassistant</rulesDirectory>
-              <failOnSeverity>MAJOR</failOnSeverity>
-              <warnOnSeverity>MINOR</warnOnSeverity>
-              <scanIncludes>
-                <scanInclude>
-                  <path>${project.basedir}/.git</path>
-                </scanInclude>
-              </scanIncludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
         <groupId>org.apache.rat</groupId>
@@ -1280,18 +1255,6 @@
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>com.buschmais.jqassistant</groupId>
-        <artifactId>jqassistant-maven-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
     </plugins>
   </reporting>
 
@@ -1710,6 +1673,53 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+
+    <profile>
+      <id>with-jqassistant</id>
+      <build>
+        <plugins>
+          <!-- Plugin for analysing the project based on neo4j queries -->
+          <plugin>
+            <groupId>com.buschmais.jqassistant</groupId>
+            <artifactId>jqassistant-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>scan</goal>
+                  <goal>analyze</goal>
+                </goals>
+                <configuration>
+                  <rulesDirectory>${project.basedir}/src/jqassistant</rulesDirectory>
+                  <failOnSeverity>MAJOR</failOnSeverity>
+                  <warnOnSeverity>MINOR</warnOnSeverity>
+                  <scanIncludes>
+                    <scanInclude>
+                      <path>${project.basedir}/.git</path>
+                    </scanInclude>
+                  </scanIncludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>com.buschmais.jqassistant</groupId>
+            <artifactId>jqassistant-maven-plugin</artifactId>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>report</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
     </profile>
 
     <!--
