@@ -22,43 +22,22 @@ package org.apache.plc4x.java.scraper;
 import java.util.Map;
 
 /**
- * POJO Object to transport all Job informtation.
+ * POJO Object to transport all Job information.
  * Is generated from {@link org.apache.plc4x.java.scraper.config.ScraperConfiguration} by
- * merging the sources and the {@link org.apache.plc4x.java.scraper.config.JobConfiguration}.
+ * merging the sources and the {@link org.apache.plc4x.java.scraper.config.JobConfigurationImpl}.
  */
-public class ScrapeJob {
+public interface ScrapeJob {
+    String getJobName();
 
-    private final String name;
-    private final long scrapeRate;
-    private final Map<String, String> connections;
-    private final Map<String, String> fields;
-
-    public ScrapeJob(String name, long scrapeRate, Map<String, String> connections, Map<String, String> fields) {
-        this.name = name;
-        this.scrapeRate = scrapeRate;
-        this.connections = connections;
-        this.fields = fields;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public long getScrapeRate() {
-        return scrapeRate;
-    }
+    long getScrapeRate();
 
     /**
      * alias -&gt; connection-string
      */
-    public Map<String, String> getConnections() {
-        return connections;
-    }
+    Map<String, String> getSourceConnections();
 
     /**
      * alias -&gt; field-query
      */
-    public Map<String, String> getFields() {
-        return fields;
-    }
+    Map<String, String> getFields();
 }

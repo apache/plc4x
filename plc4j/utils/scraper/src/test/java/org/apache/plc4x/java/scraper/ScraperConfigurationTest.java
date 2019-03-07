@@ -24,7 +24,9 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.scraper.config.JobConfiguration;
+import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -69,7 +71,7 @@ class ScraperConfigurationTest implements WithAssertions {
             .containsEntry("a3", "b");
 
         assertThat(conf.getName()).isEqualTo("job1");
-        assertThat(conf.getScrapeRate()).isEqualTo(10);
+        assertThat(((JobConfigurationImpl)conf).getScrapeRate()).isEqualTo(10);
         assertThat(conf.getSources())
             .hasSize(3);
 
@@ -160,7 +162,7 @@ class ScraperConfigurationTest implements WithAssertions {
     }
 
     @Test
-    void generateScrapeJobs_fromConfig() {
+    void generateScrapeJobs_fromConfig() throws ScraperException {
         String yaml =   "sources:\n" +
                         "  source1: 'connection string'\n" +
                         "jobs:\n" +
@@ -176,9 +178,9 @@ class ScraperConfigurationTest implements WithAssertions {
 
         ScrapeJob job = jobs.get(0);
 
-        assertThat(job.getName()).isEqualTo("job1");
+        assertThat(job.getJobName()).isEqualTo("job1");
         assertThat(job.getScrapeRate()).isEqualTo(10);
-        assertThat(job.getConnections())
+        assertThat(job.getSourceConnections())
             .hasSize(1)
             .containsEntry("source1", "connection string");
         assertThat(job.getFields())

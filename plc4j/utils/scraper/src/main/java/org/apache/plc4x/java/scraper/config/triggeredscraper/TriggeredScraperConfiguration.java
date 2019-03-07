@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.scraper.config;
+package org.apache.plc4x.java.scraper.config.triggeredscraper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,10 +27,10 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.plc4x.java.scraper.ScrapeJob;
 import org.apache.plc4x.java.scraper.ScrapeJobImpl;
-import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
-import org.apache.plc4x.java.scraper.ScraperImpl;
-import org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredJobConfiguration;
+import org.apache.plc4x.java.scraper.config.JobConfiguration;
+import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
+import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
 
 import java.io.File;
@@ -44,15 +44,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Configuration class for {@link ScraperImpl}.
- *
- * @deprecated Scraper is deprecated please use {@link org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfiguration} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
+ * Configuration class for {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}.
  */
-@Deprecated
-public class ScraperConfiguration {
+public class TriggeredScraperConfiguration {
 
     private final Map<String, String> sources;
-    private final List<JobConfigurationImpl> jobConfigurations;
+    private final List<TriggeredJobConfiguration> jobConfigurations;
 
     /**
      * Default constructor.
@@ -61,15 +58,15 @@ public class ScraperConfiguration {
      * @param jobConfigurations List of configurations one for each Job
      */
     @JsonCreator
-    public ScraperConfiguration(@JsonProperty(value = "sources", required = true) Map<String, String> sources,
-                                @JsonProperty(value = "jobs", required = true) List<JobConfigurationImpl> jobConfigurations) {
+    public TriggeredScraperConfiguration(@JsonProperty(value = "sources", required = true) Map<String, String> sources,
+                                         @JsonProperty(value = "jobs", required = true) List<TriggeredJobConfiguration> jobConfigurations) {
         checkNoUnreferencedSources(sources, jobConfigurations);
         // TODO Warning on too many sources?!
         this.sources = sources;
         this.jobConfigurations = jobConfigurations;
     }
 
-    private void checkNoUnreferencedSources(Map<String, String> sources, List<JobConfigurationImpl> jobConfigurations) {
+    private void checkNoUnreferencedSources(Map<String, String> sources, List<TriggeredJobConfiguration> jobConfigurations) {
         Set<String> unreferencedSources = jobConfigurations.stream()
             .flatMap(job -> job.getSources().stream())
             .filter(source -> !sources.containsKey(source))
@@ -79,25 +76,25 @@ public class ScraperConfiguration {
         }
     }
 
-    public static ScraperConfiguration fromYaml(String yaml) {
+    public static TriggeredScraperConfiguration fromYaml(String yaml) {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
-            return mapper.readValue(yaml, ScraperConfiguration.class);
+            return mapper.readValue(yaml, TriggeredScraperConfiguration.class);
         } catch (IOException e) {
             throw new ScraperConfigurationException("Unable to parse given yaml configuration!", e);
         }
     }
 
-    public static ScraperConfiguration fromJson(String json) {
+    public static TriggeredScraperConfiguration fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper(new JsonFactory());
         try {
-            return mapper.readValue(json, ScraperConfiguration.class);
+            return mapper.readValue(json, TriggeredScraperConfiguration.class);
         } catch (IOException e) {
             throw new ScraperConfigurationException("Unable to parse given json configuration!", e);
         }
     }
 
-    public static ScraperConfiguration fromFile(String path) throws IOException {
+    public static TriggeredScraperConfiguration fromFile(String path) throws IOException {
         ObjectMapper mapper;
         if (path.endsWith("json")) {
             mapper = new ObjectMapper(new JsonFactory());
@@ -107,7 +104,7 @@ public class ScraperConfiguration {
             throw new ScraperConfigurationException("Only files with extensions json, yml or yaml can be read");
         }
         try {
-            return mapper.readValue(new File(path), ScraperConfiguration.class);
+            return mapper.readValue(new File(path), TriggeredScraperConfiguration.class);
         } catch (FileNotFoundException e) {
             throw new ScraperConfigurationException("Unable to find configuration given configuration file at '" + path + "'", e);
         } catch (MismatchedInputException e) {
@@ -119,7 +116,7 @@ public class ScraperConfiguration {
         return sources;
     }
 
-    public List<JobConfigurationImpl> getJobConfigurations() {
+    public List<TriggeredJobConfiguration> getJobConfigurations() {
         return jobConfigurations;
     }
 

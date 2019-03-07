@@ -17,36 +17,32 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.scraper.config;
+package org.apache.plc4x.java.scraper.config.triggeredscraper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @deprecated Scraper is deprecated please use {@link org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfigurationBuilder} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
- */
-@Deprecated
-public class ScraperConfigurationBuilder {
+public class TriggeredScraperConfigurationBuilder {
 
     private final Map<String, String> sources = new HashMap<>();
-    private final List<JobConfigurationImpl> jobConfigurations = new ArrayList<>();
+    private final List<TriggeredJobConfiguration> jobConfigurations = new ArrayList<>();
 
-    public ScraperConfigurationBuilder addSource(String alias, String connectionString) {
+    public TriggeredScraperConfigurationBuilder addSource(String alias, String connectionString) {
         sources.put(alias, connectionString);
         return this;
     }
 
-    public JobConfigurationImplBuilder job(String name, int scrapeRateMs) {
-        return new JobConfigurationImplBuilder(this, name, scrapeRateMs);
+    public TriggeredJobConfigurationBuilder job(String name, String triggerConfig) {
+        return new TriggeredJobConfigurationBuilder(this, name, triggerConfig);
     }
 
-    public ScraperConfiguration build() {
-        return new ScraperConfiguration(sources, jobConfigurations);
+    public TriggeredScraperConfiguration build() {
+        return new TriggeredScraperConfiguration(sources, jobConfigurations);
     }
 
-    public void addJobConfiguration(JobConfigurationImpl configuration) {
+    public void addJobConfiguration(TriggeredJobConfiguration configuration) {
         this.jobConfigurations.add(configuration);
     }
 }

@@ -21,6 +21,7 @@ package org.apache.plc4x;
 import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.calcite.jdbc.Driver;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ import java.util.Properties;
 public class DriverManagerTest implements WithAssertions {
 
     @Test
-    void query() throws SQLException, IOException {
+    void query() throws SQLException, IOException, ScraperException {
         Driver driver = new Driver();
         Connection connection = driver.connect("jdbc:calcite:asdf;lex=MYSQL_ANSI", new Properties());
 
