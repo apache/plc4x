@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
@@ -43,14 +44,16 @@ public class TriggerConfiguration{
         Pattern.compile("\\((?<strategy>[A-Z_0-9]+),(?<scheduledInterval>\\d+)(,(\\((?<triggerVar>\\S+)\\))((?<comp>[!=<>]{1,2}))(\\((?<compVar>[a-z0-9.\\-]+)\\)))?\\)");
 
     private final TriggerType triggerType;
-    private final long scrapeInterval;
+    private final Long scrapeInterval;
     private final String triggerVariable;
     private final String comparator;
     private Comparators comparatorType;
     private TriggeredScrapeJobImpl triggeredScrapeJobImpl;
 
     private final Object compareValue;
-    private final S7Field s7Field;
+    private final PlcField plcField;
+
+
 
     /**
      * default constructor when an S7Field should be used for triggering
@@ -66,18 +69,25 @@ public class TriggerConfiguration{
         this.triggerType = triggerType;
         this.triggeredScrapeJobImpl = triggeredScrapeJobImpl;
         this.scrapeInterval = parseScrapeInterval(scrapeInterval);
-
-        //test for valid field-connection string, on exception quit job and return message to user
-        try {
-            this.s7Field = S7Field.of(triggerVariable);
-        }
-        catch (PlcInvalidFieldException e){
-            logger.debug(e.getMessage(),e);
-            String exceptionMessage = String.format("Invalid trigger Field for Job %s: %s",triggeredScrapeJobImpl.getJobName(), triggerVariable);
-            throw new ScraperException(exceptionMessage);
-        }
         this.triggerVariable = triggerVariable;
         this.comparator = comparator;
+
+        if(this.triggerType.equals(TriggerType.S7_TRIGGER_VAR)) {
+            //test for valid field-connection string, on exception quit job and return message to user
+            try {
+                this.plcField = S7Field.of(triggerVariable);
+            } catch (PlcInvalidFieldException e) {
+                logger.debug(e.getMessage(), e);
+                String exceptionMessage = String.format("Invalid trigger Field for Job %s: %s", triggeredScrapeJobImpl.getJobName(), triggerVariable);
+                throw new ScraperException(exceptionMessage);
+            }
+            //ToDo add more and other trigger
+        }
+        else{
+            String exceptionMessage = String.format("TriggerType %s is not yet implemented", this.triggerType);
+            throw new ScraperException(exceptionMessage);
+        }
+
 
         this.compareValue = convertCompareValue(compareValue);
         detectComparatorType();
@@ -97,8 +107,9 @@ public class TriggerConfiguration{
         this.triggerVariable = null;
         this.comparator = null;
         this.compareValue = null;
-        this.s7Field = null;
+        this.plcField = null;
         this.comparatorType = null;
+
     }
 
     /**
@@ -125,7 +136,7 @@ public class TriggerConfiguration{
      * @throws ScraperException when something goes wrong
      */
     boolean evaluateTrigger(Object value) throws ScraperException {
-        if(detectVariableType().equals(Boolean.class)){
+        if(validateDataType().equals(Boolean.class)){
             boolean currentValue;
             boolean refValue;
             try{
@@ -143,7 +154,7 @@ public class TriggerConfiguration{
                 return currentValue != refValue;
             }
         }
-        if(detectVariableType().equals(Double.class)) {
+        if(validateDataType().equals(Double.class)) {
             double currentValue;
             double refValue;
             try{
@@ -209,9 +220,9 @@ public class TriggerConfiguration{
      * @throws ScraperException when invalid combination is detected
      */
     private void matchTypeAndComparator() throws ScraperException {
-        if(detectVariableType().equals(Boolean.class)
+        if(validateDataType().equals(Boolean.class)
             && !(this.comparatorType.equals(Comparators.EQUAL) || this.comparatorType.equals(Comparators.UNEQUAL))){
-            String exceptionMessage = String.format("Trigger-Data-Type (%s) and Comparator (%s) do not match",this.s7Field.getDataType(),this.comparatorType);
+            String exceptionMessage = String.format("Trigger-Data-Type (%s) and Comparator (%s) do not match",this.plcField.getDefaultJavaType(),this.comparatorType);
             throw new ScraperException(exceptionMessage);
         }
         //all other combinations are valid
@@ -223,24 +234,24 @@ public class TriggerConfiguration{
      * @throws ScraperException when an unsupported S7-Type is choosen,which is not (yet) implemented for comparison
      * ToDo check how to handle time-variables if needed
      */
-    private Class detectVariableType() throws ScraperException {
-        switch (this.s7Field.getDataType()){
-            case BOOL:
-                return Boolean.class;
-            case INT:
-            case UINT:
-            case SINT:
-            case USINT:
-            case DINT:
-            case UDINT:
-            case LINT:
-            case ULINT:
-            case REAL:
-            case LREAL:
-                return Double.class;
-            default:
-                throw new ScraperException("Unsupported trigger data-type used: "+this.s7Field.getDataType());
+    private Class<?> validateDataType() throws ScraperException {
+        if(this.plcField!=null){
+            Class<?> javaDataType = this.plcField.getDefaultJavaType();
+            if(!javaDataType.equals(Boolean.class)
+                && !javaDataType.equals(Integer.class)
+                && !javaDataType.equals(Long.class)
+                && !javaDataType.equals(Double.class)
+            ){
+                String exceptionMessage = String.format("Unsupported plc-trigger variable %s with converted data-type %s used",this.plcField,this.plcField.getDefaultJavaType());
+                throw new ScraperException(exceptionMessage);
+            }
+            return javaDataType;
         }
+        else{
+            String exceptionMessage = String.format("Unsupported plc-trigger variable %s with converted data-type %s used",this.plcField,this.plcField.getDefaultJavaType());
+            throw new ScraperException(exceptionMessage);
+        }
+
     }
 
     /**
@@ -250,7 +261,8 @@ public class TriggerConfiguration{
      * @throws ScraperException when something does not match or parsing fails
      */
     private Object convertCompareValue(String compareValue) throws ScraperException {
-        if(detectVariableType().equals(Boolean.class)){
+        Class<?> javaDataType =validateDataType();
+        if(javaDataType.equals(Boolean.class)){
             switch (compareValue){
                 case "1":
                 case "true":
@@ -263,8 +275,12 @@ public class TriggerConfiguration{
                     throw new ScraperException(exceptionMessage);
             }
         }
-        if(detectVariableType().equals(Double.class)){
+        if(javaDataType.equals(Double.class)
+            || javaDataType.equals(Integer.class)
+            || javaDataType.equals(Long.class)){
             try {
+                //everything fits to Double for conversion ... so for first step use only double
+                //ToDo if different handling dependent on specific datatype is needed then differ
                 return Double.parseDouble(compareValue);
             }
             catch (Exception e){
@@ -272,7 +288,7 @@ public class TriggerConfiguration{
                 throw new ScraperException(exceptionMessage);
             }
         }
-        String exceptionMessage = "Invalid Datatype detected ... should not happen and be catched earlier - please report";
+        String exceptionMessage = "Invalid Datatype detected ... should not happen and be catcht earlier - please report";
         throw new ScraperException(exceptionMessage);
     }
 
@@ -333,11 +349,11 @@ public class TriggerConfiguration{
         return triggerVariable;
     }
 
-    public Comparators getComparatorType() {
+    Comparators getComparatorType() {
         return comparatorType;
     }
 
-    public Object getCompareValue() {
+    Object getCompareValue() {
         return compareValue;
     }
 

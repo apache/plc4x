@@ -32,4 +32,20 @@ package org.apache.plc4x.java.api.model;
  */
 public interface PlcField {
 
+    /**
+     * Returns the "default" type of the response one can expect from this field as java type.
+     * I.e., a call to getXXX for the ResponseItem should succeed.
+     *
+     * The contract is not to return the exact type which is internally hold by PLC4X but to
+     * return a "casteable" type, i.e., a type whiches getXXX method succeeds.
+     * So for example if a type is internally a short, but the getInt() method is implemented, it
+     * is allowed to return Integer.class by this method.
+     *
+     * <b>This method should always return the BOXED type for primitives. E.g. not bool.class but Boolean.class</b>
+     * @return Either specific type or Object.class if no specific type is known.
+     */
+    default Class<?> getDefaultJavaType() {
+        return Object.class;
+    }
+
 }
