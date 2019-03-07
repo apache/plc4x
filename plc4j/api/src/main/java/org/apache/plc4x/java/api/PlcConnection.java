@@ -19,12 +19,15 @@ under the License.
 package org.apache.plc4x.java.api;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.api.model.PlcField;
 
 /**
  * Interface defining the most basic methods a PLC4X connection should support.
@@ -51,6 +54,15 @@ public interface PlcConnection extends AutoCloseable {
      */
     @Override
     void close() throws Exception;
+
+    /**
+     * Parse a fieldQuery for the given connection type.
+     *
+     * @throws PlcRuntimeException If the string cannot be parsed
+     */
+    default PlcField parse(String fieldQuery) throws PlcInvalidFieldException {
+        throw new PlcRuntimeException("Parse method is not implemented for this connection / driver");
+    }
 
     /**
      * Provides connection metadata.

@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.model;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
@@ -87,6 +88,36 @@ public class S7Field implements PlcField {
     public static boolean matches(String fieldString) {
         return DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString).matches() ||
             ADDRESS_PATTERN.matcher(fieldString).matches();
+    }
+
+    /**
+     * @return Java type of expected response.
+     *
+     * TODO implement all Methods
+     */
+    @Override
+    public Class<?> getDefaultJavaType() {
+        switch (dataType){
+            case STRING:
+                return String.class;
+            case USINT:
+            case SINT:
+            case UINT:
+            case INT:
+            case DINT:
+                return Integer.class;
+            case UDINT:
+            case ULINT:
+            case LINT:
+                return Long.class;
+            case BOOL:
+                return Boolean.class;
+            case REAL:
+            case LREAL:
+                return Double.class;
+            default:
+                throw new NotImplementedException("The response type for datatype " + dataType + " is not yet implemented");
+        }
     }
 
     public static S7Field of(String fieldString) {
