@@ -40,9 +40,9 @@ namespace org
 						class PlcUnsupportedOperationException : public PlcRuntimeException
 						{
 							public:
-								explicit PlcUnsupportedOperationException(const std::string &message): PlcRuntimeException(message) {}
-								PlcUnsupportedOperationException(const std::string &message, const std::exception &exception): PlcRuntimeException(message, exception){}
-								explicit PlcUnsupportedOperationException(const std::exception &exception): PlcRuntimeException(exception){}
+								explicit PlcUnsupportedOperationException(const std::string& strMessage): PlcRuntimeException(strMessage) {}
+								PlcUnsupportedOperationException(const std::string& strMessage, const std::exception& exException): PlcRuntimeException(strMessage, exException){}
+								explicit PlcUnsupportedOperationException(const std::exception& exException): PlcRuntimeException(exException){}
 						};
 					}
 				}

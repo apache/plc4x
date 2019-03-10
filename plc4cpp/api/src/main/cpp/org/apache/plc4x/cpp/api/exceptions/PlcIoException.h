@@ -40,9 +40,9 @@ namespace org
 						class PlcIoException : public PlcException
 						{
 							public:
-								explicit PlcIoException(const std::string &message): PlcException(message) {}
-								PlcIoException(const std::string &message, const std::exception &exception): PlcException(message, exception){}
-								explicit PlcIoException(const std::exception &exception): PlcException(exception){}
+								explicit PlcIoException(const std::string& strMessage): PlcException(strMessage) {}
+								PlcIoException(const std::string& strMessage, const std::exception &exException): PlcException(strMessage, exException){}
+								explicit PlcIoException(const std::exception& exException): PlcException(exException){}
 						};
 
 					}

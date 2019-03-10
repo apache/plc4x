@@ -32,8 +32,8 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcFieldRangeException::PlcFieldRangeException(int maxIndex, int requestedIndex) : 
-							PlcRuntimeException("requested index of " + std::to_string(requestedIndex) + " is outside the valid range of 0 -" + std::to_string(maxIndex))
+						PlcFieldRangeException::PlcFieldRangeException(int iMaxIndex, int iRequestedIndex) : 
+							PlcRuntimeException("requested index of " + std::to_string(iRequestedIndex) + " is outside the valid range of 0 -" + std::to_string(iMaxIndex))
 						{
 						}
 

@@ -32,33 +32,33 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcProtocolPayloadTooBigException::PlcProtocolPayloadTooBigException(const std::string &protocolName, int maxSize, int actualSize, std::vector<char> payload) :
-							PlcProtocolException("Payload for protocol '" + protocolName + "' with size " + std::to_string(actualSize) + " exceeded allowed maximum of " + std::to_string(maxSize))
+						PlcProtocolPayloadTooBigException::PlcProtocolPayloadTooBigException(const std::string& strProtocolName, int iMaxSize, int iActualSize, std::vector<char> vecPayload) :
+							PlcProtocolException("Payload for protocol '" + strProtocolName + "' with size " + std::to_string(iActualSize) + " exceeded allowed maximum of " + std::to_string(iMaxSize))
 						{
-							_protocolName = protocolName;
-							_maxSize = maxSize;
-							_actualSize = actualSize;
-							_payload = payload;
+							_strProtocolName = strProtocolName;
+							_iMaxSize = iMaxSize;
+							_iActualSize = iActualSize;
+							_vecPayload = vecPayload;
 						}
 
 						std::string PlcProtocolPayloadTooBigException::getProtocolName() 
 						{ 
-							return _protocolName; 
+							return _strProtocolName;
 						}
 						
 						int PlcProtocolPayloadTooBigException::getMaxSize() 
 						{ 
-							return _maxSize; 
+							return _iMaxSize;
 						}
 
 						int PlcProtocolPayloadTooBigException::getActualSize() 
 						{ 
-							return _actualSize; 
+							return _iActualSize;
 						}
 
 						std::vector<char> PlcProtocolPayloadTooBigException::getPayload() 
 						{ 
-							return _payload; 
+							return _vecPayload;
 						}
 
 					}

@@ -40,7 +40,7 @@ namespace org
 						class PlcProtocolPayloadTooBigException : public PlcProtocolException
 						{
 							public:
-								PlcProtocolPayloadTooBigException(const std::string &protocolName, int, int, std::vector<char>);
+								PlcProtocolPayloadTooBigException(const std::string& strProtocolName, int iMaxSize, int iActualSize, std::vector<char> vecPayload);
 
 								std::string getProtocolName();
 								int getMaxSize();
@@ -48,10 +48,10 @@ namespace org
 								std::vector<char> getPayload();
 
 							private:
-								std::string _protocolName;
-								int _maxSize;
-								int _actualSize;
-								std::vector<char> _payload;
+								std::string _strProtocolName;
+								int _iMaxSize;
+								int _iActualSize;
+								std::vector<char> _vecPayload;
 						};
 
 					}

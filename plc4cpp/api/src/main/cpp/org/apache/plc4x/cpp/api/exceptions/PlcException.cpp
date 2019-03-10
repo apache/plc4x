@@ -38,12 +38,12 @@ namespace org
 						{
 						}
 
-						PlcException::PlcException(const std::string &message, const std::exception &exception) :
-								logic_error(message) // message suppressed, as no matching constructor is available
+						PlcException::PlcException(const std::string& strMessage, const std::exception& exException) :
+								logic_error(strMessage) // message suppressed, as no matching constructor is available
 						{
 						}
 
-						PlcException::PlcException(const std::exception &ex) :
+						PlcException::PlcException(const std::exception& ex) :
 								logic_error("error")
 						{
 						}

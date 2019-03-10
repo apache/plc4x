@@ -44,9 +44,9 @@ namespace org
 						{
 							public:
 								PlcException();
-								explicit PlcException(const std::string &message): std::logic_error(message.c_str()){}
-								PlcException(const std::string &message, const std::exception &exception);
-								explicit PlcException(const std::exception &exception);
+								explicit PlcException(const std::string& strMessage): std::logic_error(strMessage.c_str()) {}
+								PlcException(const std::string& strMessage, const std::exception& exException);
+								explicit PlcException(const std::exception& exException);
 						};
 					}
 				}

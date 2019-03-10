@@ -33,7 +33,7 @@ namespace org
 					{
 						PlcReadRequest::PlcReadRequest()
 						{
-							_builder = nullptr;
+                            _pPlcbuilder = nullptr;
 						}
 
 						PlcReadRequest::~PlcReadRequest()
@@ -43,7 +43,7 @@ namespace org
 
 						PlcReadRequestBuilder* PlcReadRequest::getBuilder() const
 						{ 
-							return _builder; 
+							return _pPlcbuilder;
 						}
 					}
 				}

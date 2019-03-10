@@ -42,7 +42,7 @@ namespace org
 						class PlcReadRequestBuilder : public PlcRequestBuilder
 						{
 							public:
-								virtual PlcReadRequestBuilder* addItem(std::string, std::string) = 0;
+								virtual PlcReadRequestBuilder* addItem(std::string& strName, std::string& strFieldQuery) = 0;
 
 						};
 						
