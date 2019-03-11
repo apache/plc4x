@@ -37,3 +37,7 @@ On this page we are listing options to attend talks and events around PLC4X.
 Looking forward to meeting you.
 
 If you've got or found any events or talks we might be missing, please inform us on dev@plc4x.apache.org.
+
+== Additional Material
+
+PLC4X [Banner](../img/PLC4X_rollup_83x237cm-final.pdf)
