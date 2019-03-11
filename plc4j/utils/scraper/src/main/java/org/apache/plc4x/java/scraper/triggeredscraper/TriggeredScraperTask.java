@@ -29,8 +29,8 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.scraper.ResultHandler;
-import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.ScraperTask;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.TriggerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 
 /**
  * performs the triggered task from a job for one device based on the TriggerHandler as defined in Configuration
- * ToDo Implement the monitoring as well --> PLC4X-90
+ * ToDo Implement the monitoring as well: PLC4X-90
  */
 public class TriggeredScraperTask implements ScraperTask {
     private static final Logger logger = LoggerFactory.getLogger(TriggeredScraperTask.class);
