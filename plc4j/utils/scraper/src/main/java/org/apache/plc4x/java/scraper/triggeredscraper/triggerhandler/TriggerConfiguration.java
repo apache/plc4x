@@ -35,13 +35,16 @@ import java.util.regex.Pattern;
  */
 //ToDo: Improve structure to make it more generic --> PLC4X-89
 public class TriggerConfiguration{
-    private static final Logger logger = LoggerFactory.getLogger(TriggerConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TriggerConfiguration.class);
 
     private static final String S_7_TRIGGER_VAR = "S7_TRIGGER_VAR";
     private static final String SCHEDULED = "SCHEDULED";
 
+    private static final double TOLERANCE_FLOATING_EQUALITY = 1e-6;
+
     private static final Pattern TRIGGER_STRATEGY_PATTERN =
         Pattern.compile("\\((?<strategy>[A-Z_0-9]+),(?<scheduledInterval>\\d+)(,(\\((?<triggerVar>\\S+)\\))((?<comp>[!=<>]{1,2}))(\\((?<compVar>[a-z0-9.\\-]+)\\)))?\\)");
+
 
     private final TriggerType triggerType;
     private final Long scrapeInterval;
@@ -77,7 +80,7 @@ public class TriggerConfiguration{
             try {
                 this.plcField = S7Field.of(triggerVariable);
             } catch (PlcInvalidFieldException e) {
-                logger.debug(e.getMessage(), e);
+                LOGGER.debug(e.getMessage(), e);
                 String exceptionMessage = String.format("Invalid trigger Field for Job %s: %s", triggeredScrapeJobImpl.getJobName(), triggerVariable);
                 throw new ScraperException(exceptionMessage);
             }
@@ -168,9 +171,9 @@ public class TriggerConfiguration{
 
             switch (this.comparatorType) {
                 case EQUAL:
-                    return currentValue == refValue;
+                    return isApproximately(currentValue,refValue, TOLERANCE_FLOATING_EQUALITY);
                 case UNEQUAL:
-                    return currentValue != refValue;
+                    return !isApproximately(currentValue,refValue, TOLERANCE_FLOATING_EQUALITY);
                 case SMALLER:
                     return currentValue < refValue;
                 case SMALLER_EQUAL:
@@ -284,6 +287,7 @@ public class TriggerConfiguration{
                 return Double.parseDouble(compareValue);
             }
             catch (Exception e){
+                LOGGER.debug(e.getMessage(), e);
                 String exceptionMessage = String.format("No valid compare Value at DataType Numeric for trigger for Job %s: %s",triggeredScrapeJobImpl.getJobName(),compareValue);
                 throw new ScraperException(exceptionMessage);
             }
@@ -306,7 +310,7 @@ public class TriggerConfiguration{
             String strat = matcher.group("strategy");
             String scheduledMs = matcher.group("scheduledInterval");
 
-            logger.debug("Strategy: {}, scheduled ms: {}",strat,scheduledMs);
+            LOGGER.debug("Strategy: {}, scheduled ms: {}",strat,scheduledMs);
 
             String triggerVar = matcher.group("triggerVar");
             String comparatorString = matcher.group("comp");
@@ -334,7 +338,7 @@ public class TriggerConfiguration{
 
     private void handleException(Exception e){
         //push up if needed
-        logger.debug("Exception: ", e);
+        LOGGER.debug("Exception: ", e);
     }
 
     TriggerType getTriggerType() {
@@ -355,6 +359,18 @@ public class TriggerConfiguration{
 
     Object getCompareValue() {
         return compareValue;
+    }
+
+    /**
+     * check for approximate equality to avoid "Floating-point expressions shall not be tested for equality or inequality." Sonar-Bug
+     * @param self current value
+     * @param other reference value
+     * @param within tolerance band
+     * @return if approximate equal, false otherwise
+     */
+    private static boolean isApproximately(double self, double other, double within)
+    {
+        return Math.abs(self - other) <= within;
     }
 
     public enum  Comparators{

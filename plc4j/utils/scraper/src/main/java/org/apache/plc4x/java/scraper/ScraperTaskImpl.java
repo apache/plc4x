@@ -145,7 +145,7 @@ public class ScraperTaskImpl implements ScraperTask {
                 try {
                     connection.close();
                 } catch (Exception e) {
-                    // intentionally do nothing
+                    LOGGER.warn("Error on closing connection",e);
                 }
             }
         }

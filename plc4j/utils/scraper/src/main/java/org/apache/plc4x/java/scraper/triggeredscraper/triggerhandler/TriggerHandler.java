@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * holds the handler for the regarding trigger-scraper on rising-trigger edge
  */
 public class TriggerHandler {
-    private static final Logger logger = LoggerFactory.getLogger(TriggerHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TriggerHandler.class);
     private static final String TRIGGER = "trigger";
 
     private final TriggerConfiguration triggerConfiguration;
@@ -78,14 +78,14 @@ public class TriggerHandler {
             try {
                 return parentScraperTask.getDriverManager().getConnection(parentScraperTask.getConnectionString());
             } catch (PlcConnectionException e) {
-                logger.warn("Unable to instantiate connection to " + parentScraperTask.getConnectionString(), e);
+                LOGGER.warn("Unable to instantiate connection to " + parentScraperTask.getConnectionString(), e);
                 throw new PlcRuntimeException(e);
             }
         }, parentScraperTask.getExecutorService());
         PlcConnection connection = null;
         try {
             connection = future.get(parentScraperTask.getRequestTimeoutMs(), TimeUnit.MILLISECONDS);
-            logger.trace("Connection to {} established: {}", parentScraperTask.getConnectionString(), connection);
+            LOGGER.trace("Connection to {} established: {}", parentScraperTask.getConnectionString(), connection);
             PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addItem(TRIGGER, triggerConfiguration.getTriggerVariable());
             PlcReadResponse response = builder
@@ -116,6 +116,7 @@ public class TriggerHandler {
                 try {
                     connection.close();
                 } catch (Exception e) {
+                    LOGGER.warn("Error on closing connection",e);
                     // intentionally do nothing
                 }
             }

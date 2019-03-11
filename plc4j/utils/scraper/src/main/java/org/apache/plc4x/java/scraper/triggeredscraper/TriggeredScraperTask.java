@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  * ToDo Implement the monitoring as well: PLC4X-90
  */
 public class TriggeredScraperTask implements ScraperTask {
-    private static final Logger logger = LoggerFactory.getLogger(TriggeredScraperTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperTask.class);
 
     private final PlcDriverManager driverManager;
     private final String jobName;
@@ -91,7 +91,7 @@ public class TriggeredScraperTask implements ScraperTask {
     public void run() {
         if(this.triggerHandler.checkTrigger()) {
             // Does a single fetch only when trigger is valid
-            logger.trace("Start new scrape of task of job {} for connection {}", jobName, connectionAlias);
+            LOGGER.trace("Start new scrape of task of job {} for connection {}", jobName, connectionAlias);
             requestCounter.incrementAndGet();
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
@@ -101,17 +101,17 @@ public class TriggeredScraperTask implements ScraperTask {
                     try {
                         return driverManager.getConnection(connectionString);
                     } catch (PlcConnectionException e) {
-                        logger.warn("Unable to instantiate connection to " + connectionString, e);
+                        LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
                         throw new PlcRuntimeException(e);
                     }
                 }, executorService);
                 connection = future.get(10 * requestTimeoutMs, TimeUnit.MILLISECONDS);
-                logger.trace("Connection to {} established: {}", connectionString, connection);
+                LOGGER.trace("Connection to {} established: {}", connectionString, connection);
                 PlcReadResponse response;
                 try {
                     PlcReadRequest.Builder builder = connection.readRequestBuilder();
                     fields.forEach((alias, qry) -> {
-                        logger.trace("Requesting: {} -> {}", alias, qry);
+                        LOGGER.trace("Requesting: {} -> {}", alias, qry);
                         builder.addItem(alias, qry);
                     });
                     response = builder
@@ -133,14 +133,14 @@ public class TriggeredScraperTask implements ScraperTask {
                 // Handle response (Async)
                 CompletableFuture.runAsync(() -> resultHandler.handle(jobName, connectionAlias, transformResponseToMap(response)), executorService);
             } catch (Exception e) {
-                logger.debug("Exception during scrape", e);
+                LOGGER.debug("Exception during scrape", e);
                 handleException(e);
             } finally {
                 if (connection != null) {
                     try {
                         connection.close();
                     } catch (Exception e) {
-                        // intentionally do nothing
+                        LOGGER.warn("Error on closing connection",e);
                     }
                 }
             }

@@ -147,7 +147,7 @@ public class TriggeredScraperImpl implements Scraper {
                         // Store the handle for stopping, etc.
                         futures.put(task, future);
                     } catch (ScraperException e) {
-                        LOGGER.warn("Error executing the job {} for conn {} ({}) at rate {} ms",tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate());
+                        LOGGER.warn("Error executing the job {} for conn {} ({}) at rate {} ms",tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate(),e);
                     }
 
                 }
