@@ -28,6 +28,7 @@ import io.netty.util.concurrent.PromiseCombiner;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.isotp.protocol.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.protocol.events.IsoTPConnectedEvent;
 import org.apache.plc4x.java.isotp.protocol.model.IsoTPMessage;
@@ -221,10 +222,12 @@ public class S7Protocol extends ChannelDuplexHandler {
 
     private void encodePayloads(S7Message in, ByteBuf buf) throws PlcProtocolException {
         if(in.getPayloads() != null) {
-            for (S7Payload payload : in.getPayloads()) {
+            Iterator<S7Payload> payloadIterator = in.getPayloads().iterator();
+            while(payloadIterator.hasNext()) {
+                S7Payload payload = payloadIterator.next();
                 switch (payload.getType()) {
                     case WRITE_VAR:
-                        encodeWriteVarPayload((VarPayload) payload, buf);
+                        encodeWriteVarPayload((VarPayload) payload, buf, !payloadIterator.hasNext());
                         break;
                     case CPU_SERVICES:
                         encodeCpuServicesPayload((CpuServicesPayload) payload, buf);
@@ -237,14 +240,17 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
     }
 
-    private void encodeWriteVarPayload(VarPayload varPayload, ByteBuf buf) {
+    private void encodeWriteVarPayload(VarPayload varPayload, ByteBuf buf, boolean lastItem) {
         for (VarPayloadItem payloadItem : varPayload.getItems()) {
             buf.writeByte(payloadItem.getReturnCode().getCode());
             buf.writeByte(payloadItem.getDataTransportSize().getCode());
             // TODO: Check if this is correct?!?! Might be problems with sizeInBits = true/false
             buf.writeShort(payloadItem.getData().length);
             buf.writeBytes(payloadItem.getData());
-            // TODO: It looks as if BIT type reads require a 0x00 fill byte at the end ...
+            // if this is not the last item and it's payload is exactly one byte, we need to output a fill-byte.
+            if((payloadItem.getData().length == 1) && !lastItem) {
+                buf.writeByte(0x00);
+            }
         }
     }
 
@@ -613,9 +619,9 @@ public class S7Protocol extends ChannelDuplexHandler {
                 VarPayloadItem payload = new VarPayloadItem(dataTransportErrorCode, dataTransportSize, data);
                 payloadItems.add(payload);
                 i += S7SizeHelper.getPayloadLength(payload);
-                // It seems that datatype BIT reads an additional byte, if it's not the last.
 
-                if(dataTransportSize.isHasBlankByte() && (userData.readableBytes() > 0)) {
+                // It seems that odd-byte payloads require a fill byte, but only if it's not the last item.
+                if((length % 2== 1) && (userData.readableBytes() > 0)) {
                     userData.readByte();
                     i++;
                 }
@@ -752,7 +758,11 @@ public class S7Protocol extends ChannelDuplexHandler {
                 TransportSize dataType = TransportSize.valueOf(in.readByte());
                 short length = in.readShort();
                 short dbNumber = in.readShort();
-                MemoryArea memoryArea = MemoryArea.valueOf(in.readByte());
+                byte memoryAreaCode = in.readByte();
+                MemoryArea memoryArea = MemoryArea.valueOf(memoryAreaCode);
+                if(memoryArea == null) {
+                    throw new PlcRuntimeException("Unknown memory area '" + memoryAreaCode + "'");
+                }
                 short byteAddress = (short) (in.readShort() << 5);
                 byte tmp = in.readByte();
                 // Only the least 3 bits are the bit address, the

@@ -405,36 +405,28 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 if(requestItem.getNumElements() != responseParameterItem.getNumElements()) {
                     int itemSizeInBytes = requestItem.getDataType().getSizeInBytes();
                     int totalSizeInBytes = requestItem.getNumElements() * itemSizeInBytes;
-                    byte[] data = null;
                     if(varParameter.getType() == ParameterType.READ_VAR) {
-                        data = new byte[totalSizeInBytes];
+                        byte[] data = new byte[totalSizeInBytes];
                         System.arraycopy(responsePayloadItem.getData(), 0, data, 0, responsePayloadItem.getData().length);
-                    }
 
-                    // Initialize the current size, this will be lower than the original, as the only
-                    // way to have different count, is if the request was split up.
-                    int curSizeInBytes = requestItem.getNumElements() * itemSizeInBytes;
+                        // Now iterate over the succeeding pairs of parameters and payloads till we have
+                        // found the original number of elements.
+                        while (dataOffset < totalSizeInBytes) {
+                            responseOffset++;
 
-                    // Now iterate over the succeeding pairs of parameters and payloads till we have
-                    // found the original number of elements.
-                    while(curSizeInBytes < totalSizeInBytes) {
-                        responseOffset++;
-                        // No need to process the parameters, we only need them to get the number of items.
-                        responseParameterItem = (S7AnyVarParameterItem) parameterItems.get(i + responseOffset);
-                        curSizeInBytes += responseParameterItem.getNumElements() * itemSizeInBytes;
+                            // Get the next payload item in the list.
+                            responsePayloadItem = payloadItems.get(i + responseOffset);
 
-                        // Get the next payload item in the list.
-                        responsePayloadItem = payloadItems.get(i + responseOffset);
-
-                        // Copy the data of this item behind the previous content.
-                        if(varParameter.getType() == ParameterType.READ_VAR) {
-                            System.arraycopy(responsePayloadItem.getData(), 0, data, dataOffset, responsePayloadItem.getData().length);
-                            dataOffset += responsePayloadItem.getData().length;
+                            // Copy the data of this item behind the previous content.
+                            if (varParameter.getType() == ParameterType.READ_VAR) {
+                                System.arraycopy(responsePayloadItem.getData(), 0, data, dataOffset, responsePayloadItem.getData().length);
+                                dataOffset += responsePayloadItem.getData().length;
+                            }
                         }
-                    }
 
-                    mergedPayloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK,
-                        responsePayloadItem.getDataTransportSize(), data));
+                        mergedPayloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK,
+                            responsePayloadItem.getDataTransportSize(), data));
+                    }
                 } else {
                     mergedPayloadItems.add(responsePayloadItem);
                 }
