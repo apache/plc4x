@@ -67,7 +67,9 @@ class TriggerConfigurationTest {
             Arguments.of("(S7_TRIGGER_VAR,50,(%DB111:DBX10:BOOL)==(33))"),
             Arguments.of("(S7_TRIGGER_VAR,50,(%DB111:DBX10.1:BOOL)==(33))"),
             Arguments.of("(S7_TRIGGER_VAR,50,(%DB111:DBX10.1:BOOL)<=(true))"),
-            Arguments.of("(S7_TRIGGER_VAR,50,(%DB111:DBW10:INT)<=(true))")
+            Arguments.of("(S7_TRIGGER_VAR,50,(%DB111:DBW10:INT)<=(true))"),
+            Arguments.of("(MODBUS_TRIGGER_VAR,50)"),
+            Arguments.of("(MODBUS_TRIGGER_VAR,50,(%DB111:DBW10:INT)<=(11))")
         );
     }
 

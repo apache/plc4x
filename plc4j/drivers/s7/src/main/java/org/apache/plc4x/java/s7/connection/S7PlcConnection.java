@@ -24,10 +24,13 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
@@ -40,6 +43,7 @@ import org.apache.plc4x.java.isotp.protocol.model.tpdus.DisconnectRequestTpdu;
 import org.apache.plc4x.java.isotp.protocol.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.protocol.model.types.DisconnectReason;
 import org.apache.plc4x.java.isotp.protocol.model.types.TpduSize;
+import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
@@ -198,6 +202,10 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     protected void sendChannelCreatedEvent() {
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+    }
+
+    @Override public PlcField parse(String fieldQuery) throws PlcInvalidFieldException {
+        return S7Field.of(fieldQuery);
     }
 
     public int getRack() {
