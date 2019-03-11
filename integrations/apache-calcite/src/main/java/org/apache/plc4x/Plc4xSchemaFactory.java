@@ -24,11 +24,14 @@ import org.apache.calcite.schema.SchemaPlus;
 import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
 
 public class Plc4xSchemaFactory implements SchemaFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4xSchemaFactory.class);
 
     @Override
     public Schema create(SchemaPlus parentSchema, String name, Map<String, Object> operand) {
@@ -56,6 +59,7 @@ public class Plc4xSchemaFactory implements SchemaFactory {
         try {
             return new Plc4xSchema(configuration, parsedLimit);
         } catch (ScraperException e) {
+            LOGGER.warn("Could not evaluate Plc4xSchema",e);
             //ToDo Exception, but interface does not accept ... null is fishy
             return null;
         }
