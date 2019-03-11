@@ -527,12 +527,13 @@ be pushed.
 
 The URL http://plc4x.apache.org/users/download.html has to be changed and the current release
 has to be listed there.
-This is done by changing the `download.adoc` under `src/site/users/`.
+This is done by changing the `download.adoc` under `src/site/users/` (**in the develop branch, as this is where the site is generated from!**)
 
 1. Copy the last release down to _Previous Releases_
 2. Add the new Release under _Current Releases_ and change all links.
 3. Update the sections for the changes according to the _RELEASE_NOTES_ from the release
 _Note: Transfer all to ascii-doc notation to ensure correct rendering of the site_
+_Also remove the JIRA TICKET ids in Front_
 
 === Notifying the world
 
