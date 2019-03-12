@@ -1332,6 +1332,26 @@
       <id>jenkins-build</id>
       <properties>
       </properties>
+      <build>
+        <plugins>
+          <!--TODO Remove this after fix for NVE CVS-->
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <!--<failBuildOnCVSS>8</failBuildOnCVSS>-->
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
     <!--
