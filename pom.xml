@@ -1346,8 +1346,7 @@
               </execution>
             </executions>
             <configuration>
-              <!--<failBuildOnCVSS>8</failBuildOnCVSS>-->
-              <skip>true</skip>
+              <failBuildOnCVSS>8</failBuildOnCVSS>
             </configuration>
           </plugin>
         </plugins>
