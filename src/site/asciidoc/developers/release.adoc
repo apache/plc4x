@@ -530,8 +530,10 @@ has to be listed there.
 This is done by changing the `download.adoc` under `src/site/users/` (**in the develop branch, as this is where the site is generated from!**)
 
 1. Copy the last release down to _Previous Releases_
-2. Add the new Release under _Current Releases_ and change all links.
-3. Update the sections for the changes according to the _RELEASE_NOTES_ from the release
+2. Point the download links of the last release to archive, e.g. `http://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip`
+3. Add the new Release under _Current Releases_ and change all links.
+_Note: Please add an anchor for the toc_
+4. Update the sections for the changes according to the _RELEASE_NOTES_ from the release
 _Note: Transfer all to ascii-doc notation to ensure correct rendering of the site_
 _Also remove the JIRA TICKET ids in Front_
 

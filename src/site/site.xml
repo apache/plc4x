@@ -41,11 +41,11 @@
       <slogan position="bannerLeft">The industrial IoT adapter</slogan>
       <showApacheEvents>true</showApacheEvents>
       <toc>top</toc>
-      <bottomNav maxSpan="9">
-        <column>reports</column>
+      <bottomNav maxSpan="3">
+      <!--  <column>reports</column>
         <column>Apache</column>
+        <column>modules</column> -->
         <column>Protocols</column>
-        <column>modules</column>
       </bottomNav>
       <brand>
         <name>Apache PLC4X (Incubating)</name>
