@@ -26,15 +26,11 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 ===== New Features
 
-++++
--
-++++
+No new features.
 
 ===== Incompatible changes
 
-++++
--
-++++
+No incompatible changes.
 
 ===== Bug Fixes
 
