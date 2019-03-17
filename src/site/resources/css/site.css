@@ -66,3 +66,9 @@ under the License.
     top: 20px;
     left: 83px
 }
+
+body > div.container.subfooter > div > div > p.pull-right {
+    width: 100px;
+    height: 60px;
+    text-align: right;
+}
