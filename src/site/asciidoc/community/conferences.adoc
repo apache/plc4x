@@ -40,4 +40,4 @@ If you've got or found any events or talks we might be missing, please inform us
 
 == Additional Material
 
-PLC4X [Banner](../img/PLC4X_rollup_83x237cm-final.pdf)
+PLC4X [Banner](../images/PLC4X_rollup_83x237cm-final.pdf)

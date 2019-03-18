@@ -22,7 +22,7 @@
   <skin>
     <groupId>io.github.devacfr.maven.skins</groupId>
     <artifactId>reflow-maven-skin</artifactId>
-    <version>1.5.0</version>
+    <version>${reflow.skin.version}</version>
   </skin>
 
   <!-- Hide the publish date as this will cause changes on every generated page every day -->
@@ -37,6 +37,7 @@
   <custom>
     <reflowSkin>
       <localResources>true</localResources>
+      <absoluteResourceURL>https://plc4x.apache.org/</absoluteResourceURL>
       <titleTemplate>Apache PLC4X® (Incubating) - %2$s</titleTemplate>
       <slogan position="bannerLeft">The industrial IoT adapter</slogan>
       <showApacheEvents>true</showApacheEvents>
@@ -69,12 +70,12 @@
   </custom>
 
   <poweredBy>
-    <logo name="Apache Software Foundation" img="https://www.apache.org/img/asf_logo.png" href="https://www.apache.org/"/>
+    <logo name="Apache Software Foundation" img="https://www.apache.org/images/asf_logo.png" href="https://www.apache.org/"/>
   </poweredBy>
 
   <bannerLeft>
       <name>Apache PLC4X (incubating)</name>
-      <src>https://plc4x.apache.org/img/apache_plc4x_logo.png</src>
+      <src>https://plc4x.apache.org/images/apache_plc4x_logo.png</src>
       <href>https://plc4x.apache.org/</href>
   </bannerLeft>
 

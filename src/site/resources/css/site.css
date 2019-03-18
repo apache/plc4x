@@ -68,11 +68,19 @@ under the License.
 }
 
 /* Set where the focus will be set when using anchor links */
-h1[id]:before, h2[id]:before, h3[id]:before, h4[id]:before, h5[id]:before, h6[id]:before, a[name]:before {
+h2[id]:before {
     display: block;
     content: "";
-    height: 120px;
-    margin: -120px 0 0;
+    height: 360px;
+    margin: -360px 0 0;
+}
+
+/* Set where the focus will be set when using anchor links */
+h3[id]:before, h4[id]:before, h5[id]:before, h6[id]:before, a[name]:before {
+    display: block;
+    content: "";
+    height: 106px;
+    margin: -106px 0 0;
 }
 
 /* Re-Format the position of the "to top" link */
