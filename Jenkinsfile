@@ -177,7 +177,10 @@ pipeline {
             }
             steps {
                 echo 'Staging Site'
+                // Build a directory containing the aggregated website.
                 sh 'mvn -P${JENKINS_PROFILE} site:stage'
+                // Remove some redundant resources, which shouldn't be required.
+                sh 'tools/clean-site.sh'
                 // Stash the generated site so we can publish it on the 'git-website' node.
                 stash includes: 'target/staging/**/*', name: 'plc4x-site'
             }
