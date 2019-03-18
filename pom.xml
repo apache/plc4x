@@ -780,11 +780,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <!-- Only execute this for the parent module -->
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>unpack</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>unpack</goal>
@@ -819,11 +819,11 @@
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
         <version>1.4.1</version>
-        <!-- Only execute this for the parent module -->
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>get-fontawesome</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>wget</goal>
@@ -840,11 +840,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <!-- Only execute this for the parent module -->
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>copy-site-resources</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -880,11 +880,11 @@
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
         <version>1.5.3</version>
-        <!-- Only execute this for the parent module -->
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>streamline-font-urls</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>replace</goal>
