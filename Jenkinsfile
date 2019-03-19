@@ -179,6 +179,8 @@ pipeline {
                 echo 'Staging Site'
                 // Build a directory containing the aggregated website.
                 sh 'mvn -P${JENKINS_PROFILE} site:stage'
+                // Make sure the script is executable.
+                sh 'chmod +x tools/clean-site.sh'
                 // Remove some redundant resources, which shouldn't be required.
                 sh 'tools/clean-site.sh'
                 // Stash the generated site so we can publish it on the 'git-website' node.
