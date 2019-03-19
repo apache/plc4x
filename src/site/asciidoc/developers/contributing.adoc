@@ -89,7 +89,7 @@ In order to get all changes of our upstream-repository, just execute the followi
 
     git pull upstream
 
-This will get all changed from upstream and merge them locally. In order to update your GitHub version, you have to push things back to `origin?`. You can do this by execunting the follwing command:
+This will get all changed from upstream and merge them locally. In order to update your GitHub version, you have to push things back to `origin`. You can do this by execunting the follwing command:
 
     git push
 
@@ -113,7 +113,7 @@ If you want to be assigned to an issue because you want to work on it, please re
 
 As our documentation and website are generated as a side-product of our build, contributing to this technically the same as contributing to the code.
 
-All our content is written in Asciidoctor and is located in `src/site/asciidoctor` directories. For a reference of the Asciidoctor snytax please have a look at the https://asciidoctor.org/docs/user-manual/#introduction-to-asciidoctor[Asciidoctor documentation].
+All our content is written in Asciidoctor and is located in `src/site/asciidoc` directories. For a reference of the Asciidoctor snytax please have a look at the https://asciidoctor.org/docs/user-manual/#introduction-to-asciidoctor[Asciidoctor documentation].
 
 === Branching model
 
