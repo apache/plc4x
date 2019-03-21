@@ -30,7 +30,7 @@ The only requirements to building PLC4X should be:
 
 === Using the Maven-Wrapper
 
-The so-called `Maven-Wrapper` is used by calling the Maven-Wrapper scripts `mvnw` (Mac & Linux) or `mvnw.cmd` (Windows) instead of the default Maven commads `mvn` and `mvn.cmd`.
+The so-called `Maven-Wrapper` is used by calling the Maven-Wrapper scripts `mvnw` (Mac & Linux) or `mvnw.cmd` (Windows) instead of the default Maven commands `mvn` and `mvn.cmd`.
 
 These helpers ensure Maven is available in at least the version defined in `.mvn/maven-wrapper.properties`.
 If no suitable version can be found, it is automatically downloaded and installed alongside the project (So it doesn't have to be downloaded every time and every project can have it's own Maven version)

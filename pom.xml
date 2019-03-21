@@ -120,6 +120,7 @@
     <guava.version>27.0.1-jre</guava.version>
     <hamcrest.version>1.3</hamcrest.version>
     <jackson.version>2.9.8</jackson.version>
+    <jmh.version>1.21</jmh.version>
     <jna.version>4.5.1</jna.version>
     <joda-time.version>2.10</joda-time.version>
     <jopt-simple.version>5.0.2</jopt-simple.version>
@@ -143,6 +144,7 @@
     <t-digest.version>3.2</t-digest.version>
 
     <!-- Site properties -->
+    <reflow.skin.version>1.5.0</reflow.skin.version>
     <bootstrap.version>3.3.7</bootstrap.version>
     <jquery.version>3.3.1</jquery.version>
     <anchorjs.version>3.2.2</anchorjs.version>
@@ -713,6 +715,9 @@
 
             <!-- JSON doesn't like comments -->
             <exclude>**/*.json</exclude>
+
+            <!-- Output of the profiler maven extension -->
+            <exclude>**/.profiler/**</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -772,54 +777,36 @@
         manually take care of fetching and packaging these external resources with the generated site.
       -->
 
-      <!--
-          The reflow maven skin used for the site-generation requires some static resources.
-          The following plugins configure the acquisition and location of these resources.
-      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-js-deps</id>
+            <id>unpack</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
             <configuration>
-              <!--
-                  Bundle these dependencies in the war.
-
-                  You must maintain the corresponding info if you
-                  add/remove artifacts or change their versions:
-                    - entry in src/main/webapp/META-INF/LICENSE
-                    - entry in src/main/webapp/META-INF/NOTICE when appropriate
-
-                  You must maintain the info in the corresponding
-                  console/server files because it bundles this war.
-
-                  You must maintain the info in this project's
-                  corresponding platforms/java7 files.
-               -->
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>bootstrap</artifactId>
-                  <version>${bootstrap.version}</version>
-                  <!-- We're replacing this by in the get-flatly-bootstrap-theme execution a few lines down -->
-                  <excludes>META-INF/resources/webjars/**/bootstrap.min.css</excludes>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>jquery</artifactId>
-                  <version>${jquery.version}</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>anchorjs</artifactId>
-                  <version>${anchorjs.version}</version>
+                  <groupId>io.github.devacfr.maven.skins</groupId>
+                  <artifactId>reflow-default-webdeps</artifactId>
+                  <version>${reflow.skin.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <includes>
+                    **/css/bootstrap.min.css,
+                    **/css/fontawesome/*,
+                    **/js/*.js,
+                    **/js/languages/*,
+                    **/js/styles/default.min.css
+                  </includes>
                 </artifactItem>
               </artifactItems>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
             </configuration>
           </execution>
         </executions>
@@ -834,29 +821,15 @@
         <version>1.4.1</version>
         <executions>
           <execution>
-            <id>get-flatly-bootstrap-theme</id>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://stackpath.bootstrapcdn.com/bootswatch/${bootstrap.version}/flatly/bootstrap.min.css</url>
-              <outputDirectory>
-                ${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/
-              </outputDirectory>
-              <outputFileName>bootstrap.min.css</outputFileName>
-            </configuration>
-          </execution>
-          <execution>
             <id>get-fontawesome</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>
-                https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip
-              </url>
+              <url>https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip</url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
             </configuration>
@@ -870,6 +843,8 @@
         <executions>
           <execution>
             <id>copy-site-resources</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -877,25 +852,6 @@
             <configuration>
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
-                <resource>
-                  <directory>
-                    ${project.build.directory}/dependency/META-INF/resources/webjars/anchorjs/${anchorjs.version}
-                  </directory>
-                  <targetPath>${project.build.directory}/site/js</targetPath>
-                  <includes>
-                    <include>anchor.min.js</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>
-                    ${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}
-                  </directory>
-                  <includes>
-                    <include>css/bootstrap.min.css</include>
-                    <include>js/bootstrap.min.js</include>
-                    <include>fonts/**</include>
-                  </includes>
-                </resource>
                 <resource>
                   <directory>
                     ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web
@@ -909,14 +865,6 @@
                     ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts
                   </directory>
                   <targetPath>${project.build.directory}/site/fonts</targetPath>
-                </resource>
-                <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/${jquery.version}
-                  </directory>
-                  <targetPath>${project.build.directory}/site/js</targetPath>
-                  <includes>
-                    <include>jquery.min.js</include>
-                  </includes>
                 </resource>
               </resources>
             </configuration>
@@ -935,6 +883,8 @@
         <executions>
           <execution>
             <id>streamline-font-urls</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>replace</goal>
@@ -1068,7 +1018,7 @@
             <asciidoc>
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
-                <imagesoutdir>${project.build.directory}/site/img</imagesoutdir>
+                <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
@@ -1080,7 +1030,7 @@
             <dependency>
               <groupId>io.github.devacfr.maven.skins</groupId>
               <artifactId>reflow-velocity-tools</artifactId>
-              <version>1.3.10</version>
+              <version>${reflow.skin.version}</version>
             </dependency>
             <!-- add support for scm/git site deployment -->
             <dependency>
@@ -1163,7 +1113,7 @@
   <reporting>
     <plugins>
       <!-- Generate the unit- and integration-test reports -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <reportSets>
@@ -1174,10 +1124,10 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
+      </plugin-->
 
       <!-- Generate a code coverage report -->
-      <plugin>
+      <!--plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <reportSets>
@@ -1195,17 +1145,17 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
+      </plugin-->
 
       <!-- Add html friendly version of source files with line-numbers -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
         <version>3.0.0</version>
-      </plugin>
+      </plugin-->
 
       <!-- Generate javadoc documentation -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <reportSets>
@@ -1219,10 +1169,10 @@
         <configuration>
           <failOnError>true</failOnError>
         </configuration>
-      </plugin>
+      </plugin-->
 
       <!-- Generates a changelog report from GIT commits -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changelog-plugin</artifactId>
         <reportSets>
@@ -1234,13 +1184,13 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <!-- Automatically link Jira issues -->
+          <!- Automatically link Jira issues ->
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
         </configuration>
-      </plugin>
+      </plugin-->
 
       <!-- Generates a dependency vulnerability -->
-      <plugin>
+      <!--plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
         <reportSets>
@@ -1250,7 +1200,7 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
+      </plugin-->
     </plugins>
   </reporting>
 
@@ -1261,16 +1211,6 @@
       <url>https://repository.apache.org/content/repositories/snapshots</url>
       <releases>
         <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>daffodil-release</id>
-      <url>https://repository.apache.org/content/repositories/orgapachedaffodil-1008/</url>
-      <releases>
-        <enabled>true</enabled>
       </releases>
       <snapshots>
         <enabled>true</enabled>
@@ -1332,6 +1272,25 @@
       <id>jenkins-build</id>
       <properties>
       </properties>
+      <build>
+        <plugins>
+          <!--TODO Remove this after fix for NVE CVS-->
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <failBuildOnCVSS>8</failBuildOnCVSS>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
     <!--

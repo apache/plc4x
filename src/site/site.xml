@@ -22,7 +22,7 @@
   <skin>
     <groupId>io.github.devacfr.maven.skins</groupId>
     <artifactId>reflow-maven-skin</artifactId>
-    <version>1.5.0</version>
+    <version>${reflow.skin.version}</version>
   </skin>
 
   <!-- Hide the publish date as this will cause changes on every generated page every day -->
@@ -37,15 +37,16 @@
   <custom>
     <reflowSkin>
       <localResources>true</localResources>
+      <absoluteResourceURL>https://plc4x.apache.org/</absoluteResourceURL>
       <titleTemplate>Apache PLC4X® (Incubating) - %2$s</titleTemplate>
       <slogan position="bannerLeft">The industrial IoT adapter</slogan>
       <showApacheEvents>true</showApacheEvents>
       <toc>top</toc>
-      <bottomNav maxSpan="9">
-        <column>reports</column>
+      <bottomNav maxSpan="6">
+        <!--column>reports</column-->
         <column>Apache</column>
-        <column>Protocols</column>
         <column>modules</column>
+        <column>Protocols</column>
       </bottomNav>
       <brand>
         <name>Apache PLC4X (Incubating)</name>
@@ -53,10 +54,7 @@
       </brand>
       <bottomDescription>
         <![CDATA[
-          <p id="apacheTrademarks">
-          Apache PLC4X, PLC4X, Apache, the Apache feather logo, and the Apache PLC4X project logo are either registered trademarks or trademarks of The Apache Software Foundation in the United States and other countries. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
-          </p>
-          <p id="bottomNote">
+          <p id="bottomNote" style="font-size: 15px">
           Apache PLC4X is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
           </p>
         ]]>
@@ -72,12 +70,12 @@
   </custom>
 
   <poweredBy>
-    <logo name="Apache Software Foundation" img="https://www.apache.org/img/asf_logo.png" href="https://www.apache.org/"/>
+    <logo name="Apache Software Foundation" img="https://www.apache.org/images/asf_logo.png" href="https://www.apache.org/"/>
   </poweredBy>
 
   <bannerLeft>
       <name>Apache PLC4X (incubating)</name>
-      <src>https://plc4x.apache.org/img/apache_plc4x_logo.png</src>
+      <src>https://plc4x.apache.org/images/apache_plc4x_logo.png</src>
       <href>https://plc4x.apache.org/</href>
   </bannerLeft>
 
@@ -91,9 +89,11 @@
     <head>
       <![CDATA[
         <script>
-          /* Add an image for promoting Apache events below the right banner */
           document.addEventListener("DOMContentLoaded", function(event) {
+            /* Add an image for promoting Apache events below the right banner */
             $("#bannerRight").append('<p id="apacheEvents"><a href="//www.apache.org/events/current-event.html"><img src="//www.apache.org/events/current-event-234x60.png"/></a></p>');
+            /* Append the trademarks info to the copyright section */
+            $(".copyright").append('<p>Apache PLC4X, PLC4X, Apache, the Apache feather logo, and the Apache PLC4X project logo are either registered trademarks or trademarks of The Apache Software Foundation in the United States and other countries. All other marks mentioned may be trademarks or registered trademarks of their respective owners.</p>');
           });
         </script>
       ]]>
@@ -116,9 +116,11 @@
       <item name="Code Analysis" href="developers/sonar.html"/>
       <item name="Continuous Integration" href="developers/ci.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
-      <!--item name="Decision Making" href="developers/decisions.html"/-->
-      <item name="JQassistant" href="developers/jqassistant.html"/>
+      <item name="Decision Making" href="developers/decisions.html"/>
+      <!--item name="JQassistant" href="developers/jqassistant.html"/-->
+      <item name="Maturity" href="developers/maturity.html"/>
       <item name="Releasing" href="developers/release.html"/>
+      <item name="Team" href="developers/team.html"/>
       <item name="VM Access" href="developers/vm.html"/>
       <item name="VPN Access" href="developers/vpn.html"/>
       <item name="Website" href="developers/website.html"/>
@@ -141,7 +143,6 @@
       <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
       <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
     </menu>
-    <menu name="Parent" ref="parent" inherit="top"/>
     <menu ref="modules" inherit="bottom"/>
   </body>
 

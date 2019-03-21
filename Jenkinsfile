@@ -47,7 +47,7 @@ pipeline {
 
     options {
         // Kill this job after one hour.
-        timeout(time: 1, unit: 'HOURS')
+        timeout(time: 2, unit: 'HOURS')
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
@@ -177,7 +177,12 @@ pipeline {
             }
             steps {
                 echo 'Staging Site'
+                // Build a directory containing the aggregated website.
                 sh 'mvn -P${JENKINS_PROFILE} site:stage'
+                // Make sure the script is executable.
+                sh 'chmod +x tools/clean-site.sh'
+                // Remove some redundant resources, which shouldn't be required.
+                sh 'tools/clean-site.sh'
                 // Stash the generated site so we can publish it on the 'git-website' node.
                 stash includes: 'target/staging/**/*', name: 'plc4x-site'
             }

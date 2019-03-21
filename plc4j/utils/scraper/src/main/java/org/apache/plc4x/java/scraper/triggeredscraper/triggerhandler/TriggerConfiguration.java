@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  */
 //ToDo: Improve structure to make it more generic --> PLC4X-89
 public class TriggerConfiguration{
-    private static final Logger LOGGER = LoggerFactory.getLogger(TriggerConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(TriggerConfiguration.class);
 
     private static final String S_7_TRIGGER_VAR = "S7_TRIGGER_VAR";
     private static final String SCHEDULED = "SCHEDULED";
@@ -44,7 +44,6 @@ public class TriggerConfiguration{
 
     private static final Pattern TRIGGER_STRATEGY_PATTERN =
         Pattern.compile("\\((?<strategy>[A-Z_0-9]+),(?<scheduledInterval>\\d+)(,(\\((?<triggerVar>\\S+)\\))((?<comp>[!=<>]{1,2}))(\\((?<compVar>[a-z0-9.\\-]+)\\)))?\\)");
-
 
     private final TriggerType triggerType;
     private final Long scrapeInterval;
@@ -55,8 +54,6 @@ public class TriggerConfiguration{
 
     private final Object compareValue;
     private final PlcField plcField;
-
-
 
     /**
      * default constructor when an S7Field should be used for triggering
@@ -78,9 +75,10 @@ public class TriggerConfiguration{
         if(this.triggerType.equals(TriggerType.S7_TRIGGER_VAR)) {
             //test for valid field-connection string, on exception quit job and return message to user
             try {
+                // TODO: PLC4X-106 - Make the Scraper not depend on S7 directly
                 this.plcField = S7Field.of(triggerVariable);
             } catch (PlcInvalidFieldException e) {
-                LOGGER.debug(e.getMessage(), e);
+                logger.debug(e.getMessage(), e);
                 String exceptionMessage = String.format("Invalid trigger Field for Job %s: %s", triggeredScrapeJobImpl.getJobName(), triggerVariable);
                 throw new ScraperException(exceptionMessage);
             }
@@ -112,7 +110,6 @@ public class TriggerConfiguration{
         this.compareValue = null;
         this.plcField = null;
         this.comparatorType = null;
-
     }
 
     /**
@@ -312,7 +309,7 @@ public class TriggerConfiguration{
                 return Double.parseDouble(compareValue);
             }
             catch (Exception e){
-                LOGGER.debug(e.getMessage(), e);
+                logger.debug(e.getMessage(), e);
                 String exceptionMessage = String.format("No valid compare Value at DataType Numeric for trigger for Job %s: %s",triggeredScrapeJobImpl.getJobName(),compareValue);
                 throw new ScraperException(exceptionMessage);
             }
@@ -335,7 +332,7 @@ public class TriggerConfiguration{
             String strat = matcher.group("strategy");
             String scheduledMs = matcher.group("scheduledInterval");
 
-            LOGGER.debug("Strategy: {}, scheduled ms: {}",strat,scheduledMs);
+            logger.debug("Strategy: {}, scheduled ms: {}",strat,scheduledMs);
 
             String triggerVar = matcher.group("triggerVar");
             String comparatorString = matcher.group("comp");
@@ -363,7 +360,7 @@ public class TriggerConfiguration{
 
     private void handleException(Exception e){
         //push up if needed
-        LOGGER.debug("Exception: ", e);
+        logger.debug("Exception: ", e);
     }
 
     TriggerType getTriggerType() {
