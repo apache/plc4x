@@ -157,12 +157,37 @@ public class TriggerConfiguration{
                 return currentValue != refValue;
             }
         }
-        if(validateDataType().equals(Double.class)) {
+        if(validateDataType().equals(Double.class)
+            || validateDataType().equals(Integer.class)
+            || validateDataType().equals(Long.class)) {
             double currentValue;
             double refValue;
             try{
-                currentValue = (double) value;
                 refValue = (double) compareValue;
+                if(value instanceof Short){
+                    currentValue = ((Short) value).doubleValue();
+                }
+                else {
+                    if (value instanceof Integer) {
+                        currentValue = ((Integer) value).doubleValue();
+                    }
+                    else {
+                        if (value instanceof Long) {
+                            currentValue = ((Long) value).doubleValue();
+                        }
+                        else{
+                            if (value instanceof Double) {
+                                currentValue = (Double) value;
+                            }else {
+                                currentValue = (double) value;
+                            }
+                        }
+                    }
+
+                }
+
+                //
+
             }
             catch (Exception e){
                 handleException(e);
