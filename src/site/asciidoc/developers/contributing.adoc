@@ -72,7 +72,7 @@ Add the remote on the commandline (or your git gui of choice):
 
     git remote add upstream https://github.com/apache/incubator-plc4x.git
 
-If you list all your remotes, wirth the following command:
+If you list all your remotes, with the following command:
 
     git remote -v
 
@@ -85,11 +85,11 @@ It should output something like this:
 
 If that's so, you're fine to continue, if not ... well you could ask for assistance on our dev-list.
 
-In order to get all changes of our upstream-repository, just execute the following commmand:
+In order to get all changes of our upstream-repository, just execute the following command:
 
     git pull upstream
 
-This will get all changed from upstream and merge them locally. In order to update your GitHub version, you have to push things back to `origin`. You can do this by execunting the follwing command:
+This will get all changed from upstream and merge them locally. In order to update your GitHub version, you have to push things back to `origin`. You can do this by executing the following command:
 
     git push
 
@@ -105,7 +105,7 @@ In order to be able to do so, you need to create an account first.
 
 Currently Apache has a separate login system for JIRA and all other services, this might change in the future, but right now it's the way things are.
 
-So if you are considering to contribute more than just a one-time-patch, please choose a username that hasn't been used by an existing http://people.apache.org/committer-index.html[Apache comitter] as this will simplify things if we invite you to become part of the team.
+So if you are considering to contribute more than just a one-time-patch, please choose a username that hasn't been used by an existing http://people.apache.org/committer-index.html[Apache committer] as this will simplify things if we invite you to become part of the team.
 
 If you want to be assigned to an issue because you want to work on it, please request to be added to the JIRA groups on our http://plc4x.apache.org/mailing-lists.html[developers mailing list]
 
@@ -113,7 +113,7 @@ If you want to be assigned to an issue because you want to work on it, please re
 
 As our documentation and website are generated as a side-product of our build, contributing to this technically the same as contributing to the code.
 
-All our content is written in Asciidoctor and is located in `src/site/asciidoc` directories. For a reference of the Asciidoctor snytax please have a look at the https://asciidoctor.org/docs/user-manual/#introduction-to-asciidoctor[Asciidoctor documentation].
+All our content is written in Asciidoctor and is located in `src/site/asciidoc` directories. For a reference of the Asciidoctor syntax please have a look at the https://asciidoctor.org/docs/user-manual/#introduction-to-asciidoctor[Asciidoctor documentation].
 
 === Branching model
 
