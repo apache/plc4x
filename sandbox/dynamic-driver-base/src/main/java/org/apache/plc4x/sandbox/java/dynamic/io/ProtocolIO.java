@@ -17,21 +17,12 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.dynamic.actions;
+package org.apache.plc4x.sandbox.java.dynamic.io;
 
-import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
+public interface ProtocolIO {
 
-public abstract class BaseConnectedAction extends BasePlc4xAction {
+    void send(byte[] data);
 
-    public static final String SOCKET_PARAMETER_NAME="connection";
-
-    protected ProtocolIO getProtocolIo(ActionExecutionContext ctx) {
-        Object connection = ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        if(connection instanceof ProtocolIO) {
-            return (ProtocolIO) ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        }
-        return null;
-    }
+    byte[] receive();
 
 }

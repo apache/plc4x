@@ -26,6 +26,7 @@ import org.apache.daffodil.japi.DataProcessor;
 import org.apache.daffodil.japi.ParseResult;
 import org.apache.daffodil.japi.infoset.JDOMInfosetOutputter;
 import org.apache.daffodil.japi.io.InputSourceDataInputStream;
+import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
 import org.jdom2.Document;
 import org.jdom2.Namespace;
 import org.jdom2.Text;
@@ -36,10 +37,8 @@ import org.jdom2.xpath.XPathFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -98,8 +97,10 @@ public abstract class ReceiveAction extends BaseDaffodilAction {
                 return;
             }
 
-            Socket connection = getSocket(ctx);
-            DataInputStream inputStream = new DataInputStream(new BufferedInputStream(connection.getInputStream()));
+            ProtocolIO protocolIO = getProtocolIo(ctx);
+            byte[] data = protocolIO.receive();
+
+            DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(data));
 
             // Remember when we started to receive.
             long startTime = System.currentTimeMillis();

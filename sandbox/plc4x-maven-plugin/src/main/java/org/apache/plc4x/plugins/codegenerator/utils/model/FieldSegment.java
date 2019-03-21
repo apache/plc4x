@@ -17,21 +17,24 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.dynamic.actions;
+package org.apache.plc4x.plugins.codegenerator.utils.model;
 
-import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
+public class FieldSegment implements Segment {
 
-public abstract class BaseConnectedAction extends BasePlc4xAction {
+    private String name;
+    private Type type;
 
-    public static final String SOCKET_PARAMETER_NAME="connection";
+    public FieldSegment(String name, Type type) {
+        this.name = name;
+        this.type = type;
+    }
 
-    protected ProtocolIO getProtocolIo(ActionExecutionContext ctx) {
-        Object connection = ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        if(connection instanceof ProtocolIO) {
-            return (ProtocolIO) ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        }
-        return null;
+    public String getName() {
+        return name;
+    }
+
+    public Type getType() {
+        return type;
     }
 
 }

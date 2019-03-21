@@ -28,6 +28,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.plc4x.plugins.codegenerator.utils.TemplateHelper;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 
@@ -120,6 +121,8 @@ public class GenerateMojo extends AbstractMojo {
             // Load the DFDL schema file
             Document dfdlSchema = parseDFDLSchema(schemaFile);
 
+            TemplateHelper helper = new TemplateHelper(dfdlSchema);
+
             // Get the list of main types in the schema file (complexType and root level)
             Iterator<Element> types = getMainTypes(dfdlSchema);
 
@@ -133,6 +136,7 @@ public class GenerateMojo extends AbstractMojo {
                 typeContext.put("typeName", typeName);
                 typeContext.put("typeElement", typeElement);
                 typeContext.put("packageName", packageName);
+                typeContext.put("helper", helper);
 
                 for(Template template : templateList) {
                     // Create a variable size output location where the template can generate it's content to
@@ -165,6 +169,7 @@ public class GenerateMojo extends AbstractMojo {
                         outputFileWriter.write(line);
                         outputFileWriter.newLine();
                     }
+                    outputFileWriter.flush();
                 }
                 getLog().info("Generating type " + typeName);
             }

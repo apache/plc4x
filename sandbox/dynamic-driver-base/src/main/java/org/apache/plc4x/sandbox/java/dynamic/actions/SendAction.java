@@ -24,6 +24,7 @@ import org.apache.commons.scxml2.model.ParsedValue;
 import org.apache.daffodil.japi.DataProcessor;
 import org.apache.daffodil.japi.UnparseResult;
 import org.apache.daffodil.japi.infoset.InfosetInputter;
+import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
 import org.apache.plc4x.sandbox.java.dynamic.utils.JDOMTemplateInfosetInputter;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -31,9 +32,8 @@ import org.jdom2.input.DOMBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.DataOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 
@@ -73,8 +73,7 @@ public class SendAction extends BaseDaffodilAction {
                     }
                     InfosetInputter inputter = new JDOMTemplateInfosetInputter(messageTemplate, ctx.getGlobalContext());
 
-                    Socket connection = getSocket(ctx);
-                    DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     WritableByteChannel wbc = Channels.newChannel(outputStream);
                     UnparseResult byteMessage = dp.unparse(inputter, wbc);
                     if(byteMessage.isError()) {
@@ -82,6 +81,9 @@ public class SendAction extends BaseDaffodilAction {
                         return;
                     }
                     outputStream.flush();
+
+                    ProtocolIO protocolIO = getProtocolIo(ctx);
+                    protocolIO.send(outputStream.toByteArray());
                 } catch(IOException e) {
                     e.printStackTrace();
                 }

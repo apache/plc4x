@@ -17,21 +17,19 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.dynamic.actions;
+package org.apache.plc4x.plugins.codegenerator.utils.model;
 
-import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
+public class RepeaterSegment extends FieldSegment {
 
-public abstract class BaseConnectedAction extends BasePlc4xAction {
+    private String maxOccurs;
 
-    public static final String SOCKET_PARAMETER_NAME="connection";
+    public RepeaterSegment(String name, Type type, String maxOccurs) {
+        super(name, type);
+        this.maxOccurs = maxOccurs;
+    }
 
-    protected ProtocolIO getProtocolIo(ActionExecutionContext ctx) {
-        Object connection = ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        if(connection instanceof ProtocolIO) {
-            return (ProtocolIO) ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        }
-        return null;
+    public String getMaxOccurs() {
+        return maxOccurs;
     }
 
 }
