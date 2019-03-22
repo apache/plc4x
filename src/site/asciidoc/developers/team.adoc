@@ -38,5 +38,11 @@ Sorted by first name:
  pragmatic minds GmbH /
  pragmatic industries GmbH
 
- Nürtingen |Has studied mathematics in Stuttgart. Besides his interest in open source software and big data, he focuses on the analysis of time series and traces from testing or manufacturing. PLC4X was the first project where he was offered a position as (P)PMC but he is also enganged in other Apache projects like Edgent and IotDB. | a|image::team/jfeinauer.jpg[jfeinauer, 240, 320]
+ Nürtingen |Has studied mathematics in Stuttgart. Besides his interest in open source software and big data, he focuses on the analysis of time series and traces from testing or manufacturing. PLC4X was the first project where he was offered a position as (P)PMC but he is also engaged in other Apache projects like Edgent and IotDB. | a|image::team/jfeinauer.jpg[jfeinauer, 240, 320]
+| *Tim Mitsch*
 
+ Engineer
+
+ pragmatic industries GmbH
+
+ Nürtingen |Electrical engineer (HW, SW and interface-stuff) from passion and very new to Apache projects. The more he is involved in open-source the more he likes it, focusing on PLC4X at first. | a|image::team/tmitsch.png[tmitsch, 240, 263]
