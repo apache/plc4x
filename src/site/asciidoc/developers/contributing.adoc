@@ -30,6 +30,8 @@ These usually are, but are not limited to:
 - Promoting the project (articles, blog posts, talks at conferences)
 - Documentation
 
+We are a very friendly bunch and don't be afraid to step forward.
+
 === Pull-Requests
 
 The simplest way to submit code changes, is via a GitHub pull-request.
