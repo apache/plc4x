@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Conferences
+== Conferences & Events
 
 On this page we are listing options to attend talks and events around PLC4X.
 
