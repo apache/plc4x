@@ -99,10 +99,6 @@
       ]]>
     </head>
 
-    <menu name="Community">
-      <item name="Getting Involved" href="community/getting-involved.html"/>
-      <item name="Conferences &amp; Meetups" href="community/conferences.html"/>
-    </menu>
     <menu name="Users">
       <item name="Download" href="users/download.html"/>
       <item name="Getting Started" href="users/gettingstarted.html"/>
