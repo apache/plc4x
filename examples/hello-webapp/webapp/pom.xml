@@ -63,7 +63,7 @@
           <!-- Unpack the client content into this module in order to be able to serve the client too. -->
           <execution>
             <id>copy-client</id>
-            <phase>generate-resources</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
