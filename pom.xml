@@ -156,7 +156,6 @@
     <module>protocols</module>
 
     <!-- Core PLC4X modules -->
-    <module>plc4c</module>
     <!--module>plc4cpp</module-->
     <module>plc4j</module>
 

@@ -67,7 +67,7 @@
               The reason is that in this case the dependency reference points to a directory instead of an archive.
             -->
             <id>copy-client</id>
-            <phase>generate-resources</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
