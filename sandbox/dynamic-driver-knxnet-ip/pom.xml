@@ -31,6 +31,47 @@
   <name>Sandbox: Dynamic-Driver: KNXNet/IP</name>
   <description>Implementation of a KNXNet/IP driver based on definitions provided by DFDL and SCXML.</description>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>generate-driver</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <dfdlSchema>test/protocol.dfdl.xsd</dfdlSchema>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4x-protocols-knxnet-ip</artifactId>
+            <version>0.4.0-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4x-protocols-knxnet-ip</usedDependency>
+            <usedDependency>org.apache.commons:commons-jexl3</usedDependency>
+            <usedDependency>org.slf4j:slf4j-simple</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -61,20 +102,10 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jdom</groupId>
-      <artifactId>jdom2</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.2</version>
     </dependency>
 
     <dependency>
@@ -84,21 +115,5 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-protocols-s7</usedDependency>
-            <usedDependency>org.apache.commons:commons-jexl3</usedDependency>
-            <usedDependency>org.slf4j:slf4j-simple</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

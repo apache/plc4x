@@ -31,6 +31,11 @@ import java.util.Map;
 
 public class TemplateHelper {
 
+    private Namespace targetNamespace;
+    private Namespace dfdlNamespace;
+    private Namespace xsNamespace;
+    private Map<String, Namespace> namespaces;
+
     private String rootName;
     private Type rootType;
     private Map<QName, Type> types;
@@ -39,7 +44,7 @@ public class TemplateHelper {
         types = new HashMap<>();
 
         // Get all namespaces that are declared.
-        Map<String, Namespace> namespaces = new HashMap<>();
+        namespaces = new HashMap<>();
         for (Namespace declaredNamespace : dfdlSpecification.getRootElement().declaredNamespaces()) {
             namespaces.put(declaredNamespace.getPrefix(), declaredNamespace);
         }
@@ -48,15 +53,14 @@ public class TemplateHelper {
         if(!namespaces.containsKey("dfdl")) {
             throw new RuntimeException("No namespace declaration for prefix 'dfdl' defined.");
         }
-        Namespace dfdlNamespace = namespaces.get("dfdl");
+        dfdlNamespace = namespaces.get("dfdl");
         if(!namespaces.containsKey("xs")) {
             throw new RuntimeException("No namespace declaration for prefix 'xs' defined.");
         }
-        Namespace xsNamespace = namespaces.get("xs");
+        xsNamespace = namespaces.get("xs");
 
         // Try to find the target namespace.
         String targetNamespaceUri = dfdlSpecification.getRootElement().attributeValue("targetNamespace");
-        Namespace targetNamespace = null;
         for (Namespace namespace : namespaces.values()) {
             if(namespace.getURI().equalsIgnoreCase(targetNamespaceUri)) {
                 targetNamespace = namespace;
@@ -104,78 +108,90 @@ public class TemplateHelper {
         // referenced types to come after the ones referencing them).
         List<Node> complexTypes = Lists.reverse(dfdlSpecification.getRootElement().selectNodes("xs:complexType"));
         for (Node complexTypeNode : complexTypes) {
-            Element complexTypeElement = (Element) complexTypeNode;
-            QName name = new QName(complexTypeElement.attributeValue("name"), targetNamespace);
-
-            List<Segment> segments = new LinkedList<>();
-            List<Node> segmentNodes = complexTypeElement.selectNodes("xs:sequence/xs:element");
-            for (Node segmentNode : segmentNodes) {
-                Element segmentElement = (Element) segmentNode;
-                switch(segmentElement.getName()) {
-                    case "element":
-                        String fieldName = segmentElement.attributeValue("name");
-                        String typeName = segmentElement.attributeValue("type", null);
-                        Type fieldType = null;
-                        // If a type is specified, this references another type.
-                        if(typeName != null) {
-                            String namespacePrefix = typeName.substring(0, typeName.indexOf(":"));
-                            if(!namespaces.containsKey(namespacePrefix)) {
-                                throw new RuntimeException("Namespace prefix " + namespacePrefix + " not defined in root element");
-                            }
-                            Namespace namespace = namespaces.get(namespacePrefix);
-                            typeName = typeName.substring(typeName.indexOf(":") + 1);
-                            QName type = new QName(typeName, namespace);
-                            if(!types.containsKey(type)) {
-                                throw new RuntimeException("Type " + namespacePrefix + ":" + typeName +
-                                    " not found (maybe defined before current element)");
-                            }
-                            fieldType = types.get(type);
-                        }
-                        // In all other cases, this must be a nested complex type
-                        else {
-                            // TODO: Parse the nested type ...
-                        }
-
-                        if("1".equals(segmentElement.attributeValue("maxOccurs", "1"))) {
-                            FieldSegment fieldSegment = new FieldSegment(fieldName, fieldType);
-                            segments.add(fieldSegment);
-                        } else {
-                            String maxOccurs = segmentElement.attributeValue("maxOccurs");
-                            RepeaterSegment repeaterSegment = new RepeaterSegment(fieldName, fieldType, maxOccurs);
-                            segments.add(repeaterSegment);
-                        }
-                        break;
-                    case "choice":
-                        String discriminatorRule = segmentElement.attributeValue(new QName("choiceDispatchKey", dfdlNamespace));
-                        if(!(discriminatorRule.startsWith("{xs:string(") && discriminatorRule.endsWith(")}"))) {
-                            throw new RuntimeException("Discriminator rules are expected to have the form " +
-                                "'{xs:string({pattern})}', but was " + discriminatorRule);
-                        }
-                        // Remove the "{xs:string(" and ")}" around the expression.
-                        discriminatorRule = discriminatorRule.substring(
-                            "{xs:string(".length(), discriminatorRule.length() - 2);
-                        Map<String, FieldSegment> choices = new HashMap<>();
-                        List<Node> choiceNodes = segmentElement.selectNodes("xs:element");
-                        for (Node choiceNode : choiceNodes) {
-                            Element choiceElement = (Element) choiceNode;
-                            String discriminatorValue = choiceElement.attributeValue(new QName("choiceBranchKey", dfdlNamespace));
-                            FieldSegment choiceField = null;
-                            choices.put(discriminatorValue, choiceField);
-                        }
-
-                        ChoiceSegment choiceSegment = new ChoiceSegment(discriminatorRule, choices);
-                        segments.add(choiceSegment);
-                        break;
-                    default:
-                        throw new RuntimeException("Unsupported segment type " + segmentElement.getName());
-                }
-            }
-            ComplexType complexType = new ComplexType(name, segments);
-            types.put(name, complexType);
+            ComplexType complexType = parseComplexType(complexTypeNode);
+            types.put(complexType.getName(), complexType);
         }
 
         rootType = types.get(rootTypeName);
     }
+
+    private ComplexType parseComplexType(Node complexTypeNode) {
+        Element complexTypeElement = (Element) complexTypeNode;
+        QName name = new QName(complexTypeElement.attributeValue("name"), targetNamespace);
+
+        List<Segment> segments = new LinkedList<>();
+        List<Node> segmentNodes = complexTypeElement.selectNodes("xs:sequence/*[(local-name() = 'element') or (local-name() = 'choice')]");
+        for (Node segmentNode : segmentNodes) {
+            Element segmentElement = (Element) segmentNode;
+            switch(segmentElement.getName()) {
+                case "element":
+                    String fieldName = segmentElement.attributeValue("name");
+                    String typeName = segmentElement.attributeValue("type", null);
+                    Type fieldType = null;
+                    // If a type is specified, this references another type.
+                    if(typeName != null) {
+                        String namespacePrefix = typeName.substring(0, typeName.indexOf(":"));
+                        if(!namespaces.containsKey(namespacePrefix)) {
+                            throw new RuntimeException("Namespace prefix " + namespacePrefix + " not defined in root element");
+                        }
+                        Namespace namespace = namespaces.get(namespacePrefix);
+                        typeName = typeName.substring(typeName.indexOf(":") + 1);
+                        QName type = new QName(typeName, namespace);
+                        if(!types.containsKey(type)) {
+                            throw new RuntimeException("Type " + namespacePrefix + ":" + typeName +
+                                " not found (maybe defined before current element)");
+                        }
+                        fieldType = types.get(type);
+                    }
+                    // In all other cases, this must be a nested complex type.
+                    // In this case we simply add the children instead of the complex element itself.
+                    else {
+                        // Get the children of the inner "complexType" and continue with them.
+                        Node innerComplexTypeNode = segmentElement.selectSingleNode("xs:complexType");
+                        parseComplexType(innerComplexTypeNode);
+                    }
+
+                    // This is an element that can only occur at most once.
+                    if("1".equals(segmentElement.attributeValue("maxOccurs", "1"))) {
+                        FieldSegment fieldSegment = new FieldSegment(fieldName, fieldType);
+                        segments.add(fieldSegment);
+                    }
+                    // This is an element that can only occur multiple times.
+                    else {
+                        String maxOccurs = segmentElement.attributeValue("maxOccurs");
+                        RepeaterSegment repeaterSegment = new RepeaterSegment(fieldName, fieldType, maxOccurs);
+                        segments.add(repeaterSegment);
+                    }
+                    break;
+                case "choice":
+                    String discriminatorRule = segmentElement.attributeValue(new QName("choiceDispatchKey", dfdlNamespace));
+                    if(!(discriminatorRule.startsWith("{xs:string(") && discriminatorRule.endsWith(")}"))) {
+                        throw new RuntimeException("Discriminator rules are expected to have the form " +
+                            "'{xs:string({pattern})}', but was " + discriminatorRule);
+                    }
+                    // Remove the "{xs:string(" and ")}" around the expression.
+                    discriminatorRule = discriminatorRule.substring(
+                        "{xs:string(".length(), discriminatorRule.length() - 2);
+                    Map<String, FieldSegment> choices = new HashMap<>();
+                    List<Node> choiceNodes = segmentElement.selectNodes("xs:element");
+                    for (Node choiceNode : choiceNodes) {
+                        Element choiceElement = (Element) choiceNode;
+                        String discriminatorValue = choiceElement.attributeValue(new QName("choiceBranchKey", dfdlNamespace));
+                        // TODO: Do some more parsing here ...
+                        FieldSegment choiceField = null;
+                        choices.put(discriminatorValue, choiceField);
+                    }
+
+                    ChoiceSegment choiceSegment = new ChoiceSegment(discriminatorRule, choices);
+                    segments.add(choiceSegment);
+                    break;
+                default:
+                    throw new RuntimeException("Unsupported segment type " + segmentElement.getName());
+            }
+        }
+        return new ComplexType(name, segments);
+    }
+
 
    /* List<FieldSegment> getFields(Element type) {
         List<Node> nodes = type.selectNodes("xs:sequence/xs:element");

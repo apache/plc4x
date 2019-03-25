@@ -33,10 +33,15 @@ These are documented in this document.
 ** Each document must declare the protocol namespace and define which one it is in with the `targetNamespace` attribute.
 
 * Root of all messages:
-** Each DFDL schema must only define one `xs:element` on root level.
+** Each DFDL schema must only define one `xs:element` on root level. This will be the root of all message types.
 ** The root element must define a `name` as well as a `type` attribute (No embedded type definition).
 
+* Simple types:
+** All simple types must be declared at the top.
+** No simple types are allowed to be declared inline
 
+* Complex types:
+** A complex type can only reference simple types declared at the top or other complex types declared after the current type.
 
 2. For each `xs:complexType` on root level the code generator will generate a type.
 3. Nested `xs:complexType`s will be generated as nested types.

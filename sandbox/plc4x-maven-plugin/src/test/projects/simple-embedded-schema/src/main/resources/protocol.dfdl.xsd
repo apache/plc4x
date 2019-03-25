@@ -57,6 +57,22 @@
         <xs:restriction base="xs:boolean"/>
     </xs:simpleType>
 
+    <xs:simpleType name="unsigned3bit" dfdl:lengthUnits="bits" dfdl:length="3" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="unsigned4bit" dfdl:lengthUnits="bits" dfdl:length="4" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="unsigned7bit" dfdl:lengthUnits="bits" dfdl:length="7" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="unsigned12bit" dfdl:lengthUnits="bits" dfdl:length="12" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedShort"/>
+    </xs:simpleType>
+
     <xs:simpleType name="byte" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
         <xs:restriction base="xs:unsignedByte"/>
     </xs:simpleType>
@@ -144,12 +160,8 @@
                             <xs:complexType>
                                 <xs:sequence>
                                     <xs:sequence>
-                                        <xs:element name="reserved" type="xs:unsignedByte"
-                                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                                                    dfdl:length="7"/>
-                                        <xs:element name="programMode" type="xs:unsignedByte"
-                                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                                                    dfdl:length="1"/>
+                                        <xs:element name="reserved" type="knx:unsigned7bit"/>
+                                        <xs:element name="programMode" type="knx:bit"/>
                                     </xs:sequence>
                                 </xs:sequence>
                             </xs:complexType>
@@ -252,12 +264,8 @@
                             <xs:complexType>
                                 <xs:sequence>
                                     <xs:sequence>
-                                        <xs:element name="reserved" type="xs:unsignedByte"
-                                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                                                    dfdl:length="7"/>
-                                        <xs:element name="programMode" type="xs:unsignedByte"
-                                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                                                    dfdl:length="1"/>
+                                        <xs:element name="reserved" type="knx:unsigned7bit"/>
+                                        <xs:element name="programMode" type="knx:bit"/>
                                     </xs:sequence>
                                 </xs:sequence>
                             </xs:complexType>
@@ -482,12 +490,8 @@
 
     <xs:complexType name="KnxAddress">
         <xs:sequence>
-            <xs:element name="mainGroup" type="xs:unsignedByte"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                        dfdl:length="4"/>
-            <xs:element name="middleGroup" type="xs:unsignedByte"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                        dfdl:length="4"/>
+            <xs:element name="mainGroup" type="knx:unsigned4bit"/>
+            <xs:element name="middleGroup" type="knx:unsigned4bit"/>
             <xs:element name="subGroup" type="knx:byte"/>
         </xs:sequence>
     </xs:complexType>
@@ -502,12 +506,8 @@
                             <xs:element name="interfaceObjectType" type="knx:short"/>
                             <xs:element name="objectInstance" type="knx:byte"/>
                             <xs:element name="propertyIdentifyer" type="knx:byte"/>
-                            <xs:element name="numberOfElements" type="xs:unsignedByte"
-                                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                                        dfdl:length="4"/>
-                            <xs:element name="startIndex" type="xs:unsignedByte"
-                                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                                        dfdl:length="12"/>
+                            <xs:element name="numberOfElements" type="knx:unsigned4bit"/>
+                            <xs:element name="startIndex" type="knx:unsigned12bit"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -535,9 +535,7 @@
                                                                                 <xs:element name="parityErrorFlag" type="knx:bit"/>
                                                                                 <xs:element name="dontCare" type="knx:bit"/>
                                                                                 <xs:element name="lostFlag" type="knx:bit"/>
-                                                                                <xs:element name="sequenceNumber" type="xs:unsignedByte"
-                                                                                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                                                                                            dfdl:length="3"/>
+                                                                                <xs:element name="sequenceNumber" type="knx:unsigned3bit"/>
                                                                             </xs:sequence>
                                                                         </xs:complexType>
                                                                     </xs:element>
