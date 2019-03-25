@@ -90,7 +90,7 @@ On this page we are listing options to attend talks and events around PLC4X.
 |8th March 2019 |Solingen (GER) |Conference |https://www.codecentric.de/2019/02/05/industrial-iot-day-solingen[Industrial IoT Day] |Apache PLC4X: Industry 4.0 done our way
 |=========================================================
 
-A full list containing also previous events can be found https://plc4x.apache.org/developers/conferences.adoc[here].
+A full list containing also previous events can be found https://plc4x.apache.org/developers/conferences.html[here].
 
 Looking forward to meeting you.
 
