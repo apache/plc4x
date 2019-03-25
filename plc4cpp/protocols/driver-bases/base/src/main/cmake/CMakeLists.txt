@@ -35,6 +35,14 @@ add_library(api ../../src/main/cpp/org/apache/plc4x/cpp/base/connection/Abstract
         ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultByteArrayFieldItem.cpp
         ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultByteFieldItem.cpp
         ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultDoubleFieldItem.cpp
+        ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultFloatFieldItem.cpp
+        ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultIntegerFieldItem.cpp
+        ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultLocalDateFieldItem.cpp
+        ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultLocalDateTimeFieldItem.cpp
+        ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultLocalTimeFieldItem.cpp
+        ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultLongFieldItem.cpp
+        ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultShortFieldItem.cpp
+        ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/items/DefaultStringFieldItem.cpp
         ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/DefaultPlcReadRequest.cpp
         ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/DefaultPlcWriteRequest.cpp
         ../../src/main/cpp/org/apache/plc4x/cpp/base/messages/InternalPlcFieldRequest.cpp
