@@ -20,7 +20,7 @@ under the License.
 #ifndef _INTERNAL_PLC_REQUEST
 #define _INTERNAL_PLC_REQUEST
 
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcRequest.h"
+#include <org/apache/plc4x/cpp/api/messages/PlcRequest.h>
 
 using namespace org::apache::plc4x::cpp::api::messages;
 

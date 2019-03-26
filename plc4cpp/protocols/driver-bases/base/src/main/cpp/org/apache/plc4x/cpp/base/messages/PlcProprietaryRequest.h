@@ -20,9 +20,9 @@ under the License.
 #ifndef _PLC_PROPRIETARY_REQUEST
 #define _PLC_PROPRIETARY_REQUEST
 
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/REQUEST.h"
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcRequest.h"
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api//messages/RequestTemplate.h"
+#include <org/apache/plc4x/cpp/api/messages/REQUEST.h>
+#include <org/apache/plc4x/cpp/api/messages/PlcRequest.h>
+#include <org/apache/plc4x/cpp/api//messages/RequestTemplate.h>
 
 using namespace org::apache::plc4x::cpp::api::messages;
 

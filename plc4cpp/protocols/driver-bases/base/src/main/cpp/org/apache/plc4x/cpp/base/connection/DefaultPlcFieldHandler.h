@@ -21,7 +21,7 @@ under the License.
 #define _DEFAULT_PLC_FIELD_HANDLER
 
 #include <boost/system/error_code.hpp>
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/PlcConnection.h"
+#include <org/apache/plc4x/cpp/api/PlcConnection.h>
 #include <string>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/functional/hash.hpp>
@@ -29,7 +29,7 @@ under the License.
 #include <array>
 #include <vector>
 
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/model/PlcField.h"
+#include <org/apache/plc4x/cpp/api/model/PlcField.h>
 #include "PlcFieldHandler.h"
 #include "../messages/items/BaseDefaultFieldItem.h"
 

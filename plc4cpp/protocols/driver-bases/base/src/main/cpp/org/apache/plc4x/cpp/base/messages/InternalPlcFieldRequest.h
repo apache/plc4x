@@ -21,7 +21,7 @@ under the License.
 #define _INTERNAL_PLC_FIELD_REQUEST
 
 #include "InternalPlcRequest.h"
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcFieldRequest.h"
+#include <org/apache/plc4x/cpp/api/messages/PlcFieldRequest.h>
 
 #include <map>
 

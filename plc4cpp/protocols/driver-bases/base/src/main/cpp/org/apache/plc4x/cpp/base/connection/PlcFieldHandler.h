@@ -21,12 +21,12 @@ under the License.
 #define _PLC_FIELD_HANDLER
 
 #include <boost/system/error_code.hpp>
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/PlcConnection.h"
+#include <org/apache/plc4x/cpp/api/PlcConnection.h>
 #include <string>
 #include <vector>
 #include <ctime>
 
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/model/PlcField.h"
+#include <org/apache/plc4x/cpp/api/model/PlcField.h>
 #include "../messages/items/BaseDefaultFieldItem.h"
 
 using namespace org::apache::plc4x::cpp::api::model;

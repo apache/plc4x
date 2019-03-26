@@ -23,7 +23,7 @@ under the License.
 #include "InternalPlcReadRequest.h"
 #include "InternalPlcFieldRequest.h"
 #include "PlcReader.h"
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/model/PlcField.h"
+#include <org/apache/plc4x/cpp/api/model/PlcField.h>
 
 #include <map>
 #include <boost/foreach.hpp>

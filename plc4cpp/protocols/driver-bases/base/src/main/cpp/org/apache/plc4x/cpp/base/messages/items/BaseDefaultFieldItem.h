@@ -26,9 +26,9 @@ under the License.
 #include <ctime>
 #include <array>
 
-#include "../../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/exceptions/PlcIncompatibleDatatypeException.h"
-#include "../../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/exceptions/PlcFieldRangeException.h"
-#include "../../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/types/ValueTypeObject.h"
+#include <org/apache/plc4x/cpp/api/exceptions/PlcIncompatibleDatatypeException.h>
+#include <org/apache/plc4x/cpp/api/exceptions/PlcFieldRangeException.h>
+#include <org/apache/plc4x/cpp/api/types/ValueTypeObject.h>
 
 #include <string>
 
@@ -112,8 +112,8 @@ namespace org
 
 							protected:
 								//BaseDefaultFieldItem() { this._values = new array<T>(0); }
-								inline BaseDefaultFieldItem(T* values) { this._values = values; }
-								inline  T getValue(int index)
+								inline BaseDefaultFieldItem(T* values) { _values = values; }
+								inline T getValue(int index)
 								{
 									if ((index < 0 || (index >= _values.size())))
 									{
@@ -121,8 +121,8 @@ namespace org
 									}
 									return _values[index];
 								}
-							
-								 std::vector<T> _values;
+
+								std::vector<T> _values;
 							};
 						}
 					}

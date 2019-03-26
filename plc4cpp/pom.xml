@@ -50,28 +50,6 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!--plugin>
-          <groupId>com.buschmais.jqassistant</groupId>
-          <artifactId>jqassistant-maven-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin-->
-        <!--plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.0</version>
-          <configuration>
-            <skipAssembly>true</skipAssembly>
-          </configuration>
-        </plugin-->
-        <!--plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin-->
         <!-- As the resulting libraries are highly platform dependent, it doesn't make sense do deploy them -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -141,43 +119,21 @@
       Profile inherited and automatically activated as soon as a directory contains a
       src/main/cmake directory.
     -->
-    <profile>
+    <!--profile>
       <id>cmake-module</id>
       <activation>
         <file>
-          <exists>src/main/cmake</exists>
+          <exists>CMakeLists.txt</exists>
         </file>
       </activation>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>process-cmake-files</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>resources</goal>
-                </goals>
-                <configuration>
-                  <resources>
-                    <resource>
-                      <directory>src/main/cmake</directory>
-                      <filtering>true</filtering>
-                    </resource>
-                  </resources>
-                  <outputDirectory>${project.build.directory}/cmake</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
             <groupId>com.googlecode.cmake-maven-project</groupId>
             <artifactId>cmake-maven-plugin</artifactId>
             <version>3.7.2-b1</version>
             <executions>
-              <!-- Uses a CMake generator to generate the build using the build tool of choice -->
+              <!- Uses a CMake generator to generate the build using the build tool of choice ->
               <execution>
                 <id>cmake-generate</id>
                 <phase>process-sources</phase>
@@ -185,29 +141,29 @@
                   <goal>generate</goal>
                 </goals>
                 <configuration>
-                  <!--
+                  <!-
                     Actually the path to the CMakeList.txt file which then again
                     tells to tool where to find the sources.
-                  -->
-                  <sourcePath>${project.build.directory}/cmake</sourcePath>
-                  <!--
+                  ->
+                  <sourcePath>${project.basedir}</sourcePath>
+                  <!-
                     Path to where the build configuration is generated
                     (This directory is then used in the compile step to actually perform the build)
-                  -->
+                  ->
                   <targetPath>${project.build.directory}/make</targetPath>
-                  <!--
+                  <!-
                     Name of the generator the compile step will be executing.
-                  -->
+                  ->
                   <generator>${cmake.generator}</generator>
-                  <!--
+                  <!-
                     The classifier of the current platform. One of
                     [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
                     It defines the version and type of the cmake installation to download.
-                  -->
+                  ->
                   <classifier>${os.classifier}</classifier>
                 </configuration>
               </execution>
-              <!-- Actually executes the build -->
+              <!- Actually executes the build ->
               <execution>
                 <id>cmake-compile</id>
                 <phase>compile</phase>
@@ -215,7 +171,7 @@
                   <goal>compile</goal>
                 </goals>
                 <configuration>
-                  <!-- The directory where the "generate" step generated the build configuration -->
+                  <!- The directory where the "generate" step generated the build configuration ->
                   <projectDirectory>${project.build.directory}/make</projectDirectory>
                   <classifier>${os.classifier}</classifier>
                 </configuration>
@@ -224,7 +180,7 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
+    </profile-->
   </profiles>
 
 </project>

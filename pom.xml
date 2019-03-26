@@ -716,6 +716,9 @@
 
             <!-- Output of the profiler maven extension -->
             <exclude>**/.profiler/**</exclude>
+
+            <!-- CLion stuff (C++ IDE) -->
+            <exclude>**/cmake-build-debug/**</exclude>
           </excludes>
         </configuration>
       </plugin>
