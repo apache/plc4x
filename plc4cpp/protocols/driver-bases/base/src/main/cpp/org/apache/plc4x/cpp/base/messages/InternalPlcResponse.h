@@ -20,7 +20,7 @@ under the License.
 #ifndef _INTERNAL_PLC_RESPONSE
 #define _INTERNAL_PLC_RESPONSE
 
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcResponse.h"
+#include <org/apache/plc4x/cpp/api/messages/PlcResponse.h>
 
 using namespace org::apache::plc4x::cpp::api::messages;
 

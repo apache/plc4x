@@ -27,13 +27,65 @@
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4cpp-protocol-driver-base</artifactId>
-  <name>PLC4Cpp: Protocol: Driver-Base: Base</name>
+  <artifactId>plc4cpp-protocols-driver-base-base</artifactId>
+  <name>PLC4Cpp: Protocols: Driver-Base: Base</name>
   <description>Base classes needed to implement all of the other driver bases.</description>
 
   <build>
     <!-- This is probably not required, however it helps IntelliJ detect the files as sources -->
     <sourceDirectory>src/main/cpp</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>com.googlecode.cmake-maven-project</groupId>
+        <artifactId>cmake-maven-plugin</artifactId>
+        <version>3.7.2-b1</version>
+        <executions>
+          <!-- Uses a CMake generator to generate the build using the build tool of choice -->
+          <execution>
+            <id>cmake-generate</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <!--
+                Actually the path to the CMakeList.txt file which then again
+                tells to tool where to find the sources.
+              -->
+              <sourcePath>${project.basedir}</sourcePath>
+              <!--
+                Path to where the build configuration is generated
+                (This directory is then used in the compile step to actually perform the build)
+              -->
+              <targetPath>${project.build.directory}/make</targetPath>
+              <!--
+                Name of the generator the compile step will be executing.
+              -->
+              <generator>${cmake.generator}</generator>
+              <!--
+                The classifier of the current platform. One of
+                [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
+                It defines the version and type of the cmake installation to download.
+              -->
+              <classifier>${os.classifier}</classifier>
+            </configuration>
+          </execution>
+          <!-- Actually executes the build -->
+          <execution>
+            <id>cmake-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <!-- The directory where the "generate" step generated the build configuration -->
+              <projectDirectory>${project.build.directory}/make</projectDirectory>
+              <classifier>${os.classifier}</classifier>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>

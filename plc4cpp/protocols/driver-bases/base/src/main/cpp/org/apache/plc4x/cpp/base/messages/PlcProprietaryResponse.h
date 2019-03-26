@@ -20,9 +20,9 @@ under the License.
 #ifndef _PLC_PROPRIETARY_RESPONSE
 #define _PLC_PROPRIETARY_RESPONSE
 
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/RESPONSE.h"
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcResponse.h"
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/ResponseTemplate.h"
+#include <org/apache/plc4x/cpp/api/messages/RESPONSE.h>
+#include <org/apache/plc4x/cpp/api/messages/PlcResponse.h>
+#include <org/apache/plc4x/cpp/api/messages/ResponseTemplate.h>
 
 using namespace org::apache::plc4x::cpp::api::messages;
 

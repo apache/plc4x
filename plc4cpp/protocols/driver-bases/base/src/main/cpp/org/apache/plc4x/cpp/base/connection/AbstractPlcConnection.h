@@ -20,8 +20,8 @@ under the License.
 #ifndef _ABSTRCT_PLC_HANDLER
 #define _ABSTRCT_PLC_HANDLER
 
+#include <org/apache/plc4x/cpp/api/PlcConnection.h>
 #include <boost/system/error_code.hpp>
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/PlcConnection.h"
 #include <string>
 
 using namespace org::apache::plc4x::cpp::api;

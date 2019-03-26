@@ -20,7 +20,7 @@ under the License.
 #ifndef _INTERNAL_PLC_WRITE_REQUEST
 #define _INTERNAL_PLC_WRITE_REQUEST
 
-#include "../../../../../../../../../../../../api/src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcWriteRequest.h"
+#include <org/apache/plc4x/cpp/api/messages/PlcWriteRequest.h>
 #include "./items/BaseDefaultFieldItem.h"
 #include "InternalPlcFieldRequest.h"
 #include <vector>
