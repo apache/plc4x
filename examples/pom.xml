@@ -45,6 +45,7 @@
     <module>hello-storage-elasticsearch</module>
     <module>hello-webapp</module>
     <module>hello-world-plc4x</module>
+    <module>connection-manager</module>
   </modules>
 
   <dependencyManagement>
