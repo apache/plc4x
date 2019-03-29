@@ -97,11 +97,18 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
     }
 
     /**
+     * If a InetSocketAdress is present, it uses the "ping" based default.
+     * Otherwise does the "old" approach to check nettys channel (e.g. serial).
+     */
     @Override
     public boolean isConnected() {
-        return connected && channel.isActive();
+        // Use the "netty default" if no socket adress is present (like serial)
+        if (!getInetSocketAddress().isPresent()) {
+            return connected && channel.isActive();
+        } else {
+            return super.isConnected();
+        }
     }
-     */
 
     @Override
     protected Optional<InetSocketAddress> getInetSocketAddress() {
