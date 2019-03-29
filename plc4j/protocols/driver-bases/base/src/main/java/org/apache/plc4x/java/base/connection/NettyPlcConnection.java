@@ -25,6 +25,8 @@ import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 
+import java.net.InetSocketAddress;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -94,9 +96,16 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
         connected = false;
     }
 
+    /**
     @Override
     public boolean isConnected() {
         return connected && channel.isActive();
+    }
+     */
+
+    @Override
+    protected Optional<InetSocketAddress> getInetSocketAddress() {
+        return this.channelFactory.getInetSocketAddress();
     }
 
     public Channel getChannel() {

@@ -26,6 +26,9 @@ import org.apache.plc4x.java.base.messages.PlcReader;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 
+import java.net.InetSocketAddress;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
@@ -40,6 +43,11 @@ class AbstractPlcConnectionTest implements WithAssertions {
         @Override
         public boolean isConnected() {
             throw new NotImplementedException("not used");
+        }
+
+        @Override
+        protected Optional<InetSocketAddress> getInetSocketAddress() {
+            return Optional.empty();
         }
 
         @Override

@@ -23,16 +23,31 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 
+import java.net.InetSocketAddress;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 
 public class NettyPlcConnectionTest implements WithAssertions {
 
-    NettyPlcConnection SUT = new NettyPlcConnection(EmbeddedChannel::new, true) {
+    private final ChannelFactory channelFactory = new ChannelFactory() {
+        @Override
+        public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
+            return new EmbeddedChannel();
+        }
+
+        @Override
+        public Optional<InetSocketAddress> getInetSocketAddress() {
+            return Optional.empty();
+        }
+    };
+
+    NettyPlcConnection SUT = new NettyPlcConnection(channelFactory, true) {
         @Override
         protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
             sessionSetupCompleteFuture.complete(null);
