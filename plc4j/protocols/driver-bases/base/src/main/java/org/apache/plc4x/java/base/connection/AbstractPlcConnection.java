@@ -88,21 +88,12 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
             throw new NotImplementedException("Tries to check the connection with ping, " +
                 "but no Socket Address is given!");
         }
-        Socket s = null;
-        try {
-            s = new Socket();
+        try (Socket s = new Socket()) {
             s.connect(address.get(), timeout);
             return true;
         } catch (Exception e) {
             LOGGER.debug("Unable to ping PLC", e);
             return false;
-        } finally {
-            if (s != null) {
-                try {
-                    s.close();
-                } catch (Exception e) {
-                }
-            }
         }
     }
 
