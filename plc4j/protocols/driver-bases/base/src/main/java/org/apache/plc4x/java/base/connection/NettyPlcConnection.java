@@ -106,6 +106,7 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
         if (!getInetSocketAddress().isPresent()) {
             return connected && channel.isActive();
         } else {
+            // TODO sr: Should we add a check like previously, if the channel is active?
             return super.isConnected();
         }
     }

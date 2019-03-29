@@ -83,13 +83,14 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
      * Otherwise it throws a {@link NotImplementedException} to inform the user about that.
      */
     protected boolean ping(int timeout) {
-        Optional<InetSocketAddress> address = getInetSocketAddress();
-        if (!address.isPresent()) {
-            throw new NotImplementedException("Tries to check the connection with ping, " +
-                "but no Socket Address is given!");
-        }
+        InetSocketAddress address = getInetSocketAddress()
+            .orElseThrow(() -> new NotImplementedException("Tries to check the connection with ping, " +
+                "but no Socket Address is given!"));
+
         try (Socket s = new Socket()) {
-            s.connect(address.get(), timeout);
+            s.connect(address, timeout);
+            // TODO keep the adress for a (timely) next request???
+            s.setReuseAddress(true);
             return true;
         } catch (Exception e) {
             LOGGER.debug("Unable to ping PLC", e);
