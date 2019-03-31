@@ -25,6 +25,8 @@ import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 
+import java.net.InetSocketAddress;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -94,9 +96,24 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
         connected = false;
     }
 
+    /**
+     * If a InetSocketAdress is present, it uses the "ping" based default.
+     * Otherwise does the "old" approach to check nettys channel (e.g. serial).
+     */
     @Override
     public boolean isConnected() {
-        return connected && channel.isActive();
+        // Use the "netty default" if no socket adress is present (like serial)
+        if (!getInetSocketAddress().isPresent()) {
+            return connected && channel.isActive();
+        } else {
+            // TODO sr: Should we add a check like previously, if the channel is active?
+            return super.isConnected();
+        }
+    }
+
+    @Override
+    protected Optional<InetSocketAddress> getInetSocketAddress() {
+        return this.channelFactory.getInetSocketAddress();
     }
 
     public Channel getChannel() {

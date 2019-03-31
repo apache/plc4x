@@ -22,9 +22,17 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
+import java.net.InetSocketAddress;
+import java.util.Optional;
+
 public interface ChannelFactory {
 
     Channel createChannel(ChannelHandler channelHandler)
         throws PlcConnectionException;
+
+    /**
+     * If this Channel Facotry creates a Channel which has an ip / port it should return this
+     */
+    Optional<InetSocketAddress> getInetSocketAddress();
 
 }

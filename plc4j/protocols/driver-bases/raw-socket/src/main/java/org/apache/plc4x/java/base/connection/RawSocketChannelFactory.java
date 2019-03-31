@@ -23,6 +23,8 @@ import io.netty.channel.ChannelHandler;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.Optional;
 
 public class RawSocketChannelFactory implements ChannelFactory {
 
@@ -34,6 +36,11 @@ public class RawSocketChannelFactory implements ChannelFactory {
         this.address = address;
         this.port = port;
         this.protocolId = protocolId;
+    }
+
+    @Override
+    public Optional<InetSocketAddress> getInetSocketAddress() {
+        return Optional.of(new InetSocketAddress(address, port));
     }
 
     @Override
