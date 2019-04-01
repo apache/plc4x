@@ -39,12 +39,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class DynamicS7Connection extends DynamicDriverConnectionBase implements PlcReader {
@@ -59,7 +57,6 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase implements 
     private short paramMaxAmqCaller;
     private short paramMaxAmqCallee;
     private String paramControllerType;
-    private int PORT;
 
     public DynamicS7Connection(InetAddress address, int rack, int slot, String params) {
         super("org/apache/plc4x/protocols/s7/protocol.scxml.xml",
@@ -127,11 +124,6 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase implements 
         return "disconnect";
     }
 
-    @Override protected Optional<InetSocketAddress> getInetSocketAddress() {
-        PORT = 102;
-        return Optional.of(new InetSocketAddress(address, PORT));
-    }
-
     @Override
     protected Collection<CustomAction> getAdditionalCustomActions() {
         return Arrays.asList(
@@ -149,7 +141,7 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase implements 
         Map<String, Object> dataItems = new HashMap<>();
 
         dataItems.put("hostname", address.getHostAddress());
-        dataItems.put("port", Integer.toString(PORT));
+        dataItems.put("port", "102");
         dataItems.put("plcType", paramControllerType);
 
         dataItems.put("cotpLocalReference", "15");

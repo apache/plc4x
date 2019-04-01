@@ -80,14 +80,14 @@ public class S7PlcConnectionTests {
     }
 
     @Test
-    public void parse() {
-        final PlcField field = SUT.parse("%DB1.DBX38.1:BOOL");
+    public void prepareField() {
+        final PlcField field = SUT.prepareField("%DB1.DBX38.1:BOOL");
         assertThat(field.getClass(), equalTo(S7Field.class));
         assertThat(((S7Field) field).getDataType(), equalTo(TransportSize.BOOL));
     }
 
     @Test(expected = PlcInvalidFieldException.class)
-    public void parseFails() {
-        SUT.parse("this is a bad field query");
+    public void prepareFieldFails() {
+        SUT.prepareField("this is a bad field query");
     }
 }

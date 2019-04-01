@@ -28,8 +28,6 @@ import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 
-import java.net.InetSocketAddress;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -39,11 +37,6 @@ public class NettyPlcConnectionTest implements WithAssertions {
         @Override
         public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
             return new EmbeddedChannel();
-        }
-
-        @Override
-        public Optional<InetSocketAddress> getInetSocketAddress() {
-            return Optional.empty();
         }
     };
 

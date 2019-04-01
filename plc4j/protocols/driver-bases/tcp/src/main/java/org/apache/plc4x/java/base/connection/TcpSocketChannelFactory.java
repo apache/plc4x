@@ -28,8 +28,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.Optional;
 
 public class TcpSocketChannelFactory implements ChannelFactory {
 
@@ -72,8 +70,4 @@ public class TcpSocketChannelFactory implements ChannelFactory {
         return port;
     }
 
-    @Override
-    public Optional<InetSocketAddress> getInetSocketAddress() {
-        return Optional.of(new InetSocketAddress(address, port));
-    }
 }

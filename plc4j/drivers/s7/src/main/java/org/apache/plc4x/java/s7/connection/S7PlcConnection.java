@@ -25,7 +25,6 @@ import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -204,7 +203,8 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         channel.pipeline().fireUserEventTriggered(new ConnectEvent());
     }
 
-    @Override public PlcField parse(String fieldQuery) throws PlcInvalidFieldException {
+    @Override
+    public PlcField prepareField(String fieldQuery) throws PlcInvalidFieldException {
         return S7Field.of(fieldQuery);
     }
 

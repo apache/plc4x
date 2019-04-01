@@ -22,9 +22,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
 
-import java.net.InetSocketAddress;
-import java.util.Optional;
-
 public class TestChannelFactory implements ChannelFactory {
 
     private EmbeddedChannel channel;
@@ -39,8 +36,4 @@ public class TestChannelFactory implements ChannelFactory {
         return channel;
     }
 
-    @Override
-    public Optional<InetSocketAddress> getInetSocketAddress() {
-        return Optional.empty();
-    }
 }
