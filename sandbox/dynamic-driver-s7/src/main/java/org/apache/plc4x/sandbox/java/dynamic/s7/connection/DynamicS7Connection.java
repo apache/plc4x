@@ -39,10 +39,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class DynamicS7Connection extends DynamicDriverConnectionBase implements PlcReader {
@@ -122,6 +124,10 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase implements 
     @Override
     protected String getDisconnectTransitionName() {
         return "disconnect";
+    }
+
+    @Override protected Optional<InetSocketAddress> getInetSocketAddress() {
+        return Optional.of(new InetSocketAddress(address, 102));
     }
 
     @Override
