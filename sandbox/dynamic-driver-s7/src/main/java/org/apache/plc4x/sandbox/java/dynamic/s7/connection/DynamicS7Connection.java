@@ -59,6 +59,7 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase implements 
     private short paramMaxAmqCaller;
     private short paramMaxAmqCallee;
     private String paramControllerType;
+    private int PORT;
 
     public DynamicS7Connection(InetAddress address, int rack, int slot, String params) {
         super("org/apache/plc4x/protocols/s7/protocol.scxml.xml",
@@ -127,7 +128,8 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase implements 
     }
 
     @Override protected Optional<InetSocketAddress> getInetSocketAddress() {
-        return Optional.of(new InetSocketAddress(address, 102));
+        PORT = 102;
+        return Optional.of(new InetSocketAddress(address, PORT));
     }
 
     @Override
@@ -147,7 +149,7 @@ public class DynamicS7Connection extends DynamicDriverConnectionBase implements 
         Map<String, Object> dataItems = new HashMap<>();
 
         dataItems.put("hostname", address.getHostAddress());
-        dataItems.put("port", "102");
+        dataItems.put("port", Integer.toString(PORT));
         dataItems.put("plcType", paramControllerType);
 
         dataItems.put("cotpLocalReference", "15");
