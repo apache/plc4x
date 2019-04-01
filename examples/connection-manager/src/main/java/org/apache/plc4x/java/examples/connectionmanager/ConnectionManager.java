@@ -49,8 +49,8 @@ public class ConnectionManager implements Runnable {
                     isAlive = true;
                 }
 
-                String host = connection2host(addressString);
-//          boolean ping = ping(host, 102, 1000);
+                // String host = connection2host(addressString);
+                // boolean ping = ping(host, 102, 1000);
                 boolean ping = channelPingCheck(1000, "%M1.2:BOOL");
                 if (!ping) {
                     logger.log(Level.FINEST, "simple check of connection failed");
@@ -63,11 +63,11 @@ public class ConnectionManager implements Runnable {
                 }
             } catch (PlcConnectionException e) {
                 logger.log(Level.WARNING, "error connecting with driver", e);
+            } catch (Exception e) {
+                logger.log(Level.FINEST, "Error in Connection Manager", e);
             }
-
             // wait 1 minute
             sleep(60000);
-
         }
     }
 

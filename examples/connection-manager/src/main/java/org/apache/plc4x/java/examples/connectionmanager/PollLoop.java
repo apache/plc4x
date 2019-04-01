@@ -25,7 +25,7 @@ public class PollLoop {
     public static ConnectionManager connectionManager;
 
     public static void main(String[] args) throws Exception {
-        
+
         Collector collector;
 
         List<String> variables = new ArrayList<>();
@@ -111,6 +111,10 @@ public class PollLoop {
                     // when a timeout occurs we want to stop the loop and start from beginning, 1s has already elapsed
                 } catch (TimeoutException e) {
                     logger.log(Level.SEVERE, "Timeout Exception", e);
+                    incrementalSleep();
+                    continue;
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "Error in collector", e);
                     incrementalSleep();
                     continue;
                 }
