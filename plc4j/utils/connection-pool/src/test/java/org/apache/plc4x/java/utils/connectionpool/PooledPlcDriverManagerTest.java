@@ -299,6 +299,13 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         }
 
         @Override
+        public CompletableFuture<Void> ping() {
+            CompletableFuture<Void> future = new CompletableFuture<>();
+            future.completeExceptionally(new UnsupportedOperationException());
+            return future;
+        }
+
+        @Override
         public boolean isConnected() {
             return connected;
         }
