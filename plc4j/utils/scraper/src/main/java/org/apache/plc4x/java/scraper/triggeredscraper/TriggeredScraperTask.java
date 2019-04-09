@@ -23,8 +23,6 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -32,6 +30,8 @@ import org.apache.plc4x.java.scraper.ResultHandler;
 import org.apache.plc4x.java.scraper.ScraperTask;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.TriggerHandler;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.TriggerHandlerImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +49,8 @@ import java.util.stream.Collectors;
  * ToDo Implement the monitoring as well: PLC4X-90
  */
 public class TriggeredScraperTask implements ScraperTask {
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperTask.class);
 
     private final PlcDriverManager driverManager;
@@ -66,6 +68,7 @@ public class TriggeredScraperTask implements ScraperTask {
     private final DescriptiveStatistics latencyStatistics = new DescriptiveStatistics(1000);
     private final DescriptiveStatistics failedStatistics = new DescriptiveStatistics(1000);
 
+
     public TriggeredScraperTask(PlcDriverManager driverManager,
                                 String jobName,
                                 String connectionAlias,
@@ -74,7 +77,8 @@ public class TriggeredScraperTask implements ScraperTask {
                                 long requestTimeoutMs,
                                 ExecutorService executorService,
                                 ResultHandler resultHandler,
-                                TriggeredScrapeJobImpl triggeredScrapeJob) throws ScraperException {
+                                TriggeredScrapeJobImpl triggeredScrapeJob,
+                                TriggerCollector triggerCollector) throws ScraperException {
         this.driverManager = driverManager;
         this.jobName = jobName;
         this.connectionAlias = connectionAlias;
@@ -83,7 +87,7 @@ public class TriggeredScraperTask implements ScraperTask {
         this.requestTimeoutMs = requestTimeoutMs;
         this.executorService = executorService;
         this.resultHandler = resultHandler;
-        this.triggerHandler = new TriggerHandler(triggeredScrapeJob.getTriggerConfig(),triggeredScrapeJob,this);
+        this.triggerHandler = new TriggerHandlerImpl(triggeredScrapeJob.getTriggerConfig(),triggeredScrapeJob,this,triggerCollector);
     }
 
     @Override
@@ -91,22 +95,24 @@ public class TriggeredScraperTask implements ScraperTask {
     public void run() {
         if(this.triggerHandler.checkTrigger()) {
             // Does a single fetch only when trigger is valid
-            LOGGER.trace("Start new scrape of task of job {} for connection {}", jobName, connectionAlias);
+            LOGGER.info("Trigger for job {} and device {} is met ... scraping desired data",jobName,connectionAlias);
+            if(LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Start new scrape of task of job {} for connection {}", jobName, connectionAlias);
+            }
             requestCounter.incrementAndGet();
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             PlcConnection connection = null;
             try {
-                CompletableFuture<PlcConnection> future = CompletableFuture.supplyAsync(() -> {
-                    try {
-                        return driverManager.getConnection(connectionString);
-                    } catch (PlcConnectionException e) {
-                        LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
-                        throw new PlcRuntimeException(e);
-                    }
-                }, executorService);
-                connection = future.get(10 * requestTimeoutMs, TimeUnit.MILLISECONDS);
-                LOGGER.trace("Connection to {} established: {}", connectionString, connection);
+                String info = "";
+                if(LOGGER.isTraceEnabled()) {
+                    info = String.format("acquiring data collecting connection to (%s,%s)", connectionAlias,jobName);
+                    LOGGER.trace("acquiring data collecting connection to ({},{})", connectionAlias,jobName);
+                }
+                connection = TriggeredScraperImpl.getPlcConnection(driverManager,connectionString,executorService,requestTimeoutMs,info);
+                if(LOGGER.isTraceEnabled()) {
+                    LOGGER.trace("Connection to {} established: {}", connectionString, connection);
+                }
                 PlcReadResponse response;
                 try {
                     PlcReadRequest.Builder builder = connection.readRequestBuilder();
@@ -131,7 +137,7 @@ public class TriggeredScraperTask implements ScraperTask {
                 // Validate response
                 validateResponse(response);
                 // Handle response (Async)
-                CompletableFuture.runAsync(() -> resultHandler.handle(jobName, connectionAlias, transformResponseToMap(response)), executorService);
+                CompletableFuture.runAsync(() -> resultHandler.handle(jobName, connectionAlias, TriggeredScraperImpl.convertPlcResponseToMap(response)), executorService);
             } catch (Exception e) {
                 LOGGER.debug("Exception during scrape", e);
                 handleException(e);
@@ -147,6 +153,11 @@ public class TriggeredScraperTask implements ScraperTask {
         }
     }
 
+    /**
+     * detects if {@link PlcReadResponse} is valid
+     * //ToDo CHECK: is this thing S7 specific? if not this comment can be removed
+     * @param response the {@link PlcReadResponse} that should be validated
+     */
     private void validateResponse(PlcReadResponse response) {
         Map<String, PlcResponseCode> failedFields = response.getFieldNames().stream()
             .filter(name -> !PlcResponseCode.OK.equals(response.getResponseCode(name)))
@@ -159,13 +170,7 @@ public class TriggeredScraperTask implements ScraperTask {
         }
     }
 
-    private Map<String, Object> transformResponseToMap(PlcReadResponse response) {
-        return response.getFieldNames().stream()
-            .collect(Collectors.toMap(
-                name -> name,
-                response::getObject
-            ));
-    }
+
 
     @Override
     public String getJobName() {
@@ -221,5 +226,19 @@ public class TriggeredScraperTask implements ScraperTask {
 
     public long getRequestTimeoutMs() {
         return requestTimeoutMs;
+    }
+
+    @Override
+    public String toString() {
+        return "TriggeredScraperTask{" +
+            "driverManager=" + driverManager +
+            ", jobName='" + jobName + '\'' +
+            ", connectionAlias='" + connectionAlias + '\'' +
+            ", connectionString='" + connectionString + '\'' +
+            ", requestTimeoutMs=" + requestTimeoutMs +
+            ", executorService=" + executorService +
+            ", resultHandler=" + resultHandler +
+            ", triggerHandler=" + triggerHandler +
+            '}';
     }
 }
