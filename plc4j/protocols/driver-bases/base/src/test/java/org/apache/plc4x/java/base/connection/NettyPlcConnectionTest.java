@@ -38,6 +38,12 @@ public class NettyPlcConnectionTest implements WithAssertions {
         public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
             return new EmbeddedChannel();
         }
+
+        @Override
+        public void ping() {
+            // Ignore ...
+        }
+
     };
 
     NettyPlcConnection SUT = new NettyPlcConnection(channelFactory, true) {

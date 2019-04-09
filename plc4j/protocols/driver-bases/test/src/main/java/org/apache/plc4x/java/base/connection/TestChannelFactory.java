@@ -32,6 +32,11 @@ public class TestChannelFactory implements ChannelFactory {
         return channel;
     }
 
+    @Override
+    public void ping() {
+        // Ignore ...
+    }
+
     public EmbeddedChannel getChannel() {
         return channel;
     }

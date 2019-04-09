@@ -21,10 +21,13 @@ package org.apache.plc4x.java.base.connection;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 
 public interface ChannelFactory {
 
     Channel createChannel(ChannelHandler channelHandler)
         throws PlcConnectionException;
+
+    void ping() throws PlcException;
 
 }

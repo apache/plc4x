@@ -23,6 +23,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 
 import java.util.concurrent.CompletableFuture;
@@ -86,6 +87,21 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
         } catch (ExecutionException e) {
             throw new PlcConnectionException(e);
         }
+    }
+
+    @Override
+    public CompletableFuture<Void> ping() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        try {
+            // Relay the actual pinging to the channel factory ...
+            channelFactory.ping();
+            // If we got here, the ping was successful.
+            future.complete(null);
+        } catch(PlcException e) {
+            // If we got here, something went wrong.
+            future.completeExceptionally(e);
+        }
+        return future;
     }
 
     @Override

@@ -59,6 +59,11 @@ public class SerialChannelFactory implements ChannelFactory {
         }
     }
 
+    @Override
+    public void ping() {
+        // TODO: Do some sort of check as soon as we know how ...
+    }
+
     public String getSerialPort() {
         return serialPort;
     }
