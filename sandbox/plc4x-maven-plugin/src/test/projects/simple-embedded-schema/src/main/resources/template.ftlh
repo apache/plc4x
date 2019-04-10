@@ -40,7 +40,26 @@ package ${packageName};
 
 public class ${typeName} {
 
+<#list segments as segment>
+<#if helper.isFieldSegment(segment)>
+    private final ${segment.type.name.name} ${segment.name};
+</#if>
+</#list>
 
+    public ${typeName}(<#list segments as segment><#if helper.isFieldSegment(segment)>${segment.type.name.name} ${segment.name}</#if><#sep>, </#sep></#list>) {
+<#list segments as segment>
+<#if helper.isFieldSegment(segment)>
+        this.${segment.name} = ${segment.name};
+</#if>
+</#list>
+    }
 
+<#list segments as segment>
+<#if helper.isFieldSegment(segment)>
+    public ${segment.type.name.name} get${segment.name?cap_first}() {
+        return ${segment.name};
+    }
 
+</#if>
+</#list>
 }

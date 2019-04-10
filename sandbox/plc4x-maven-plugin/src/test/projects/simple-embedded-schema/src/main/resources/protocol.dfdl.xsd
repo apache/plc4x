@@ -85,8 +85,18 @@
         <xs:restriction base="xs:hexBinary"/>
     </xs:simpleType>
 
+    <xs:simpleType name="hex6Byte" dfdl:lengthUnits="bytes" dfdl:length="6" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
     <xs:simpleType name="ipAddress" dfdl:lengthUnits="bytes" dfdl:length="4" dfdl:lengthKind="explicit">
         <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="string30Chars" dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes"
+                   dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
+                   dfdl:length="30">
+        <xs:restriction base="xs:string"/>
     </xs:simpleType>
 
     <!--
@@ -175,17 +185,10 @@
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
-                        <xs:element name="knxNetIpDeviceSerialNumber" type="xs:hexBinary"
-                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
-                                    dfdl:length="6"/>
+                        <xs:element name="knxNetIpDeviceSerialNumber" type="knx:hex6Byte"/>
                         <xs:element name="knxNetIpDeviceMulticastAddress" type="knx:ipAddress"/>
-                        <xs:element name="knxNetIpDeviceMacAddress" type="xs:hexBinary"
-                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
-                                    dfdl:length="6"/>
-                        <xs:element name="deviceFriendlyName" type="xs:string"
-                                    dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes"
-                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
-                                    dfdl:length="30"/>
+                        <xs:element name="knxNetIpDeviceMacAddress" type="knx:hex6Byte"/>
+                        <xs:element name="deviceFriendlyName" type="knx:string30Chars"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -279,17 +282,10 @@
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
-                        <xs:element name="knxNetIpDeviceSerialNumber" type="xs:hexBinary"
-                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
-                                    dfdl:length="6"/>
+                        <xs:element name="knxNetIpDeviceSerialNumber" type="knx:hex6Byte"/>
                         <xs:element name="knxNetIpDeviceMulticastAddress" type="knx:ipAddress"/>
-                        <xs:element name="knxNetIpDeviceMacAddress" type="xs:hexBinary"
-                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
-                                    dfdl:length="6"/>
-                        <xs:element name="deviceFriendlyName" type="xs:string"
-                                    dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes"
-                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
-                                    dfdl:length="30"/>
+                        <xs:element name="knxNetIpDeviceMacAddress" type="knx:hex6Byte"/>
+                        <xs:element name="deviceFriendlyName" type="knx:string30Chars"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
