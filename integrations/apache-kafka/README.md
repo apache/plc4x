@@ -28,3 +28,31 @@ See `config/source.properties` for example configuration.
 ## Sink Connector
 
 See `config/sink.properties` for example configuration.
+
+## Quickstart
+
+1) Download the latest version of Apache Kafka binaries from here: https://kafka.apache.org/downloads
+2) Unpack the archive.
+3) Copy the target/apache-kafka-0.4.0-SNAPSHOT.jar to the Kafka "libs" directory.
+4) Copy the files in the "config" to Kafka's "configs" directory (maybe inside a "plc4x" subdirectory)
+5) Open 4 console windows and change directory into that directory
+6) Start Zookeeper: 
+        
+        bin/zookeeper-server-start.sh config/zookeeper.properties 
+7) Start Kafka:
+        
+        bin/kafka-server-start.sh config/server.properties
+8) Create the "test" topic:
+        
+        bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test
+9) Start the consumer:
+        
+        bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
+
+**Note:** Not quite sure here ... have to continue working on this ...
+
+10) Start Kafka connect:
+        
+        bin/connect-standalone.sh config/connect-standalone.properties config/plc4x/source.properties
+
+Now watch the console window with the "kafka-console-consumer". 
