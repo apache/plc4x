@@ -38,7 +38,7 @@ The simplest way to submit code changes, is via a GitHub pull-request.
 
 In order to do this first create a GitHub account and sign into you account.
 
-After that's done, please to to our https://github.com/apache/incubator-plc4x[GitHub site] and create a so-called `Fork`.
+After that's done, please to to our https://github.com/apache/plc4x[GitHub site] and create a so-called `Fork`.
 
 image::contributing-github-fork.png[]
 
@@ -46,7 +46,7 @@ What happens now, is that GitHub creates a full copy of the PLC4X repo in your a
 
 Now ideally you check-out your cloned repository:
 
-    git clone https://github.com/{your-user-id}/incubator-plc4x.git
+    git clone https://github.com/{your-user-id}/plc4x.git
 
 Now you have a copy of PLC4X on your computer and you can change whatever you want and as it's your copy, you can even commit these changes without any danger of breaking things.
 
@@ -72,7 +72,7 @@ Usually you will call the second remote `upstream` but in general you can call i
 
 Add the remote on the commandline (or your git gui of choice):
 
-    git remote add upstream https://github.com/apache/incubator-plc4x.git
+    git remote add upstream https://github.com/apache/plc4x.git
 
 If you list all your remotes, with the following command:
 
@@ -80,10 +80,10 @@ If you list all your remotes, with the following command:
 
 It should output something like this:
 
-    origin    https://github.com/{your-user-id}/incubator-plc4x.git (fetch)
-    origin    https://github.com/{your-user-id}/incubator-plc4x.git (push)
-    upstream    https://github.com/apache/incubator-plc4x.git (fetch)
-    upstream    https://github.com/apache/incubator-plc4x.git (push)
+    origin    https://github.com/{your-user-id}/plc4x.git (fetch)
+    origin    https://github.com/{your-user-id}/plc4x.git (push)
+    upstream    https://github.com/apache/plc4x.git (fetch)
+    upstream    https://github.com/apache/plc4x.git (push)
 
 If that's so, you're fine to continue, if not ... well you could ask for assistance on our dev-list.
 

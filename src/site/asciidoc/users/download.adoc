@@ -17,7 +17,7 @@
 
 == Download
 
-Be sure to verify your downloads by these https://www.apache.org/info/verification[procedures] using these https://www.apache.org/dist/incubator/plc4x/KEYS[KEYS] for any Apache release.
+Be sure to verify your downloads by these https://www.apache.org/info/verification[procedures] using these https://www.apache.org/dist/plc4x/KEYS[KEYS] for any Apache release.
 
 === Current Releases
 

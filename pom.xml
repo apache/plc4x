@@ -42,9 +42,9 @@
   <inceptionYear>2017</inceptionYear>
 
   <scm>
-    <connection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</connection>
-    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</developerConnection>
-    <url>https://github.com/apache/incubator-plc4x</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</developerConnection>
+    <url>https://github.com/apache/plc4x</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -52,7 +52,7 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x-website.git</url>
+      <url>scm:git:https://gitbox.apache.org/repos/asf/plc4x-website.git</url>
     </site>
   </distributionManagement>
 
@@ -737,8 +737,6 @@
               <resourceBundles>
                 <!-- Will generate META-INF/{DEPENDENCIES,LICENSE,NOTICE} -->
                 <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
-                <!-- Will generate META-INF/DISCLAIMER  -->
-                <resourceBundle>org.apache:apache-incubator-disclaimer-resource-bundle:1.1</resourceBundle>
               </resourceBundles>
               <!-- Content in this directory will be appended to generated resources -->
               <appendedResourcesDirectory>${basedir}/src/remote-resources</appendedResourcesDirectory>
@@ -976,20 +974,12 @@
           </executions>
         </plugin>
 
-        <!--
-          Inject the "incubating" into the output filename
-          N.B. this finalName config spec is currently ignored/overridden
-          by the "apache-release" profile based configuration
-          in this pom. See that config for the finalName.
-          Retain this for now in case we get to the point where
-          that "apache-release" config is no longer needed.
-        -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>3.1.1</version>
           <configuration>
-            <finalName>apache-plc4x-incubating-${project.version}</finalName>
+            <finalName>apache-plc4x-${project.version}</finalName>
           </configuration>
         </plugin>
 
@@ -1753,7 +1743,7 @@
                 <fileSet>
                   <directory>${project.build.directory}</directory>
                   <includes>
-                    <include>apache-plc4x-incubating-${project.version}-source-release.zip</include>
+                    <include>apache-plc4x-${project.version}-source-release.zip</include>
                   </includes>
                 </fileSet>
               </fileSets>

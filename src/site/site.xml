@@ -38,27 +38,20 @@
     <reflowSkin>
       <localResources>true</localResources>
       <absoluteResourceURL>https://plc4x.apache.org/</absoluteResourceURL>
-      <titleTemplate>Apache PLC4X® (Incubating) - %2$s</titleTemplate>
+      <titleTemplate>Apache PLC4X® - %2$s</titleTemplate>
       <slogan position="bannerLeft">The industrial IoT adapter</slogan>
       <showApacheEvents>true</showApacheEvents>
       <toc>top</toc>
-      <bottomNav maxSpan="6">
-        <!--column>reports</column-->
+      <bottomNav maxSpan="12">
+        <column>reports</column>
         <column>Apache</column>
         <column>modules</column>
         <column>Protocols</column>
       </bottomNav>
       <brand>
-        <name>Apache PLC4X (Incubating)</name>
+        <name>Apache PLC4X</name>
         <href>https://plc4x.apache.org/</href>
       </brand>
-      <bottomDescription>
-        <![CDATA[
-          <p id="bottomNote" style="font-size: 15px">
-          Apache PLC4X is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
-          </p>
-        ]]>
-      </bottomDescription>
       <breadcrumbs>true</breadcrumbs>
       <highlightJs>true</highlightJs>
       <pages>
@@ -74,15 +67,16 @@
   </poweredBy>
 
   <bannerLeft>
-      <name>Apache PLC4X (incubating)</name>
+      <name>Apache PLC4X</name>
       <src>https://plc4x.apache.org/images/apache_plc4x_logo.png</src>
       <href>https://plc4x.apache.org/</href>
   </bannerLeft>
 
   <bannerRight>
-    <name>Apache Incubator</name>
-    <src>https://incubator.apache.org/images/incubator_feather_egg_logo_sm.png</src>
-    <href>http://incubator.apache.org/</href>
+    <name>Apache Software Foundation</name>
+    <src>https://plc4x.apache.org/images/apache_logo.png</src>
+    <!--src>./images/apache_logo.png</src-->
+    <href>http://www.apache.org/</href>
   </bannerRight>
 
   <body>

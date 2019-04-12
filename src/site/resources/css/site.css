@@ -57,7 +57,9 @@ under the License.
 }
 
 #bannerRight > img {
-    width: 400px;
+    margin-top: 20px;
+    margin-left: 120px;
+    margin-bottom: 20px;
 }
 
 #apacheEvents {

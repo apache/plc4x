@@ -117,7 +117,7 @@ Either they are licensed with restrictive licenses such as GPL or they are dual 
 
 The APIs of all drivers usually differs quite greatly from each one another. This makes it extremely difficult to create solutions that work with a variety of PLCs and protocols.
 
-This is where `Apache PLC4X (incubating)` comes in. It is the goal of `PLC4X` to provide a suite of drivers for communicating with industrial PLCs using a variety of protocols, but with a shared API and a license model, that is suitable for creating commercial applications.
+This is where `Apache PLC4X` comes in. It is the goal of `PLC4X` to provide a suite of drivers for communicating with industrial PLCs using a variety of protocols, but with a shared API and a license model, that is suitable for creating commercial applications.
 
 Hereby `PLC4X` forms the missing link between the automation and the open-source world.
 Making it possible to use the entire stack of open-source technologies to create a new generation of open industrial control systems.
