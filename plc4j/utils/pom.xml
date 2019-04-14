@@ -39,6 +39,7 @@
     <module>raw-sockets</module>
     <module>test-utils</module>
     <module>scraper</module>
+    <module>interop</module>
   </modules>
 
 </project>
