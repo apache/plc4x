@@ -29,3 +29,11 @@ Make sure the `bin` directory containing the executable `mingw32-make.exe` is on
 In the `plc4cpp-libs` module all third party dependencies will be built that are needed by any of the other plc4cpp modules.
 The build is setup to install any built binaries to the `libs` directory of the `plc4cpp-libs` module and to only build them if they have previously not been installed there.
 So please refer to that directory in any of the other builds.
+
+## Building PLC4CPP in Visual Studio
+
+1. Open Visual Studio (Tested with 2017 and 2019)
+2. Open Local Directory
+3. Select the `plc4cpp` subdirectory
+4. Wait till the IDE is ready (little icon in the lower left corner)
+5. Build everything by selecting the menu `Build/Build All` (or similar)

@@ -54,5 +54,10 @@ See `config/sink.properties` for example configuration.
 10) Start Kafka connect:
         
         bin/connect-standalone.sh config/connect-standalone.properties config/plc4x/source.properties
-
 Now watch the console window with the "kafka-console-consumer". 
+
+If you want to debug the connector, be sure to set some environment variables before starting Kafka-Connect:
+
+        export KAFKA_DEBUG=y; export DEBUG_SUSPEND_FLAG=y;
+
+In this case the startup will suspend till an IDE is connected via a remote-debugging session.
