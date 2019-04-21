@@ -63,11 +63,15 @@ public class Handler implements InteropServer.Iface {
 
     @Override public void close(ConnectionHandle handle) throws TException {
         LOGGER.debug("Receiving new close request for handle {}", handle.getConnectionId());
+        if (!connections.containsKey(handle)) {
+            LOGGER.warn("Handle for close request {} does not exist. Perhaps already closed?", handle.getConnectionId());
+            return;
+        }
         try {
             connections.get(handle).close();
             connections.remove(handle);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("Unable to close the conn / remove the handle", e);
         }
 
     }
