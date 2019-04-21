@@ -7,6 +7,8 @@ The only thing which needs to be done as _installation_ is to run the `initializ
 
 Then, you are good to go.
 
+Some tests can be found in `test/test_PlcDriverManager.py`.
+
 Here is some example code:
 
 ```python
