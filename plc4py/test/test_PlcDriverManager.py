@@ -56,6 +56,30 @@ class TestPlcDriverManager(TestCase):
         finally:
             manager.close()
 
+    def test_withCompleteAPI(self):
+        try:
+            manager = PlcDriverManager()
+
+            connection = None
+            try:
+                connection = manager.get_connection("mock:a")
+
+                result = connection.execute(Request(fields={"field1": "asdf"}))
+                print("Response Code is " + str(result.get_field("field1").get_response_code()))
+                # We now that we want to get an int...
+                print("Response Value is " + str(result.get_field("field1").get_int_value()))
+
+                ## Assert the value
+                self.assertEqual(result.get_field("field1").get_int_value(), 100)
+
+            except PlcException as e:
+                raise Exception(str(e.url))
+            finally:
+                if connection is not None:
+                    connection.close()
+        finally:
+            manager.close()
+
     # This i a manual test, which needs a running server to work
     def mt_withRealPLC_forDebug(self):
         try:
