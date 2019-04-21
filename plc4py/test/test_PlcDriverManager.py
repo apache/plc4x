@@ -14,7 +14,7 @@ class TestPlcDriverManager(TestCase):
 
     def test_callLib(self):
         try:
-            proc = Popen(["java", "-jar", "../lib/apache-plc4x-incubating-0.4.0-SNAPSHOT-jar-with-dependencies.jar"])
+            proc = Popen(["java", "-jar", "../lib/interop-server.jar"])
             print("Started server under pid " + str(proc.pid))
             time.sleep(5)
             poll = proc.poll()
@@ -56,7 +56,8 @@ class TestPlcDriverManager(TestCase):
         finally:
             manager.close()
 
-    def test_withRealPLC_forDebug(self):
+    # This i a manual test, which needs a running server to work
+    def mt_withRealPLC_forDebug(self):
         try:
             manager = PlcDriverManager(embedded_server=False)
 
@@ -73,7 +74,8 @@ class TestPlcDriverManager(TestCase):
         finally:
             manager.close()
 
-    def test_withRealPLC(self):
+    # This is an integration test, which needs a S7 PLC
+    def it_withRealPLC(self):
         try:
             manager = PlcDriverManager()
 

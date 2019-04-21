@@ -22,11 +22,11 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.4.0-SNAPSHOT</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.apache.plc4x</groupId>-->
-<!--      <artifactId>plc4j-protocol-driver-base-test</artifactId>-->
-<!--      <version>0.4.0-SNAPSHOT</version>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-protocol-driver-base-test</artifactId>
+      <version>0.4.0-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
@@ -57,16 +57,43 @@
 
   <build>
     <plugins>
+
+<!--      &lt;!&ndash; Maven Shade Plugin &ndash;&gt;-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-shade-plugin</artifactId>-->
+<!--        <version>2.3</version>-->
+<!--        <executions>-->
+<!--          &lt;!&ndash; Run shade goal on package phase &ndash;&gt;-->
+<!--          <execution>-->
+<!--            <phase>package</phase>-->
+<!--            <goals>-->
+<!--              <goal>shade</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <transformers>-->
+<!--                &lt;!&ndash; add Main-Class to manifest file &ndash;&gt;-->
+<!--                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+<!--                  <mainClass>org.apache.plc4x.interop.impl.Server</mainClass>-->
+<!--                </transformer>-->
+<!--              </transformers>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
+
       <!-- Create a fat jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.5.3</version>
         <configuration>
           <!-- get all project dependencies -->
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
+<!--          <descriptorRefs>-->
+<!--            <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--            <descriptorRef>metaInf-services</descriptorRef>-->
+<!--          </descriptorRefs>-->
+          <descriptors>src/assembly/assembly.xml</descriptors>
           <!-- MainClass in mainfest make a executable jar -->
           <archive>
             <manifest>
@@ -88,6 +115,5 @@
       </plugin>
     </plugins>
   </build>
-
 
 </project>

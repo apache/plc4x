@@ -21,7 +21,7 @@ class PlcDriverManager:
         if embedded_server:
             self.interop_proc = subprocess.Popen(
                 ["java", "-Dlog4j.configurationFile=../lib/log4j2.xml",
-                 "-jar", "../lib/apache-plc4x-incubating-0.4.0-SNAPSHOT-jar-with-dependencies.jar"])
+                 "-jar", "../lib/interop-server.jar"])
             try:
                 print("Started server under pid " + str(self.interop_proc.pid))
             except:
