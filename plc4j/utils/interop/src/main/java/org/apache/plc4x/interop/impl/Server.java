@@ -10,8 +10,8 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
-import org.apache.plc4x.java.mock.MockDevice;
-import org.apache.plc4x.java.mock.PlcMockConnection;
+//import org.apache.plc4x.java.mock.MockDevice;
+//import org.apache.plc4x.java.mock.PlcMockConnection;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
@@ -26,9 +26,9 @@ public class Server {
         final PlcDriverManager driverManager = new PlcDriverManager();
 
         // Do some mocking
-        final PlcMockConnection mockConnection = (PlcMockConnection) driverManager.getConnection("mock:a");
+//        final PlcMockConnection mockConnection = (PlcMockConnection) driverManager.getConnection("mock:a");
 
-        mockConnection.setDevice(new MyMockDevice());
+//        mockConnection.setDevice(new MyMockDevice());
 
         final Handler handler = new Handler(driverManager);
         final InteropServer.Processor<Handler> processor = new InteropServer.Processor<>(handler);
@@ -44,29 +44,29 @@ public class Server {
         }
     }
 
-    private static class MyMockDevice implements MockDevice {
-        @Override public Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery) {
-            return Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(100L));
-        }
-
-        @Override public PlcResponseCode write(String fieldQuery, Object value) {
-            return null;
-        }
-
-        @Override public Pair<PlcResponseCode, PlcSubscriptionHandle> subscribe(String fieldQuery) {
-            return null;
-        }
-
-        @Override public void unsubscribe() {
-
-        }
-
-        @Override public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-            return null;
-        }
-
-        @Override public void unregister(PlcConsumerRegistration registration) {
-
-        }
-    }
+//    private static class MyMockDevice implements MockDevice {
+//        @Override public Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery) {
+//            return Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(100L));
+//        }
+//
+//        @Override public PlcResponseCode write(String fieldQuery, Object value) {
+//            return null;
+//        }
+//
+//        @Override public Pair<PlcResponseCode, PlcSubscriptionHandle> subscribe(String fieldQuery) {
+//            return null;
+//        }
+//
+//        @Override public void unsubscribe() {
+//
+//        }
+//
+//        @Override public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+//            return null;
+//        }
+//
+//        @Override public void unregister(PlcConsumerRegistration registration) {
+//
+//        }
+//    }
 }
