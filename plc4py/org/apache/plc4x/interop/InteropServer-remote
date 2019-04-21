@@ -13,8 +13,8 @@ from thrift.transport import TSocket
 from thrift.transport import THttpClient
 from thrift.protocol import TBinaryProtocol
 
-import InteropServer
-from ttypes import *
+import org.apache.plc4x.interop.InteropServer
+from org.apache.plc4x.interop.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print ''
