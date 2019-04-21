@@ -3,7 +3,7 @@
 #
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 #
-from pip._vendor.urllib3.connectionpool import xrange
+from urllib3.connectionpool import xrange
 from thrift.Thrift import *
 
 from thrift.transport import TTransport
