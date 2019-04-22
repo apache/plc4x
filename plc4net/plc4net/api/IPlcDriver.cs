@@ -50,7 +50,8 @@ namespace org.apache.plc4net.api
         /// </summary>
         /// <param name="connectionString"></param>
         /// <param name="authentication"></param>
-        /// <returns></returns>
+        /// <returns>Awaitable task returning the <see cref="IPlcConnection"/> to which the connection was established</returns>
+        /// <exception cref="org.apache.plc4net.exceptions.PlcConnectionException">Thrown on connection failure</exception>
         Task<IPlcConnection> ConnectAsync(string connectionString, IPlcAuthentication authentication);
     }
 }
