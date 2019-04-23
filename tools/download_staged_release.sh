@@ -23,8 +23,8 @@ set -e
 
 # Download the collection of files associated with an Apache PLC4X
 # Release or Release Candidate from the Apache Distribution area:
-# https://dist.apache.org/repos/dist/release/incubator/plc4x
-# or https://dist.apache.org/repos/dist/dev/incubator/plc4x
+# https://dist.apache.org/repos/dist/release/plc4x
+# or https://dist.apache.org/repos/dist/dev/plc4x
 # respectively.
 #
 # Prompts before taking actions unless "--nquery"

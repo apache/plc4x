@@ -40,7 +40,7 @@
     <distributionManagement>
         <site>
             <id>apache.website</id>
-            <url>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x-website.git</url>
+            <url>scm:git:https://gitbox.apache.org/repos/asf/plc4x-website.git</url>
         </site>
     </distributionManagement>
 
