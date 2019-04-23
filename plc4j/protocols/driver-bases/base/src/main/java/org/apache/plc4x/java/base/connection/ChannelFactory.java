@@ -21,18 +21,13 @@ package org.apache.plc4x.java.base.connection;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-
-import java.net.InetSocketAddress;
-import java.util.Optional;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 
 public interface ChannelFactory {
 
     Channel createChannel(ChannelHandler channelHandler)
         throws PlcConnectionException;
 
-    /**
-     * If this Channel Facotry creates a Channel which has an ip / port it should return this
-     */
-    Optional<InetSocketAddress> getInetSocketAddress();
+    void ping() throws PlcException;
 
 }

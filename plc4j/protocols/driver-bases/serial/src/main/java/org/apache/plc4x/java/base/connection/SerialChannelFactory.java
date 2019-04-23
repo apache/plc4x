@@ -28,20 +28,12 @@ import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import io.netty.channel.oio.OioEventLoopGroup;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
-import java.net.InetSocketAddress;
-import java.util.Optional;
-
 public class SerialChannelFactory implements ChannelFactory {
 
     private final String serialPort;
 
     public SerialChannelFactory(String serialPort) {
         this.serialPort = serialPort;
-    }
-
-    @Override
-    public Optional<InetSocketAddress> getInetSocketAddress() {
-        return Optional.empty();
     }
 
     @Override
@@ -65,6 +57,11 @@ public class SerialChannelFactory implements ChannelFactory {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException("Error creating channel.", e);
         }
+    }
+
+    @Override
+    public void ping() {
+        // TODO: Do some sort of check as soon as we know how ...
     }
 
     public String getSerialPort() {

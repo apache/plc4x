@@ -23,10 +23,9 @@ import io.netty.channel.ChannelHandler;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 
-import java.net.InetSocketAddress;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -91,29 +90,33 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
     }
 
     @Override
+    public CompletableFuture<Void> ping() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        try {
+            // Relay the actual pinging to the channel factory ...
+            channelFactory.ping();
+            // If we got here, the ping was successful.
+            future.complete(null);
+        } catch(PlcException e) {
+            // If we got here, something went wrong.
+            future.completeExceptionally(e);
+        }
+        return future;
+    }
+
+    @Override
     public void close() throws PlcConnectionException {
         channel = null;
         connected = false;
     }
 
     /**
-     * If a InetSocketAdress is present, it uses the "ping" based default.
-     * Otherwise does the "old" approach to check nettys channel (e.g. serial).
+     * Check if the communication channel is active (channel.isActive()) and the driver for a given protocol
+     * has finished establishing the connection.
      */
     @Override
     public boolean isConnected() {
-        // Use the "netty default" if no socket adress is present (like serial)
-        if (!getInetSocketAddress().isPresent()) {
-            return connected && channel.isActive();
-        } else {
-            // TODO sr: Should we add a check like previously, if the channel is active?
-            return super.isConnected();
-        }
-    }
-
-    @Override
-    protected Optional<InetSocketAddress> getInetSocketAddress() {
-        return this.channelFactory.getInetSocketAddress();
+        return connected && channel.isActive();
     }
 
     public Channel getChannel() {

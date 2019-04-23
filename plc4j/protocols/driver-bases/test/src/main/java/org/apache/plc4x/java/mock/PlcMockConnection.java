@@ -66,6 +66,13 @@ public class PlcMockConnection implements PlcConnection, PlcReader, PlcWriter, P
     }
 
     @Override
+    public CompletableFuture<Void> ping() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        future.completeExceptionally(new UnsupportedOperationException());
+        return future;
+    }
+
+    @Override
     public boolean isConnected() {
         return device != null;
     }

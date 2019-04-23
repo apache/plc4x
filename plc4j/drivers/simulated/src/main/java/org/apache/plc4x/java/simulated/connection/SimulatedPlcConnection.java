@@ -29,7 +29,6 @@ import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.model.*;
 
-import java.net.InetSocketAddress;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -62,12 +61,6 @@ public class SimulatedPlcConnection extends AbstractPlcConnection implements Plc
     @Override
     public boolean isConnected() {
         return connected;
-    }
-
-    @Override
-    protected Optional<InetSocketAddress> getInetSocketAddress() {
-        // IS okay, isConnected is overridden
-        return Optional.empty();
     }
 
     @Override

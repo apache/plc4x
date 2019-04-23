@@ -26,12 +26,15 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Optional;
+import java.net.Socket;
 
 public class TcpSocketChannelFactory implements ChannelFactory {
+
+    private static final int PING_TIMEOUT_MS = 1_000;
 
     private final InetAddress address;
     private final int port;
@@ -64,6 +67,19 @@ public class TcpSocketChannelFactory implements ChannelFactory {
         }
     }
 
+    @Override
+    public void ping() throws PlcException {
+        // TODO: Replace this check with a more accurate one ...
+        InetSocketAddress address = new InetSocketAddress(getAddress(), getPort());
+        try (Socket s = new Socket()) {
+            s.connect(address, PING_TIMEOUT_MS);
+            // TODO keep the address for a (timely) next request???
+            s.setReuseAddress(true);
+        } catch (Exception e) {
+            throw new PlcConnectionException("Unable to ping remote host");
+        }
+    }
+
     public InetAddress getAddress() {
         return address;
     }
@@ -72,8 +88,4 @@ public class TcpSocketChannelFactory implements ChannelFactory {
         return port;
     }
 
-    @Override
-    public Optional<InetSocketAddress> getInetSocketAddress() {
-        return Optional.of(new InetSocketAddress(address, port));
-    }
 }
