@@ -280,16 +280,20 @@ Is back to normal.
         always {
             script {
                 if(env.BRANCH_NAME == "master") {
-                    emailext(
-                        subject: "[COMMIT-TO-MASTER]: A commit to the master branch was made'",
-                        body: """
+                    // Double check if something was really changed as sometimes the
+                    // build just runs without any changes.
+                    if(currentBuild.changeSets.size() > 0) {
+                        emailext(
+                            subject: "[COMMIT-TO-MASTER]: A commit to the master branch was made'",
+                            body: """
 COMMIT-TO-MASTER: A commit to the master branch was made:
 
 Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"
 """,
-                        to: "dev@plc4x.apache.org",
-                        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-                    )
+                            to: "dev@plc4x.apache.org",
+                            recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                        )
+                    }
                 }
             }
         }
