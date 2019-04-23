@@ -15,6 +15,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
+<!--
+
+    This file contains information about the committee/PMC of the project.
+    It should be updated as soon as the PMC or the chair of the project changes.
+    It is referenced from https://svn.apache.org/repos/asf/comdev/projects.apache.org/trunk/data/committees.xml
+
+-->
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:asfext="http://projects.apache.org/ns/asfext#"
          xmlns:foaf="http://xmlns.com/foaf/0.1/"

@@ -16,6 +16,16 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
+<!--
+
+    This file contains information about the project itself.
+    It should be updated as soon as a new language is supported.
+    It also contains the information needed to populate the project
+    categories and languages referenced on the Apache project listing
+    page. It is referenced from here:
+    https://svn.apache.org/repos/asf/comdev/projects.apache.org/trunk/data/projects.xml
+
+-->
 <rdf:RDF xml:lang="en"
          xmlns="http://usefulinc.com/ns/doap#"
          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -31,7 +41,7 @@
       =======================================================================
     -->
 
-    <Project rdf:about="https://plc4x.rdf.apache.org/">
+    <Project rdf:about="https://plc4x.apache.org">
         <name>Apache PLC4X</name>
         <created>2019-04-18</created>
         <license rdf:resource="http://www.apache.org/licenses/LICENSE-2.0"/>
@@ -68,7 +78,7 @@
 
         <release>
             <Version>
-                <name>Latest Legacy 0.3.1 release</name>
+                <name>Latest 0.3.1 release</name>
                 <created>2017-03-13</created>
                 <revision>0.3.1</revision>
             </Version>
