@@ -86,3 +86,7 @@ jqassistant/
 plc4cpp/libs/libs/
 plc4cpp/.idea/
 plc4cpp/cmake-build-debug/
+
+# Exclude temporary python stuff
+plc4py/venv/
+**/__pycache__/**/*
