@@ -91,3 +91,7 @@ plc4cpp/cmake-build-debug/
 **/CMakeSettings.json
 **/.vs/**
 
+# Exclude temporary python stuff
+plc4py/venv/
+**/__pycache__/**/*
+
