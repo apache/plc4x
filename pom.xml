@@ -159,6 +159,9 @@
     <!--module>plc4cpp</module-->
     <module>plc4j</module>
 
+    <!-- Python language binding-->
+    <module>plc4py</module>
+
     <!-- Integration modules for other frameworks -->
     <module>integrations</module>
 
@@ -719,6 +722,11 @@
 
             <!-- CLion stuff (C++ IDE) -->
             <exclude>**/cmake-build-debug/**</exclude>
+
+            <!-- Temporarily exclude generated code from interop servers thrift-->
+            <exclude>**/gen-csharp/**</exclude>
+            <exclude>**/gen-java/**</exclude>
+            <exclude>**/gen-py/**</exclude>
           </excludes>
         </configuration>
       </plugin>
