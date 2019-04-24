@@ -28,6 +28,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>interop-server</artifactId>
+  <name>PLC4J: Utils: Interop-Server</name>
 
   <dependencies>
     <dependency>
@@ -75,6 +76,48 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.4.1</version>
+        <executions>
+          <execution>
+            <id>get-fontawesome</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.thrift.tools</groupId>
+        <artifactId>maven-thrift-plugin</artifactId>
+        <version>0.1.11</version>
+        <configuration>
+          <thriftExecutable>/usr/local/bin/thrift</thriftExecutable>
+          <thriftSourceRoot>src/main/thrift</thriftSourceRoot>
+          <includes>
+            <include>interop.thrift</include>
+          </includes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>thrift-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
 <!--      &lt;!&ndash; Maven Shade Plugin &ndash;&gt;-->
 <!--      <plugin>-->
