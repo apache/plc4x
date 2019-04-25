@@ -34,3 +34,17 @@ Then update `Bison`:
     brew link bison --force
 
 # Windows
+
+Some tools need to be installed before being able to build on Windows:
+
+- WinBuilds
+- Bison
+- Flex
+
+He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
+
+For Bison, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
+
+Please download the Flex compiler from here: http://gnuwin32.sourceforge.net/packages/flex.htm (Ideally download the binary zip distribution)  
+
+Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH`.
