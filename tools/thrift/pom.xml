@@ -127,22 +127,32 @@
             </executions>
           </plugin>
 
+          <!--
+            It turns out the gradle version used by the thrift build has problems detecting Java versions above 10
+            So we manually patch the gradle-wrapper properties to use a newer version.
+
+            However it seems as if this version too has problems with Java 12 which we currently have no solution for.
+          -->
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-patch-plugin</artifactId>
-            <version>1.2</version>
+            <groupId>com.google.code.maven-replacer-plugin</groupId>
+            <artifactId>replacer</artifactId>
+            <version>1.5.3</version>
             <executions>
               <execution>
                 <id>patch-gradle-version</id>
                 <phase>process-sources</phase>
                 <goals>
-                  <goal>apply</goal>
+                  <goal>replace</goal>
                 </goals>
                 <configuration>
-                  <targetDirectory>${project.build.directory}/thrift-${thrift.version}</targetDirectory>
-                  <patches>
-                    <patch>update-gradle-wrapper.patch</patch>
-                  </patches>
+                  <file>${project.build.directory}/thrift-${thrift.version}/lib/java/gradle/wrapper/gradle-wrapper.properties</file>
+                  <regex>false</regex>
+                  <replacements>
+                    <replacement>
+                      <token>distributionUrl=https\://services.gradle.org/distributions/gradle-4.4.1-bin.zip</token>
+                      <value>distributionUrl=https\://services.gradle.org/distributions/gradle-5.4-bin.zip</value>
+                    </replacement>
+                  </replacements>
                 </configuration>
               </execution>
             </executions>
