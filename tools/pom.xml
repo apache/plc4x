@@ -39,14 +39,7 @@
 
   <build>
     <plugins>
-      <!-- We don't want to install or deploy anything in this module -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
+      <!-- We don't want to deploy anything in this module -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>

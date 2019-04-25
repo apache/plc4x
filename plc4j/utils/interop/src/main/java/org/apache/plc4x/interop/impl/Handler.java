@@ -21,13 +21,7 @@ package org.apache.plc4x.interop.impl;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.interop.ConnectionHandle;
-import org.apache.plc4x.interop.FieldResponse;
-import org.apache.plc4x.interop.InteropServer;
-import org.apache.plc4x.interop.PlcException;
-import org.apache.plc4x.interop.RESPONSE_CODE;
-import org.apache.plc4x.interop.Request;
-import org.apache.plc4x.interop.Response;
+import org.apache.plc4x.interop.*;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -61,7 +55,7 @@ public class Handler implements InteropServer.Iface {
     }
 
 
-    @Override public ConnectionHandle connect(String connectionString) throws PlcException, TException {
+    @Override public ConnectionHandle connect(String connectionString) throws TException {
         LOGGER.debug("Receiving new connect request to '{}'", connectionString);
         try {
             long id = connectionCounter.getAndIncrement();
@@ -96,7 +90,7 @@ public class Handler implements InteropServer.Iface {
     }
 
 
-    @Override public Response execute(ConnectionHandle handle, Request request) throws PlcException, TException {
+    @Override public Response execute(ConnectionHandle handle, Request request) throws TException {
         LOGGER.debug("Executing " + request);
         if (request.getFields() == null) {
             throw new PlcException(
