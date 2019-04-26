@@ -109,6 +109,37 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Create a fat jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.5.3</version>
+        <configuration>
+          <!-- get all project dependencies -->
+          <!--          <descriptorRefs>-->
+          <!--            <descriptorRef>jar-with-dependencies</descriptorRef>-->
+          <!--            <descriptorRef>metaInf-services</descriptorRef>-->
+          <!--          </descriptorRefs>-->
+          <descriptors>src/assembly/assembly.xml</descriptors>
+          <!-- MainClass in mainfest make a executable jar -->
+          <archive>
+            <manifest>
+              <mainClass>org.apache.plc4x.interop.impl.Server</mainClass>
+            </manifest>
+          </archive>
+
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <!-- bind to the packaging phase -->
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 

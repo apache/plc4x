@@ -43,6 +43,7 @@ class TestPlcDriverManager(TestCase):
             print("Unable to start proces")
         finally:
             proc.terminate()
+            time.sleep(1)
 
     def test_startAndStopServer(self):
         try:
@@ -59,6 +60,7 @@ class TestPlcDriverManager(TestCase):
             client.close(connection)
         finally:
             manager.close()
+            time.sleep(1)
 
     def test_withPlcConnection(self):
         try:
@@ -72,6 +74,7 @@ class TestPlcDriverManager(TestCase):
                 connection.close()
         finally:
             manager.close()
+            time.sleep(1)
 
     def test_withCompleteAPI(self):
         try:
@@ -96,6 +99,7 @@ class TestPlcDriverManager(TestCase):
                     connection.close()
         finally:
             manager.close()
+            time.sleep(1)
 
     # This i a manual test, which needs a running server to work
     def mt_withRealPLC_forDebug(self):
