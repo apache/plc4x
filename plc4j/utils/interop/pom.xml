@@ -54,6 +54,16 @@
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/protocol-spec</outputDirectory>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-tools-thrift</artifactId>
+                  <version>0.4.0-SNAPSHOT</version>
+                  <type>zip</type>
+                  <classifier>compiler-${os.classifier}</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/thrift-compiler</outputDirectory>
+                  <destFileName>${thrift.compiler.executable}</destFileName>
+                </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
@@ -79,7 +89,7 @@
         <artifactId>maven-thrift-plugin</artifactId>
         <version>0.1.11</version>
         <configuration>
-          <thriftExecutable>${project.basedir}/../../../tools/thrift/target/make/compiler/cpp/bin/thrift</thriftExecutable>
+          <thriftExecutable>${project.build.directory}/thrift-compiler/plc4x-tools-thrift/${thrift.compiler.executable}</thriftExecutable>
           <generator>java</generator>
         </configuration>
         <executions>
@@ -136,15 +146,6 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
       <version>0.4.0-SNAPSHOT</version>
-    </dependency>
-
-    <!-- Make sure this is built before this module -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-tools-thrift</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-      <type>pom</type>
-      <optional>true</optional>
     </dependency>
   </dependencies>
 

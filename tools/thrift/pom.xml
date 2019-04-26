@@ -89,12 +89,59 @@
       <properties>
         <thrift.with.cpp>ON</thrift.with.cpp>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.1</version>
+            <executions>
+              <execution>
+                <id>package-thrift-compiler</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.artifactId}</finalName>
+                  <descriptors>
+                    <descriptor>src/assembly/cpp.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
+
     <profile>
       <id>with-python</id>
       <properties>
         <thrift.with.python>ON</thrift.with.python>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.1</version>
+            <executions>
+              <execution>
+                <id>package-thrift-compiler</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.artifactId}</finalName>
+                  <descriptors>
+                    <descriptor>src/assembly/python.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
     <profile>
@@ -172,7 +219,7 @@
                 </goals>
                 <configuration>
                   <sourcePath>${project.build.directory}/thrift-${thrift.version}</sourcePath>
-                  <targetPath>${project.build.directory}/make</targetPath>
+                  <targetPath>${project.build.directory}/build</targetPath>
                   <generator>${cmake.generator}</generator>
                   <!--
                     The classifier of the current platform. One of
@@ -184,7 +231,8 @@
                     <!-- Disable testing for now -->
                     <option>-DBUILD_TESTING=OFF</option>
                     <option>-DBUILD_CPP=${thrift.with.cpp}</option>
-                    <option>-DBUILD_JAVA=ON</option>
+                    <!-- Don't build Java, as the libs are available via Maven -->
+                    <option>-DBUILD_JAVA=OFF</option>
                     <option>-DBUILD_PYTHON=${thrift.with.python}</option>
                     <option>-DBUILD_HASKELL=OFF</option>
                   </options>
@@ -203,8 +251,29 @@
                 </goals>
                 <configuration>
                   <!-- The directory where the "generate" step generated the build configuration -->
-                  <projectDirectory>${project.build.directory}/make</projectDirectory>
+                  <projectDirectory>${project.build.directory}/build</projectDirectory>
                   <classifier>${os.classifier}</classifier>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Add the thrift compiler executable to the build -->
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.1</version>
+            <executions>
+              <execution>
+                <id>package-thrift-compiler</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.artifactId}</finalName>
+                  <descriptors>
+                    <descriptor>src/assembly/compiler.xml</descriptor>
+                  </descriptors>
                 </configuration>
               </execution>
             </executions>
