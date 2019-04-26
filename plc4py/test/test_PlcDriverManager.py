@@ -21,7 +21,7 @@ from subprocess import Popen
 from unittest import TestCase
 
 from org.apache.plc4x.PlcDriverManager import PlcDriverManager
-from org.apache.plc4x.interop.InteropServer import Client, Request, PlcException
+from generated.org.apache.plc4x.interop.InteropServer import Client, Request, PlcException
 
 if __name__ == '__main__':
     unittest.main()

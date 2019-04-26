@@ -15,7 +15,7 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
-from org.apache.plc4x.interop.ttypes import PlcException, FieldResponse
+from generated.org.apache.plc4x.interop.ttypes import PlcException, FieldResponse
 
 
 class PlcConnection:

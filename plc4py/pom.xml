@@ -35,16 +35,70 @@
 
   <build>
     <plugins>
+      <!-- Unpack the protocol spec -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>unpack-protocol-spec</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-proxy</artifactId>
+                  <version>0.4.0-SNAPSHOT</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/protocol-spec</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-tools-thrift</artifactId>
+                  <version>0.4.0-SNAPSHOT</version>
+                  <type>zip</type>
+                  <classifier>compiler-${os.classifier}</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/thrift-compiler</outputDirectory>
+                  <destFileName>${thrift.compiler.executable}</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-dependencies</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <usedDependencies combine.children="append">
+                <usedDependency>org.apache.plc4x:plc4x-tools-thrift</usedDependency>
+                <usedDependency>javax.annotation:jsr250-api</usedDependency>
+              </usedDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.thrift.tools</groupId>
         <artifactId>maven-thrift-plugin</artifactId>
         <version>0.1.11</version>
         <configuration>
-          <thriftExecutable>/usr/local/bin/thrift</thriftExecutable>
+          <thriftExecutable>${project.build.directory}/thrift-compiler/plc4x-tools-thrift/${thrift.compiler.executable}</thriftExecutable>
           <thriftSourceRoot>${project.basedir}/../plc4j/utils/interop/src/main/thrift</thriftSourceRoot>
+          <outputDirectory>${basedir}/generated/</outputDirectory>
           <includes>
             <include>interop.thrift</include>
           </includes>
+          <generator>py</generator>
         </configuration>
         <executions>
           <execution>

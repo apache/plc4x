@@ -19,8 +19,8 @@ from thrift.protocol import TBinaryProtocol
 from thrift.transport import TSocket, TTransport
 from thrift.transport.TTransport import TTransportException
 
-from org.apache.plc4x.interop.InteropServer import Client, PlcException
-from org.apache.plc4x.interop.ttypes import Request
+from generated.org.apache.plc4x.interop.InteropServer import Client, PlcException
+from generated.org.apache.plc4x.interop.ttypes import Request
 
 transport = TSocket.TSocket('localhost', 9090)
 transport = TTransport.TBufferedTransport(transport)

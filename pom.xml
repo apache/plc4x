@@ -736,6 +736,9 @@
             <exclude>**/gen-csharp/**</exclude>
             <exclude>**/gen-java/**</exclude>
             <exclude>**/gen-py/**</exclude>
+
+            <!-- Temporary Python virtualenv files-->
+            <exclude>**/venv/**</exclude>
           </excludes>
         </configuration>
       </plugin>
