@@ -26,6 +26,9 @@
     <format>zip</format>
   </formats>
 
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+
   <fileSets>
     <fileSet>
       <directory>${project.build.directory}/build/compiler/cpp/bin</directory>

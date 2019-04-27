@@ -20,7 +20,7 @@
 
 On a clean Ubuntu 18.04 the following software needs to be installed:
 
-    sudo apt install bison flex
+    sudo apt install bison flex python-dev
          
 # MAC
 

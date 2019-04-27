@@ -89,7 +89,7 @@
         <artifactId>maven-thrift-plugin</artifactId>
         <version>0.1.11</version>
         <configuration>
-          <thriftExecutable>${project.build.directory}/thrift-compiler/plc4x-tools-thrift/${thrift.compiler.executable}</thriftExecutable>
+          <thriftExecutable>${project.build.directory}/thrift-compiler/${thrift.compiler.executable}</thriftExecutable>
           <generator>java</generator>
         </configuration>
         <executions>

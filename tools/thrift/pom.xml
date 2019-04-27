@@ -39,14 +39,12 @@
   </properties>
 
   <dependencies>
-    <!-- Ensure Boost is built first -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-tools-boost</artifactId>
       <version>0.4.0-SNAPSHOT</version>
-      <type>pom</type>
-      <scope>provided</scope>
-      <optional>true</optional>
+      <type>zip</type>
+      <classifier>cpp-${os.classifier}</classifier>
     </dependency>
   </dependencies>
 
@@ -96,13 +94,13 @@
             <version>3.1.1</version>
             <executions>
               <execution>
-                <id>package-thrift-compiler</id>
+                <id>package-thrift-cpp</id>
                 <phase>package</phase>
                 <goals>
                   <goal>single</goal>
                 </goals>
                 <configuration>
-                  <finalName>${project.artifactId}</finalName>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
                   <descriptors>
                     <descriptor>src/assembly/cpp.xml</descriptor>
                   </descriptors>
@@ -126,13 +124,13 @@
             <version>3.1.1</version>
             <executions>
               <execution>
-                <id>package-thrift-compiler</id>
+                <id>package-thrift-python</id>
                 <phase>package</phase>
                 <goals>
                   <goal>single</goal>
                 </goals>
                 <configuration>
-                  <finalName>${project.artifactId}</finalName>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
                   <descriptors>
                     <descriptor>src/assembly/python.xml</descriptor>
                   </descriptors>
@@ -174,32 +172,20 @@
             </executions>
           </plugin>
 
-          <!--
-            It turns out the gradle version used by the thrift build has problems detecting Java versions above 10
-            So we manually patch the gradle-wrapper properties to use a newer version.
-
-            However it seems as if this version too has problems with Java 12 which we currently have no solution for.
-          -->
+          <!-- Get the dependencies and unpack them to the target/dependencies folder -->
           <plugin>
-            <groupId>com.google.code.maven-replacer-plugin</groupId>
-            <artifactId>replacer</artifactId>
-            <version>1.5.3</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.1.1</version>
             <executions>
               <execution>
-                <id>patch-gradle-version</id>
-                <phase>process-sources</phase>
+                <id>unpack-protocol-spec</id>
+                <phase>generate-sources</phase>
                 <goals>
-                  <goal>replace</goal>
+                  <goal>unpack-dependencies</goal>
                 </goals>
                 <configuration>
-                  <file>${project.build.directory}/thrift-${thrift.version}/lib/java/gradle/wrapper/gradle-wrapper.properties</file>
-                  <regex>false</regex>
-                  <replacements>
-                    <replacement>
-                      <token>distributionUrl=https\://services.gradle.org/distributions/gradle-4.4.1-bin.zip</token>
-                      <value>distributionUrl=https\://services.gradle.org/distributions/gradle-5.4-bin.zip</value>
-                    </replacement>
-                  </replacements>
+                  <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
                 </configuration>
               </execution>
             </executions>
@@ -230,6 +216,7 @@
                   <options>
                     <!-- Disable testing for now -->
                     <option>-DBUILD_TESTING=OFF</option>
+                    <option>-DBUILD_C_GLIB=OFF</option>
                     <option>-DBUILD_CPP=${thrift.with.cpp}</option>
                     <!-- Don't build Java, as the libs are available via Maven -->
                     <option>-DBUILD_JAVA=OFF</option>
@@ -237,7 +224,7 @@
                     <option>-DBUILD_HASKELL=OFF</option>
                   </options>
                   <environmentVariables>
-                    <BOOST_ROOT>${project.basedir}/../boost/bin/boost</BOOST_ROOT>
+                    <BOOST_ROOT>${project.build.directory}/dependencies</BOOST_ROOT>
                     <OPENSSL_ROOT_DIR>/usr/local/opt/openssl/include</OPENSSL_ROOT_DIR>
                   </environmentVariables>
                 </configuration>
@@ -264,13 +251,19 @@
             <version>3.1.1</version>
             <executions>
               <execution>
+                <id>source-release-assembly</id>
+                <configuration>
+                  <skip>true</skip>
+                </configuration>
+              </execution>
+              <execution>
                 <id>package-thrift-compiler</id>
                 <phase>package</phase>
                 <goals>
                   <goal>single</goal>
                 </goals>
                 <configuration>
-                  <finalName>${project.artifactId}</finalName>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
                   <descriptors>
                     <descriptor>src/assembly/compiler.xml</descriptor>
                   </descriptors>
