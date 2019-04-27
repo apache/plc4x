@@ -732,10 +732,8 @@
             <!-- CLion stuff (C++ IDE) -->
             <exclude>**/cmake-build-debug/**</exclude>
 
-            <!-- Temporarily exclude generated code from interop servers thrift-->
-            <exclude>**/gen-csharp/**</exclude>
-            <exclude>**/gen-java/**</exclude>
-            <exclude>**/gen-py/**</exclude>
+            <!-- Temporarily exclude generated code from thrift in python modules -->
+            <exclude>generated/**</exclude>
 
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
@@ -747,13 +745,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>1.6.0</version>
         <executions>
           <execution>
             <id>process-resource-bundles</id>
+            <phase>prepare-package</phase>
             <goals>
               <goal>process</goal>
             </goals>
             <configuration>
+              <!-- TODO: For some reason the build seems to fail in conjunction with the dependency-plugin unpack goal, if enabled -->
+              <skip>true</skip>
               <resourceBundles>
                 <!-- Will generate META-INF/{DEPENDENCIES,LICENSE,NOTICE} -->
                 <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
@@ -1405,7 +1407,7 @@
                     <requireJavaVersion>
                       <version>1.8.0</version>
                     </requireJavaVersion>
-                    <reactorModuleConvergence/>
+                    <!--reactorModuleConvergence/-->
                   </rules>
                 </configuration>
               </execution>

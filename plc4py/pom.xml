@@ -92,11 +92,11 @@
         <artifactId>maven-thrift-plugin</artifactId>
         <version>0.1.11</version>
         <configuration>
-          <thriftExecutable>${project.build.directory}/thrift-compiler/plc4x-tools-thrift/${thrift.compiler.executable}</thriftExecutable>
-          <thriftSourceRoot>${project.basedir}/../plc4j/utils/interop/src/main/thrift</thriftSourceRoot>
+          <thriftExecutable>${project.build.directory}/thrift-compiler/${thrift.compiler.executable}</thriftExecutable>
+          <thriftSourceRoot>${project.build.directory}/protocol-spec</thriftSourceRoot>
           <outputDirectory>${basedir}/generated/</outputDirectory>
           <includes>
-            <include>interop.thrift</include>
+            <include>**/interop.thrift</include>
           </includes>
           <generator>py</generator>
         </configuration>
@@ -109,6 +109,14 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
     </plugins>
   </build>
