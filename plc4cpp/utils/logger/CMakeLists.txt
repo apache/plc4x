@@ -22,12 +22,17 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
-
+add_library(plc4cpp-utils-logger 
+		src/main/cpp/org/apache/plc4x/cpp/utils/logger/BLogger.cpp
+        src/main/cpp/org/apache/plc4x/cpp/utils/logger/DatDmp.cpp
+		src/main/cpp/org/apache/plc4x/cpp/utils/logger/DbgTrace.cpp
+		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ErrorCategory.cpp
+		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ErrorInfoException.cpp
+		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ExLog.cpp
+        )
 
 #[[
-    Build all the modules of PLC4Cpp
+    Import the headers for boost and the plc4cpp-utils module
 ]]
-add_subdirectory(api)
-add_subdirectory(protocols/driver-bases/base)
-add_subdirectory(utils/logger)
+target_include_directories (plc4cpp-utils-logger PUBLIC ../../libs/libs/boost/include)
+target_include_directories (plc4cpp-utils-logger PUBLIC ../../api/src/main/cpp)
