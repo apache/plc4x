@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -17,28 +16,29 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+  <id>cpp-${os.classifier}</id>
 
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
-  </parent>
+  <formats>
+    <format>zip</format>
+  </formats>
 
-  <artifactId>plc4x-tools</artifactId>
-  <packaging>pom</packaging>
+  <includeBaseDirectory>false</includeBaseDirectory>
 
-  <name>Tools</name>
-
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <module>thrift</module>
-      </modules>
-    </profile>
-  </profiles>
-
-</project>
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/install</directory>
+      <includes>
+        <!--include>**/*.hpp</include>
+        <include>**/*.a</include>
+        <include>**/*.dylib</include>
+        <include>**/*.so*</include-->
+        <include>**</include>
+      </includes>
+      <outputDirectory/>
+    </fileSet>
+  </fileSets>
+</assembly>

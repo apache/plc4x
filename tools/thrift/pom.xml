@@ -38,16 +38,6 @@
     <thrift.with.python>OFF</thrift.with.python>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-tools-boost</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-      <type>zip</type>
-      <classifier>cpp-${os.classifier}</classifier>
-    </dependency>
-  </dependencies>
-
   <!--
     Project for building platform dependent versions of the base-libs used by the plc4cpp modules.
     As building these libraries usually takes quite a lot of time, they are being built in the
@@ -172,25 +162,6 @@
             </executions>
           </plugin>
 
-          <!-- Get the dependencies and unpack them to the target/dependencies folder -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.1.1</version>
-            <executions>
-              <execution>
-                <id>unpack-protocol-spec</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>unpack-dependencies</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
           <plugin>
             <groupId>com.googlecode.cmake-maven-project</groupId>
             <artifactId>cmake-maven-plugin</artifactId>
@@ -199,7 +170,7 @@
               <!-- Uses a CMake generator to generate the build using the build tool of choice -->
               <execution>
                 <id>cmake-generate</id>
-                <phase>generate-resources</phase>
+                <phase>process-sources</phase>
                 <goals>
                   <goal>generate</goal>
                 </goals>
@@ -223,10 +194,6 @@
                     <option>-DBUILD_PYTHON=${thrift.with.python}</option>
                     <option>-DBUILD_HASKELL=OFF</option>
                   </options>
-                  <environmentVariables>
-                    <BOOST_ROOT>${project.build.directory}/dependencies</BOOST_ROOT>
-                    <OPENSSL_ROOT_DIR>/usr/local/opt/openssl/include</OPENSSL_ROOT_DIR>
-                  </environmentVariables>
                 </configuration>
               </execution>
               <!-- Actually executes the build -->

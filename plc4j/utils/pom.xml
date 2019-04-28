@@ -35,11 +35,19 @@
 
   <modules>
     <module>connection-pool</module>
-    <module>interop</module>
     <module>opm</module>
     <module>raw-sockets</module>
     <module>test-utils</module>
     <module>scraper</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>with-proxies</id>
+      <modules>
+        <module>interop</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

@@ -99,8 +99,8 @@
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
     <bouncycastle.version>1.60</bouncycastle.version>
-    <boost.version>1.69.0</boost.version>
-    <boost.version.underline-short>1_69</boost.version.underline-short>
+    <boost.version>1.70.0</boost.version>
+    <boost.version.underline-short>1_70</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
     <commons-codec.version>1.11</commons-codec.version>
@@ -135,7 +135,7 @@
     <lucene.version>7.4.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.24.5</mockito.version>
-    <netty.version>4.1.33.Final</netty.version>
+    <netty.version>4.1.35.Final</netty.version>
     <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
     <owasp-dependency-check.version>5.0.0-M1</owasp-dependency-check.version>
     <pcap4j.version>1.7.3</pcap4j.version>
@@ -1264,7 +1264,6 @@
       <properties>
         <os.suffix>linux</os.suffix>
         <os.classifier>linux-x86_64</os.classifier>
-        <python.os.classifier>linux-x86_64-2.7</python.os.classifier>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
@@ -1286,7 +1285,6 @@
       <properties>
         <os.suffix>mac</os.suffix>
         <os.classifier>mac-x86_64</os.classifier>
-        <python.os.classifier>macosx-10.14-x86_64-2.7</python.os.classifier>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
@@ -1308,7 +1306,6 @@
       <properties>
         <os.suffix>win</os.suffix>
         <os.classifier>windows-x86_64</os.classifier>
-        <python.os.classifier>macosx-10.14-x86_64-2.7</python.os.classifier>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
         <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>

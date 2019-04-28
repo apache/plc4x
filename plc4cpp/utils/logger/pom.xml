@@ -27,11 +27,9 @@
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4cpp-api</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4cpp-utils-logger</artifactId>
 
-  <name>PLC4Cpp: API</name>
-  <description>Central API Module.</description>
+  <name>PLC4Cpp: Utils: Logger</name>
 
   <build>
     <!-- This is probably not required, however it helps IntelliJ detect the files as sources -->
@@ -114,7 +112,7 @@
         <version>3.1.1</version>
         <executions>
           <execution>
-            <id>package-cpp</id>
+            <id>package-thrift-cpp</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
@@ -134,7 +132,14 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4cpp-libs-boost</artifactId>
+      <artifactId>plc4cpp-api</artifactId>
+      <version>0.4.0-SNAPSHOT</version>
+      <type>zip</type>
+      <classifier>cpp-${os.classifier}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-tools-boost</artifactId>
       <version>0.4.0-SNAPSHOT</version>
       <type>zip</type>
       <classifier>cpp-${os.classifier}</classifier>

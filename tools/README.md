@@ -40,11 +40,16 @@ Some tools need to be installed before being able to build on Windows:
 - WinBuilds
 - Bison
 - Flex
+- Python 2.7
 
 He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
 
 For Bison, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
+It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form here: http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip
+(More infos on this issue here: https://sourceforge.net/p/gnuwin32/bugs/473/)
 
 Please download the Flex compiler from here: http://gnuwin32.sourceforge.net/packages/flex.htm (Ideally download the binary zip distribution)  
+
+You can get Python from here: https://www.python.org/downloads/release/python-2716/
 
 Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH`.

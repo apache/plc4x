@@ -34,5 +34,4 @@ add_library(plc4cpp-utils-logger
 #[[
     Import the headers for boost and the plc4cpp-utils module
 ]]
-target_include_directories (plc4cpp-utils-logger PUBLIC ../../libs/libs/boost/include)
-target_include_directories (plc4cpp-utils-logger PUBLIC ../../api/src/main/cpp)
+target_include_directories (plc4cpp-utils-logger PUBLIC target/dependencies/include)

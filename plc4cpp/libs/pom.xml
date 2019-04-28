@@ -23,33 +23,18 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4cpp</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4x-protocols</artifactId>
+  <artifactId>plc4cpp-libs</artifactId>
   <packaging>pom</packaging>
 
-  <name>Protocols</name>
-  <description>Base protocol specifications.</description>
+  <name>PLC4Cpp: Libs</name>
+  <description>Wrapper project for PLC4Cpp third party libs.</description>
 
   <modules>
-    <!-- DFDL and SCXML based protocols -->
-    <module>knxnet-ip</module>
-    <module>s7</module>
-
-    <!-- Stuff for testing -->
-    <module>test-utils</module>
+    <module>boost</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <!-- Thrift based protocols -->
-        <module>proxy</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

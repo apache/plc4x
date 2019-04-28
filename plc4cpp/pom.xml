@@ -36,6 +36,10 @@
   <modules>
     <module>api</module>
     <module>protocols</module>
+    <module>utils</module>
+
+    <!-- Third party libs -->
+    <module>libs</module>
   </modules>
 
   <build>

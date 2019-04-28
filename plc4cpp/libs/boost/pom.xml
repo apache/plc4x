@@ -23,15 +23,37 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-tools</artifactId>
+    <artifactId>plc4cpp-libs</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4x-tools-boost</artifactId>
+  <artifactId>plc4cpp-libs-boost</artifactId>
   <packaging>pom</packaging>
 
-  <name>Tools: Boost</name>
+  <name>PLC4Cpp: Libs: Boost</name>
   <description>Build the boost library.</description>
+
+  <properties>
+    <assembly.file>cpp.xml</assembly.file>
+  </properties>
+
+  <!--
+    The boost build for windows adds a strange additional directory,
+    so we need to use a special assembly to package this.
+  -->
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <assembly.file>cpp-windows.xml</assembly.file>
+      </properties>
+    </profile>
+  </profiles>
 
   <!--
     Project for building platform dependent versions of the base-libs used by the plc4cpp modules.
@@ -50,7 +72,7 @@
         <executions>
           <execution>
             <id>get-boost</id>
-            <phase>validate</phase>
+            <phase>generate-sources</phase>
             <goals>
               <goal>wget</goal>
             </goals>
@@ -74,8 +96,8 @@
         <version>1.6.0</version>
         <executions>
           <execution>
-            <id>bootstrap-boost</id>
-            <phase>validate</phase>
+            <id>bootstrap</id>
+            <phase>process-sources</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -88,8 +110,8 @@
             </configuration>
           </execution>
           <execution>
-            <id>build-boost</id>
-            <phase>validate</phase>
+            <id>compile</id>
+            <phase>compile</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -100,14 +122,8 @@
                 <argument>install</argument>
                 <!-- Tell it where to install the libraries and header files -->
                 <argument>--prefix=${project.build.directory}/install</argument>
-                <!-- Build only the modules we need (speeds up build-time drastically) -->
-                <!-- Currently the plc4cpp needs only "system", but thrift needs the rest -->
-                <argument>--with-chrono</argument>
-                <argument>--with-filesystem</argument>
-                <argument>--with-program_options</argument>
+                <!-- List of modules to build (Currently only the 'system' module -->
                 <argument>--with-system</argument>
-                <argument>--with-test</argument>
-                <argument>--with-thread</argument>
                 <!-- On Windows machines the build failed, if this was not explicitly set -->
                 <argument>address-model=64</argument>
               </arguments>
@@ -122,7 +138,7 @@
         <version>3.1.1</version>
         <executions>
           <execution>
-            <id>package-thrift-cpp</id>
+            <id>package-cpp</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
@@ -130,7 +146,7 @@
             <configuration>
               <finalName>${project.artifactId}-${project.version}</finalName>
               <descriptors>
-                <descriptor>src/assembly/cpp.xml</descriptor>
+                <descriptor>src/assembly/${assembly.file}</descriptor>
               </descriptors>
             </configuration>
           </execution>

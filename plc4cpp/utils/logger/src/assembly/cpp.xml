@@ -20,7 +20,7 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
 
-  <id>python</id>
+  <id>cpp-${os.classifier}</id>
 
   <formats>
     <format>zip</format>
@@ -30,25 +30,18 @@
 
   <fileSets>
     <fileSet>
-      <directory>${project.build.directory}/thrift-${thrift.version}/lib/py/build/lib.linux-x86_64-2.7</directory>
+      <directory>${project.basedir}/src/main/cpp</directory>
       <includes>
-        <include>**</include>
+        <include>**/*.h</include>
       </includes>
-      <outputDirectory/>
+      <outputDirectory>include</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>${project.build.directory}/thrift-${thrift.version}/lib/py/build/lib.macosx-10.14-x86_64-2.7</directory>
+      <directory>${project.build.directory}/build</directory>
       <includes>
-        <include>**</include>
+        <include>*.a</include>
       </includes>
-      <outputDirectory/>
-    </fileSet>
-    <fileSet>
-      <directory>${project.build.directory}/thrift-${thrift.version}/lib/py/build/lib.win-amd64-2.7</directory>
-      <includes>
-        <include>**</include>
-      </includes>
-      <outputDirectory/>
+      <outputDirectory>lib</outputDirectory>
     </fileSet>
   </fileSets>
 </assembly>
