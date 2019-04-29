@@ -17,20 +17,5 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.7)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
-
-
-#[[
-    Build all the modules of PLC4Cpp
-]]
-add_subdirectory(api)
-add_subdirectory(protocols)
-add_subdirectory(utils)
-
-add_subdirectory(examples)
-add_subdirectory(integrations)
+add_subdirectory(apache-mynewt)
+add_subdirectory(edgex-foundry)

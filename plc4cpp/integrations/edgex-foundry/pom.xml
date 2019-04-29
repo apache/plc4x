@@ -1,4 +1,5 @@
-#[[
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,22 +16,23 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-cmake_minimum_required(VERSION 3.7)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+  <modelVersion>4.0.0</modelVersion>
 
-set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4cpp-integrations</artifactId>
+    <version>0.4.0-SNAPSHOT</version>
+  </parent>
 
+  <artifactId>plc4cpp-edgex-foundry</artifactId>
+  <packaging>pom</packaging>
 
-#[[
-    Build all the modules of PLC4Cpp
-]]
-add_subdirectory(api)
-add_subdirectory(protocols)
-add_subdirectory(utils)
+  <name>PLC4Cpp: Integrations: EdgeX-Foundry</name>
 
-add_subdirectory(examples)
-add_subdirectory(integrations)
+  <modules>
+  </modules>
+
+</project>

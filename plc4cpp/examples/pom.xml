@@ -23,42 +23,33 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4cpp</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4cpp</artifactId>
+  <groupId>org.apache.plc4x.examples</groupId>
+  <artifactId>plc4cpp-examples</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4Cpp</name>
-  <description>Implementation of the protocol adapters for usage as C++ library.</description>
+  <name>PLC4Cpp: Examples</name>
+  <description>Parent of all C++ based application example modules.</description>
 
   <modules>
-    <module>api</module>
-    <module>protocols</module>
-    <module>utils</module>
-
-    <module>examples</module>
-    <module>integrations</module>
-
-    <!-- Third party libs -->
-    <module>libs</module>
   </modules>
 
   <build>
-    <plugins>
-      <!-- Prevent the jar plugin from building a jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <phase/>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <!-- No need to deploy examples in a maven repo -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
 </project>
