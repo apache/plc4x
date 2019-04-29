@@ -26,6 +26,7 @@ Currently the project is configured to require the following software:
 1) Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to point to that.
 2) libpcap/WinPcap for raw socket tests
 3) (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
+4) Git (even when working on the source distribution)
 
 
 Getting Started

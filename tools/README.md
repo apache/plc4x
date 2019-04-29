@@ -36,8 +36,13 @@ Then update `Bison`:
 
     brew install bison
     brew link bison --force
+    echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
+    
+Install `Python 2.7`:
+    
+    brew install python@2
 
-If you're building a source-distribution and haven't installed git yet, be sure to do so.
+Be sure to re-open the command window or the changes will not apply.
 
 # Windows
 
