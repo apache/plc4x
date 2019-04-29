@@ -126,7 +126,7 @@ pipeline {
             steps {
                 echo 'Checking Code Quality'
                 withSonarQubeEnv('ASF Sonar Analysis') {
-                    sh 'mvn -P${JENKINS_PROFILE} sonar:sonar'
+                    sh 'mvn -P${JENKINS_PROFILE},with-cpp,with-python,with-proxies sonar:sonar'
                 }
             }
         }
