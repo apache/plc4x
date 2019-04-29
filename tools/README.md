@@ -54,6 +54,10 @@ Some tools need to be installed before being able to build on Windows:
 - Python 2.7
 
 He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
+When running the installer, make sure to select the options:
+- Native Windows
+- x86_64
+Not quite sure which elements are really needed, better just install all of them.
 
 For Bison, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
 It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form here: http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip
