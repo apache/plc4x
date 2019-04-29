@@ -21,6 +21,10 @@
 On a clean Ubuntu 18.04 the following software needs to be installed:
 
     sudo apt install bison flex python-dev
+
+If you're building a source-distribution and haven't installed git yet, be sure to do so:
+
+    sudo get install git
          
 # MAC
 
@@ -32,6 +36,8 @@ Then update `Bison`:
 
     brew install bison
     brew link bison --force
+
+If you're building a source-distribution and haven't installed git yet, be sure to do so.
 
 # Windows
 
@@ -53,3 +59,5 @@ Please download the Flex compiler from here: http://gnuwin32.sourceforge.net/pac
 You can get Python from here: https://www.python.org/downloads/release/python-2716/
 
 Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH`.
+
+If you're building a source-distribution and haven't installed git yet, be sure to do so.
