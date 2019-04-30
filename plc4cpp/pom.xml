@@ -33,6 +33,10 @@
   <name>PLC4Cpp</name>
   <description>Implementation of the protocol adapters for usage as C++ library.</description>
 
+  <properties>
+    <sonar.language>c++</sonar.language>
+  </properties>
+
   <modules>
     <module>api</module>
     <module>protocols</module>
