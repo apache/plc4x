@@ -33,9 +33,10 @@
   <name>PLC4Cpp</name>
   <description>Implementation of the protocol adapters for usage as C++ library.</description>
 
-  <properties>
+  <!-- Disabled for now as C++ support is currently not installed in Apache SonarQube -->
+  <!--properties>
     <sonar.language>c++</sonar.language>
-  </properties>
+  </properties-->
 
   <modules>
     <module>api</module>
