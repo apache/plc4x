@@ -34,12 +34,13 @@
   <description>Implementation of the protocol adapters for usage as Python module.</description>
 
   <build>
+    <sourceDirectory>src/main/python</sourceDirectory>
+    <testSourceDirectory>src/test/python</testSourceDirectory>
     <plugins>
       <!-- Unpack the protocol spec -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.1</version>
         <executions>
           <execution>
             <id>unpack-protocol-spec</id>
@@ -71,6 +72,27 @@
             </configuration>
           </execution>
           <execution>
+            <id>copy-interop-server</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>interop-server</artifactId>
+                  <version>0.4.0-SNAPSHOT</version>
+                  <type>jar</type>
+                  <classifier>jar-with-dependencies</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                  <destFileName>interop-server.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
             <id>check-dependencies</id>
             <phase>verify</phase>
             <goals>
@@ -88,13 +110,69 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <!-- For Python we don't really compile anything, so just copy the files here -->
+          <execution>
+            <id>copy-python</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/python</directory>
+                  <filtering>false</filtering>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/generated-sources/thrift</directory>
+                  <filtering>false</filtering>
+                </resource>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <!-- For Python we don't really compile anything, so just copy the files here -->
+          <execution>
+            <id>copy-test-python</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/test/python</directory>
+                  <filtering>false</filtering>
+                </resource>
+                <resource>
+                  <directory>${project.build.directory}/generated-test-sources/thrift</directory>
+                  <filtering>false</filtering>
+                </resource>
+                <resource>
+                  <directory>src/test/resources</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.thrift.tools</groupId>
         <artifactId>maven-thrift-plugin</artifactId>
         <version>0.1.11</version>
         <configuration>
           <thriftExecutable>${project.build.directory}/thrift-compiler/${thrift.compiler.executable}</thriftExecutable>
           <thriftSourceRoot>${project.build.directory}/protocol-spec</thriftSourceRoot>
-          <outputDirectory>${basedir}/generated/</outputDirectory>
           <includes>
             <include>**/interop.thrift</include>
           </includes>
@@ -103,7 +181,7 @@
         <executions>
           <execution>
             <id>thrift-sources</id>
-            <phase>generate-sources</phase>
+            <phase>process-sources</phase>
             <goals>
               <goal>compile</goal>
             </goals>
@@ -121,13 +199,14 @@
     </plugins>
   </build>
 
-  <!-- TODO copy artifact from interop-server here, to make the initialize_interop_server.sh obsolete-->
-
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>interop-server</artifactId>
       <version>0.4.0-SNAPSHOT</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 
