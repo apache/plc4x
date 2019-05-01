@@ -64,16 +64,16 @@
   <mailingLists>
     <mailingList>
       <name>Apache PLC4X Developer List</name>
-      <subscribe>mailto:dev-subscribe@plc4x.apache.org</subscribe>
-      <unsubscribe>mailto:dev-unsubscribe@plc4x.apache.org</unsubscribe>
-      <post>mailto:dev@plc4x.apache.org</post>
+      <subscribe>dev-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>dev@plc4x.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
     </mailingList>
     <mailingList>
       <name>commits PLC4X Commits List</name>
-      <subscribe>mailto:commit-subscribe@plc4x.apache.org</subscribe>
-      <unsubscribe>mailto:commits-unsubscribe@plc4x.apache.org</unsubscribe>
-      <post>mailto:commits@plc4x.apache.org</post>
+      <subscribe>commit-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>commits@plc4x.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
     </mailingList>
   </mailingLists>
