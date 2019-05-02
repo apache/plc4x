@@ -38,7 +38,6 @@
     <sonar.language>py</sonar.language>
   </properties-->
 
-
   <build>
     <sourceDirectory>src/main/python</sourceDirectory>
     <testSourceDirectory>src/test/python</testSourceDirectory>
@@ -116,63 +115,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <!-- For Python we don't really compile anything, so just copy the files here -->
-          <execution>
-            <id>copy-python</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/classes</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/python</directory>
-                  <filtering>false</filtering>
-                </resource>
-                <resource>
-                  <directory>${project.build.directory}/generated-sources/thrift</directory>
-                  <filtering>false</filtering>
-                </resource>
-                <resource>
-                  <directory>src/main/resources</directory>
-                  <filtering>false</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <!-- For Python we don't really compile anything, so just copy the files here -->
-          <execution>
-            <id>copy-test-python</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/test/python</directory>
-                  <filtering>false</filtering>
-                </resource>
-                <resource>
-                  <directory>${project.build.directory}/generated-test-sources/thrift</directory>
-                  <filtering>false</filtering>
-                </resource>
-                <resource>
-                  <directory>src/test/resources</directory>
-                  <filtering>false</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.thrift.tools</groupId>
         <artifactId>maven-thrift-plugin</artifactId>
         <version>0.1.11</version>
@@ -197,32 +139,50 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <id>package-python</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>${project.artifactId}-${project.version}</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>src/assembly/python.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-remote-resources-plugin</artifactId>
         <configuration>
           <skip>true</skip>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>python-build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>setup.py</argument>
+                <argument>build</argument>
+                <argument>--build-base=${project.build.directory}/python</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>python-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <workingDirectory>${project.build.directory}/python</workingDirectory>
+              <arguments>
+                <argument>../../setup.py</argument>
+                <argument>sdist</argument>
+                <argument>--dist-dir=${project.build.directory}/python</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -28,25 +28,28 @@ here = path.abspath(path.dirname(__file__))
 
 # Read the entire README.md and save it's content in the "long_description" variable.
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+    longDescription = f.read()
 
 # Register the maven namespace.
 ns = {'mvn': 'http://maven.apache.org/POM/4.0.0'}
 # Load the pom.xml and extract some of it's information from it.
-mavenPomRoot = ET.parse('pom.xml')
-print("Root", mavenPomRoot)
+mavenPomRoot = ET.parse(path.join(here, 'pom.xml'))
 mvnArtifactId = mavenPomRoot.find("mvn:artifactId", ns).text
-print("ArtifactId", mvnArtifactId)
 mvnVersion = mavenPomRoot.find("mvn:parent/mvn:version", ns).text
-print(mvnVersion)
 mvnDescription = mavenPomRoot.find("mvn:description", ns).text
-print(mvnDescription)
+
+# Cut off the "-SNAPSHOT"
+if mvnVersion.endswith('-SNAPSHOT'):
+    mvnVersion = mvnVersion[:-9]
+
+print("ArtifactId", mvnArtifactId)
+print("Version", mvnVersion)
 
 setup(
     name=mvnArtifactId,
     version=mvnVersion,
     description=mvnDescription,
-    long_description=long_description,
+    long_description=longDescription,
     long_description_content_type='text/markdown',
     url='https://plc4x.apache.org',
     author_email='dev@plc4x.apache.org',
