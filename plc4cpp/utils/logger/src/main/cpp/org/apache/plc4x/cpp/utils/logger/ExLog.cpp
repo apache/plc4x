@@ -19,7 +19,7 @@ under the License.
 
 #include <boost/exception/all.hpp>
 #include <exception>
-#include <boost/lexical_cast.hpp>"
+#include <boost/lexical_cast.hpp>
 #include <typeinfo>
 #include "ErrorInfoException.h"
 
