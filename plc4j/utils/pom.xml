@@ -41,4 +41,13 @@
     <module>scraper</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>with-proxies</id>
+      <modules>
+        <module>interop</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>

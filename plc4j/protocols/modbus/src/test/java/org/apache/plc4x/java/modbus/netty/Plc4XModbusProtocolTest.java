@@ -39,12 +39,9 @@ import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -334,7 +331,6 @@ public class Plc4XModbusProtocolTest {
         ArrayList<Object> in = new ArrayList<>();
         SUT.encode(null, plcRequestContainer, in);
         assertThat(in, hasSize(1));
-        syncInvoiceId();
         ArrayList<Object> out = new ArrayList<>();
         SUT.decode(null, modbusTcpPayload, out);
         assertThat(out, hasSize(0));
@@ -410,18 +406,5 @@ public class Plc4XModbusProtocolTest {
         } else {
             return dataTypePair;
         }
-    }
-
-    private void syncInvoiceId() throws Exception {
-        Field transactionId = SUT.getClass().getDeclaredField("transactionId");
-        transactionId.setAccessible(true);
-        AtomicInteger correlationBuilder = (AtomicInteger) transactionId.get(SUT);
-
-        Field invokeIdField = ModbusTcpPayload.class.getDeclaredField("transactionId");
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(invokeIdField, invokeIdField.getModifiers() & ~Modifier.FINAL);
-        invokeIdField.setAccessible(true);
-        invokeIdField.set(modbusTcpPayload, (short) (correlationBuilder.get() - 1));
     }
 }

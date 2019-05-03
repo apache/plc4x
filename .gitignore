@@ -87,7 +87,10 @@ plc4cpp/libs/libs/
 plc4cpp/.idea/
 plc4cpp/cmake-build-debug/
 
-# Ignore VisualStudio related files
+    # Ignore VisualStudio related files
 **/CMakeSettings.json
 **/.vs/**
 
+# Exclude temporary python stuff
+plc4py/venv/
+**/__pycache__/**/*

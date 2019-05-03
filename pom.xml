@@ -64,17 +64,24 @@
   <mailingLists>
     <mailingList>
       <name>Apache PLC4X Developer List</name>
-      <subscribe>dev-subscribe@plc4x.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@plc4x.apache.org</unsubscribe>
-      <post>dev@plc4x.apache.org</post>
+      <subscribe>mailto:dev-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:dev-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:dev@plc4x.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
     </mailingList>
     <mailingList>
-      <name>commits PLC4X Commits List</name>
-      <subscribe>commit-subscribe@plc4x.apache.org</subscribe>
-      <unsubscribe>commits-unsubscribe@plc4x.apache.org</unsubscribe>
-      <post>commits@plc4x.apache.org</post>
+      <name>PLC4X Commits List</name>
+      <subscribe>mailto:commit-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:commits-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:commits@plc4x.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
+    </mailingList>
+    <mailingList>
+      <name>PLC4X Jira Notifications List</name>
+      <subscribe>mailto:issues-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:issues-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:issues@plc4x.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-issues/</archive>
     </mailingList>
   </mailingLists>
 
@@ -99,6 +106,9 @@
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
     <bouncycastle.version>1.60</bouncycastle.version>
+    <boost.version>1.70.0</boost.version>
+    <boost.version.underline-short>1_70</boost.version.underline-short>
+    <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
     <commons-codec.version>1.11</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
@@ -132,7 +142,7 @@
     <lucene.version>7.4.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.24.5</mockito.version>
-    <netty.version>4.1.33.Final</netty.version>
+    <netty.version>4.1.35.Final</netty.version>
     <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
     <owasp-dependency-check.version>5.0.0-M1</owasp-dependency-check.version>
     <pcap4j.version>1.7.3</pcap4j.version>
@@ -142,6 +152,7 @@
     <spock-reports.version>1.6.1</spock-reports.version>
     <spock.version>1.2-groovy-2.5</spock.version>
     <t-digest.version>3.2</t-digest.version>
+    <thrift.version>0.12.0</thrift.version>
 
     <!-- Site properties -->
     <reflow.skin.version>1.5.0</reflow.skin.version>
@@ -159,11 +170,17 @@
     <!--module>plc4cpp</module-->
     <module>plc4j</module>
 
+    <!-- Python language binding-->
+    <module>plc4py</module>
+
     <!-- Integration modules for other frameworks -->
     <module>integrations</module>
 
     <!-- Examples -->
     <module>examples</module>
+
+    <!-- Tools needed throughout the build -->
+    <module>tools</module>
   </modules>
 
   <prerequisites>
@@ -719,6 +736,12 @@
 
             <!-- CLion stuff (C++ IDE) -->
             <exclude>**/cmake-build-debug/**</exclude>
+
+            <!-- Temporarily exclude generated code from thrift in python modules -->
+            <exclude>generated/**</exclude>
+
+            <!-- Temporary Python virtualenv files-->
+            <exclude>**/venv/**</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -727,13 +750,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>1.6.0</version>
         <executions>
           <execution>
             <id>process-resource-bundles</id>
+            <phase>prepare-package</phase>
             <goals>
               <goal>process</goal>
             </goals>
             <configuration>
+              <!-- TODO: For some reason the build seems to fail in conjunction with the dependency-plugin unpack goal, if enabled -->
+              <skip>true</skip>
               <resourceBundles>
                 <!-- Will generate META-INF/{DEPENDENCIES,LICENSE,NOTICE} -->
                 <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
@@ -1218,12 +1245,84 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>with-python</id>
+      <modules>
+        <module>plc4py</module>
+      </modules>
+    </profile>
+
     <!-- Build PLC4X including the CPP modules -->
     <profile>
       <id>with-sandbox</id>
       <modules>
         <module>sandbox</module>
       </modules>
+    </profile>
+
+    <!-- Profile for linux -->
+    <profile>
+      <id>unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>linux</os.suffix>
+        <os.classifier>linux-x86_64</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
+        <boost.build.executable>./b2</boost.build.executable>
+        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
+        <thrift.configure.executable>./configure</thrift.configure.executable>
+        <thrift.make.executable>make</thrift.make.executable>
+        <thrift.compiler.executable>thrift</thrift.compiler.executable>
+      </properties>
+    </profile>
+    <!-- Profile for mac -->
+    <profile>
+      <id>max</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>mac</os.suffix>
+        <os.classifier>mac-x86_64</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
+        <boost.build.executable>./b2</boost.build.executable>
+        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
+        <thrift.configure.executable>./configure</thrift.configure.executable>
+        <thrift.make.executable>make</thrift.make.executable>
+        <thrift.compiler.executable>thrift</thrift.compiler.executable>
+      </properties>
+    </profile>
+    <!-- profile for windows -->
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>win</os.suffix>
+        <os.classifier>windows-x86_64</os.classifier>
+        <cmake.generator>MinGW Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
+        <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
+        <boost.build.executable>b2</boost.build.executable>
+        <boost.include-directory>libs/libs/boost/include/boost-${boost.version.underline-short}</boost.include-directory>
+        <thrift.bootstrap.executable>bootstrap.sh</thrift.bootstrap.executable>
+        <thrift.configure.executable>configure</thrift.configure.executable>
+        <thrift.make.executable>make</thrift.make.executable>
+        <thrift.compiler.executable>thrift.exe</thrift.compiler.executable>
+      </properties>
     </profile>
 
     <!--
@@ -1310,14 +1409,14 @@
                     <requireJavaVersion>
                       <version>1.8.0</version>
                     </requireJavaVersion>
-                    <reactorModuleConvergence/>
+                    <!--reactorModuleConvergence/-->
                   </rules>
                 </configuration>
               </execution>
             </executions>
           </plugin>
 
-          <plugin>
+          <!--plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
             <executions>
@@ -1330,7 +1429,7 @@
             <configuration>
               <failBuildOnCVSS>8</failBuildOnCVSS>
             </configuration>
-          </plugin>
+          </plugin-->
         </plugins>
       </build>
     </profile>

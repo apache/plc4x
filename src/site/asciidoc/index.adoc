@@ -52,19 +52,23 @@ The major benefits of PLC4X™ over OPC-UA, from our point of view are:
 
 At first we will be concentrating on providing adapters for the most widely used protocol such as:
 
+- icon:pause-circle[role=light-gray] BACnet
 - icon:check[role=green] link:protocols/ads/index.html[Beckhoff ADS (TCP)]
 - icon:wrench[role=yellow] link:protocpls/delta-v/index.html[Emerson DeltaV (UDP)]
 - icon:wrench[role=yellow] link:protocols/ethernet-ip/index.html[EtherNet/IP (TCP)]
-- icon:check[role=green] link:protocols/modbus/index.html[Modbus (TCP)]
-- icon:pause-circle[role=light-gray] link:protocols/opc-ua/index.html[OPC-UA]
-- icon:check[role=green] link:protocols/s7/index.html[S7 (TCP)]
 - icon:wrench[role=yellow] KNXNet/IP (UDP)
+- icon:check[role=green] link:protocols/modbus/index.html[Modbus (TCP)]
+- icon:pause-circle[role=light-gray] link:protocols/opc-ua/index.html[OPC-UA (TCP)]
+- icon:pause-circle[role=light-gray] Profinet
+- icon:check[role=green] link:protocols/s7/index.html[S7-STEP7 (TCP)]
+- icon:wrench[role=yellow] link:protocols/s7/index.html[S7-TIA (TCP)]
 
 We are planning on providing support for the following programming languages:
 
+- icon:wrench[role=yellow] C++
+- icon:pause-circle[role=light-gray] C# (.Net)
 - icon:check[role=green] link:plc4j/index.html[Java]
-- icon:wrench[role=yellow] link:plc4c/index.html[C/C++]
-- icon:pause-circle[role=light-gray] link:plc4s/index.html[Scala]
+- icon:wrench[role=yellow] Python
 
 Beyond implementing the pure adapters we have already implemented some of the planned integration modules to popular projects in the Apache IoT world such as:
 
