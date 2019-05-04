@@ -165,9 +165,11 @@ public class PythonGenerator implements Generator {
         }
 
         // Constructors
-        for (ConstructorDeclaration constructor : constructors) {
-            this.generateConstructor(className, constructor.getParameters(), constructor.getBody());
-            writer.writeLine("");
+        if (constructors != null) {
+            for (ConstructorDeclaration constructor : constructors) {
+                this.generateConstructor(className, constructor.getParameters(), constructor.getBody());
+                writer.writeLine("");
+            }
         }
 
         // Methods
