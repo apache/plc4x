@@ -115,13 +115,16 @@ public class PythonGenerator implements Generator {
     }
 
     @Override public void generate(MethodDefinition methodDefinition) {
+        if (methodDefinition.getModifiers().contains(MethodDefinition.Modifier.STATIC)) {
+            writer.writeLine("@classmethod");
+        }
         writer.startLine("def ");
         writer.write(methodDefinition.getName());
         writer.write("(");
         for (int i = 0; i < methodDefinition.getParameters().size(); i++) {
-            methodDefinition.getParameters().get(i).getType().write(this);
-            writer.write(" ");
             methodDefinition.getParameters().get(i).write(this);
+            writer.write(": ");
+            methodDefinition.getParameters().get(i).getType().write(this);
             if (i < methodDefinition.getParameters().size() - 1) {
                 writer.write(", ");
             }
@@ -220,6 +223,18 @@ public class PythonGenerator implements Generator {
 
     @Override public void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses) {
         generateClass(mainClass.getNamespace(), mainClass.getClassName(), mainClass.getFields(), mainClass.getConstructors(), mainClass.getMethods(), innerClasses, true);
+    }
+
+    @Override public void generateType(String typeString) {
+        writer.write(typeString);
+    }
+
+    @Override public void generateComment(String comment) {
+        writer.writeLine("# " + comment);
+    }
+
+    @Override public void generateNoOp() {
+        writer.write("pass");
     }
 
     private String getOperator(BinaryExpression.Operation op) {

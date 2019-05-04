@@ -3,15 +3,23 @@ package org.apache.plc4x.codegen.version2;
 /**
  * Stub for the Type System.
  */
-public abstract class TypeNode implements Node {
+public class TypeNode implements Node {
 
     private final String typeString;
 
-    protected TypeNode(String typeString) {
+    public TypeNode(String typeString) {
         this.typeString = typeString;
     }
 
     String getTypeString() {
         return this.typeString;
+    }
+
+    @Override public <T> T accept(NodeVisitor<T> visitor) {
+        return null;
+    }
+
+    @Override public void write(Generator writer) {
+        writer.generateType(typeString);
     }
 }

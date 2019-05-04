@@ -1,5 +1,6 @@
 package org.apache.plc4x.codegen.version2;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +26,21 @@ public class PojoFactory {
             })
             .collect(Collectors.toList());
 
+        final List<MethodDefinition> methods = new ArrayList<>();
 
-        return new ClassDefinition("", desc.getName(), fields, Arrays.asList(new ConstructorDeclaration(Collections.emptyList(), new Block())), getters, null);
+        methods.addAll(getters);
+        // Encode Method
+        methods.add(new MethodDefinition("encode", Primitive.VOID, Collections.singletonList(
+            new ParameterExpression(new TypeNode("org.apache.plc4x.api.Buffer"), "buffer")
+        ), new Block()));
+
+        // Decode Method
+        methods.add(new MethodDefinition(Collections.singleton(MethodDefinition.Modifier.STATIC), "decode", new TypeNode(desc.getName()), Collections.singletonList(
+            new ParameterExpression(new TypeNode("org.apache.plc4x.api.Buffer"), "buffer")
+        ), new Block()));
+
+
+        return new ClassDefinition("", desc.getName(), fields, Arrays.asList(new ConstructorDeclaration(Collections.emptyList(), new Block())), methods, null);
     }
 
     public static class PojoDescription {

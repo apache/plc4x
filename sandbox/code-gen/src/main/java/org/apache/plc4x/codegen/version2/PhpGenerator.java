@@ -90,4 +90,16 @@ public class PhpGenerator implements Generator {
     @Override public void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses) {
 
     }
+
+    @Override public void generateType(String typeString) {
+
+    }
+
+    @Override public void generateComment(String comment) {
+
+    }
+
+    @Override public void generateNoOp() {
+
+    }
 }

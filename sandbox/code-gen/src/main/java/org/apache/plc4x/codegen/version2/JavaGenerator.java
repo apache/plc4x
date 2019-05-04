@@ -115,6 +115,9 @@ public class JavaGenerator implements Generator {
 
     @Override public void generate(MethodDefinition methodDefinition) {
         writer.startLine("public ");
+        if (methodDefinition.getModifiers().contains(MethodDefinition.Modifier.STATIC)) {
+            writer.write("static ");
+        }
         // Special handling of VOID is necessary
         if (methodDefinition.getResultType() == Primitive.VOID) {
             writer.write("void");
@@ -223,6 +226,18 @@ public class JavaGenerator implements Generator {
 
     @Override public void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses) {
         generateClass(mainClass.getNamespace(), mainClass.getClassName(), mainClass.getFields(), mainClass.getConstructors(), mainClass.getMethods(), innerClasses, true);
+    }
+
+    @Override public void generateType(String typeString) {
+        writer.write(typeString);
+    }
+
+    @Override public void generateComment(String comment) {
+        writer.writeLine("// " + comment);
+    }
+
+    @Override public void generateNoOp() {
+        writer.write(";");
     }
 
     private String getOperator(BinaryExpression.Operation op) {

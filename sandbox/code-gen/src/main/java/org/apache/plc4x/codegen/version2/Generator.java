@@ -41,4 +41,10 @@ public interface Generator {
     void generateConstructor(String className, List<ParameterExpression> parameters, Block body);
 
     void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses);
+
+    void generateType(String typeString);
+
+    void generateComment(String comment);
+
+    void generateNoOp();
 }
