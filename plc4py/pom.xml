@@ -158,9 +158,9 @@
             </goals>
             <configuration>
               <executable>python</executable>
-              <workingDirectory>${project.basedir}</workingDirectory>
+              <workingDirectory>${project.build.directory}/python</workingDirectory>
               <arguments>
-                <argument>setup.py</argument>
+                <argument>../../setup.py</argument>
                 <argument>build</argument>
                 <argument>--build-base=${project.build.directory}/python</argument>
               </arguments>
