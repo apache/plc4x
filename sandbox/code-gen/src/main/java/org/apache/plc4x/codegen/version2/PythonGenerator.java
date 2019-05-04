@@ -50,6 +50,9 @@ public class PythonGenerator implements Generator {
 
     @Override public void writeBlock(Block statements) {
         writer.startBlock();
+        if (statements.getStatements().isEmpty()) {
+            writer.writeLine("pass");
+        }
         for (Node statement : statements.getStatements()) {
             // Dont to the wrapping for If Statements
             if (statement instanceof IfStatement) {
@@ -113,7 +116,6 @@ public class PythonGenerator implements Generator {
 
     @Override public void generate(MethodDefinition methodDefinition) {
         writer.startLine("def ");
-        writer.write(" ");
         writer.write(methodDefinition.getName());
         writer.write("(");
         for (int i = 0; i < methodDefinition.getParameters().size(); i++) {

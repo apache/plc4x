@@ -26,7 +26,7 @@ public class PojoFactory {
             .collect(Collectors.toList());
 
 
-        return new ClassDefinition("", desc.getName(), fields, null, getters, null);
+        return new ClassDefinition("", desc.getName(), fields, Arrays.asList(new ConstructorDeclaration(Collections.emptyList(), new Block())), getters, null);
     }
 
     public static class PojoDescription {
