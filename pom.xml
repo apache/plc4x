@@ -708,6 +708,7 @@
             <exclude>**/.project</exclude>
             <exclude>**/.settings/**</exclude>
             <exclude>**/.classpath</exclude>
+            <exclude>**/.factorypath</exclude>
 
             <!-- IntelliJ related files -->
             <exclude>**/.idea/**</exclude>
