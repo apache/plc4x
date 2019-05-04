@@ -143,10 +143,14 @@ public class JavaGenerator implements Generator {
         value.write(this);
     }
 
-    @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods) {
+    @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses, boolean mainClass) {
         // Add static?!
         // Own File?
-        writer.write("public class ");
+        writer.startLine("public ");
+        if (!mainClass) {
+            writer.write("static ");
+        }
+        writer.write("class ");
         writer.write(className);
         // TODO extends / implements
         writer.write(" {");
@@ -172,9 +176,15 @@ public class JavaGenerator implements Generator {
             writer.writeLine("");
         }
 
+        // If there are inner classes, implement them
+        if (innerClasses != null) {
+            for (ClassDefinition innerClass : innerClasses) {
+                this.generateClass(innerClass.getNamespace(), innerClass.getClassName(), innerClass.getFields(), innerClass.getConstructors(), innerClass.getMethods(), innerClass.getInnerClasses(), false);
+            }
+        }
+
         writer.endBlock();
-        writer.write("}");
-        writer.endLine();
+        writer.writeLine("}");
     }
 
     @Override public void generateFieldDeclaration(TypeNode type, String name) {
@@ -207,6 +217,10 @@ public class JavaGenerator implements Generator {
         writer.endLine();
         body.write(this);
         writer.writeLine("}");
+    }
+
+    @Override public void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses) {
+        generateClass(mainClass.getNamespace(), mainClass.getClassName(), mainClass.getFields(), mainClass.getConstructors(), mainClass.getMethods(), innerClasses, true);
     }
 
     private String getOperator(BinaryExpression.Operation op) {

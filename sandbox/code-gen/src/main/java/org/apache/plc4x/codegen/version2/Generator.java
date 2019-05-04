@@ -32,11 +32,13 @@ public interface Generator {
 
     void generateReturn(Expression value);
 
-    void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods);
+    void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses, boolean mainClass);
 
     void generateFieldDeclaration(TypeNode type, String name);
 
     void generateFieldReference(TypeNode type, String name);
 
     void generateConstructor(String className, List<ParameterExpression> parameters, Block body);
+
+    void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses);
 }

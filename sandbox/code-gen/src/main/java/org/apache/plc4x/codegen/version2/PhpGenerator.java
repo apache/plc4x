@@ -71,7 +71,7 @@ public class PhpGenerator implements Generator {
 
     }
 
-    @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods) {
+    @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses, boolean mainClass) {
 
     }
 
@@ -84,6 +84,10 @@ public class PhpGenerator implements Generator {
     }
 
     @Override public void generateConstructor(String className, List<ParameterExpression> parameters, Block body) {
+
+    }
+
+    @Override public void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses) {
 
     }
 }

@@ -159,6 +159,7 @@ public class JavaGeneratorTest {
     @Test
     public void defineClass() {
         final FieldDeclaration current = new FieldDeclaration(Primitive.DOUBLE, "current");
+        final FieldReference currentRef = new FieldReference(Primitive.DOUBLE, "current");
 
         final ParameterExpression a = new ParameterExpression(Primitive.DOUBLE, "a");
         final ParameterExpression b = new ParameterExpression(Primitive.DOUBLE, "b");
@@ -173,7 +174,6 @@ public class JavaGeneratorTest {
                 )
             )
         );
-        final FieldReference currentRef = new FieldReference(Primitive.DOUBLE, "current");
         final MethodDefinition inc = new MethodDefinition("inc", Primitive.VOID,
             Collections.EMPTY_LIST,
             new Block(
@@ -184,7 +184,7 @@ public class JavaGeneratorTest {
             )
         );
 
-        final ClassDefinition clazz = new ClassDefinition("org.apache.plc4x", "MyClazz", Arrays.asList(current), Collections.emptyList(), Arrays.asList(inc, decl));
+        final ClassDefinition clazz = new ClassDefinition("org.apache.plc4x", "MyClazz", Arrays.asList(current), Collections.emptyList(), Arrays.asList(inc, decl), null);
 
         clazz.write(generator);
         final String code = writer.getCode();
@@ -219,7 +219,7 @@ public class JavaGeneratorTest {
                     new Block(new AssignementExpression(currentRef, value))
                 )
             ),
-            Collections.emptyList());
+            Collections.emptyList(), null);
 
         clazz.write(generator);
         final String code = writer.getCode();
@@ -231,6 +231,45 @@ public class JavaGeneratorTest {
             "        this.current = value;\n" +
             "    }\n" +
             "    \n" +
+            "}\n", code);
+    }
+
+    @Test
+    public void defineClassWithInnerClass() {
+        final FieldDeclaration current = new FieldDeclaration(Primitive.DOUBLE, "current");
+
+        final FieldReference currentRef = new FieldReference(Primitive.DOUBLE, "current");
+
+        final ParameterExpression value = new ParameterExpression(Primitive.DOUBLE, "value");
+
+        // Define Inner Class
+        final ClassDefinition innerClass = new ClassDefinition("", "MyInnerClazz", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null);
+
+        final ClassDefinition clazz = new ClassDefinition("org.apache.plc4x",
+            "MyClazz",
+            Arrays.asList(current),
+            Arrays.asList(
+                new ConstructorDeclaration(
+                    Collections.singletonList(value),
+                    new Block(new AssignementExpression(currentRef, value))
+                )
+            ),
+            Collections.emptyList(),
+            Collections.singletonList(innerClass));
+
+        clazz.write(generator);
+        final String code = writer.getCode();
+        assertEquals("public class MyClazz {\n" +
+            "    \n" +
+            "    public double current;\n" +
+            "    \n" +
+            "    public MyClazz(double value) {\n" +
+            "        this.current = value;\n" +
+            "    }\n" +
+            "    \n" +
+            "    public static class MyInnerClazz {\n" +
+            "        \n" +
+            "    }\n" +
             "}\n", code);
     }
 }
