@@ -2,11 +2,11 @@ package org.apache.plc4x.codegen.version2;
 
 import java.util.List;
 
-public class JavaGenerator implements Generator {
+public class PythonGenerator implements Generator {
 
     private final CodeWriter writer;
 
-    public JavaGenerator(CodeWriter writer) {
+    public PythonGenerator(CodeWriter writer) {
         this.writer = writer;
     }
 
@@ -15,17 +15,18 @@ public class JavaGenerator implements Generator {
     }
 
     @Override public void generateDeclarationWithInitializer(DeclarationStatement declarationStatement) {
-        declarationStatement.getParameterExpression().getType().write(this);
-        writer.write(" ");
         declarationStatement.getParameterExpression().write(this);
+        writer.write(": ");
+        declarationStatement.getParameterExpression().getType().write(this);
         writer.write(" = ");
         declarationStatement.getInitializer().write(this);
     }
 
     @Override public void generateDeclaration(DeclarationStatement declarationStatement) {
-        declarationStatement.getParameterExpression().getType().write(this);
-        writer.write(" ");
         declarationStatement.getParameterExpression().write(this);
+        writer.write(": ");
+        declarationStatement.getParameterExpression().getType().write(this);
+        writer.write(" = None");
     }
 
     @Override public void generate(ParameterExpression parameterExpression) {
@@ -37,15 +38,14 @@ public class JavaGenerator implements Generator {
     }
 
     @Override public void generate(IfStatement ifStatement) {
-        writer.startLine("if (");
+        writer.startLine("if ");
         ifStatement.getCondition().write(this);
-        writer.write(") {\n");
+        writer.write(":\n");
         writeBlock(ifStatement.getBody());
         if (ifStatement.getOrElse() != null) {
-            writer.writeLine("} else {");
+            writer.writeLine("else:");
             writeBlock(ifStatement.getOrElse());
         }
-        writer.writeLine("}");
     }
 
     @Override public void writeBlock(Block statements) {
@@ -57,7 +57,6 @@ public class JavaGenerator implements Generator {
             } else {
                 writer.startLine("");
                 statement.write(this);
-                writer.write(";");
                 writer.endLine();
             }
         }
@@ -106,7 +105,6 @@ public class JavaGenerator implements Generator {
     }
 
     @Override public void generate(NewExpression newExpression) {
-        writer.write("new ");
         newExpression.getType().write(this);
         writer.write("(");
         generateArgumentList(newExpression.getArguments());
@@ -114,13 +112,7 @@ public class JavaGenerator implements Generator {
     }
 
     @Override public void generate(MethodDefinition methodDefinition) {
-        writer.startLine("public ");
-        // Special handling of VOID is necessary
-        if (methodDefinition.getResultType() == Primitive.VOID) {
-            writer.write("void");
-        } else {
-            methodDefinition.getResultType().write(this);
-        }
+        writer.startLine("def ");
         writer.write(" ");
         writer.write(methodDefinition.getName());
         writer.write("(");
@@ -132,10 +124,16 @@ public class JavaGenerator implements Generator {
                 writer.write(", ");
             }
         }
-        writer.write(") {");
+        writer.write(") -> ");
+        // Special handling of VOID is necessary
+        if (methodDefinition.getResultType() == Primitive.VOID) {
+            writer.write("None");
+        } else {
+            methodDefinition.getResultType().write(this);
+        }
+        writer.write(":");
         writer.endLine();
         methodDefinition.getBody().write(this);
-        writer.writeLine("}");
     }
 
     @Override public void generateReturn(Expression value) {
@@ -146,18 +144,20 @@ public class JavaGenerator implements Generator {
     @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses, boolean mainClass) {
         // Add static?!
         // Own File?
-        writer.startLine("public ");
-        if (!mainClass) {
-            writer.write("static ");
-        }
-        writer.write("class ");
+        writer.startLine("class ");
         writer.write(className);
         // TODO extends / implements
-        writer.write(" {");
+        writer.write(":");
         writer.endLine();
         writer.startBlock();
 
+        // Insert a pass if there are no fields or methods
+        if (fields.size() == 0 && methods.size() == 0) {
+            writer.writeLine("pass");
+        }
+
         writer.writeLine("");
+
         // Fields
         for (FieldDeclaration field : fields) {
             field.write(this);
@@ -184,27 +184,23 @@ public class JavaGenerator implements Generator {
         }
 
         writer.endBlock();
-        writer.writeLine("}");
     }
 
     @Override public void generateFieldDeclaration(TypeNode type, String name) {
-        writer.startLine("public ");
-        type.write(this);
-        writer.write(" ");
+        writer.startLine("self.");
         writer.write(name);
-        writer.write(";");
+        writer.write(": ");
+        type.write(this);
         writer.endLine();
     }
 
     @Override public void generateFieldReference(TypeNode type, String name) {
-        writer.write("this.");
+        writer.write("self.");
         writer.write(name);
     }
 
     @Override public void generateConstructor(String className, List<ParameterExpression> parameters, Block body) {
-        writer.startLine("public ");
-        writer.write(className);
-        writer.write("(");
+        writer.startLine("def __init__(");
         for (int i = 0; i < parameters.size(); i++) {
             parameters.get(i).getType().write(this);
             writer.write(" ");
@@ -213,10 +209,9 @@ public class JavaGenerator implements Generator {
                 writer.write(", ");
             }
         }
-        writer.write(") {");
+        writer.write("):");
         writer.endLine();
         body.write(this);
-        writer.writeLine("}");
     }
 
     @Override public void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses) {
