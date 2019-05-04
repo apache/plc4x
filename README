@@ -42,6 +42,10 @@ If you're building a source-distribution and haven't installed git yet, be sure 
 
     sudo get install git
 
+In order to build the .Net version, please install the .Net package according to this guide:
+
+https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-1804-7lp
+
 Mac
 ---
 
@@ -61,15 +65,19 @@ Install `Python 2.7`:
 
 Be sure to re-open the command window or the changes will not apply.
 
+If you're going to build the `with-dotnet` profile you also need to install DotNet.
+Please download it from: https://dotnet.microsoft.com/download and run the installer.
+
 Windows
 -------
 
 Some tools need to be installed before being able to build on Windows:
 
-- WinBuilds
-- Bison
-- Flex
-- Python 2.7
+- WinBuilds (for `with-cpp`, `with-proxies` profiles)
+- Bison (for `with-cpp` profiles)
+- Flex (for `with-cpp` profiles)
+- Python 2.7 (for `with-python`, `with-proxies` profiles)
+- Dotnet (for `with-dotnet` profiles)
 
 He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
 When running the installer, make sure to select the options:

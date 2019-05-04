@@ -66,24 +66,24 @@ namespace org.apache.plc4net.api
         /// Request builder for constructing read requests
         /// </summary>
         /// <returns>null if the connection does not support reading</returns>
-        IPlcReadRequestBuilder? ReadRequestBuilder { get; }
+        IPlcReadRequestBuilder ReadRequestBuilder { get; }
 
         /// <summary>
         /// Request builder for constructing write requests
         /// </summary>
         /// <returns>null if the connection does not support writing</returns>
-        IPlcWriteRequestBuilder? WriteRequestBuilder { get; }
+        IPlcWriteRequestBuilder WriteRequestBuilder { get; }
 
         /// <summary>
         /// Request builder for constructing subscription requests
         /// </summary>
         /// <returns>null if the connection does not support subscriptions</returns>
-        IPlcSubscriptionRequestBuilder? SubscriptionRequestBuilder { get; }
+        IPlcSubscriptionRequestBuilder SubscriptionRequestBuilder { get; }
 
         /// <summary>
         /// Request builder for unsubscribing
         /// </summary>
         /// <returns>null if the connection does not support subscriptions</returns>
-        IPlcUnsubscriptionRequestBuilder? UnsubscriptionRequestBuilder { get; }
+        IPlcUnsubscriptionRequestBuilder UnsubscriptionRequestBuilder { get; }
     }
 }
