@@ -38,12 +38,19 @@ public class JavaGenerator implements Generator {
 
     @Override public void generate(IfStatement ifStatement) {
         writer.startLine("if (");
-        ifStatement.getCondition().write(this);
+        ifStatement.getConditions().get(0).write(this);
         writer.write(") {\n");
-        writeBlock(ifStatement.getBody());
-        if (ifStatement.getOrElse() != null) {
+        writeBlock(ifStatement.getBlocks().get(0));
+        // For each remaining condition to an else if
+        for (int i = 1; i < ifStatement.getConditions().size(); i++) {
+            writer.startLine("} else if (");
+            ifStatement.getConditions().get(i).write(this);
+            writer.write(") {\n");
+            writeBlock(ifStatement.getBlocks().get(i));
+        }
+        if (ifStatement.getBlocks().size() == ifStatement.getConditions().size() + 1) {
             writer.writeLine("} else {");
-            writeBlock(ifStatement.getOrElse());
+            writeBlock(ifStatement.getBlocks().get(ifStatement.getBlocks().size() - 1));
         }
         writer.writeLine("}");
     }

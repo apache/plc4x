@@ -1,28 +1,29 @@
 package org.apache.plc4x.codegen.ast;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class IfStatement extends Statement {
 
-    private Expression condition;
-    private Block body;
-    private Block orElse;
+    private List<Expression> condition;
+    private List<Block> blocks;
 
     public IfStatement(Expression condition, Block body, Block orElse) {
-        // Check condition returns Binary
-        this.condition = condition;
-        this.body = body;
-        this.orElse = orElse;
+        this(Arrays.asList(condition), Arrays.asList(body, orElse));
     }
 
-    public Expression getCondition() {
+    public IfStatement(List<Expression> condition, List<Block> blocks) {
+        assert condition.size() == blocks.size() || condition.size() == (blocks.size() -1);
+        this.condition = condition;
+        this.blocks = blocks;
+    }
+
+    public List<Expression> getConditions() {
         return condition;
     }
 
-    public Block getBody() {
-        return body;
-    }
-
-    public Block getOrElse() {
-        return orElse;
+    public List<Block> getBlocks() {
+        return blocks;
     }
 
     @Override public <T> T accept(NodeVisitor<T> visitor) {

@@ -55,4 +55,27 @@ public class PythonGeneratorTest {
             "        pass\n" +
             "        \n", code);
     }
+
+    @Test
+    public void ifMultipleElse() {
+        final IfStatement stmt = new IfStatement(
+            Arrays.asList(
+                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantNode(10.0), BinaryExpression.Operation.EQ),
+                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantNode(5.0), BinaryExpression.Operation.EQ)
+            ),
+            Arrays.asList(
+                new Block(),
+                new Block(),
+                new Block()
+            ));
+
+        stmt.write(generator);
+        final String code = writer.getCode();
+        assertEquals("if a == 10.0:\n" +
+            "    pass\n" +
+            "elif a == 5.0:\n" +
+            "    pass\n" +
+            "else:\n" +
+            "    pass\n", code);
+    }
 }
