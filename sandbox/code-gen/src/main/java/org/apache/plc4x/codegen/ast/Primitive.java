@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.codegen.ast;
 
-public class Primitive extends TypeNode {
+public class Primitive extends TypeDefinition {
 
     // Shorthands
     public static final Primitive VOID = new Primitive(DataType.VOID);

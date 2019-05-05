@@ -19,12 +19,18 @@ under the License.
 package org.apache.plc4x.codegen.ast;
 
 /**
- * Do Nothing command;
+ * Definition of a Type / Class.
  */
-public class NoOp extends Expression {
+public class TypeDefinition implements Node {
 
-    protected NoOp() {
-        super(Primitive.VOID);
+    private final String typeString;
+
+    public TypeDefinition(String typeString) {
+        this.typeString = typeString;
+    }
+
+    String getTypeString() {
+        return this.typeString;
     }
 
     @Override public <T> T accept(NodeVisitor<T> visitor) {
@@ -32,6 +38,6 @@ public class NoOp extends Expression {
     }
 
     @Override public void write(Generator writer) {
-        writer.generateNoOp();
+        writer.generateType(typeString);
     }
 }

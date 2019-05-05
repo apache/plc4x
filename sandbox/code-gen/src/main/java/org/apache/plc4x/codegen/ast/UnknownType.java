@@ -21,7 +21,7 @@ package org.apache.plc4x.codegen.ast;
 /**
  * Represents an Unknown Type.
  */
-public class UnknownType extends TypeNode {
+public class UnknownType extends TypeDefinition {
 
     public static final UnknownType INSTANCE = new UnknownType();
 

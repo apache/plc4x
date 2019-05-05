@@ -50,7 +50,7 @@ public class Expressions {
      * @param op
      * @return
      */
-    public static Expression binaryExpression(TypeNode type, Node left, Node right, BinaryExpression.Operation op) {
+    public static Expression binaryExpression(TypeDefinition type, Node left, Node right, BinaryExpression.Operation op) {
         return new BinaryExpression(type, left, right, op);
     }
 
@@ -129,7 +129,7 @@ public class Expressions {
      * Define a compile time constant and also passes
      * the expected type for usage in the code generation later.
      */
-    public static Expression constant(TypeNode type, Object value) {
+    public static Expression constant(TypeDefinition type, Object value) {
         return new ConstantExpression(value);
     }
 
@@ -144,7 +144,7 @@ public class Expressions {
     /**
      * Declares a constant (no field), which is not initialized.
      */
-    public static Statement declaration(String variable, TypeNode type) {
+    public static Statement declaration(String variable, TypeDefinition type) {
         return new DeclarationStatement(parameter(variable, type), null);
     }
 
@@ -175,24 +175,56 @@ public class Expressions {
     public static Expression call(Node target, String methodName, Node... arguments) {
         return new CallExpression(
             new Method(UnknownType.INSTANCE, methodName, UnknownType.INSTANCE,
-                Collections.<TypeNode>emptyList(), Collections.<ExceptionType>emptyList()),
+                Collections.<TypeDefinition>emptyList(), Collections.<ExceptionType>emptyList()),
             target,
             arguments
         );
+    }
+
+    public static Expression call(Method method, Node target, Node... arguments) {
+        return new CallExpression(method, target, arguments);
+    }
+
+    /**
+     * Static call.
+     */
+    public static Expression call(Method method, Node... arguments) {
+        return new CallExpression(method, null, arguments);
     }
 
     /**
      * Reference to a Method, similar than field-reference
      * @return
      */
-    public static Method method(TypeNode definingClass, String name, TypeNode returnType, List<TypeNode> parameterTypes, List<ExceptionType> exceptions) {
+    public static Method method(TypeDefinition definingClass, String name, TypeDefinition returnType, List<TypeDefinition> parameterTypes, List<ExceptionType> exceptions) {
         return new Method(definingClass, name, returnType, parameterTypes, exceptions);
     }
 
     /**
      * Declares a variable.
      */
-    public static ParameterExpression parameter(String name, TypeNode type) {
+    public static ParameterExpression parameter(String name, TypeDefinition type) {
         return new ParameterExpression(type, name);
+    }
+
+    /**
+     * New Instance of Class / Type.
+     */
+    public static Expression new_(TypeDefinition type, Node... arguments) {
+        return new NewExpression(type, arguments);
+    }
+
+    /**
+     * New Instance of Class / Type.
+     */
+    public static Expression new_(TypeDefinition type, List<Node> arguments) {
+        return new NewExpression(type, arguments);
+    }
+
+    /**
+     * Return Statements.
+     */
+    public static ReturnStatement return_(Expression value) {
+        return new ReturnStatement(value);
     }
 }

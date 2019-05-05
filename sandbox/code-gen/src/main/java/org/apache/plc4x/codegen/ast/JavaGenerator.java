@@ -248,7 +248,7 @@ public class JavaGenerator implements Generator {
         writer.writeLine("}");
     }
 
-    @Override public void generateFieldDeclaration(Set<Modifier> modifiers, TypeNode type, String name, Expression initializer) {
+    @Override public void generateFieldDeclaration(Set<Modifier> modifiers, TypeDefinition type, String name, Expression initializer) {
         if (modifiers.contains(Modifier.PRIVATE)) {
             writer.startLine("private ");
         } else {
@@ -272,7 +272,7 @@ public class JavaGenerator implements Generator {
         writer.endLine();
     }
 
-    @Override public void generateFieldReference(TypeNode type, String name) {
+    @Override public void generateFieldReference(TypeDefinition type, String name) {
         writer.write("this.");
         writer.write(name);
     }

@@ -21,7 +21,7 @@ package org.apache.plc4x.codegen.ast;
 /**
  * Defines an Exception-Type.
  */
-public class ExceptionType extends TypeNode {
+public class ExceptionType extends TypeDefinition {
 
     public ExceptionType(String typeString) {
         super(typeString);

@@ -27,13 +27,13 @@ import java.util.List;
  */
 public class Method implements Node {
 
-    private final TypeNode type;    // Type where this thing is defined on
+    private final TypeDefinition type;    // Type where this thing is defined on
     private final String name;
-    private final TypeNode returnType;
-    private final List<TypeNode> parameterTypes;
+    private final TypeDefinition returnType;
+    private final List<TypeDefinition> parameterTypes;
     private final List<ExceptionType> expressionTypes;
 
-    public Method(TypeNode type, String name, TypeNode returnType, List<TypeNode> parameterTypes, List<ExceptionType> expressionTypes) {
+    public Method(TypeDefinition type, String name, TypeDefinition returnType, List<TypeDefinition> parameterTypes, List<ExceptionType> expressionTypes) {
         this.type = type;
         this.name = name;
         this.returnType = returnType;
@@ -41,7 +41,7 @@ public class Method implements Node {
         this.expressionTypes = expressionTypes;
     }
 
-    public TypeNode getType() {
+    public TypeDefinition getType() {
         return type;
     }
 
@@ -49,11 +49,11 @@ public class Method implements Node {
         return name;
     }
 
-    public TypeNode getReturnType() {
+    public TypeDefinition getReturnType() {
         return returnType;
     }
 
-    public List<TypeNode> getParameterTypes() {
+    public List<TypeDefinition> getParameterTypes() {
         return parameterTypes;
     }
 

@@ -255,7 +255,7 @@ public class PythonGenerator implements Generator {
         writer.endBlock();
     }
 
-    @Override public void generateFieldDeclaration(Set<Modifier> modifiers, TypeNode type, String name, Expression initializer) {
+    @Override public void generateFieldDeclaration(Set<Modifier> modifiers, TypeDefinition type, String name, Expression initializer) {
         writer.startLine("");
         writer.write(name);
         writer.write(": ");
@@ -270,7 +270,7 @@ public class PythonGenerator implements Generator {
         writer.endLine();
     }
 
-    @Override public void generateFieldReference(TypeNode type, String name) {
+    @Override public void generateFieldReference(TypeDefinition type, String name) {
         writer.write("self.");
         writer.write(name);
     }

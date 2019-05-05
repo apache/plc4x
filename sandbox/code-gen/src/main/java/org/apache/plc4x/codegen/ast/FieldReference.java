@@ -25,12 +25,12 @@ public class FieldReference extends ParameterExpression {
     /**
      * if target == null, reference on a field in the surrounding class ("this")
      */
-    public FieldReference(TypeNode type, String name, Node target) {
+    public FieldReference(TypeDefinition type, String name, Node target) {
         super(type, name);
         this.target = target;
     }
 
-    public FieldReference(TypeNode type, String name) {
+    public FieldReference(TypeDefinition type, String name) {
         this(type, name, null);
     }
 

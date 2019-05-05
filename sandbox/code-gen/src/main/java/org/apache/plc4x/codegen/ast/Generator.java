@@ -60,9 +60,9 @@ public interface Generator {
 
     void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDeclaration> innerClasses, boolean mainClass);
 
-    void generateFieldDeclaration(Set<Modifier> modifiers, TypeNode type, String name, Expression initializer);
+    void generateFieldDeclaration(Set<Modifier> modifiers, TypeDefinition type, String name, Expression initializer);
 
-    void generateFieldReference(TypeNode type, String name);
+    void generateFieldReference(TypeDefinition type, String name);
 
     void generateConstructor(Set<Modifier> modifiers, String className, List<ParameterExpression> parameters, Block body);
 

@@ -20,7 +20,7 @@ package org.apache.plc4x.codegen.ast;
 
 public class ConditionalStatement extends Expression {
 
-    protected ConditionalStatement(TypeNode type) {
+    protected ConditionalStatement(TypeDefinition type) {
         super(type);
     }
 

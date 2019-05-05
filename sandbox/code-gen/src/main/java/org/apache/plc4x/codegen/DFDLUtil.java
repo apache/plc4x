@@ -56,7 +56,7 @@ public class DFDLUtil {
             final Iterator<Element> elementIterator = sequence.elementIterator(ELEMENT);
             while (elementIterator.hasNext()) {
                 final Element elem = elementIterator.next();
-                fields.add(new PojoFactory.Field(new TypeNode(elem.attributeValue("type")), elem.attributeValue("name")));
+                fields.add(new PojoFactory.Field(new TypeDefinition(elem.attributeValue("type")), elem.attributeValue("name")));
             }
             final PojoFactory.PojoDescription desc = new PojoFactory.PojoDescription(element.attributeValue("name"), fields);
             final ClassDeclaration classDeclaration = factory.create(desc);

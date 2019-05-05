@@ -26,23 +26,23 @@ import java.util.Set;
 public class FieldDeclaration implements Node {
 
     private final Set<Modifier> modifiers;
-    private final TypeNode type;
+    private final TypeDefinition type;
     private final String name;
 
     private final Expression initializer;
 
-    public FieldDeclaration(Set<Modifier> modifiers, TypeNode type, String name, Expression initializer) {
+    public FieldDeclaration(Set<Modifier> modifiers, TypeDefinition type, String name, Expression initializer) {
         this.modifiers = modifiers;
         this.type = type;
         this.name = name;
         this.initializer = initializer;
     }
 
-    public FieldDeclaration(TypeNode type, String name) {
+    public FieldDeclaration(TypeDefinition type, String name) {
         this(Collections.emptySet(), type, name, null);
     }
 
-    public FieldDeclaration(TypeNode type, String name, Modifier... modifiers) {
+    public FieldDeclaration(TypeDefinition type, String name, Modifier... modifiers) {
         this(new HashSet<>(Arrays.asList(modifiers)), type, name, null);
     }
 

@@ -20,13 +20,13 @@ package org.apache.plc4x.codegen.ast;
 
 public abstract class AbstractNode implements Node {
 
-    public final TypeNode type;
+    public final TypeDefinition type;
 
-    protected AbstractNode(TypeNode type) {
+    protected AbstractNode(TypeDefinition type) {
         this.type = type;
     }
 
-    public TypeNode getType() {
+    public TypeDefinition getType() {
         return this.type;
     }
 }

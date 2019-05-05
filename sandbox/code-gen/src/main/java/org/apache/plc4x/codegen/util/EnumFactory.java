@@ -53,7 +53,7 @@ public class EnumFactory {
 
         // Now add all these static methods on top
         for (EnumEntry enumEntry : enumEntries) {
-            final TypeNode clazzType = new TypeNode(desc.getName());
+            final TypeDefinition clazzType = new TypeDefinition(desc.getName());
             final String fieldName = enumEntry.getName().toUpperCase();
             finalFields.add(new FieldDeclaration(
                 new HashSet<>(Arrays.asList(Modifier.STATIC, Modifier.FINAL)),
@@ -75,13 +75,13 @@ public class EnumFactory {
         return new ClassDeclaration("", desc.getName(), finalFields, Arrays.asList(constructor), methods, null);
     }
 
-    static MethodDefinition getGetterDefinition(String name, TypeNode type) {
+    static MethodDefinition getGetterDefinition(String name, TypeDefinition type) {
         String getter = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
         Block body = new Block(new ReturnStatement(new FieldReference(type, name)));
         return new MethodDefinition(getter, type, Collections.emptyList(), body);
     }
 
-    static MethodDefinition getSetterDefinition(String name, TypeNode type) {
+    static MethodDefinition getSetterDefinition(String name, TypeDefinition type) {
         String getter = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
         final ParameterExpression param = new ParameterExpression(type, name);
         Block body = new Block(Expressions.assignment(new FieldReference(type, name), param));
@@ -133,15 +133,15 @@ public class EnumFactory {
 
     public static class Field {
 
-        private final TypeNode type;
+        private final TypeDefinition type;
         private final String name;
 
-        public Field(TypeNode type, String name) {
+        public Field(TypeDefinition type, String name) {
             this.type = type;
             this.name = name;
         }
 
-        public TypeNode getType() {
+        public TypeDefinition getType() {
             return type;
         }
 

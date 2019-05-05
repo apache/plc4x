@@ -24,7 +24,7 @@ public class BinaryExpression extends Expression {
     private final Node right;
     private final Operation op;
 
-    protected BinaryExpression(TypeNode type, Node left, Node right, Operation op) {
+    protected BinaryExpression(TypeDefinition type, Node left, Node right, Operation op) {
         super(type);
         this.left = left;
         this.right = right;

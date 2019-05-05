@@ -20,7 +20,7 @@ package org.apache.plc4x.codegen.ast;
 
 public class TypeUtil {
 
-    public static TypeNode infer(Object o) {
+    public static TypeDefinition infer(Object o) {
         if (o instanceof Double) {
             return Primitive.DOUBLE;
         }

@@ -26,11 +26,11 @@ public class MethodDefinition implements Node {
 
     private final Set<Modifier> modifiers;
     private final String name;
-    private final TypeNode resultType;
+    private final TypeDefinition resultType;
     private final List<ParameterExpression> parameters;
     private final Block body;
 
-    public MethodDefinition(Set<Modifier> modifiers, String name, TypeNode resultType, List<ParameterExpression> parameters, Block body) {
+    public MethodDefinition(Set<Modifier> modifiers, String name, TypeDefinition resultType, List<ParameterExpression> parameters, Block body) {
         this.modifiers = modifiers;
         this.name = name;
         this.resultType = resultType;
@@ -38,7 +38,7 @@ public class MethodDefinition implements Node {
         this.body = body;
     }
 
-    public MethodDefinition(String name, TypeNode resultType, List<ParameterExpression> parameters, Block body) {
+    public MethodDefinition(String name, TypeDefinition resultType, List<ParameterExpression> parameters, Block body) {
         this(Collections.<Modifier>emptySet(), name, resultType, parameters, body);
     }
 
@@ -50,7 +50,7 @@ public class MethodDefinition implements Node {
         return name;
     }
 
-    public TypeNode getResultType() {
+    public TypeDefinition getResultType() {
         return resultType;
     }
 

@@ -106,7 +106,7 @@ public class JavaGeneratorTest {
 
     @Test
     public void callStaticMethod() {
-        final TypeNode myClazz = new TypeNode("MyClazz");
+        final TypeDefinition myClazz = new TypeDefinition("MyClazz");
         Expression expr = new CallExpression(new Method(myClazz, "toString", Primitive.VOID, Collections.singletonList(Primitive.DOUBLE), Collections.EMPTY_LIST), null, new ConstantExpression(5.0));
 
         expr.write(generator);
@@ -118,7 +118,7 @@ public class JavaGeneratorTest {
 
     @Test
     public void callMethod() {
-        final TypeNode myClazz = new TypeNode("MyClazz");
+        final TypeDefinition myClazz = new TypeDefinition("MyClazz");
         Expression expr = new CallExpression(new Method(myClazz, "toString", Primitive.VOID, Collections.singletonList(Primitive.DOUBLE), Collections.EMPTY_LIST), new ParameterExpression(myClazz, "a"), new ConstantExpression(5.0));
 
         expr.write(generator);
@@ -130,7 +130,7 @@ public class JavaGeneratorTest {
 
     @Test
     public void complexCallAssignment() {
-        final TypeNode myClazz = new TypeNode("MyClazz");
+        final TypeDefinition myClazz = new TypeDefinition("MyClazz");
         final ParameterExpression instance = new ParameterExpression(myClazz, "instance");
         final Method getNumberMethod = new Method(myClazz, "getNumber", Primitive.DOUBLE, Collections.emptyList(), Collections.emptyList());
         final Method staticMethod = new Method(myClazz, "staticMethod", Primitive.DOUBLE, Collections.emptyList(), Collections.emptyList());

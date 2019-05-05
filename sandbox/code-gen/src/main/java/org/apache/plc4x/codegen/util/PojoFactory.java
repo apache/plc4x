@@ -31,7 +31,7 @@ import static org.apache.plc4x.codegen.util.EnumFactory.getSetterDefinition;
 
 public class PojoFactory {
 
-    private TypeNode BUFFER_TYPE;
+    private TypeDefinition BUFFER_TYPE;
 
     private Method readByte = new Method(BUFFER_TYPE, "readByte", Primitive.INTEGER, Collections.emptyList(), Collections.emptyList());
 
@@ -58,13 +58,13 @@ public class PojoFactory {
 
         // Encode Method
         methods.add(new MethodDefinition("encode", Primitive.VOID, Collections.singletonList(
-            new ParameterExpression(new TypeNode("org.apache.plc4x.api.Buffer"), "buffer")
+            new ParameterExpression(new TypeDefinition("org.apache.plc4x.api.Buffer"), "buffer")
         ), new Block()));
 
         // Decode Method
-        BUFFER_TYPE = new TypeNode("org.apache.plc4x.api.Buffer");
+        BUFFER_TYPE = new TypeDefinition("org.apache.plc4x.api.Buffer");
         final ParameterExpression buffer = new ParameterExpression(BUFFER_TYPE, "buffer");
-        final TypeNode clazz = new TypeNode(desc.getName());
+        final TypeDefinition clazz = new TypeDefinition(desc.getName());
         final ParameterExpression instance = new ParameterExpression(clazz, "instance");
         methods.add(new MethodDefinition(Collections.singleton(Modifier.STATIC), "decode", clazz, Collections.singletonList(
             buffer
@@ -104,15 +104,15 @@ public class PojoFactory {
 
     public static class Field {
 
-        private final TypeNode type;
+        private final TypeDefinition type;
         private final String name;
 
-        public Field(TypeNode type, String name) {
+        public Field(TypeDefinition type, String name) {
             this.type = type;
             this.name = name;
         }
 
-        public TypeNode getType() {
+        public TypeDefinition getType() {
             return type;
         }
 
