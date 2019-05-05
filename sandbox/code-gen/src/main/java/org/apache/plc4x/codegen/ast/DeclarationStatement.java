@@ -20,10 +20,10 @@ package org.apache.plc4x.codegen.ast;
 
 public class DeclarationStatement extends Statement {
 
-    public final ParameterExpression parameterExpression;
-    public final Expression initializer;
+    private final ParameterExpression parameterExpression;
+    private final Expression initializer;
 
-    public DeclarationStatement(ParameterExpression parameterExpression, Expression initializer) {
+    DeclarationStatement(ParameterExpression parameterExpression, Expression initializer) {
         this.parameterExpression = parameterExpression;
         this.initializer = initializer;
     }

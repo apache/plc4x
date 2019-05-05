@@ -152,14 +152,14 @@ public class Expressions {
      * Reference to a field in the surrounding class.
      */
     public static Expression field(String name) {
-        return new FieldReference(new UnknownType(), name);
+        return new FieldReference(UnknownType.INSTANCE, name);
     }
 
     /**
      * Reference to a field on the given target
      */
     public static Expression field(Node target, String name) {
-        return new FieldReference(new UnknownType(), name, target);
+        return new FieldReference(UnknownType.INSTANCE, name, target);
     }
 
     /**
@@ -226,5 +226,12 @@ public class Expressions {
      */
     public static ReturnStatement return_(Expression value) {
         return new ReturnStatement(value);
+    }
+
+    /**
+     * Declares a Class as type.
+     */
+    public static TypeDefinition typeOf(String className) {
+        return new TypeDefinition(className);
     }
 }

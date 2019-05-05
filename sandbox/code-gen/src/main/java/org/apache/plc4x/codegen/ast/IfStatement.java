@@ -26,7 +26,7 @@ public class IfStatement extends Statement {
     private List<Expression> condition;
     private List<Block> blocks;
 
-    public IfStatement(Expression condition, Block body, Block orElse) {
+    IfStatement(Expression condition, Block body, Block orElse) {
         this.condition = Arrays.asList(condition);
         if (orElse == null) {
             this.blocks = Arrays.asList(body);
@@ -35,7 +35,7 @@ public class IfStatement extends Statement {
         }
     }
 
-    public IfStatement(List<Expression> condition, List<Block> blocks) {
+    IfStatement(List<Expression> condition, List<Block> blocks) {
         assert condition.size() == blocks.size() || condition.size() == (blocks.size() -1);
         this.condition = condition;
         this.blocks = blocks;

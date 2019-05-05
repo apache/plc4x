@@ -22,7 +22,7 @@ public class ParameterExpression extends Expression {
 
     private final String name;
 
-    public ParameterExpression(TypeDefinition type, String name) {
+    ParameterExpression(TypeDefinition type, String name) {
         super(type);
         this.name = name;
     }

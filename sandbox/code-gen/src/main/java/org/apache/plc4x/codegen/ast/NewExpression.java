@@ -25,12 +25,12 @@ public class NewExpression extends Expression {
 
     private List<Node> arguments;
 
-    public NewExpression(TypeDefinition myClazz, List<Node> arguments) {
+    NewExpression(TypeDefinition myClazz, List<Node> arguments) {
         super(myClazz);
         this.arguments = arguments;
     }
 
-    public NewExpression(TypeDefinition myClazz, Node... arguments) {
+    NewExpression(TypeDefinition myClazz, Node... arguments) {
         this(myClazz, Arrays.asList(arguments));
     }
 

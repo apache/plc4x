@@ -22,7 +22,7 @@ public class ConstantExpression extends Expression {
 
     private Object value;
 
-    public ConstantExpression(TypeDefinition type, Object value) {
+    ConstantExpression(TypeDefinition type, Object value) {
         super(type);
         this.value = value;
     }

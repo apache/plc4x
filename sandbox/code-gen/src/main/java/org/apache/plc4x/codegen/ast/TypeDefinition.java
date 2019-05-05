@@ -25,7 +25,7 @@ public class TypeDefinition implements Node {
 
     private final String typeString;
 
-    public TypeDefinition(String typeString) {
+    TypeDefinition(String typeString) {
         this.typeString = typeString;
     }
 

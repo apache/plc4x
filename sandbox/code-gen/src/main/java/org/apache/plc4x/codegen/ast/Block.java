@@ -23,18 +23,24 @@ import java.util.List;
 
 public class Block extends Statement {
 
+    public static final Block EMPTY_BLOCK = new Block();
+
     private final List<Node> statements;
 
-    public Block(List<Node> statements) {
+    Block(List<Node> statements) {
         this.statements = statements;
     }
 
-    public Block(Node... statements) {
+    Block(Node... statements) {
         this(Arrays.asList(statements));
     }
 
     public List<Node> getStatements() {
         return statements;
+    }
+
+    public static BlockBuilder build() {
+        return new BlockBuilder();
     }
 
     @Override public <T> T accept(NodeVisitor<T> visitor) {

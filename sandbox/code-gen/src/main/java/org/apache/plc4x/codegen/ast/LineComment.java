@@ -25,7 +25,7 @@ public class LineComment implements Node {
 
     private final String comment;
 
-    public LineComment(String comment) {
+    LineComment(String comment) {
         this.comment = comment;
     }
 

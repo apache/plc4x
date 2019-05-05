@@ -25,7 +25,7 @@ public class UnknownType extends TypeDefinition {
 
     public static final UnknownType INSTANCE = new UnknownType();
 
-    public UnknownType() {
+    private UnknownType() {
         super("");
     }
 

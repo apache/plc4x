@@ -22,7 +22,7 @@ public class ReturnStatement extends Statement {
 
     private final Expression value;
 
-    public ReturnStatement(Expression value) {
+    ReturnStatement(Expression value) {
         this.value = value;
     }
 

@@ -23,7 +23,7 @@ package org.apache.plc4x.codegen.ast;
  */
 public class ExceptionType extends TypeDefinition {
 
-    public ExceptionType(String typeString) {
+    ExceptionType(String typeString) {
         super(typeString);
     }
 

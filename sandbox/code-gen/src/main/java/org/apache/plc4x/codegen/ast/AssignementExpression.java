@@ -23,7 +23,7 @@ public class AssignementExpression extends Expression {
     private final Expression target;
     private final Node value;
 
-    protected AssignementExpression(Expression target, Node value) {
+    AssignementExpression(Expression target, Node value) {
         super(target.getType());
         this.target = target;
         this.value = value;

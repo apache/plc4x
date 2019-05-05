@@ -58,24 +58,25 @@ public class PojoFactory {
 
         // Encode Method
         methods.add(new MethodDefinition("encode", Primitive.VOID, Collections.singletonList(
-            new ParameterExpression(new TypeDefinition("org.apache.plc4x.api.Buffer"), "buffer")
-        ), new Block()));
+            Expressions.parameter("buffer", Expressions.typeOf("org.apache.plc4x.api.Buffer"))
+        ), Block.build().toBlock()));
 
         // Decode Method
-        BUFFER_TYPE = new TypeDefinition("org.apache.plc4x.api.Buffer");
-        final ParameterExpression buffer = new ParameterExpression(BUFFER_TYPE, "buffer");
-        final TypeDefinition clazz = new TypeDefinition(desc.getName());
-        final ParameterExpression instance = new ParameterExpression(clazz, "instance");
+        BUFFER_TYPE = Expressions.typeOf("org.apache.plc4x.api.Buffer");
+        final ParameterExpression buffer = Expressions.parameter("buffer", BUFFER_TYPE);
+        final TypeDefinition clazz = Expressions.typeOf(desc.getName());
+        final ParameterExpression instance = Expressions.parameter("instance", clazz);
         methods.add(new MethodDefinition(Collections.singleton(Modifier.STATIC), "decode", clazz, Collections.singletonList(
             buffer
-        ), new Block(
-            Expressions.assignment(instance, new NewExpression(clazz)),
-            new CallExpression(readByte, buffer),
-            new ReturnStatement(instance)
-        )));
+        ), Block.build()
+            .add(Expressions.assignment(instance, Expressions.new_(clazz)))
+            .add(Expressions.call(buffer, readByte))
+            .add(Expressions.return_(instance))
+            .toBlock()
+        ));
 
 
-        return new ClassDeclaration("", desc.getName(), fields, Arrays.asList(new ConstructorDeclaration(Collections.emptyList(), new Block())), methods, null);
+        return new ClassDeclaration("", desc.getName(), fields, Arrays.asList(new ConstructorDeclaration(Collections.emptyList(), Block.EMPTY_BLOCK)), methods, null);
     }
 
     public static class PojoDescription {

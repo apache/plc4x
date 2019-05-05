@@ -33,7 +33,7 @@ public class CallExpression extends Expression {
      * @param target .
      * @param arguments .
      */
-    public CallExpression(Method method, Node target, Node... arguments) {
+    CallExpression(Method method, Node target, Node... arguments) {
         super(method.getReturnType());
         this.method = method;
         this.target = target;

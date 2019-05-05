@@ -36,8 +36,8 @@ public class EnumFactory {
             FieldDeclaration fieldDeclaration = new FieldDeclaration(field1.getType(), field1.getName(), Modifier.PRIVATE, Modifier.FINAL);
             fields.add(fieldDeclaration);
             constructorStatements.add(Expressions.assignment(
-                new FieldReference(field1.getType(), field1.getName()),
-                new ParameterExpression(field1.getType(), field1.getName())
+                Expressions.field(field1.getName()),
+                Expressions.parameter(field1.getName(), field1.getType())
             ));
         }
 
@@ -53,13 +53,13 @@ public class EnumFactory {
 
         // Now add all these static methods on top
         for (EnumEntry enumEntry : enumEntries) {
-            final TypeDefinition clazzType = new TypeDefinition(desc.getName());
+            final TypeDefinition clazzType = Expressions.typeOf(desc.getName());
             final String fieldName = enumEntry.getName().toUpperCase();
             finalFields.add(new FieldDeclaration(
                 new HashSet<>(Arrays.asList(Modifier.STATIC, Modifier.FINAL)),
                 clazzType,
                 fieldName,
-                new NewExpression(clazzType, enumEntry.getArguments())
+                Expressions.new_(clazzType, enumEntry.getArguments())
             ));
         }
 
@@ -68,8 +68,8 @@ public class EnumFactory {
         // Add constructor
         final ConstructorDeclaration constructor = new ConstructorDeclaration(Collections.singleton(Modifier.PRIVATE),
             desc.fields.stream()
-                .map(field -> new ParameterExpression(field.getType(), field.getName())).collect(Collectors.toList()),
-            new Block(constructorStatements));
+                .map(field -> Expressions.parameter(field.getName(), field.getType())).collect(Collectors.toList()),
+            Block.build().add(constructorStatements).toBlock());
 
 
         return new ClassDeclaration("", desc.getName(), finalFields, Arrays.asList(constructor), methods, null);
@@ -77,14 +77,14 @@ public class EnumFactory {
 
     static MethodDefinition getGetterDefinition(String name, TypeDefinition type) {
         String getter = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
-        Block body = new Block(new ReturnStatement(new FieldReference(type, name)));
+        Block body = Block.build().add(Expressions.return_(Expressions.field(name))).toBlock();
         return new MethodDefinition(getter, type, Collections.emptyList(), body);
     }
 
     static MethodDefinition getSetterDefinition(String name, TypeDefinition type) {
         String getter = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
-        final ParameterExpression param = new ParameterExpression(type, name);
-        Block body = new Block(Expressions.assignment(new FieldReference(type, name), param));
+        final ParameterExpression param = Expressions.parameter(name, type);
+        Block body = Block.build().add(Expressions.assignment(Expressions.field(name), param)).toBlock();
         return new MethodDefinition(getter, type, Collections.singletonList(param), body);
     }
 
