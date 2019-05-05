@@ -16,7 +16,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.codegen.ast;
+package org.apache.plc4x.codegen.util;
+
+import org.apache.plc4x.codegen.ast.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,14 +28,14 @@ import java.util.stream.Collectors;
  */
 public class EnumFactory {
 
-    public ClassDefinition create(PojoDescription desc, List<EnumEntry> enumEntries) {
+    public ClassDeclaration create(PojoDescription desc, List<EnumEntry> enumEntries) {
         // Create all Fields first
         final List<Node> constructorStatements = new ArrayList<>();
         final List<FieldDeclaration> fields = new ArrayList<>();
         for (Field field1 : desc.fields) {
             FieldDeclaration fieldDeclaration = new FieldDeclaration(field1.getType(), field1.getName(), Modifier.PRIVATE, Modifier.FINAL);
             fields.add(fieldDeclaration);
-            constructorStatements.add(new AssignementExpression(
+            constructorStatements.add(Expressions.assignment(
                 new FieldReference(field1.getType(), field1.getName()),
                 new ParameterExpression(field1.getType(), field1.getName())
             ));
@@ -70,7 +72,7 @@ public class EnumFactory {
             new Block(constructorStatements));
 
 
-        return new ClassDefinition("", desc.getName(), finalFields, Arrays.asList(constructor), methods, null);
+        return new ClassDeclaration("", desc.getName(), finalFields, Arrays.asList(constructor), methods, null);
     }
 
     static MethodDefinition getGetterDefinition(String name, TypeNode type) {
@@ -82,7 +84,7 @@ public class EnumFactory {
     static MethodDefinition getSetterDefinition(String name, TypeNode type) {
         String getter = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
         final ParameterExpression param = new ParameterExpression(type, name);
-        Block body = new Block(new AssignementExpression(new FieldReference(type, name), param));
+        Block body = new Block(Expressions.assignment(new FieldReference(type, name), param));
         return new MethodDefinition(getter, type, Collections.singletonList(param), body);
     }
 

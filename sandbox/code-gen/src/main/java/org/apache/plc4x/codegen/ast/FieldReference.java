@@ -20,8 +20,18 @@ package org.apache.plc4x.codegen.ast;
 
 public class FieldReference extends ParameterExpression {
 
-    public FieldReference(TypeNode type, String name) {
+    private final Node target;
+
+    /**
+     * if target == null, reference on a field in the surrounding class ("this")
+     */
+    public FieldReference(TypeNode type, String name, Node target) {
         super(type, name);
+        this.target = target;
+    }
+
+    public FieldReference(TypeNode type, String name) {
+        this(type, name, null);
     }
 
     @Override public <T> T accept(NodeVisitor<T> visitor) {

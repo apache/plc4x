@@ -46,9 +46,9 @@ public class PythonGeneratorTest {
         final ParameterExpression value = new ParameterExpression(Primitive.DOUBLE, "value");
 
         // Define Inner Class
-        final ClassDefinition innerClass = new ClassDefinition("", "MyInnerClazz", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null);
+        final ClassDeclaration innerClass = new ClassDeclaration("", "MyInnerClazz", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null);
 
-        final ClassDefinition clazz = new ClassDefinition("org.apache.plc4x",
+        final ClassDeclaration clazz = new ClassDeclaration("org.apache.plc4x",
             "MyClazz",
             Arrays.asList(current),
             Arrays.asList(
@@ -64,9 +64,9 @@ public class PythonGeneratorTest {
         final String code = writer.getCode();
         assertEquals("class MyClazz:\n" +
             "    \n" +
-            "    self.current: double\n" +
+            "    current: float\n" +
             "    \n" +
-            "    def __init__(double value):\n" +
+            "    def __init__(float value):\n" +
             "        self.current = value\n" +
             "    \n" +
             "    class MyInnerClazz:\n" +
@@ -78,8 +78,8 @@ public class PythonGeneratorTest {
     public void ifMultipleElse() {
         final IfStatement stmt = new IfStatement(
             Arrays.asList(
-                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantNode(10.0), BinaryExpression.Operation.EQ),
-                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantNode(5.0), BinaryExpression.Operation.EQ)
+                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantExpression(10.0), BinaryExpression.Operation.EQ),
+                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantExpression(5.0), BinaryExpression.Operation.EQ)
             ),
             Arrays.asList(
                 new Block(),

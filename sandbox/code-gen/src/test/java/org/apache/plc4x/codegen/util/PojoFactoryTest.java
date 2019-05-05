@@ -16,9 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.codegen.ast;
+package org.apache.plc4x.codegen.util;
 
-import org.apache.plc4x.codegen.util.PojoFactory;
+import org.apache.plc4x.codegen.ast.*;
+
 import org.junit.Test;
 
 public class PojoFactoryTest {
@@ -27,7 +28,7 @@ public class PojoFactoryTest {
     public void createPojoJava() {
         System.out.println("Java:");
         System.out.println("----------");
-        final ClassDefinition pojo = newPojo();
+        final ClassDeclaration pojo = newPojo();
 
         final CodeWriter writer = new CodeWriter(4);
         final JavaGenerator generator = new JavaGenerator(writer);
@@ -41,7 +42,7 @@ public class PojoFactoryTest {
     public void createPojoPython() {
         System.out.println("Python:");
         System.out.println("----------");
-        final ClassDefinition pojo = newPojo();
+        final ClassDeclaration pojo = newPojo();
 
         final CodeWriter writer = new CodeWriter(4);
         final PythonGenerator generator = new PythonGenerator(writer);
@@ -51,7 +52,7 @@ public class PojoFactoryTest {
         System.out.println(writer.getCode());
     }
 
-    private ClassDefinition newPojo() {
+    private ClassDeclaration newPojo() {
         final PojoFactory factory = new PojoFactory();
         final PojoFactory.PojoDescription description = new PojoFactory.PojoDescription("MyPojo",
             new PojoFactory.Field(Primitive.DOUBLE, "field1"),

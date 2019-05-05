@@ -33,8 +33,8 @@ public class PythonGenerator implements Generator {
         return null;
     }
 
-    @Override public void generate(ConstantNode constantNode) {
-        writer.write(constantNode.getValue().toString());
+    @Override public void generate(ConstantExpression constantExpression) {
+        writer.write(constantExpression.getValue().toString());
     }
 
     @Override public void generateDeclarationWithInitializer(DeclarationStatement declarationStatement) {
@@ -57,7 +57,24 @@ public class PythonGenerator implements Generator {
     }
 
     @Override public void generatePrimitive(Primitive.DataType primitive) {
-        writer.write(primitive.getTypeString());
+        switch (primitive) {
+            case STRING:
+                writer.write("string");
+                break;
+            case LONG:
+            case INTEGER:
+                writer.write("long");
+                break;
+            case DOUBLE:
+                writer.write("float");
+                break;
+            case BOOLEAN:
+                writer.write("bool");
+                break;
+            case VOID:
+                default:
+                    throw new UnsupportedOperationException("Primitive type " + primitive + " is not implemented!");
+        }
     }
 
     @Override public void generate(IfStatement ifStatement) {
@@ -191,7 +208,7 @@ public class PythonGenerator implements Generator {
         value.write(this);
     }
 
-    @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses, boolean mainClass) {
+    @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDeclaration> innerClasses, boolean mainClass) {
         // Add static?!
         // Own File?
         writer.startLine("class ");
@@ -230,7 +247,7 @@ public class PythonGenerator implements Generator {
 
         // If there are inner classes, implement them
         if (innerClasses != null) {
-            for (ClassDefinition innerClass : innerClasses) {
+            for (ClassDeclaration innerClass : innerClasses) {
                 this.generateClass(innerClass.getNamespace(), innerClass.getClassName(), innerClass.getFields(), innerClass.getConstructors(), innerClass.getMethods(), innerClass.getInnerClasses(), false);
             }
         }
@@ -273,7 +290,7 @@ public class PythonGenerator implements Generator {
         body.write(this);
     }
 
-    @Override public void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses) {
+    @Override public void generateFile(ClassDeclaration mainClass, List<ClassDeclaration> innerClasses) {
         generateClass(mainClass.getNamespace(), mainClass.getClassName(), mainClass.getFields(), mainClass.getConstructors(), mainClass.getMethods(), innerClasses, true);
     }
 

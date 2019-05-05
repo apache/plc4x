@@ -20,7 +20,7 @@ package org.apache.plc4x.codegen.ast;
 
 public interface NodeVisitor<T> {
 
-    T visit(ConstantNode constantNode);
+    T visit(ConstantExpression constantExpression);
 
     T visit(DeclarationStatement declarationStatement);
 

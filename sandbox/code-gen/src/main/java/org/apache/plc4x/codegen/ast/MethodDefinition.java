@@ -39,7 +39,7 @@ public class MethodDefinition implements Node {
     }
 
     public MethodDefinition(String name, TypeNode resultType, List<ParameterExpression> parameters, Block body) {
-        this(Collections.emptySet(), name, resultType, parameters, body);
+        this(Collections.<Modifier>emptySet(), name, resultType, parameters, body);
     }
 
     public Set<Modifier> getModifiers() {

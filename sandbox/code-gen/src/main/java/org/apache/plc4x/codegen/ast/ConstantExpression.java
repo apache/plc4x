@@ -18,26 +18,29 @@ under the License.
 */
 package org.apache.plc4x.codegen.ast;
 
-import java.util.List;
+public class ConstantExpression extends Expression {
 
-/**
- * Defines a File in Java
- */
-public class FileNode implements Node {
+    private Object value;
 
-    private final ClassDeclaration mainClass;
-    private final List<ClassDeclaration> innerClasses;
+    public ConstantExpression(TypeNode type, Object value) {
+        super(type);
+        this.value = value;
+    }
 
-    public FileNode(ClassDeclaration mainClass, List<ClassDeclaration> innerClasses) {
-        this.mainClass = mainClass;
-        this.innerClasses = innerClasses;
+    public ConstantExpression(Object value) {
+        this(TypeUtil.infer(value), value);
+    }
+
+    public Object getValue() {
+        return value;
     }
 
     @Override public <T> T accept(NodeVisitor<T> visitor) {
-        return null;
+        return visitor.visit(this);
     }
 
-    @Override public void write(Generator writer) {
-        writer.generateFile(mainClass, innerClasses);
+    @Override public void write(Generator generator) {
+        generator.generate(this);
     }
+
 }

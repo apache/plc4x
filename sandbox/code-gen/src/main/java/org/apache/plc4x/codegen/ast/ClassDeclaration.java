@@ -20,7 +20,7 @@ package org.apache.plc4x.codegen.ast;
 
 import java.util.List;
 
-public class ClassDefinition implements Node {
+public class ClassDeclaration implements Node {
 
     private final String namespace;
     private final String className;
@@ -28,9 +28,9 @@ public class ClassDefinition implements Node {
     private final List<FieldDeclaration> fields;
     private final List<ConstructorDeclaration> constructors;
     private final List<MethodDefinition> methods;
-    private final List<ClassDefinition> innerClasses;
+    private final List<ClassDeclaration> innerClasses;
 
-    public ClassDefinition(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses) {
+    public ClassDeclaration(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDeclaration> innerClasses) {
         this.namespace = namespace;
         this.className = className;
         this.fields = fields;
@@ -59,7 +59,7 @@ public class ClassDefinition implements Node {
         return methods;
     }
 
-    public List<ClassDefinition> getInnerClasses() {
+    public List<ClassDeclaration> getInnerClasses() {
         return innerClasses;
     }
 

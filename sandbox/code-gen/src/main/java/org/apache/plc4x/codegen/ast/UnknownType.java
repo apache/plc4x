@@ -18,25 +18,29 @@ under the License.
 */
 package org.apache.plc4x.codegen.ast;
 
-public class ConstantNode extends Expression {
+/**
+ * Represents an Unknown Type.
+ */
+public class UnknownType extends TypeNode {
 
-    private Object value;
+    public static final UnknownType INSTANCE = new UnknownType();
 
-    public ConstantNode(Object value) {
-        super(TypeUtil.infer(value));
-        this.value = value;
+    public UnknownType() {
+        super("");
     }
 
-    public Object getValue() {
-        return value;
+    @Override
+    String getTypeString() {
+        throw new UnsupportedOperationException();
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
-        return visitor.visit(this);
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
+        throw new UnsupportedOperationException();
     }
 
-    @Override public void write(Generator generator) {
-        generator.generate(this);
+    @Override
+    public void write(Generator writer) {
+        throw new UnsupportedOperationException();
     }
-
 }

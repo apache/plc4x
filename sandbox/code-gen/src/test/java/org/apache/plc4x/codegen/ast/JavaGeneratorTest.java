@@ -39,22 +39,22 @@ public class JavaGeneratorTest {
 
     @Test
     public void writeDeclaration() {
-        final DeclarationStatement stmt = new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantNode(5.0));
+        final DeclarationStatement stmt = new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantExpression(5.0));
         stmt.write(generator);
 
         final String code = writer.getCode();
 
-        assertEquals("double a = 5.0", code);
+        assertEquals("Double a = 5.0", code);
     }
 
     @Test
     public void ifStatement() {
         final Statement stmt = new IfStatement(
             new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"),
-                new ConstantNode(10.0),
+                new ConstantExpression(10.0),
                 BinaryExpression.Operation.EQ),
-            new Block(new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "b"), new ConstantNode(5.0))),
-            new Block(new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "b"), new ConstantNode(3.0)))
+            new Block(new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "b"), new ConstantExpression(5.0))),
+            new Block(new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "b"), new ConstantExpression(3.0)))
         );
 
         stmt.write(generator);
@@ -62,9 +62,9 @@ public class JavaGeneratorTest {
         final String code = writer.getCode();
 
         assertEquals("if (a == 10.0) {\n" +
-            "    double b = 5.0;\n" +
+            "    Double b = 5.0;\n" +
             "} else {\n" +
-            "    double b = 3.0;\n" +
+            "    Double b = 3.0;\n" +
             "}\n", code);
     }
 
@@ -74,16 +74,16 @@ public class JavaGeneratorTest {
             new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "c"), null),
             new IfStatement(
                 new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"),
-                    new ConstantNode(10.0),
+                    new ConstantExpression(10.0),
                     BinaryExpression.Operation.EQ),
                 new Block(
                     new IfStatement(
                         new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "b"),
-                            new ConstantNode(10.0),
+                            new ConstantExpression(10.0),
                             BinaryExpression.Operation.EQ),
                         new Block(
-                            new AssignementExpression(new ParameterExpression(Primitive.DOUBLE, "c"), new ConstantNode(5.0)),
-                            new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "d"), new ConstantNode(100.0))
+                            new AssignementExpression(new ParameterExpression(Primitive.DOUBLE, "c"), new ConstantExpression(5.0)),
+                            new DeclarationStatement(new ParameterExpression(Primitive.DOUBLE, "d"), new ConstantExpression(100.0))
                         ),
                         null
                     )
@@ -95,19 +95,19 @@ public class JavaGeneratorTest {
 
         final String code = writer.getCode();
 
-        assertEquals("    double c;\n" +
+        assertEquals("    Double c;\n" +
             "    if (a == 10.0) {\n" +
             "        if (b == 10.0) {\n" +
             "            c = 5.0;\n" +
-            "            double d = 100.0;\n" +
+            "            Double d = 100.0;\n" +
             "        }\n" +
             "    }\n", code);
     }
 
     @Test
     public void callStaticMethod() {
-        final TypeNode myClazz = new Primitive("MyClazz");
-        Expression expr = new CallExpression(new Method(myClazz, "toString", Primitive.VOID, Collections.singletonList(Primitive.DOUBLE), Collections.EMPTY_LIST), null, new ConstantNode(5.0));
+        final TypeNode myClazz = new TypeNode("MyClazz");
+        Expression expr = new CallExpression(new Method(myClazz, "toString", Primitive.VOID, Collections.singletonList(Primitive.DOUBLE), Collections.EMPTY_LIST), null, new ConstantExpression(5.0));
 
         expr.write(generator);
 
@@ -118,8 +118,8 @@ public class JavaGeneratorTest {
 
     @Test
     public void callMethod() {
-        final TypeNode myClazz = new Primitive("MyClazz");
-        Expression expr = new CallExpression(new Method(myClazz, "toString", Primitive.VOID, Collections.singletonList(Primitive.DOUBLE), Collections.EMPTY_LIST), new ParameterExpression(myClazz, "a"), new ConstantNode(5.0));
+        final TypeNode myClazz = new TypeNode("MyClazz");
+        Expression expr = new CallExpression(new Method(myClazz, "toString", Primitive.VOID, Collections.singletonList(Primitive.DOUBLE), Collections.EMPTY_LIST), new ParameterExpression(myClazz, "a"), new ConstantExpression(5.0));
 
         expr.write(generator);
 
@@ -130,7 +130,7 @@ public class JavaGeneratorTest {
 
     @Test
     public void complexCallAssignment() {
-        final TypeNode myClazz = new Primitive("MyClazz");
+        final TypeNode myClazz = new TypeNode("MyClazz");
         final ParameterExpression instance = new ParameterExpression(myClazz, "instance");
         final Method getNumberMethod = new Method(myClazz, "getNumber", Primitive.DOUBLE, Collections.emptyList(), Collections.emptyList());
         final Method staticMethod = new Method(myClazz, "staticMethod", Primitive.DOUBLE, Collections.emptyList(), Collections.emptyList());
@@ -147,8 +147,8 @@ public class JavaGeneratorTest {
         assertEquals("    MyClazz instance;\n" +
             "    instance = new MyClazz();\n" +
             "    instance = new MyClazz(new MyClazz());\n" +
-            "    double a = instance.getNumber();\n" +
-            "    double b = MyClazz.staticMethod();\n", code);
+            "    Double a = instance.getNumber();\n" +
+            "    Double b = MyClazz.staticMethod();\n", code);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class JavaGeneratorTest {
 
         decl.write(generator);
         final String code = writer.getCode();
-        assertEquals("public double add(double a, double b) {\n" +
+        assertEquals("public Double add(Double a, Double b) {\n" +
             "    return a + b;\n" +
             "}\n", code);
     }
@@ -197,24 +197,24 @@ public class JavaGeneratorTest {
             new Block(
                 new AssignementExpression(
                     currentRef,
-                    new BinaryExpression(currentRef.getType(), currentRef, new ConstantNode(1.0), BinaryExpression.Operation.PLUS)
+                    new BinaryExpression(currentRef.getType(), currentRef, new ConstantExpression(1.0), BinaryExpression.Operation.PLUS)
                 )
             )
         );
 
-        final ClassDefinition clazz = new ClassDefinition("org.apache.plc4x", "MyClazz", Arrays.asList(current), Collections.emptyList(), Arrays.asList(inc, decl), null);
+        final ClassDeclaration clazz = new ClassDeclaration("org.apache.plc4x", "MyClazz", Arrays.asList(current), Collections.emptyList(), Arrays.asList(inc, decl), null);
 
         clazz.write(generator);
         final String code = writer.getCode();
         assertEquals("public class MyClazz {\n" +
             "    \n" +
-            "    public double current;\n" +
+            "    public Double current;\n" +
             "    \n" +
-            "    public void inc() {\n" +
+            "    public Void inc() {\n" +
             "        this.current = this.current + 1.0;\n" +
             "    }\n" +
             "    \n" +
-            "    public double add(double a, double b) {\n" +
+            "    public Double add(Double a, Double b) {\n" +
             "        return a + b;\n" +
             "    }\n" +
             "    \n" +
@@ -228,7 +228,7 @@ public class JavaGeneratorTest {
         final FieldReference currentRef = new FieldReference(Primitive.DOUBLE, "current");
 
         final ParameterExpression value = new ParameterExpression(Primitive.DOUBLE, "value");
-        final ClassDefinition clazz = new ClassDefinition("org.apache.plc4x",
+        final ClassDeclaration clazz = new ClassDeclaration("org.apache.plc4x",
             "MyClazz",
             Arrays.asList(current),
             Arrays.asList(
@@ -243,9 +243,9 @@ public class JavaGeneratorTest {
         final String code = writer.getCode();
         assertEquals("public class MyClazz {\n" +
             "    \n" +
-            "    public double current;\n" +
+            "    public Double current;\n" +
             "    \n" +
-            "    public MyClazz(double value) {\n" +
+            "    public MyClazz(Double value) {\n" +
             "        this.current = value;\n" +
             "    }\n" +
             "    \n" +
@@ -261,9 +261,9 @@ public class JavaGeneratorTest {
         final ParameterExpression value = new ParameterExpression(Primitive.DOUBLE, "value");
 
         // Define Inner Class
-        final ClassDefinition innerClass = new ClassDefinition("", "MyInnerClazz", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null);
+        final ClassDeclaration innerClass = new ClassDeclaration("", "MyInnerClazz", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null);
 
-        final ClassDefinition clazz = new ClassDefinition("org.apache.plc4x",
+        final ClassDeclaration clazz = new ClassDeclaration("org.apache.plc4x",
             "MyClazz",
             Arrays.asList(current),
             Arrays.asList(
@@ -279,9 +279,9 @@ public class JavaGeneratorTest {
         final String code = writer.getCode();
         assertEquals("public class MyClazz {\n" +
             "    \n" +
-            "    public double current;\n" +
+            "    public Double current;\n" +
             "    \n" +
-            "    public MyClazz(double value) {\n" +
+            "    public MyClazz(Double value) {\n" +
             "        this.current = value;\n" +
             "    }\n" +
             "    \n" +
@@ -295,8 +295,8 @@ public class JavaGeneratorTest {
     public void ifMultipleElse() {
         final IfStatement stmt = new IfStatement(
             Arrays.asList(
-                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantNode(10.0), BinaryExpression.Operation.EQ),
-                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantNode(5.0), BinaryExpression.Operation.EQ)
+                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantExpression(10.0), BinaryExpression.Operation.EQ),
+                new BinaryExpression(Primitive.DOUBLE, new ParameterExpression(Primitive.DOUBLE, "a"), new ConstantExpression(5.0), BinaryExpression.Operation.EQ)
             ),
             Arrays.asList(
                 new Block(),

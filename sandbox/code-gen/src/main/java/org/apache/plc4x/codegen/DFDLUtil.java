@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.codegen;
 
 import org.apache.plc4x.codegen.ast.*;
+import org.apache.plc4x.codegen.util.PojoFactory;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 
@@ -58,12 +59,12 @@ public class DFDLUtil {
                 fields.add(new PojoFactory.Field(new TypeNode(elem.attributeValue("type")), elem.attributeValue("name")));
             }
             final PojoFactory.PojoDescription desc = new PojoFactory.PojoDescription(element.attributeValue("name"), fields);
-            final ClassDefinition classDefinition = factory.create(desc);
+            final ClassDeclaration classDeclaration = factory.create(desc);
 
             // Now generate the code for that
             final CodeWriter writer = new CodeWriter(4);
             final Generator generator = new JavaGenerator(writer);
-            classDefinition.write(generator);
+            classDeclaration.write(generator);
 
             System.out.println("Class Definition");
             System.out.println("----------------------------");

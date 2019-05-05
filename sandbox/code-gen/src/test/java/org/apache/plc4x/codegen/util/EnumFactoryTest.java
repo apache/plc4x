@@ -16,8 +16,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.codegen.ast;
+package org.apache.plc4x.codegen.util;
 
+import org.apache.plc4x.codegen.ast.*;
 import org.apache.plc4x.codegen.util.EnumFactory;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class EnumFactoryTest {
     public void createEnums() {
         System.out.println("Java:");
         System.out.println("----------");
-        final ClassDefinition MyEnum = newEnum();
+        final ClassDeclaration MyEnum = newEnum();
 
         final CodeWriter writer = new CodeWriter(4);
         final JavaGenerator generator = new JavaGenerator(writer);
@@ -43,7 +44,7 @@ public class EnumFactoryTest {
     public void createEnumsInPython() {
         System.out.println("Python:");
         System.out.println("----------");
-        final ClassDefinition MyEnum = newEnum();
+        final ClassDeclaration MyEnum = newEnum();
 
         final CodeWriter writer = new CodeWriter(4);
         final PythonGenerator generator = new PythonGenerator(writer);
@@ -53,7 +54,7 @@ public class EnumFactoryTest {
         System.out.println(writer.getCode());
     }
 
-    private ClassDefinition newEnum() {
+    private ClassDeclaration newEnum() {
         final EnumFactory factory = new EnumFactory();
         final EnumFactory.PojoDescription description = new EnumFactory.PojoDescription("MyPojo",
             new EnumFactory.Field(Primitive.DOUBLE, "field1"),
@@ -63,24 +64,24 @@ public class EnumFactoryTest {
         return factory.create(description,
             Arrays.asList(
                 new EnumFactory.EnumEntry("alternative1", Arrays.asList(
-                    new ConstantNode(1.0),
-                    new ConstantNode(2.0),
-                    new ConstantNode(3.0)
+                    new ConstantExpression(1.0),
+                    new ConstantExpression(2.0),
+                    new ConstantExpression(3.0)
                 )),
                 new EnumFactory.EnumEntry("alternative2", Arrays.asList(
-                    new ConstantNode(1.0),
-                    new ConstantNode(2.0),
-                    new ConstantNode(3.0)
+                    new ConstantExpression(1.0),
+                    new ConstantExpression(2.0),
+                    new ConstantExpression(3.0)
                 )),
                 new EnumFactory.EnumEntry("alternative3", Arrays.asList(
-                    new ConstantNode(1.0),
-                    new ConstantNode(2.0),
-                    new ConstantNode(3.0)
+                    new ConstantExpression(1.0),
+                    new ConstantExpression(2.0),
+                    new ConstantExpression(3.0)
                 )),
                 new EnumFactory.EnumEntry("alternative4", Arrays.asList(
-                    new ConstantNode(1.0),
-                    new ConstantNode(2.0),
-                    new ConstantNode(3.0)
+                    new ConstantExpression(1.0),
+                    new ConstantExpression(2.0),
+                    new ConstantExpression(3.0)
                 ))
             )
         );

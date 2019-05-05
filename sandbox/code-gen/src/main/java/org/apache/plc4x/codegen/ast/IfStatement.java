@@ -27,7 +27,12 @@ public class IfStatement extends Statement {
     private List<Block> blocks;
 
     public IfStatement(Expression condition, Block body, Block orElse) {
-        this(Arrays.asList(condition), Arrays.asList(body, orElse));
+        this.condition = Arrays.asList(condition);
+        if (orElse == null) {
+            this.blocks = Arrays.asList(body);
+        } else {
+            this.blocks = Arrays.asList(body, orElse);
+        }
     }
 
     public IfStatement(List<Expression> condition, List<Block> blocks) {

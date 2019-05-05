@@ -16,7 +16,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.codegen.ast;
+package org.apache.plc4x.codegen.util;
+
+import org.apache.plc4x.codegen.ast.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,16 +26,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.apache.plc4x.codegen.ast.EnumFactory.getGetterDefinition;
-import static org.apache.plc4x.codegen.ast.EnumFactory.getSetterDefinition;
+import static org.apache.plc4x.codegen.util.EnumFactory.getGetterDefinition;
+import static org.apache.plc4x.codegen.util.EnumFactory.getSetterDefinition;
 
 public class PojoFactory {
 
     private TypeNode BUFFER_TYPE;
 
-    private Method readByte = new Method(BUFFER_TYPE, "readByte", Primitive.BYTE, Collections.emptyList(), Collections.emptyList());
+    private Method readByte = new Method(BUFFER_TYPE, "readByte", Primitive.INTEGER, Collections.emptyList(), Collections.emptyList());
 
-    public ClassDefinition create(PojoDescription desc) {
+    public ClassDeclaration create(PojoDescription desc) {
         // Create all Fields first
         final List<FieldDeclaration> fields = desc.fields.stream()
             .map(field -> new FieldDeclaration(field.getType(), field.getName()))
@@ -67,13 +69,13 @@ public class PojoFactory {
         methods.add(new MethodDefinition(Collections.singleton(Modifier.STATIC), "decode", clazz, Collections.singletonList(
             buffer
         ), new Block(
-            new AssignementExpression(instance, new NewExpression(clazz)),
+            Expressions.assignment(instance, new NewExpression(clazz)),
             new CallExpression(readByte, buffer),
             new ReturnStatement(instance)
         )));
 
 
-        return new ClassDefinition("", desc.getName(), fields, Arrays.asList(new ConstructorDeclaration(Collections.emptyList(), new Block())), methods, null);
+        return new ClassDeclaration("", desc.getName(), fields, Arrays.asList(new ConstructorDeclaration(Collections.emptyList(), new Block())), methods, null);
     }
 
     public static class PojoDescription {

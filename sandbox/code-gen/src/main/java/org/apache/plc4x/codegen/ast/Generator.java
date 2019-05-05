@@ -30,7 +30,7 @@ public interface Generator {
      */
     Node prepare(Node root);
 
-    void generate(ConstantNode constantNode);
+    void generate(ConstantExpression constantExpression);
 
     void generateDeclarationWithInitializer(DeclarationStatement declarationStatement);
 
@@ -58,7 +58,7 @@ public interface Generator {
 
     void generateReturn(Expression value);
 
-    void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses, boolean mainClass);
+    void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDeclaration> innerClasses, boolean mainClass);
 
     void generateFieldDeclaration(Set<Modifier> modifiers, TypeNode type, String name, Expression initializer);
 
@@ -66,7 +66,7 @@ public interface Generator {
 
     void generateConstructor(Set<Modifier> modifiers, String className, List<ParameterExpression> parameters, Block body);
 
-    void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses);
+    void generateFile(ClassDeclaration mainClass, List<ClassDeclaration> innerClasses);
 
     void generateType(String typeString);
 

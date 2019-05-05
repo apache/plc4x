@@ -18,26 +18,23 @@ under the License.
 */
 package org.apache.plc4x.codegen.ast;
 
-import java.util.List;
-
 /**
- * Defines a File in Java
+ * Defines an Exception-Type.
  */
-public class FileNode implements Node {
+public class ExceptionType extends TypeNode {
 
-    private final ClassDeclaration mainClass;
-    private final List<ClassDeclaration> innerClasses;
-
-    public FileNode(ClassDeclaration mainClass, List<ClassDeclaration> innerClasses) {
-        this.mainClass = mainClass;
-        this.innerClasses = innerClasses;
+    public ExceptionType(String typeString) {
+        super(typeString);
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return null;
     }
 
-    @Override public void write(Generator writer) {
-        writer.generateFile(mainClass, innerClasses);
+    @Override
+    public void write(Generator writer) {
+
     }
+
 }

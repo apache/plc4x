@@ -31,9 +31,9 @@ public class Method implements Node {
     private final String name;
     private final TypeNode returnType;
     private final List<TypeNode> parameterTypes;
-    private final List<TypeNode> expressionTypes;
+    private final List<ExceptionType> expressionTypes;
 
-    public Method(TypeNode type, String name, TypeNode returnType, List<TypeNode> parameterTypes, List<TypeNode> expressionTypes) {
+    public Method(TypeNode type, String name, TypeNode returnType, List<TypeNode> parameterTypes, List<ExceptionType> expressionTypes) {
         this.type = type;
         this.name = name;
         this.returnType = returnType;
@@ -57,7 +57,7 @@ public class Method implements Node {
         return parameterTypes;
     }
 
-    public List<TypeNode> getExpressionTypes() {
+    public List<ExceptionType> getExpressionTypes() {
         return expressionTypes;
     }
 
