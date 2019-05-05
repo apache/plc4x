@@ -174,8 +174,9 @@ public class JavaGenerator implements Generator {
         if (methodDefinition.getModifiers().contains(Modifier.STATIC)) {
             writer.write(STATIC_);
         }
-        // Special handling of VOID is necessary, in fact... is it?
-        if ("Void".equals(methodDefinition.getResultType().toString())) {
+        // Special handling of VOID is necessary, to avoid having to return null in the end.
+        if (methodDefinition.getResultType() instanceof Primitive &&
+            ((Primitive) methodDefinition.getResultType()).getType() == Primitive.DataType.VOID) {
             writer.write("void");
         } else {
             methodDefinition.getResultType().write(this);

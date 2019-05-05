@@ -224,6 +224,10 @@ public class Expressions {
         return new DeclarationStatement(parameter(variable, initializer.getType()), initializer);
     }
 
+    public static Statement declaration(ParameterExpression variable, Expression initializer) {
+        return new DeclarationStatement(variable, initializer);
+    }
+
     /**
      * Declares a constant (no field), which is not initialized.
      */

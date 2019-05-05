@@ -85,7 +85,7 @@ public class EnumFactory {
         String getter = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
         final ParameterExpression param = Expressions.parameter(name, type);
         Block body = Block.build().add(Expressions.assignment(Expressions.field(name), param)).toBlock();
-        return new MethodDefinition(getter, type, Collections.singletonList(param), body);
+        return new MethodDefinition(getter, Primitive.VOID, Collections.singletonList(param), body);
     }
 
     public static class EnumEntry {

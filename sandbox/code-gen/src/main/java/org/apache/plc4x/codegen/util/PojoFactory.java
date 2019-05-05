@@ -31,14 +31,10 @@ import static org.apache.plc4x.codegen.util.EnumFactory.getSetterDefinition;
 
 public class PojoFactory {
 
-    private TypeDefinition BUFFER_TYPE;
-
-    private Method readByte = new Method(BUFFER_TYPE, "readByte", Primitive.INTEGER, Collections.emptyList(), Collections.emptyList());
-
     public ClassDeclaration create(PojoDescription desc) {
         // Create all Fields first
         final List<FieldDeclaration> fields = desc.fields.stream()
-            .map(field -> new FieldDeclaration(field.getType(), field.getName()))
+            .map(field -> new FieldDeclaration(field.getType(), field.getName(), Modifier.PRIVATE))
             .collect(Collectors.toList());
 
         // Create the Getters
@@ -58,19 +54,18 @@ public class PojoFactory {
 
         // Encode Method
         methods.add(new MethodDefinition("encode", Primitive.VOID, Collections.singletonList(
-            Expressions.parameter("buffer", Expressions.typeOf("org.apache.plc4x.api.Buffer"))
+            Expressions.parameter("buffer", BufferUtil.BUFFER_TYPE)
         ), Block.build().toBlock()));
 
         // Decode Method
-        BUFFER_TYPE = Expressions.typeOf("org.apache.plc4x.api.Buffer");
-        final ParameterExpression buffer = Expressions.parameter("buffer", BUFFER_TYPE);
+        final ParameterExpression buffer = Expressions.parameter("buffer", BufferUtil.BUFFER_TYPE);
         final TypeDefinition clazz = Expressions.typeOf(desc.getName());
         final ParameterExpression instance = Expressions.parameter("instance", clazz);
         methods.add(new MethodDefinition(Collections.singleton(Modifier.STATIC), "decode", clazz, Collections.singletonList(
             buffer
         ), Block.build()
-            .add(Expressions.assignment(instance, Expressions.new_(clazz)))
-            .add(Expressions.call(buffer, readByte))
+            .add(Expressions.declaration(instance, Expressions.new_(clazz)))
+            .add(Expressions.call(buffer, BufferUtil.READ_UINT8))
             .add(Expressions.return_(instance))
             .toBlock()
         ));
