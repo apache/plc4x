@@ -1,6 +1,7 @@
 package org.apache.plc4x.codegen.ast;
 
 import java.util.List;
+import java.util.Set;
 
 public class PythonGenerator implements Generator {
 
@@ -8,6 +9,10 @@ public class PythonGenerator implements Generator {
 
     public PythonGenerator(CodeWriter writer) {
         this.writer = writer;
+    }
+
+    @Override public Node prepare(Node root) {
+        return null;
     }
 
     @Override public void generate(ConstantNode constantNode) {
@@ -133,12 +138,16 @@ public class PythonGenerator implements Generator {
     }
 
     @Override public void generate(MethodDefinition methodDefinition) {
-        if (methodDefinition.getModifiers().contains(MethodDefinition.Modifier.STATIC)) {
+        if (methodDefinition.getModifiers().contains(Modifier.STATIC)) {
             writer.writeLine("@classmethod");
         }
         writer.startLine("def ");
         writer.write(methodDefinition.getName());
         writer.write("(");
+        writer.write("self");
+        if (!methodDefinition.getParameters().isEmpty()) {
+            writer.write(", ");
+        }
         for (int i = 0; i < methodDefinition.getParameters().size(); i++) {
             methodDefinition.getParameters().get(i).write(this);
             writer.write(": ");
@@ -190,7 +199,7 @@ public class PythonGenerator implements Generator {
         // Constructors
         if (constructors != null) {
             for (ConstructorDeclaration constructor : constructors) {
-                this.generateConstructor(className, constructor.getParameters(), constructor.getBody());
+                this.generateConstructor(constructor.getModifiers(), className, constructor.getParameters(), constructor.getBody());
                 writer.writeLine("");
             }
         }
@@ -211,11 +220,18 @@ public class PythonGenerator implements Generator {
         writer.endBlock();
     }
 
-    @Override public void generateFieldDeclaration(TypeNode type, String name) {
-        writer.startLine("self.");
+    @Override public void generateFieldDeclaration(Set<Modifier> modifiers, TypeNode type, String name, Expression initializer) {
+        writer.startLine("");
         writer.write(name);
         writer.write(": ");
         type.write(this);
+        // If its static, assign here
+        if (initializer != null) {
+            assert modifiers.contains(Modifier.STATIC);
+            // TODO Python cannot self reference
+            writer.write(" = ");
+            initializer.write(this);
+        }
         writer.endLine();
     }
 
@@ -224,7 +240,7 @@ public class PythonGenerator implements Generator {
         writer.write(name);
     }
 
-    @Override public void generateConstructor(String className, List<ParameterExpression> parameters, Block body) {
+    @Override public void generateConstructor(Set<Modifier> modifiers, String className, List<ParameterExpression> parameters, Block body) {
         writer.startLine("def __init__(");
         for (int i = 0; i < parameters.size(); i++) {
             parameters.get(i).getType().write(this);

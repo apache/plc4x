@@ -1,8 +1,16 @@
 package org.apache.plc4x.codegen.ast;
 
 import java.util.List;
+import java.util.Set;
 
 public interface Generator {
+
+    /**
+     * Do preliminary stuff.
+     * @param root
+     * @return
+     */
+    Node prepare(Node root);
 
     void generate(ConstantNode constantNode);
 
@@ -34,11 +42,11 @@ public interface Generator {
 
     void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses, boolean mainClass);
 
-    void generateFieldDeclaration(TypeNode type, String name);
+    void generateFieldDeclaration(Set<Modifier> modifiers, TypeNode type, String name, Expression initializer);
 
     void generateFieldReference(TypeNode type, String name);
 
-    void generateConstructor(String className, List<ParameterExpression> parameters, Block body);
+    void generateConstructor(Set<Modifier> modifiers, String className, List<ParameterExpression> parameters, Block body);
 
     void generateFile(ClassDefinition mainClass, List<ClassDefinition> innerClasses);
 

@@ -1,6 +1,7 @@
 package org.apache.plc4x.codegen.ast;
 
 import java.util.List;
+import java.util.Set;
 
 public class JavaGenerator implements Generator {
 
@@ -8,6 +9,10 @@ public class JavaGenerator implements Generator {
 
     public JavaGenerator(CodeWriter writer) {
         this.writer = writer;
+    }
+
+    @Override public Node prepare(Node root) {
+        return root;
     }
 
     @Override public void generate(ConstantNode constantNode) {
@@ -122,7 +127,7 @@ public class JavaGenerator implements Generator {
 
     @Override public void generate(MethodDefinition methodDefinition) {
         writer.startLine("public ");
-        if (methodDefinition.getModifiers().contains(MethodDefinition.Modifier.STATIC)) {
+        if (methodDefinition.getModifiers().contains(Modifier.STATIC)) {
             writer.write("static ");
         }
         // Special handling of VOID is necessary
@@ -177,7 +182,7 @@ public class JavaGenerator implements Generator {
         // Constructors
         if (constructors != null) {
             for (ConstructorDeclaration constructor : constructors) {
-                this.generateConstructor(className, constructor.getParameters(), constructor.getBody());
+                this.generateConstructor(constructor.getModifiers(), className, constructor.getParameters(), constructor.getBody());
                 writer.writeLine("");
             }
         }
@@ -199,11 +204,26 @@ public class JavaGenerator implements Generator {
         writer.writeLine("}");
     }
 
-    @Override public void generateFieldDeclaration(TypeNode type, String name) {
-        writer.startLine("public ");
+    @Override public void generateFieldDeclaration(Set<Modifier> modifiers, TypeNode type, String name, Expression initializer) {
+        if (modifiers.contains(Modifier.PRIVATE)) {
+            writer.startLine("private ");
+        } else {
+            writer.startLine("public ");
+        }
+        if (modifiers.contains(Modifier.STATIC)) {
+            writer.write("static ");
+        }
+        if (modifiers.contains(Modifier.FINAL)) {
+            writer.write("final ");
+        }
         type.write(this);
         writer.write(" ");
         writer.write(name);
+        // If it has an initializer, then do it here...
+        if (initializer != null) {
+            writer.write( " = ");
+            initializer.write(this);
+        }
         writer.write(";");
         writer.endLine();
     }
@@ -213,8 +233,12 @@ public class JavaGenerator implements Generator {
         writer.write(name);
     }
 
-    @Override public void generateConstructor(String className, List<ParameterExpression> parameters, Block body) {
-        writer.startLine("public ");
+    @Override public void generateConstructor(Set<Modifier> modifiers, String className, List<ParameterExpression> parameters, Block body) {
+        if (modifiers.contains(Modifier.PRIVATE)) {
+            writer.startLine("private ");
+        } else {
+            writer.startLine("public ");
+        }
         writer.write(className);
         writer.write("(");
         for (int i = 0; i < parameters.size(); i++) {

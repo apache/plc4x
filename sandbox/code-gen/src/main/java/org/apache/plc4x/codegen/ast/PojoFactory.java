@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.apache.plc4x.codegen.ast.EnumFactory.getMethodDefinition;
+
 public class PojoFactory {
 
     public ClassDefinition create(PojoDescription desc) {
@@ -17,13 +19,7 @@ public class PojoFactory {
 
         // Create the Getters
         final List<MethodDefinition> getters = desc.fields.stream()
-            .map(new Function<Field, MethodDefinition>() {
-                @Override public MethodDefinition apply(Field field) {
-                    String getter = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1, field.getName().length());
-                    Block body = new Block(new ReturnStatement(new FieldReference(field.getType(), field.getName())));
-                    return new MethodDefinition(getter, field.getType(), Collections.emptyList(), body);
-                }
-            })
+            .map(field -> getMethodDefinition(field.getName(), field.getType()))
             .collect(Collectors.toList());
 
         final List<MethodDefinition> methods = new ArrayList<>();
@@ -35,7 +31,7 @@ public class PojoFactory {
         ), new Block()));
 
         // Decode Method
-        methods.add(new MethodDefinition(Collections.singleton(MethodDefinition.Modifier.STATIC), "decode", new TypeNode(desc.getName()), Collections.singletonList(
+        methods.add(new MethodDefinition(Collections.singleton(Modifier.STATIC), "decode", new TypeNode(desc.getName()), Collections.singletonList(
             new ParameterExpression(new TypeNode("org.apache.plc4x.api.Buffer"), "buffer")
         ), new Block()));
 

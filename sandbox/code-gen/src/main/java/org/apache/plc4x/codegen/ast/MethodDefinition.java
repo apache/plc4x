@@ -52,9 +52,4 @@ public class MethodDefinition implements Node {
         writer.generate(this);
     }
 
-    public enum Modifier {
-        STATIC,
-        PRIVATE
-    }
-
 }

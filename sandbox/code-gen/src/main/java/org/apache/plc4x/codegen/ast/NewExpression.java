@@ -7,9 +7,13 @@ public class NewExpression extends Expression {
 
     private List<Node> arguments;
 
-    public NewExpression(TypeNode myClazz, Node... arguments) {
+    public NewExpression(TypeNode myClazz, List<Node> arguments) {
         super(myClazz);
-        this.arguments = Arrays.asList(arguments);
+        this.arguments = arguments;
+    }
+
+    public NewExpression(TypeNode myClazz, Node... arguments) {
+        this(myClazz, Arrays.asList(arguments));
     }
 
     public List<Node> getArguments() {
