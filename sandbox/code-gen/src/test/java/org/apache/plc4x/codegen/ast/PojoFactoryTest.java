@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.codegen.ast;
 
+import org.apache.plc4x.codegen.util.PojoFactory;
 import org.junit.Test;
 
 public class PojoFactoryTest {

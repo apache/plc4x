@@ -23,6 +23,8 @@ import java.util.Set;
 
 public class JavaGenerator implements Generator {
 
+    public static final String PUBLIC_ = "public ";
+    public static final String STATIC_ = "static ";
     private final CodeWriter writer;
 
     public JavaGenerator(CodeWriter writer) {
@@ -55,8 +57,29 @@ public class JavaGenerator implements Generator {
         writer.write(parameterExpression.getName());
     }
 
-    @Override public void generate(Primitive primitive) {
-        writer.write(primitive.getTypeString());
+    @Override public void generatePrimitive(Primitive.DataType primitive) {
+        switch (primitive) {
+            case STRING:
+                writer.write("String");
+                break;
+            case DOUBLE:
+                writer.write("Double");
+                break;
+            case LONG:
+                writer.write("Long");
+                break;
+            case INTEGER:
+                writer.write("Integer");
+                break;
+            case BOOLEAN:
+                writer.write("Boolean");
+                break;
+            case VOID:
+                writer.write("Void");
+                break;
+            default:
+                throw new UnsupportedOperationException("The primitive type " + primitive + " is not implemented!");
+        }
     }
 
     @Override public void generate(IfStatement ifStatement) {
@@ -144,12 +167,12 @@ public class JavaGenerator implements Generator {
     }
 
     @Override public void generate(MethodDefinition methodDefinition) {
-        writer.startLine("public ");
+        writer.startLine(PUBLIC_);
         if (methodDefinition.getModifiers().contains(Modifier.STATIC)) {
-            writer.write("static ");
+            writer.write(STATIC_);
         }
-        // Special handling of VOID is necessary
-        if (methodDefinition.getResultType() == Primitive.VOID) {
+        // Special handling of VOID is necessary, in fact... is it?
+        if ("Void".equals(methodDefinition.getResultType().toString())) {
             writer.write("void");
         } else {
             methodDefinition.getResultType().write(this);
@@ -179,9 +202,9 @@ public class JavaGenerator implements Generator {
     @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDefinition> innerClasses, boolean mainClass) {
         // Add static?!
         // Own File?
-        writer.startLine("public ");
+        writer.startLine(PUBLIC_);
         if (!mainClass) {
-            writer.write("static ");
+            writer.write(STATIC_);
         }
         writer.write("class ");
         writer.write(className);
@@ -226,10 +249,10 @@ public class JavaGenerator implements Generator {
         if (modifiers.contains(Modifier.PRIVATE)) {
             writer.startLine("private ");
         } else {
-            writer.startLine("public ");
+            writer.startLine(PUBLIC_);
         }
         if (modifiers.contains(Modifier.STATIC)) {
-            writer.write("static ");
+            writer.write(STATIC_);
         }
         if (modifiers.contains(Modifier.FINAL)) {
             writer.write("final ");
@@ -255,7 +278,7 @@ public class JavaGenerator implements Generator {
         if (modifiers.contains(Modifier.PRIVATE)) {
             writer.startLine("private ");
         } else {
-            writer.startLine("public ");
+            writer.startLine(PUBLIC_);
         }
         writer.write(className);
         writer.write("(");

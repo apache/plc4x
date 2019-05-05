@@ -38,7 +38,7 @@ public interface Generator {
 
     void generate(ParameterExpression parameterExpression);
 
-    void generate(Primitive primitive);
+    void generatePrimitive(Primitive.DataType primitive);
 
     void generate(IfStatement ifStatement);
 

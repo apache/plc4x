@@ -22,6 +22,8 @@ import java.util.List;
 
 /**
  * Method Declaration
+ * 
+ * TODO is this duplicate to something???
  */
 public class Method implements Node {
 

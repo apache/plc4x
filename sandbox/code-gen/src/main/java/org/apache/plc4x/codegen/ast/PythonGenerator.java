@@ -56,7 +56,7 @@ public class PythonGenerator implements Generator {
         writer.write(parameterExpression.getName());
     }
 
-    @Override public void generate(Primitive primitive) {
+    @Override public void generatePrimitive(Primitive.DataType primitive) {
         writer.write(primitive.getTypeString());
     }
 

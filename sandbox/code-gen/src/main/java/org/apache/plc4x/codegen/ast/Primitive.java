@@ -20,12 +20,23 @@ package org.apache.plc4x.codegen.ast;
 
 public class Primitive extends TypeNode {
 
-    public static final TypeNode DOUBLE = new Primitive("double");
-    public static final TypeNode VOID = new Primitive("Void");
-    public static final TypeNode BYTE = new Primitive("byte");
+    // Shorthands
+    public static final Primitive VOID = new Primitive(DataType.VOID);
+    public static final Primitive BOOLEAN = new Primitive(DataType.BOOLEAN);
+    public static final Primitive INTEGER = new Primitive(DataType.INTEGER);
+    public static final Primitive LONG = new Primitive(DataType.LONG);
+    public static final Primitive DOUBLE = new Primitive(DataType.DOUBLE);
+    public static final Primitive STRING = new Primitive(DataType.STRING);
 
-    public Primitive(String typeString) {
-        super(typeString);
+    private final DataType type;
+
+    public Primitive(DataType dataType) {
+        super(dataType.toString());
+        this.type = dataType;
+    }
+
+    public DataType getType() {
+        return type;
     }
 
     @Override public <T> T accept(NodeVisitor<T> visitor) {
@@ -33,6 +44,15 @@ public class Primitive extends TypeNode {
     }
 
     @Override public void write(Generator generator) {
-        generator.generate(this);
+        generator.generatePrimitive(this.getType());
+    }
+
+    public enum DataType {
+        VOID,
+        BOOLEAN,
+        INTEGER,
+        LONG,
+        DOUBLE,
+        STRING
     }
 }
