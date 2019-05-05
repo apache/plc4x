@@ -1038,6 +1038,7 @@
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
                 <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
+                <project-version>${project.version}</project-version>
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
