@@ -75,6 +75,22 @@ pipeline {
             }
         }
 
+        /**
+         * As the maven build requires the maven plugin to exist, we have to ensure it's built first.
+         */
+        stage('Build Maven Plugin') {
+            steps {
+                echo 'Building Maven Plugin'
+                sh 'mvn -f sandbox/plc4x-maven-plugin/pom.xml -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+            }
+            post {
+                always {
+                    junit(testResults: '**/surefire-reports/*.xml', allowEmptyResults: true)
+                    junit(testResults: '**/failsafe-reports/*.xml', allowEmptyResults: true)
+                }
+            }
+        }
+
         stage('Build') {
             when {
                 expression {

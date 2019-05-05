@@ -17,21 +17,25 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.dynamic.actions;
+package org.apache.plc4x.plugins.codegenerator.utils;
 
-import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
+import org.apache.plc4x.plugins.codegenerator.utils.model.ChoiceSegment;
+import org.apache.plc4x.plugins.codegenerator.utils.model.FieldSegment;
+import org.apache.plc4x.plugins.codegenerator.utils.model.RepeaterSegment;
+import org.apache.plc4x.plugins.codegenerator.utils.model.Segment;
 
-public abstract class BaseConnectedAction extends BasePlc4xAction {
+public class TemplateHelper {
 
-    public static final String SOCKET_PARAMETER_NAME="connection";
+    public boolean isFieldSegment(Segment segment) {
+        return segment instanceof FieldSegment;
+    }
 
-    protected ProtocolIO getProtocolIo(ActionExecutionContext ctx) {
-        Object connection = ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        if(connection instanceof ProtocolIO) {
-            return (ProtocolIO) connection;
-        }
-        return null;
+    public boolean isChoiceSegment(Segment segment) {
+        return segment instanceof ChoiceSegment;
+    }
+
+    public boolean isRepeaterSegment(Segment segment) {
+        return segment instanceof RepeaterSegment;
     }
 
 }

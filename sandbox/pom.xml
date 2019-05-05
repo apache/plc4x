@@ -36,6 +36,7 @@
 
   <modules>
     <module>dynamic-driver-base</module>
+    <module>dynamic-driver-knxnet-ip</module>
     <module>dynamic-driver-s7</module>
     <module>code-gen</module>
   </modules>

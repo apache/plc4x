@@ -17,21 +17,23 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.dynamic.actions;
+package org.apache.plc4x.plugins.codegenerator.utils.model;
 
-import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
+import org.dom4j.QName;
 
-public abstract class BaseConnectedAction extends BasePlc4xAction {
+import java.util.List;
 
-    public static final String SOCKET_PARAMETER_NAME="connection";
+public class ComplexType extends Type {
 
-    protected ProtocolIO getProtocolIo(ActionExecutionContext ctx) {
-        Object connection = ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        if(connection instanceof ProtocolIO) {
-            return (ProtocolIO) connection;
-        }
-        return null;
+    private final List<Segment> segments;
+
+    public ComplexType(QName name, List<Segment> segments) {
+        super(name);
+        this.segments = segments;
+    }
+
+    public List<Segment> getSegments() {
+        return segments;
     }
 
 }

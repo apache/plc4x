@@ -17,21 +17,18 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.dynamic.actions;
+package org.apache.plc4x.sandbox.java.dynamic.exceptions;
 
-import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
+import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 
-public abstract class BaseConnectedAction extends BasePlc4xAction {
+public class DynamicDriverException extends PlcProtocolException {
 
-    public static final String SOCKET_PARAMETER_NAME="connection";
+    public DynamicDriverException(String message) {
+        super(message);
+    }
 
-    protected ProtocolIO getProtocolIo(ActionExecutionContext ctx) {
-        Object connection = ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        if(connection instanceof ProtocolIO) {
-            return (ProtocolIO) connection;
-        }
-        return null;
+    public DynamicDriverException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

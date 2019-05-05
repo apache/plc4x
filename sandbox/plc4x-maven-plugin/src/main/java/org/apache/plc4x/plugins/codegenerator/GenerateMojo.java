@@ -28,13 +28,21 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.dom4j.*;
+import org.apache.plc4x.plugins.codegenerator.utils.TemplateHelper;
+import org.apache.plc4x.plugins.codegenerator.utils.model.ProtocolSpecification;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Namespace;
+import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Generate the types, serializer and parser classes based on a DFDL shema.
@@ -120,19 +128,21 @@ public class GenerateMojo extends AbstractMojo {
             // Load the DFDL schema file
             Document dfdlSchema = parseDFDLSchema(schemaFile);
 
+            ProtocolSpecification protocolSpecification = new ProtocolSpecification(dfdlSchema);
+            TemplateHelper helper = new TemplateHelper();
+
             // Get the list of main types in the schema file (complexType and root level)
-            Iterator<Element> types = getMainTypes(dfdlSchema);
+            List<QName> typeNames = protocolSpecification.getComplexTypeNames();
 
             // Iterate over the types and have content generated for each one
-            while (types.hasNext()){
-                Element typeElement = types.next();
-                String typeName = typeElement.attributeValue("name");
-
+            for (QName typeName : typeNames) {
                 // Prepare a new generation context
                 Map<String, Object> typeContext = new HashMap<>();
-                typeContext.put("typeName", typeName);
-                typeContext.put("typeElement", typeElement);
                 typeContext.put("packageName", packageName);
+                typeContext.put("typeName", typeName.getName());
+                typeContext.put("segments", protocolSpecification.getSegments(typeName));
+                typeContext.put("spec", protocolSpecification);
+                typeContext.put("helper", helper);
 
                 for(Template template : templateList) {
                     // Create a variable size output location where the template can generate it's content to
@@ -165,6 +175,7 @@ public class GenerateMojo extends AbstractMojo {
                         outputFileWriter.write(line);
                         outputFileWriter.newLine();
                     }
+                    outputFileWriter.flush();
                 }
                 getLog().info("Generating type " + typeName);
             }
@@ -198,11 +209,6 @@ public class GenerateMojo extends AbstractMojo {
         } catch (DocumentException e) {
             throw new MojoExecutionException("Unable to parse DFDL schema at " + schemaFile.getAbsolutePath(), e);
         }
-    }
-
-    private Iterator<Element> getMainTypes(Document dfdlSchema) {
-        Element rootElement = dfdlSchema.getRootElement();
-        return rootElement.elementIterator(complexType);
     }
 
 }

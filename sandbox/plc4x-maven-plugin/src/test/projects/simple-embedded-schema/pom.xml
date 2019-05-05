@@ -34,8 +34,8 @@
         <groupId>org.apache.plc4x.plugins</groupId>
         <artifactId>plc4x-maven-plugin</artifactId>
         <configuration>
-          <dfdl-schema>${pom.basedir}/src/main/resources/protocol.dfdl.xsd</dfdl-schema>
-          <package-name>org.apache.plc4x.test</package-name>
+          <dfdlSchema>${pom.basedir}/src/main/resources/protocol.dfdl.xsd</dfdlSchema>
+          <packageName>org.apache.plc4x.test</packageName>
           <templates>
             <tempate>${pom.basedir}/src/main/resources/template.ftlh</tempate>
           </templates>

@@ -20,11 +20,12 @@
 package org.apache.plc4x.sandbox.java.dynamic.actions;
 
 import org.apache.commons.scxml2.ActionExecutionContext;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.sandbox.java.dynamic.exceptions.DynamicDriverException;
+import org.apache.plc4x.sandbox.java.dynamic.io.TcpProtocolIO;
+import org.apache.plc4x.sandbox.java.dynamic.io.UdpProtocolIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.Socket;
 
 public class ConnectAction extends BasePlc4xAction {
 
@@ -66,14 +67,23 @@ public class ConnectAction extends BasePlc4xAction {
         getLogger().info(getStateName() + ": Connecting...");
         try {
             if ("TCP".equalsIgnoreCase(type)) {
-                Socket socket = new Socket(host, Integer.parseInt(port));
-                ctx.getGlobalContext().set(BaseConnectedAction.SOCKET_PARAMETER_NAME, socket);
+                TcpProtocolIO tcpIo = new TcpProtocolIO(host, Integer.parseInt(port));
+                ctx.getGlobalContext().set(BaseConnectedAction.SOCKET_PARAMETER_NAME, tcpIo);
 
                 getLogger().info("Connected.");
 
                 fireSuccessEvent(ctx);
+            } else if ("UDP".equalsIgnoreCase(type)) {
+                UdpProtocolIO udpIo = new UdpProtocolIO(host, Integer.parseInt(port));
+                ctx.getGlobalContext().set(BaseConnectedAction.SOCKET_PARAMETER_NAME, udpIo);
+
+                getLogger().info("Connected.");
+
+                fireSuccessEvent(ctx);
+            } else {
+                throw new PlcRuntimeException("Unsupported connection type " + type);
             }
-        } catch (IOException e) {
+        } catch (DynamicDriverException e) {
             getLogger().error("Error connecting to remote.", e);
         }
     }

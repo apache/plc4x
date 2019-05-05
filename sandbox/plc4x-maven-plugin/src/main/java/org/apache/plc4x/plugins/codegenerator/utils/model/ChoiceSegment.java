@@ -17,21 +17,26 @@
  under the License.
  */
 
-package org.apache.plc4x.sandbox.java.dynamic.actions;
+package org.apache.plc4x.plugins.codegenerator.utils.model;
 
-import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.plc4x.sandbox.java.dynamic.io.ProtocolIO;
+import java.util.Map;
 
-public abstract class BaseConnectedAction extends BasePlc4xAction {
+public class ChoiceSegment implements Segment {
 
-    public static final String SOCKET_PARAMETER_NAME="connection";
+    private String discriminatorRule;
+    private Map<String, FieldSegment> choices;
 
-    protected ProtocolIO getProtocolIo(ActionExecutionContext ctx) {
-        Object connection = ctx.getGlobalContext().get(SOCKET_PARAMETER_NAME);
-        if(connection instanceof ProtocolIO) {
-            return (ProtocolIO) connection;
-        }
-        return null;
+    public ChoiceSegment(String discriminator, Map<String, FieldSegment> choices) {
+        this.discriminatorRule = discriminatorRule;
+        this.choices = choices;
+    }
+
+    public String getDiscriminatorRule() {
+        return discriminatorRule;
+    }
+
+    public Map<String, FieldSegment> getChoices() {
+        return choices;
     }
 
 }
