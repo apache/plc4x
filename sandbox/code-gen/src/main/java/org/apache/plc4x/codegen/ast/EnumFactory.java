@@ -27,7 +27,7 @@ public class EnumFactory {
 
         // Create the Getters
         final List<MethodDefinition> getters = desc.fields.stream()
-            .map(field -> getMethodDefinition(field.getName(), field.getType()))
+            .map(field -> getGetterDefinition(field.getName(), field.getType()))
             .collect(Collectors.toList());
 
         // Now add all these getters
@@ -59,10 +59,17 @@ public class EnumFactory {
         return new ClassDefinition("", desc.getName(), finalFields, Arrays.asList(constructor), methods, null);
     }
 
-    static MethodDefinition getMethodDefinition(String name, TypeNode type) {
+    static MethodDefinition getGetterDefinition(String name, TypeNode type) {
         String getter = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
         Block body = new Block(new ReturnStatement(new FieldReference(type, name)));
         return new MethodDefinition(getter, type, Collections.emptyList(), body);
+    }
+
+    static MethodDefinition getSetterDefinition(String name, TypeNode type) {
+        String getter = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+        final ParameterExpression param = new ParameterExpression(type, name);
+        Block body = new Block(new AssignementExpression(new FieldReference(type, name), param));
+        return new MethodDefinition(getter, type, Collections.singletonList(param), body);
     }
 
     public static class EnumEntry {

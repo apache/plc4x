@@ -4,6 +4,7 @@ public class Primitive extends TypeNode {
 
     public static final TypeNode DOUBLE = new Primitive("double");
     public static final TypeNode VOID = new Primitive("Void");
+    public static final TypeNode BYTE = new Primitive("byte");
 
     public Primitive(String typeString) {
         super(typeString);
