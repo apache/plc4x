@@ -1,4 +1,6 @@
-﻿#
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,7 +19,6 @@
 # under the License.
 #
 
-Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
