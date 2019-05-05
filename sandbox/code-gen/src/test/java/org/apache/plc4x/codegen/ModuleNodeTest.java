@@ -1,42 +1,25 @@
+/*
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
 package org.apache.plc4x.codegen;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.plc4x.codegen.python.AbstractNodeVisitor;
-import org.apache.plc4x.codegen.python.AddNode;
-import org.apache.plc4x.codegen.python.AliasNode;
-import org.apache.plc4x.codegen.python.AnnAssignerNode;
-import org.apache.plc4x.codegen.python.ArgNode;
-import org.apache.plc4x.codegen.python.ArgumentsNode;
-import org.apache.plc4x.codegen.python.AssignNode;
-import org.apache.plc4x.codegen.python.AttributeNode;
-import org.apache.plc4x.codegen.python.AugAssignNode;
-import org.apache.plc4x.codegen.python.BinOpNode;
-import org.apache.plc4x.codegen.python.CallNode;
-import org.apache.plc4x.codegen.python.ClassDefNode;
-import org.apache.plc4x.codegen.python.CodePrinter;
-import org.apache.plc4x.codegen.python.CompareNode;
-import org.apache.plc4x.codegen.python.EqNode;
-import org.apache.plc4x.codegen.python.ExprNode;
-import org.apache.plc4x.codegen.python.FunctionDefNode;
-import org.apache.plc4x.codegen.python.IfNode;
-import org.apache.plc4x.codegen.python.ImportFromNode;
-import org.apache.plc4x.codegen.python.KeywordNode;
-import org.apache.plc4x.codegen.python.ListNode;
-import org.apache.plc4x.codegen.python.LoadNode;
-import org.apache.plc4x.codegen.python.ModuleNode;
-import org.apache.plc4x.codegen.python.MultNode;
-import org.apache.plc4x.codegen.python.NameConstantNode;
-import org.apache.plc4x.codegen.python.NameNode;
-import org.apache.plc4x.codegen.python.Node;
-import org.apache.plc4x.codegen.python.NodeVisitor;
-import org.apache.plc4x.codegen.python.NotEqNode;
-import org.apache.plc4x.codegen.python.NumNode;
-import org.apache.plc4x.codegen.python.PassNode;
-import org.apache.plc4x.codegen.python.ReturnNode;
-import org.apache.plc4x.codegen.python.StoreNode;
-import org.apache.plc4x.codegen.python.StrNode;
-import org.apache.plc4x.codegen.python.TupleNode;
-import org.apache.plc4x.codegen.python.WhileNode;
+import org.apache.plc4x.codegen.python.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
