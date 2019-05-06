@@ -21,7 +21,6 @@ package org.apache.plc4x.plugins.codegenerator;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -55,9 +54,6 @@ public class GenerateMojo extends AbstractMojo {
     private static final Namespace xsNamespace = new Namespace("xs", "http://www.w3.org/2001/XMLSchema");
     private static final QName complexType = new QName("complexType", xsNamespace);
 
-    @Parameter( defaultValue = "${session}", readonly = true, required = true )
-    private MavenSession session;
-
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
@@ -89,28 +85,29 @@ public class GenerateMojo extends AbstractMojo {
             }
         }
 
-        // Load the DFDL schema from classpath.
-        InputStream schemaInputStream;
+        // Build a classloader that can access the projects classpath (read from dependencies)
+        ClassLoader moduleClassloader;
         try {
             List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
             int numRuntimeClasspathElements = runtimeClasspathElements.size();
             List<URL> classpathElements = new ArrayList<>(numRuntimeClasspathElements);
-            for (int i = 0; i < numRuntimeClasspathElements; i++) {
-                classpathElements.add(new File(runtimeClasspathElements.get(i)).toURI().toURL());
-                System.out.println("Added runtime classpath element");
+            for (String runtimeClasspathElement : runtimeClasspathElements) {
+                classpathElements.add(new File(runtimeClasspathElement).toURI().toURL());
             }
-            ClassLoader moduleClassloader = new URLClassLoader(
+            moduleClassloader = new URLClassLoader(
                 classpathElements.toArray(new URL[0]), GenerateMojo.class.getClassLoader());
-
-            schemaInputStream = moduleClassloader.getResourceAsStream(dfdlSchema.substring("classpath:".length()));
-            if(schemaInputStream != null) {
-                System.out.println("Found It");
-            }
         } catch (MalformedURLException | DependencyResolutionRequiredException e) {
             throw new MojoExecutionException(
-                "Error creating classloader for loading dfdl schema from module dependencies", e);
+                "Error creating classloader for loading DFDL schema from module dependencies", e);
         }
 
+        // Try to get the DFDL schema from this classloader.
+        InputStream schemaInputStream = moduleClassloader.getResourceAsStream(dfdlSchema);
+        if(schemaInputStream == null) {
+            throw new MojoExecutionException("Error loading DFDL schema from " + dfdlSchema);
+        }
+
+        // Initialize the protocol-model.
         //ProtocolModel protocolModel = new ProtocolModel(schemaInputStream);
 
         /*try {
