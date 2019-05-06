@@ -42,7 +42,7 @@ public class GenerateMojoTest {
      * @throws Exception if any
      */
     @Test
-    public void testSomething() throws Exception {
+    public void testEmbeddedSchema() throws Exception {
         File baseDir = testResources.getBasedir("simple-embedded-schema");
         MavenProject project = rule.readMavenProject(baseDir);
 
@@ -53,6 +53,23 @@ public class GenerateMojoTest {
         File outputDirectory = (File) rule.getVariableValueFromObject(generateMojo, "outputDir");
         assertNotNull(outputDirectory);
         assertTrue(outputDirectory.exists());
+    }
+
+    /**
+     * @throws Exception if any
+     */
+    @Test
+    public void testExternalSchema() throws Exception {
+        File baseDir = testResources.getBasedir("s7-external-schema");
+        MavenProject project = rule.readMavenProject(baseDir);
+
+/*        GenerateMojo generateMojo = (GenerateMojo) rule.lookupConfiguredMojo(project, "generate-driver");
+        assertNotNull(generateMojo);
+        generateMojo.execute();
+
+        File outputDirectory = (File) rule.getVariableValueFromObject(generateMojo, "outputDir");
+        assertNotNull(outputDirectory);
+        assertTrue(outputDirectory.exists());*/
     }
 
     /**

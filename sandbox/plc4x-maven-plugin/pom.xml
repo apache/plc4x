@@ -30,6 +30,7 @@
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>21</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.apache.plc4x.plugins</groupId>
@@ -163,17 +164,19 @@
         <version>3.6.0</version>
         <configuration>
           <!-- <goalPrefix>maven-archetype-plugin</goalPrefix> -->
-          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+          <!--skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound-->
         </configuration>
         <executions>
           <execution>
             <id>mojo-descriptor</id>
+            <phase>process-classes</phase>
             <goals>
               <goal>descriptor</goal>
             </goals>
           </execution>
           <execution>
             <id>help-goal</id>
+            <phase>generate-sources</phase>
             <goals>
               <goal>helpmojo</goal>
             </goals>

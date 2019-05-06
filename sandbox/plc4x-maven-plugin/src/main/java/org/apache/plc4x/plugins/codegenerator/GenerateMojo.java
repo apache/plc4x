@@ -18,9 +18,10 @@ under the License.
 */
 package org.apache.plc4x.plugins.codegenerator;
 
-import freemarker.core.ParseException;
-import freemarker.template.*;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateExceptionHandler;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -28,21 +29,20 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.plc4x.plugins.codegenerator.utils.TemplateHelper;
-import org.apache.plc4x.plugins.codegenerator.utils.model.ProtocolSpecification;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Generate the types, serializer and parser classes based on a DFDL shema.
@@ -55,6 +55,8 @@ public class GenerateMojo extends AbstractMojo {
     private static final Namespace xsNamespace = new Namespace("xs", "http://www.w3.org/2001/XMLSchema");
     private static final QName complexType = new QName("complexType", xsNamespace);
 
+    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    private MavenSession session;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
@@ -71,7 +73,7 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(required = true)
     private String dfdlSchema;
 
-    @Parameter(required = true)
+    @Parameter(required = false)
     private List<String> templates;
 
     @Parameter(required = true)
@@ -87,7 +89,31 @@ public class GenerateMojo extends AbstractMojo {
             }
         }
 
+        // Load the DFDL schema from classpath.
+        InputStream schemaInputStream;
         try {
+            List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
+            int numRuntimeClasspathElements = runtimeClasspathElements.size();
+            List<URL> classpathElements = new ArrayList<>(numRuntimeClasspathElements);
+            for (int i = 0; i < numRuntimeClasspathElements; i++) {
+                classpathElements.add(new File(runtimeClasspathElements.get(i)).toURI().toURL());
+                System.out.println("Added runtime classpath element");
+            }
+            ClassLoader moduleClassloader = new URLClassLoader(
+                classpathElements.toArray(new URL[0]), GenerateMojo.class.getClassLoader());
+
+            schemaInputStream = moduleClassloader.getResourceAsStream(dfdlSchema.substring("classpath:".length()));
+            if(schemaInputStream != null) {
+                System.out.println("Found It");
+            }
+        } catch (MalformedURLException | DependencyResolutionRequiredException e) {
+            throw new MojoExecutionException(
+                "Error creating classloader for loading dfdl schema from module dependencies", e);
+        }
+
+        //ProtocolModel protocolModel = new ProtocolModel(schemaInputStream);
+
+        /*try {
             // Configure the Freemarker template engine
             Configuration freemarkerConfiguration = getFreemarkerConfiguration();
 
@@ -185,7 +211,7 @@ public class GenerateMojo extends AbstractMojo {
             throw new MojoExecutionException("Error resolving template", e);
         } catch (IOException e) {
             throw new MojoExecutionException("Error generating sources", e);
-        }
+        }*/
     }
 
     private Configuration getFreemarkerConfiguration() throws MojoExecutionException {

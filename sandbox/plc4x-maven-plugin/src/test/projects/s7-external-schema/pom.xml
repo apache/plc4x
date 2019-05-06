@@ -23,10 +23,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.plc4x.plugins.ut</groupId>
-  <artifactId>test-plc4x-maven-plugin-embedded-schema</artifactId>
+  <artifactId>test-plc4x-maven-plugin-external-schema</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>Test GenerateMojo with embedded DFDL schema</name>
+  <name>Test GenerateMojo with external DFDL schema</name>
 
   <build>
     <plugins>
@@ -34,15 +34,29 @@
         <groupId>org.apache.plc4x.plugins</groupId>
         <artifactId>plc4x-maven-plugin</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <configuration>
-          <dfdlSchema>${pom.basedir}/src/main/resources/protocol.dfdl.xsd</dfdlSchema>
-          <packageName>org.apache.plc4x.test</packageName>
-          <templates>
-            <tempate>${pom.basedir}/src/main/resources/template.ftlh</tempate>
-          </templates>
-        </configuration>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <dfdlSchema>org/apache/plc4x/protocols/s7/protocol.dfdl.xsd</dfdlSchema>
+              <packageName>org.apache.plc4x.s7</packageName>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-s7</artifactId>
+      <version>0.4.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
 </project>
