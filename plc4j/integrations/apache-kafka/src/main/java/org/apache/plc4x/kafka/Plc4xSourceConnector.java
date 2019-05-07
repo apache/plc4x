@@ -92,7 +92,7 @@ public class Plc4xSourceConnector extends SourceConnector {
         } else {
             try {
                 // TODO
-                String config =  new Scanner(new URL(json).openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next();
+                String config =  new Scanner(new URL(json).openStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> values = mapper.readValue(config, new TypeReference<Map<String, Object>>() {});
                 List<Map<String, Object>> plcs = (List<Map<String, Object>>) values.get("PLCs");
