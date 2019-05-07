@@ -210,7 +210,7 @@ public class JavaGeneratorTest {
             "    \n" +
             "    public Double current;\n" +
             "    \n" +
-            "    public Void inc() {\n" +
+            "    public void inc() {\n" +
             "        this.current = this.current + 1.0;\n" +
             "    }\n" +
             "    \n" +

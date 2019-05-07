@@ -43,6 +43,7 @@
             </goals>
             <configuration>
               <dfdlSchema>org/apache/plc4x/protocols/s7/protocol.dfdl.xsd</dfdlSchema>
+              <template>org/apache/plc4x/languages/Java</template>
               <packageName>org.apache.plc4x.s7</packageName>
             </configuration>
           </execution>
@@ -56,6 +57,13 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
       <version>0.4.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-lanhuage-java</artifactId>
+      <version>0.4.0-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
