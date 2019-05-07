@@ -30,6 +30,9 @@
 
     <fx:Script>
         <![CDATA[
+        import org.apache.royale.events.Event;
+        import org.apache.royale.events.MouseEvent;
+
         public function move(event:MouseEvent):void {
             if (event.target == moveForwardLeftButton) {
                 robotService.moveForwardLeft();

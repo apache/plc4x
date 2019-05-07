@@ -19,6 +19,11 @@
 
 package service
 {
+import org.apache.royale.events.Event;
+import org.apache.royale.events.EventDispatcher;
+import org.apache.royale.net.HTTPConstants;
+import org.apache.royale.net.HTTPService;
+
 [Event(name="success", type="org.apache.royale.events.Event")]
 public class RobotService extends EventDispatcher {
 
