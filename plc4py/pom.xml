@@ -33,13 +33,19 @@
   <name>PLC4PY</name>
   <description>Implementation of the protocol adapters for usage as Python module.</description>
 
+  <!-- Disabled for now as Python support is currently not installed in Apache SonarQube -->
+  <!--properties>
+    <sonar.language>py</sonar.language>
+  </properties-->
+
   <build>
+    <sourceDirectory>src/main/python</sourceDirectory>
+    <testSourceDirectory>src/test/python</testSourceDirectory>
     <plugins>
       <!-- Unpack the protocol spec -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.1</version>
         <executions>
           <execution>
             <id>unpack-protocol-spec</id>
@@ -71,6 +77,27 @@
             </configuration>
           </execution>
           <execution>
+            <id>copy-interop-server</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>interop-server</artifactId>
+                  <version>0.4.0-SNAPSHOT</version>
+                  <type>jar</type>
+                  <classifier>jar-with-dependencies</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                  <destFileName>interop-server.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
             <id>check-dependencies</id>
             <phase>verify</phase>
             <goals>
@@ -94,7 +121,6 @@
         <configuration>
           <thriftExecutable>${project.build.directory}/thrift-compiler/${thrift.compiler.executable}</thriftExecutable>
           <thriftSourceRoot>${project.build.directory}/protocol-spec</thriftSourceRoot>
-          <outputDirectory>${basedir}/generated/</outputDirectory>
           <includes>
             <include>**/interop.thrift</include>
           </includes>
@@ -103,7 +129,7 @@
         <executions>
           <execution>
             <id>thrift-sources</id>
-            <phase>generate-sources</phase>
+            <phase>process-sources</phase>
             <goals>
               <goal>compile</goal>
             </goals>
@@ -118,16 +144,57 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>python-build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <workingDirectory>${project.build.directory}/python</workingDirectory>
+              <arguments>
+                <argument>../../setup.py</argument>
+                <argument>build</argument>
+                <argument>--build-base=${project.build.directory}/python</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>python-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <workingDirectory>${project.build.directory}/python</workingDirectory>
+              <arguments>
+                <argument>../../setup.py</argument>
+                <argument>sdist</argument>
+                <argument>--dist-dir=${project.build.directory}/python</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
-  <!-- TODO copy artifact from interop-server here, to make the initialize_interop_server.sh obsolete-->
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>interop-server</artifactId>
       <version>0.4.0-SNAPSHOT</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 

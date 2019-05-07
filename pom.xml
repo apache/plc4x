@@ -64,17 +64,24 @@
   <mailingLists>
     <mailingList>
       <name>Apache PLC4X Developer List</name>
-      <subscribe>dev-subscribe@plc4x.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@plc4x.apache.org</unsubscribe>
-      <post>dev@plc4x.apache.org</post>
+      <subscribe>mailto:dev-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:dev-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:dev@plc4x.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
     </mailingList>
     <mailingList>
-      <name>commits PLC4X Commits List</name>
-      <subscribe>commit-subscribe@plc4x.apache.org</subscribe>
-      <unsubscribe>commits-unsubscribe@plc4x.apache.org</unsubscribe>
-      <post>commits@plc4x.apache.org</post>
+      <name>PLC4X Commits List</name>
+      <subscribe>mailto:commit-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:commits-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:commits@plc4x.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
+    </mailingList>
+    <mailingList>
+      <name>PLC4X Jira Notifications List</name>
+      <subscribe>mailto:issues-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:issues-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:issues@plc4x.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-issues/</archive>
     </mailingList>
   </mailingLists>
 
@@ -698,6 +705,7 @@
             <exclude>**/.project</exclude>
             <exclude>**/.settings/**</exclude>
             <exclude>**/.classpath</exclude>
+            <exclude>**/.factorypath</exclude>
 
             <!-- IntelliJ related files -->
             <exclude>**/.idea/**</exclude>
@@ -723,6 +731,9 @@
 
             <!-- CLion stuff (C++ IDE) -->
             <exclude>**/cmake-build-debug/**</exclude>
+
+            <!-- Stuff created during a plc4net build -->
+            <exclude>**/obj/**</exclude>
 
             <!-- Temporarily exclude generated code from thrift in python modules -->
             <exclude>generated/**</exclude>
@@ -1007,6 +1018,7 @@
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
                 <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
+                <project-version>${project.version}</project-version>
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
@@ -1215,6 +1227,23 @@
       </modules>
     </profile>
 
+    <!-- Build PLC4X including the Java modules -->
+    <profile>
+      <id>with-java</id>
+      <modules>
+        <module>plc4j</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the .Net modules -->
+    <profile>
+      <id>with-dotnet</id>
+      <modules>
+        <module>plc4net</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the Python modules -->
     <profile>
       <id>with-python</id>
       <modules>
@@ -1222,12 +1251,17 @@
       </modules>
     </profile>
 
-    <!-- Build PLC4X including the CPP modules -->
+    <!-- Build PLC4X including the Sandbox modules -->
     <profile>
       <id>with-sandbox</id>
       <modules>
         <module>sandbox</module>
       </modules>
+    </profile>
+
+    <!-- Profile, which is used in sub-modules to enable Thrift related proxy modules -->
+    <profile>
+      <id>with-proxies</id>
     </profile>
 
     <!-- Profile for linux -->

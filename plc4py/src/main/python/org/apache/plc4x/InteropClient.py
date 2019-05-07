@@ -15,12 +15,11 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
+from generated.org.apache.plc4x.interop.InteropServer import Client
+from generated.org.apache.plc4x.interop.ttypes import Request
 from thrift.protocol import TBinaryProtocol
 from thrift.transport import TSocket, TTransport
 from thrift.transport.TTransport import TTransportException
-
-from generated.org.apache.plc4x.interop.InteropServer import Client, PlcException
-from generated.org.apache.plc4x.interop.ttypes import Request
 
 transport = TSocket.TSocket('localhost', 9090)
 transport = TTransport.TBufferedTransport(transport)

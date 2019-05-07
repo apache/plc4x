@@ -23,43 +23,42 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
+    <artifactId>plc4net</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4cpp</artifactId>
+  <artifactId>plc4net-driver</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4Cpp</name>
-  <description>Implementation of the protocol adapters for usage as C++ library.</description>
+  <name>PLC4Net: Driver</name>
+  <description>Implementation of the protocol adapters for usage as .Net module.</description>
 
-  <!-- Disabled for now as C++ support is currently not installed in Apache SonarQube -->
+  <!-- Disabled for now as C# support is currently not installed in Apache SonarQube -->
   <!--properties>
-    <sonar.language>c++</sonar.language>
+    <sonar.language>c#</sonar.language>
   </properties-->
-
-  <modules>
-    <module>api</module>
-    <module>protocols</module>
-    <module>utils</module>
-
-    <module>examples</module>
-    <module>integrations</module>
-
-    <!-- Third party libs -->
-    <module>libs</module>
-  </modules>
 
   <build>
     <plugins>
-      <!-- Prevent the jar plugin from building a jar -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
         <executions>
           <execution>
-            <id>default-jar</id>
-            <phase/>
+            <id>dotnet-build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>dotnet</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>build</argument>
+                <argument>plc4net.driver.csproj</argument>
+              </arguments>
+            </configuration>
           </execution>
         </executions>
       </plugin>
