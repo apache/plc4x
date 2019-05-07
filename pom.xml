@@ -166,16 +166,6 @@
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
 
-    <!-- Core PLC4X modules -->
-    <!--module>plc4cpp</module-->
-    <module>plc4j</module>
-
-    <!-- Integration modules for other frameworks -->
-    <module>integrations</module>
-
-    <!-- Examples -->
-    <module>examples</module>
-
     <!-- Tools needed throughout the build -->
     <module>tools</module>
   </modules>
@@ -773,23 +763,6 @@
         </executions>
       </plugin>
 
-      <!-- Compile any groovy code located in "src/test/groovy" -->
-      <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.6.2</version>
-        <executions>
-          <execution>
-            <id>compile-groovy-tests</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>addTestSources</goal>
-              <goal>compileTests</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <!--
         ===================================
         ==                               ==
@@ -1247,6 +1220,15 @@
       </modules>
     </profile>
 
+    <!-- Build PLC4X including the Java modules -->
+    <profile>
+      <id>with-java</id>
+      <modules>
+        <module>plc4j</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the .Net modules -->
     <profile>
       <id>with-dotnet</id>
       <modules>
@@ -1254,6 +1236,7 @@
       </modules>
     </profile>
 
+    <!-- Build PLC4X including the Python modules -->
     <profile>
       <id>with-python</id>
       <modules>
@@ -1261,12 +1244,17 @@
       </modules>
     </profile>
 
-    <!-- Build PLC4X including the CPP modules -->
+    <!-- Build PLC4X including the Sandbox modules -->
     <profile>
       <id>with-sandbox</id>
       <modules>
         <module>sandbox</module>
       </modules>
+    </profile>
+
+    <!-- Profile, which is used in sub-modules to enable Thrift related proxy modules -->
+    <profile>
+      <id>with-proxies</id>
     </profile>
 
     <!-- Profile for linux -->
@@ -1369,27 +1357,6 @@
     -->
     <profile>
       <id>jenkins-build</id>
-      <properties>
-      </properties>
-      <build>
-        <plugins>
-          <!--TODO Remove this after fix for NVE CVS-->
-          <plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <failBuildOnCVSS>8</failBuildOnCVSS>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
 
     <!--
@@ -1439,294 +1406,6 @@
               <failBuildOnCVSS>8</failBuildOnCVSS>
             </configuration>
           </plugin-->
-        </plugins>
-      </build>
-    </profile>
-
-    <!--
-      This profile has java-specific plugin configurations
-      that might not apply to other languages.
-    -->
-    <profile>
-      <id>java-module</id>
-      <activation>
-        <file>
-          <exists>src/main/java</exists>
-        </file>
-      </activation>
-
-      <!-- Dependencies common to all java modules -->
-      <dependencies>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <!-- JUnit 4 Support -->
-        <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <!-- JUnit 5 Support -->
-        <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter-api</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter-params</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter-engine</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.junit.vintage</groupId>
-          <artifactId>junit-vintage-engine</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.hamcrest</groupId>
-          <artifactId>hamcrest-core</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.hamcrest</groupId>
-          <artifactId>hamcrest-library</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-core</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-junit-jupiter</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-core</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.codehaus.groovy</groupId>
-          <artifactId>groovy-test-junit5</artifactId>
-          <version>2.5.3</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-
-      <build>
-        <plugins>
-          <!--
-            Even if Maven transitively pulls in dependencies, relying on these can
-            quite often cause hard to find problems. So it's a good practice to make
-            sure everything directly required is also directly added as a dependency.
-            On the other side adding unused dependency only over-complicates the
-            the dependency graph, so the maven-dependency-plugin checks we depend on
-            what we need and only that and that runtime dependencies are correctly
-            imported with runtime scope.
-          -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>check-dependencies</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>analyze-only</goal>
-                </goals>
-                <configuration>
-                  <failOnWarning>true</failOnWarning>
-                  <ignoredDependencies>
-                    <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
-                    <ignoredDependency>junit:junit</ignoredDependency>
-                    <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
-                    <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
-                    <ignoredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredDependency>
-                    <ignoredDependency>org.junit.vintage:junit-vintage-engine</ignoredDependency>
-                    <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
-                    <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
-                    <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
-                    <ignoredDependency>org.mockito:mockito-junit-jupiter</ignoredDependency>
-                    <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
-                    <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
-                    <ignoredDependency>org.codehaus.groovy:groovy-test-junit5</ignoredDependency>
-                    <ignoredDependency>org.codehaus.groovy:groovy</ignoredDependency>
-                    <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
-                  </ignoredDependencies>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!--
-            This plugin doesn't really do much, it makes sure the jacoco agent
-            is downloaded and that the path to this is saved in an environment
-            variable so we can access this later on in the build.
-          -->
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <executions>
-              <!--
-                  Prepares the property pointing to the JaCoCo runtime agent which
-                  is passed as VM argument when Maven the Surefire plugin is executed.
-              -->
-              <execution>
-                <id>pre-unit-test</id>
-                <phase>generate-test-sources</phase>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-                <configuration>
-                  <!--
-                      Sets the name of the property containing the settings
-                      for JaCoCo runtime agent.
-                  -->
-                  <propertyName>surefireArgLine</propertyName>
-                </configuration>
-              </execution>
-              <!--
-                  Prepares the property pointing to the JaCoCo runtime agent which
-                  is passed as VM argument when Maven the Failsafe plugin is executed.
-              -->
-              <execution>
-                <id>pre-integration-test</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>prepare-agent-integration</goal>
-                </goals>
-                <configuration>
-                  <!--
-                      Sets the name of the property containing the settings
-                      for JaCoCo runtime agent.
-                  -->
-                  <propertyName>failsafeArgLine</propertyName>
-                </configuration>
-              </execution>
-              <!--
-                  Check if the unit-test-coverage is at least a certain minimum.
-              -->
-              <execution>
-                <id>check-coverage</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-                <configuration>
-                  <!-- TODO: Turn this on as soon as possible. -->
-                  <haltOnFailure>false</haltOnFailure>
-                  <rules>
-                    <rule implementation="org.jacoco.maven.RuleConfiguration">
-                      <element>BUNDLE</element>
-                      <limits>
-                        <!-- Fail the build if the instruction level coverage is below 80%. -->
-                        <limit implementation="org.jacoco.report.check.Limit">
-                          <counter>INSTRUCTION</counter>
-                          <value>COVEREDRATIO</value>
-                          <minimum>0.50</minimum>
-                        </limit>
-                        <!-- Fail the build if there are classes without any coverage. -->
-                        <limit implementation="org.jacoco.report.check.Limit">
-                          <counter>CLASS</counter>
-                          <value>MISSEDCOUNT</value>
-                          <maximum>0</maximum>
-                        </limit>
-                      </limits>
-                    </rule>
-                  </rules>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!--
-            Make the surefire execute all unit-tests
-          -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <!--
-                We have to slightly increase the heap-size or some tests will fail.
-                Notice the @ instead of the $ as prefix? That's late evaluation.
-              -->
-              <argLine>-Xmx256m @{surefireArgLine}</argLine>
-              <includes>
-                <include>**/*Test.java</include>
-                <include>**/*Tests.java</include>
-                <include>**/*Spec.java</include>
-              </includes>
-            </configuration>
-          </plugin>
-
-          <!--
-            Generate an OSGI compatible MANIFEST file.
-          -->
-          <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>bundle-manifest</id>
-                <phase>process-classes</phase>
-                <goals>
-                  <goal>manifest</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!--
-            Use the MANIFEST file generated by the maven-bundle-plugin.
-          -->
-          <plugin>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-              <archive>
-                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-              </archive>
-            </configuration>
-          </plugin>
-
-          <!--
-            Make the failsafe execute all integration-tests
-          -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <!--
-                    Notice the @ instead of the $ as prefix? That's late evaluation.
-              -->
-              <argLine>@{failsafeArgLine}</argLine>
-            </configuration>
-          </plugin>
         </plugins>
       </build>
     </profile>

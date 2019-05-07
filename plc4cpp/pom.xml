@@ -43,6 +43,9 @@
     <module>protocols</module>
     <module>utils</module>
 
+    <module>examples</module>
+    <module>integrations</module>
+
     <!-- Third party libs -->
     <module>libs</module>
   </modules>

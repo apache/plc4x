@@ -29,5 +29,8 @@ set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
     Build all the modules of PLC4Cpp
 ]]
 add_subdirectory(api)
-add_subdirectory(protocols/driver-bases/base)
-add_subdirectory(utils/logger)
+add_subdirectory(protocols)
+add_subdirectory(utils)
+
+add_subdirectory(examples)
+add_subdirectory(integrations)

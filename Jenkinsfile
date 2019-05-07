@@ -122,7 +122,7 @@ pipeline {
 
                 // We'll deploy to a relative directory so we can save
                 // that and deploy in a later step on a different node
-                sh 'mvn -P${JENKINS_PROFILE},development,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                sh 'mvn -P${JENKINS_PROFILE},development,with-cpp,with-java,with-dotnet,with-python,with-proxies,with-sandbox ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
 
                 // Stash the build results so we can deploy them on another node
                 stash name: 'plc4x-build-snapshots', includes: 'local-snapshots-dir/**'
@@ -142,7 +142,7 @@ pipeline {
             steps {
                 echo 'Checking Code Quality'
                 withSonarQubeEnv('ASF Sonar Analysis') {
-                    sh 'mvn -P${JENKINS_PROFILE},with-cpp,with-dotnet,with-python,with-proxies sonar:sonar'
+                    sh 'mvn -P${JENKINS_PROFILE},with-cpp,with-java,with-dotnet,with-python,with-proxies sonar:sonar'
                 }
             }
         }
