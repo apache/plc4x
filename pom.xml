@@ -166,13 +166,6 @@
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
 
-    <!-- Core PLC4X modules -->
-    <!--module>plc4cpp</module-->
-    <module>plc4j</module>
-
-    <!-- Python language binding-->
-    <module>plc4py</module>
-
     <!-- Tools needed throughout the build -->
     <module>tools</module>
   </modules>
