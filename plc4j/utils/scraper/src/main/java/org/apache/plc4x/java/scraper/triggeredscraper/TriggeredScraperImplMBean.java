@@ -17,25 +17,17 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.scraper;
+package org.apache.plc4x.java.scraper.triggeredscraper;
+
+import org.apache.plc4x.java.scraper.Scraper;
 
 /**
- * Main interface that orchestrates scraping.
+ * MBean for {@link Scraper}
  */
-public interface Scraper{
-    /**
-     * Start the scraping.
-     */
-    void start();
+public interface TriggeredScraperImplMBean {
 
-    /**
-     * retrieves active tasks used for scraping
-     * @return number of active tasks
-     */
+    boolean isRunning();
+
     int getNumberOfActiveTasks();
 
-    /**
-     * stops active scraping processes
-     */
-    void stop();
 }

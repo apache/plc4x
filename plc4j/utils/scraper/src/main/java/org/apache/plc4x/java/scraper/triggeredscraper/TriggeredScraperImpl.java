@@ -37,6 +37,8 @@ import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.*;
+import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -54,9 +56,11 @@ import java.util.concurrent.*;
  *     right now boolean variables as well as numeric variables could be used as data-types
  *     available comparators are ==,!= for all data-types and &gt;,&gt;=,&lt;,&lt;= for numeric data-types
  */
-public class TriggeredScraperImpl implements Scraper {
+public class TriggeredScraperImpl implements Scraper, TriggeredScraperImplMBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperImpl.class);
+    public static final String MX_DOMAIN = "org.apache.plc4x.java";
+
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10,
         new BasicThreadFactory.Builder()
@@ -77,6 +81,7 @@ public class TriggeredScraperImpl implements Scraper {
     private final MultiValuedMap<ScraperTask, ScheduledFuture<?>> futures = new ArrayListValuedHashMap<>();
     private final PlcDriverManager driverManager;
     private final List<ScrapeJob> jobs;
+    private MBeanServer mBeanServer;
 
     /**
      * Creates a Scraper instance from a configuration.
@@ -86,6 +91,21 @@ public class TriggeredScraperImpl implements Scraper {
      */
     public TriggeredScraperImpl(TriggeredScraperConfiguration config, ResultHandler resultHandler) throws ScraperException {
         this(resultHandler, createPooledDriverManager(), config.getJobs());
+    }
+
+
+    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager driverManager, List<ScrapeJob> jobs) {
+        this.resultHandler = resultHandler;
+        Validate.notEmpty(jobs);
+        this.driverManager = driverManager;
+        this.jobs = jobs;
+        // Register MBean
+        mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        try {
+            mBeanServer.registerMBean(this, new ObjectName(MX_DOMAIN, "scraper", "scraper"));
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
+            LOGGER.debug("Unable to register Scraper as MBean", e);
+        }
     }
 
     /**
@@ -101,14 +121,6 @@ public class TriggeredScraperImpl implements Scraper {
             poolConfig.setTestOnReturn(true);
             return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, poolConfig);
         });
-    }
-
-
-    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager driverManager, List<ScrapeJob> jobs) {
-        this.resultHandler = resultHandler;
-        Validate.notEmpty(jobs);
-        this.driverManager = driverManager;
-        this.jobs = jobs;
     }
 
     /**
@@ -139,6 +151,8 @@ public class TriggeredScraperImpl implements Scraper {
                             executorService,
                             resultHandler,
                             (TriggeredScrapeJobImpl) tuple.getLeft());
+                        // Register task mxbean
+                        registerTaskMBean(task);
                         // Add task to internal list
                         tasks.put(tuple.getLeft(), task);
                         ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task,
@@ -168,10 +182,18 @@ public class TriggeredScraperImpl implements Scraper {
         }, 1_000, 1_000, TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public int getNumberOfActiveTasks() {
-        return 0;
+    /**
+     * Register a task as MBean
+     * @param task task to register
+     */
+    private void registerTaskMBean(ScraperTask task) {
+        try {
+            mBeanServer.registerMBean(task, new ObjectName(MX_DOMAIN + ":type=ScrapeTask,name=" + task.getJobName() + "-" + task.getConnectionAlias()));
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
+            LOGGER.debug("Unable to register Task as MBean", e);
+        }
     }
+
 
     @Override
     public void stop() {
@@ -183,5 +205,18 @@ public class TriggeredScraperImpl implements Scraper {
         }
         // Clear the map
         futures.clear();
+    }
+
+
+    // MBean methods
+    @Override
+    public boolean isRunning() {
+        // TODO is this okay so?
+        return !futures.isEmpty();
+    }
+
+    @Override
+    public int getNumberOfActiveTasks() {
+        return (int) futures.entries().stream().filter(entry -> !entry.getValue().isDone()).count();
     }
 }
