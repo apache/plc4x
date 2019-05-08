@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.scraper.triggeredscraper;
 
 import org.apache.plc4x.java.scraper.ScrapeJob;
+import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.TriggerConfiguration;
 
@@ -33,7 +34,7 @@ public class TriggeredScrapeJobImpl implements ScrapeJob {
     private final TriggerConfiguration triggerConfiguration;
 
 
-    public TriggeredScrapeJobImpl(String jobName, String triggerConfig, Map<String, String> connections, Map<String, String> fields) throws ScraperException {
+    public TriggeredScrapeJobImpl(String jobName, String triggerConfig, Map<String, String> connections, Map<String, String> fields) throws ScraperConfigurationException {
         this.jobName = jobName;
         this.triggerConfig = triggerConfig;
         this.sourceConnections = connections;

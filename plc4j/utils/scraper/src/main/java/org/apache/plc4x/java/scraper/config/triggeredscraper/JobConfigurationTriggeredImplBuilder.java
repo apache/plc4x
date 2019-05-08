@@ -17,47 +17,54 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.scraper.config;
+package org.apache.plc4x.java.scraper.config.triggeredscraper;
+
+import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @deprecated Scraper is deprecated please use {@link org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredJobConfiguration} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
- */
-@Deprecated
-public class JobConfigurationImplBuilder {
+public class JobConfigurationTriggeredImplBuilder {
 
-    private final ScraperConfigurationBuilder parent;
+    private final ScraperConfigurationTriggeredImplBuilder parent;
     private final String name;
-    private final int scrapeRateMs;
+    private final String triggerConfig;
 
     private final List<String> sources = new ArrayList<>();
     private final Map<String, String> fields = new HashMap<>();
 
-    public JobConfigurationImplBuilder(ScraperConfigurationBuilder parent, String name, int scrapeRateMs) {
+    public JobConfigurationTriggeredImplBuilder(ScraperConfigurationTriggeredImplBuilder parent, String name, String triggerConfig) {
+        if(parent==null){
+            throw new ScraperConfigurationException("parent builder cannot be null");
+        }
+        if (name == null || name.isEmpty()) {
+            throw new ScraperConfigurationException("Job name must not be null or empty");
+        }
         this.parent = parent;
         this.name = name;
-        this.scrapeRateMs = scrapeRateMs;
+        this.triggerConfig = triggerConfig;
     }
 
-    public JobConfigurationImplBuilder source(String alias) {
+    public JobConfigurationTriggeredImplBuilder source(String alias) {
+        if(alias==null || alias.isEmpty()){
+            throw new ScraperConfigurationException("source alias cannot be null or empty");
+        }
         this.sources.add(alias);
         return this;
     }
 
-    public JobConfigurationImplBuilder field(String alias, String fieldQuery) {
+    public JobConfigurationTriggeredImplBuilder field(String alias, String fieldQuery) {
         this.fields.put(alias, fieldQuery);
         return this;
     }
 
-    private JobConfigurationImpl buildInternal() {
-        return new JobConfigurationImpl(name, scrapeRateMs, sources, fields);
+    private JobConfigurationTriggeredImpl buildInternal() {
+        return new JobConfigurationTriggeredImpl(name, triggerConfig,null, sources, fields);
     }
 
-    public ScraperConfigurationBuilder build() {
+    public ScraperConfigurationTriggeredImplBuilder build() {
         parent.addJobConfiguration(this.buildInternal());
         return this.parent;
     }

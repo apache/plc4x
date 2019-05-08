@@ -29,8 +29,11 @@
     </encoder>
   </appender>
 
-  <root level="INFO">
+  <root level="WARN">
     <appender-ref ref="STDOUT"/>
   </root>
 
+  <logger name="org.apache.plc4x.java.scraper.triggeredscraper" level="WARN" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
 </configuration>

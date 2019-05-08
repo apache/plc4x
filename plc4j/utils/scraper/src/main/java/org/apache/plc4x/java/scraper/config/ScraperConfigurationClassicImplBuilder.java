@@ -19,34 +19,36 @@
 
 package org.apache.plc4x.java.scraper.config;
 
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImplBuilder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @deprecated Scraper is deprecated please use {@link org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfigurationBuilder} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
+ * @deprecated Scraper is deprecated please use {@link ScraperConfigurationTriggeredImplBuilder} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
  */
 @Deprecated
-public class ScraperConfigurationBuilder {
+public class ScraperConfigurationClassicImplBuilder {
 
     private final Map<String, String> sources = new HashMap<>();
     private final List<JobConfigurationImpl> jobConfigurations = new ArrayList<>();
 
-    public ScraperConfigurationBuilder addSource(String alias, String connectionString) {
+    public ScraperConfigurationClassicImplBuilder addSource(String alias, String connectionString) {
         sources.put(alias, connectionString);
         return this;
     }
 
-    public JobConfigurationImplBuilder job(String name, int scrapeRateMs) {
-        return new JobConfigurationImplBuilder(this, name, scrapeRateMs);
+    public JobConfigurationClassicImplBuilder job(String name, int scrapeRateMs) {
+        return new JobConfigurationClassicImplBuilder(this, name, scrapeRateMs);
     }
 
     public ScraperConfiguration build() {
-        return new ScraperConfiguration(sources, jobConfigurations);
+        return new ScraperConfigurationClassicImpl(sources, jobConfigurations);
     }
 
-    public void addJobConfiguration(JobConfigurationImpl configuration) {
+    public void addJobConfiguration(JobConfigurationClassicImpl configuration) {
         this.jobConfigurations.add(configuration);
     }
 }

@@ -17,55 +17,49 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.scraper.config.triggeredscraper;
+package org.apache.plc4x.java.scraper.config;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTriggeredImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TriggeredJobConfigurationBuilder {
+/**
+ * @deprecated Scraper is deprecated please use {@link JobConfigurationTriggeredImpl} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
+ */
+@Deprecated
+public class JobConfigurationClassicImplBuilder {
 
-    private final TriggeredScraperConfigurationBuilder parent;
+    private final ScraperConfigurationClassicImplBuilder parent;
     private final String name;
-    private final String triggerConfig;
+    private final int scrapeRateMs;
 
     private final List<String> sources = new ArrayList<>();
     private final Map<String, String> fields = new HashMap<>();
 
-    public TriggeredJobConfigurationBuilder(TriggeredScraperConfigurationBuilder parent, String name, String triggerConfig) {
-        if(parent==null){
-            throw new ScraperConfigurationException("parent builder cannot be null");
-        }
-        if (name == null || name.isEmpty()) {
-            throw new ScraperConfigurationException("Job name must not be null or empty");
-        }
+    public JobConfigurationClassicImplBuilder(ScraperConfigurationClassicImplBuilder parent, String name, int scrapeRateMs) {
         this.parent = parent;
         this.name = name;
-        this.triggerConfig = triggerConfig;
+        this.scrapeRateMs = scrapeRateMs;
     }
 
-    public TriggeredJobConfigurationBuilder source(String alias) {
-        if(alias==null || alias.isEmpty()){
-            throw new ScraperConfigurationException("source alias cannot be null or empty");
-        }
+    public JobConfigurationClassicImplBuilder source(String alias) {
         this.sources.add(alias);
         return this;
     }
 
-    public TriggeredJobConfigurationBuilder field(String alias, String fieldQuery) {
+    public JobConfigurationClassicImplBuilder field(String alias, String fieldQuery) {
         this.fields.put(alias, fieldQuery);
         return this;
     }
 
-    private TriggeredJobConfiguration buildInternal() {
-        return new TriggeredJobConfiguration(name, triggerConfig, sources, fields);
+    private JobConfigurationClassicImpl buildInternal() {
+        return new JobConfigurationClassicImpl(name,null, scrapeRateMs, sources, fields);
     }
 
-    public TriggeredScraperConfigurationBuilder build() {
+    public ScraperConfigurationClassicImplBuilder build() {
         parent.addJobConfiguration(this.buildInternal());
         return this.parent;
     }
