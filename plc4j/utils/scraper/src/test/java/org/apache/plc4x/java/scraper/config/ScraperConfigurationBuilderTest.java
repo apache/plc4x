@@ -23,8 +23,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.assertj.core.api.WithAssertions;
-import org.junit.Ignore;
-import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,18 +31,18 @@ class ScraperConfigurationBuilderTest implements WithAssertions {
 
     //ToDo test is failing idon't know why (Tim)
     void builder_usage_example() throws JsonProcessingException {
-        ScraperConfigurationBuilder builder = new ScraperConfigurationBuilder();
+        ScraperConfigurationClassicImplBuilder builder = new ScraperConfigurationClassicImplBuilder();
         List<String> sources = Arrays.asList("s1", "s2");
         List<String> jobs = Arrays.asList("j1", "j2");
 
         sources.forEach(source -> builder.addSource(source, source));
         for (String job : jobs) {
-            JobConfigurationImplBuilder jobConfigurationImplBuilder = builder.job(job, 10);
-            sources.forEach(jobConfigurationImplBuilder::source);
+            JobConfigurationClassicImplBuilder jobConfigurationClassicImplBuilder = builder.job(job, 10);
+            sources.forEach(jobConfigurationClassicImplBuilder::source);
             for (int i = 1; i <= 10; i++) {
-                jobConfigurationImplBuilder.field("f" + i, "qry" + i);
+                jobConfigurationClassicImplBuilder.field("f" + i, "qry" + i);
             }
-            jobConfigurationImplBuilder.build();
+            jobConfigurationClassicImplBuilder.build();
         }
 
         ScraperConfiguration configuration = builder.build();

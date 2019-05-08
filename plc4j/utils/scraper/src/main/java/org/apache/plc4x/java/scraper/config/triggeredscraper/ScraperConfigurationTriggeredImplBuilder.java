@@ -19,30 +19,32 @@
 
 package org.apache.plc4x.java.scraper.config.triggeredscraper;
 
+import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TriggeredScraperConfigurationBuilder {
+public class ScraperConfigurationTriggeredImplBuilder {
 
     private final Map<String, String> sources = new HashMap<>();
-    private final List<TriggeredJobConfiguration> jobConfigurations = new ArrayList<>();
+    private final List<JobConfigurationImpl> jobConfigurations = new ArrayList<>();
 
-    public TriggeredScraperConfigurationBuilder addSource(String alias, String connectionString) {
+    public ScraperConfigurationTriggeredImplBuilder addSource(String alias, String connectionString) {
         sources.put(alias, connectionString);
         return this;
     }
 
-    public TriggeredJobConfigurationBuilder job(String name, String triggerConfig) {
-        return new TriggeredJobConfigurationBuilder(this, name, triggerConfig);
+    public JobConfigurationTriggeredImplBuilder job(String name, String triggerConfig) {
+        return new JobConfigurationTriggeredImplBuilder(this, name, triggerConfig);
     }
 
-    public TriggeredScraperConfiguration build() {
-        return new TriggeredScraperConfiguration(sources, jobConfigurations);
+    public ScraperConfigurationTriggeredImpl build() {
+        return new ScraperConfigurationTriggeredImpl(sources, jobConfigurations);
     }
 
-    public void addJobConfiguration(TriggeredJobConfiguration configuration) {
+    public void addJobConfiguration(JobConfigurationTriggeredImpl configuration) {
         this.jobConfigurations.add(configuration);
     }
 }

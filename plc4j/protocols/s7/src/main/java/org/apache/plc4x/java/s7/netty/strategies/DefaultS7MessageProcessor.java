@@ -405,6 +405,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 if(requestItem.getNumElements() != responseParameterItem.getNumElements()) {
                     int itemSizeInBytes = requestItem.getDataType().getSizeInBytes();
                     int totalSizeInBytes = requestItem.getNumElements() * itemSizeInBytes;
+
                     if(varParameter.getType() == ParameterType.READ_VAR) {
                         byte[] data = new byte[totalSizeInBytes];
                         System.arraycopy(responsePayloadItem.getData(), 0, data, 0, responsePayloadItem.getData().length);

@@ -19,10 +19,14 @@
 
 package org.apache.plc4x.java.scraper;
 
+import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.modbus.connection.ModbusConnectionFactory;
-import org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,15 +42,20 @@ public class TriggeredScraperRunnerModbus {
      * testing of TriggeredScraper vs real device (Modbus)
      */
     public static void main(String[] args) throws IOException, ScraperException {
-        TriggeredScraperConfiguration configuration = TriggeredScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example_triggered_scraper_modbus.yml");
-        TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (j, a, m) -> {
+        ScraperConfiguration configuration = ScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example_triggered_scraper_modbus.yml", ScraperConfigurationTriggeredImpl.class);
+        PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
+        TriggeredScraperImpl scraper = new TriggeredScraperImpl(
+            configuration,
+            plcDriverManager,
+            (j, a, m) -> {
             LOGGER.info("Results from {}/{}: {}", j, a, m);
             for(Map.Entry<String, Object> entry:m.entrySet()){
                 for(Object object:(List<Object>)entry.getValue()){
                     LOGGER.info("{}",object);
                 }
             }
-        });
+            },
+            new TriggerCollectorImpl(plcDriverManager));
 
         scraper.start();
     }
