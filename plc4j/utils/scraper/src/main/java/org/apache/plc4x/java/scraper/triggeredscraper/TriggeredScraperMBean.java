@@ -24,7 +24,7 @@ import org.apache.plc4x.java.scraper.Scraper;
 /**
  * MBean for {@link Scraper}
  */
-public interface TriggeredScraperImplMBean {
+public interface TriggeredScraperMBean {
 
     boolean isRunning();
 

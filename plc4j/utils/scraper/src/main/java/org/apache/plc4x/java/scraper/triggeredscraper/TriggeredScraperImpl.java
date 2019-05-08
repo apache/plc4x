@@ -23,7 +23,6 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
@@ -62,7 +61,7 @@ import java.util.stream.Collectors;
  *     right now boolean variables as well as numeric variables could be used as data-types
  *     available comparators are ==,!= for all data-types and &gt;,&gt;=,&lt;,&lt;= for numeric data-types
  */
-public class TriggeredScraperImpl implements Scraper, TriggeredScraperImplMBean {
+public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperImpl.class);
     public static final String MX_DOMAIN = "org.apache.plc4x.java";
@@ -129,14 +128,6 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperImplMBean 
         this.jobs = jobs;
         this.triggerCollector = triggerCollector;
         this.futureTimeOut = futureTimeOut;
-    }
-
-
-    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager driverManager, List<ScrapeJob> jobs) {
-        this.resultHandler = resultHandler;
-        Validate.notEmpty(jobs);
-        this.driverManager = driverManager;
-        this.jobs = jobs;
         // Register MBean
         mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
@@ -145,6 +136,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperImplMBean 
             LOGGER.debug("Unable to register Scraper as MBean", e);
         }
     }
+
 
     /**
      * Min Idle per Key is set to 1 for situations where the network is broken.
@@ -159,14 +151,6 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperImplMBean 
             poolConfig.setTestOnReturn(true);
             return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, poolConfig);
         });
-    }
-
-
-    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager driverManager, List<ScrapeJob> jobs) {
-        this.resultHandler = resultHandler;
-        Validate.notEmpty(jobs);
-        this.driverManager = driverManager;
-        this.jobs = jobs;
     }
 
     /**
@@ -204,7 +188,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperImplMBean 
 
                     // Add task to internal list
                     LOGGER.info("Task {} added to scheduling", triggeredScraperTask);
-                    registerTaskMBean(task);
+                    registerTaskMBean(triggeredScraperTask);
                     tasks.put(job, triggeredScraperTask);
                     ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(triggeredScraperTask, 0, job.getScrapeRate(), TimeUnit.MILLISECONDS);
 
@@ -338,11 +322,11 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperImplMBean 
     @Override
     public boolean isRunning() {
         // TODO is this okay so?
-        return !futures.isEmpty();
+        return !scraperTaskMap.isEmpty();
     }
 
     @Override
     public int getNumberOfActiveTasks() {
-        return (int) futures.entries().stream().filter(entry -> !entry.getValue().isDone()).count();
+        return (int) scraperTaskMap.entries().stream().filter(entry -> !entry.getValue().isDone()).count();
     }
 }

@@ -29,6 +29,8 @@ import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfiguration;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -105,7 +107,8 @@ public class TriggeredScraperImplTest {
         when(mockDevice2.read(eq("%DB810:DBW0:INT"))).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(4L)));
 
         TriggeredScraperConfiguration configuration = TriggeredScraperConfiguration.fromFile("src/test/resources/mock-scraper-config.yml");
-        TriggeredScraperImpl scraper = new TriggeredScraperImpl((j, a, m) -> System.out.println(String.format("Results from %s/%s: %s", j, a, m)), driverManager, configuration.getJobs());
+        TriggerCollector triggerCollector = new TriggerCollectorImpl(driverManager);
+        TriggeredScraperImpl scraper = new TriggeredScraperImpl((j, a, m) -> System.out.println(String.format("Results from %s/%s: %s", j, a, m)), driverManager, configuration.getJobs(),triggerCollector,1000);
 
         scraper.start();
 
