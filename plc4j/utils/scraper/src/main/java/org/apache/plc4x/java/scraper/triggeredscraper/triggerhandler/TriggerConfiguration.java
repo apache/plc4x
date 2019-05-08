@@ -76,6 +76,7 @@ public class TriggerConfiguration{
             //test for valid field-connection string, on exception quit job and return message to user
             try {
                 // TODO: PLC4X-106 - Make the Scraper not depend on S7 directly
+                // TODO: This should fetch the Field from the PLC Connection
                 this.plcField = S7Field.of(triggerVariable);
             } catch (PlcInvalidFieldException e) {
                 logger.debug(e.getMessage(), e);

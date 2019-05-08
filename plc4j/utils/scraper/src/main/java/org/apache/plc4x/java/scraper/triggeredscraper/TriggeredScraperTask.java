@@ -89,6 +89,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
     @Override
     //ToDo code-refactoring and improved testing --> PLC4X-90
     public void run() {
+        LOGGER.trace("Check condition for task of job {} for connection {}", jobName, connectionAlias);
         if(this.triggerHandler.checkTrigger()) {
             // Does a single fetch only when trigger is valid
             LOGGER.trace("Start new scrape of task of job {} for connection {}", jobName, connectionAlias);
@@ -233,7 +234,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
 
     @Override
     public double getPercentageFailed() {
-        return (double)this.getScrapesSuccess()/this.getScrapesTotal() * 100.0;
+        return 100.0 - (double)this.getScrapesSuccess()/this.getScrapesTotal() * 100.0;
     }
 
     @Override

@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
  * holds the handler for the regarding trigger-scraper on rising-trigger edge
  */
 public class TriggerHandler {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggerHandler.class);
     private static final String TRIGGER = "trigger";
 
@@ -45,7 +46,7 @@ public class TriggerHandler {
     //used to enable trigger only on rising edge
     private boolean lastTriggerState;
 
-    public TriggerHandler(String triggerStrategy, TriggeredScrapeJobImpl triggeredScrapeJob,TriggeredScraperTask parentScraperTask) throws ScraperException {
+    public TriggerHandler(String triggerStrategy, TriggeredScrapeJobImpl triggeredScrapeJob, TriggeredScraperTask parentScraperTask) throws ScraperException {
         this.triggerConfiguration = TriggerConfiguration.createConfiguration(triggerStrategy,triggeredScrapeJob);
         this.parentScraperTask = parentScraperTask;
         this.lastTriggerState = false;
@@ -73,7 +74,6 @@ public class TriggerHandler {
      * @return true if rising-edge of trigger is detected, false otherwise
      */
     private boolean checkS7TriggerVariable(){
-
         CompletableFuture<PlcConnection> future = CompletableFuture.supplyAsync(() -> {
             try {
                 return parentScraperTask.getDriverManager().getConnection(parentScraperTask.getConnectionString());
@@ -97,13 +97,23 @@ public class TriggerHandler {
             boolean trigger = triggerConfiguration.evaluateTrigger(response.getObject(TRIGGER));
 
             //only trigger scraping of data on rising edge of trigger
-            if(trigger && !this.lastTriggerState){
-                this.lastTriggerState = true;
-                return true;
-            }
-            else{
-                this.lastTriggerState = trigger;
-                return false;
+            if(trigger == true){
+                if (this.lastTriggerState == false) {
+                    this.lastTriggerState = true;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                // Trigger is false
+                if (this.lastTriggerState) {
+                    // Triggered before, so RESET it
+                    this.lastTriggerState = false;
+                    return false;
+                } else {
+                    // Simply return false
+                    return false;
+                }
             }
 
         } catch (Exception e) {
