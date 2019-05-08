@@ -16,6 +16,11 @@
   limitations under the License.
 -->
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+
+  <uri name="http://plc4x.apache.org/plc4x"
+       uri="org/apache/plc4x/protocols/protocol.dfdl.xsd"/>
+
   <uri name="http://plc4x.apache.org/s7"
        uri="org/apache/plc4x/protocols/s7/protocol.dfdl.xsd"/>
+
 </catalog>

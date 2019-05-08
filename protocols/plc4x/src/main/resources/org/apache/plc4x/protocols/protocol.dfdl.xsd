@@ -1,0 +1,227 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+           targetNamespace="http://plc4x.apache.org/plc4x">
+
+    <!--
+
+        Simple type definition.
+
+        These are the types language adapters must provide mappings for.
+
+    -->
+
+    <xs:simpleType name="null" dfdl:lengthUnits="bytes" dfdl:length="0" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+
+
+    <xs:simpleType name="bit" dfdl:lengthUnits="bits" dfdl:length="1" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:boolean"/>
+    </xs:simpleType>
+
+
+
+    <xs:simpleType name="uint2" dfdl:lengthUnits="bits" dfdl:length="2" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint3" dfdl:lengthUnits="bits" dfdl:length="3" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint4" dfdl:lengthUnits="bits" dfdl:length="4" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint5" dfdl:lengthUnits="bits" dfdl:length="5" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint6" dfdl:lengthUnits="bits" dfdl:length="6" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint7" dfdl:lengthUnits="bits" dfdl:length="7" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint8" dfdl:lengthUnits="bits" dfdl:length="8" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint9" dfdl:lengthUnits="bits" dfdl:length="9" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint10" dfdl:lengthUnits="bits" dfdl:length="10" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint11" dfdl:lengthUnits="bits" dfdl:length="11" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint12" dfdl:lengthUnits="bits" dfdl:length="12" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint13" dfdl:lengthUnits="bits" dfdl:length="13" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint14" dfdl:lengthUnits="bits" dfdl:length="14" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint15" dfdl:lengthUnits="bits" dfdl:length="15" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint16" dfdl:lengthUnits="bits" dfdl:length="16" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedShort"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint17" dfdl:lengthUnits="bits" dfdl:length="17" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint18" dfdl:lengthUnits="bits" dfdl:length="18" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint19" dfdl:lengthUnits="bits" dfdl:length="19" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint20" dfdl:lengthUnits="bits" dfdl:length="20" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint21" dfdl:lengthUnits="bits" dfdl:length="21" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint22" dfdl:lengthUnits="bits" dfdl:length="22" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint23" dfdl:lengthUnits="bits" dfdl:length="23" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint24" dfdl:lengthUnits="bits" dfdl:length="24" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint25" dfdl:lengthUnits="bits" dfdl:length="25" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint26" dfdl:lengthUnits="bits" dfdl:length="26" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint27" dfdl:lengthUnits="bits" dfdl:length="27" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint28" dfdl:lengthUnits="bits" dfdl:length="28" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint29" dfdl:lengthUnits="bits" dfdl:length="29" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint30" dfdl:lengthUnits="bits" dfdl:length="30" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint31" dfdl:lengthUnits="bits" dfdl:length="31" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint32" dfdl:lengthUnits="bits" dfdl:length="32" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedInt"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uint64" dfdl:lengthUnits="bits" dfdl:length="64" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedLong"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="uintN" dfdl:lengthUnits="bits" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedLong"/>
+    </xs:simpleType>
+
+
+
+    <xs:simpleType name="int8" dfdl:lengthUnits="bits" dfdl:length="8" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:byte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="int16" dfdl:lengthUnits="bits" dfdl:length="16" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:short"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="int32" dfdl:lengthUnits="bits" dfdl:length="32" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:int"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="int64" dfdl:lengthUnits="bits" dfdl:length="64" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:long"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="intN" dfdl:lengthUnits="bits" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:long"/>
+    </xs:simpleType>
+
+
+
+    <xs:simpleType name="byte8" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="byte16" dfdl:lengthUnits="bytes" dfdl:length="2" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="byte32" dfdl:lengthUnits="bytes" dfdl:length="3" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="byte64" dfdl:lengthUnits="bytes" dfdl:length="4" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="byteN" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+
+
+
+    <xs:simpleType name="stringN" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
+                   dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+</xs:schema>

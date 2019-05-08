@@ -16,12 +16,14 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xs:schema targetNamespace="http://plc4x.apache.org/s7"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+           xmlns:plc4x="http://plc4x.apache.org/plc4x"
            xmlns:s7="http://plc4x.apache.org/s7"
-           xmlns:fn="http://www.w3.org/2005/xpath-functions"
-           xmlns:plc4x="http://plc4x.apache.org/schemas/dfdl"
-           targetNamespace="http://plc4x.apache.org/s7">
+           xmlns:fn="http://www.w3.org/2005/xpath-functions">
+
+    <xs:import namespace="http://plc4x.apache.org/plc4x" schemaLocation="../protocol.dfdl.xsd"/>
 
     <xs:annotation>
         <xs:appinfo source="http://www.ogf.org/dfdl/">
@@ -31,6 +33,8 @@
                              binaryNumberRep="binary"
                              byteOrder="bigEndian"
                              lengthKind="implicit" lengthUnits="bytes" length="0"
+                             binaryBooleanTrueRep="1"
+                             binaryBooleanFalseRep="0"
                              occursCountKind="implicit"
                              textOutputMinLength="0"
                              alignment="1" alignmentUnits="bits"
@@ -49,38 +53,16 @@
 
     <!--
 
-        Simple type definition.
-
-    -->
-
-    <xs:simpleType name="bit" dfdl:lengthUnits="bits" dfdl:length="1" dfdl:lengthKind="explicit">
-        <xs:restriction base="xs:boolean"/>
-    </xs:simpleType>
-
-    <xs:simpleType name="byte" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
-        <xs:restriction base="xs:unsignedByte"/>
-    </xs:simpleType>
-
-    <xs:simpleType name="short" dfdl:lengthUnits="bytes" dfdl:length="2" dfdl:lengthKind="explicit">
-        <xs:restriction base="xs:unsignedShort"/>
-    </xs:simpleType>
-
-    <xs:simpleType name="hexByte" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
-        <xs:restriction base="xs:hexBinary"/>
-    </xs:simpleType>
-
-    <!--
-
         TPKT - Iso-On-TCP
 
     -->
 
-    <xs:element name="TpktMessage" type="s7:TpktMessageType"/>
+    <xs:element name="TpktMessage" type="s7:TpktMessage"/>
 
-    <xs:complexType name="TpktMessageType">
+    <xs:complexType name="TpktMessage">
         <xs:sequence>
             <!-- TPKT Magic Byte always 0x03 -->
-            <xs:element name="magicByte" type="s7:byte" fixed="3">
+            <xs:element name="magicByte" type="plc4x:uint8" fixed="3">
                 <xs:annotation>
                     <xs:appinfo source="http://plc4x.apache.org/dfdl">
                         <plc4x:noProperty/>
@@ -91,15 +73,15 @@
                     </xs:appinfo>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="reserved" type="s7:byte">
+            <xs:element name="reserved" type="plc4x:uint8">
                 <xs:annotation>
                     <xs:appinfo source="http://plc4x.apache.org/dfdl">
                         <plc4x:noProperty/>
                     </xs:appinfo>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="length" type="s7:short"/>
-            <xs:element name="userData" type="s7:CotpMessageType"/>
+            <xs:element name="length" type="plc4x:uint16"/>
+            <xs:element name="userData" type="s7:CotpMessage"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -110,7 +92,7 @@
     -->
 
     <xs:simpleType name="CotpTpduType">
-        <xs:restriction base="xs:unsignedByte">
+        <xs:restriction base="plc4x:uint8">
             <xs:enumeration id="tpduTypeConnectionRequest" value="224">
                 <xs:annotation>
                     <xs:appinfo source="http://plc4x.apache.org/">ConnectionRequest</xs:appinfo>
@@ -145,7 +127,7 @@
     </xs:simpleType>
 
     <xs:simpleType name="CotpParameterType">
-        <xs:restriction base="xs:unsignedByte">
+        <xs:restriction base="plc4x:uint8">
             <xs:enumeration value="192">
                 <xs:annotation>
                     <xs:appinfo source="http://plc4x.apache.org/">TpduSize</xs:appinfo>
@@ -174,10 +156,10 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="CotpMessageType">
+    <xs:complexType name="CotpMessage">
         <xs:sequence>
             <!-- Length of the COTP header data -->
-            <xs:element name="headerLength" type="s7:byte"/>
+            <xs:element name="headerLength" type="plc4x:uint8"/>
             <xs:element name="type" type="s7:CotpTpduType"/>
             <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                 <xs:element dfdl:choiceBranchKey="224" name="cotpTpduConnectionRequest"
@@ -191,7 +173,7 @@
                 <xs:element dfdl:choiceBranchKey="112" name="cotpTpduError" type="s7:CotpTpduError"/>
                 <xs:element dfdl:choiceBranchKey="240" name="cotpTpduData" type="s7:CotpTpduData"/>
             </xs:choice>
-            <xs:element name="userData" type="s7:S7MessageType" minOccurs="0"
+            <xs:element name="userData" type="s7:S7Message" minOccurs="0"
                         dfdl:occursCountKind="expression"
                         dfdl:occursCount="{if((../../length - (../headerLength + 5)) gt 0) then 1 else 0}"/>
         </xs:sequence>
@@ -199,9 +181,9 @@
 
     <xs:complexType name="CotpTpduConnectionRequest">
         <xs:sequence>
-            <xs:element name="destinationReference" type="s7:short"/>
-            <xs:element name="sourceReference" type="s7:short"/>
-            <xs:element name="protocolClass" type="s7:byte"/>
+            <xs:element name="destinationReference" type="plc4x:uint16"/>
+            <xs:element name="sourceReference" type="plc4x:uint16"/>
+            <xs:element name="protocolClass" type="plc4x:uint8"/>
             <xs:element name="parameters" minOccurs="0"
                         dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 6}"
                         dfdl:occursCountKind="expression"
@@ -217,9 +199,9 @@
 
     <xs:complexType name="CotpTpduConnectionResponse">
         <xs:sequence>
-            <xs:element name="destinationReference" type="s7:short"/>
-            <xs:element name="sourceReference" type="s7:short"/>
-            <xs:element name="protocolClass" type="s7:byte"/>
+            <xs:element name="destinationReference" type="plc4x:uint16"/>
+            <xs:element name="sourceReference" type="plc4x:uint16"/>
+            <xs:element name="protocolClass" type="plc4x:uint8"/>
             <xs:element name="parameters" minOccurs="0"
                         dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 6}"
                         dfdl:occursCountKind="expression"
@@ -235,9 +217,9 @@
 
     <xs:complexType name="CotpTpduDisconnectRequest">
         <xs:sequence>
-            <xs:element name="destinationReference" type="s7:short"/>
-            <xs:element name="sourceReference" type="s7:short"/>
-            <xs:element name="disconnectReason" type="s7:byte"/>
+            <xs:element name="destinationReference" type="plc4x:uint16"/>
+            <xs:element name="sourceReference" type="plc4x:uint16"/>
+            <xs:element name="disconnectReason" type="plc4x:uint8"/>
             <xs:element name="parameters" minOccurs="0"
                         dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 6}"
                         dfdl:occursCountKind="expression"
@@ -253,8 +235,8 @@
 
     <xs:complexType name="CotpTpduDisconnectResponse">
         <xs:sequence>
-            <xs:element name="destinationReference" type="s7:short"/>
-            <xs:element name="sourceReference" type="s7:short"/>
+            <xs:element name="destinationReference" type="plc4x:uint16"/>
+            <xs:element name="sourceReference" type="plc4x:uint16"/>
             <xs:element name="parameters" minOccurs="0"
                         dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 5}"
                         dfdl:occursCountKind="expression"
@@ -270,8 +252,8 @@
 
     <xs:complexType name="CotpTpduError">
         <xs:sequence>
-            <xs:element name="destinationReference" type="s7:short"/>
-            <xs:element name="rejectCause" type="s7:byte"/>
+            <xs:element name="destinationReference" type="plc4x:uint16"/>
+            <xs:element name="rejectCause" type="plc4x:uint8"/>
             <xs:element name="parameters" minOccurs="0"
                         dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../../headerLength - 4}"
                         dfdl:occursCountKind="expression"
@@ -287,17 +269,15 @@
 
     <xs:complexType name="CotpTpduData">
         <xs:sequence>
-            <xs:element name="endOfTransmission" type="xs:unsignedInt"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits" dfdl:length="1"/>
-            <xs:element name="tpduRef" type="xs:unsignedInt"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits" dfdl:length="7"/>
+            <xs:element name="endOfTransmission" type="plc4x:bit"/>
+            <xs:element name="tpduRef" type="plc4x:uint7"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="Parameter">
         <xs:sequence>
             <xs:element name="type" type="s7:CotpParameterType"/>
-            <xs:element name="parameterLength" type="s7:byte"/>
+            <xs:element name="parameterLength" type="plc4x:uint8"/>
             <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                 <xs:element dfdl:choiceBranchKey="192" name="cotpParameterTpduSize" type="s7:CotpParameterTpduSize"/>
                 <xs:element dfdl:choiceBranchKey="193" name="cotpParameterCallingTsap" type="s7:CotpParameterCallingTsap"/>
@@ -311,33 +291,31 @@
 
     <xs:complexType name="CotpParameterTpduSize">
         <xs:sequence>
-            <xs:element name="tpduSize" type="s7:byte"/>
+            <xs:element name="tpduSize" type="plc4x:uint8"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CotpParameterCallingTsap">
         <xs:sequence>
-            <xs:element name="tsapId" type="s7:short"/>
+            <xs:element name="tsapId" type="plc4x:uint16"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CotpParameterCalledTsap">
         <xs:sequence>
-            <xs:element name="tsapId" type="s7:short"/>
+            <xs:element name="tsapId" type="plc4x:uint16"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CotpParameterChecksum">
         <xs:sequence>
-            <xs:element name="checksum" type="s7:byte"/>
+            <xs:element name="checksum" type="plc4x:uint8"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CotpParameterDisconnectAdditionalInformation">
         <xs:sequence>
-            <xs:element name="data" type="xs:hexBinary"
-                        dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
-                        dfdl:length="{../../parameterLength}"/>
+            <xs:element name="data" type="plc4x:byteN" dfdl:length="{../../parameterLength}"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -347,10 +325,10 @@
 
     -->
 
-    <xs:complexType name="S7MessageType">
+    <xs:complexType name="S7Message">
         <xs:sequence>
             <!-- S7 Magic Byte always 0x32 -->
-            <xs:element name="magicByte" type="s7:byte">
+            <xs:element name="magicByte" type="plc4x:uint8">
                 <xs:annotation>
                     <xs:appinfo source="http://www.ogf.org/dfdl/">
                         <dfdl:assert message="Magic number was not 0x32."
@@ -358,7 +336,7 @@
                     </xs:appinfo>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="type" type="s7:byte"/>
+            <xs:element name="type" type="plc4x:uint8"/>
             <!--
                 Unfortunately the response for a CPU Functions request follows the rules of a
                 response, however has the header structure of a request
@@ -376,10 +354,10 @@
     <xs:complexType name="S7RequestMessage">
         <xs:sequence>
             <!-- Reserved value always 0x0000 -->
-            <xs:element name="reserved" type="s7:short" fixed="0"/>
-            <xs:element name="tpduReference" type="s7:short"/>
-            <xs:element name="parametersLength" type="s7:short"/>
-            <xs:element name="payloadsLength" type="s7:short"/>
+            <xs:element name="reserved" type="plc4x:uint16" fixed="0"/>
+            <xs:element name="tpduReference" type="plc4x:uint16"/>
+            <xs:element name="parametersLength" type="plc4x:uint16"/>
+            <xs:element name="payloadsLength" type="plc4x:uint16"/>
             <xs:element name="parameters" minOccurs="0"
                         dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../parametersLength}"
                         dfdl:occursCountKind="expression"
@@ -389,7 +367,7 @@
                         <xs:element name="parameter" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="type" type="s7:byte"/>
+                                    <xs:element name="type" type="plc4x:uint8"/>
                                     <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                         <xs:element dfdl:choiceBranchKey="240" name="s7GeneralParameterSetupCommunication"
                                                     type="s7:S7GeneralParameterSetupCommunication"/>
@@ -449,14 +427,14 @@
     <xs:complexType name="S7ResponseMessage">
         <xs:sequence>
             <!-- Reserved value always 0x0000 -->
-            <xs:element name="reserved" type="s7:short" fixed="0"/>
-            <xs:element name="tpduReference" type="s7:short"/>
-            <xs:element name="parametersLength" type="s7:short"/>
-            <xs:element name="payloadsLength" type="s7:short"/>
+            <xs:element name="reserved" type="plc4x:uint16" fixed="0"/>
+            <xs:element name="tpduReference" type="plc4x:uint16"/>
+            <xs:element name="parametersLength" type="plc4x:uint16"/>
+            <xs:element name="payloadsLength" type="plc4x:uint16"/>
             <!-- UserData (type 7) responses don't have the error class and code -->
-            <xs:element name="errorClass" type="s7:byte" minOccurs="0"
+            <xs:element name="errorClass" type="plc4x:uint8" minOccurs="0"
                         dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../type eq 3) then 1 else 0}"/>
-            <xs:element name="errorCode" type="s7:byte" minOccurs="0"
+            <xs:element name="errorCode" type="plc4x:uint8" minOccurs="0"
                         dfdl:occursCountKind="expression" dfdl:occursCount="{if(../../type eq 3) then 1 else 0}"/>
             <xs:element name="parameters" minOccurs="0"
                         dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../parametersLength}"
@@ -467,7 +445,7 @@
                         <xs:element name="parameter" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="type" type="s7:byte"/>
+                                    <xs:element name="type" type="plc4x:uint8"/>
                                     <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                         <xs:element dfdl:choiceBranchKey="240" name="s7GeneralParameterSetupCommunication"
                                                     type="s7:S7GeneralParameterSetupCommunication"/>
@@ -528,10 +506,10 @@
     <xs:complexType name="S7UserDataMessage">
         <xs:sequence>
             <!-- Reserved value always 0x0000 -->
-            <xs:element name="reserved" type="s7:short" fixed="0"/>
-            <xs:element name="tpduReference" type="s7:short"/>
-            <xs:element name="parametersLength" type="s7:short"/>
-            <xs:element name="payloadsLength" type="s7:short"/>
+            <xs:element name="reserved" type="plc4x:uint16" fixed="0"/>
+            <xs:element name="tpduReference" type="plc4x:uint16"/>
+            <xs:element name="parametersLength" type="plc4x:uint16"/>
+            <xs:element name="payloadsLength" type="plc4x:uint16"/>
             <xs:element name="parameters" minOccurs="0"
                         dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="{../parametersLength}"
                         dfdl:occursCountKind="expression"
@@ -541,7 +519,7 @@
                         <xs:element name="parameter" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="type" type="s7:byte"/>
+                                    <xs:element name="type" type="plc4x:uint8"/>
                                     <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                         <xs:element dfdl:choiceBranchKey="0" name="s7UserDataParameterCPUService"
                                                     type="s7:S7UserDataParameterCPUService"/>
@@ -599,35 +577,33 @@
     <xs:complexType name="S7GeneralParameterSetupCommunication">
         <xs:sequence>
             <!-- Reserved value always 0x00 -->
-            <xs:element name="reserved" type="s7:byte" fixed="0"/>
-            <xs:element name="maxAmqCaller" type="s7:short"/>
-            <xs:element name="maxAmqCallee" type="s7:short"/>
-            <xs:element name="pduLength" type="s7:short"/>
+            <xs:element name="reserved" type="plc4x:uint8" fixed="0"/>
+            <xs:element name="maxAmqCaller" type="plc4x:uint16"/>
+            <xs:element name="maxAmqCallee" type="plc4x:uint16"/>
+            <xs:element name="pduLength" type="plc4x:uint16"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="S7UserDataParameterCPUService">
         <xs:sequence>
             <!-- Fixed header 0x0112 274 -> -->
-            <xs:element name="header" type="s7:short"/><!-- fixed="274"-->
-            <xs:element name="paramLength" type="s7:byte"/><!-- fixed="4"-->
+            <xs:element name="header" type="plc4x:uint16"/><!-- fixed="274"-->
+            <xs:element name="paramLength" type="plc4x:uint8"/><!-- fixed="4"-->
             <!-- Request: 0x11 -> 17 -->
-            <xs:element name="typeCode" type="s7:byte"/><!-- fixed="17"-->
-            <xs:element name="type" type="xs:unsignedByte" dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
-                        dfdl:length="4"/>
+            <xs:element name="typeCode" type="plc4x:uint8"/><!-- fixed="17"-->
+            <xs:element name="type" type="plc4x:uint4"/>
             <!-- First 4 bits: Request 0x40, last 4 bits: Function Group 0x04 = 0x44 -> 68 -->
-            <xs:element name="functionGroup" type="xs:unsignedByte" dfdl:lengthKind="explicit"
-                        dfdl:lengthUnits="bits" dfdl:length="4"/><!-- fixed="68"-->
+            <xs:element name="functionGroup" type="plc4x:uint4"/><!-- fixed="68"-->
             <!-- READ SSL = 0x01 -->
-            <xs:element name="subFunctionGroup" type="s7:byte"/><!-- fixed="1"-->
-            <xs:element name="sequenceNumber" type="s7:byte"/>
-            <xs:element name="dataUnitReferenceNumber" type="s7:byte" minOccurs="0"
+            <xs:element name="subFunctionGroup" type="plc4x:uint8"/><!-- fixed="1"-->
+            <xs:element name="sequenceNumber" type="plc4x:uint8"/>
+            <xs:element name="dataUnitReferenceNumber" type="plc4x:uint8" minOccurs="0"
                         dfdl:occursCountKind="expression"
                         dfdl:occursCount="{if(../sequenceNumber eq 2) then 1 else 0}"/>
-            <xs:element name="lastDataUnit" type="s7:byte" minOccurs="0"
+            <xs:element name="lastDataUnit" type="plc4x:uint8" minOccurs="0"
                         dfdl:occursCountKind="expression"
                         dfdl:occursCount="{if(../sequenceNumber eq 2) then 1 else 0}"/>
-            <xs:element name="errorCode" type="s7:short" minOccurs="0"
+            <xs:element name="errorCode" type="plc4x:uint16" minOccurs="0"
                         dfdl:occursCountKind="expression"
                         dfdl:occursCount="{if(../sequenceNumber eq 2) then 1 else 0}"/>
         </xs:sequence>
@@ -635,7 +611,7 @@
 
     <xs:complexType name="S7RequestParameterReadVar">
         <xs:sequence>
-            <xs:element name="numItems" type="s7:byte"/>
+            <xs:element name="numItems" type="plc4x:uint8"/>
             <xs:element name="items" minOccurs="0"
                         dfdl:occursCountKind="expression" dfdl:occursCount="{if(../numItems gt 0) then 1 else 0}">
                 <xs:complexType>
@@ -644,7 +620,7 @@
                                     dfdl:occursCountKind="expression" dfdl:occursCount="{../../numItems}">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="type" type="s7:byte"/>
+                                    <xs:element name="type" type="plc4x:uint8"/>
                                     <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                         <xs:element dfdl:choiceBranchKey="18" name="s7RequestParameterReadVarAnyItem"
                                                     type="s7:S7RequestParameterReadVarAnyItem"/>
@@ -660,34 +636,32 @@
 
     <xs:complexType name="S7RequestParameterReadVarAnyItem">
         <xs:sequence>
-            <xs:element name="paramLength" type="s7:byte"/><!-- fixed="10"-->
+            <xs:element name="paramLength" type="plc4x:uint8"/><!-- fixed="10"-->
             <!-- Addressing Mode: Any 0x10 -> 16 -->
-            <xs:element name="addressingMode" type="s7:byte"/><!-- fixed="16"-->
-            <xs:element name="dataType" type="s7:byte"/>
-            <xs:element name="numElements" type="s7:short"/>
-            <xs:element name="dataBlockNumber" type="s7:short"/>
-            <xs:element name="memoryArea" type="s7:byte"/>
+            <xs:element name="addressingMode" type="plc4x:uint8"/><!-- fixed="16"-->
+            <xs:element name="dataType" type="plc4x:uint8"/>
+            <xs:element name="numElements" type="plc4x:uint16"/>
+            <xs:element name="dataBlockNumber" type="plc4x:uint16"/>
+            <xs:element name="memoryArea" type="plc4x:uint8"/>
             <!--
              The next 3 bytes (24 bits) contain the byte- and bit-offset,
              were the last byte contains the bit-offset in the last 3 bits
              and the byteOffset is encoded in the higher level 21 bits
             -->
-            <xs:element name="byteOffset" type="xs:unsignedInt"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits" dfdl:length="21"/>
-            <xs:element name="bitOffset" type="xs:unsignedInt"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits" dfdl:length="3"/>
+            <xs:element name="byteOffset" type="plc4x:uint21"/>
+            <xs:element name="bitOffset" type="plc4x:uint3"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="S7ResponseParameterReadVar">
         <xs:sequence>
-            <xs:element name="numItems" type="s7:byte"/>
+            <xs:element name="numItems" type="plc4x:uint8"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="S7RequestParameterWriteVar">
         <xs:sequence>
-            <xs:element name="numItems" type="s7:byte"/>
+            <xs:element name="numItems" type="plc4x:uint8"/>
             <xs:element name="items" minOccurs="0"
                         dfdl:occursCountKind="expression" dfdl:occursCount="{if(../numItems gt 0) then 1 else 0}">
                 <xs:complexType>
@@ -696,7 +670,7 @@
                                     dfdl:occursCountKind="expression" dfdl:occursCount="{../../numItems}">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="type" type="s7:byte"/>
+                                    <xs:element name="type" type="plc4x:uint8"/>
                                     <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
                                         <xs:element dfdl:choiceBranchKey="18" name="s7RequestParameterWriteVarAnyItem"
                                                     type="s7:S7RequestParameterWriteVarAnyItem"/>
@@ -712,28 +686,26 @@
 
     <xs:complexType name="S7RequestParameterWriteVarAnyItem">
         <xs:sequence>
-            <xs:element name="itemLength" type="s7:byte"/><!-- fixed="10"-->
+            <xs:element name="itemLength" type="plc4x:uint8"/><!-- fixed="10"-->
             <!-- Addressing Mode: Any 0x10 -> 16 -->
-            <xs:element name="addressingMode" type="s7:byte"/><!-- fixed="16"-->
-            <xs:element name="dataType" type="s7:byte"/>
-            <xs:element name="numElements" type="s7:short"/>
-            <xs:element name="dataBlockNumber" type="s7:short"/>
-            <xs:element name="memoryArea" type="s7:byte"/>
+            <xs:element name="addressingMode" type="plc4x:uint8"/><!-- fixed="16"-->
+            <xs:element name="dataType" type="plc4x:uint8"/>
+            <xs:element name="numElements" type="plc4x:uint16"/>
+            <xs:element name="dataBlockNumber" type="plc4x:uint16"/>
+            <xs:element name="memoryArea" type="plc4x:uint8"/>
             <!--
              The next 3 bytes (24 bits) contain the byte- and bit-offset,
              were the last byte contains the bit-offset in the last 3 bits
              and the byteOffset is encoded in the higher level 21 bits
             -->
-            <xs:element name="byteOffset" type="xs:unsignedInt"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits" dfdl:length="21"/>
-            <xs:element name="bitOffset" type="xs:unsignedInt"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits" dfdl:length="3"/>
+            <xs:element name="byteOffset" type="plc4x:uint21"/>
+            <xs:element name="bitOffset" type="plc4x:uint3"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="S7ResponseParameterWriteVar">
         <xs:sequence>
-            <xs:element name="numItems" type="s7:byte"/>
+            <xs:element name="numItems" type="plc4x:uint8"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -745,19 +717,19 @@
 
     <xs:complexType name="S7GeneralPayloadSetupCommunication">
         <xs:sequence>
-            <xs:element name="data" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="0"/>
+            <xs:element name="data" type="plc4x:null"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="S7UserDataPayloadCpuServices">
         <xs:sequence>
-            <xs:element name="returnCode" type="s7:byte"/>
-            <xs:element name="transportSize" type="s7:byte"/><!-- fixed="9"-->
-            <xs:element name="length" type="s7:short"/>
-            <xs:element name="sslId" type="s7:short" minOccurs="0"
+            <xs:element name="returnCode" type="plc4x:uint8"/>
+            <xs:element name="transportSize" type="plc4x:uint8"/><!-- fixed="9"-->
+            <xs:element name="length" type="plc4x:uint16"/>
+            <xs:element name="sslId" type="plc4x:uint16" minOccurs="0"
                         dfdl:occursCountKind="expression"
                         dfdl:occursCount="{if(../returnCode eq 255) then 1 else 0}"/>
-            <xs:element name="sslIndex" type="s7:short" minOccurs="0"
+            <xs:element name="sslIndex" type="plc4x:uint16" minOccurs="0"
                         dfdl:occursCountKind="expression"
                         dfdl:occursCount="{if(../returnCode eq 255) then 1 else 0}"/>
             <xs:element name="partialList" minOccurs="0"
@@ -765,8 +737,8 @@
                         dfdl:occursCount="{if((../returnCode eq 255) and (../length gt 4)) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="partialListLengthInBytes" type="s7:short"/>
-                        <xs:element name="partialListCount" type="s7:short"/>
+                        <xs:element name="partialListLengthInBytes" type="plc4x:uint16"/>
+                        <xs:element name="partialListCount" type="plc4x:uint16"/>
                         <xs:element name="sslDataRecords">
                             <xs:complexType>
                                 <xs:sequence>
@@ -794,26 +766,24 @@
 
     <xs:complexType name="S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification">
         <xs:sequence>
-            <xs:element name="index" type="s7:short"/>
-            <xs:element name="articleNumber" type="xs:string" dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes"
-                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes" dfdl:length="20"/>
-            <xs:element name="bgType" type="s7:short"/>
-            <xs:element name="moduleOrOsVersion" type="s7:short"/>
-            <xs:element name="pgDescriptionFileVersion" type="s7:short"/>
+            <xs:element name="index" type="plc4x:uint16"/>
+            <xs:element name="articleNumber" type="plc4x:stringN" dfdl:length="20"/>
+            <xs:element name="bgType" type="plc4x:uint16"/>
+            <xs:element name="moduleOrOsVersion" type="plc4x:uint16"/>
+            <xs:element name="pgDescriptionFileVersion" type="plc4x:uint16"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="S7RequestPayloadReadVar">
         <xs:sequence>
-            <xs:element name="data"
-                        type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="0"/>
+            <xs:element name="data" type="plc4x:null"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="S7ResponsePayloadReadVar">
         <xs:sequence>
             <!-- The number of items which should be read is transmitted in the matching parameter -->
-            <xs:element name="numItems" type="s7:byte"
+            <xs:element name="numItems" type="plc4x:uint8"
                         dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7ResponseParameterReadVar/numItems
                             }"/>
@@ -821,25 +791,23 @@
                         dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="returnCode" type="s7:byte"/>
-                        <xs:element name="transportSize" type="s7:byte"/>
-                        <xs:element name="rawLength" type="s7:short"/>
+                        <xs:element name="returnCode" type="plc4x:uint8"/>
+                        <xs:element name="transportSize" type="plc4x:uint8"/>
+                        <xs:element name="rawLength" type="plc4x:uint16"/>
                         <!--
                             For some reason the types BIT, BYTE_WORD_DWORD and INTEGER are transferred in "bits",
                             the rest is transferred in "bytes"
                         -->
-                        <xs:element name="lengthInBytes" type="s7:short" dfdl:inputValueCalc="{
+                        <xs:element name="lengthInBytes" type="plc4x:uint16" dfdl:inputValueCalc="{
                                     xs:unsignedShort(if((../transportSize eq 3) or (../transportSize eq 4) or (../transportSize eq 5))
                                             then fn:ceiling(xs:double(../rawLength div 8))
                                             else ../rawLength)}"/>
-                        <xs:element name="data" type="xs:hexBinary"
-                                    dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
-                                    dfdl:length="{../lengthInBytes}"/>
+                        <xs:element name="data" type="plc4x:byteN" dfdl:length="{../lengthInBytes}"/>
                         <!--
                             Transport sizes: BIT, BYTE_WORD_DWORD and OCTET_STRING require a blank byte.
                             However only if this is not the last item in the result.
                         -->
-                        <xs:element name="fillByte" type="s7:byte" minOccurs="0"
+                        <xs:element name="fillByte" type="plc4x:uint8" minOccurs="0"
                                     dfdl:occursCountKind="expression" dfdl:occursCount="{
                                             if(((../lengthInBytes mod 2) eq 1) and
                                                 (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/>
@@ -852,7 +820,7 @@
     <xs:complexType name="S7RequestPayloadWriteVar">
         <xs:sequence>
             <!-- The number of items which should be read is transmitted in the matching parameter -->
-            <xs:element name="numItems" type="s7:byte"
+            <xs:element name="numItems" type="plc4x:uint8"
                         dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7RequestParameterWriteVar/numItems
                             }"/>
@@ -860,25 +828,23 @@
                         dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="returnCode" type="s7:byte"/>
-                        <xs:element name="transportSize" type="s7:byte"/>
-                        <xs:element name="rawLength" type="s7:short"/>
+                        <xs:element name="returnCode" type="plc4x:uint8"/>
+                        <xs:element name="transportSize" type="plc4x:uint8"/>
+                        <xs:element name="rawLength" type="plc4x:uint16"/>
                         <!--
                             For some reason the types BIT, BYTE_WORD_DWORD and INTEGER are transferred in "bits",
                             the rest is transferred in "bytes"
                         -->
-                        <xs:element name="lengthInBytes" type="s7:short" dfdl:inputValueCalc="{
+                        <xs:element name="lengthInBytes" type="plc4x:uint16" dfdl:inputValueCalc="{
                                     xs:unsignedShort(if((../transportSize eq 3) or (../transportSize eq 4) or (../transportSize eq 5))
                                             then fn:ceiling(../rawLength div 8)
                                             else ../rawLength)}"/>
-                        <xs:element name="data" type="xs:hexBinary"
-                                    dfdl:byteOrder="bigEndian" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
-                                    dfdl:length="{../lengthInBytes}"/>
+                        <xs:element name="data" type="plc4x:byteN" dfdl:length="{../lengthInBytes}"/>
                         <!--
                             It seems that the item payload must always be an even number of bytes. So if it's
                             not an even number, add a fill byte.
                         -->
-                        <xs:element name="fillByte" type="s7:byte" minOccurs="0"
+                        <xs:element name="fillByte" type="plc4x:uint8" minOccurs="0"
                                     dfdl:occursCountKind="expression" dfdl:occursCount="{
                                             if(((../lengthInBytes mod 2) eq 1) and
                                                 (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/>
@@ -891,7 +857,7 @@
     <xs:complexType name="S7ResponsePayloadWriteVar">
         <xs:sequence>
             <!-- The number of items which should be read is transmitted in the matching parameter -->
-            <xs:element name="numItems" type="s7:byte"
+            <xs:element name="numItems" type="plc4x:uint8"
                         dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7ResponseParameterWriteVar/numItems
                             }"/>
@@ -899,7 +865,7 @@
                         dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="returnCode" type="s7:byte"/>
+                        <xs:element name="returnCode" type="plc4x:uint8"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
