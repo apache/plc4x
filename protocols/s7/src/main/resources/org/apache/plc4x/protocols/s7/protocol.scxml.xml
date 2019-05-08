@@ -98,7 +98,7 @@
             <userData>
               <headerLength>17</headerLength>
               <type>224</type>
-              <s7:CotpTpduConnectionRequest>
+              <cotpTpduConnectionRequest>
                 <destinationReference>0</destinationReference>
                 <!-- Insert the value for "cotpLocalReference" as short here -->
                 <sourceReference>${cotpLocalReference}</sourceReference>
@@ -107,26 +107,26 @@
                   <parameter>
                     <type>194</type>
                     <parameterLength>2</parameterLength>
-                    <s7:CotpParameterCalledTsap>
+                    <cotpParameterCalledTsap>
                       <tsapId>${cotpCalledTsap}</tsapId>
-                    </s7:CotpParameterCalledTsap>
+                    </cotpParameterCalledTsap>
                   </parameter>
                   <parameter>
                     <type>193</type>
                     <parameterLength>2</parameterLength>
-                    <s7:CotpParameterCallingTsap>
+                    <cotpParameterCallingTsap>
                       <tsapId>${cotpCallingTsap}</tsapId>
-                    </s7:CotpParameterCallingTsap>
+                    </cotpParameterCallingTsap>
                   </parameter>
                   <parameter>
                     <type>192</type>
                     <parameterLength>1</parameterLength>
-                    <s7:CotpParameterTpduSize>
+                    <cotpParameterTpduSize>
                       <tpduSize>${cotpTpduSize}</tpduSize>
-                    </s7:CotpParameterTpduSize>
+                    </cotpParameterTpduSize>
                   </parameter>
                 </s7:parameters>
-              </s7:CotpTpduConnectionRequest>
+              </cotpTpduConnectionRequest>
             </userData>
           </s7:TpktMessage>
         </plc4x:send>
@@ -171,14 +171,14 @@
             <userData>
               <headerLength>2</headerLength>
               <type>240</type>
-              <s7:CotpTpduData>
+              <cotpTpduData>
                 <endOfTransmission>1</endOfTransmission>
                 <tpduRef>0</tpduRef>
-              </s7:CotpTpduData>
+              </cotpTpduData>
               <userData>
                 <magicByte>50</magicByte>
                 <type>1</type>
-                <s7:S7RequestMessage>
+                <s7RequestMessage>
                   <reserved>0</reserved>
                   <tpduReference>0</tpduReference>
                   <parametersLength>8</parametersLength>
@@ -186,20 +186,22 @@
                   <parameters>
                     <parameter>
                       <type>240</type>
-                      <s7:S7GeneralParameterSetupCommunication>
+                      <s7GeneralParameterSetupCommunication>
                         <reserved>0</reserved>
                         <maxAmqCaller>${s7MaxAmqCaller}</maxAmqCaller>
                         <maxAmqCallee>${s7MaxAmqCallee}</maxAmqCallee>
                         <pduLength>${s7PduLength}</pduLength>
-                      </s7:S7GeneralParameterSetupCommunication>
+                      </s7GeneralParameterSetupCommunication>
                     </parameter>
                   </parameters>
                   <payloads>
                     <payload>
-                      <s7:S7GeneralPayloadSetupCommunication/>
+                      <s7GeneralPayloadSetupCommunication>
+                        <data/>
+                      </s7GeneralPayloadSetupCommunication>
                     </payload>
                   </payloads>
-                </s7:S7RequestMessage>
+                </s7RequestMessage>
               </userData>
             </userData>
           </s7:TpktMessage>
@@ -250,14 +252,14 @@
             <userData>
               <headerLength>2</headerLength>
               <type>240</type>
-              <s7:CotpTpduData>
+              <cotpTpduData>
                 <endOfTransmission>1</endOfTransmission>
                 <tpduRef>0</tpduRef>
-              </s7:CotpTpduData>
+              </cotpTpduData>
               <userData>
                 <magicByte>50</magicByte>
                 <type>7</type>
-                <s7:S7UserDataMessage>
+                <s7UserDataMessage>
                   <reserved>0</reserved>
                   <tpduReference>1</tpduReference>
                   <parametersLength>8</parametersLength>
@@ -265,7 +267,7 @@
                   <parameters>
                     <parameter>
                       <type>0</type>
-                      <s7:S7UserDataParameterCPUService>
+                      <s7UserDataParameterCPUService>
                         <header>274</header>
                         <paramLength>4</paramLength>
                         <typeCode>17</typeCode>
@@ -273,21 +275,21 @@
                         <functionGroup>4</functionGroup>
                         <subFunctionGroup>1</subFunctionGroup>
                         <sequenceNumber>0</sequenceNumber>
-                      </s7:S7UserDataParameterCPUService>
+                      </s7UserDataParameterCPUService>
                     </parameter>
                   </parameters>
                   <payloads>
                     <payload>
-                      <s7:S7UserDataPayloadCpuServices>
+                      <s7UserDataPayloadCpuServices>
                         <returnCode>255</returnCode>
                         <transportSize>9</transportSize>
                         <length>4</length>
                         <sslId>17</sslId>
                         <sslIndex>0</sslIndex>
-                      </s7:S7UserDataPayloadCpuServices>
+                      </s7UserDataPayloadCpuServices>
                     </payload>
                   </payloads>
-                </s7:S7UserDataMessage>
+                </s7UserDataMessage>
               </userData>
             </userData>
           </s7:TpktMessage>
@@ -346,14 +348,14 @@
             <userData>
               <headerLength>2</headerLength>
               <type>240</type>
-              <s7:CotpTpduData>
+              <cotpTpduData>
                 <endOfTransmission>1</endOfTransmission>
                 <tpduRef>0</tpduRef>
-              </s7:CotpTpduData>
+              </cotpTpduData>
               <userData>
                 <magicByte>50</magicByte>
                 <type>1</type>
-                <s7:S7RequestMessage>
+                <s7RequestMessage>
                   <reserved>0</reserved>
                   <tpduReference>${requestId}</tpduReference>
                   <parametersLength>14</parametersLength>
@@ -361,12 +363,12 @@
                   <parameters>
                     <parameter>
                       <type>4</type>
-                      <s7:S7RequestParameterReadVar>
+                      <s7RequestParameterReadVar>
                         <numItems>1</numItems>
                         <items>
                           <item>
                             <type>18</type>
-                            <s7:S7RequestParameterReadVarAnyItem>
+                            <s7RequestParameterReadVarAnyItem>
                               <paramLength>10</paramLength>
                               <addressingMode>16</addressingMode>
                               <dataType>${container.request.fields[0].dataType.typeCode}</dataType><!--8 ${s7ReadDataType}-->
@@ -375,18 +377,18 @@
                               <memoryArea>${container.request.fields[0].memoryArea.code}</memoryArea><!--131 ${s7ReadMemoryArea}-->
                               <byteOffset>${container.request.fields[0].byteOffset}</byteOffset><!--16 ${s7ReadByteOffset}-->
                               <bitOffset>${container.request.fields[0].bitOffset}</bitOffset><!--0 ${s7ReadBitOffset}-->
-                            </s7:S7RequestParameterReadVarAnyItem>
+                            </s7RequestParameterReadVarAnyItem>
                           </item>
                         </items>
-                      </s7:S7RequestParameterReadVar>
+                      </s7RequestParameterReadVar>
                     </parameter>
                   </parameters>
                   <payloads>
                     <payload>
-                      <s7:S7RequestPayloadReadVar/>
+                      <s7RequestPayloadReadVar/>
                     </payload>
                   </payloads>
-                </s7:S7RequestMessage>
+                </s7RequestMessage>
               </userData>
             </userData>
           </s7:TpktMessage>
@@ -423,14 +425,14 @@
             <userData>
               <headerLength>2</headerLength>
               <type>240</type>
-              <s7:CotpTpduData>
+              <cotpTpduData>
                 <endOfTransmission>1</endOfTransmission>
                 <tpduRef>0</tpduRef>
-              </s7:CotpTpduData>
+              </cotpTpduData>
               <userData>
                 <magicByte>50</magicByte>
                 <type>1</type>
-                <s7:S7RequestMessage>
+                <s7RequestMessage>
                   <reserved>0</reserved>
                   <tpduReference>${requestId}</tpduReference>
                   <parametersLength>14</parametersLength>
@@ -438,12 +440,12 @@
                   <parameters>
                     <parameter>
                       <type>5</type>
-                      <s7:S7RequestParameterWriteVar>
+                      <s7RequestParameterWriteVar>
                         <numItems>1</numItems>
                         <items>
                           <item>
                             <type>18</type>
-                            <s7:S7RequestParameterWriteVarAnyItem>
+                            <s7RequestParameterWriteVarAnyItem>
                               <itemLength>10</itemLength>
                               <addressingMode>16</addressingMode>
                               <dataType>8</dataType><!--8 ${s7WriteDataType}-->
@@ -452,15 +454,15 @@
                               <memoryArea>131</memoryArea><!--131 ${s7WriteMemoryArea}-->
                               <byteOffset>16</byteOffset><!--16 ${s7WriteByteOffset}-->
                               <bitOffset>0</bitOffset><!--0 ${s7WriteBitOffset}-->
-                            </s7:S7RequestParameterWriteVarAnyItem>
+                            </s7RequestParameterWriteVarAnyItem>
                           </item>
                         </items>
-                      </s7:S7RequestParameterWriteVar>
+                      </s7RequestParameterWriteVar>
                     </parameter>
                   </parameters>
                   <payloads>
                     <payload>
-                      <s7:S7RequestPayloadWriteVar>
+                      <s7RequestPayloadWriteVar>
                         <numItems>1</numItems>
                         <item>
                           <returnCode>0</returnCode>
@@ -469,10 +471,10 @@
                           <lengthInBytes>4</lengthInBytes><!--4 ${s7WriteLengthInBytes}-->
                           <data>79E9F642</data><!--79E9F642 ${s7WriteData}-->
                         </item>
-                      </s7:S7RequestPayloadWriteVar>
+                      </s7RequestPayloadWriteVar>
                     </payload>
                   </payloads>
-                </s7:S7RequestMessage>
+                </s7RequestMessage>
               </userData>
             </userData>
           </s7:TpktMessage>

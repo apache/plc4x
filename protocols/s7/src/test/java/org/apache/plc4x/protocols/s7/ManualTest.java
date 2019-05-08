@@ -42,6 +42,7 @@ public class ManualTest {
         if (schemaUrl != null) {
             URI schemaUri = schemaUrl.toURI();
             ProcessorFactory pf = c.compileSource(schemaUri);
+            logDiagnosticInformation(pf);
             DataProcessor dp = pf.onPath("/");
             logDiagnosticInformation(dp);
 
