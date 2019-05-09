@@ -23,7 +23,7 @@
            xmlns:s7="http://plc4x.apache.org/s7"
            xmlns:fn="http://www.w3.org/2005/xpath-functions">
 
-    <xs:import namespace="http://plc4x.apache.org/plc4x" schemaLocation="../protocol.dfdl.xsd"/>
+    <xs:import namespace="http://plc4x.apache.org/plc4x"/>
 
     <xs:annotation>
         <xs:appinfo source="http://www.ogf.org/dfdl/">
@@ -93,34 +93,46 @@
 
     <xs:simpleType name="CotpTpduType">
         <xs:restriction base="plc4x:uint8">
-            <xs:enumeration id="tpduTypeConnectionRequest" value="224">
+            <xs:enumeration value="224">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">ConnectionRequest</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>ConnectionRequest</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
-            <xs:enumeration id="tpduTypeConnectionResponse" value="208">
+            <xs:enumeration value="208">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">ConnectionResponse</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>ConnectionResponse</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="128">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">DisconnectRequest</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>DisconnectRequest</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="192">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">DisconnectResponse</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>DisconnectResponse</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="112">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">Error</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>Error</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="240">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">Data</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>Data</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
         </xs:restriction>
@@ -130,27 +142,37 @@
         <xs:restriction base="plc4x:uint8">
             <xs:enumeration value="192">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">TpduSize</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>TpduSize</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="193">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">CallingTsap</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>CallingTsap</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="194">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">CalledTsap</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>CalledTsap</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="195">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">Checksum</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>Checksum</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="224">
                 <xs:annotation>
-                    <xs:appinfo source="http://plc4x.apache.org/">DisconnectAdditionalInformation</xs:appinfo>
+                    <xs:appinfo source="http://plc4x.apache.org/plc4x">
+                        <plc4x:enumName>DisconnectAdditionalInformation</plc4x:enumName>
+                    </xs:appinfo>
                 </xs:annotation>
             </xs:enumeration>
         </xs:restriction>

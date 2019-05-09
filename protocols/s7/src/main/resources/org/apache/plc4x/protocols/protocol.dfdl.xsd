@@ -40,6 +40,9 @@
 
 
 
+    <!--
+        UINT values are always referenced with 'bit' lengths
+    -->
     <xs:simpleType name="uint8" dfdl:lengthUnits="bits" dfdl:length="8" dfdl:lengthKind="explicit">
         <xs:restriction base="xs:unsignedByte"/>
     </xs:simpleType>
@@ -62,6 +65,9 @@
 
 
 
+    <!--
+        INT values are always referenced with 'bit' lengths
+    -->
     <xs:simpleType name="int8" dfdl:lengthUnits="bits" dfdl:length="8" dfdl:lengthKind="explicit">
         <xs:restriction base="xs:byte"/>
     </xs:simpleType>
@@ -84,6 +90,10 @@
 
 
 
+    <!--
+        BYTE values are always referenced with 'byte' lengths because
+        it doesn't make sense to read part of a byte as hex value.
+    -->
     <xs:simpleType name="byte8" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
         <xs:restriction base="xs:hexBinary"/>
     </xs:simpleType>
@@ -106,7 +116,10 @@
 
 
 
-
+    <!--
+        STRING values are always referenced with 'byte' lengths because
+        it doesn't make sense to read part of a string character.
+    -->
     <xs:simpleType name="stringN" dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
                    dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes">
         <xs:restriction base="xs:string"/>

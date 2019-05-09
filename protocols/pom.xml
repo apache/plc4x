@@ -189,7 +189,6 @@
     </plugins>
   </build>
 
-
   <modules>
     <!-- Base definitions of the simple types used by all drivers -->
     <module>plc4x</module>

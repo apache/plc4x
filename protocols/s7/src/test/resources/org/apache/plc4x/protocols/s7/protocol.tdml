@@ -27,9 +27,8 @@
                 defaultRoundTrip="onePass">
 
     <tdml:defineSchema name="s7Schema" elementFormDefault="unqualified">
-        <!-- Import the Schema -->
-        <xs:import namespace="http://plc4x.apache.org/s7"
-                   schemaLocation="protocol.dfdl.xsd"/>
+        <!-- Import the Schema (location is defined by daffodil-built-in-catalog.xml) -->
+        <xs:import namespace="http://plc4x.apache.org/s7"/>
 
         <!-- Import the format settings -->
         <dfdl:format ref="s7:s7FullFormat"/>

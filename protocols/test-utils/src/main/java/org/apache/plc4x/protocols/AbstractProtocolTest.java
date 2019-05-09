@@ -19,6 +19,8 @@
 
 package org.apache.plc4x.protocols;
 
+import org.apache.daffodil.japi.Daffodil;
+import org.apache.daffodil.japi.logger.LogLevel;
 import org.apache.daffodil.tdml.DFDLTestSuite;
 import org.apache.daffodil.tdml.Runner;
 import org.apache.daffodil.util.Misc;
@@ -34,6 +36,9 @@ public abstract class AbstractProtocolTest {
     private final String testsuiteName;
 
     public AbstractProtocolTest(String testsuiteName) {
+        System.out.println("Initializing Testsuite:");
+        System.out.println(testsuiteName);
+        Daffodil.setLoggingLevel(LogLevel.Resolver);
         this.testsuiteName = testsuiteName;
     }
 
@@ -55,6 +60,7 @@ public abstract class AbstractProtocolTest {
             );
             dynamicTests.add(test);
         }
+        System.out.println("Found " + dynamicTests.size() + " tests");
         return dynamicTests;
     }
 
