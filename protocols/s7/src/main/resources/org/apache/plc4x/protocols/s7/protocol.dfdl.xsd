@@ -270,7 +270,7 @@
     <xs:complexType name="CotpTpduData">
         <xs:sequence>
             <xs:element name="endOfTransmission" type="plc4x:bit"/>
-            <xs:element name="tpduRef" type="plc4x:uint7"/>
+            <xs:element name="tpduRef" type="plc4x:uintN" dfdl:length="7"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -591,9 +591,9 @@
             <xs:element name="paramLength" type="plc4x:uint8"/><!-- fixed="4"-->
             <!-- Request: 0x11 -> 17 -->
             <xs:element name="typeCode" type="plc4x:uint8"/><!-- fixed="17"-->
-            <xs:element name="type" type="plc4x:uint4"/>
+            <xs:element name="type" type="plc4x:uintN" dfdl:length="4"/>
             <!-- First 4 bits: Request 0x40, last 4 bits: Function Group 0x04 = 0x44 -> 68 -->
-            <xs:element name="functionGroup" type="plc4x:uint4"/><!-- fixed="68"-->
+            <xs:element name="functionGroup" type="plc4x:uintN" dfdl:length="4"/><!-- fixed="68"-->
             <!-- READ SSL = 0x01 -->
             <xs:element name="subFunctionGroup" type="plc4x:uint8"/><!-- fixed="1"-->
             <xs:element name="sequenceNumber" type="plc4x:uint8"/>
@@ -648,8 +648,8 @@
              were the last byte contains the bit-offset in the last 3 bits
              and the byteOffset is encoded in the higher level 21 bits
             -->
-            <xs:element name="byteOffset" type="plc4x:uint21"/>
-            <xs:element name="bitOffset" type="plc4x:uint3"/>
+            <xs:element name="byteOffset" type="plc4x:uintN" dfdl:length="21"/>
+            <xs:element name="bitOffset" type="plc4x:uintN" dfdl:length="3"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -698,8 +698,8 @@
              were the last byte contains the bit-offset in the last 3 bits
              and the byteOffset is encoded in the higher level 21 bits
             -->
-            <xs:element name="byteOffset" type="plc4x:uint21"/>
-            <xs:element name="bitOffset" type="plc4x:uint3"/>
+            <xs:element name="byteOffset" type="plc4x:uintN" dfdl:length="21"/>
+            <xs:element name="bitOffset" type="plc4x:uintN" dfdl:length="3"/>
         </xs:sequence>
     </xs:complexType>
 
