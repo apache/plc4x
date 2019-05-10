@@ -24,10 +24,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
 
+set(BOOST_ROOT "./libs/boost/target/boost_1_70_0/")
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
+find_package(Boost COMPONENTS filesystem log REQUIRED)
+
+#[[ Trace CMAKE Variable ]]
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
 
 #[[
     Build all the modules of PLC4Cpp
 ]]
 add_subdirectory(api)
 add_subdirectory(protocols/driver-bases/base)
-add_subdirectory(utils/logger)
+add_subdirectory(drivers/s7)
+add_subdirectory(utils)
+add_subdirectory(examples/hello-world-plc4x)
