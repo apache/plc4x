@@ -58,7 +58,7 @@ namespace org
 
 						public:
 
-							virtual PlcField createField(std::string strFieldQuery) = 0;
+							virtual PlcField* createField(std::string strFieldQuery) = 0;
 
 							virtual BaseDefaultFieldItem<bool>* encodeBoolean(PlcField plcField, std::vector<void*> pValues) = 0;
 

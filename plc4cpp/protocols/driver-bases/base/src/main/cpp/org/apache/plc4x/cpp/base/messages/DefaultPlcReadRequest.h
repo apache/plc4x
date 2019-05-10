@@ -24,11 +24,12 @@ under the License.
 #include "InternalPlcFieldRequest.h"
 #include "PlcReader.h"
 #include <org/apache/plc4x/cpp/api/model/PlcField.h>
+#include "../connection/PlcFieldHandler.h"
 
 #include <map>
 #include <boost/foreach.hpp>
 
-using namespace org::apache::plc4x::cpp::api::messages;
+
 
 
 namespace org
@@ -43,8 +44,10 @@ namespace org
 				{
 					namespace messages
 					{
-						
-						class DefaultPlcReadRequest : public InternalPlcReadRequest //, public InternalPlcFieldRequest
+                        using namespace org::apache::plc4x::cpp::api::messages;
+                        using namespace org::apache::plc4x::cpp::base::connection;
+
+                        class DefaultPlcReadRequest : public InternalPlcReadRequest
 						{
 						public:
 							// Todo:
@@ -55,21 +58,37 @@ namespace org
 
 							// Todo: implement java Builder-pattern for C++							
 							
-							DefaultPlcReadRequest(PlcReader* reader, std::map<std::string, PlcField> fields);
+							DefaultPlcReadRequest(PlcReader* plcReader, std::map<std::string, PlcField*> mplcFields);
 							int getNumberOfFields();						
 							std::vector<std::string> getFieldNames();			
 							PlcField* getField(std::string name);
-							std::vector<PlcField> getFields();
-							std::map<std::string, PlcField> getNamedFields();
+							std::vector<PlcField*> getFields();
+							std::map<std::string, PlcField*> getNamedFields();
+
+                            class Builder
+                            {
+                            public:
+                                Builder(PlcReader* plcReader, PlcFieldHandler* plcFieldHandler);
+                                Builder* addItem(std::string strName, std::string strFieldQuery);
+                                PlcReadRequest* build();
+
+                            private:
+                                PlcReader* _plcReader;
+                                PlcFieldHandler* _plcFieldHandler;
+                                std::map<std::string, std::string> _mFields;
+                            };
+
 
 						protected:
+
 							PlcReader* getReader();
 							
 
 						private:					
+
 							DefaultPlcReadRequest();
-							PlcReader* _reader;
-							std::map<std::string, PlcField> _fields;
+							PlcReader* _plcReader;
+							std::map<std::string, PlcField*> _mplcFields;
 						};
 					}
 				}

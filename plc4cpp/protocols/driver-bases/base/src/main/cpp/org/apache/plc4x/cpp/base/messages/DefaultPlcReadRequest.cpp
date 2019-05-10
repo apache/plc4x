@@ -39,81 +39,103 @@ namespace org
 						}
 
 						// =========================================================
-						DefaultPlcReadRequest::DefaultPlcReadRequest(PlcReader* reader, std::map<std::string, PlcField> fields)
+						DefaultPlcReadRequest::DefaultPlcReadRequest(PlcReader* plcReader, std::map<std::string, PlcField*> mplcFields)
 						{
-							this->_reader = reader;
-							this->_fields = fields;
+                            _plcReader = plcReader;
+                            _mplcFields = mplcFields;
 						}
+
+                        // ====================================================
+                        PlcReader* DefaultPlcReadRequest::getReader()
+                        {
+                            return _plcReader;
+                        }
 
 						// ==========================================================
 						int DefaultPlcReadRequest::getNumberOfFields()
 						{
-							return _fields.size();
+							return _mplcFields.size();
 						}
 
 						// =========================================================
-						PlcField* DefaultPlcReadRequest::getField(std::string name)
+						PlcField* DefaultPlcReadRequest::getField(std::string strName)
 						{
-							// sgl: check 1st, whether the key is contained in vector 
-							// (otherwise an exception is thrown)...
-							std::map<std::string, PlcField>::iterator iterator = _fields.find(name);
+                            PlcField* plcField = nullptr;
+                            
+                            std::map<std::string, PlcField*>::iterator iterator = _mplcFields.find(strName);
 
-							if (iterator == _fields.end())
+							if (iterator != _mplcFields.end())
 							{
-								return nullptr;
+                                plcField = iterator->second;
 							}
 
-							return &(iterator->second);
-							
+							return plcField;							
 						}
 
 						// ======================================================
-						std::map<std::string, PlcField> DefaultPlcReadRequest::getNamedFields()
+						std::map<std::string, PlcField*> DefaultPlcReadRequest::getNamedFields()
 						{
-							// Todo:
-							/*return fields.entrySet()
-								.stream()
-								.map(stringPlcFieldEntry->Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))
-								.collect(Collectors.toCollection(LinkedList::new));
-*/
-							return std::map<std::string, PlcField>();
-						}
-
-						// ====================================================
-						PlcReader* DefaultPlcReadRequest::getReader()
-						{
-							return _reader;
+							return std::map<std::string, PlcField*>();
 						}
 
 						// =====================================================
-						std::vector<PlcField> DefaultPlcReadRequest::getFields()
+						std::vector<PlcField*> DefaultPlcReadRequest::getFields()
 						{
-							// TODO: check if already exists...
-							std::pair<std::string, PlcField> me;
-							std::vector<PlcField> vNames;
+							std::pair<std::string, PlcField*> me;
+							std::vector<PlcField*> vplcFields;
 
-							BOOST_FOREACH(me, _fields)
+							BOOST_FOREACH(me, _mplcFields)
 							{
-								vNames.push_back(me.second);
+                                vplcFields.push_back(me.second);
 							}
 
-							return vNames;
+							return vplcFields;
 						}
 
 						// =========================================================
 						std::vector<std::string> DefaultPlcReadRequest::getFieldNames()
 						{							
 							// TODO: check if already exists...
-							std::pair<std::string, PlcField> me;
-							std::vector<std::string> vNames;
+							std::pair<std::string, PlcField*> me;
+							std::vector<std::string> vstrNames;
 
-							BOOST_FOREACH(me, _fields)
+							BOOST_FOREACH(me, _mplcFields)
 							{
-								vNames.push_back(me.first);
+                                vstrNames.push_back(me.first);
 							}
 
-							return vNames;
-						}						
+							return vstrNames;
+						}
+
+                        DefaultPlcReadRequest::Builder::Builder(PlcReader* plcReader, PlcFieldHandler* plcFieldHandler)
+                        {
+                            _plcReader = plcReader;
+                            _plcFieldHandler = plcFieldHandler;
+                        }
+
+                        DefaultPlcReadRequest::Builder* DefaultPlcReadRequest::Builder::addItem(std::string strName, std::string strFieldQuery)
+                        {
+                            std::map<std::string, std::string>::iterator iterator = _mFields.find(strName);
+                            if (iterator != _mFields.end())
+                            {
+                                BOOST_THROW_EXCEPTION(PlcRuntimeException("Duplicate field definition '" + strName + "'"));
+                            }
+                            _mFields.insert(std::pair<std::string,std::string>(strName, strFieldQuery));
+                            return this;
+                        }
+
+                        PlcReadRequest* DefaultPlcReadRequest::Builder::build()
+                        {
+                            std::map<std::string, PlcField*> mParsedFields;
+                            std::pair<std::string, std::string> me;
+
+                            BOOST_FOREACH(me, _mFields)
+                            {
+                                PlcField* parsedField = _plcFieldHandler->createField(me.second);
+                                mParsedFields.insert(std::pair<std::string, PlcField*>(me.first, parsedField));
+                            }
+                            return new DefaultPlcReadRequest(_plcReader, mParsedFields);
+                        }
 					}
 				}
 			}

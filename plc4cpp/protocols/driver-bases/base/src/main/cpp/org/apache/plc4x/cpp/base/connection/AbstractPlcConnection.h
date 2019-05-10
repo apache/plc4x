@@ -48,7 +48,7 @@ namespace org
 						{
 
 						public:
-							PlcConnectionMetadata& getMetadata();
+							PlcConnectionMetadata* getMetadata();
 							bool canRead();
 							bool canWrite();
 							bool canSubscribe();
@@ -57,8 +57,7 @@ namespace org
 							virtual void close() = 0;
 							virtual bool send(unsigned char* pBytesToSend, int iNumBytesToSend) = 0;
 
-							// Todo: Check if required
-							//PlcReadRequest.Builder readRequestBuilder();
+							PlcReadRequest::Builder* readRequestBuilder();
 							// PlcWriteRequest.Builder writeRequestBuilder();
 							// PlcSubscriptionRequest.Builder subscriptionRequestBuilder();
 							// PlcUnsubscriptionRequest.Builder nsubscriptionRequestBuilder();

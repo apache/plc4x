@@ -41,7 +41,7 @@ namespace org
 						class InternalPlcFieldRequest : public InternalPlcRequest, PlcFieldRequest
 						{
 						public:
-							virtual std::map<std::string, PlcField> getNamedFields() = 0;
+							virtual std::map<std::string, PlcField*> getNamedFields() = 0;
 							InternalPlcFieldRequest();
 						};
 					}
