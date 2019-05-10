@@ -44,6 +44,13 @@
       <outputDirectory/>
     </fileSet>
     <fileSet>
+      <directory>${project.build.directory}/thrift-${thrift.version}/lib/py/build/lib.macosx-10.14-intel-2.7</directory>
+      <includes>
+        <include>**</include>
+      </includes>
+      <outputDirectory/>
+    </fileSet>
+    <fileSet>
       <directory>${project.build.directory}/thrift-${thrift.version}/lib/py/build/lib.win-amd64-2.7</directory>
       <includes>
         <include>**</include>

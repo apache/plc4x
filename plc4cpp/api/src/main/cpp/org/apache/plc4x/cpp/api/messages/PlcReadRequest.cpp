@@ -33,11 +33,17 @@ namespace org
 					{
 						PlcReadRequest::PlcReadRequest()
 						{
+                            _pPlcbuilder = nullptr;
 						}
 
 						PlcReadRequest::~PlcReadRequest()
 						{
 							 // TODO Free Pointer eg. use Smartpointer ?
+						}
+
+						PlcReadRequestBuilder* PlcReadRequest::getBuilder() const
+						{ 
+							return _pPlcbuilder;
 						}
 					}
 				}

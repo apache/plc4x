@@ -40,6 +40,7 @@ namespace org
 						class PlcRequestBuilder
 						{
 							public:	
+								virtual PlcRequest* build() = 0;
 
 							private:
 						};

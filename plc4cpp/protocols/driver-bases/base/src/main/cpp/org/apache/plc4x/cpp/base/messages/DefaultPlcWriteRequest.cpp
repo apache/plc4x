@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
-#include "DefaultPlcWriteRequest.h"
+#include "DefaultPlcReadRequest.h"
 
 namespace org
 {
@@ -32,83 +32,86 @@ namespace org
 					namespace messages
 					{
 						// =========================================================
-                        DefaultPlcWriteRequest::DefaultPlcWriteRequest()
+						DefaultPlcReadRequest::DefaultPlcReadRequest()
 						{
 						}
 
 						// =========================================================
-						DefaultPlcWriteRequest::DefaultPlcWriteRequest(PlcWriter* plcWriter, std::map<std::string, PlcField*> mplcFields)
+						DefaultPlcReadRequest::DefaultPlcReadRequest(PlcReader* reader, std::map<std::string, PlcField> fields)
 						{
-							_plcWriter = plcWriter;
-                            _mplcFields = mplcFields;
+							this->_reader = reader;
+							this->_fields = fields;
 						}
 
-                        // ====================================================
-                        PlcWriter* DefaultPlcWriteRequest::getWriter()
-                        {
-                            return _plcWriter;
-                        }
+						// ==========================================================
+						int DefaultPlcReadRequest::getNumberOfFields()
+						{
+							return _fields.size();
+						}
 
-                        // ==========================================================
-                        int DefaultPlcWriteRequest::getNumberOfFields()
-                        {
-                            return _mplcFields.size();
-                        }
+						// =========================================================
+						PlcField* DefaultPlcReadRequest::getField(std::string name)
+						{
+							// sgl: check 1st, whether the key is contained in vector 
+							// (otherwise an exception is thrown)...
+							std::map<std::string, PlcField>::iterator iterator = _fields.find(name);
 
-                        // =========================================================
-                        PlcField* DefaultPlcWriteRequest::getField(std::string strName)
-                        {
-                            PlcField* plcField = nullptr;
+							if (iterator == _fields.end())
+							{
+								return nullptr;
+							}
 
-                            std::map<std::string, PlcField*>::iterator iterator = _mplcFields.find(strName);
+							return &(iterator->second);
+							
+						}
 
-                            if (iterator != _mplcFields.end())
-                            {
-                                plcField = iterator->second;
-                            }
+						// ======================================================
+						std::map<std::string, PlcField> DefaultPlcReadRequest::getNamedFields()
+						{
+							// Todo:
+							/*return fields.entrySet()
+								.stream()
+								.map(stringPlcFieldEntry->Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))
+								.collect(Collectors.toCollection(LinkedList::new));
+*/
+							return std::map<std::string, PlcField>();
+						}
 
-                            return plcField;
+						// ====================================================
+						PlcReader* DefaultPlcReadRequest::getReader()
+						{
+							return _reader;
+						}
 
-                        }
+						// =====================================================
+						std::vector<PlcField> DefaultPlcReadRequest::getFields()
+						{
+							// TODO: check if already exists...
+							std::pair<std::string, PlcField> me;
+							std::vector<PlcField> vNames;
 
-                        // ======================================================
-                        std::map<std::string, PlcField*> DefaultPlcWriteRequest::getNamedFields()
-                        {
-                            return std::map<std::string, PlcField*>();
-                        }
+							BOOST_FOREACH(me, _fields)
+							{
+								vNames.push_back(me.second);
+							}
 
-                        // =====================================================
-                        std::vector<PlcField*> DefaultPlcWriteRequest::getFields()
-                        {
-                            std::pair<std::string, PlcField*> me;
-                            std::vector<PlcField*> vplcFields;
+							return vNames;
+						}
 
-                            BOOST_FOREACH(me, _mplcFields)
-                            {
-                                vplcFields.push_back(me.second);
-                            }
+						// =========================================================
+						std::vector<std::string> DefaultPlcReadRequest::getFieldNames()
+						{							
+							// TODO: check if already exists...
+							std::pair<std::string, PlcField> me;
+							std::vector<std::string> vNames;
 
-                            return vplcFields;
-                        }
+							BOOST_FOREACH(me, _fields)
+							{
+								vNames.push_back(me.first);
+							}
 
-                        // =========================================================
-                        std::vector<std::string> DefaultPlcWriteRequest::getFieldNames()
-                        {
-                            // TODO: check if already exists...
-                            std::pair<std::string, PlcField*> me;
-                            std::vector<std::string> vstrNames;
-
-                            BOOST_FOREACH(me, _mplcFields)
-                            {
-                                vstrNames.push_back(me.first);
-                            }
-
-                            return vstrNames;
-                        }
-
-						
-
-											
+							return vNames;
+						}						
 					}
 				}
 			}

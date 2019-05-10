@@ -18,7 +18,6 @@ under the License.
 */
 
 #include "AbstractPlcConnection.h"
-#include <org/apache/plc4x/cpp/api/exceptions/PlcUnsupportedOperationException.h>
 
 namespace org
 {
@@ -32,11 +31,9 @@ namespace org
 				{
 					namespace connection
 					{
-                        using namespace org::apache::plc4x::cpp::api::exceptions;
-
-                        PlcConnectionMetadata* AbstractPlcConnection::getMetadata()
+						PlcConnectionMetadata& AbstractPlcConnection::getMetadata()
 						{
-							return this;
+							return *this;
 						}
 						bool AbstractPlcConnection::canRead()
 						{
@@ -50,30 +47,6 @@ namespace org
 						{
 							return false;
 						}
-
-                        PlcReadRequest::Builder* AbstractPlcConnection::readRequestBuilder()
-                        {
-                            BOOST_THROW_EXCEPTION(PlcUnsupportedOperationException("The connection does not support reading"));
-                        }
-
-                        
-
-                        /*@Override
-                            public PlcWriteRequest.Builder writeRequestBuilder() {
-                            throw new PlcUnsupportedOperationException("The connection does not support writing");
-                        }
-
-                        @Override
-                            public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-                            throw new PlcUnsupportedOperationException("The connection does not support subscription");
-                        }
-
-                        @Override
-                            public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-                            throw new PlcUnsupportedOperationException("The connection does not support subscription");
-                        }*/
-
-
 					}
 				}
 			}

@@ -33,9 +33,9 @@ void TracerW(const wchar_t* formatStr, ...)
 	static wchar_t arcBuffer[TRACE_BUFFERSIZE];
 	va_list args;
 	va_start(args, formatStr);
-    swprintf_s(arcBuffer, TRACE_BUFFERSIZE, formatStr, args);
+	_vstprintf_s(arcBuffer, TRACE_BUFFERSIZE, formatStr, args);
 	va_end(args);
-	::OutputDebugStringW(arcBuffer);
+	::OutputDebugString(buffer);
 }
 
 
@@ -46,7 +46,7 @@ void Tracer(const char* formatStr, ...)
 	va_start(args, formatStr);
 	vsprintf_s(arcBuffer, TRACE_BUFFERSIZE, formatStr, args);
 	va_end(args);
-	::OutputDebugStringA(arcBuffer);
+	::OutputDebugStringA(buffer);
 }
 
 #endif

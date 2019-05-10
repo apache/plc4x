@@ -24,7 +24,6 @@ under the License.
 #include "PlcFieldResponse.h"
 
 #include <string>
-#include <map>
 
 namespace org
 {
@@ -41,14 +40,13 @@ namespace org
 						/**
 						 * Base type for all messages sent from the plc4x system to a connected plc.
 						 */
-						class PlcFieldRequest : public PlcRequest
+						class PlcFieldRequest : PlcRequest
 						{
 							public:	
 								virtual int getNumberOfFields() = 0;
-                                virtual std::vector<std::string> getFieldNames();
-								virtual PlcField* getField(std::string) = 0;
-								virtual std::vector<PlcField*> getFields() = 0;
-                                virtual std::map<std::string, PlcField*> getNamedFields() = 0;
+								virtual std::vector<std::string>* getFieldNames() const = 0;
+								virtual PlcField* getField(std::string) const = 0;
+								virtual std::vector<PlcField>* getFields() const = 0;
 
 							private:
 						};

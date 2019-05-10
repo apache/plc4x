@@ -36,6 +36,7 @@ On this page we are listing options to attend talks and events around PLC4X.
 |4th June 2018 |Cologne (GER) |Conference |https://www.buildingiot.de/[Building IoT] |https://www.buildingiot.de/veranstaltung-6815-industrial-iot-und-edge-computing-mit-apache-plc4x-und-apache-edgent-%5Bsponsored-talk%5D.html?id=6815[Industrial IoT und Edge Computing mit Apache PLC4X und Apache Edgent]
 |5th April 2018 |Hamburg (GER) |Conference |https://techcamp.hamburg/[TechCamp Hamburg] |https://techcamp.hamburg/events/revolutionizing-industrial-iot-with-apache-plc4x/[Revolutionizing Industrial IoT with Apache PLC4X]
 |21th January 2018 |Hamburg (GER) |Conference |https://www.nortec-hamburg.de/[Nortec] |Mehr für Weniger? Aber Sicher!
+|4th-5th May 2019 |Brussels (BE) |Hackathon |https://eufossahackathon.bemyapp.com[EU FOSSA Apache Hackathon] | Co-creating the future of open source
 |=========================================================
 
 Looking forward to meeting you.
@@ -44,4 +45,4 @@ If you've got or found any events or talks we might be missing, please inform us
 
 == Additional Material
 
-PLC4X [Banner](../images/PLC4X_rollup_83x237cm-final.pdf)
+link:/images/PLC4X_rollup_83x237cm-final.pdf[PLC4X Banner]

@@ -22,9 +22,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_library(plc4cpp-api 
-        src/main/cpp/org/apache/plc4x/cpp/PlcDriverManager.cpp
-        src/main/cpp/org/apache/plc4x/cpp/api/PlcConnection.cpp
+add_library(plc4cpp-api src/main/cpp/org/apache/plc4x/cpp/api/PlcConnection.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/authentication/PlcAuthentication.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/authentication/PlcUsernamePasswordAuthentication.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/exceptions/PlcConnectionException.cpp
@@ -44,6 +42,7 @@ add_library(plc4cpp-api
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcFieldResponse.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcMessage.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcReadRequest.cpp
+        src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcReadRequestBuilder.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcReadResponse.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcRequest.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcRequestBuilder.cpp
@@ -74,6 +73,4 @@ add_library(plc4cpp-api
     Import the boost headers
 ]]
 target_include_directories (plc4cpp-api PUBLIC target/dependencies/include)
-target_include_directories (plc4cpp-api PUBLIC ${Boost_INCLUDE_DIRS})
-target_include_directories (plc4cpp-api PUBLIC ../utils/logger/src/main/cpp)
 

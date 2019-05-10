@@ -54,21 +54,22 @@ namespace org
 
 							// Todo: implement java Builder-pattern for C++							
 							
-							DefaultPlcWriteRequest(PlcWriter* writer, std::map<std::string, PlcField*> fields);
+							DefaultPlcWriteRequest(PlcWriter* writer, std::map<std::string, PlcField> fields);
 							int getNumberOfFields();						
 							std::vector<std::string> getFieldNames();			
 							PlcField* getField(std::string name);
-							std::vector<PlcField*> getFields();
-							std::map<std::string, PlcField*> getNamedFields();
+							std::vector<PlcField> getFields();
+							std::map<std::string, PlcField> getNamedFields();
 							// Todo: implement callback to: execute() { _writer.write(this); }
 
 						protected:
 							PlcWriter* getWriter();
 							
+
 						private:					
 							DefaultPlcWriteRequest();
-							PlcWriter* _plcWriter;
-							std::map<std::string, PlcField*> _mplcFields;
+							PlcWriter* _writer;
+							std::map<std::string, PlcField> _fields;
 						};
 					}
 				}

@@ -36,7 +36,7 @@ Linux
 
 On a clean Ubuntu 18.04 the following software needs to be installed:
 
-    sudo apt install bison flex python-dev
+    sudo apt
 
 If you're building a source-distribution and haven't installed git yet, be sure to do so:
 
@@ -99,7 +99,7 @@ downloaded and installed by the maven wrapper `mvnw`.
 
 Build PLC4X Java jars and install them in your local maven repository
 
-$ ./mvnw install  # add -DskipTests to omit running the tests
+$ ./mvnw install -P with-java  # add -DskipTests to omit running the tests
 
 You can now construct Java applications that use PLC4X. The PLC4X samples
 are a good place to start and are available inside the `examples`
@@ -122,6 +122,9 @@ You can download the Mac/Linux version from: http://www.tcpdump.org/
 The windows version can be found here: https://sourceforge.net/projects/winpcap413-176/
 (In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
 Windows version is 1.0. At this location is a patched version based on libpcap 1.7.4)
+
+Same applies for Python with the `with-python` and the C# .Net imeplemtation with `with-dotnet` profiles.
+However both of these are in a pretty experimental state.
 
 
 Building the C++ libraries

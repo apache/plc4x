@@ -67,6 +67,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch-x-content</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.elasticsearch.plugin</groupId>
       <artifactId>transport-netty4-client</artifactId>
       <scope>test</scope>
@@ -81,6 +86,16 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies>
+            <usedDependency>org.pcap4j:pcap4j-packetfactory-static</usedDependency>
+            <usedDependency>de.dentrassi.elasticsearch:log4j2-mock</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
