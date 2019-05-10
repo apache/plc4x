@@ -7,6 +7,8 @@ We are planning on shipping libraries for usage in:
 1) Java
 2) Scala
 3) C/C++
+4) C# (.Net)
+5) Python
 
 As well as provide direct integration into other Apache projects, such as:
 
@@ -17,14 +19,13 @@ As well as provide direct integration into other Apache projects, such as:
 5) Apache Karaf
 6) Apache NiFi
 
-
 Environment
 -----------
 
 Currently the project is configured to require the following software:
 
 1) Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to point to that.
-2) libpcap/WinPcap for raw socket tests
+2) libpcap/WinPcap for raw socket tests in Java
 3) (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
 4) Git (even when working on the source distribution)
 
@@ -41,6 +42,10 @@ On a clean Ubuntu 18.04 the following software needs to be installed:
 If you're building a source-distribution and haven't installed git yet, be sure to do so:
 
     sudo get install git
+
+In order to build the .Net version, please install the .Net package according to this guide:
+
+https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-1804-7lp
 
 Mac
 ---
@@ -61,21 +66,30 @@ Install `Python 2.7`:
 
 Be sure to re-open the command window or the changes will not apply.
 
+If you're going to build the `with-dotnet` profile you also need to install DotNet.
+Please download it from: https://dotnet.microsoft.com/download and run the installer.
+
 Windows
 -------
 
 Some tools need to be installed before being able to build on Windows:
 
-- WinBuilds
-- Bison
-- Flex
-- Python 2.7
+- WinBuilds (for `with-cpp`, `with-proxies` profiles)
+- Bison (for `with-cpp` profiles)
+- Flex (for `with-cpp` profiles)
+- Python 2.7 (for `with-python`, `with-proxies` profiles)
+- Dotnet (for `with-dotnet` profiles)
 
 He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
 When running the installer, make sure to select the options:
 - Native Windows
 - x86_64
 Not quite sure which elements are really needed, better just install all of them.
+
+WARNING: If you don't use the installer version of the distribution. The build will probably fail and it will be pretty
+impossible to see the problem. When manually executing the command, a popup will appear complaining about not being able
+to find some DLL. So if you are having these problems, please try using the installer instead of the manually unpackable
+archive.
 
 For Bison, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
 It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form here: http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip
@@ -111,6 +125,17 @@ the `with-cpp` profile
 
 $ ./mvnw -P with-cpp install  # add -DskipTests to omit running the tests
 
+Same applies for the C# .Net implementation with `with-dotnet` profiles.
+
+The Python implementation is currently in a somewhat unclean state and still needs refactoring.
+In order to be able to build the Python module, you currently need to activate both the:
+`with-python` and `with-proxies` profiles.
+
+However both of these are in a pretty experimental state.
+
+In order to build everything the following command should work:
+
+& ./mvnw -P with-java,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox install
 
 Installing libpcap/WinPcap
 --------------------------
