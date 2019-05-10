@@ -167,7 +167,7 @@ pipeline {
             }
             steps {
                 echo 'Building Site'
-                sh 'mvn -P${JENKINS_PROFILE} site'
+                sh 'mvn -P${JENKINS_PROFILE} -P${JENKINS_PROFILE},with-cpp,with-java,with-dotnet,with-python,with-proxies site'
             }
         }
 
