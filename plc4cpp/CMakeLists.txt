@@ -41,7 +41,6 @@ endforeach()
     Build all the modules of PLC4Cpp
 ]]
 add_subdirectory(api)
-add_subdirectory(protocols/driver-bases/base)
-add_subdirectory(drivers/s7)
+add_subdirectory(protocols)
 add_subdirectory(utils)
-add_subdirectory(examples/hello-world-plc4x)
+add_subdirectory(examples)
