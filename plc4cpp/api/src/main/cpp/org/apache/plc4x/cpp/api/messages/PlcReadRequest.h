@@ -22,7 +22,6 @@ under the License.
 
 #include "PlcFieldRequest.h"
 #include "PlcRequestBuilder.h"
-#include "PlcReadRequestBuilder.h"
 
 
 namespace org
@@ -46,10 +45,15 @@ namespace org
 							PlcReadRequest();
 							~PlcReadRequest();
 
-							PlcReadRequestBuilder* getBuilder() const;
+                            class Builder : public PlcRequestBuilder
+                            {
+                            public:
+                                virtual PlcReadRequest* build() = 0;
+                                virtual Builder* addItem(std::string& strName, std::string& strFieldQuery) = 0;
+                            };
 
 						private:
-							PlcReadRequestBuilder* _pPlcbuilder;
+							
 						};
 												
 					}

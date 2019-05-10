@@ -44,7 +44,6 @@ add_library(plc4cpp-api
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcFieldResponse.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcMessage.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcReadRequest.cpp
-        src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcReadRequestBuilder.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcReadResponse.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcRequest.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/messages/PlcRequestBuilder.cpp
@@ -75,4 +74,6 @@ add_library(plc4cpp-api
     Import the boost headers
 ]]
 target_include_directories (plc4cpp-api PUBLIC target/dependencies/include)
+target_include_directories (plc4cpp-api PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories (plc4cpp-api PUBLIC ../utils/logger/src/main/cpp)
 
