@@ -18,6 +18,7 @@
   -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+           xmlns:plc4x="http://plc4x.apache.org/plc4x"
            targetNamespace="http://plc4x.apache.org/plc4x">
 
     <!--

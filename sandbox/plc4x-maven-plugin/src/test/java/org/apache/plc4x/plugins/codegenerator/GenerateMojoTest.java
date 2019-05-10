@@ -22,6 +22,7 @@ import org.apache.maven.plugin.testing.MojoRule;
 import org.apache.maven.plugin.testing.WithoutMojo;
 import org.apache.maven.plugin.testing.resources.TestResources;
 import org.apache.maven.project.MavenProject;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -42,6 +43,7 @@ public class GenerateMojoTest {
      * @throws Exception if any
      */
     @Test
+    @Ignore
     public void testEmbeddedSchema() throws Exception {
         File baseDir = testResources.getBasedir("simple-embedded-schema");
         MavenProject project = rule.readMavenProject(baseDir);

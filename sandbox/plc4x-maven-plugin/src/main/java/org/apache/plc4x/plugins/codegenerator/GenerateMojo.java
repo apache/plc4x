@@ -20,6 +20,7 @@ package org.apache.plc4x.plugins.codegenerator;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -42,13 +43,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Generate the types, serializer and parser classes based on a DFDL shema.
  */
 @Mojo(name = "generate-driver",
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-    requiresDependencyResolution = ResolutionScope.RUNTIME)
+    requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class GenerateMojo extends AbstractMojo {
 
     private static final Namespace xsNamespace = new Namespace("xs", "http://www.w3.org/2001/XMLSchema");
@@ -88,18 +90,30 @@ public class GenerateMojo extends AbstractMojo {
         // Build a classloader that can access the projects classpath (read from dependencies)
         ClassLoader moduleClassloader;
         try {
-            List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
-            int numRuntimeClasspathElements = runtimeClasspathElements.size();
-            List<URL> classpathElements = new ArrayList<>(numRuntimeClasspathElements);
-            for (String runtimeClasspathElement : runtimeClasspathElements) {
-                classpathElements.add(new File(runtimeClasspathElement).toURI().toURL());
+            Set<Artifact> artifacts = project.getArtifacts();
+            List<URL> classpathElements = new ArrayList<>(artifacts.size() + 1);
+            // Add the normal class output (needed for embedded schemas)
+            classpathElements.add(new File(project.getBuild().getOutputDirectory()).toURI().toURL());
+            // Add all the other artifacts (no matter what scope)
+            for (Artifact artifact : artifacts) {
+                classpathElements.add(artifact.getFile().toURI().toURL());
             }
             moduleClassloader = new URLClassLoader(
                 classpathElements.toArray(new URL[0]), GenerateMojo.class.getClassLoader());
-        } catch (MalformedURLException | DependencyResolutionRequiredException e) {
+        } catch (MalformedURLException e) {
             throw new MojoExecutionException(
                 "Error creating classloader for loading DFDL schema from module dependencies", e);
         }
+
+        // Initialize the protocol-model.
+        ProtocolModel protocolModel = new ProtocolModel();
+
+        InputStream baseInputStream = moduleClassloader.getResourceAsStream("org/apache/plc4x/protocols/protocol.dfdl.xsd");
+        if(baseInputStream == null) {
+            throw new MojoExecutionException(
+                "Error loading DFDL base-schema from org/apache/plc4x/protocols/protocol.dfdl.xsd");
+        }
+        protocolModel.parseBaseSchema(baseInputStream);
 
         // Try to get the DFDL schema from this classloader.
         InputStream schemaInputStream = moduleClassloader.getResourceAsStream(dfdlSchema);
@@ -107,8 +121,7 @@ public class GenerateMojo extends AbstractMojo {
             throw new MojoExecutionException("Error loading DFDL schema from " + dfdlSchema);
         }
 
-        // Initialize the protocol-model.
-        //ProtocolModel protocolModel = new ProtocolModel(schemaInputStream);
+        protocolModel.parseSchema(schemaInputStream);
 
         /*try {
             // Configure the Freemarker template engine
