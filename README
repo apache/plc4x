@@ -112,7 +112,7 @@ downloaded and installed by the maven wrapper `mvnw`.
 
 Build PLC4X Java jars and install them in your local maven repository
 
-$ ./mvnw install  # add -DskipTests to omit running the tests
+$ ./mvnw install -P with-java  # add -DskipTests to omit running the tests
 
 You can now construct Java applications that use PLC4X. The PLC4X samples
 are a good place to start and are available inside the `examples`
@@ -123,6 +123,9 @@ If you want to also build the C++ libraries, this has to be enabled by activatin
 the `with-cpp` profile
 
 $ ./mvnw -P with-cpp install  # add -DskipTests to omit running the tests
+
+Same applies for Python with the `with-python` and the C# .Net imeplemtation with `with-dotnet` profiles.
+However both of these are in a pretty experimental state.
 
 
 Installing libpcap/WinPcap
