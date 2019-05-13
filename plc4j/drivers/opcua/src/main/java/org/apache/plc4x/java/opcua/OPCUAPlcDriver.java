@@ -15,27 +15,21 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
+
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
  */
 package org.apache.plc4x.java.opcua;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.opcua.connection.OPCUAConnectionFactory;
-import org.apache.plc4x.java.opcua.connection.OPCUATcpPlcConnection;
-import org.apache.plc4x.java.opcua.protocol.model.OpcuaPlcFieldHandler;
 import org.apache.plc4x.java.spi.PlcDriver;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

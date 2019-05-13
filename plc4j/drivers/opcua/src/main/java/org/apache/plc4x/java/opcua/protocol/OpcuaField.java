@@ -15,12 +15,13 @@ software distributed under the License is distributed on an
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
-*/
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 package org.apache.plc4x.java.opcua.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.opcua.protocol.model.OpcuaDataTypes;
 import org.apache.plc4x.java.opcua.protocol.model.OpcuaIdentifierType;
 
 import java.util.Objects;

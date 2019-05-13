@@ -15,6 +15,8 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
  */
 package org.apache.plc4x.java.opcua.connection;
 
@@ -29,13 +31,11 @@ import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.model.OpcuaPlcFieldHandler;
 
-import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ManualPLC4XOPCUA {
@@ -44,18 +44,18 @@ public class ManualPLC4XOPCUA {
 
 
 
-        OPCUATcpPlcConnection adsConnection = null;
+        OPCUATcpPlcConnection opcuaConnection = null;
         OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
         PlcField field = fieldH.createField("ns=2;i=10855");
         try {
-            adsConnection = (OPCUATcpPlcConnection)
+            opcuaConnection = (OPCUATcpPlcConnection)
                 new PlcDriverManager().getConnection("opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer");
 
         } catch (PlcConnectionException e) {
             e.printStackTrace();
         }
         try {
-            PlcReadRequest.Builder builder = adsConnection.readRequestBuilder();
+            PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
             //builder.addItem("String", "ns=2;i=10855");
             builder.addItem("Bool", "ns=2;i=10844");
             builder.addItem("ByteString", "ns=2;i=10858");
@@ -76,10 +76,10 @@ public class ManualPLC4XOPCUA {
             builder.addItem("DoesNotExists", "ns=2;i=12512623");
 
             PlcReadRequest request = builder.build();
-            PlcReadResponse response = adsConnection.read(request).get();
+            PlcReadResponse response = opcuaConnection.read(request).get();
             Collection coll = response.getAllStrings("String");
 
-            PlcWriteRequest.Builder wBuilder = adsConnection.writeRequestBuilder();
+            PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
             //wBuilder.addItem("w-Bool", "ns=2;i=10844", "TEST");
             //wBuilder.addItem("w-Bool", "ns=2;i=11012", true);
             //--->> wBuilder.addItem("w-ByteString", "ns=2;i=10858", "TEST".getBytes());
@@ -102,10 +102,10 @@ public class ManualPLC4XOPCUA {
 
             */
             PlcWriteRequest writeRequest = wBuilder.build();
-            PlcWriteResponse wResponse = adsConnection.write(writeRequest).get();
+            PlcWriteResponse wResponse = opcuaConnection.write(writeRequest).get();
 
-            PlcSubscriptionResponse subResp = adsConnection.subscribe(new DefaultPlcSubscriptionRequest(
-                adsConnection,
+            PlcSubscriptionResponse subResp = opcuaConnection.subscribe(new DefaultPlcSubscriptionRequest(
+                opcuaConnection,
                 new LinkedHashMap<>(
                     Collections.singletonMap("field1",
                         new SubscriptionPlcField(PlcSubscriptionType.CHANGE_OF_STATE, OpcuaField.of("ns=2;i=10855"), Duration.of(1, ChronoUnit.SECONDS)))
@@ -113,11 +113,11 @@ public class ManualPLC4XOPCUA {
             )).get();
 
             Consumer<PlcSubscriptionEvent> consumer = plcSubscriptionEvent -> System.out.println(plcSubscriptionEvent.toString());
-            PlcConsumerRegistration registration = adsConnection.register(consumer, subResp.getSubscriptionHandles());
+            PlcConsumerRegistration registration = opcuaConnection.register(consumer, subResp.getSubscriptionHandles());
             Thread.sleep(7000);
             registration.unregister();
             Thread.sleep(200000);
-            adsConnection.close();
+            opcuaConnection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
