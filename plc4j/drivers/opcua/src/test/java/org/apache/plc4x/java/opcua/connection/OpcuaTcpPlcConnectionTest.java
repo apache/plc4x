@@ -6,9 +6,9 @@
  to you under the Apache License, Version 2.0 (the
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,19 +20,16 @@
  */
 package org.apache.plc4x.java.opcua.connection;
 
-import java.net.InetAddress;
-import java.util.Objects;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
-public class OPCUAConnectionFactory {
-
-    public OPCUATcpPlcConnection opcuaTcpPlcConnectionOf(InetAddress address, Integer port, String params, int requestTimeout) {
-        Objects.requireNonNull(address);
-
-        if (port == null) {
-            return OPCUATcpPlcConnection.of(address, params, requestTimeout);
-        } else {
-            return OPCUATcpPlcConnection.of(address, port, params, requestTimeout);
-        }
+public class OpcuaTcpPlcConnectionTest {
+    @BeforeEach
+    public void before() {
     }
 
+    @AfterEach
+    public void after() {
+
+    }
 }
