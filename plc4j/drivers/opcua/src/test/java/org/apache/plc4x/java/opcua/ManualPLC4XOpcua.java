@@ -18,7 +18,7 @@
  * @author Matthias Milan Stlrljic
  * Created by Matthias Milan Stlrljic on 10.05.2019
  */
-package org.apache.plc4x.java.opcua.connection;
+package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -28,8 +28,9 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionRequest;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
+import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
-import org.apache.plc4x.java.opcua.protocol.model.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -39,17 +40,15 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
 
-public class ManualPLC4XOPCUA {
+public class ManualPLC4XOpcua {
     public static void main(String args[]){
 
 
-
-
-        OPCUATcpPlcConnection opcuaConnection = null;
+        OpcuaTcpPlcConnection opcuaConnection = null;
         OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
         PlcField field = fieldH.createField("ns=2;i=10855");
         try {
-            opcuaConnection = (OPCUATcpPlcConnection)
+            opcuaConnection = (OpcuaTcpPlcConnection)
                 new PlcDriverManager().getConnection("opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer");
 
         } catch (PlcConnectionException e) {
@@ -82,7 +81,6 @@ public class ManualPLC4XOPCUA {
 
             PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
             wBuilder.addItem("w-Bool", "ns=2;i=11012", true);
-            /*
             wBuilder.addItem("w-ByteString", "ns=2;i=10858", "TEST".getBytes());
             wBuilder.addItem("w-Byte", "ns=2;i=10846", (byte)1);
             wBuilder.addItem("w-Double", "ns=2;i=10854", (double)0.25);
@@ -97,7 +95,6 @@ public class ManualPLC4XOPCUA {
             wBuilder.addItem("w-UInt32", "ns=2;i=10850", (long)21412);
             wBuilder.addItem("w-UInt64", "ns=2;i=10852", new BigInteger("1245152"));
             wBuilder.addItem("w-UInteger", "ns=2;i=10870", new BigInteger("1245152"));
-*/
             PlcWriteRequest writeRequest = wBuilder.build();
             PlcWriteResponse wResponse = opcuaConnection.write(writeRequest).get();
 
@@ -113,7 +110,7 @@ public class ManualPLC4XOPCUA {
             PlcConsumerRegistration registration = opcuaConnection.register(consumer, subResp.getSubscriptionHandles());
             Thread.sleep(7000);
             registration.unregister();
-            Thread.sleep(200000);
+            Thread.sleep(20000);
             opcuaConnection.close();
         } catch (Exception e) {
             e.printStackTrace();

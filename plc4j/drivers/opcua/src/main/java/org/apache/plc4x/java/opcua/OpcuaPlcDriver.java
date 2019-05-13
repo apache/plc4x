@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.opcua.connection.OPCUAConnectionFactory;
+import org.apache.plc4x.java.opcua.connection.OpcuaConnectionFactory;
 import org.apache.plc4x.java.spi.PlcDriver;
 
 import java.net.InetAddress;
@@ -37,20 +37,20 @@ import java.util.regex.Pattern;
  * Implementation of the OPC UA protocol, based on:
  * - Eclipse Milo (https://github.com/eclipse/milo)
  */
-public class OPCUAPlcDriver implements PlcDriver {
+public class OpcuaPlcDriver implements PlcDriver {
 
 
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.-]+)(:(?<port>\\d*))?");
     public static final Pattern OPCUA_URI_PATTERN = Pattern.compile("^opcua:(" + INET_ADDRESS_PATTERN + ")?" + "(?<params>/[\\w/]+)?");
     private static final int requestTimeout = 10000;
-    private OPCUAConnectionFactory opcuaConnectionFactory;
+    private OpcuaConnectionFactory opcuaConnectionFactory;
 
-    public OPCUAPlcDriver() {
-        this.opcuaConnectionFactory = new OPCUAConnectionFactory();
+    public OpcuaPlcDriver() {
+        this.opcuaConnectionFactory = new OpcuaConnectionFactory();
     }
 
-    public OPCUAPlcDriver(OPCUAConnectionFactory opcuaConnectionFactory) {
+    public OpcuaPlcDriver(OpcuaConnectionFactory opcuaConnectionFactory) {
         this.opcuaConnectionFactory = opcuaConnectionFactory;
     }
 

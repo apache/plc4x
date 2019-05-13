@@ -27,16 +27,16 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.opcua.protocol.model.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public abstract class BaseOPCUAPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
+public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseOPCUAPlcConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseOpcuaPlcConnection.class);
 
-    BaseOPCUAPlcConnection(String params) {
+    BaseOpcuaPlcConnection(String params) {
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {

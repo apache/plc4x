@@ -18,7 +18,7 @@
  * @author Matthias Milan Stlrljic
  * Created by Matthias Milan Stlrljic on 10.05.2019
  */
-package org.apache.plc4x.java.opcua.protocol.model;
+package org.apache.plc4x.java.opcua.protocol;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,7 +28,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.opcua.connection.OPCUATcpPlcConnection;
+import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
@@ -66,7 +66,7 @@ public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
             if(value.getStatusCode() != StatusCode.GOOD){
                 resultCode = PlcResponseCode.NOT_FOUND;
             }else{
-                stringItem = OPCUATcpPlcConnection.encodeFieldItem(value);
+                stringItem = OpcuaTcpPlcConnection.encodeFieldItem(value);
 
             }
             Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();

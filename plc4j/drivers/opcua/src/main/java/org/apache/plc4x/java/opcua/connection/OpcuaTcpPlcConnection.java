@@ -32,7 +32,7 @@ import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.*;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
-import org.apache.plc4x.java.opcua.protocol.model.OpcuaSubsriptionHandle;
+import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
 import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
@@ -70,11 +70,11 @@ import java.util.stream.Collectors;
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
-public class OPCUATcpPlcConnection extends BaseOPCUAPlcConnection {
+public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     private static final int OPCUA_DEFAULT_TCP_PORT = 4840;
 
-    private static final Logger logger = LoggerFactory.getLogger(OPCUATcpPlcConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(OpcuaTcpPlcConnection.class);
     private InetAddress address;
     private int requestTimeout = 5000;
     private int port;
@@ -82,29 +82,30 @@ public class OPCUATcpPlcConnection extends BaseOPCUAPlcConnection {
     private OpcUaClient client;
     private boolean isConnected = false;
     private  final AtomicLong clientHandles = new AtomicLong(1L);
-    private OPCUATcpPlcConnection(InetAddress address, String params, int requestTimeout) {
+
+    private OpcuaTcpPlcConnection(InetAddress address, String params, int requestTimeout) {
         this( address, OPCUA_DEFAULT_TCP_PORT,  params, requestTimeout);
-        logger.info("Configured OPCUATcpPlcConnection with: host-name {}", address.getHostAddress());
+        logger.info("Configured OpcuaTcpPlcConnection with: host-name {}", address.getHostAddress());
     }
 
-    public OPCUATcpPlcConnection(InetAddress address, int port, String params, int requestTimeout) {
+    public OpcuaTcpPlcConnection(InetAddress address, int port, String params, int requestTimeout) {
         this(params);
-        logger.info("Configured OPCUATcpPlcConnection with: host-name {}", address.getHostAddress());
+        logger.info("Configured OpcuaTcpPlcConnection with: host-name {}", address.getHostAddress());
         this.address = address;
         this.port = port;
         this.params = params;
     }
 
-    public OPCUATcpPlcConnection(String params) {
+    public OpcuaTcpPlcConnection(String params) {
         super(params);
     }
 
-    public static OPCUATcpPlcConnection of(InetAddress address, String params, int requestTimeout) {
-        return new OPCUATcpPlcConnection(address, params, requestTimeout);
+    public static OpcuaTcpPlcConnection of(InetAddress address, String params, int requestTimeout) {
+        return new OpcuaTcpPlcConnection(address, params, requestTimeout);
     }
 
-    public static OPCUATcpPlcConnection of(InetAddress address, int port, String params, int requestTimeout) {
-        return new OPCUATcpPlcConnection(address, port, params, requestTimeout);
+    public static OpcuaTcpPlcConnection of(InetAddress address, int port, String params, int requestTimeout) {
+        return new OpcuaTcpPlcConnection(address, port, params, requestTimeout);
     }
 
 
