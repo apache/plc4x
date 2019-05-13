@@ -1,0 +1,391 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Preparing your Computer
+
+Building a project like Apache PLC4X on multiple target operating-systems is quite a challenge, but I think we managed to make it as simple as possible.
+
+However when building any of the parts of PLC4X there are some requirements the build is expecting you to have provided.
+
+In order to build at all you are required to have `Java` installed on your machine.
+We have tested the build with Java 8 up to Java 12.
+If a new version comes out, please give us a little time to handle any related issues, but we'll probably fix them as soon as possible.
+However in the past with Oracle's new release strategy, there have been a few bumps on the road.
+
+[width=100%]
+|===
+| Profile        | Description                                              | Requirements
+| `with-java`    | Builds Java API, drivers, integrations, examples        a|
+* Git
+* LibPCAP (Optional)
+| `with-cpp`     | Builds C++ API, drivers, integrations, examples         a|
+* gcc
+* g++
+| `with-dotnet`  | Builds C# and .Net API, drivers, integrations, examples a|
+* dotnet
+| `with-python`  | Builds Python API, drivers, integrations, examples      a|
+* python (2.7)
+| `with-proxies` | Adds proxy modules to each enabled language             a|
+* bison
+* flex
+* python
+| `with-sandbox` | Adds some experimental modules                          a|
+|===
+
+The following chapters will describe how to provide these requirements sorted by operating system.
+
+=== Linux
+
+==== Git
+
+Checking:
+
+ git --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install git
+
+Yum based systems:
+
+ sudo yum install git
+
+==== LibPCAP
+
+Apt-based systems:
+
+ sudo apt-get install libpcap-dev
+
+Yum based systems:
+
+ sudo yum install libpcap-devel
+
+==== gcc
+
+Checking:
+
+ gcc --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install gcc
+
+Yum based systems:
+
+ sudo yum install gcc
+
+==== g++
+
+Checking:
+
+ g++ --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install g++
+
+Yum based systems:
+
+ sudo yum install g++
+
+==== dotnet
+
+Checking:
+
+ dotnet --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Microsoft has documented what is needed to install `.Net SDK` https://dotnet.microsoft.com/download/linux-package-manager/rhel/sdk-2.2.203[here]
+
+For Ubuntu this would be:
+
+ wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
+ sudo dpkg -i packages-microsoft-prod.deb
+
+ sudo apt-get install apt-transport-https
+ sudo apt-get update
+ sudo apt-get install dotnet-sdk-2.2
+
+For other distributions, please select the distribution in the drop-down menu and follow the instructions there.
+
+==== python
+
+Checking:
+
+ python --version
+
+If you get a version of 2.7 or higher reported, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install python-dev
+
+Yum based systems:
+
+ yum install gcc
+ cd /usr/src
+ wget https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz
+ tar xzf Python-2.7.10.tgz
+ cd Python-2.7.10
+ ./configure
+ make altinstall
+
+==== bison
+
+Checking:
+
+ bison --version
+
+If you get a version above 2.3 output, you don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install bison
+
+Yum based systems:
+
+ sudo yum install bison-devel
+
+==== flex
+
+Checking:
+
+ flex --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install flex
+
+Yum based systems:
+
+ sudo yum install flex
+
+=== macOS
+
+Most libraries on Mac are installed using `Homebrew`.
+
+Make sure `Homebrew` ist installed in order to install most of these.
+
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+==== Git
+
+Checking:
+
+ git --version
+
+If you get any successful output, you probably don't need to do anything.
+
+In order to install it, please execute the following command:
+
+ brew install git
+
+==== LibPCAP
+
+==== gcc
+
+Checking:
+
+ gcc --version
+
+If you get any successful output, you probably don't need to do anything.
+
+It seems macOS comes with a version of gcc which is good enough for our usecases.
+
+==== g++
+
+Checking:
+
+ g++ --version
+
+If you get any successful output, you probably don't need to do anything.
+
+It seems macOS comes with a version of g++ which is good enough for our usecases.
+
+==== dotnet
+
+Checking:
+
+ dotnet --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Microsoft is offering an installer for MacOS which is available from https://dotnet.microsoft.com/download/dotnet-core/2.2[here].
+
+==== python
+
+Checking:
+
+ python --version
+
+If you get a version of 2.7 or higher reported, you probably don't need to do anything.
+
+In order to install it, please execute the following command:
+
+ brew install python@2
+
+==== bison
+
+Checking:
+
+ python --version
+
+If you get a version above 2.3 output, you don't need to do anything.
+
+macOS comes with a pre-installed version of bison, however this version is 2.3 and hereby too old.
+So you need to update to a more recent version:
+
+ brew install bison
+ brew link bison --force
+ echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
+
+Be sure to reboot or at least restart your IDE or commandline in order for the changes to become effective.
+
+==== flex
+
+Checking:
+
+ flex --version
+
+If you get any successful output, you probably don't need to do anything.
+
+It seems macOS comes with a version of flex which is good enough for our usecases.
+
+=== Windows
+
+==== Git
+
+Checking:
+
+ git --version
+
+If you get any successful output, you probably don't need to do anything.
+
+In order to install it, please download end execute the installer from https://git-scm.com/download/win[here] and make sure to have it add the git executable to your systems `PATH`.
+
+==== LibPCAP
+
+A special version of LibPCAP is available for Windows, which is called WinPCAP.
+It is available from https://www.winpcap.org/[here].
+
+However this is a based on a very old version (1.0) of LibPCAP and in order to read PCAPNG files we require a libpcap version 1.1.0 or greater.
+A patched windows version can be found here: https://sourceforge.net/projects/winpcap413-176/
+(At this location is a patched version based on libpcap 1.7.4)
+
+So in order to install things correctly:
+
+1. install the version WinPCP from above location.
+2. Then download the patched version from the sourceforge link and unpack it somewhere.
+3. After that copy bin\x64\wpcap.dll from archive to \Windows\System32
+4. Copy bin\wpcap.dll from archive to \Windows\SysWOW64
+
+After this all should be working.
+
+==== gcc
+
+Checking:
+
+ gcc --version
+
+If you get any successful output, you probably don't need to do anything.
+
+On windows we will be using something called WinBuilds, which is sort of a package consisting of a typical build environment consisting of multiple build tools. So please look at the WinBuilds chapter at the end of the Windows section.
+
+==== g++
+
+Checking:
+
+ g++ --version
+
+If you get any successful output, you probably don't need to do anything.
+
+On windows we will be using something called WinBuilds, which is sort of a package consisting of a typical build environment consisting of multiple build tools. So please look at the WinBuilds chapter at the end of the Windows section.
+
+==== dotnet
+
+Checking:
+
+ dotnet --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Usually this is already installed on Windows machines.
+
+==== python
+
+Checking:
+
+ python --version
+
+If you get any successful output, you probably don't need to do anything.
+
+You can get Python from https://www.python.org/downloads/release/python-2716/[here].
+
+Make sure directory containing `python.exe` is added to your systems `PATH`.
+Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
+
+==== bison
+
+Checking:
+
+ bison --version
+
+If you get any successful output, you probably don't need to do anything.
+
+For Bison, please download the Setup installer version from http://gnuwin32.sourceforge.net/packages/bison.htm[here] (When using the zip version the bison.exe couldn't find some DLL files)
+It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip[here]
+(More infos on this issue https://sourceforge.net/p/gnuwin32/bugs/473/[here])
+
+Make sure it's `bin` directory is added to your systems `PATH`.
+Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
+
+==== flex
+
+Checking:
+
+ flex --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Please download the Flex compiler from http://gnuwin32.sourceforge.net/packages/flex.htm[here] (Ideally download the binary zip distribution)
+
+Make sure it's `bin` directory is added to your systems `PATH`.
+Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
+
+==== WinBuilds
+
+He have tested WinBuilds with the bundle found http://win-builds.org/doku.php/download_and_installation_from_windows[here].
+
+WARNING: Please use the installer. When using the zip distribution and manually adding that to the `PATH` the build will fail without a log output as some binaries can't find some of the DLL files.
+
+When running the installer, make sure to select the options:
+- Native Windows
+- x86_64
+Not quite sure which elements are really needed, better just install all of them.
+
+Make sure it's `bin` directory is added to your systems `PATH`, however the installer should have taken care of this.
+Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
+

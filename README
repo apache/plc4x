@@ -7,6 +7,8 @@ We are planning on shipping libraries for usage in:
 1) Java
 2) Scala
 3) C/C++
+4) C# (.Net)
+5) Python
 
 As well as provide direct integration into other Apache projects, such as:
 
@@ -17,14 +19,13 @@ As well as provide direct integration into other Apache projects, such as:
 5) Apache Karaf
 6) Apache NiFi
 
-
 Environment
 -----------
 
 Currently the project is configured to require the following software:
 
 1) Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to point to that.
-2) libpcap/WinPcap for raw socket tests
+2) libpcap/WinPcap for raw socket tests in Java
 3) (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
 4) Git (even when working on the source distribution)
 
@@ -112,7 +113,7 @@ downloaded and installed by the maven wrapper `mvnw`.
 
 Build PLC4X Java jars and install them in your local maven repository
 
-$ ./mvnw install  # add -DskipTests to omit running the tests
+$ ./mvnw install -P with-java  # add -DskipTests to omit running the tests
 
 You can now construct Java applications that use PLC4X. The PLC4X samples
 are a good place to start and are available inside the `examples`
@@ -124,6 +125,17 @@ the `with-cpp` profile
 
 $ ./mvnw -P with-cpp install  # add -DskipTests to omit running the tests
 
+Same applies for the C# .Net implementation with `with-dotnet` profiles.
+
+The Python implementation is currently in a somewhat unclean state and still needs refactoring.
+In order to be able to build the Python module, you currently need to activate both the:
+`with-python` and `with-proxies` profiles.
+
+However both of these are in a pretty experimental state.
+
+In order to build everything the following command should work:
+
+& ./mvnw -P with-java,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox install
 
 Installing libpcap/WinPcap
 --------------------------
@@ -135,6 +147,9 @@ You can download the Mac/Linux version from: http://www.tcpdump.org/
 The windows version can be found here: https://sourceforge.net/projects/winpcap413-176/
 (In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
 Windows version is 1.0. At this location is a patched version based on libpcap 1.7.4)
+
+Same applies for Python with the `with-python` and the C# .Net imeplemtation with `with-dotnet` profiles.
+However both of these are in a pretty experimental state.
 
 
 Building the C++ libraries
