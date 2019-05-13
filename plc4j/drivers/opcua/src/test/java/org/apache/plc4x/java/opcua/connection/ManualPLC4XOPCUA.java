@@ -31,6 +31,7 @@ import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.model.OpcuaPlcFieldHandler;
 
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -80,12 +81,9 @@ public class ManualPLC4XOPCUA {
             Collection coll = response.getAllStrings("String");
 
             PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
-            //wBuilder.addItem("w-Bool", "ns=2;i=10844", "TEST");
-            //wBuilder.addItem("w-Bool", "ns=2;i=11012", true);
-            //--->> wBuilder.addItem("w-ByteString", "ns=2;i=10858", "TEST".getBytes());
-            wBuilder.addItem("w-String", "ns=2;i=10855", "TEST");
-
+            wBuilder.addItem("w-Bool", "ns=2;i=11012", true);
             /*
+            wBuilder.addItem("w-ByteString", "ns=2;i=10858", "TEST".getBytes());
             wBuilder.addItem("w-Byte", "ns=2;i=10846", (byte)1);
             wBuilder.addItem("w-Double", "ns=2;i=10854", (double)0.25);
             wBuilder.addItem("w-Float", "ns=2;i=10853", (float)0.25);
@@ -99,8 +97,7 @@ public class ManualPLC4XOPCUA {
             wBuilder.addItem("w-UInt32", "ns=2;i=10850", (long)21412);
             wBuilder.addItem("w-UInt64", "ns=2;i=10852", new BigInteger("1245152"));
             wBuilder.addItem("w-UInteger", "ns=2;i=10870", new BigInteger("1245152"));
-
-            */
+*/
             PlcWriteRequest writeRequest = wBuilder.build();
             PlcWriteResponse wResponse = opcuaConnection.write(writeRequest).get();
 

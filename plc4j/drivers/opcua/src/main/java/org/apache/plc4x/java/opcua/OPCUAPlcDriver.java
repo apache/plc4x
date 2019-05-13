@@ -43,7 +43,7 @@ public class OPCUAPlcDriver implements PlcDriver {
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.-]+)(:(?<port>\\d*))?");
     public static final Pattern OPCUA_URI_PATTERN = Pattern.compile("^opcua:(" + INET_ADDRESS_PATTERN + ")?" + "(?<params>/[\\w/]+)?");
-
+    private static final int requestTimeout = 10000;
     private OPCUAConnectionFactory opcuaConnectionFactory;
 
     public OPCUAPlcDriver() {
@@ -79,7 +79,7 @@ public class OPCUAPlcDriver implements PlcDriver {
         String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
 
         try {
-            return opcuaConnectionFactory.opcuaTcpPlcConnectionOf(InetAddress.getByName(host), port, params);
+            return opcuaConnectionFactory.opcuaTcpPlcConnectionOf(InetAddress.getByName(host), port, params, requestTimeout);
         } catch (UnknownHostException e) {
             throw new PlcConnectionException(e);
         }
