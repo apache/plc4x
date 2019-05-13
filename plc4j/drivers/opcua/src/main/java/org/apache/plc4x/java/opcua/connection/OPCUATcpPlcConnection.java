@@ -76,17 +76,18 @@ public class OPCUATcpPlcConnection extends BaseOPCUAPlcConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(OPCUATcpPlcConnection.class);
     private InetAddress address;
+    private int requestTimeout = 5000;
     private int port;
     private String params;
     private OpcUaClient client;
     private boolean isConnected = false;
     private  final AtomicLong clientHandles = new AtomicLong(1L);
-    private OPCUATcpPlcConnection(InetAddress address, String params) {
-        this( address, OPCUA_DEFAULT_TCP_PORT,  params);
+    private OPCUATcpPlcConnection(InetAddress address, String params, int requestTimeout) {
+        this( address, OPCUA_DEFAULT_TCP_PORT,  params, requestTimeout);
         logger.info("Configured OPCUATcpPlcConnection with: host-name {}", address.getHostAddress());
     }
 
-    public OPCUATcpPlcConnection(InetAddress address, int port, String params) {
+    public OPCUATcpPlcConnection(InetAddress address, int port, String params, int requestTimeout) {
         this(params);
         logger.info("Configured OPCUATcpPlcConnection with: host-name {}", address.getHostAddress());
         this.address = address;
@@ -98,18 +99,18 @@ public class OPCUATcpPlcConnection extends BaseOPCUAPlcConnection {
         super(params);
     }
 
-    public static OPCUATcpPlcConnection of(InetAddress address, String params) {
-        return new OPCUATcpPlcConnection(address, params);
+    public static OPCUATcpPlcConnection of(InetAddress address, String params, int requestTimeout) {
+        return new OPCUATcpPlcConnection(address, params, requestTimeout);
     }
 
-    public static OPCUATcpPlcConnection of(InetAddress address, int port, String params) {
-        return new OPCUATcpPlcConnection(address, port, params);
+    public static OPCUATcpPlcConnection of(InetAddress address, int port, String params, int requestTimeout) {
+        return new OPCUATcpPlcConnection(address, port, params, requestTimeout);
     }
 
 
 
     public InetAddress getRemoteAddress() {
-        return null;
+        return address;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class OPCUATcpPlcConnection extends BaseOPCUAPlcConnection {
 
         try {
             endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, params)).get();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             // try the explicit discovery endpoint as well
             String discoveryUrl = getEndpointUrl(address, port, params);
 
@@ -131,39 +132,31 @@ public class OPCUATcpPlcConnection extends BaseOPCUAPlcConnection {
             try {
                 endpoints = DiscoveryClient.getEndpoints(discoveryUrl).get();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                throw new PlcConnectionException("Unable to discover URL:" + discoveryUrl);
             }
         }
 
-        EndpointDescription endpoint = null;
-        try {
-            endpoint = endpoints.stream()
+        EndpointDescription endpoint = endpoints.stream()
                 .filter(e -> e.getSecurityPolicyUri().equals(getSecurityPolicy().getUri()))
                 .filter(endpointFilter())
                 .findFirst()
-                .orElseThrow(() -> new Exception("no desired endpoints returned"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                .orElseThrow(() -> new PlcConnectionException("No desired endpoints from"));
 
         OpcUaClientConfig config = OpcUaClientConfig.builder()
             .setApplicationName(LocalizedText.english("eclipse milo opc-ua client"))
-            .setApplicationUri("urn:eclipse:milo:examples:client")
+            .setApplicationUri("urn:eclipse:milo:plc4x:client")
             .setEndpoint(endpoint)
             .setIdentityProvider(getIdentityProvider())
-            .setRequestTimeout(UInteger.valueOf(5000))
+            .setRequestTimeout(UInteger.valueOf(requestTimeout))
             .build();
 
         try {
             this.client =  OpcUaClient.create(config);
             this.client.connect().get();
             isConnected = true;
-        } catch (UaException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (UaException | InterruptedException | ExecutionException e) {
             isConnected = false;
-        } catch (ExecutionException e) {
-            isConnected = false;
+
         }
     }
 
@@ -425,15 +418,15 @@ public class OPCUATcpPlcConnection extends BaseOPCUAPlcConnection {
             List<StatusCode> statusCodes = null;
             try {
                 statusCodes = opcRequest.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                statusCodes = new LinkedList<>();
+                for(int counter = 0; counter < ids.size(); counter++){
+                    ((LinkedList<StatusCode>) statusCodes).push(StatusCode.BAD);
+                }
             }
 
             for(int counter = 0; counter < names.size(); counter++){
-                PlcResponseCode resultCode = PlcResponseCode.OK;
-                BaseDefaultFieldItem stringItem = null;
+                PlcResponseCode resultCode;
                 if(statusCodes != null && statusCodes.size() > counter){
                     if(statusCodes.get(counter).isGood()){
                         resultCode = PlcResponseCode.OK;

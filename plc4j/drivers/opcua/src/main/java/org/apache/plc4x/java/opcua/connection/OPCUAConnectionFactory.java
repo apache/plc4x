@@ -25,13 +25,13 @@ import java.util.Objects;
 
 public class OPCUAConnectionFactory {
 
-    public OPCUATcpPlcConnection opcuaTcpPlcConnectionOf(InetAddress address, Integer port, String params) {
+    public OPCUATcpPlcConnection opcuaTcpPlcConnectionOf(InetAddress address, Integer port, String params, int requestTimeout) {
         Objects.requireNonNull(address);
 
         if (port == null) {
-            return OPCUATcpPlcConnection.of(address, params);
+            return OPCUATcpPlcConnection.of(address, params, requestTimeout);
         } else {
-            return OPCUATcpPlcConnection.of(address, port, params);
+            return OPCUATcpPlcConnection.of(address, port, params, requestTimeout);
         }
     }
 

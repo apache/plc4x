@@ -136,10 +136,16 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     @Override
     public BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
-        ArrayList<Byte[]> resultSet = new ArrayList<>();
+        Byte[][] byteArray = new Byte[values.length][];
+        int innerCounter = 0;
         for(Object item : values){
-            resultSet.add((Byte[]) item);
+            byte[] itemArray = (byte[]) item;
+            byteArray[innerCounter] = new Byte[((byte[]) item).length];
+            for(int counter = 0; counter < itemArray.length; counter++){
+                byteArray[innerCounter][counter] = itemArray[counter];
+            }
+            innerCounter++;
         }
-        return new DefaultByteArrayFieldItem(resultSet.toArray(new Byte[0][0]));
+        return new DefaultByteArrayFieldItem(byteArray);
     }
 }
