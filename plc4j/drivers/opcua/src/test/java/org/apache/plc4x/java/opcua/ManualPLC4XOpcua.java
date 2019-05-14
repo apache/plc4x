@@ -38,6 +38,14 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
 /**
+ * This class serves only as a manual entry point for ad-hoc tests of the OPC UA PLC4J driver.
+ *
+ *
+ * The current version is tested against a public server, which is to be replaced later by a separate instance of the Milo framework.
+ * Afterwards the code represented here will be used as an example for the introduction page.
+ *
+ * TODO: replace current public server with local Milo instance
+ *
  * @author Matthias Milan Stlrljic
  * Created by Matthias Milan Stlrljic on 10.05.2019
  */
