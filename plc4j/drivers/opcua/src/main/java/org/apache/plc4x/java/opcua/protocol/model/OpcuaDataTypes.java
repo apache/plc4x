@@ -15,31 +15,32 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
+*/
+package org.apache.plc4x.java.opcua.protocol.model;
+/**
  * @author Matthias Milan Stlrljic
  * Created by Matthias Milan Stlrljic on 10.05.2019
  */
-package org.apache.plc4x.java.opcua.protocol.model;
-
 public enum OpcuaDataTypes {
     BOOL,
     SByte,
     Byte,
-    Int16,
-    UInt16,
-    Int32,
-    UInt32,
-    Int64,
-    Uint64,
-    Float,
-    Double,
-    StatusCode,
-    String,
-    DateTime,
-    Guid,
-    ByteString,
-    XMLElement,
-    NodeId,
-    ExpandedNodeId,
-    QualifiedName
+    INT16,
+    UINT16,
+    INT32,
+    UINT32,
+    INT64,
+    UINT64,
+    FLOAT,
+    DOUBLE,
+    STATUS_CODE,
+    STRING,
+    DATE_TIME,
+    GUID,
+    BYTE_STRING,
+    XML_ELEMENT,
+    NODE_ID,
+    EXPANDABLE_NODE_ID,
+    QUALIFIED_NAME
 
 }

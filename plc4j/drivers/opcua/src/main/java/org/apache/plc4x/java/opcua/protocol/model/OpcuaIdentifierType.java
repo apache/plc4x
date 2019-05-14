@@ -15,14 +15,35 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
  */
 package org.apache.plc4x.java.opcua.protocol.model;
 
+/**
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 public enum OpcuaIdentifierType {
-    s,
-    i,
-    g,
-    b
+    STRING_IDENTIFIER("s"),
+    NUMBER_IDENTIFIER("i"),
+    GUID_IDENTIFIER("g"),
+    BINARY_IDENTIFIER("BINARY_IDENTIFIER");
+
+    private String text;
+
+    OpcuaIdentifierType(String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return this.text;
+    }
+
+    public static OpcuaIdentifierType fromString(String text) {
+        for (OpcuaIdentifierType type : OpcuaIdentifierType.values()) {
+            if (type.text.equalsIgnoreCase(text)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found");
+    }
 }
