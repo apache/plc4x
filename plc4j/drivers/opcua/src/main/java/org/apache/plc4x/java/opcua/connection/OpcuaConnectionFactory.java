@@ -15,14 +15,15 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
- */
+*/
 package org.apache.plc4x.java.opcua.connection;
 
 import java.net.InetAddress;
 import java.util.Objects;
-
+/**
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 public class OpcuaConnectionFactory {
 
     public OpcuaTcpPlcConnection opcuaTcpPlcConnectionOf(InetAddress address, Integer port, String params, int requestTimeout) {
