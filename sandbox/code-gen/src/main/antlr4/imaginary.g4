@@ -10,21 +10,44 @@ statement
  ;
 
 typeDefinition
- : LBRACKET K_TYPE IDENTIFIER COMMENT? (LBRACKET fieldDefinition RBRACKET COMMENT?)+ RBRACKET
- | LBRACKET K_DISCRIMINATED_TYPE IDENTIFIER '[length]' COMMENT? (LBRACKET fieldDefinition RBRACKET COMMENT?)+ RBRACKET
+ : LBRACKET K_TYPE IDENTIFIER COMMENT? (fieldDefinition COMMENT?)+ RBRACKET
+ | LBRACKET K_DISCRIMINATED_TYPE IDENTIFIER '[length]'? COMMENT? (fieldDefinition COMMENT?)+ RBRACKET
  ;
 
+
 fieldDefinition
+ : LBRACKET simpleField RBRACKET
+ | typeSwitch
+ ;
+
+simpleField
  : K_CONST dataType IDENTIFIER expression
  | K_RESERVED dataType expression
  | K_IMPLICIT dataType IDENTIFIER expression
  | K_EMBEDDED IDENTIFIER LCBRACKET context RCBRACKET
  | K_DISCRIMINATOR dataType IDENTIFIER
+ | 'context' (dataType | IDENTIFIER) expression
+ | 'optionalField' (dataType | IDENTIFIER) expression
+ | 'field' dataType IDENTIFIER
+ | arrayField
  ;
 
+typeSwitch
+ : LBRACKET 'typeSwitch' IDENTIFIER COMMENT? caseStatement* RBRACKET
+ ;
+
+caseStatement
+ : LBRACKET expression IDENTIFIER COMMENT? (fieldDefinition COMMENT?)+ RBRACKET
+ ;
+
+arrayField
+ : 'arrayField' (IDENTIFIER | dataType) IDENTIFIER IDENTIFIER expression COMMENT*
+ ;
 
 dataType
- : K_UINT8
+ : 'bit'
+ | 'uint7'
+ | K_UINT8
  | K_UINT16
  ;
 
@@ -94,6 +117,7 @@ RCBRACKET : '}';
 BinaryOperator
  : '+'
  | '-'
+ | '=='
  ;
 
 ZERO : '0';
