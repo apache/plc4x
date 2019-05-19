@@ -30,8 +30,10 @@ import java.util.regex.Pattern;
  * Created by Matthias Milan Stlrljic on 10.05.2019
  */
 public class OpcuaField implements PlcField {
+
     //TODO: Add a correct regex definition of all the different sub-types of the identifiers --> requires perhaps individual type definitions
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);((?<identifierType>[isgb])=((?<identifier>[\\w.\\-/=%_]+))?)");
+
 
     private final OpcuaIdentifierType identifierType;
 
