@@ -15,10 +15,7 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
-
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
- */
+*/
 package org.apache.plc4x.java.opcua;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,9 +30,13 @@ import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
  * Implementation of the OPC UA protocol, based on:
  * - Eclipse Milo (https://github.com/eclipse/milo)
+ *
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
  */
 public class OpcuaPlcDriver implements PlcDriver {
 

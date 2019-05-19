@@ -15,15 +15,16 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
- */
+*/
 package org.apache.plc4x.java.opcua;
 
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.fail;
-
+/**
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 public class UtilsTest {
     public static void assertMatching(Pattern pattern, String match) {
         if (!pattern.matcher(match).matches()) {

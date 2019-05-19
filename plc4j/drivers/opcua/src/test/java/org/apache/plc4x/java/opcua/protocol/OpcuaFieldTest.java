@@ -15,9 +15,7 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
- */
+*/
 package org.apache.plc4x.java.opcua.protocol;
 
 import org.junit.jupiter.api.AfterEach;
@@ -26,7 +24,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 import static org.apache.plc4x.java.opcua.protocol.OpcuaField.ADDRESS_PATTERN;
-
+/**
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 public class OpcuaFieldTest {
 
     @BeforeEach

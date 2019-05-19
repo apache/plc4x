@@ -15,9 +15,7 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
- */
+*/
 package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.PlcDriverManager;
@@ -39,8 +37,37 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
-
+/**
+ * This class serves only as a manual entry point for ad-hoc tests of the OPC UA PLC4J driver.
+ *
+ *
+ * The current version is tested against a public server, which is to be replaced later by a separate instance of the Milo framework.
+ * Afterwards the code represented here will be used as an example for the introduction page.
+ *
+ * TODO: replace current public server with local Milo instance
+ *
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 public class ManualPLC4XOpcua {
+    private static final String BOOL_IDENTIFIER = "ns=2;i=10844";
+    private static final String BYTE_STRING_IDENTIFIER = "ns=2;i=10858";
+    private static final String BYTE_IDENTIFIER = "ns=2;i=10846";
+    private static final String DOUBLE_IDENTIFIER = "ns=2;i=10854";
+    private static final String FLOAT_IDENTIFIER = "ns=2;i=10853";
+    private static final String INT16_IDENTIFIER = "ns=2;i=10847";
+    private static final String INT32_IDENTIFIER = "ns=2;i=10849";
+    private static final String INT64_IDENTIFIER = "ns=2;i=10851";
+    private static final String INTEGER_IDENTIFIER = "ns=2;i=10869";
+    private static final String SBYTE_IDENTIFIER = "ns=2;i=10845";
+    private static final String STRING_IDENTIFIER = "ns=2;i=10855";
+    private static final String UINT16_IDENTIFIER = "ns=2;i=10848";
+    private static final String UINT32_IDENTIFIER = "ns=2;i=10850";
+    private static final String UINT64_IDENTIFIER = "ns=2;i=10852";
+    private static final String UINTEGER_IDENTIFIER = "ns=2;i=10870";
+    private static final String DOES_NOT_EXIST_IDENTIFIER = "ns=2;i=12512623";
+
+
     public static void main(String args[]){
 
 
@@ -56,45 +83,44 @@ public class ManualPLC4XOpcua {
         }
         try {
             PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
-            //builder.addItem("String", "ns=2;i=10855");
-            builder.addItem("Bool", "ns=2;i=10844");
-            builder.addItem("ByteString", "ns=2;i=10858");
-            builder.addItem("Byte", "ns=2;i=10846");
-            builder.addItem("Double", "ns=2;i=10854");
-            builder.addItem("Float", "ns=2;i=10853");
-            builder.addItem("Int16", "ns=2;i=10847");
-            builder.addItem("Int32", "ns=2;i=10849");
-            builder.addItem("Int64", "ns=2;i=10851");
-            builder.addItem("Integer", "ns=2;i=10869");
-            builder.addItem("SByte", "ns=2;i=10845");
-            builder.addItem("String", "ns=2;i=10855");
-            builder.addItem("UInt16", "ns=2;i=10848");
-            builder.addItem("UInt32", "ns=2;i=10850");
-            builder.addItem("UInt64", "ns=2;i=10852");
-            builder.addItem("UInteger", "ns=2;i=10870");
+            builder.addItem("Bool", BOOL_IDENTIFIER);
+            builder.addItem("ByteString", BYTE_STRING_IDENTIFIER);
+            builder.addItem("Byte", BYTE_IDENTIFIER);
+            builder.addItem("Double", DOUBLE_IDENTIFIER);
+            builder.addItem("Float", FLOAT_IDENTIFIER);
+            builder.addItem("Int16", INT16_IDENTIFIER);
+            builder.addItem("Int32", INT32_IDENTIFIER);
+            builder.addItem("Int64", INT64_IDENTIFIER);
+            builder.addItem("Integer", INTEGER_IDENTIFIER);
+            builder.addItem("SByte", SBYTE_IDENTIFIER);
+            builder.addItem("String", STRING_IDENTIFIER);
+            builder.addItem("UInt16", UINT16_IDENTIFIER);
+            builder.addItem("UInt32", UINT32_IDENTIFIER);
+            builder.addItem("UInt64", UINT64_IDENTIFIER);
+            builder.addItem("UInteger", UINTEGER_IDENTIFIER);
 
-            builder.addItem("DoesNotExists", "ns=2;i=12512623");
+            builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = opcuaConnection.read(request).get();
             Collection coll = response.getAllStrings("String");
 
             PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
-            wBuilder.addItem("w-Bool", "ns=2;i=11012", true);
-            wBuilder.addItem("w-ByteString", "ns=2;i=10858", "TEST".getBytes());
-            wBuilder.addItem("w-Byte", "ns=2;i=10846", (byte)1);
-            wBuilder.addItem("w-Double", "ns=2;i=10854", (double)0.25);
-            wBuilder.addItem("w-Float", "ns=2;i=10853", (float)0.25);
-            wBuilder.addItem("w-Int16", "ns=2;i=10847", (short)12);
-            wBuilder.addItem("w-Int32", "ns=2;i=10849", (int)314);
-            wBuilder.addItem("w-Int64", "ns=2;i=10851", (long)123125);
-            wBuilder.addItem("w-Integer", "ns=2;i=10869", (int)314);
-            wBuilder.addItem("w-SByte", "ns=2;i=10845", (short)23);
-            wBuilder.addItem("w-String", "ns=2;i=10855", "TEST");
-            wBuilder.addItem("w-UInt16", "ns=2;i=10848", (int)222);
-            wBuilder.addItem("w-UInt32", "ns=2;i=10850", (long)21412);
-            wBuilder.addItem("w-UInt64", "ns=2;i=10852", new BigInteger("1245152"));
-            wBuilder.addItem("w-UInteger", "ns=2;i=10870", new BigInteger("1245152"));
+            wBuilder.addItem("w-Bool", BOOL_IDENTIFIER, true);
+            wBuilder.addItem("w-ByteString", BYTE_STRING_IDENTIFIER, "TEST".getBytes());
+            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte)1);
+            wBuilder.addItem("w-Double", DOUBLE_IDENTIFIER, (double)0.25);
+            wBuilder.addItem("w-Float", FLOAT_IDENTIFIER, (float)0.25);
+            wBuilder.addItem("w-INT16", INT16_IDENTIFIER, (short)12);
+            wBuilder.addItem("w-Int32", INT32_IDENTIFIER, (int)314);
+            wBuilder.addItem("w-Int64", INT64_IDENTIFIER, (long)123125);
+            wBuilder.addItem("w-Integer", INTEGER_IDENTIFIER, (int)314);
+            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (short)23);
+            wBuilder.addItem("w-String", STRING_IDENTIFIER, "TEST");
+            wBuilder.addItem("w-UInt16", UINT16_IDENTIFIER, (int)222);
+            wBuilder.addItem("w-UInt32", UINT32_IDENTIFIER, (long)21412);
+            wBuilder.addItem("w-UInt64", UINT64_IDENTIFIER, new BigInteger("1245152"));
+            wBuilder.addItem("w-UInteger", UINTEGER_IDENTIFIER, new BigInteger("1245152"));
             PlcWriteRequest writeRequest = wBuilder.build();
             PlcWriteResponse wResponse = opcuaConnection.write(writeRequest).get();
 
@@ -102,7 +128,7 @@ public class ManualPLC4XOpcua {
                 opcuaConnection,
                 new LinkedHashMap<>(
                     Collections.singletonMap("field1",
-                        new SubscriptionPlcField(PlcSubscriptionType.CHANGE_OF_STATE, OpcuaField.of("ns=2;i=10855"), Duration.of(1, ChronoUnit.SECONDS)))
+                        new SubscriptionPlcField(PlcSubscriptionType.CHANGE_OF_STATE, OpcuaField.of(STRING_IDENTIFIER), Duration.of(1, ChronoUnit.SECONDS)))
                 )
             )).get();
 

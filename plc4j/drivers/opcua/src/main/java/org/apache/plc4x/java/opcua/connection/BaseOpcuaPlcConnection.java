@@ -15,9 +15,7 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
- */
+*/
 package org.apache.plc4x.java.opcua.connection;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +29,10 @@ import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseOpcuaPlcConnection.class);

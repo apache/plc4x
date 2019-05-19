@@ -15,9 +15,7 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
- */
+*/
 package org.apache.plc4x.java.opcua.protocol;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -40,7 +38,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-
+/**
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
     Set< Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
     String fieldName;

@@ -15,9 +15,7 @@ software distributed under the License is distributed on an
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
- */
+*/
 package org.apache.plc4x.java.opcua.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
@@ -27,7 +25,10 @@ import org.apache.plc4x.java.opcua.protocol.model.OpcuaIdentifierType;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/**
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
+ */
 public class OpcuaField implements PlcField {
     //TODO: Add a correct regex definition of all the different sub-types of the identifiers --> requires perhaps individual type definitions
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);((?<identifierType>[isgb])=((?<identifier>[\\w.\\-/=%_]+))?)");
@@ -64,7 +65,7 @@ public class OpcuaField implements PlcField {
         String identifier = matcher.group("identifier");
 
         String identifierTypeString = matcher.group("identifierType");
-        OpcuaIdentifierType identifierType = OpcuaIdentifierType.valueOf(identifierTypeString);
+        OpcuaIdentifierType identifierType = OpcuaIdentifierType.fromString(identifierTypeString);
 
         String namespaceString = matcher.group("namespace");
         Integer namespace = namespaceString != null ? Integer.valueOf(namespaceString) : 0;
@@ -98,7 +99,7 @@ public class OpcuaField implements PlcField {
             return false;
         }
         OpcuaField that = (OpcuaField) o;
-        return namespace == that.namespace && identifier.equals(that.identifier);
+        return namespace == that.namespace && identifier.equals(that.identifier) && identifierType == that.identifierType;
     }
 
     @Override
@@ -110,6 +111,7 @@ public class OpcuaField implements PlcField {
     public String toString() {
         return "OpcuaField{" +
             "namespace=" + namespace +
+            "identifierType=" + identifierType.getText() +
             "identifier=" + identifier +
             '}';
     }
