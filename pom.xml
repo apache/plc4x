@@ -122,7 +122,7 @@
     <commons-text.version>1.4</commons-text.version>
     <crc.version>1.0.1</crc.version>
     <daffodil.version>2.3.0</daffodil.version>
-    <elasticsearch.version>6.4.2</elasticsearch.version>
+    <elasticsearch.version>7.0.1</elasticsearch.version>
     <equalsverifier.version>3.0.2</equalsverifier.version>
     <findbugs.version>3.0.1</findbugs.version>
     <groovy.version>2.5.3</groovy.version>
@@ -139,7 +139,7 @@
     <junit.version>4.12</junit.version>
     <log4j.version>2.11.1</log4j.version>
     <logback.version>1.2.3</logback.version>
-    <lucene.version>7.4.0</lucene.version>
+    <lucene.version>8.0.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.24.5</mockito.version>
     <netty.version>4.1.35.Final</netty.version>
