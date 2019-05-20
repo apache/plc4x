@@ -2001,9 +2001,11 @@
                                     <payload>
                                         <s7ResponsePayloadWriteVar>
                                             <numItems>1</numItems>
-                                            <item>
-                                                <returnCode>255</returnCode>
-                                            </item>
+                                            <items>
+                                                <item>
+                                                    <returnCode>255</returnCode>
+                                                </item>
+                                            </items>
                                         </s7ResponsePayloadWriteVar>
                                     </payload>
                                 </payloads>
@@ -2430,21 +2432,23 @@
                                     <payload>
                                         <s7ResponsePayloadWriteVar>
                                             <numItems>5</numItems>
-                                            <item>
-                                                <returnCode>255</returnCode>
-                                            </item>
-                                            <item>
-                                                <returnCode>255</returnCode>
-                                            </item>
-                                            <item>
-                                                <returnCode>255</returnCode>
-                                            </item>
-                                            <item>
-                                                <returnCode>3</returnCode>
-                                            </item>
-                                            <item>
-                                                <returnCode>3</returnCode>
-                                            </item>
+                                            <items>
+                                                <item>
+                                                    <returnCode>255</returnCode>
+                                                </item>
+                                                <item>
+                                                    <returnCode>255</returnCode>
+                                                </item>
+                                                <item>
+                                                    <returnCode>255</returnCode>
+                                                </item>
+                                                <item>
+                                                    <returnCode>3</returnCode>
+                                                </item>
+                                                <item>
+                                                    <returnCode>3</returnCode>
+                                                </item>
+                                            </items>
                                         </s7ResponsePayloadWriteVar>
                                     </payload>
                                 </payloads>
