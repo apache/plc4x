@@ -59,7 +59,7 @@
         <executions>
           <execution>
             <id>default-jar</id>
-            <phase/>
+            <phase />
           </execution>
         </executions>
       </plugin>
