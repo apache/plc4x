@@ -212,7 +212,7 @@
                         dfdl:occursCount="{if(../../headerLength gt 6) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="parameter" type="s7:Parameter" maxOccurs="unbounded"/>
+                        <xs:element name="parameter" type="s7:CotpParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -230,7 +230,7 @@
                         dfdl:occursCount="{if(../../headerLength gt 6) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="parameter" type="s7:Parameter" maxOccurs="unbounded"/>
+                        <xs:element name="parameter" type="s7:CotpParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -248,7 +248,7 @@
                         dfdl:occursCount="{if(../../headerLength gt 6) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="parameter" type="s7:Parameter" maxOccurs="unbounded"/>
+                        <xs:element name="parameter" type="s7:CotpParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -265,7 +265,7 @@
                         dfdl:occursCount="{if(../../headerLength gt 5) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="parameter" type="s7:Parameter" maxOccurs="unbounded"/>
+                        <xs:element name="parameter" type="s7:CotpParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -282,7 +282,7 @@
                         dfdl:occursCount="{if(../../headerLength gt 4) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="parameter" type="s7:Parameter" maxOccurs="unbounded"/>
+                        <xs:element name="parameter" type="s7:CotpParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -296,7 +296,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="Parameter">
+    <xs:complexType name="CotpParameter">
         <xs:sequence>
             <xs:element name="type" type="s7:CotpParameterType"/>
             <xs:element name="parameterLength" type="plc4x:uint8"/>
@@ -386,21 +386,7 @@
                         dfdl:occursCount="{if(../parametersLength gt 0) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="parameter" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="type" type="plc4x:uint8"/>
-                                    <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
-                                        <xs:element dfdl:choiceBranchKey="240" name="s7GeneralParameterSetupCommunication"
-                                                    type="s7:S7GeneralParameterSetupCommunication"/>
-                                        <xs:element dfdl:choiceBranchKey="4" name="s7RequestParameterReadVar"
-                                                    type="s7:S7RequestParameterReadVar"/>
-                                        <xs:element dfdl:choiceBranchKey="5" name="s7RequestParameterWriteVar"
-                                                    type="s7:S7RequestParameterWriteVar"/>
-                                    </xs:choice>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
+                        <xs:element name="parameter" type="s7:S7RequestParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -423,23 +409,9 @@
                             of items for a read/write request in order to process the correct number of items in
                             the payload.
                         -->
-                        <xs:element name="payload" maxOccurs="unbounded"
+                        <xs:element name="payload" type="s7:S7Payload" maxOccurs="unbounded"
                                     dfdl:occursCountKind="expression"
-                                    dfdl:occursCount="{fn:count(../../parameters[1]/parameter)}">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:choice
-                                        dfdl:choiceDispatchKey="{xs:string(../../parameters[1]/parameter[dfdl:occursIndex()]/type)}">
-                                        <xs:element dfdl:choiceBranchKey="240" name="s7GeneralPayloadSetupCommunication"
-                                                    type="s7:S7GeneralPayloadSetupCommunication"/>
-                                        <xs:element dfdl:choiceBranchKey="4" name="s7RequestPayloadReadVar"
-                                                    type="s7:S7RequestPayloadReadVar"/>
-                                        <xs:element dfdl:choiceBranchKey="5" name="s7RequestPayloadWriteVar"
-                                                    type="s7:S7RequestPayloadWriteVar"/>
-                                    </xs:choice>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
+                                    dfdl:occursCount="{fn:count(../../parameters[1]/parameter)}"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -464,21 +436,7 @@
                         dfdl:occursCount="{if(../parametersLength gt 0) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="parameter" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="type" type="plc4x:uint8"/>
-                                    <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
-                                        <xs:element dfdl:choiceBranchKey="240" name="s7GeneralParameterSetupCommunication"
-                                                    type="s7:S7GeneralParameterSetupCommunication"/>
-                                        <xs:element dfdl:choiceBranchKey="4" name="s7ResponseParameterReadVar"
-                                                    type="s7:S7ResponseParameterReadVar"/>
-                                        <xs:element dfdl:choiceBranchKey="5" name="s7ResponseParameterWriteVar"
-                                                    type="s7:S7ResponseParameterWriteVar"/>
-                                    </xs:choice>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
+                        <xs:element name="parameter" type="s7:S7ResponseParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -501,23 +459,9 @@
                             of items for a read/write request in order to process the correct number of items in
                             the payload.
                         -->
-                        <xs:element name="payload" maxOccurs="unbounded"
+                        <xs:element name="payload" type="s7:S7Payload" maxOccurs="unbounded"
                                     dfdl:occursCountKind="expression"
-                                    dfdl:occursCount="{fn:count(../../parameters[1]/parameter)}">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:choice
-                                        dfdl:choiceDispatchKey="{xs:string(../../parameters[1]/parameter[dfdl:occursIndex()]/type)}">
-                                        <xs:element dfdl:choiceBranchKey="240" name="s7GeneralPayloadSetupCommunication"
-                                                    type="s7:S7GeneralPayloadSetupCommunication"/>
-                                        <xs:element dfdl:choiceBranchKey="4" name="s7ResponsePayloadReadVar"
-                                                    type="s7:S7ResponsePayloadReadVar"/>
-                                        <xs:element dfdl:choiceBranchKey="5" name="s7ResponsePayloadWriteVar"
-                                                    type="s7:S7ResponsePayloadWriteVar"/>
-                                    </xs:choice>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
+                                    dfdl:occursCount="{fn:count(../../parameters[1]/parameter)}"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -538,17 +482,7 @@
                         dfdl:occursCount="{if(../parametersLength gt 0) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="parameter" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="type" type="plc4x:uint8"/>
-                                    <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
-                                        <xs:element dfdl:choiceBranchKey="0" name="s7UserDataParameterCPUService"
-                                                    type="s7:S7UserDataParameterCPUService"/>
-                                    </xs:choice>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
+                        <xs:element name="parameter" type="s7:S7GeneralParameter" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -571,19 +505,9 @@
                             of items for a read/write request in order to process the correct number of items in
                             the payload.
                         -->
-                        <xs:element name="payload" maxOccurs="unbounded"
+                        <xs:element name="payload" type="s7:S7Payload" maxOccurs="unbounded"
                                     dfdl:occursCountKind="expression"
-                                    dfdl:occursCount="{fn:count(../../parameters[1]/parameter)}">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:choice
-                                        dfdl:choiceDispatchKey="{xs:string(../../parameters[1]/parameter[dfdl:occursIndex()]/type)}">
-                                        <xs:element dfdl:choiceBranchKey="0" name="s7UserDataPayloadCpuServices"
-                                                    type="s7:S7UserDataPayloadCpuServices"/>
-                                    </xs:choice>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
+                                    dfdl:occursCount="{fn:count(../../parameters[1]/parameter)}"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -595,6 +519,50 @@
         Parameters.
 
     -->
+
+    <xs:complexType name="S7GeneralParameter">
+        <xs:sequence>
+            <xs:element name="type" type="plc4x:uint8"/>
+            <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
+                <xs:element dfdl:choiceBranchKey="240" name="s7GeneralParameterSetupCommunication"
+                            type="s7:S7GeneralParameterSetupCommunication"/>
+                <xs:element dfdl:choiceBranchKey="0" name="s7UserDataParameterCPUService"
+                            type="s7:S7UserDataParameterCPUService"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="S7RequestParameter">
+        <xs:sequence>
+            <xs:element name="type" type="plc4x:uint8"/>
+            <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
+                <xs:element dfdl:choiceBranchKey="240" name="s7GeneralParameterSetupCommunication"
+                            type="s7:S7GeneralParameterSetupCommunication"/>
+                <xs:element dfdl:choiceBranchKey="4" name="s7RequestParameterReadVar"
+                            type="s7:S7RequestParameterReadVar"/>
+                <xs:element dfdl:choiceBranchKey="5" name="s7RequestParameterWriteVar"
+                            type="s7:S7RequestParameterWriteVar"/>
+                <xs:element dfdl:choiceBranchKey="0" name="s7UserDataParameterCPUService"
+                            type="s7:S7UserDataParameterCPUService"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="S7ResponseParameter">
+        <xs:sequence>
+            <xs:element name="type" type="plc4x:uint8"/>
+            <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
+                <xs:element dfdl:choiceBranchKey="240" name="s7GeneralParameterSetupCommunication"
+                            type="s7:S7GeneralParameterSetupCommunication"/>
+                <xs:element dfdl:choiceBranchKey="4" name="s7ResponseParameterReadVar"
+                            type="s7:S7ResponseParameterReadVar"/>
+                <xs:element dfdl:choiceBranchKey="5" name="s7ResponseParameterWriteVar"
+                            type="s7:S7ResponseParameterWriteVar"/>
+                <xs:element dfdl:choiceBranchKey="0" name="s7UserDataParameterCPUService"
+                            type="s7:S7UserDataParameterCPUService"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="S7GeneralParameterSetupCommunication">
         <xs:sequence>
@@ -737,6 +705,22 @@
 
     -->
 
+    <xs:complexType name="S7Payload">
+        <xs:sequence>
+            <xs:choice
+                dfdl:choiceDispatchKey="{xs:string(../../parameters[1]/parameter[dfdl:occursIndex()]/type)}">
+                <xs:element dfdl:choiceBranchKey="240" name="s7GeneralPayloadSetupCommunication"
+                            type="s7:S7GeneralPayloadSetupCommunication"/>
+                <xs:element dfdl:choiceBranchKey="4" name="s7ResponsePayloadReadVar"
+                            type="s7:S7ResponsePayloadReadVar"/>
+                <xs:element dfdl:choiceBranchKey="5" name="s7ResponsePayloadWriteVar"
+                            type="s7:S7ResponsePayloadWriteVar"/>
+                <xs:element dfdl:choiceBranchKey="0" name="s7UserDataPayloadCpuServices"
+                            type="s7:S7UserDataPayloadCpuServices"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="S7GeneralPayloadSetupCommunication">
         <xs:sequence>
             <xs:element name="data" type="plc4x:null"/>
@@ -809,30 +793,36 @@
                         dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7ResponseParameterReadVar/numItems
                             }"/>
-            <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
-                        dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
+            <xs:element name="items" minOccurs="0"
+                        dfdl:occursCountKind="expression" dfdl:occursCount="{if(../numItems gt 0) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="returnCode" type="plc4x:uint8"/>
-                        <xs:element name="transportSize" type="plc4x:uint8"/>
-                        <xs:element name="rawLength" type="plc4x:uint16"/>
-                        <!--
-                            For some reason the types BIT, BYTE_WORD_DWORD and INTEGER are transferred in "bits",
-                            the rest is transferred in "bytes"
-                        -->
-                        <xs:element name="lengthInBytes" type="plc4x:uint16" dfdl:inputValueCalc="{
-                                    xs:unsignedShort(if((../transportSize eq 3) or (../transportSize eq 4) or (../transportSize eq 5))
-                                            then fn:ceiling(xs:double(../rawLength div 8))
+                        <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
+                                    dfdl:occursCountKind="expression" dfdl:occursCount="{../../numItems}">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="returnCode" type="plc4x:uint8"/>
+                                    <xs:element name="transportSize" type="plc4x:uint8"/>
+                                    <xs:element name="rawLength" type="plc4x:uint16"/>
+                                    <!--
+                                        For some reason the types BIT, BYTE_WORD_DWORD and INTEGER are transferred in "bits",
+                                        the rest is transferred in "bytes"
+                                    -->
+                                    <xs:element name="lengthInBytes" type="plc4x:uint16" dfdl:inputValueCalc="{
+                                    xs:unsignedShort(if((../transportSize eq 3) or (../../transportSize eq 4) or (../transportSize eq 5))
+                                            then fn:ceiling(xs:double(../../rawLength div 8))
                                             else ../rawLength)}"/>
-                        <xs:element name="data" type="plc4x:byteN" dfdl:length="{../lengthInBytes}"/>
-                        <!--
-                            Transport sizes: BIT, BYTE_WORD_DWORD and OCTET_STRING require a blank byte.
-                            However only if this is not the last item in the result.
-                        -->
-                        <xs:element name="fillByte" type="plc4x:uint8" minOccurs="0"
-                                    dfdl:occursCountKind="expression" dfdl:occursCount="{
+                                    <xs:element name="data" type="plc4x:byteN" dfdl:length="{../lengthInBytes}"/>
+                                    <!--
+                                        Transport sizes: BIT, BYTE_WORD_DWORD and OCTET_STRING require a blank byte.
+                                        However only if this is not the last item in the result.
+                                    -->
+                                    <xs:element name="fillByte" type="plc4x:uint8" minOccurs="0"
+                                                dfdl:occursCountKind="expression" dfdl:occursCount="{
                                             if(((../lengthInBytes mod 2) eq 1) and
-                                                (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/>
+                                                (dfdl:occursIndex() ne ../../../numItems)) then 1 else 0}"/>                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -846,30 +836,37 @@
                         dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7RequestParameterWriteVar/numItems
                             }"/>
-            <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
-                        dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
+            <xs:element name="items" minOccurs="0"
+                        dfdl:occursCountKind="expression" dfdl:occursCount="{if(../numItems gt 0) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="returnCode" type="plc4x:uint8"/>
-                        <xs:element name="transportSize" type="plc4x:uint8"/>
-                        <xs:element name="rawLength" type="plc4x:uint16"/>
-                        <!--
-                            For some reason the types BIT, BYTE_WORD_DWORD and INTEGER are transferred in "bits",
-                            the rest is transferred in "bytes"
-                        -->
-                        <xs:element name="lengthInBytes" type="plc4x:uint16" dfdl:inputValueCalc="{
+                        <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
+                                    dfdl:occursCountKind="expression" dfdl:occursCount="{../../numItems}">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="returnCode" type="plc4x:uint8"/>
+                                    <xs:element name="transportSize" type="plc4x:uint8"/>
+                                    <xs:element name="rawLength" type="plc4x:uint16"/>
+                                    <!--
+                                        For some reason the types BIT, BYTE_WORD_DWORD and INTEGER are transferred in "bits",
+                                        the rest is transferred in "bytes"
+                                    -->
+                                    <xs:element name="lengthInBytes" type="plc4x:uint16" dfdl:inputValueCalc="{
                                     xs:unsignedShort(if((../transportSize eq 3) or (../transportSize eq 4) or (../transportSize eq 5))
                                             then fn:ceiling(../rawLength div 8)
                                             else ../rawLength)}"/>
-                        <xs:element name="data" type="plc4x:byteN" dfdl:length="{../lengthInBytes}"/>
-                        <!--
-                            It seems that the item payload must always be an even number of bytes. So if it's
-                            not an even number, add a fill byte.
-                        -->
-                        <xs:element name="fillByte" type="plc4x:uint8" minOccurs="0"
-                                    dfdl:occursCountKind="expression" dfdl:occursCount="{
+                                    <xs:element name="data" type="plc4x:byteN" dfdl:length="{../lengthInBytes}"/>
+                                    <!--
+                                        It seems that the item payload must always be an even number of bytes. So if it's
+                                        not an even number, add a fill byte.
+                                    -->
+                                    <xs:element name="fillByte" type="plc4x:uint8" minOccurs="0"
+                                                dfdl:occursCountKind="expression" dfdl:occursCount="{
                                             if(((../lengthInBytes mod 2) eq 1) and
-                                                (dfdl:occursIndex() ne ../../numItems)) then 1 else 0}"/>
+                                                (dfdl:occursIndex() ne ../../../numItems)) then 1 else 0}"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -883,11 +880,18 @@
                         dfdl:inputValueCalc="{
                                 ../../../../parameters[1]/parameter[dfdl:occursIndex()]/s7ResponseParameterWriteVar/numItems
                             }"/>
-            <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
-                        dfdl:occursCountKind="expression" dfdl:occursCount="{../numItems}">
+            <xs:element name="items" minOccurs="0"
+                        dfdl:occursCountKind="expression" dfdl:occursCount="{if(../numItems gt 0) then 1 else 0}">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="returnCode" type="plc4x:uint8"/>
+                        <xs:element name="item" minOccurs="0" maxOccurs="unbounded"
+                                    dfdl:occursCountKind="expression" dfdl:occursCount="{../../numItems}">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="returnCode" type="plc4x:uint8"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
