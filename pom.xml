@@ -17,7 +17,8 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -44,7 +45,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</developerConnection>
     <url>https://github.com/apache/plc4x</url>
-    <tag>rel/0.4</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
@@ -1504,7 +1505,7 @@
                         </goals>
                       </pluginExecutionFilter>
                       <action>
-                        <ignore />
+                        <ignore/>
                       </action>
                     </pluginExecution>
                   </pluginExecutions>
