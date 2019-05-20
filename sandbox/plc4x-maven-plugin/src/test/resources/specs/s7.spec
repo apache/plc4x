@@ -2,18 +2,18 @@
 // IsoOnTcp/TPKT
 ////////////////////////////////////////////////////////////////
 
-[type TPKTPacket
-    [const    uint8  'protocolId' '0x3']
-    [reserved uint8  '0x0']
-    [implicit uint16 'length' 'payload.size + 4']
-    [embedded 'payload' {length: 'length - 4'}]
+[type 'TPKTPacket'
+    [const    uint8      'protocolId' '0x3']
+    [reserved uint8      '0x0']
+    [implicit uint16     'len'     'payload.size + 4']
+    [field    COTPPacket 'payload'  {payloadLength: 'len - 4'}]
 ]
 
 ////////////////////////////////////////////////////////////////
 // COTP
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType COTPPacket [length]
+[discriminatedType 'COTPPacket' ['payloadLength']
     [implicit uint8 'headerLength' 'this.size - (payload.size + 1)']
     [discriminator uint8 'tpduCode']
     [typeSwitch 'tpduCode'
@@ -46,12 +46,12 @@
         ]
     ]
     [arrayField COTPParameter 'parameters' length '(headerLength + 1) - cur']
-    [embedded 'payload' {length: 'length - (headerLength + 1)'}]
+    [field      S7Message     'payload'    {payloadLength: 'payloadLength - (headerLength + 1)'}]
 ]
 
-[discriminatedType COTPParameter
-    [discriminator uint8 'type']
-    [typeSwitch 'type'
+[discriminatedType 'COTPParameter'
+    [discriminator uint8 'parameterType']
+    [typeSwitch 'parameterType'
         ['0xC0' TpduSize
             [field uint8 'tpduSize']
         ]
@@ -74,36 +74,36 @@
 // S7
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType S7Message
+[discriminatedType 'S7Message' ['payloadLength']
     [const    uint8  'protocolId' '0x32']
-    [discriminator uint8 'type']
+    [discriminator uint8 'messageType']
     [reserved uint16 '0x00']
     [field    uint16 'tpduReference']
     [implicit uint16 'parameterLength' 'parameter.size']
     [implicit uint16 'payloadLength' 'payload.size']
-    [typeSwitch 'type'
+    [typeSwitch 'messageType'
         ['0x01' Request
-            [context 'messageType' 'request']
+            [context string 'messageType' 'request']
         ]
         ['0x03' Response
-            [context 'messageType' 'response']
+            [context string 'messageType' 'response']
             [field uint8 'errorClass']
             [field uint8 'errorCode']
         ]
         ['0x07' UserData
-            [context 'messageType' 'userData']
+            [context string 'messageType' 'userData']
         ]
     ]
-    [optionalField S7Parameter 'parameter' 'parameterLength > 0' {messageType: messageType}]
-    [optionalField S7Payload 'payload' 'payloadLength > 0' {messageType: messageType, parameter: parameter}]
+    [optionalField S7Parameter 'parameter' 'parameterLength > 0' {messageType: 'messageType'}]
+    [optionalField S7Payload 'payload' 'payloadLength > 0' {messageType: 'messageType', parameter: 'parameter'}]
 ]
 
 ////////////////////////////////////////////////////////////////
 // Parameters
 
-[discriminatedType S7Parameter [messageType]
-    [discriminator uint8 'type']
-    [typeSwitch 'type,messageType'
+[discriminatedType 'S7Parameter' ['messageType']
+    [discriminator uint8 'parameterType']
+    [typeSwitch 'parameterType','messageType'
         ['0xF0' SetupCommunication
             [reserved uint8 '0x0']
             [field uint16 'maxAmqCaller']
@@ -111,29 +111,29 @@
             [field uint16 'pduLength']
         ]
         ['0x04','request' ReadVarRequest
-            [implicit uint8 'numItems' 'items.count']
+            [implicit uint8 'numItems' 'items.size']
             [arrayField S7VarRequestParameterItem 'items' count 'numItems']
         ]
         ['0x04','response' ReadVarResponse
             [field uint8 'numItems']
         ]
         ['0x05','request' WriteVarRequest
-            [implicit uint8 'numItems' 'items.count']
+            [implicit uint8 'numItems' 'items.size']
             [arrayField S7VarRequestParameterItem 'items' count 'numItems']
         ]
         ['0x05','response' WriteVarResponse
             [field uint8 'numItems']
         ]
         ['0x00','userData' UserData
-            [implicit uint8 'items.count']
+            [implicit uint8 'numItems' 'items.size']
             [arrayField UserDataItem 'items' count 'numItems']
         ]
     ]
 ]
 
-[discriminatedType S7VarRequestParameterItem
-    [discriminator uint8 'type']
-    [typeSwitch 'type'
+[discriminatedType 'S7VarRequestParameterItem'
+    [discriminator uint8 'parameterItemType']
+    [typeSwitch 'parameterItemType'
         ['0x12' Address
             [implicit uint8 'addressLength' 'address.size']
             [field S7Address 'address']
@@ -141,35 +141,33 @@
     ]
 ]
 
-[discriminatedType S7Address
-    [discriminator uint8 'type']
-    [typeSwitch 'type'
+[discriminatedType 'S7Address'
+    [discriminator uint8 'addressType']
+    [typeSwitch 'addressType'
         ['0x10' Any
-            [field uint8  'transportSize']
-            [field uint16 'length']
-            [field uint8  'dbNumber']
-            [field uint8  'area']
-            [reserved uint5]
-            [field uint16 'byteAddress']
-            [field uint3  'bitAddress']
+            [field    uint8  'transportSize']
+            [field    uint16 'numberOfElements']
+            [field    uint8  'dbNumber']
+            [field    uint8  'area']
+            [reserved uint5  '0x0']
+            [field    uint16 'byteAddress']
+            [field    uint3  'bitAddress']
         ]
     ]
 ]
 
-[discriminatorType UserDataItem
-    [discriminator uint8 'type']
-    [typeSwitch type
+// TODO: CPUFunctions still need some love ...
+[discriminatedType 'UserDataItem'
+    [discriminator uint8 'itemType']
+    [typeSwitch 'itemType'
         ['0x12' CPUFunctions
-            [internal      uint8 'parameterLength']
-            [field         uint16 'type']
-            [field         unit8 'subFunctionGroup']
-            [field         uint8 'sequenceNumber']
-            [optionalField uint8 'dataUnitReferenceNumber' 'parameterLength == 8']
-            [optionalField uint8 'lastDataUnit' 'parameterLength == 8']
-            [optionalField uint8 'errorCode' 'parameterLength == 8']
-
-            // TODO: CPUFunctions still need some love ...
-
+            [implicit      uint8  'parameterLength' 'size']
+            [field         uint16 'cpuFunctionType']
+            [field         unit8  'subFunctionGroup']
+            [field         uint8  'sequenceNumber']
+            [optionalField uint8  'dataUnitReferenceNumber' 'parameterLength == 8']
+            [optionalField uint8  'lastDataUnit' 'parameterLength == 8']
+            [optionalField uint8  'errorCode' 'parameterLength == 8']
         ]
     ]
 ]
@@ -177,8 +175,8 @@
 ////////////////////////////////////////////////////////////////
 // Payloads
 
-[discriminatorType S7Payload [messageType, parameter]
-    [typeSwitch 'parameter.type, messageType'
+[discriminatedType 'S7Payload' ['messageType', 'parameter']
+    [typeSwitch 'parameter.parameterType', 'messageType'
         ['0x04','response' ReadVarResponse
             [arrayField S7VarPayloadDataItem 'items' count 'parameter.numItems']
         ]
@@ -193,13 +191,13 @@
     ]
 ]
 
-[type S7VarPayloadDataItem
+[type 'S7VarPayloadDataItem'
     [field uint8 'returnCode']
     [field uint8 'transportSize']
-    [field uint16 'length']
-    [arrayField uint8 'data' count 'length']
+    [field uint16 'dataLength']
+    [arrayField uint8 'data' count 'dataLength']
 ]
 
-[type S7VarPayloadStatusItem
+[type 'S7VarPayloadStatusItem'
     [field uint8 'returnCode']
 ]

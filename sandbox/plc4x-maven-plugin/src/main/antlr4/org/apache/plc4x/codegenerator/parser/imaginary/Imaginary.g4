@@ -11,12 +11,12 @@ complexTypeDefinition
 
 complexType
  : K_TYPE name=idExpression fieldDefinition+
- | K_DISCRIMINATED_TYPE name=idExpression length='[length]'? fieldDefinition+
+ | K_DISCRIMINATED_TYPE name=idExpression (LBRACKET params=multipleExpressions RBRACKET)? fieldDefinition+
  ;
 
 
 fieldDefinition
- : LBRACKET field RBRACKET
+ : LBRACKET field (LCBRACKET context RCBRACKET)? RBRACKET
  ;
 
 field
@@ -53,7 +53,7 @@ embeddedField
  ;
 
 simpleField
- : K_FIELD type=dataType name=idExpression
+ : K_FIELD type=typeReference name=idExpression (LCBRACKET context RCBRACKET)?
  ;
 
 implicitField
@@ -69,7 +69,7 @@ reservedField
  ;
 
 typeSwitchField
- : K_TYPE_SWITCH discriminator=idExpression caseStatement*
+ : K_TYPE_SWITCH discriminators=multipleExpressions caseStatement*
  ;
 
 
@@ -79,14 +79,16 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET discriminatorValues=multipleExpressions name=IDENTIFIER fieldDefinition+ RBRACKET
+ : LBRACKET discriminatorValues=multipleExpressions name=IDENTIFIER fieldDefinition* RBRACKET
  ;
 
 dataType
  : 'bit'
+ | K_UINT5
  | 'uint7'
  | K_UINT8
  | K_UINT16
+ | K_STRING
  ;
 
 expression
@@ -163,8 +165,10 @@ K_TYPE_SWITCH : 'typeSwitch';
 K_COUNT : 'count';
 K_LENGTH : 'length';
 
+K_UINT5 : 'uint5';
 K_UINT8 : 'uint8';
 K_UINT16 : 'uint16';
+K_STRING: 'string';
 
 TICK : '\'';
 TIMES : 'x';
@@ -177,6 +181,11 @@ BinaryOperator
  : '+'
  | '-'
  | '=='
+ | '!='
+ | '>'
+ | '<'
+ | '>='
+ | '<='
  ;
 
 ZERO : '0';

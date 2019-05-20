@@ -26,16 +26,16 @@ import java.util.List;
 
 public class SwitchField implements Field {
 
-    private final String discriminatorName;
+    private final String[] discriminatorNames;
     private final List<DiscriminatedComplexType> cases;
 
-    public SwitchField(String discriminatorName) {
-        this.discriminatorName = discriminatorName;
+    public SwitchField(String[] discriminatorNames) {
+        this.discriminatorNames = discriminatorNames;
         cases = new LinkedList<>();
     }
 
-    public String getDiscriminatorName() {
-        return discriminatorName;
+    public String[] getDiscriminatorNames() {
+        return discriminatorNames;
     }
 
     public void addCase(DiscriminatedComplexType caseType) {

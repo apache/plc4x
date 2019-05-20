@@ -136,8 +136,12 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterTypeSwitchField(ImaginaryParser.TypeSwitchFieldContext ctx) {
-        String discriminator = ctx.discriminator.getText();
-        SwitchField switchField = new SwitchField(discriminator);
+        int numDescriminators = ctx.discriminators.expression().size();
+        String[] discriminators = new String[numDescriminators];
+        for(int i = 0; i < numDescriminators; i++) {
+            discriminators[i] = ctx.discriminators.expression().get(i).getText();
+        }
+        SwitchField switchField = new SwitchField(discriminators);
         parserContexts.peek().add(switchField);
     }
 
