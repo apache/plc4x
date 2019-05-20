@@ -58,7 +58,7 @@ At first we will be concentrating on providing adapters for the most widely used
 - icon:wrench[role=yellow] link:protocols/ethernet-ip/index.html[EtherNet/IP (TCP)]
 - icon:wrench[role=yellow] KNXNet/IP (UDP)
 - icon:check[role=green] link:protocols/modbus/index.html[Modbus (TCP)]
-- icon:pause-circle[role=light-gray] link:protocols/opc-ua/index.html[OPC-UA (TCP)]
+- icon:check[role=green] link:protocols/opc-ua/index.html[OPC-UA (TCP)]
 - icon:pause-circle[role=light-gray] Profinet
 - icon:check[role=green] link:protocols/s7/index.html[S7-STEP7 (TCP)]
 - icon:wrench[role=yellow] link:protocols/s7/index.html[S7-TIA (TCP)]
@@ -66,7 +66,7 @@ At first we will be concentrating on providing adapters for the most widely used
 We are planning on providing support for the following programming languages:
 
 - icon:wrench[role=yellow] C++
-- icon:pause-circle[role=light-gray] C# (.Net)
+- con:wrench[role=yellow] C# (.Net)
 - icon:check[role=green] link:plc4j/index.html[Java]
 - icon:wrench[role=yellow] Python
 
