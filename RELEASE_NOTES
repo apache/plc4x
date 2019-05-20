@@ -1,12 +1,21 @@
 ==============================================================
-(Unreleased) Apache PLC4X (incubating) 0.4.0-SNAPSHOT
+(Unreleased) Apache PLC4X 0.4.0-SNAPSHOT
 ==============================================================
 
 New Features
 ------------
 
+- The PlcConnection now supports a `ping` method to allow checking if an existing connection is still alive.
+- Support of the OPC-UA protocol with the `opc-ua-driver`.
+- Other Languages Support:
+-- Added first versions of a C# .Net PLC4X API (plc4net)
+-- Added first versions of a Python PLC4X API (plc4py)
+- Added an Interop server which allows to relay requests from other languages to a Java Server
+
 Incompatible changes
 --------------------
+
+- ElasticSearch example was updated to use ElasticSearch 7.0.1, this might cause problems with older Kibana versions.
 
 Bug Fixes
 ---------
