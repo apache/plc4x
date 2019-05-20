@@ -17,28 +17,32 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-public abstract class Type {
+import org.apache.plc4x.plugins.codegenerator.model.Type;
 
+public class OptionalField implements Field {
+
+    private final Type type;
     private final String name;
-    private Type parentType;
+    private final String conditionExpression;
 
-    public Type(String name) {
+    public OptionalField(Type type, String name, String conditionExpression) {
+        this.type = type;
         this.name = name;
-        this.parentType = null;
+        this.conditionExpression = conditionExpression;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public String getName() {
         return name;
     }
 
-    public Type getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public String getConditionExpression() {
+        return conditionExpression;
     }
 
 }

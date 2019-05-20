@@ -17,28 +17,16 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.parser;
 
-public abstract class Type {
+import java.io.InputStream;
 
-    private final String name;
-    private Type parentType;
+public class ManualMessageFormatParserTest {
 
-    public Type(String name) {
-        this.name = name;
-        this.parentType = null;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Type getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public static void main(String[] args) {
+        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
+        MessageFormatParser parser = new MessageFormatParser();
+        parser.parse(spec);
     }
 
 }

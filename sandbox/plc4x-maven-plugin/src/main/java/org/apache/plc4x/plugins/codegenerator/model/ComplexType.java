@@ -19,26 +19,27 @@
 
 package org.apache.plc4x.plugins.codegenerator.model;
 
-public abstract class Type {
+import org.apache.plc4x.plugins.codegenerator.model.fields.Field;
 
-    private final String name;
-    private Type parentType;
+import java.util.List;
 
-    public Type(String name) {
-        this.name = name;
-        this.parentType = null;
+public class ComplexType extends Type {
+
+    private final boolean isAbstract;
+    private final List<Field> fields;
+
+    public ComplexType(String name, boolean isAbstract, List<Field> fields) {
+        super(name);
+        this.isAbstract = isAbstract;
+        this.fields = fields;
     }
 
-    public String getName() {
-        return name;
+    public boolean isAbstract() {
+        return isAbstract;
     }
 
-    public Type getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public List<Field> getFields() {
+        return fields;
     }
 
 }

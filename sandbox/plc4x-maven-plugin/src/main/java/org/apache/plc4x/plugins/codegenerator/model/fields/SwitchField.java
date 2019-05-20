@@ -17,28 +17,33 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-public abstract class Type {
+import org.apache.plc4x.plugins.codegenerator.model.DiscriminatedComplexType;
 
-    private final String name;
-    private Type parentType;
+import java.util.LinkedList;
+import java.util.List;
 
-    public Type(String name) {
-        this.name = name;
-        this.parentType = null;
+public class SwitchField implements Field {
+
+    private final String discriminatorName;
+    private final List<DiscriminatedComplexType> cases;
+
+    public SwitchField(String discriminatorName) {
+        this.discriminatorName = discriminatorName;
+        cases = new LinkedList<>();
     }
 
-    public String getName() {
-        return name;
+    public String getDiscriminatorName() {
+        return discriminatorName;
     }
 
-    public Type getParentType() {
-        return parentType;
+    public void addCase(DiscriminatedComplexType caseType) {
+        cases.add(caseType);
     }
 
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public List<DiscriminatedComplexType> getCases() {
+        return cases;
     }
 
 }

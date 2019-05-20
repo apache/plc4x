@@ -17,28 +17,44 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-public abstract class Type {
+import org.apache.plc4x.plugins.codegenerator.model.Type;
 
+public class ArrayField implements Field {
+
+    private final String typeName;
     private final String name;
-    private Type parentType;
+    private final LengthType lengthType;
+    private final String lengthExpression;
 
-    public Type(String name) {
+
+    public ArrayField(String typeName, String name, LengthType lengthType, String lengthExpression) {
+        this.typeName = typeName;
         this.name = name;
-        this.parentType = null;
+        this.lengthType = lengthType;
+        this.lengthExpression = lengthExpression;
+    }
+
+    public String getTypeName() {
+        return typeName;
     }
 
     public String getName() {
         return name;
     }
 
-    public Type getParentType() {
-        return parentType;
+    public LengthType getLengthType() {
+        return lengthType;
     }
 
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public String getLengthExpression() {
+        return lengthExpression;
+    }
+
+    public static enum LengthType {
+        COUNT,
+        LENGTH
     }
 
 }

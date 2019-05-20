@@ -17,28 +17,26 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-public abstract class Type {
+import org.apache.plc4x.plugins.codegenerator.model.Type;
 
-    private final String name;
-    private Type parentType;
+public class ConstField implements Field {
 
-    public Type(String name) {
-        this.name = name;
-        this.parentType = null;
+    private final Type type;
+    private final Object referenceValue;
+
+    public ConstField(Type type, Object referenceValue) {
+        this.type = type;
+        this.referenceValue = referenceValue;
     }
 
-    public String getName() {
-        return name;
+    public Type getType() {
+        return type;
     }
 
-    public Type getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public Object getReferenceValue() {
+        return referenceValue;
     }
 
 }

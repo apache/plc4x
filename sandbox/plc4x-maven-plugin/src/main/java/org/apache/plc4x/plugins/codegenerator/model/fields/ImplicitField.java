@@ -17,28 +17,26 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-public abstract class Type {
+import org.apache.plc4x.plugins.codegenerator.model.Type;
 
-    private final String name;
-    private Type parentType;
+public class ImplicitField implements Field {
 
-    public Type(String name) {
-        this.name = name;
-        this.parentType = null;
+    private final Type type;
+    private final String serializationExpression;
+
+    public ImplicitField(Type type, String serializationExpression) {
+        this.type = type;
+        this.serializationExpression = serializationExpression;
     }
 
-    public String getName() {
-        return name;
+    public Type getType() {
+        return type;
     }
 
-    public Type getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public String getSerializationExpression() {
+        return serializationExpression;
     }
 
 }

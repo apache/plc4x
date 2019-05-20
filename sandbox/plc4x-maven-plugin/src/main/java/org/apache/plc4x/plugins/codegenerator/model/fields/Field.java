@@ -17,28 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-public abstract class Type {
-
-    private final String name;
-    private Type parentType;
-
-    public Type(String name) {
-        this.name = name;
-        this.parentType = null;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Type getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
-    }
-
+public interface Field {
 }
