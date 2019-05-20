@@ -102,22 +102,22 @@ This is the version the `develop` branch will be changed to.
 The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
 Otherwise we would have to define the working copy version for each module.
 
-   mvn release:branch -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
+   mvn release:branch -Pwith-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
-So in case of preparing the release branch for `0.2.0-SNAPSHOT` the command would be the following:
+So in case of preparing the release branch for `0.4.0-SNAPSHOT` the command would be the following:
 
-   mvn release:branch -DbranchName=rel/0.2 -DautoVersionSubmodules=true
+   mvn release:branch -Pwith-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/0.4 -DautoVersionSubmodules=true
 
 The plugin will then aks for the version:
 
-   What is the new working copy version for "PLC4X"? (org.apache.plc4x:plc4x-parent) 0.2.1-SNAPSHOT: : 0.3.0-SNAPSHOT
+   What is the new working copy version for "PLC4X"? (org.apache.plc4x:plc4x-parent) 0.4.1-SNAPSHOT: : 0.5.0-SNAPSHOT
 
 Where the suggested default is manually overridden.
 
 This step now should perform quite quickly as no build and no tests are involved.
 
-However in the end the versions of the `develop` branch are updated and a new `rel/0.2` branch is created.
+However in the end the versions of the `develop` branch are updated and a new `rel/0.4` branch is created.
 
 === Preparing `develop` for the next iteration
 

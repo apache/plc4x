@@ -49,7 +49,6 @@
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-protocols-proxy</artifactId>
-                  <version>0.4.0-SNAPSHOT</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/protocol-spec</outputDirectory>
@@ -57,7 +56,6 @@
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-tools-thrift</artifactId>
-                  <version>0.4.0-SNAPSHOT</version>
                   <type>zip</type>
                   <classifier>compiler-${os.classifier}</classifier>
                   <overWrite>true</overWrite>
