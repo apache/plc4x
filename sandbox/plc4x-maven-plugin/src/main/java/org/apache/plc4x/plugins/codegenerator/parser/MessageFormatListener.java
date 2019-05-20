@@ -52,9 +52,20 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void exitComplexType(ImaginaryParser.ComplexTypeContext ctx) {
         String typeName = ctx.name.id.getText();
-        boolean abstractType = ctx.K_DISCRIMINATED_TYPE() != null;
-        ComplexType field = new ComplexType(typeName, abstractType, parserContexts.peek());
-        complexTypes.put(typeName, field);
+
+        // If the type has sub-types it's an abstract type.
+        SwitchField switchField = getSwitchField();
+        boolean abstractType = switchField != null;
+        ComplexType type = new ComplexType(typeName, abstractType, parserContexts.peek());
+        complexTypes.put(typeName, type);
+
+        // Set the parent type for all sub-types.
+        if(switchField != null) {
+            for (DiscriminatedComplexType subtype : switchField.getCases()) {
+                subtype.setParentType(type);
+            }
+        }
+
         parserContexts.pop();
     }
 
