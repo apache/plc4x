@@ -38,7 +38,7 @@
     <sonar.language>c#</sonar.language>
   </properties-->
 
-  <build>
+  <!--build>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -63,6 +63,6 @@
         </executions>
       </plugin>
     </plugins>
-  </build>
+  </build-->
 
 </project>
