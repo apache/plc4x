@@ -117,7 +117,6 @@
     <commons-lang3.version>3.7</commons-lang3.version>
     <commons-math3.version>3.5</commons-math3.version>
     <commons-pool2.version>2.6.0</commons-pool2.version>
-    <commons-scxml.version>2.0-SNAPSHOT</commons-scxml.version>
     <commons-text.version>1.4</commons-text.version>
     <crc.version>1.0.1</crc.version>
     <daffodil.version>2.3.0</daffodil.version>
@@ -375,17 +374,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-pool2</artifactId>
         <version>${commons-pool2.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-scxml2</artifactId>
-        <version>${commons-scxml.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
