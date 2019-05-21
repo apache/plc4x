@@ -75,6 +75,7 @@
               <failOnWarning>true</failOnWarning>
               <usedDependencies combine.children="append">
                 <usedDependency>org.apache.plc4x:plc4x-tools-thrift</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4x-protocols-proxy</usedDependency>
                 <usedDependency>javax.annotation:jsr250-api</usedDependency>
               </usedDependencies>
             </configuration>
@@ -184,11 +185,33 @@
     <!-- Make sure this is built before this module -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-proxy</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-tools-thrift</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-      <type>pom</type>
-      <optional>true</optional>
+      <type>zip</type>
+      <classifier>compiler-${os.classifier}</classifier>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-protocols-proxy</artifactId>
+        <version>0.4.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-tools-thrift</artifactId>
+        <version>0.4.0-SNAPSHOT</version>
+        <type>zip</type>
+        <classifier>compiler-${os.classifier}</classifier>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

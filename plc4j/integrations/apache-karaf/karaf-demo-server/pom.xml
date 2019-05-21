@@ -113,11 +113,11 @@
           <usedDependencies>
             <usedDependency>org.apache.karaf.features:framework</usedDependency>
             <usedDependency>org.apache.karaf.features:standard</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-ads-feature</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-ethernet-ip-feature</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-modbus-feature</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-s7-feature</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-simulated-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-ads-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-ethernet-ip-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-modbus-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-s7-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-simulated-feature</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

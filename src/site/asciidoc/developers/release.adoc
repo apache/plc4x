@@ -102,12 +102,12 @@ This is the version the `develop` branch will be changed to.
 The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
 Otherwise we would have to define the working copy version for each module.
 
-   mvn release:branch -Pwith-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
+   mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `0.4.0-SNAPSHOT` the command would be the following:
 
-   mvn release:branch -Pwith-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/0.4 -DautoVersionSubmodules=true
+   mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/0.4 -DautoVersionSubmodules=true
 
 The plugin will then aks for the version:
 
@@ -161,9 +161,9 @@ In order to prepare a release-candidate, the first step is switching to the corr
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -P with-cpp -DautoVersionSubmodules=true
+   mvn release:prepare -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DautoVersionSubmodules=true
 
-(The `-P with-cpp` tells maven to activace the `with-cpp` profile which also enables the C++ modules and makes sure the versions of these modules are updated as part of the release)
+(The `-P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
@@ -221,16 +221,18 @@ However it will not delete the tag in GIT (locally and remotely). So you have to
 
 This is done by executing another goal of the `maven-release-plugin`:
 
-   mvn release:perform
+   mvn release:perform -DreleaseProfiles=apache-release,with-java,with-proxies
 
 This executes automatically as all information it requires is located in the `release.properties` file the `prepare` goal prepared.
 
 The first step is that the `perform` goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
-   mvn clean deploy -P apache-release
+   mvn clean deploy -P apache-release,with-java,with-proxies
 
-This builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
+As the `apache-release` profile is also activated, this builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
+
+We are intentionally not adding the other profiles, as these either produce binary artifacts that usually only work on the system they were compiled on (C++, .Net) or we haven't found a good way to distribute them via Maven yet (Python) or deployment is disabled anyway (sandbox).
 
 As this time the build is building with release versions, Maven will automatically choose the release url for deploying artifacts.
 
