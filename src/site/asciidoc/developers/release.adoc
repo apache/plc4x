@@ -446,10 +446,10 @@ announce@apache.org
 dev@plc4x.apache.org
 
     E-Mail Topic:
-[ANNOUNCE] Apache PLC4X 0.4.0 released
+[ANNOUNCE] Apache PLC4X 0.5.0 released
 
     Message:
-The Apache PLC4X team is pleased to announce the release of Apache PLC4X (incubating) 0.1.0
+The Apache PLC4X team is pleased to announce the release of Apache PLC4X 0.5.0
 
 This is the first official release of PLC4X.
 
