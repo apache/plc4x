@@ -34,8 +34,7 @@
   <description>Wrapper project for PLC4Cpp protocol utilities.</description>
 
   <modules>
-    <!-- Disabled for now till we figure out the reason for a compile error -->
-    <!--module>logger</module-->
+    <module>logger</module>
   </modules>
 
 </project>
