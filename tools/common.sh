@@ -188,7 +188,7 @@ function getReleaseTag() {  # $1: X.Y.Z  [$2: rc-num]
   if [ $# -gt 0 ] && [ "$1" != "" ]; then
     RC_SFX="-RC$1"
   fi
-  echo "${VER}-incubating${RC_SFX}" 
+  echo "${VER}${RC_SFX}"
 }
 
 function getReleaseTagComment() {  # $1: X.Y.Z  [$2: rc-num]
@@ -198,5 +198,5 @@ function getReleaseTagComment() {  # $1: X.Y.Z  [$2: rc-num]
   if [ $# -gt 0 ] && [ "$1" != "" ]; then
     RC_SFX=" RC$1"
   fi
-  echo "Apache PLC4X ${VER}-incubating${RC_SFX}"
+  echo "Apache PLC4X ${VER}${RC_SFX}"
 }
