@@ -157,6 +157,8 @@ Changes should either be re applied in `develop` or `cherry-picked`, however mer
 
 === Preparing a release
 
+As especially when switching a lot between different branches, it is recommended to do a clean checkout of the repository.
+Otherwise a lot of directories can be left over, which would be included in the source-release zip.
 In order to prepare a release-candidate, the first step is switching to the corresponding release-branch.
 
 After that, the following command will to all preparation steps for the release:
