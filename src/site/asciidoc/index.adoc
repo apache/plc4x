@@ -89,8 +89,9 @@ On this page we are listing options to attend talks and events around PLC4X.
 
 [width="100%",cols="2,^2,2,^2,^3",options="header"]
 |=========================================================
-|Date |Location |Type |Event | Title
-|18th June 2019 |Erfurt (GER) |Meetup |https://www.meetup.com/de-DE/iothde/events/260140057/[IoT Thüringen] |Industrie & IoT: Die perfekte Verbindung mit Flexibus & Apache PLC4X
+|Date           |Location        |Type   |Event                                                                 |Title
+|24th May 2019  |Frankfurt (GER) |Meetup |https://www.meetup.com/de-DE/IoT-Hessen/events/261422034/[IoT Hessen] |Industrial IoT goes Open Source: Apache PLC4X Talks & Party
+|18th June 2019 |Erfurt (GER)    |Meetup |https://www.meetup.com/de-DE/iothde/events/260140057/[IoT Thüringen]  |Industrie & IoT: Die perfekte Verbindung mit Flexibus & Apache PLC4X
 |=========================================================
 
 A full list containing also previous events can be found https://plc4x.apache.org/developers/conferences.html[here].
