@@ -42,6 +42,11 @@
 
         <asfext:member>
             <foaf:Person>
+                <foaf:name>Björn Höper</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
                 <foaf:name>Christofer Dutz</foaf:name>
             </foaf:Person>
         </asfext:member>
