@@ -90,7 +90,7 @@ According to SemVer, we have: Major, Minor and Bugfix releases.
 
 For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
 
-So if currently the project version in develop is `0.2.0-SNAPSHOT`, we create a branch `rel/0.2`.
+So if currently the project version in develop is `0.5.0-SNAPSHOT`, we create a branch `rel/0.5`.
 
 When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
 
@@ -105,13 +105,13 @@ Otherwise we would have to define the working copy version for each module.
    mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
-So in case of preparing the release branch for `0.4.0-SNAPSHOT` the command would be the following:
+So in case of preparing the release branch for `0.5.0-SNAPSHOT` the command would be the following:
 
-   mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/0.4 -DautoVersionSubmodules=true
+   mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/0.5 -DautoVersionSubmodules=true
 
 The plugin will then aks for the version:
 
-   What is the new working copy version for "PLC4X"? (org.apache.plc4x:plc4x-parent) 0.4.1-SNAPSHOT: : 0.5.0-SNAPSHOT
+   What is the new working copy version for "PLC4X"? (org.apache.plc4x:plc4x-parent) 0.5.1-SNAPSHOT: : 0.6.0-SNAPSHOT
 
 Where the suggested default is manually overridden.
 
@@ -173,6 +173,14 @@ In general the plugin will now ask you 3 questions:
 3. The next development version (The version present in the pom after the release)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
+
+We currently have a dependency to a SNAPSHOT dependency in the sandbox module.
+The release plugin will complain about this and we will not be able to release this way.
+As this in the sandbox module, we can force the plugin to continue by appending:
+
+   -DignoreSnapshots=true
+
+However it is important to check that nowhere else SNAPSHOT versions are referenced.
 
 What the plugin now does, is automatically execute the following operations:
 

@@ -659,23 +659,55 @@
 
   <build>
     <plugins>
-      <!--plugin>
+      <!-- Make some additional properties available to simplify keeping some content up to date -->
+      <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
         <version>2.1</version>
-        <inherited>false</inherited>
         <executions>
           <execution>
-            <phase>validate</phase>
+            <id>provide-custom-properties</id>
+            <phase>pre-site</phase>
             <goals>
               <goal>execute</goal>
             </goals>
             <configuration>
-              <source>${project.basedir}/src/main/script/prerequisite-check.groovy</source>
+              <source>
+                print "\nCalculating some additional properties:"
+                // Get the current year
+                def currentYear = Calendar.getInstance().get(Calendar.YEAR) as String
+                print "\nCurrent year:                     " + currentYear
+                project.properties['current-year'] = currentYear
+
+                // Calculate some version related stuff
+                def currentVersion = project.version as String
+                def match = (currentVersion =~ /(\d+)\.(\d+)\.(\d+)(-SNAPSHOT)?/)
+                print "\nCurrent version:                  " + currentVersion
+                if(match.count >= 1) {
+                  def majorVersion = match[0][1] as Integer
+                  def minorVersion = match[0][2] as Integer
+                  def bugfixVersion = match[0][3] as Integer
+
+                  def currentFullVersion = majorVersion + "." + minorVersion + "." + bugfixVersion
+                  def currentShortVersion = majorVersion + "." + minorVersion
+                  def currentNextIncrementalVersion = majorVersion + "." + minorVersion + "." + (bugfixVersion + 1)
+                  def currentNextMinorVersion = majorVersion + "." + (minorVersion + 1) + ".0"
+
+                  print "\nCurrent full version:             " + currentFullVersion + " (current-full-version)"
+                  project.properties['current-full-version'] = currentFullVersion
+                  print "\nCurrent short version:            " + currentShortVersion + "   (current-short-version)"
+                  project.properties['current-short-version'] = currentShortVersion
+                  print "\nCurrent next incremental version: " + currentNextIncrementalVersion + " (current-next-incremental-version)"
+                  project.properties['current-next-incremental-version'] = currentNextIncrementalVersion
+                  print "\nCurrent next minor version:       " + currentNextMinorVersion + " (current-next-minor-version)"
+                  project.properties['current-next-minor-version'] = currentNextMinorVersion
+                }
+                print "\n"
+              </source>
             </configuration>
           </execution>
         </executions>
-      </plugin-->
+      </plugin>
 
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
@@ -871,6 +903,11 @@
                   </directory>
                   <targetPath>${project.build.directory}/site/fonts</targetPath>
                 </resource>
+                <resource>
+                  <directory>${project.basedir}/src/site/resources-filtered</directory>
+                  <filtering>true</filtering>
+                  <targetPath>${project.build.directory}/site</targetPath>
+                </resource>
               </resources>
             </configuration>
           </execution>
@@ -1017,6 +1054,11 @@
                 <source-highlighter>prettify</source-highlighter>
                 <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
                 <project-version>${project.version}</project-version>
+                <current-year>@{current-year}</current-year>
+                <current-full-version>@{current-full-version}</current-full-version>
+                <current-short-version>@{current-short-version}</current-short-version>
+                <current-next-incremental-version>@{current-next-incremental-version}</current-next-incremental-version>
+                <current-next-minor-version>@{current-next-minor-version}</current-next-minor-version>
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
