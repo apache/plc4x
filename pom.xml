@@ -153,6 +153,9 @@
     <thrift.version>0.12.0</thrift.version>
 
     <!-- Site properties -->
+    <asciidoctor.maven.plugin.version>2.0.0-RC.1</asciidoctor.maven.plugin.version>
+    <asciidoctorj.version>2.0.0</asciidoctorj.version>
+    <asciidoctorj.diagram.version>1.5.16</asciidoctorj.diagram.version>
     <reflow.skin.version>1.5.0</reflow.skin.version>
     <bootstrap.version>3.3.7</bootstrap.version>
     <jquery.version>3.3.1</jquery.version>
@@ -709,6 +712,24 @@
         </executions>
       </plugin>
 
+      <!-- Write all the properties into a file so we can access them from asciidoctor -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <executions>
+          <execution>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>write-project-properties</goal>
+            </goals>
+            <configuration>
+              <outputFile>${project.build.directory}/pom.adoc</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
         <groupId>org.apache.rat</groupId>
@@ -941,6 +962,28 @@
               </replacements>
             </configuration>
           </execution>
+          <execution>
+            <id>convert-property-to-adoc</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/pom.adoc</file>
+              <replacements>
+                <replacement>
+                  <token>(.*)=(.*)</token>
+                  <value>\:$1\: $2</value>
+                </replacement>
+                <replacement>
+                  <token>#(.*)</token>
+                  <value>// $1</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -1053,12 +1096,7 @@
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
                 <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
-                <project-version>${project.version}</project-version>
-                <current-year>@{current-year}</current-year>
-                <current-full-version>@{current-full-version}</current-full-version>
-                <current-short-version>@{current-short-version}</current-short-version>
-                <current-next-incremental-version>@{current-next-incremental-version}</current-next-incremental-version>
-                <current-next-minor-version>@{current-next-minor-version}</current-next-minor-version>
+                <pom-adoc>${project.build.directory}/pom.adoc</pom-adoc>
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
@@ -1072,6 +1110,7 @@
               <artifactId>reflow-velocity-tools</artifactId>
               <version>${reflow.skin.version}</version>
             </dependency>
+
             <!-- add support for scm/git site deployment -->
             <dependency>
               <groupId>org.apache.maven.wagon</groupId>
@@ -1093,26 +1132,22 @@
               <artifactId>maven-scm-provider-gitexe</artifactId>
               <version>1.9.5</version>
             </dependency>
+
             <!-- Add support for asciidoctor -->
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctor-maven-plugin</artifactId>
-              <version>1.5.7.1</version>
-            </dependency>
-            <dependency>
-              <groupId>org.jruby</groupId>
-              <artifactId>jruby-complete</artifactId>
-              <version>9.1.13.0</version>
+              <version>${asciidoctor.maven.plugin.version}</version>
             </dependency>
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj</artifactId>
-              <version>1.5.6</version>
+              <version>${asciidoctorj.version}</version>
             </dependency>
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj-diagram</artifactId>
-              <version>1.5.4.1</version>
+              <version>${asciidoctorj.diagram.version}</version>
             </dependency>
           </dependencies>
         </plugin>
