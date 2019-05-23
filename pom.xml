@@ -668,6 +668,19 @@
         <artifactId>groovy-maven-plugin</artifactId>
         <version>2.1</version>
         <executions>
+          <!-- Do some pre-build checks and report any findings to the user -->
+          <execution>
+            <id>prerequisite-check</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <source>${project.basedir}/src/main/script/prerequisiteCheck.groovy</source>
+            </configuration>
+          </execution>
+          <!-- Set some dynamic variables which are usefull for the site generation -->
           <execution>
             <id>provide-custom-properties</id>
             <phase>pre-site</phase>
