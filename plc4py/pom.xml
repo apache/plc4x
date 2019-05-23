@@ -157,7 +157,7 @@
               <executable>python</executable>
               <workingDirectory>${project.build.directory}/python</workingDirectory>
               <arguments>
-                <argument>../../setup.py</argument>
+                <argument>${project.basedir}/setup.py</argument>
                 <argument>build</argument>
                 <argument>--build-base=${project.build.directory}/python</argument>
               </arguments>
@@ -173,7 +173,7 @@
               <executable>python</executable>
               <workingDirectory>${project.build.directory}/python</workingDirectory>
               <arguments>
-                <argument>../../setup.py</argument>
+                <argument>${project.basedir}/setup.py</argument>
                 <argument>sdist</argument>
                 <argument>--dist-dir=${project.build.directory}/python</argument>
               </arguments>
