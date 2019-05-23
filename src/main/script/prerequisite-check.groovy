@@ -45,6 +45,10 @@ def checkPython() {
     print "bash python --version".execute().text
 }
 
+// Additional Checks we should add:
+// - Windows:
+//     - Check the length of the path of the base dir as we're having issues with the length of paths being too long.
+
 checkBison()
 
 checkDotnet()
