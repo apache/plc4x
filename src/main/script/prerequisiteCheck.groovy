@@ -146,8 +146,12 @@ def checkGpp() {
 
 def checkPython() {
     print "Detecting Python version: "
-    def output = ("python --version").execute().text
-    def matcher = output =~ /.* (\d+\.\d+\.\d+).*/
+    def process = ("python --version").execute()
+    def stdOut = new StringBuilder()
+    def stdErr = new StringBuilder()
+    process.consumeProcessOutput(stdOut, stdErr)
+    process.waitForOrKill(500)
+    def matcher = stdErr =~ /.* (\d+\.\d+\.\d+).*/
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLast(curVersion, "2.7.0")
@@ -257,7 +261,7 @@ if(proxiesEnabled || cppEnabled) {
 
 // TODO: Doesn't work yet
 if(pythonEnabled) {
-    //checkPython()
+    checkPython()
 }
 
 if(!allConditionsMet) {
@@ -266,3 +270,8 @@ if(!allConditionsMet) {
 println ""
 println "All known conditions met successfully."
 println ""
+
+// Things we could possibly check:
+// - DNS Providers that return a default ip on unknown host-names
+// - Availability and version of LibPCAP/WinPCAP
+
