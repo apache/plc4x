@@ -39,6 +39,7 @@
     <module>dynamic-driver-knxnet-ip</module>
     <module>dynamic-driver-s7</module>
     <module>code-gen</module>
+    <module>plc4x-maven-plugin</module>
   </modules>
 
 </project>

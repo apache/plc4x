@@ -751,6 +751,13 @@
 
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
+
+            <!-- Exclude antlr4 files?! -->
+            <exclude>**/*.g4</exclude>
+
+
+            <!-- (Temporary) Exclude spec files (from Chris) -->
+            <exclude>**/*.spec</exclude>
           </excludes>
         </configuration>
       </plugin>

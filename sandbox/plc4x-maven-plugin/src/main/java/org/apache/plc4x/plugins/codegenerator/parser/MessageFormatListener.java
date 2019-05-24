@@ -72,7 +72,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void enterArrayField(ImaginaryParser.ArrayFieldContext ctx) {
         String typeName = ctx.type.getText();
-        String name = ctx.name.id.getText();
+        String name = ctx.name.IDENTIFIER().getText();
         ArrayField.LengthType lengthType;
         if(ctx.lengthType.K_COUNT() != null) {
             lengthType = ArrayField.LengthType.COUNT;
@@ -87,7 +87,8 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void enterConstField(ImaginaryParser.ConstFieldContext ctx) {
         SimpleType type = new SimpleType(ctx.type.getText());
-        String expected = ctx.expected.getText();
+        // TODO use a visitor or something to get this without TICKs
+        String expected = ctx.expected.expr.getText();
         Field field = new ConstField(type, expected);
         parserContexts.peek().add(field);
     }
@@ -115,7 +116,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void enterSimpleField(ImaginaryParser.SimpleFieldContext ctx) {
         SimpleType type = new SimpleType(ctx.type.getText());
-        String name = ctx.name.getText();
+        String name = ctx.name.IDENTIFIER().getText();
         Field field = new SimpleField(type, name);
         parserContexts.peek().add(field);
     }
@@ -123,7 +124,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void enterImplicitField(ImaginaryParser.ImplicitFieldContext ctx) {
         SimpleType type = new SimpleType(ctx.type.getText());
-        String serializationExpression = ctx.serializationExpression.getText();
+        String serializationExpression = ctx.serializationExpression.innerExpression().getText();
         Field field = new ImplicitField(type, serializationExpression);
         parserContexts.peek().add(field);
     }
@@ -131,7 +132,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void enterOptionalField(ImaginaryParser.OptionalFieldContext ctx) {
         SimpleType type = new SimpleType(ctx.type.getText());
-        String name = ctx.name.getText();
+        String name = ctx.name.IDENTIFIER().getText();
         String conditionExpression = ctx.condition.expr.getText();
         Field field = new OptionalField(type, name, conditionExpression);
         parserContexts.peek().add(field);
