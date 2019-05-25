@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.codegen.ast;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class PythonGenerator implements Generator {
@@ -108,18 +109,22 @@ public class PythonGenerator implements Generator {
 
     @Override public void writeBlock(Block statements) {
         writer.startBlock();
-        if (statements.getStatements().isEmpty()) {
-            writer.writeLine("pass");
-        }
         for (Node statement : statements.getStatements()) {
             // Dont to the wrapping for If Statements
             if (statement instanceof IfStatement) {
+                statement.write(this);
+            } else if (statement instanceof LineComment) {
                 statement.write(this);
             } else {
                 writer.startLine("");
                 statement.write(this);
                 writer.endLine();
             }
+        }
+        // Pass, if necessary
+        final long stmtCount = statements.getStatements().stream().filter(stmt -> !(stmt instanceof LineComment)).count();
+        if (stmtCount == 0) {
+            writer.writeLine("pass");
         }
         writer.endBlock();
     }
@@ -312,6 +317,8 @@ public class PythonGenerator implements Generator {
                 return "==";
             case PLUS:
                 return "+";
+            case NEQ:
+                return "!=";
         }
         throw new UnsupportedOperationException("The Operator " + op + " is currently not implemented!");
     }

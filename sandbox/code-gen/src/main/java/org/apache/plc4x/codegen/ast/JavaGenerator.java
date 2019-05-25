@@ -110,6 +110,8 @@ public class JavaGenerator implements Generator {
             // Dont to the wrapping for If Statements
             if (statement instanceof IfStatement) {
                 statement.write(this);
+            } else if (statement instanceof LineComment) { // Special handling of comments
+                statement.write(this);
             } else {
                 writer.startLine("");
                 statement.write(this);
@@ -313,7 +315,7 @@ public class JavaGenerator implements Generator {
     }
 
     @Override public void generateNoOp() {
-        writer.write(";");
+        //writer.write(";");
     }
 
     private String getOperator(BinaryExpression.Operation op) {
@@ -322,6 +324,8 @@ public class JavaGenerator implements Generator {
                 return "==";
             case PLUS:
                 return "+";
+            case NEQ:
+                return "!=";
         }
         throw new UnsupportedOperationException("The Operator " + op + " is currently not implemented!");
     }

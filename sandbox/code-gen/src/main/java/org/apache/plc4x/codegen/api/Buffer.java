@@ -28,4 +28,8 @@ public interface Buffer {
     Integer readUint16();
 
     Long readUint32();
+
+    void writeUint8(short n);
+
+    void writeUint16(int n);
 }

@@ -23,6 +23,8 @@ public class TypeUtil {
     public static TypeDefinition infer(Object o) {
         if (o instanceof Double) {
             return Primitive.DOUBLE;
+        } else if (o instanceof Integer) {
+            return Primitive.INTEGER;
         }
         throw new UnsupportedOperationException("No type available for object " + o);
     }

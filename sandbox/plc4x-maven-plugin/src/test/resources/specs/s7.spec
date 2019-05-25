@@ -5,7 +5,7 @@
 [type 'TPKTPacket'
     [const    uint8      'protocolId' '0x3']
     [reserved uint8      '0x0']
-    [implicit uint16     'len'     'payload.size + 4']
+    [field    uint16     'len']
     [field    COTPPacket 'payload'  {payloadLength: 'len - 4'}]
 ]
 

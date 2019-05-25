@@ -23,13 +23,18 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.apache.plc4x.codegen.ast.BinaryExpression;
+import org.apache.plc4x.codegen.ast.BlockBuilder;
 import org.apache.plc4x.codegen.ast.ClassDeclaration;
 import org.apache.plc4x.codegen.ast.CodeWriter;
+import org.apache.plc4x.codegen.ast.Expression;
 import org.apache.plc4x.codegen.ast.Expressions;
 import org.apache.plc4x.codegen.ast.Generator;
 import org.apache.plc4x.codegen.ast.JavaGenerator;
+import org.apache.plc4x.codegen.ast.Method;
+import org.apache.plc4x.codegen.ast.ParameterExpression;
 import org.apache.plc4x.codegen.ast.Primitive;
-import org.apache.plc4x.codegen.ast.TypeDefinition;
+import org.apache.plc4x.codegen.ast.PythonGenerator;
 import org.apache.plc4x.codegen.util.PojoFactory;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryLexer;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryParser;
@@ -48,6 +53,7 @@ import org.apache.plc4x.plugins.codegenerator.model.fields.SwitchField;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -97,7 +103,7 @@ public class MessageFormatParser {
             final List<ClassBuilder> classes = new ArrayList<>();
             for (Map.Entry<String, ComplexType> entry : complexTypes.entrySet()) {
                 final CodeWriter writer = new CodeWriter(4);
-                final Generator generator = new JavaGenerator(writer);
+                final Generator generator = new PythonGenerator(writer);
                 System.out.println("// ----------------------");
                 System.out.println("//    " + entry.getKey() + "   ");
                 System.out.println("// ----------------------");
@@ -109,7 +115,7 @@ public class MessageFormatParser {
                     .collect(Collectors.toList());
                 final PojoFactory.PojoDescription pojoDesc = new PojoFactory.PojoDescription(entry.getKey(), fields);
                 final ClassDeclaration classDeclaration = factory.create(pojoDesc);
-                classDeclaration.write(generator);
+                // classDeclaration.write(generator);
                 // Output POJO
                 // System.out.println(writer.getCode());
 
@@ -120,14 +126,71 @@ public class MessageFormatParser {
                 classBuilder.withName(entry.getKey());
                 int constCount = 1;
                 int implicitCount = 1;
+                int tmpCount = 1;
+                BlockBuilder writerBuilder = new BlockBuilder();
+                BlockBuilder readerBuilder = new BlockBuilder();
+                final ParameterExpression _buffer = Expressions.parameter("buffer", Expressions.typeOf("Buffer"));
+                final Method _writeUint8 = Expressions.method(Expressions.typeOf("Buffer"), "writeUint8", Primitive.VOID, Collections.singletonList(Primitive.INTEGER), Collections.emptyList());
+                final Method _readUint8 = Expressions.method(Expressions.typeOf("Buffer"), "readUint8", Primitive.INTEGER, Collections.emptyList(), Collections.emptyList());
                 for (Field field : type.getFields()) {
                     if (field instanceof ArrayField) {
                         // do nothing
                         System.out.println("Skipping Array field...");
                     } else if (field instanceof ConstField) {
                         classBuilder.withConstant("CONST_" + constCount++, ((ConstField) field).getType().getName(), ((ConstField) field).getReferenceValue(), new ClassBuilder.Documentation("Constant expression"));
+
+                        String constString = ((ConstField) field).getReferenceValue().toString();
+                        constString = constString.replace("'", "");
+                        final Expression _const = Expressions.constant(Integer.decode(constString));
+
+                        // Writer
+                        writerBuilder.add(Expressions.comment("Constant"));
+                        writerBuilder.add(Expressions.call(
+                            _buffer,
+                            _writeUint8,
+                            _const
+                        ));
+
+                        // Reader
+                        readerBuilder.add(Expressions.comment("This should be a check on the expected value"));
+                        String tmpVar = "tmp" + tmpCount++;
+                        readerBuilder.add(Expressions.declaration(
+                            tmpVar,
+                            Expressions.call(_buffer, _readUint8)
+                        ));
+                        readerBuilder.add(Expressions.ifElse(
+                            Expressions.binaryExpression(Primitive.BOOLEAN, Expressions.parameter(tmpVar, Primitive.VOID), _const, BinaryExpression.Operation.NEQ),
+                            Expressions.block(
+                                Expressions.comment("We should throw an exception here")
+                            )
+                        ));
+
                     } else if (field instanceof SimpleField) {
                         classBuilder.withField(((SimpleField) field).getName(), ((SimpleField) field).getType().getName(), new ClassBuilder.Documentation("Simple Field..."));
+
+                        // Writer
+
+                        final ParameterExpression parameter = Expressions.parameter(
+                            ((SimpleField) field).getName(),
+                            Expressions.typeOf(((SimpleField) field).getType().getName())
+                        );
+                        if (((SimpleField) field).getType().getName().startsWith("uint")) {
+                            writerBuilder.add(Expressions.call(
+                                _buffer,
+                                _writeUint8,
+                                parameter
+                            ));
+                        } else {
+                            writerBuilder.add(Expressions.call(
+                                parameter,
+                                "write",
+                                Primitive.VOID,
+                                _buffer
+                            ));
+                        }
+
+                        // Reader
+
                     } else if (field instanceof ImplicitField) {
                         classBuilder.withField("implicit" + implicitCount, ((ImplicitField) field).getType().getName(), ((ImplicitField) field).getSerializationExpression(), new ClassBuilder.Documentation("Implicitly defined field"));
                     } else if (field instanceof DiscriminatorField) {
@@ -150,6 +213,11 @@ public class MessageFormatParser {
                 }
 
                 // System.out.println(classBuilder.toString());
+
+                // Print something here
+                writerBuilder.toBlock().write(generator);
+                readerBuilder.toBlock().write(generator);
+                System.out.println(writer.getCode());
             }
 
             // Now print all Classes

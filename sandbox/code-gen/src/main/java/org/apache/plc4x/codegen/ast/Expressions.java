@@ -143,7 +143,7 @@ public class Expressions {
      * @param statements
      * @return
      */
-    public static Statement block(Node... statements) {
+    public static Block block(Node... statements) {
         return new Block(statements);
     }
 
@@ -259,9 +259,9 @@ public class Expressions {
     /**
      * Simple call to a method which throws no exception and that stuff.
      */
-    public static Expression call(Node target, String methodName, Node... arguments) {
+    public static Expression call(Node target, String methodName, TypeDefinition returnType, Node... arguments) {
         return new CallExpression(
-            new Method(UnknownType.INSTANCE, methodName, UnknownType.INSTANCE,
+            new Method(UnknownType.INSTANCE, methodName, returnType,
                 Collections.<TypeDefinition>emptyList(), Collections.<ExceptionType>emptyList()),
             target,
             arguments
