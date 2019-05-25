@@ -377,7 +377,7 @@ After the 72 hour minimum wait period is over and we have fulfilled the requirem
 [subs="verbatim,attributes"]
 ----
     E-Mail Topic:
-    [RESULT] [DISCUSS] Apache PLC4X {current-full-version} RC1
+    [RESULT] [VOTE] Apache PLC4X {current-full-version} RC1
 
     Message:
     So, the vote passes with 3 +1 votes by PMC members and one +1 vote by a non PMC member.
