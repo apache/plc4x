@@ -26,16 +26,14 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryLexer;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryParser;
 import org.apache.plc4x.plugins.codegenerator.model.ComplexType;
-import org.apache.plc4x.plugins.codegenerator.model.Type;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 
 public class MessageFormatParser {
 
-    public List<Type> parse(InputStream source) {
+    public Map<String, ComplexType> parse(InputStream source) {
         try {
             ImaginaryLexer lexer = new ImaginaryLexer(CharStreams.fromStream(source));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -44,12 +42,10 @@ public class MessageFormatParser {
             ParseTreeWalker walker = new ParseTreeWalker();
             MessageFormatListener listener = new MessageFormatListener();
             walker.walk(listener, tree);
-            Map<String, ComplexType> complexTypes = listener.getComplexTypes();
-            System.out.println(complexTypes);
+            return listener.getComplexTypes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
 }

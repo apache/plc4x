@@ -19,14 +19,18 @@
 
 package org.apache.plc4x.plugins.codegenerator.parser;
 
+import org.apache.plc4x.plugins.codegenerator.model.ComplexType;
+
 import java.io.InputStream;
+import java.util.Map;
 
 public class ManualMessageFormatParserTest {
 
     public static void main(String[] args) {
         InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
         MessageFormatParser parser = new MessageFormatParser();
-        parser.parse(spec);
+        Map<String, ComplexType> types = parser.parse(spec);
+        System.out.println(types);
     }
 
 }

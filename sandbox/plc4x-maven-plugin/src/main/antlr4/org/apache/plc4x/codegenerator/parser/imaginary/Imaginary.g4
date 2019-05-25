@@ -84,10 +84,9 @@ caseStatement
 
 dataType
  : 'bit'
- | K_UINT5
- | 'uint7'
- | K_UINT8
- | K_UINT16
+ | K_INT INTEGER_LITERAL
+ | K_UINT INTEGER_LITERAL
+ | K_FLOAT INTEGER_LITERAL
  | K_STRING
  ;
 
@@ -165,6 +164,9 @@ K_TYPE_SWITCH : 'typeSwitch';
 K_COUNT : 'count';
 K_LENGTH : 'length';
 
+K_INT : 'int';
+K_UINT : 'uint';
+K_FLOAT : 'float';
 K_UINT5 : 'uint5';
 K_UINT8 : 'uint8';
 K_UINT16 : 'uint16';
