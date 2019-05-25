@@ -68,7 +68,8 @@ public class ElasticsearchStorage {
 
     private static class MyNode extends Node {
         private MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
-            super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+            super(InternalSettingsPreparer.prepareEnvironment(
+                preparedSettings, Collections.emptyMap(), null, () -> "hello-es"), classpathPlugins, true);
         }
     }
 
@@ -79,7 +80,7 @@ public class ElasticsearchStorage {
             Node node = new MyNode(Settings.builder()
                 .put("transport.type", "netty4")
                 .put("http.type", "netty4")
-                .put("http.enabled", "true")
+                .put("http.cors.enabled", "true")
                 .put("path.home", "elasticsearch-data")
                 .build(), Collections.singletonList(Netty4Plugin.class));
             node.start();

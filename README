@@ -37,7 +37,7 @@ Linux
 
 On a clean Ubuntu 18.04 the following software needs to be installed:
 
-    sudo apt
+    sudo apt install python-setuptools
 
 If you're building a source-distribution and haven't installed git yet, be sure to do so:
 

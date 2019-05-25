@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4cpp</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4cpp-api</artifactId>
@@ -135,7 +135,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4cpp-libs-boost</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
+      <version>0.5.0-SNAPSHOT</version>
       <type>zip</type>
       <classifier>cpp-${os.classifier}</classifier>
     </dependency>

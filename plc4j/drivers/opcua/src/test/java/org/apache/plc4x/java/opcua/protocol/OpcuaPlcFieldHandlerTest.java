@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -15,46 +15,22 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
+*/
+package org.apache.plc4x.java.opcua.protocol;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+/**
+ * @author Matthias Milan Stlrljic
+ * Created by Matthias Milan Stlrljic on 10.05.2019
  */
+public class OpcuaPlcFieldHandlerTest {
+    @BeforeEach
+    public void before() {
+    }
 
-def checkBison() {
-    print "bash git --version".execute().text
+    @AfterEach
+    public void after() {
+
+    }
 }
-
-def checkDotnet() {
-    print "bash dotnet --version".execute().text
-}
-
-def checkFlex() {
-    print "bash flex --version".execute().text
-}
-
-def checkGcc() {
-    print "bash gcc --version".execute().text
-}
-
-def checkGit() {
-    print "bash git --version".execute().text
-}
-
-def checkGpp() {
-    print "bash g++ --version".execute().text
-}
-
-def checkPython() {
-    print "bash python --version".execute().text
-}
-
-checkBison()
-
-checkDotnet()
-
-checkFlex()
-
-checkGcc()
-
-checkGit()
-
-checkGpp()
-
-checkPython()
