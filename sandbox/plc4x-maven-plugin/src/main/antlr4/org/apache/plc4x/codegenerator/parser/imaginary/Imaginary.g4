@@ -74,8 +74,8 @@ typeSwitchField
 
 
 typeReference
- : IDENTIFIER
- | dataType
+ : complexTypeReference=IDENTIFIER
+ | simpleTypeReference=dataType
  ;
 
 caseStatement
