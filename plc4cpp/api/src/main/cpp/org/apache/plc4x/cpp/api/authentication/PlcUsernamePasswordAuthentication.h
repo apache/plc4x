@@ -52,8 +52,8 @@ namespace org
 							
 
 							protected:
-								std::string username;
-								std::string password;
+								std::string _strUsername;
+								std::string _strPassword;
 						};
 					}
 				}

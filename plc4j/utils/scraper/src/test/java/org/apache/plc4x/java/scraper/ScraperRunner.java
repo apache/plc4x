@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.scraper;
 
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +30,9 @@ public class ScraperRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScraperRunner.class);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ScraperException {
         ScraperConfiguration configuration = ScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example.yml");
-        Scraper scraper = new Scraper(configuration, (j, a, m) -> LOGGER.info("Results from {}/{}: {}", j, a, m));
+        Scraper scraper = new ScraperImpl(configuration, (j, a, m) -> LOGGER.info("Results from {}/{}: {}", j, a, m));
 
         scraper.start();
     }

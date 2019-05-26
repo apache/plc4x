@@ -1,4 +1,29 @@
 ==============================================================
+Apache PLC4X 0.4.0
+==============================================================
+
+This is the first release of Apache PLC4X as top-level project.
+
+New Features
+------------
+
+- The PlcConnection now supports a `ping` method to allow checking if an existing connection is still alive.
+- Support of the OPC-UA protocol with the `opc-ua-driver`.
+- Other Languages Support:
+-- Added first versions of a C# .Net PLC4X API (`plc4net`)
+-- Added first versions of a Python PLC4X API (`plc4py`)
+- Added an Interop server which allows to relay requests from other languages to a Java Server
+
+Incompatible changes
+--------------------
+
+- ElasticSearch example was updated to use ElasticSearch 7.0.1, this might cause problems with older Kibana versions.
+
+Bug Fixes
+---------
+
+
+==============================================================
 Apache PLC4X (incubating) 0.3.1
 ==============================================================
 
@@ -6,6 +31,7 @@ This is a bugfix-release, that fixes some problems with S7 driver.
 
 Bug Fixes
 ---------
+
 - The S7 driver didn't correctly handle "fill-bytes" in multi-item read-responses and multi-item write-requests
 - PLC4X-83: fixed NPE when reading odd-length array of one-byte base types
 - PLC4X-82: renamed flags "F" to Siemens Standard "M" (Marker)
@@ -157,3 +183,7 @@ PLC4X-20	Jacoco doesn't seem to be working at all
 PLC4X-21	Code coverage doesn't seem to work
 PLC4X-47	S7 driver silently ignores surplus ReadRequestItems
 PLC4X-48	S7 driver failes to parse response with multiple items
+
+
+
+

@@ -56,7 +56,7 @@ public class ScraperTaskTest implements WithAssertions {
         connection.setDevice(mockDevice);
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
 
-        ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
+        ScraperTask scraperTask = new ScraperTaskImpl(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
             1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
         scraperTask.run();
@@ -73,7 +73,7 @@ public class ScraperTaskTest implements WithAssertions {
             connection.setDevice(mockDevice);
             when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.NOT_FOUND, new DefaultStringFieldItem("hallo")));
 
-            ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1",
+            ScraperTask scraperTask = new ScraperTaskImpl(driverManager, "job1", "m1",
                 "mock:scraper", Collections.singletonMap("a", "b"), 1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
             // When
@@ -88,7 +88,7 @@ public class ScraperTaskTest implements WithAssertions {
             // Given
             when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
 
-            ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
+            ScraperTask scraperTask = new ScraperTaskImpl(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
                 1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
             ScraperTask spy = spy(scraperTask);
@@ -101,7 +101,7 @@ public class ScraperTaskTest implements WithAssertions {
         void runByScheduler_handledGracefully() throws PlcConnectionException {
             when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
             ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
-            ScraperTask scraperTask = new ScraperTask(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
+            ScraperTask scraperTask = new ScraperTaskImpl(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
                 1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
             Future<?> future = pool.scheduleAtFixedRate(scraperTask, 0, 10, TimeUnit.MILLISECONDS);

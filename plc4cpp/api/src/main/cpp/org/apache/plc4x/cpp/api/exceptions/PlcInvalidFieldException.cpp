@@ -32,27 +32,27 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcInvalidFieldException::PlcInvalidFieldException(const std::string &fieldToBeParsed) :
-							PlcRuntimeException(fieldToBeParsed + " invalid")
+						PlcInvalidFieldException::PlcInvalidFieldException(const std::string& strFieldToBeParsed) :
+							PlcRuntimeException(strFieldToBeParsed + " invalid")
 						{
-							_fieldToBeParsed = fieldToBeParsed;
+                            _strFieldToBeParsed = strFieldToBeParsed;
 						}
 
-						PlcInvalidFieldException::PlcInvalidFieldException(const std::string &fieldToBeParsed, const std::string &pattern) :
-							PlcRuntimeException(fieldToBeParsed + " doesn't match " + pattern)
+						PlcInvalidFieldException::PlcInvalidFieldException(const std::string& strFieldToBeParsed, const std::string& strPattern) :
+							PlcRuntimeException(strFieldToBeParsed + " doesn't match " + strPattern)
 						{
-							_fieldToBeParsed = fieldToBeParsed;
+                            _strFieldToBeParsed = strFieldToBeParsed;
 						}
 
-						PlcInvalidFieldException::PlcInvalidFieldException(const std::string &fieldToBeParsed, const std::string &pattern, const std::string &readablePattern) :
-							PlcRuntimeException(fieldToBeParsed + " doesn't match " + readablePattern + '(' + pattern + ')')
+						PlcInvalidFieldException::PlcInvalidFieldException(const std::string& strFieldToBeParsed, const std::string& strPattern, const std::string& strReadablePattern) :
+							PlcRuntimeException(strFieldToBeParsed + " doesn't match " + strReadablePattern + '(' + strPattern + ')')
 						{							
-							_fieldToBeParsed = fieldToBeParsed;
+                            _strFieldToBeParsed = strFieldToBeParsed;
 						}
 
 						std::string PlcInvalidFieldException::getFieldToBeParsed()
 						{ 
-							return _fieldToBeParsed; 
+							return _strFieldToBeParsed;
 						}
 
 					}

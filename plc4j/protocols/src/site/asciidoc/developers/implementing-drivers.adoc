@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: ./../img/
+:imagesdir: ./../images/
 
 == Implementing Drivers
 
@@ -155,7 +155,7 @@ Also as creating of raw sockets requires elevated user permissions the applicati
 
 When setup correctly the raw socket connector allows implementing protocols right down to manually constructing `Ehternet` frames.
 
-This is currently treated as a temporary solution as we have to collect experience with this approach. Eventually native transports implemented as part of the PLC4X project might be the more performant solution.
+This is currently treated as a temporary solution as we have to collect experience with this approach. Perhaps native transports implemented as part of the PLC4X project might be the more performant solution.
 
 === Serial
 

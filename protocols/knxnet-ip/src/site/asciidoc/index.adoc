@@ -1,0 +1,57 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: images/
+:icons: font
+
+== KNXNet/IP
+
+=== Connection establishment
+
+
+[seqdiag,knx-connection]
+....
+{
+    === Connect ===
+
+    Client -> "KNX Group Address (224.0.23.12)" [label = "Search Request"]
+    Client <- "KNX Gateway" [label = "Search Response"]
+
+    Client -> "KNX Gateway" [label = "Description Request"]
+    Client <- "KNX Gateway" [label = "Description Response"]
+
+    Client -> "KNX Gateway" [label = "Connection Request"]
+    Client <- "KNX Gateway" [label = "Connection Response"]
+
+    === Periodic Confirmation (every 60 seconds) ===
+
+    Client -> "KNX Gateway" [label = "Connection State Request"]
+    Client <- "KNX Gateway" [label = "Connection State Response"]
+
+    === Data on the KNX Bus ===
+
+    Client <- "KNX Gateway" [label = "Tunneling Request"]
+    Client -> "KNX Gateway" [label = "Tunneling Response"]
+
+    === Disconnect ===
+
+    Client -> "KNX Gateway" [label = "Disconnect Request"]
+    Client <- "KNX Gateway" [label = "Disconnect Response"]
+
+}
+....
+
+http://knxer.net/?p=78

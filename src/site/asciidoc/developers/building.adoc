@@ -19,18 +19,25 @@
 
 PLC4X is built with `Apache Maven` and we have tried to make the build as simple as possible.
 
+However PLC4X aims at providing means to communicate with PLCs of multiple vendors using a shared API but also in a variety of different languages.
+
+We have partitioned the build to allow selecting the parts that are of interest.
+This is done by selecting so-called `Maven profiles`.
+More about these later down in this manual.
+
 For your convenience we also have provided a `Maven-Wrapper`, that should allow building of PLC4X with only `Java 8` or greater as requirement.
 
 === Requirements
 
 The only requirements to building PLC4X should be:
 
-* Java 8 JDK (or newer)
-* Apache Maven (3.1.0 or newer) *(Optional)*
+* Java 8 JDK (or newer - latest tested version: Java 12)
+* Git (Even if you are building the source distribution, the Kafka plugin seems to require a `git` executable being available on the systems `PATH`)
+* Apache Maven (3.1.0 or newer) *(Optional)* (See next chapter)
 
 === Using the Maven-Wrapper
 
-The so-called `Maven-Wrapper` is used by calling the Maven-Wrapper scripts `mvnw` (Mac & Linux) or `mvnw.cmd` (Windows) instead of the default Maven commads `mvn` and `mvn.cmd`.
+The so-called `Maven-Wrapper` is used by calling the Maven-Wrapper scripts `mvnw` (Mac & Linux) or `mvnw.cmd` (Windows) instead of the default Maven commands `mvn` and `mvn.cmd`.
 
 These helpers ensure Maven is available in at least the version defined in `.mvn/maven-wrapper.properties`.
 If no suitable version can be found, it is automatically downloaded and installed alongside the project (So it doesn't have to be downloaded every time and every project can have it's own Maven version)
@@ -52,15 +59,34 @@ video::167857327[vimeo,width=640,height=420]
 
 === Building PLC4X with Maven
 
-PLC4X is built by executing the following command:
+In order to build only the parts you are interested in, we have partitioned the build into multiple parts.
+By enabling these, you add more modules to the build.
 
-    mvn package
+By not enabling any profile, only the `protocols` and part of the `tools` will be built, which is pretty useless.
+
+The following profiles are available:
+
+- `with-java`: Builds all Java related modules, integrations and examples
+- `with-cpp`: Builds all C++ related modules, integrations and examples
+- `with-dotnet`: Builds all C# and .Net related modules, integrations and examples
+- `with-python`: Builds all Python related modules, integrations and examples
+
+WARNING: All profiles except the `with-java` typically require some preparation and setup on your development machine, please read the link:preparing.html[Preparing your Computer] guide for a detailed description on this.
+
+Beyond that there is an additional profile `with-proxies` which will enable additional modules in each of the activated languages.
+This `proxies` module, uses Apache Thrift to generate modules for forwarding requests to an `interop server` which runs somewhere else or on the same machine.
+
+WARNING: Currently when enabling the `with-python` module, you are required to also enable the `with-proxies` profile too as this is currently required there but will probably change in the near future.
+
+PLC4X is built by executing the following command (Example for building all modules):
+
+    mvn -P with-java,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox package
 
 This not only builds the artifacts and creates the jar files, but also runs all unit- and integration-tests.
 
 If you want to skip the running of tests (even if this is not encouraged) you can skip them all together.
 
-    mvn package -DskipTests
+    mvn -P with-java,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox package -DskipTests
 
 This will not skip the compilation of tests however.
 

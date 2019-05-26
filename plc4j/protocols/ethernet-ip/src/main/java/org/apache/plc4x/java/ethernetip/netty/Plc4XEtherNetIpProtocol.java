@@ -74,7 +74,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
     // In CIP we are doing explicit connected messaging, this requires every used address to be registered at the
     // remote server and to use that Addresses connectionId for accessing data. We are saving the references to
     // these here.
-    // REMARK: Eventually we should add a timeout to these so we unregister them after not being used
+    // REMARK: Perhaps we should add a timeout to these so we unregister them after not being used
     // for quire some time. Hereby freeing resources on both client and server.
     private Map<PlcField, Long> fieldConnectionMap = new ConcurrentHashMap<>();
 

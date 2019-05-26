@@ -1,0 +1,253 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<sc:scxml version="1.0"
+          xmlns:plc4x="https://plc4x.apache.org/scxml-extension"
+          xmlns:sc="http://www.w3.org/2005/07/scxml"
+          xmlns:knx="http://plc4x.apache.org/knxnet-ip"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          initial="init"
+          datamodel="jexl"
+          xsi:schemaLocation="http://www.w3.org/2005/07/scxml http://www.w3.org/2011/04/SCXML/scxml.xsd">
+
+  <!-- Define all the variables we're going to use -->
+  <sc:datamodel>
+    <sc:data id="protocolDaffodilSchema"/>
+    <sc:data id="clientIpAddress"/>
+    <sc:data id="clientUdpPort"/>
+    <sc:data id="clientKnxAddress"/>
+    <sc:data id="serverIpAddress"/>
+    <sc:data id="serverPort"/>
+    <sc:data id="serverKnxAddress"/>
+    <sc:data id="serverName"/>
+
+    <!-- Data container for processing requests -->
+    <sc:data id="container"/>
+  </sc:datamodel>
+
+  <!--
+    Setup the initial state ... this usually just initializes the Daffodil subsystem.
+  -->
+  <sc:state id="init">
+    <sc:onentry>
+      <plc4x:initContext protocolDaffodilSchemaName="protocolDaffodilSchema"/>
+    </sc:onentry>
+    <sc:transition event="success" target="connect">
+      <sc:assign location="args" expr="_event.data"/>
+    </sc:transition>
+  </sc:state>
+
+  <!--
+    Sub-Statemachine handling the connection establishment.
+  -->
+  <sc:state id="connect">
+    <sc:initial>
+      <sc:transition target="establishNetworkConnection"/>
+    </sc:initial>
+
+    <!-- This step establishes the physical connection to the remote -->
+    <sc:state id="establishNetworkConnection">
+      <sc:onentry>
+        <!-- Initialize the network connection to the remote host using the tcp adapter with a given host and port -->
+        <plc4x:connect type="udp" host="224.0.23.12" port="3671"/>
+      </sc:onentry>
+      <sc:transition event="success" target="sendSearchRequest"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <sc:state id="sendSearchRequest">
+      <sc:onentry>
+        <plc4x:send>
+          <knx:KNXNetIPMessage>
+            <header>
+              <headerLength>6</headerLength>
+              <protocolVersion>16</protocolVersion>
+              <serviceTypeIdentifier>513</serviceTypeIdentifier>
+              <totalLength>14</totalLength>
+            </header>
+            <SearchRequest>
+              <HPAIDiscoveryEndpoint>
+                <structureLength>8</structureLength>
+                <hostProtocolCode>1</hostProtocolCode>
+                <ipAddress>${clientIpAddress}</ipAddress>
+                <ipPort>${clientUdpPort}</ipPort>
+              </HPAIDiscoveryEndpoint>
+            </SearchRequest>
+          </knx:KNXNetIPMessage>
+        </plc4x:send>
+      </sc:onentry>
+      <sc:transition event="success" target="receiveSearchResponse"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <sc:state id="receiveSearchResponse">
+      <plc4x:receiveExtractVerify timeout="5000" packetLengthStartPosition="4" packetLengthSizeInBytes="2">
+        <extraction name="serverIpAddress" xpath-expression=""/>
+        <extraction name="serverPort" xpath-expression=""/>
+        <extraction name="serverKnxAddress" xpath-expression=""/>
+        <extraction name="serverName" xpath-expression=""/>
+      </plc4x:receiveExtractVerify>
+      <sc:transition event="success" target="sendConnectionRequest"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <!--sc:state id="sendDescriptionRequest">
+      <sc:onentry>
+        <plc4x:send>
+          <knx:KNXNetIPMessage>
+            <header>
+              <headerLength>6</headerLength>
+              <protocolVersion>16</protocolVersion>
+              <serviceTypeIdentifier>515</serviceTypeIdentifier>
+              <totalLength>14</totalLength>
+            </header>
+            <DescriptionRequest>
+              <HPAIControlEndpoint>
+                <structureLength>8</structureLength>
+                <hostProtocolCode>1</hostProtocolCode>
+                <ipAddress>00000000</ipAddress>
+                <ipPort>0</ipPort>
+              </HPAIControlEndpoint>
+            </DescriptionRequest>
+          </knx:KNXNetIPMessage>
+        </plc4x:send>
+      </sc:onentry>
+      <sc:transition event="success" target="receiveDescriptionResponse"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <sc:state id="receiveDescriptionResponse">
+      <plc4x:receiveExtractVerify timeout="5000" packetLengthStartPosition="4" packetLengthSizeInBytes="2">
+        <extraction name="clientKnxAddress" xpath-expression=""/>
+      </plc4x:receiveExtractVerify>
+      <sc:transition event="success" target="sendConnectionRequest"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state-->
+
+    <sc:state id="sendConnectionRequest">
+      <sc:onentry>
+        <plc4x:send>
+          <knx:KNXNetIPMessage>
+            <header>
+              <headerLength>6</headerLength>
+              <protocolVersion>16</protocolVersion>
+              <serviceTypeIdentifier>517</serviceTypeIdentifier>
+              <totalLength>26</totalLength>
+            </header>
+            <ConnectionRequest>
+              <HPAIDiscoveryEndpoint>
+                <structureLength>8</structureLength>
+                <hostProtocolCode>1</hostProtocolCode>
+                <ipAddress>${clientIpAddress}</ipAddress>
+                <ipPort>${clientUdpPort}</ipPort>
+              </HPAIDiscoveryEndpoint>
+              <HPAIDataEndpoint>
+                <structureLength>8</structureLength>
+                <hostProtocolCode>1</hostProtocolCode>
+                <ipAddress>${clientIpAddress}</ipAddress>
+                <ipPort>${clientUdpPort}</ipPort>
+              </HPAIDataEndpoint>
+              <ConnectionRequestInformation>
+                <structureLength>4</structureLength>
+                <connectionType>4</connectionType>
+                <knxLayer>2</knxLayer>
+                <reserved>0</reserved>
+              </ConnectionRequestInformation>
+            </ConnectionRequest>
+          </knx:KNXNetIPMessage>
+        </plc4x:send>
+      </sc:onentry>
+      <sc:transition event="success" target="receiveConnectionResponse"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <sc:state id="receiveConnectionResponse">
+      <plc4x:receiveExtractVerify timeout="5000" packetLengthStartPosition="4" packetLengthSizeInBytes="2">
+        <verification value="0" xpath-expression=""/>
+        <extraction name="communicationChanelId" xpath-expression=""/>
+        <extraction name="clientKnxAddress" xpath-expression=""/>
+      </plc4x:receiveExtractVerify>
+      <sc:transition event="success" target="sendConnectionStateRequest"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <sc:state id="sendConnectionStateRequest">
+      <sc:onentry>
+        <plc4x:send>
+          <knx:KNXNetIPMessage>
+          </knx:KNXNetIPMessage>
+        </plc4x:send>
+      </sc:onentry>
+      <sc:transition event="success" target="receiveConnectionStateRequest"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <sc:state id="receiveConnectionStateRequest">
+      <sc:transition event="success" target="connected"/>
+      <sc:transition event="failure" target="error"/>
+      <sc:transition event="disconnect" target="disconnect"/>
+    </sc:state>
+
+    <!--
+      Default state after connecting to a PLC.
+    -->
+    <sc:state id="connected">
+      <!--sc:transition event="read" target="sendS7ReadRequest">
+        <sc:assign location="container" expr="_event.data"/>
+      </sc:transition>
+      <sc:transition event="write" target="sendS7WriteRequest">
+        <sc:assign location="container" expr="_event.data"/>
+      </sc:transition>
+      <sc:transition event="disconnect" target="disconnect"/-->
+    </sc:state>
+
+    <!--
+      Initiate disconnecting.
+    -->
+    <sc:state id="disconnect">
+      <sc:transition event="disconnect" target="disconnected"/>
+    </sc:state>
+
+    <!--
+      Final state of this state-machine, after any of the parties disconnected.
+    -->
+    <sc:final id="disconnected">
+      <sc:onentry>
+        <sc:log expr="'Disconnected'"/>
+      </sc:onentry>
+    </sc:final>
+
+    <!--
+      Error state in case of any form of error during the processing of data.
+    -->
+    <sc:final id="error">
+      <sc:onentry>
+        <sc:log expr="'Error'"/>
+      </sc:onentry>
+    </sc:final>
+  </sc:state>
+
+</sc:scxml>

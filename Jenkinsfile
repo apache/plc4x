@@ -36,7 +36,7 @@ pipeline {
         JENKINS_PROFILE = 'jenkins-build'
         // On non develop build we don't want to pollute the global m2 repo
         MVN_LOCAL_REPO_OPT = '-Dmaven.repo.local=.repository'
-        // Testfails will be handled by the jenkins junit steps and mark the build as unstable.
+        // Test failures will be handled by the jenkins junit steps and mark the build as unstable.
         MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
     }
 
@@ -46,7 +46,8 @@ pipeline {
     }
 
     options {
-        timeout(time: 1, unit: 'HOURS')
+        // Kill this job after one hour.
+        timeout(time: 2, unit: 'HOURS')
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
@@ -105,7 +106,7 @@ pipeline {
 
                 // We'll deploy to a relative directory so we can save
                 // that and deploy in a later step on a different node
-                sh 'mvn -P${JENKINS_PROFILE},development ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                sh 'mvn -P${JENKINS_PROFILE},development,with-cpp,with-java,with-dotnet,with-python,with-proxies,with-sandbox ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
 
                 // Stash the build results so we can deploy them on another node
                 stash name: 'plc4x-build-snapshots', includes: 'local-snapshots-dir/**'
@@ -125,7 +126,7 @@ pipeline {
             steps {
                 echo 'Checking Code Quality'
                 withSonarQubeEnv('ASF Sonar Analysis') {
-                    sh 'mvn -P${JENKINS_PROFILE} sonar:sonar'
+                    sh 'mvn -P${JENKINS_PROFILE},with-cpp,with-java,with-dotnet,with-python,with-proxies sonar:sonar'
                 }
             }
         }
@@ -166,7 +167,7 @@ pipeline {
             }
             steps {
                 echo 'Building Site'
-                sh 'mvn -P${JENKINS_PROFILE} site'
+                sh 'mvn -P${JENKINS_PROFILE} -P${JENKINS_PROFILE},with-cpp,with-java,with-dotnet,with-python,with-proxies site'
             }
         }
 
@@ -176,7 +177,12 @@ pipeline {
             }
             steps {
                 echo 'Staging Site'
+                // Build a directory containing the aggregated website.
                 sh 'mvn -P${JENKINS_PROFILE} site:stage'
+                // Make sure the script is executable.
+                sh 'chmod +x tools/clean-site.sh'
+                // Remove some redundant resources, which shouldn't be required.
+                sh 'tools/clean-site.sh'
                 // Stash the generated site so we can publish it on the 'git-website' node.
                 stash includes: 'target/staging/**/*', name: 'plc4x-site'
             }
@@ -274,16 +280,20 @@ Is back to normal.
         always {
             script {
                 if(env.BRANCH_NAME == "master") {
-                    emailext(
-                        subject: "[COMMIT-TO-MASTER]: A commit to the master branch was made'",
-                        body: """
+                    // Double check if something was really changed as sometimes the
+                    // build just runs without any changes.
+                    if(currentBuild.changeSets.size() > 0) {
+                        emailext(
+                            subject: "[COMMIT-TO-MASTER]: A commit to the master branch was made'",
+                            body: """
 COMMIT-TO-MASTER: A commit to the master branch was made:
 
 Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"
 """,
-                        to: "dev@plc4x.apache.org",
-                        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-                    )
+                            to: "dev@plc4x.apache.org",
+                            recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                        )
+                    }
                 }
             }
         }

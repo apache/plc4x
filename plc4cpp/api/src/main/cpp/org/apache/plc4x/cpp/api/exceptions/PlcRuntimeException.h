@@ -44,9 +44,9 @@ namespace org
 						class PlcRuntimeException : public std::runtime_error
 						{
 							public:
-                                explicit PlcRuntimeException(const std::string &message): std::runtime_error(message.c_str()){}
-								PlcRuntimeException(const std::string &message, const std::exception &exception);
-                                explicit PlcRuntimeException(const std::exception &exception);
+                                explicit PlcRuntimeException(const std::string& strMessage): std::runtime_error(strMessage.c_str()){}
+								PlcRuntimeException(const std::string& strMessage, const std::exception &exException);
+                                explicit PlcRuntimeException(const std::exception& exException);
 						};
 					}
 				}

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-parent</artifactId>
+    <version>0.4.0</version>
+  </parent>
+
+  <artifactId>plc4py</artifactId>
+  <packaging>pom</packaging>
+
+  <name>PLC4PY</name>
+  <description>Implementation of the protocol adapters for usage as Python module.</description>
+
+  <!-- Disabled for now as Python support is currently not installed in Apache SonarQube -->
+  <!--properties>
+    <sonar.language>py</sonar.language>
+  </properties-->
+
+  <build>
+    <sourceDirectory>src/main/python</sourceDirectory>
+    <testSourceDirectory>src/test/python</testSourceDirectory>
+    <plugins>
+      <!-- Unpack the protocol spec -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-protocol-spec</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-proxy</artifactId>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/protocol-spec</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-tools-thrift</artifactId>
+                  <type>zip</type>
+                  <classifier>compiler-${os.classifier}</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/thrift-compiler</outputDirectory>
+                  <destFileName>${thrift.compiler.executable}</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-interop-server</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>interop-server</artifactId>
+                  <type>jar</type>
+                  <classifier>jar-with-dependencies</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                  <destFileName>interop-server.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-dependencies</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <usedDependencies combine.children="append">
+                <usedDependency>org.apache.plc4x:plc4x-tools-thrift</usedDependency>
+                <usedDependency>javax.annotation:jsr250-api</usedDependency>
+              </usedDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.thrift.tools</groupId>
+        <artifactId>maven-thrift-plugin</artifactId>
+        <version>0.1.11</version>
+        <configuration>
+          <thriftExecutable>${project.build.directory}/thrift-compiler/${thrift.compiler.executable}</thriftExecutable>
+          <thriftSourceRoot>${project.build.directory}/protocol-spec</thriftSourceRoot>
+          <includes>
+            <include>**/interop.thrift</include>
+          </includes>
+          <generator>py</generator>
+        </configuration>
+        <executions>
+          <execution>
+            <id>thrift-sources</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>python-build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <workingDirectory>${project.build.directory}/python</workingDirectory>
+              <arguments>
+                <argument>../../setup.py</argument>
+                <argument>build</argument>
+                <argument>--build-base=${project.build.directory}/python</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>python-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>python</executable>
+              <workingDirectory>${project.build.directory}/python</workingDirectory>
+              <arguments>
+                <argument>../../setup.py</argument>
+                <argument>sdist</argument>
+                <argument>--dist-dir=${project.build.directory}/python</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>interop-server</artifactId>
+      <classifier>jar-with-dependencies</classifier>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-protocols-proxy</artifactId>
+        <version>0.4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-tools-thrift</artifactId>
+        <version>0.4.0</version>
+        <type>zip</type>
+        <classifier>compiler-${os.classifier}</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>interop-server</artifactId>
+        <version>0.4.0</version>
+        <classifier>jar-with-dependencies</classifier>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>

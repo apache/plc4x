@@ -50,8 +50,8 @@ namespace org
 						{
 							public:	
 								virtual std::vector<std::string>* getFieldNames() = 0;
-								virtual PlcField* getField(std::string) = 0;
-								virtual PlcResponseCode* getresponseCode(std::string) = 0;
+								virtual PlcField* getField(std::string& strName) = 0;
+								virtual PlcResponseCode* getresponseCode(std::string& strName) = 0;
 								virtual PlcRequest* getRequest() = 0;
 
 							private:

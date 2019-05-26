@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: ../../img/
+:imagesdir: ../../images/
 
 == Reverse Engineering the DeltaV protocol
 
@@ -234,7 +234,7 @@ With this we were able to write a simple console application that was able to in
 
 However when using what we learnt on the old captures we did, it turned out that unfortunately we could no longer find these `0x0b08` sequences, however we did find a lot of `0x08` followed by a 32 bit floating point value.
 So it seems that `0x08` indicates the type of an `signed 32 bit IEE 754 floating point value`.
-Eventually the `0x0b` part referred to some sort subscription-id.
+Perhaps the `0x0b` part referred to some sort subscription-id.
 
 As we seem to be doing a subscription based communication, the OS has to tell the controller what information it is interested in.
 

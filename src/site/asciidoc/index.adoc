@@ -14,10 +14,10 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: img/
+:imagesdir: images/
 :icons: font
 
-== PLC4X: Universal Protocol Adapter for Industrial IoT
+== Apache PLC4X™: Universal Protocol Adapter for Industrial IoT
 
 image::iot-lab.jpg[width=480, float=right]
 
@@ -33,7 +33,7 @@ As everyone is talking about IoT, virtualization, BigData, FastData and machine-
 Unfortunately the industry's Programmable Logic Controllers (PLCs) communicate with a large number of usually incompatible protocols.
 This has made it difficult to create applications that integrate these systems with the new world.
 
-This is where PLC4X comes in:
+This is where PLC4X™ comes in:
 
 *It is our goal to create a set of libraries, that allow unified access to any type of PLC*
 
@@ -44,7 +44,7 @@ PLC4X tries to provide a unified API by implementing drivers for communicating w
 
 Each of these drivers is being implemented from the specs or by reverse engineering protocols in order to be fully Apache 2.0 licensed.
 
-The major benefits of PLC4X over OPC-UA, from our point of view are:
+The major benefits of PLC4X™ over OPC-UA, from our point of view are:
 
 - No need to modify existing hardware
 - Activating OPC-UA support on existing PLCs greatly increases the load on the PLCs
@@ -52,28 +52,49 @@ The major benefits of PLC4X over OPC-UA, from our point of view are:
 
 At first we will be concentrating on providing adapters for the most widely used protocol such as:
 
+- icon:pause-circle[role=light-gray] BACnet
 - icon:check[role=green] link:protocols/ads/index.html[Beckhoff ADS (TCP)]
 - icon:wrench[role=yellow] link:protocpls/delta-v/index.html[Emerson DeltaV (UDP)]
 - icon:wrench[role=yellow] link:protocols/ethernet-ip/index.html[EtherNet/IP (TCP)]
+- icon:wrench[role=yellow] KNXNet/IP (UDP)
 - icon:check[role=green] link:protocols/modbus/index.html[Modbus (TCP)]
-- icon:pause-circle[role=light-gray] link:protocols/opc-ua/index.html[OPC-UA]
-- icon:check[role=green] link:protocols/s7/index.html[S7 (TCP)]
+- icon:check[role=green] link:protocols/opc-ua/index.html[OPC-UA (TCP)]
+- icon:pause-circle[role=light-gray] Profinet
+- icon:check[role=green] link:protocols/s7/index.html[S7-STEP7 (TCP)]
+- icon:wrench[role=yellow] link:protocols/s7/index.html[S7-TIA (TCP)]
 
 We are planning on providing support for the following programming languages:
 
+- icon:wrench[role=yellow] C++
+- con:wrench[role=yellow] C# (.Net)
 - icon:check[role=green] link:plc4j/index.html[Java]
-- icon:pause-circle[role=light-gray] link:plc4s/index.html[Scala]
-- icon:pause-circle[role=light-gray] link:plc4c/index.html[C/C++]
+- icon:wrench[role=yellow] Python
 
 Beyond implementing the pure adapters we have already implemented some of the planned integration modules to popular projects in the Apache IoT world such as:
 
 [width=100%]
 |===
 a|image::apache_edgent_logo.png[width=80%,link=https://edgent.apache.org] a|image::apache_camel_logo.png[width=80%,link=https://camel.apache.org] a|image::apache_kafka_logo.png[width=80%,link=https://kafka.apache.org]
-|icon:check[role=green] https://edgent.apache.org[Apache Edgent (Incubating)] |icon:check[role=green] https://camel.apache.org[Apache Camel] |icon:wrench[role=yellow] https://kafka.apache.org[Apache Kafka]
+|icon:check[role=green] https://edgent.apache.org[Apache Edgent™ (Incubating)] |icon:check[role=green] https://camel.apache.org[Apache Camel™] |icon:check[role=green] https://kafka.apache.org[Apache Kafka™]
 
 a|image::apache_nifi_logo.svg[width=80%,link=https://nifi.apache.org] a|image::apache_brooklyn_logo.png[width=80%,link=https://brooklyn.apache.org] a|image::apache_mynewt_logo.png[width=80%,link=https://mynewt.apache.org]
-|icon:wrench[role=yellow] https://nifi.apache.org[Apache Nifi] |icon:pause-circle[role=light-gray] https://brooklyn.apache.org[Apache Brooklyn] |icon:pause-circle[role=light-gray] https://mynewt.apache.org[Apache Mynewt]
+|icon:wrench[role=yellow] https://nifi.apache.org[Apache Nifi™] |icon:pause-circle[role=light-gray] https://brooklyn.apache.org[Apache Brooklyn™] |icon:pause-circle[role=light-gray] https://mynewt.apache.org[Apache Mynewt™]
 |===
 
 Hereby greatly reducing the barriers and the learning curve for creating industrial IoT applications.
+
+=== Upcoming Conferences & Meetups
+
+On this page we are listing options to attend talks and events around PLC4X.
+
+[width="100%",cols="2,^2,2,^2,^3",options="header"]
+|=========================================================
+|Date |Location |Type |Event | Title
+|18th June 2019 |Erfurt (GER) |Meetup |https://www.meetup.com/de-DE/iothde/events/260140057/[IoT Thüringen] |Industrie & IoT: Die perfekte Verbindung mit Flexibus & Apache PLC4X
+|=========================================================
+
+A full list containing also previous events can be found https://plc4x.apache.org/developers/conferences.html[here].
+
+Looking forward to meeting you.
+
+If you've got or found any events or talks we might be missing, please inform us on dev@plc4x.apache.org.

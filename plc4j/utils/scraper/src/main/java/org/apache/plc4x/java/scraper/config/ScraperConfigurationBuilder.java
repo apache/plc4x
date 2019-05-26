@@ -24,25 +24,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated Scraper is deprecated please use {@link org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfigurationBuilder} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
+ */
+@Deprecated
 public class ScraperConfigurationBuilder {
 
     private final Map<String, String> sources = new HashMap<>();
-    private final List<JobConfiguration> jobConfigurations = new ArrayList<>();
+    private final List<JobConfigurationImpl> jobConfigurations = new ArrayList<>();
 
     public ScraperConfigurationBuilder addSource(String alias, String connectionString) {
         sources.put(alias, connectionString);
         return this;
     }
 
-    public JobConfigurationBuilder job(String name, int scrapeRateMs) {
-        return new JobConfigurationBuilder(this, name, scrapeRateMs);
+    public JobConfigurationImplBuilder job(String name, int scrapeRateMs) {
+        return new JobConfigurationImplBuilder(this, name, scrapeRateMs);
     }
 
     public ScraperConfiguration build() {
         return new ScraperConfiguration(sources, jobConfigurations);
     }
 
-    void addJobConfiguration(JobConfiguration configuration) {
+    public void addJobConfiguration(JobConfigurationImpl configuration) {
         this.jobConfigurations.add(configuration);
     }
 }

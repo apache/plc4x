@@ -1,0 +1,55 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../images/
+:icons: font
+
+== Team
+
+Sorted by first name:
+
+[width="100%",cols="2,4,1,1",options="header"]
+|=========================================================
+|Name |Bio | |
+| *Christofer Dutz*
+
+IoT Consultant
+
+codecentric AG
+
+Frankfurt |Likes to swim outside the mainstream. He is really passionate about walking new paths. His first email to an Apache list on file was to the Cocoon project back in the year 2000. His direct involvement started in 2012 when he was elected to become an Apache Flex committer. Since then he became involved with a lot of Apache-internal groups and committees and was elected to become a Member of the Apache Software Foundation in 2015 and recently has taken up the role of mentoring several IoT podlings in the Apache Incubator. | a|image::team/cdutz.png[cdutz, 200, 200]
+| *Julian Feinauer*
+
+Founder / CEO
+
+pragmatic minds GmbH /
+pragmatic industries GmbH
+
+Nürtingen |Has studied mathematics in Stuttgart. Besides his interest in open source software and big data, he focuses on the analysis of time series and traces from testing or manufacturing. PLC4X was the first project where he was offered a position as (P)PMC but he is also engaged in other Apache projects like Edgent and IotDB. | a|image::team/jfeinauer.jpg[jfeinauer, 240, 320]
+| *Sebastian Rühl*
+
+IoT Consultant
+
+codecentric AG
+
+Frankfurt |Software engineer, member of the (P)PMC of PLC4X| a| image::team/sruehl.jpg[sruehl, 240, 320]
+| *Tim Mitsch*
+
+Engineer
+
+pragmatic industries GmbH
+
+Nürtingen |Electrical engineer (HW, SW and interface-stuff) from passion and very new to Apache projects. The more he is involved in open-source the more he likes it, focusing on PLC4X at first. | a|image::team/tmitsch.png[tmitsch, 240, 263]

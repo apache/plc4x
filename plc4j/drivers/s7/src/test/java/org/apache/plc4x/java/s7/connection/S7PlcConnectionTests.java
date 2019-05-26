@@ -19,7 +19,11 @@
 
 package org.apache.plc4x.java.s7.connection;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.s7.model.S7Field;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,4 +79,15 @@ public class S7PlcConnectionTests {
         assertThrows(PlcUnsupportedOperationException.class, () -> SUT.unsubscriptionRequestBuilder());
     }
 
+    @Test
+    public void prepareField() {
+        final PlcField field = SUT.prepareField("%DB1.DBX38.1:BOOL");
+        assertThat(field.getClass(), equalTo(S7Field.class));
+        assertThat(((S7Field) field).getDataType(), equalTo(TransportSize.BOOL));
+    }
+
+    @Test(expected = PlcInvalidFieldException.class)
+    public void prepareFieldFails() {
+        SUT.prepareField("this is a bad field query");
+    }
 }

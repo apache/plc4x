@@ -7,6 +7,8 @@ We are planning on shipping libraries for usage in:
 1) Java
 2) Scala
 3) C/C++
+4) C# (.Net)
+5) Python
 
 As well as provide direct integration into other Apache projects, such as:
 
@@ -17,15 +19,89 @@ As well as provide direct integration into other Apache projects, such as:
 5) Apache Karaf
 6) Apache NiFi
 
-
 Environment
 -----------
 
 Currently the project is configured to require the following software:
 
 1) Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to point to that.
-2) libpcap/WinPcap for raw socket tests
+2) libpcap/WinPcap for raw socket tests in Java
 3) (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
+4) Git (even when working on the source distribution)
+
+With this setup you will be able to build the Java part of PLC4X excluding the "proxy" drivers and servers.
+For a full build of PLC4X with all options the following has to be provided:
+
+Linux
+-----
+
+On a clean Ubuntu 18.04 the following software needs to be installed:
+
+    sudo apt
+
+If you're building a source-distribution and haven't installed git yet, be sure to do so:
+
+    sudo get install git
+
+In order to build the .Net version, please install the .Net package according to this guide:
+
+https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-1804-7lp
+
+Mac
+---
+
+Make sure `Homebrew` ist installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
+
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Then update `Bison`:
+
+    brew install bison
+    brew link bison --force
+    echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
+
+Install `Python 2.7`:
+
+    brew install python@2
+
+Be sure to re-open the command window or the changes will not apply.
+
+If you're going to build the `with-dotnet` profile you also need to install DotNet.
+Please download it from: https://dotnet.microsoft.com/download and run the installer.
+
+Windows
+-------
+
+Some tools need to be installed before being able to build on Windows:
+
+- WinBuilds (for `with-cpp`, `with-proxies` profiles)
+- Bison (for `with-cpp` profiles)
+- Flex (for `with-cpp` profiles)
+- Python 2.7 (for `with-python`, `with-proxies` profiles)
+- Dotnet (for `with-dotnet` profiles)
+
+He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
+When running the installer, make sure to select the options:
+- Native Windows
+- x86_64
+Not quite sure which elements are really needed, better just install all of them.
+
+WARNING: If you don't use the installer version of the distribution. The build will probably fail and it will be pretty
+impossible to see the problem. When manually executing the command, a popup will appear complaining about not being able
+to find some DLL. So if you are having these problems, please try using the installer instead of the manually unpackable
+archive.
+
+For Bison, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
+It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form here: http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip
+(More infos on this issue here: https://sourceforge.net/p/gnuwin32/bugs/473/)
+
+Please download the Flex compiler from here: http://gnuwin32.sourceforge.net/packages/flex.htm (Ideally download the binary zip distribution)
+
+You can get Python from here: https://www.python.org/downloads/release/python-2716/
+
+Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH`.
+
+If you're building a source-distribution and haven't installed git yet, be sure to do so.
 
 
 Getting Started
@@ -35,14 +111,31 @@ You must have Java 8 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). Maven will be automatically
 downloaded and installed by the maven wrapper `mvnw`.
 
-Build PLC4X jars and install them in your local maven repository
+Build PLC4X Java jars and install them in your local maven repository
 
-$ ./mvnw install  # add -DskipTests to omit running the tests
+$ ./mvnw install -P with-java  # add -DskipTests to omit running the tests
 
-You can now construct applications that use PLC4X. The PLC4X samples
+You can now construct Java applications that use PLC4X. The PLC4X samples
 are a good place to start and are available inside the `examples`
 directory.
 
+If you want to also build the C++ libraries, this has to be enabled by activating
+
+the `with-cpp` profile
+
+$ ./mvnw -P with-cpp install  # add -DskipTests to omit running the tests
+
+Same applies for the C# .Net implementation with `with-dotnet` profiles.
+
+The Python implementation is currently in a somewhat unclean state and still needs refactoring.
+In order to be able to build the Python module, you currently need to activate both the:
+`with-python` and `with-proxies` profiles.
+
+However both of these are in a pretty experimental state.
+
+In order to build everything the following command should work:
+
+& ./mvnw -P with-java,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox install
 
 Installing libpcap/WinPcap
 --------------------------
@@ -54,6 +147,9 @@ You can download the Mac/Linux version from: http://www.tcpdump.org/
 The windows version can be found here: https://sourceforge.net/projects/winpcap413-176/
 (In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
 Windows version is 1.0. At this location is a patched version based on libpcap 1.7.4)
+
+Same applies for Python with the `with-python` and the C# .Net imeplemtation with `with-dotnet` profiles.
+However both of these are in a pretty experimental state.
 
 
 Building the C++ libraries
@@ -79,11 +175,3 @@ Licensing
 ---------
 
 Apache PLC4X is released under the Apache License Version 2.0.
-
-Apache PLC4X is an effort undergoing incubation at The Apache Software Foundation (ASF),
-sponsored by the Incubator PMC. Incubation is required of all newly accepted
-projects until a further review indicates that the infrastructure, communications,
-and decision making process have stabilized in a manner consistent with other
-successful ASF projects. While incubation status is not necessarily a reflection
-of the completeness or stability of the code, it does indicate that the project
-has yet to be fully endorsed by the ASF.

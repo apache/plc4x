@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4cpp-utils</artifactId>
+    <version>0.4.0</version>
+  </parent>
+
+  <artifactId>plc4cpp-utils-logger</artifactId>
+
+  <name>PLC4Cpp: Utils: Logger</name>
+
+  <build>
+    <!-- This is probably not required, however it helps IntelliJ detect the files as sources -->
+    <sourceDirectory>src/main/cpp</sourceDirectory>
+
+    <plugins>
+      <!-- Get the dependencies and unpack them to the target/dependencies folder -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>unpack-dependencies</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.googlecode.cmake-maven-project</groupId>
+        <artifactId>cmake-maven-plugin</artifactId>
+        <version>3.7.2-b1</version>
+        <executions>
+          <!-- Uses a CMake generator to generate the build using the build tool of choice -->
+          <execution>
+            <id>cmake-generate</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <!--
+                Actually the path to the CMakeList.txt file which then again
+                tells to tool where to find the sources.
+              -->
+              <sourcePath>${project.basedir}</sourcePath>
+              <!--
+                Path to where the build configuration is generated
+                (This directory is then used in the compile step to actually perform the build)
+              -->
+              <targetPath>${project.build.directory}/build</targetPath>
+              <!--
+                Name of the generator the compile step will be executing.
+              -->
+              <generator>${cmake.generator}</generator>
+              <!--
+                The classifier of the current platform. One of
+                [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
+                It defines the version and type of the cmake installation to download.
+              -->
+              <classifier>${os.classifier}</classifier>
+            </configuration>
+          </execution>
+          <!-- Actually executes the build -->
+          <!-- Disabled for now till we figure out the reason for a compile error -->
+          <!--execution>
+            <id>cmake-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <!- The directory where the "generate" step generated the build configuration ->
+              <projectDirectory>${project.build.directory}/build</projectDirectory>
+              <classifier>${os.classifier}</classifier>
+            </configuration>
+          </execution-->
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>package-thrift-cpp</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.artifactId}-${project.version}</finalName>
+              <descriptors>
+                <descriptor>src/assembly/cpp.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4cpp-api</artifactId>
+      <version>0.4.0</version>
+      <type>zip</type>
+      <classifier>cpp-${os.classifier}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4cpp-libs-boost</artifactId>
+      <version>0.4.0</version>
+      <type>zip</type>
+      <classifier>cpp-${os.classifier}</classifier>
+    </dependency>
+  </dependencies>
+
+</project>

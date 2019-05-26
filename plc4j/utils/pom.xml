@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.3.1</version>
+    <version>0.4.0</version>
   </parent>
 
   <artifactId>plc4j-utils</artifactId>
@@ -40,5 +40,14 @@
     <module>test-utils</module>
     <module>scraper</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>with-proxies</id>
+      <modules>
+        <module>interop</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

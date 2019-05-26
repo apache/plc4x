@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.base.messages.InternalPlcMessage;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Base class for implementing connections.
@@ -40,6 +41,13 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public PlcConnectionMetadata getMetadata() {
         return this;
+    }
+
+    @Override
+    public CompletableFuture<Void> ping() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        future.completeExceptionally(new PlcUnsupportedOperationException("The connection does not support pinging"));
+        return future;
     }
 
     @Override

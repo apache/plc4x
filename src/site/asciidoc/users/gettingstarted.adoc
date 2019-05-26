@@ -17,5 +17,8 @@
 
 == Getting Started
 
+Depending on the programming language, the usage will differ, therefore please go to the `Getting Started` version of the language of choice.
 
+=== Java
 
+For guides on how to write PLC4X applications with Java, please go to the link:../plc4j/users/gettingstarted.html[Java Getting Started]

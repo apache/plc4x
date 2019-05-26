@@ -20,6 +20,7 @@ under the License.
 package org.apache.plc4x.java.s7.model;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.test.FastTests;
@@ -83,6 +84,13 @@ class S7FieldTests {
         } catch (PlcRuntimeException e) {
             // This was expected.
         }
+    }
+
+    @Test
+    void getDefaultJavaType() {
+        final PlcField field = S7Field.of("%DB1.DBX38.1:BOOL");
+
+        assertThat(field.getDefaultJavaType(), equalTo(Boolean.class));
     }
 
     @Test

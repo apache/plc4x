@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.3.1</version>
+    <version>0.4.0</version>
   </parent>
 
   <artifactId>plc4j-drivers</artifactId>
@@ -39,6 +39,7 @@
     <module>modbus</module>
     <module>s7</module>
     <module>simulated</module>
+	<module>opcua</module>
   </modules>
 
 </project>

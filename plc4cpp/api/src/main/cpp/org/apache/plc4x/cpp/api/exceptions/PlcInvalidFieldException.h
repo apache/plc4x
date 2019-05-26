@@ -37,14 +37,14 @@ namespace org
 						class PlcInvalidFieldException : public PlcRuntimeException
 						{
 							public:
-                                explicit PlcInvalidFieldException(const std::string &fieldToBeParsed);
-								PlcInvalidFieldException(const std::string &fieldToBeParsed, const std::string &pattern);
-								PlcInvalidFieldException(const std::string &fieldToBeParsed, const std::string &pattern, const std::string &readablePattern);
+                                explicit PlcInvalidFieldException(const std::string& strFieldToBeParsed);
+								PlcInvalidFieldException(const std::string& strFieldToBeParsed, const std::string& strPattern);
+								PlcInvalidFieldException(const std::string& strFieldToBeParsed, const std::string& strPattern, const std::string &strReadablePattern);
 
 								std::string getFieldToBeParsed();
 
 							private:
-								std::string _fieldToBeParsed;
+								std::string _strFieldToBeParsed;
 						};
 
 					}

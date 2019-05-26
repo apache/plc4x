@@ -33,12 +33,12 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcRuntimeException::PlcRuntimeException(const std::string &message, const std::exception &exception) :
-							runtime_error(message) // message suppressed, as no matching constructor is available
+						PlcRuntimeException::PlcRuntimeException(const std::string& strMessage, const std::exception& exException) :
+							runtime_error(strMessage) // message suppressed, as no matching constructor is available
 						{
 						}
 
-						PlcRuntimeException::PlcRuntimeException(const std::exception &ex) :
+						PlcRuntimeException::PlcRuntimeException(const std::exception& exException) :
 						    runtime_error("error")
 						{
 						}

@@ -1,0 +1,582 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+           xmlns:knx="http://plc4x.apache.org/knxnet-ip"
+           targetNamespace="http://plc4x.apache.org/knxnet-ip">
+
+    <xs:annotation>
+        <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:defineVariable name="messageType" type="xs:string"/>
+            <dfdl:defineFormat name="knxNetIpFullFormat">
+                <dfdl:format representation="binary"
+                             binaryNumberRep="binary"
+                             byteOrder="bigEndian"
+                             lengthKind="implicit" lengthUnits="bytes" length="0"
+                             occursCountKind="implicit"
+                             textOutputMinLength="0"
+                             binaryBooleanTrueRep="1"
+                             binaryBooleanFalseRep="0"
+                             alignment="1" alignmentUnits="bits"
+                             leadingSkip="0" trailingSkip="0"
+                             textPadKind="none" ignoreCase="no"
+                             textBidi="no" floating="no"
+                             encoding="utf-8" truncateSpecifiedLengthString="no"
+                             initiator="" terminator=""
+                             sequenceKind="ordered" separator=""
+                             escapeSchemeRef="" initiatedContent="no"
+                             encodingErrorPolicy="replace"/>
+            </dfdl:defineFormat>
+            <dfdl:format ref="knx:knxNetIpFullFormat"/>
+        </xs:appinfo>
+    </xs:annotation>
+
+    <!--
+
+        Simple type definition.
+
+    -->
+
+    <xs:simpleType name="bit" dfdl:lengthUnits="bits" dfdl:length="1" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:boolean"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="byte" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedByte"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="short" dfdl:lengthUnits="bytes" dfdl:length="2" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:unsignedShort"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="hexByte" dfdl:lengthUnits="bytes" dfdl:length="1" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="ipAddress" dfdl:lengthUnits="bytes" dfdl:length="4" dfdl:lengthKind="explicit">
+        <xs:restriction base="xs:hexBinary"/>
+    </xs:simpleType>
+
+    <!--
+
+        TPKT - Iso-On-TCP
+
+    -->
+
+    <xs:element name="KNXNetIPMessage" type="knx:KNXNetIPMessageType"/>
+
+    <xs:complexType name="KNXNetIPMessageType">
+        <xs:sequence>
+            <xs:element name="header">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="headerLength" type="knx:byte" fixed="06"/>
+                        <xs:element name="protocolVersion" type="knx:byte" fixed="10"/>
+                        <xs:element name="serviceTypeIdentifier" type="knx:short"/>
+                        <!-- length of the entire message (including header) -->
+                        <xs:element name="totalLength" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:choice dfdl:choiceDispatchKey="{xs:string(header/serviceTypeIdentifier)}">
+                <xs:element dfdl:choiceBranchKey="513" name="SearchRequest" type="knx:SearchRequest"/>
+                <xs:element dfdl:choiceBranchKey="514" name="SearchResponse" type="knx:SearchResponse"/>
+                <xs:element dfdl:choiceBranchKey="515" name="DescriptionRequest" type="knx:DescriptionRequest"/>
+                <xs:element dfdl:choiceBranchKey="516" name="DescriptionResponse" type="knx:DescriptionResponse"/>
+                <xs:element dfdl:choiceBranchKey="517" name="ConnectionRequest" type="knx:ConnectionRequest"/>
+                <xs:element dfdl:choiceBranchKey="518" name="ConnectionResponse" type="knx:ConnectionResponse"/>
+                <xs:element dfdl:choiceBranchKey="519" name="ConnectionStateRequest" type="knx:ConnectionStateRequest"/>
+                <xs:element dfdl:choiceBranchKey="520" name="ConnectionStateResponse" type="knx:ConnectionStateResponse"/>
+                <xs:element dfdl:choiceBranchKey="521" name="DisconnectRequest" type="knx:DisconnectRequest"/>
+                <xs:element dfdl:choiceBranchKey="522" name="DisconnectResponse" type="knx:DisconnectResponse"/>
+                <xs:element dfdl:choiceBranchKey="784" name="DeviceConfigurationRequest" type="knx:DeviceConfigurationRequest"/>
+                <xs:element dfdl:choiceBranchKey="785" name="DeviceConfigurationResponse" type="knx:DeviceConfigurationResponse"/>
+                <xs:element dfdl:choiceBranchKey="1056" name="TunnelingRequest" type="knx:TunnelingRequest"/>
+                <xs:element dfdl:choiceBranchKey="1057" name="TunnelingResponse" type="knx:TunnelingResponse"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SearchRequest">
+        <xs:sequence>
+            <xs:element name="HPAIDiscoveryEndpoint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="hostProtocolCode" type="knx:byte"/>
+                        <xs:element name="ipAddress" type="knx:ipAddress" />
+                        <xs:element name="ipPort" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SearchResponse">
+        <xs:sequence>
+            <xs:element name="HPAIControlEndpoint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="hostProtocolCode" type="knx:byte"/>
+                        <xs:element name="ipAddress" type="knx:ipAddress" />
+                        <xs:element name="ipPort" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="DIBDeviceInfo">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="descriptionType" type="knx:byte"/>
+                        <xs:element name="knxMedium" type="knx:byte"/>
+                        <xs:element name="deviceStatus">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:sequence>
+                                        <xs:element name="reserved" type="xs:unsignedByte"
+                                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                                                    dfdl:length="7"/>
+                                        <xs:element name="programMode" type="xs:unsignedByte"
+                                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                                                    dfdl:length="1"/>
+                                    </xs:sequence>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="knxAddress" type="knx:KnxAddress"/>
+                        <xs:element name="projectInstallationIdentifier">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="projectNumber" type="knx:byte"/>
+                                    <xs:element name="installationNumber" type="knx:byte"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="knxNetIpDeviceSerialNumber" type="xs:hexBinary"
+                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
+                                    dfdl:length="6"/>
+                        <xs:element name="knxNetIpDeviceMulticastAddress" type="knx:ipAddress"/>
+                        <xs:element name="knxNetIpDeviceMacAddress" type="xs:hexBinary"
+                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
+                                    dfdl:length="6"/>
+                        <xs:element name="deviceFriendlyName" type="xs:string"
+                                    dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes"
+                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
+                                    dfdl:length="30"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="DIBSuppSvcFamilies">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="descriptionType" type="knx:byte"/>
+                        <xs:element name="serviceIds">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="serviceId" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="type" type="knx:byte"/>
+                                                <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
+                                                    <xs:element dfdl:choiceBranchKey="2" name="KnxNetIpCore">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="version" type="knx:byte"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element dfdl:choiceBranchKey="3" name="KnxNetIpDeviceManagement">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="version" type="knx:byte"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element dfdl:choiceBranchKey="4" name="KnxNetIpTunneling">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="version" type="knx:byte"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:choice>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DescriptionRequest">
+        <xs:sequence>
+            <xs:element name="HPAIControlEndpoint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="hostProtocolCode" type="knx:byte"/>
+                        <xs:element name="ipAddress" type="knx:ipAddress" />
+                        <xs:element name="ipPort" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DescriptionResponse">
+        <xs:sequence>
+            <!-- Identical to SearchResponse -->
+            <xs:element name="DIBDeviceInfo">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="descriptionType" type="knx:byte"/>
+                        <xs:element name="knxMedium" type="knx:byte"/>
+                        <xs:element name="deviceStatus">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:sequence>
+                                        <xs:element name="reserved" type="xs:unsignedByte"
+                                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                                                    dfdl:length="7"/>
+                                        <xs:element name="programMode" type="xs:unsignedByte"
+                                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                                                    dfdl:length="1"/>
+                                    </xs:sequence>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="knxAddress" type="knx:KnxAddress"/>
+                        <xs:element name="projectInstallationIdentifier">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="projectNumber" type="knx:byte"/>
+                                    <xs:element name="installationNumber" type="knx:byte"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="knxNetIpDeviceSerialNumber" type="xs:hexBinary"
+                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
+                                    dfdl:length="6"/>
+                        <xs:element name="knxNetIpDeviceMulticastAddress" type="knx:ipAddress"/>
+                        <xs:element name="knxNetIpDeviceMacAddress" type="xs:hexBinary"
+                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
+                                    dfdl:length="6"/>
+                        <xs:element name="deviceFriendlyName" type="xs:string"
+                                    dfdl:textTrimKind="none" dfdl:alignmentUnits="bytes"
+                                    dfdl:lengthKind="explicit" dfdl:lengthUnits="bytes"
+                                    dfdl:length="30"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="DIBSuppSvcFamilies">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="descriptionType" type="knx:byte"/>
+                        <xs:element name="serviceIds">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="serviceId" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="type" type="knx:byte"/>
+                                                <xs:choice dfdl:choiceDispatchKey="{xs:string(type)}">
+                                                    <xs:element dfdl:choiceBranchKey="2" name="KnxNetIpCore">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="version" type="knx:byte"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element dfdl:choiceBranchKey="3" name="KnxNetIpDeviceManagement">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="version" type="knx:byte"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element dfdl:choiceBranchKey="4" name="KnxNetIpTunneling">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="version" type="knx:byte"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:choice>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ConnectionRequest">
+        <xs:sequence>
+            <xs:element name="HPAIDiscoveryEndpoint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="hostProtocolCode" type="knx:byte"/>
+                        <xs:element name="ipAddress" type="knx:ipAddress" />
+                        <xs:element name="ipPort" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HPAIDataEndpoint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="hostProtocolCode" type="knx:byte"/>
+                        <xs:element name="ipAddress" type="knx:ipAddress" />
+                        <xs:element name="ipPort" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ConnectionRequestInformation">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="connectionType" type="knx:byte"/>
+                        <xs:element name="knxLayer" type="knx:byte" />
+                        <xs:element name="reserved" type="knx:byte"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ConnectionResponse">
+        <xs:sequence>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="status" type="knx:byte"/>
+            <xs:element name="HPAIDataEndpoint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="hostProtocolCode" type="knx:byte"/>
+                        <xs:element name="ipAddress" type="knx:ipAddress" />
+                        <xs:element name="ipPort" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ConnectionResponseDataBlock">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="connectionType" type="knx:byte"/>
+                        <xs:element name="knxAddress" type="knx:KnxAddress"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ConnectionStateRequest">
+        <xs:sequence>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="reserved" type="knx:byte"/>
+            <xs:element name="HPAIControlEndpoint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="hostProtocolCode" type="knx:byte"/>
+                        <xs:element name="ipAddress" type="knx:ipAddress" />
+                        <xs:element name="ipPort" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ConnectionStateResponse">
+        <xs:sequence>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="status" type="knx:byte"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DisconnectRequest">
+        <xs:sequence>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="reserved" type="knx:byte"/>
+            <xs:element name="HPAIControlEndpoint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="structureLength" type="knx:byte"/>
+                        <xs:element name="hostProtocolCode" type="knx:byte"/>
+                        <xs:element name="ipAddress" type="knx:ipAddress" />
+                        <xs:element name="ipPort" type="knx:short"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DisconnectResponse">
+        <xs:sequence>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="status" type="knx:byte"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DeviceConfigurationRequest">
+        <xs:sequence>
+            <xs:element name="structureLength" type="knx:byte"/>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="sequenceCounter" type="knx:byte"/>
+            <xs:element name="reserved" type="knx:byte"/>
+            <xs:element name="cEMI" type="knx:CEMI">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DeviceConfigurationResponse">
+        <xs:sequence>
+            <xs:element name="structureLength" type="knx:byte"/>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="sequenceCounter" type="knx:byte"/>
+            <xs:element name="status" type="knx:byte"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TunnelingRequest">
+        <xs:sequence>
+            <xs:element name="structureLength" type="knx:byte"/>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="sequenceCounter" type="knx:byte"/>
+            <xs:element name="reserved" type="knx:byte"/>
+            <xs:element name="cEMI" type="knx:CEMI"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TunnelingResponse">
+        <xs:sequence>
+            <xs:element name="structureLength" type="knx:byte"/>
+            <xs:element name="communicationChannelId" type="knx:byte"/>
+            <xs:element name="sequenceCounter" type="knx:byte"/>
+            <xs:element name="status" type="knx:byte"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="KnxAddress">
+        <xs:sequence>
+            <xs:element name="mainGroup" type="xs:unsignedByte"
+                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                        dfdl:length="4"/>
+            <xs:element name="middleGroup" type="xs:unsignedByte"
+                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                        dfdl:length="4"/>
+            <xs:element name="subGroup" type="knx:byte"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CEMI">
+        <xs:sequence>
+            <xs:element name="messageCode" type="knx:byte"/>
+            <xs:choice dfdl:choiceDispatchKey="{xs:string(messageCode)}">
+                <xs:element dfdl:choiceBranchKey="252" name="MPropRead">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="interfaceObjectType" type="knx:short"/>
+                            <xs:element name="objectInstance" type="knx:byte"/>
+                            <xs:element name="propertyIdentifyer" type="knx:byte"/>
+                            <xs:element name="numberOfElements" type="xs:unsignedByte"
+                                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                                        dfdl:length="4"/>
+                            <xs:element name="startIndex" type="xs:unsignedByte"
+                                        dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                                        dfdl:length="12"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element dfdl:choiceBranchKey="43" name="LBusmonInd">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="additionalInformationLength" type="knx:byte"/>
+                            <xs:element name="additionalInformation">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="additionalInformation" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="additionalInformationType" type="knx:byte"/>
+                                                    <xs:choice dfdl:choiceDispatchKey="{xs:string(additionalInformationType)}">
+                                                        <xs:element dfdl:choiceBranchKey="3" name="BusmonitorInfo">
+                                                            <xs:complexType>
+                                                                <xs:sequence>
+                                                                    <xs:element name="length" type="knx:byte"/>
+                                                                    <xs:element name="busmonitorErrorFlags">
+                                                                        <xs:complexType>
+                                                                            <xs:sequence>
+                                                                                <xs:element name="frameErrorFlag" type="knx:bit"/>
+                                                                                <xs:element name="bitErrorFlag" type="knx:bit"/>
+                                                                                <xs:element name="parityErrorFlag" type="knx:bit"/>
+                                                                                <xs:element name="dontCare" type="knx:bit"/>
+                                                                                <xs:element name="lostFlag" type="knx:bit"/>
+                                                                                <xs:element name="sequenceNumber" type="xs:unsignedByte"
+                                                                                            dfdl:lengthKind="explicit" dfdl:lengthUnits="bits"
+                                                                                            dfdl:length="3"/>
+                                                                            </xs:sequence>
+                                                                        </xs:complexType>
+                                                                    </xs:element>
+                                                                </xs:sequence>
+                                                            </xs:complexType>
+                                                        </xs:element>
+                                                        <xs:element dfdl:choiceBranchKey="4" name="RelativeTimestamp">
+                                                            <xs:complexType>
+                                                                <xs:sequence>
+                                                                    <xs:element name="length" type="knx:byte"/>
+                                                                    <xs:element name="relativeTimestamp" type="knx:short"/>
+                                                                </xs:sequence>
+                                                            </xs:complexType>
+                                                        </xs:element>
+                                                    </xs:choice>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="rawFrame" type="xs:hexBinary"
+                                        dfdl:lengthUnits="bytes" dfdl:lengthKind="explicit"
+                                        dfdl:length="{../../../../header/totalLength - (12 + ../additionalInformationLength)}"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--
+        http://www.eb-systeme.de/?page_id=479
+    -->
+
+</xs:schema>

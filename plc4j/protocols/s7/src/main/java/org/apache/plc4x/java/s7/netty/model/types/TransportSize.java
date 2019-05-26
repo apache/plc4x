@@ -103,12 +103,12 @@ public enum TransportSize {
     // Single-byte character
     CHAR(0x03, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Double-byte character
-    // TODO: Find the code (Eventually 0x13)
+    // TODO: Find the code (Perhaps 0x13)
     WCHAR(0x13, "X", 2, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Variable-length single-byte character string
     STRING(0x03, "X", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Variable-length double-byte character string
-    // TODO: Find the code (Eventually 0x13)
+    // TODO: Find the code (Perhaps 0x13)
     WSTRING(0x00, "X", 1, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500);
 
     /* TO BE CONTINUED */

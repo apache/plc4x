@@ -24,39 +24,32 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.3.1</version>
+    <version>0.4.0</version>
   </parent>
 
-  <artifactId>protocols</artifactId>
+  <artifactId>plc4x-protocols</artifactId>
+  <packaging>pom</packaging>
 
   <name>Protocols</name>
-  <description>General Protocol Descriptions.</description>
+  <description>Base protocol specifications.</description>
 
-  <build>
-    <!-- This project should only contain the DFDL definitions for our protocols -->
-    <resources>
-      <resource>
-        <directory>src/main/dfdl</directory>
-      </resource>
-    </resources>
-  </build>
+  <modules>
+    <!-- DFDL and SCXML based protocols -->
+    <module>knxnet-ip</module>
+    <module>s7</module>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.daffodil</groupId>
-      <artifactId>daffodil-tdml_2.12</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.daffodil</groupId>
-      <artifactId>daffodil-lib_2.12</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <!-- Stuff for testing -->
+    <module>test-utils</module>
+  </modules>
+
+  <profiles>
+    <profile>
+      <id>with-proxies</id>
+      <modules>
+        <!-- Thrift based protocols -->
+        <module>proxy</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

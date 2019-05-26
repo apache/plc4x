@@ -32,15 +32,15 @@ namespace org
 					namespace exceptions
 					{
 
-						PlcTimeoutException::PlcTimeoutException(long timeout) :
-							PlcRuntimeException("Timeout reached after " + std::to_string(timeout) + "ns")
+						PlcTimeoutException::PlcTimeoutException(long lTimeout) :
+							PlcRuntimeException("Timeout reached after " + std::to_string(lTimeout) + "ns")
 						{
-							_timeout = timeout;
+							_lTimeout = lTimeout;
 						}
 
 						long PlcTimeoutException::getTimeout() 
 						{
-							return _timeout; 
+							return _lTimeout; 
 						}
 
 					}

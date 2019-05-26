@@ -19,53 +19,16 @@
 
 package org.apache.plc4x.java.scraper.config;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 import java.util.Map;
 
 /**
- * Configuration for one {@link org.apache.plc4x.java.scraper.ScrapeJob} in the @{@link ScraperConfiguration}.
+ * Created by timbo on 2019-03-05
  */
-public class JobConfiguration {
+public interface JobConfiguration {
+    String getName();
 
-    private final String name;
-    private final int scrapeRate;
-    private final List<String> sources;
-    private final Map<String, String> fields;
+    List<String> getSources();
 
-    /**
-     * Default construcotr
-     * @param name Job Name / identifier
-     * @param scrapeRate Scrape rate in ms
-     * @param sources source alias (<b>not</b> connection string but the alias (from @{@link ScraperConfiguration}).
-     * @param fields Map from field alias (how it is named in the result map) to plc4x field query
-     */
-    @JsonCreator
-    public JobConfiguration(@JsonProperty(value = "name", required = true) String name,
-                            @JsonProperty(value = "scrapeRate", required = true) int scrapeRate,
-                            @JsonProperty(value = "sources", required = true) List<String> sources,
-                            @JsonProperty(value = "fields", required = true) Map<String, String> fields) {
-        this.name = name;
-        this.scrapeRate = scrapeRate;
-        this.sources = sources;
-        this.fields = fields;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getScrapeRate() {
-        return scrapeRate;
-    }
-
-    public List<String> getSources() {
-        return sources;
-    }
-
-    public Map<String, String> getFields() {
-        return fields;
-    }
+    Map<String, String> getFields();
 }

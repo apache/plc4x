@@ -38,8 +38,8 @@ namespace org
 						PlcUsernamePasswordAuthentication::PlcUsernamePasswordAuthentication(std::string username, std::string password)
 						{																					
 							// Check isNull (Java) not required, is every time a valid string
-							this->username = username;
-							this->password = password;
+							this->_strUsername = username;
+							this->_strPassword = password;
 						}
 						PlcUsernamePasswordAuthentication::~PlcUsernamePasswordAuthentication()
 						{
@@ -50,7 +50,7 @@ namespace org
 						*---------------------------------------------------------------------*/
 						std::string PlcUsernamePasswordAuthentication::getUsername()
 						{
-							return username;
+							return _strUsername;
 						}
 
 						/**---------------------------------------------------------------------
@@ -58,7 +58,7 @@ namespace org
 						*---------------------------------------------------------------------*/
 						std::string PlcUsernamePasswordAuthentication::getPassword()
 						{
-							return password;
+							return _strPassword;
 						}
 						/**---------------------------------------------------------------------
 						* Check for equality (identical object or identical values)
@@ -67,7 +67,7 @@ namespace org
 						{
 							bool bResult = false;
 							
-							if ( (this == &auth) || ( (username.compare(auth.getUsername()) == 0) && (password.compare(auth.getPassword()) == 0) ))
+							if ( (this == &auth) || ( (_strUsername.compare(auth.getUsername()) == 0) && (_strPassword.compare(auth.getPassword()) == 0) ))
 							{
 								return true;
 							}
@@ -77,7 +77,7 @@ namespace org
 
 						std::string PlcUsernamePasswordAuthentication::toString()
 						{
-							return "PlcUsernamePasswordAuthentication{ username='" + username + '\'' +
+							return "PlcUsernamePasswordAuthentication{ username='" + _strUsername + '\'' +
 								", password='" + "*****************" + '\'' +
 								'}';
 						}
@@ -86,7 +86,7 @@ namespace org
 						{
 							boost::hash<std::string> string_hash;
 
-							return string_hash(username + password);
+							return string_hash(_strUsername + _strPassword);
 						}
 
 					}

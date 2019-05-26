@@ -25,11 +25,11 @@ PLC4X_ROOT_DIR=.
 # BUNDLE_DIR is results of maven release:perform's creation of release candidate
 BUNDLE_DIR=${PLC4X_ROOT_DIR}/target/checkout/target
 
-PLC4X_ASF_GIT_URL=https://git-wip-us.apache.org/repos/asf/incubator-plc4x.git
-PLC4X_ASF_DIST_URL=https://www.apache.org/dist/incubator/plc4x
-PLC4X_ASF_DIST_DYN_URL=https://www.apache.org/dyn/closer.cgi/incubator/plc4x
-PLC4X_ASF_SVN_RELEASE_URL=https://dist.apache.org/repos/dist/release/incubator/plc4x
-PLC4X_ASF_SVN_RC_URL=https://dist.apache.org/repos/dist/dev/incubator/plc4x
+PLC4X_ASF_GIT_URL=https://git-wip-us.apache.org/repos/asf/plc4x.git
+PLC4X_ASF_DIST_URL=https://www.apache.org/dist/plc4x
+PLC4X_ASF_DIST_DYN_URL=https://www.apache.org/dyn/closer.cgi/plc4x
+PLC4X_ASF_SVN_RELEASE_URL=https://dist.apache.org/repos/dist/release/plc4x
+PLC4X_ASF_SVN_RC_URL=https://dist.apache.org/repos/dist/dev/plc4x
 
 USAGE=
 
@@ -188,7 +188,7 @@ function getReleaseTag() {  # $1: X.Y.Z  [$2: rc-num]
   if [ $# -gt 0 ] && [ "$1" != "" ]; then
     RC_SFX="-RC$1"
   fi
-  echo "${VER}-incubating${RC_SFX}" 
+  echo "${VER}${RC_SFX}"
 }
 
 function getReleaseTagComment() {  # $1: X.Y.Z  [$2: rc-num]
@@ -198,5 +198,5 @@ function getReleaseTagComment() {  # $1: X.Y.Z  [$2: rc-num]
   if [ $# -gt 0 ] && [ "$1" != "" ]; then
     RC_SFX=" RC$1"
   fi
-  echo "Apache PLC4X ${VER}-incubating${RC_SFX}"
+  echo "Apache PLC4X ${VER}${RC_SFX}"
 }

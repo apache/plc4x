@@ -24,26 +24,120 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4cpp</artifactId>
-    <version>0.3.1</version>
+    <version>0.4.0</version>
   </parent>
 
   <artifactId>plc4cpp-api</artifactId>
+  <packaging>pom</packaging>
 
   <name>PLC4Cpp: API</name>
   <description>Central API Module.</description>
 
   <build>
     <!-- This is probably not required, however it helps IntelliJ detect the files as sources -->
-    <sourceDirectory>${project.basedir}/src/main/cpp</sourceDirectory>
+    <sourceDirectory>src/main/cpp</sourceDirectory>
+
+    <plugins>
+      <!-- Get the dependencies and unpack them to the target/dependencies folder -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>unpack-dependencies</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.googlecode.cmake-maven-project</groupId>
+        <artifactId>cmake-maven-plugin</artifactId>
+        <version>3.7.2-b1</version>
+        <executions>
+          <!-- Uses a CMake generator to generate the build using the build tool of choice -->
+          <execution>
+            <id>cmake-generate</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <!--
+                Actually the path to the CMakeList.txt file which then again
+                tells to tool where to find the sources.
+              -->
+              <sourcePath>${project.basedir}</sourcePath>
+              <!--
+                Path to where the build configuration is generated
+                (This directory is then used in the compile step to actually perform the build)
+              -->
+              <targetPath>${project.build.directory}/build</targetPath>
+              <!--
+                Name of the generator the compile step will be executing.
+              -->
+              <generator>${cmake.generator}</generator>
+              <!--
+                The classifier of the current platform. One of
+                [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
+                It defines the version and type of the cmake installation to download.
+              -->
+              <classifier>${os.classifier}</classifier>
+            </configuration>
+          </execution>
+          <!-- Actually executes the build -->
+          <execution>
+            <id>cmake-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <!-- The directory where the "generate" step generated the build configuration -->
+              <projectDirectory>${project.build.directory}/build</projectDirectory>
+              <classifier>${os.classifier}</classifier>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>package-cpp</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.artifactId}-${project.version}</finalName>
+              <descriptors>
+                <descriptor>src/assembly/cpp.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
-    <!-- To make sure the libs are built first. -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4cpp-libs</artifactId>
-      <version>0.3.1</version>
-      <type>pom</type>
+      <artifactId>plc4cpp-libs-boost</artifactId>
+      <version>0.4.0</version>
+      <type>zip</type>
+      <classifier>cpp-${os.classifier}</classifier>
     </dependency>
   </dependencies>
 

@@ -29,7 +29,7 @@
 
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
-  <version>0.3.1</version>
+  <version>0.4.0</version>
   <packaging>pom</packaging>
 
   <name>PLC4X</name>
@@ -41,17 +41,17 @@
   <inceptionYear>2017</inceptionYear>
 
   <scm>
-    <connection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</connection>
-    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x.git</developerConnection>
-    <url>https://github.com/apache/incubator-plc4x</url>
-    <tag>release/0.3.1</tag>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</developerConnection>
+    <url>https://github.com/apache/plc4x</url>
+    <tag>release/0.4.0</tag>
   </scm>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scm:git:https://gitbox.apache.org/repos/asf/incubator-plc4x-website.git</url>
+      <url>scm:git:https://gitbox.apache.org/repos/asf/plc4x-website.git</url>
     </site>
   </distributionManagement>
 
@@ -63,10 +63,24 @@
   <mailingLists>
     <mailingList>
       <name>Apache PLC4X Developer List</name>
-      <subscribe>dev-subscribe@plc4x.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@plc4x.apache.org</unsubscribe>
-      <post>dev@plc4x.apache.org</post>
+      <subscribe>mailto:dev-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:dev-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:dev@plc4x.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>PLC4X Commits List</name>
+      <subscribe>mailto:commit-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:commits-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:commits@plc4x.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
+    </mailingList>
+    <mailingList>
+      <name>PLC4X Jira Notifications List</name>
+      <subscribe>mailto:issues-subscribe@plc4x.apache.org</subscribe>
+      <unsubscribe>mailto:issues-unsubscribe@plc4x.apache.org</unsubscribe>
+      <post>mailto:issues@plc4x.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-issues/</archive>
     </mailingList>
   </mailingLists>
 
@@ -91,7 +105,10 @@
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
     <bouncycastle.version>1.60</bouncycastle.version>
-    <byte-buddy.version>1.8.21</byte-buddy.version>
+    <boost.version>1.70.0</boost.version>
+    <boost.version.underline-short>1_70</boost.version.underline-short>
+    <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
+    <byte-buddy.version>1.9.10</byte-buddy.version>
     <commons-codec.version>1.11</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
     <commons-configuration2.version>2.2</commons-configuration2.version>
@@ -102,15 +119,16 @@
     <commons-pool2.version>2.6.0</commons-pool2.version>
     <commons-text.version>1.4</commons-text.version>
     <crc.version>1.0.1</crc.version>
-    <daffodil.version>2.2.0</daffodil.version>
-    <elasticsearch.version>6.4.2</elasticsearch.version>
+    <daffodil.version>2.3.0</daffodil.version>
+    <elasticsearch.version>7.0.1</elasticsearch.version>
     <equalsverifier.version>3.0.2</equalsverifier.version>
     <findbugs.version>3.0.1</findbugs.version>
     <groovy.version>2.5.3</groovy.version>
     <gson.version>2.8.0</gson.version>
     <guava.version>27.0.1-jre</guava.version>
     <hamcrest.version>1.3</hamcrest.version>
-    <jackson.version>2.9.7</jackson.version>
+    <jackson.version>2.9.8</jackson.version>
+    <jmh.version>1.21</jmh.version>
     <jna.version>4.5.1</jna.version>
     <joda-time.version>2.10</joda-time.version>
     <jopt-simple.version>5.0.2</jopt-simple.version>
@@ -119,11 +137,12 @@
     <junit.version>4.12</junit.version>
     <log4j.version>2.11.1</log4j.version>
     <logback.version>1.2.3</logback.version>
-    <lucene.version>7.4.0</lucene.version>
+    <lucene.version>8.0.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
-    <mockito.version>2.22.0</mockito.version>
-    <netty.version>4.1.23.Final</netty.version>
+    <mockito.version>2.24.5</mockito.version>
+    <netty.version>4.1.35.Final</netty.version>
     <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
+    <owasp-dependency-check.version>5.0.0-M1</owasp-dependency-check.version>
     <pcap4j.version>1.7.3</pcap4j.version>
     <scala.version>2.12.6</scala.version>
     <slf4j.version>1.7.25</slf4j.version>
@@ -131,8 +150,10 @@
     <spock-reports.version>1.6.1</spock-reports.version>
     <spock.version>1.2-groovy-2.5</spock.version>
     <t-digest.version>3.2</t-digest.version>
+    <thrift.version>0.12.0</thrift.version>
 
     <!-- Site properties -->
+    <reflow.skin.version>1.5.0</reflow.skin.version>
     <bootstrap.version>3.3.7</bootstrap.version>
     <jquery.version>3.3.1</jquery.version>
     <anchorjs.version>3.2.2</anchorjs.version>
@@ -143,17 +164,8 @@
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
 
-    <!-- Core PLC4X modules -->
-    <module>plc4c</module>
-    <!--module>plc4cpp</module-->
-    <module>plc4j</module>
-    <module>plc4s</module>
-
-    <!-- Integration modules for other frameworks -->
-    <module>integrations</module>
-
-    <!-- Examples -->
-    <module>examples</module>
+    <!-- Tools needed throughout the build -->
+    <module>tools</module>
   </modules>
 
   <prerequisites>
@@ -288,6 +300,11 @@
         <version>${netty.version}</version>
       </dependency>
       <dependency>
+        <groupId>jaxen</groupId>
+        <artifactId>jaxen</artifactId>
+        <version>1.1.6</version>
+      </dependency>
+      <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>${joda-time.version}</version>
@@ -334,6 +351,17 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
+        <artifactId>commons-jexl3</artifactId>
+        <version>3.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons-lang3.version}</version>
       </dependency>
@@ -354,12 +382,27 @@
       </dependency>
       <dependency>
         <groupId>org.apache.daffodil</groupId>
+        <artifactId>daffodil-japi_2.12</artifactId>
+        <version>${daffodil.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.daffodil</groupId>
         <artifactId>daffodil-lib_2.12</artifactId>
         <version>${daffodil.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.daffodil</groupId>
-        <artifactId>daffodil-tdml_2.12</artifactId>
+        <artifactId>daffodil-runtime1_2.12</artifactId>
+        <version>${daffodil.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.daffodil</groupId>
+        <artifactId>daffodil-tdml-lib_2.12</artifactId>
+        <version>${daffodil.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.daffodil</groupId>
+        <artifactId>daffodil-tdml-processor_2.12</artifactId>
         <version>${daffodil.version}</version>
       </dependency>
       <dependency>
@@ -516,6 +559,11 @@
         <version>${hamcrest.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom2</artifactId>
+        <version>2.0.6</version>
+      </dependency>
+      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
         <version>${junit.jupiter.version}</version>
@@ -581,6 +629,11 @@
         <version>${slf4j.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.spockframework</groupId>
         <artifactId>spock-core</artifactId>
         <version>${spock.version}</version>
@@ -596,35 +649,33 @@
         <artifactId>netty-transport-jserialcomm</artifactId>
         <version>${netty-transport-jserialcomm.version}</version>
       </dependency>
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>1.4.01</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <build>
     <plugins>
-      <!-- Plugin for analysing the project based on neo4j queries -->
-      <plugin>
-        <groupId>com.buschmais.jqassistant</groupId>
-        <artifactId>jqassistant-maven-plugin</artifactId>
-        <version>1.6.0</version>
+      <!--plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1</version>
+        <inherited>false</inherited>
         <executions>
           <execution>
+            <phase>validate</phase>
             <goals>
-              <goal>scan</goal>
-              <goal>analyze</goal>
+              <goal>execute</goal>
             </goals>
             <configuration>
-              <rulesDirectory>${project.basedir}/src/jqassistant</rulesDirectory>
-              <failOnSeverity>MAJOR</failOnSeverity>
-              <warnOnSeverity>MINOR</warnOnSeverity>
-              <scanIncludes>
-                <scanInclude>
-                  <path>${project.basedir}/.git</path>
-                </scanInclude>
-              </scanIncludes>
+              <source>${project.basedir}/src/main/script/prerequisite-check.groovy</source>
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
 
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
@@ -652,6 +703,7 @@
             <exclude>**/.project</exclude>
             <exclude>**/.settings/**</exclude>
             <exclude>**/.classpath</exclude>
+            <exclude>**/.factorypath</exclude>
 
             <!-- IntelliJ related files -->
             <exclude>**/.idea/**</exclude>
@@ -671,6 +723,21 @@
 
             <!-- JSON doesn't like comments -->
             <exclude>**/*.json</exclude>
+
+            <!-- Output of the profiler maven extension -->
+            <exclude>**/.profiler/**</exclude>
+
+            <!-- CLion stuff (C++ IDE) -->
+            <exclude>**/cmake-build-debug/**</exclude>
+
+            <!-- Stuff created during a plc4net build -->
+            <exclude>**/obj/**</exclude>
+
+            <!-- Temporarily exclude generated code from thrift in python modules -->
+            <exclude>generated/**</exclude>
+
+            <!-- Temporary Python virtualenv files-->
+            <exclude>**/venv/**</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -679,39 +746,24 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>1.6.0</version>
         <executions>
           <execution>
             <id>process-resource-bundles</id>
+            <phase>prepare-package</phase>
             <goals>
               <goal>process</goal>
             </goals>
             <configuration>
+              <!-- TODO: For some reason the build seems to fail in conjunction with the dependency-plugin unpack goal, if enabled -->
+              <skip>true</skip>
               <resourceBundles>
                 <!-- Will generate META-INF/{DEPENDENCIES,LICENSE,NOTICE} -->
                 <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
-                <!-- Will generate META-INF/DISCLAIMER  -->
-                <resourceBundle>org.apache:apache-incubator-disclaimer-resource-bundle:1.1</resourceBundle>
               </resourceBundles>
               <!-- Content in this directory will be appended to generated resources -->
               <appendedResourcesDirectory>${basedir}/src/remote-resources</appendedResourcesDirectory>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Compile any groovy code located in "src/test/groovy" -->
-      <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.6.2</version>
-        <executions>
-          <execution>
-            <id>compile-groovy-tests</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>addTestSources</goal>
-              <goal>compileTests</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
@@ -730,54 +782,36 @@
         manually take care of fetching and packaging these external resources with the generated site.
       -->
 
-      <!--
-          The reflow maven skin used for the site-generation requires some static resources.
-          The following plugins configure the acquisition and location of these resources.
-      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-js-deps</id>
+            <id>unpack</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
             <configuration>
-              <!--
-                  Bundle these dependencies in the war.
-
-                  You must maintain the corresponding info if you
-                  add/remove artifacts or change their versions:
-                    - entry in src/main/webapp/META-INF/LICENSE
-                    - entry in src/main/webapp/META-INF/NOTICE when appropriate
-
-                  You must maintain the info in the corresponding
-                  console/server files because it bundles this war.
-
-                  You must maintain the info in this project's
-                  corresponding platforms/java7 files.
-               -->
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>bootstrap</artifactId>
-                  <version>${bootstrap.version}</version>
-                  <!-- We're replacing this by in the get-flatly-bootstrap-theme execution a few lines down -->
-                  <excludes>META-INF/resources/webjars/**/bootstrap.min.css</excludes>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>jquery</artifactId>
-                  <version>${jquery.version}</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>anchorjs</artifactId>
-                  <version>${anchorjs.version}</version>
+                  <groupId>io.github.devacfr.maven.skins</groupId>
+                  <artifactId>reflow-default-webdeps</artifactId>
+                  <version>${reflow.skin.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <includes>
+                    **/css/bootstrap.min.css,
+                    **/css/fontawesome/*,
+                    **/js/*.js,
+                    **/js/languages/*,
+                    **/js/styles/default.min.css
+                  </includes>
                 </artifactItem>
               </artifactItems>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
             </configuration>
           </execution>
         </executions>
@@ -789,32 +823,18 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
         <executions>
           <execution>
-            <id>get-flatly-bootstrap-theme</id>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://stackpath.bootstrapcdn.com/bootswatch/${bootstrap.version}/flatly/bootstrap.min.css</url>
-              <outputDirectory>
-                ${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/
-              </outputDirectory>
-              <outputFileName>bootstrap.min.css</outputFileName>
-            </configuration>
-          </execution>
-          <execution>
             <id>get-fontawesome</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>
-                https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip
-              </url>
+              <url>https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip</url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
             </configuration>
@@ -828,6 +848,8 @@
         <executions>
           <execution>
             <id>copy-site-resources</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -835,25 +857,6 @@
             <configuration>
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
-                <resource>
-                  <directory>
-                    ${project.build.directory}/dependency/META-INF/resources/webjars/anchorjs/${anchorjs.version}
-                  </directory>
-                  <targetPath>${project.build.directory}/site/js</targetPath>
-                  <includes>
-                    <include>anchor.min.js</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>
-                    ${project.build.directory}/dependency/META-INF/resources/webjars/bootstrap/${bootstrap.version}
-                  </directory>
-                  <includes>
-                    <include>css/bootstrap.min.css</include>
-                    <include>js/bootstrap.min.js</include>
-                    <include>fonts/**</include>
-                  </includes>
-                </resource>
                 <resource>
                   <directory>
                     ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web
@@ -867,14 +870,6 @@
                     ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts
                   </directory>
                   <targetPath>${project.build.directory}/site/fonts</targetPath>
-                </resource>
-                <resource>
-                  <directory>${project.build.directory}/dependency/META-INF/resources/webjars/jquery/${jquery.version}
-                  </directory>
-                  <targetPath>${project.build.directory}/site/js</targetPath>
-                  <includes>
-                    <include>jquery.min.js</include>
-                  </includes>
                 </resource>
               </resources>
             </configuration>
@@ -893,6 +888,8 @@
         <executions>
           <execution>
             <id>streamline-font-urls</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
             <phase>pre-site</phase>
             <goals>
               <goal>replace</goal>
@@ -908,56 +905,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-
-      <!--
-        When running asciidoctor as part of the site-generation there were great problems with
-        the configuration of the diagram generation. Unfortunatel when generating all content here,
-        the output will not have the site style. That's why here we generate the images to the
-        site directory and have the output written to an outside directory, so it will not interfere.
-      -->
-      <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
-        <version>1.5.6</version>
-        <executions>
-          <execution>
-            <id>generate-asciidoc</id>
-            <phase>site</phase>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-            <configuration>
-              <sourceDirectory>src/site/asciidoc</sourceDirectory>
-              <outputDirectory>${project.build.directory}/dump</outputDirectory>
-              <attributes>
-                <source-highlighter>prettify</source-highlighter>
-                <!-- Tells asciidoctor where to put the generated files -->
-                <imagesoutdir>${project.build.directory}/site/img</imagesoutdir>
-              </attributes>
-              <requires>
-                <require>asciidoctor-diagram</require>
-              </requires>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.jruby</groupId>
-            <artifactId>jruby-complete</artifactId>
-            <version>9.1.13.0</version>
-          </dependency>
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctorj</artifactId>
-            <version>1.5.6</version>
-          </dependency>
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctorj-diagram</artifactId>
-            <version>1.5.4.1</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <!--
@@ -1033,20 +980,12 @@
           </executions>
         </plugin>
 
-        <!--
-          Inject the "incubating" into the output filename
-          N.B. this finalName config spec is currently ignored/overridden
-          by the "apache-release" profile based configuration
-          in this pom. See that config for the finalName.
-          Retain this for now in case we get to the point where
-          that "apache-release" config is no longer needed.
-        -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.1.1</version>
           <configuration>
-            <finalName>apache-plc4x-incubating-${project.version}</finalName>
+            <finalName>apache-plc4x-${project.version}</finalName>
           </configuration>
         </plugin>
 
@@ -1076,14 +1015,8 @@
             <asciidoc>
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
-                <!--
-                  When running asciidoctor as part of the site-generation, it will generate the diagrams of
-                  sub-modules into the root modules img directory, which will break everything. Therefore we
-                  tell it to generate to some outside directory and have a second execution of asciidoctor
-                  generate the images to the correct location. This is a hack that should be removed as soon
-                  as possible.
-                -->
-                <imagesoutdir>${project.build.directory}/dump</imagesoutdir>
+                <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
+                <project-version>${project.version}</project-version>
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
@@ -1095,7 +1028,7 @@
             <dependency>
               <groupId>io.github.devacfr.maven.skins</groupId>
               <artifactId>reflow-velocity-tools</artifactId>
-              <version>1.3.10</version>
+              <version>${reflow.skin.version}</version>
             </dependency>
             <!-- add support for scm/git site deployment -->
             <dependency>
@@ -1122,7 +1055,7 @@
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctor-maven-plugin</artifactId>
-              <version>1.5.6</version>
+              <version>1.5.7.1</version>
             </dependency>
             <dependency>
               <groupId>org.jruby</groupId>
@@ -1160,35 +1093,17 @@
           <version>2.3</version>
         </plugin>
 
-        <!--                                                                                                                                                                  
-              This is a fake plugin which is used to tell m2e (Eclipse) how                                                                                                   
-              to process this maven project.                                                                                                                                  
-        -->
         <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-remote-resources-plugin</artifactId>
-                    <versionRange>[1.0.0,)</versionRange>
-                    <goals>
-                      <goal>process</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
+          <groupId>com.buschmais.jqassistant</groupId>
+          <artifactId>jqassistant-maven-plugin</artifactId>
+          <version>1.6.0</version>
         </plugin>
 
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${owasp-dependency-check.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -1196,7 +1111,7 @@
   <reporting>
     <plugins>
       <!-- Generate the unit- and integration-test reports -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <reportSets>
@@ -1207,10 +1122,10 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
+      </plugin-->
 
       <!-- Generate a code coverage report -->
-      <plugin>
+      <!--plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <reportSets>
@@ -1228,17 +1143,17 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
+      </plugin-->
 
       <!-- Add html friendly version of source files with line-numbers -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.5</version>
-      </plugin>
+        <version>3.0.0</version>
+      </plugin-->
 
       <!-- Generate javadoc documentation -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <reportSets>
@@ -1252,10 +1167,10 @@
         <configuration>
           <failOnError>true</failOnError>
         </configuration>
-      </plugin>
+      </plugin-->
 
       <!-- Generates a changelog report from GIT commits -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changelog-plugin</artifactId>
         <reportSets>
@@ -1267,24 +1182,39 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <!-- Automatically link Jira issues -->
+          <!- Automatically link Jira issues ->
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
         </configuration>
-      </plugin>
+      </plugin-->
 
-      <plugin>
-        <groupId>com.buschmais.jqassistant</groupId>
-        <artifactId>jqassistant-maven-plugin</artifactId>
+      <!-- Generates a dependency vulnerability -->
+      <!--plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
         <reportSets>
           <reportSet>
             <reports>
-              <report>report</report>
+              <report>aggregate</report>
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
+      </plugin-->
     </plugins>
   </reporting>
+
+  <!-- Make Snapshots of Apache projects available -->
+  <repositories>
+    <repository>
+      <id>apache-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <profiles>
     <!-- Build PLC4X including the CPP modules -->
@@ -1293,6 +1223,108 @@
       <modules>
         <module>plc4cpp</module>
       </modules>
+    </profile>
+
+    <!-- Build PLC4X including the Java modules -->
+    <profile>
+      <id>with-java</id>
+      <modules>
+        <module>plc4j</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the .Net modules -->
+    <profile>
+      <id>with-dotnet</id>
+      <modules>
+        <module>plc4net</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the Python modules -->
+    <profile>
+      <id>with-python</id>
+      <modules>
+        <module>plc4py</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the Sandbox modules -->
+    <profile>
+      <id>with-sandbox</id>
+      <modules>
+        <module>sandbox</module>
+      </modules>
+    </profile>
+
+    <!-- Profile, which is used in sub-modules to enable Thrift related proxy modules -->
+    <profile>
+      <id>with-proxies</id>
+    </profile>
+
+    <!-- Profile for linux -->
+    <profile>
+      <id>unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>linux</os.suffix>
+        <os.classifier>linux-x86_64</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
+        <boost.build.executable>./b2</boost.build.executable>
+        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
+        <thrift.configure.executable>./configure</thrift.configure.executable>
+        <thrift.make.executable>make</thrift.make.executable>
+        <thrift.compiler.executable>thrift</thrift.compiler.executable>
+      </properties>
+    </profile>
+    <!-- Profile for mac -->
+    <profile>
+      <id>max</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>mac</os.suffix>
+        <os.classifier>mac-x86_64</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
+        <boost.build.executable>./b2</boost.build.executable>
+        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
+        <thrift.configure.executable>./configure</thrift.configure.executable>
+        <thrift.make.executable>make</thrift.make.executable>
+        <thrift.compiler.executable>thrift</thrift.compiler.executable>
+      </properties>
+    </profile>
+    <!-- profile for windows -->
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>win</os.suffix>
+        <os.classifier>windows-x86_64</os.classifier>
+        <cmake.generator>MinGW Makefiles</cmake.generator>
+        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
+        <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
+        <boost.build.executable>b2</boost.build.executable>
+        <boost.include-directory>libs/libs/boost/include/boost-${boost.version.underline-short}</boost.include-directory>
+        <thrift.bootstrap.executable>bootstrap.sh</thrift.bootstrap.executable>
+        <thrift.configure.executable>configure</thrift.configure.executable>
+        <thrift.make.executable>make</thrift.make.executable>
+        <thrift.compiler.executable>thrift.exe</thrift.compiler.executable>
+      </properties>
     </profile>
 
     <!--
@@ -1330,8 +1362,6 @@
     -->
     <profile>
       <id>jenkins-build</id>
-      <properties>
-      </properties>
     </profile>
 
     <!--
@@ -1346,7 +1376,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <version>3.0.0-M1</version> <!--$NO-MVN-MAN-VER$-->
+            <version>3.0.0-M2</version> <!--$NO-MVN-MAN-VER$-->
             <executions>
               <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
               <execution>
@@ -1360,314 +1390,117 @@
                     <requireJavaVersion>
                       <version>1.8.0</version>
                     </requireJavaVersion>
-                    <reactorModuleConvergence />
+                    <!--reactorModuleConvergence/-->
                   </rules>
                 </configuration>
               </execution>
             </executions>
           </plugin>
 
-          <plugin>
+          <!--plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
-            <version>4.0.2</version>
             <executions>
               <execution>
                 <goals>
                   <goal>check</goal>
                 </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <failBuildOnCVSS>8</failBuildOnCVSS>
+            </configuration>
+          </plugin-->
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>with-jqassistant</id>
+      <build>
+        <plugins>
+          <!-- Plugin for analysing the project based on neo4j queries -->
+          <plugin>
+            <groupId>com.buschmais.jqassistant</groupId>
+            <artifactId>jqassistant-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>scan</goal>
+                  <goal>analyze</goal>
+                </goals>
+                <configuration>
+                  <rulesDirectory>${project.basedir}/src/jqassistant</rulesDirectory>
+                  <failOnSeverity>MAJOR</failOnSeverity>
+                  <warnOnSeverity>MINOR</warnOnSeverity>
+                  <scanIncludes>
+                    <scanInclude>
+                      <path>${project.basedir}/.git</path>
+                    </scanInclude>
+                  </scanIncludes>
+                </configuration>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
-    </profile>
-
-    <!--
-      This profile has java-specific plugin configurations
-      that might not apply to other languages.
-    -->
-    <profile>
-      <id>java-module</id>
-      <activation>
-        <file>
-          <exists>src/main/java</exists>
-        </file>
-      </activation>
-
-      <!-- Dependencies common to all java modules -->
-      <dependencies>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <!-- JUnit 4 Support -->
-        <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <!-- JUnit 5 Support -->
-        <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter-api</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter-params</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter-engine</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.junit.vintage</groupId>
-          <artifactId>junit-vintage-engine</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.hamcrest</groupId>
-          <artifactId>hamcrest-core</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.hamcrest</groupId>
-          <artifactId>hamcrest-library</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-core</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-junit-jupiter</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-core</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.codehaus.groovy</groupId>
-          <artifactId>groovy-test-junit5</artifactId>
-          <version>2.5.3</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-
-      <build>
+      <reporting>
         <plugins>
-          <!--
-            Even if Maven transitively pulls in dependencies, relying on these can
-            quite often cause hard to find problems. So it's a good practice to make
-            sure everything directly required is also directly added as a dependency.
-            On the other side adding unused dependency only over-complicates the
-            the dependency graph, so the maven-dependency-plugin checks we depend on
-            what we need and only that and that runtime dependencies are correctly
-            imported with runtime scope.
-          -->
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>check-dependencies</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>analyze-only</goal>
-                </goals>
-                <configuration>
-                  <failOnWarning>true</failOnWarning>
-                  <ignoredDependencies>
-                    <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
-                    <ignoredDependency>junit:junit</ignoredDependency>
-                    <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
-                    <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
-                    <ignoredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredDependency>
-                    <ignoredDependency>org.junit.vintage:junit-vintage-engine</ignoredDependency>
-                    <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
-                    <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
-                    <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
-                    <ignoredDependency>org.mockito:mockito-junit-jupiter</ignoredDependency>
-                    <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
-                    <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
-                    <ignoredDependency>org.codehaus.groovy:groovy-test-junit5</ignoredDependency>
-                    <ignoredDependency>org.codehaus.groovy:groovy</ignoredDependency>
-                    <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
-                  </ignoredDependencies>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!--
-            This plugin doesn't really do much, it makes sure the jacoco agent
-            is downloaded and that the path to this is saved in an environment
-            variable so we can access this later on in the build.
-          -->
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <executions>
-              <!--
-                  Prepares the property pointing to the JaCoCo runtime agent which
-                  is passed as VM argument when Maven the Surefire plugin is executed.
-              -->
-              <execution>
-                <id>pre-unit-test</id>
-                <phase>generate-test-sources</phase>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-                <configuration>
-                  <!--
-                      Sets the name of the property containing the settings
-                      for JaCoCo runtime agent.
-                  -->
-                  <propertyName>surefireArgLine</propertyName>
-                </configuration>
-              </execution>
-              <!--
-                  Prepares the property pointing to the JaCoCo runtime agent which
-                  is passed as VM argument when Maven the Failsafe plugin is executed.
-              -->
-              <execution>
-                <id>pre-integration-test</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>prepare-agent-integration</goal>
-                </goals>
-                <configuration>
-                  <!--
-                      Sets the name of the property containing the settings
-                      for JaCoCo runtime agent.
-                  -->
-                  <propertyName>failsafeArgLine</propertyName>
-                </configuration>
-              </execution>
-              <!--
-                  Check if the unit-test-coverage is at least a certain minimum.
-              -->
-              <execution>
-                <id>check-coverage</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-                <configuration>
-                  <!-- TODO: Turn this on as soon as possible. -->
-                  <haltOnFailure>false</haltOnFailure>
-                  <rules>
-                    <rule implementation="org.jacoco.maven.RuleConfiguration">
-                      <element>BUNDLE</element>
-                      <limits>
-                        <!-- Fail the build if the instruction level coverage is below 80%. -->
-                        <limit implementation="org.jacoco.report.check.Limit">
-                          <counter>INSTRUCTION</counter>
-                          <value>COVEREDRATIO</value>
-                          <minimum>0.50</minimum>
-                        </limit>
-                        <!-- Fail the build if there are classes without any coverage. -->
-                        <limit implementation="org.jacoco.report.check.Limit">
-                          <counter>CLASS</counter>
-                          <value>MISSEDCOUNT</value>
-                          <maximum>0</maximum>
-                        </limit>
-                      </limits>
-                    </rule>
-                  </rules>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!--
-            Make the surefire execute all unit-tests
-          -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <!--
-                We have to slightly increase the heap-size or some tests will fail.
-                Notice the @ instead of the $ as prefix? That's late evaluation.
-              -->
-              <argLine>-Xmx256m @{surefireArgLine}</argLine>
-              <includes>
-                <include>**/*Test.java</include>
-                <include>**/*Tests.java</include>
-                <include>**/*Spec.java</include>
-              </includes>
-            </configuration>
-          </plugin>
-
-          <!--
-            Generate an OSGI compatible MANIFEST file.
-          -->
-          <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>bundle-manifest</id>
-                <phase>process-classes</phase>
-                <goals>
-                  <goal>manifest</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!--
-            Use the MANIFEST file generated by the maven-bundle-plugin.
-          -->
-          <plugin>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-              <archive>
-                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-              </archive>
-            </configuration>
-          </plugin>
-
-          <!--
-            Make the failsafe execute all integration-tests
-          -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <!--
-                    Notice the @ instead of the $ as prefix? That's late evaluation.
-              -->
-              <argLine>@{failsafeArgLine}</argLine>
-            </configuration>
+            <groupId>com.buschmais.jqassistant</groupId>
+            <artifactId>jqassistant-maven-plugin</artifactId>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>report</report>
+                </reports>
+              </reportSet>
+            </reportSets>
           </plugin>
         </plugins>
+      </reporting>
+    </profile>
+
+    <profile>
+      <id>only-eclipse</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <!--
+              This is a fake plugin which is used to tell m2e (Eclipse) how
+              to process this maven project.
+            -->
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-remote-resources-plugin</artifactId>
+                        <versionRange>[1.0.0,)</versionRange>
+                        <goals>
+                          <goal>process</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
       </build>
     </profile>
 
@@ -1686,7 +1519,7 @@
           <plugin>
             <groupId>net.nicoulaj.maven.plugins</groupId>
             <artifactId>checksum-maven-plugin</artifactId>
-            <version>1.7</version>
+            <version>1.8</version>
             <executions>
               <execution>
                 <goals>
@@ -1702,7 +1535,7 @@
                 <fileSet>
                   <directory>${project.build.directory}</directory>
                   <includes>
-                    <include>apache-plc4x-incubating-${project.version}-source-release.zip</include>
+                    <include>apache-plc4x-${project.version}-source-release.zip</include>
                   </includes>
                 </fileSet>
               </fileSets>

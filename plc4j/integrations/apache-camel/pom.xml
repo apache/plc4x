@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-integrations</artifactId>
+    <version>0.4.0</version>
+  </parent>
+
+  <artifactId>plc4j-apache-camel</artifactId>
+
+  <name>PLC4J: Integrations: Apache Camel</name>
+  <description>Integration module for integrating PLC4X into Apache Camel.</description>
+
+  <properties>
+    <camel.version>2.23.1</camel.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.4.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+      <!-- TODO: version temporary defined due to PLC4X-22-->
+      <version>${camel.version}</version>
+    </dependency>
+
+    <!-- Support camel documentation-->
+    <!-- TODO: Do we need this? -->
+    <!--dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>apt</artifactId>
+      <!- TODO: version temporary defined due to PLC4X-22->
+      <version>${camel.version}</version>
+      <scope>provided</scope>
+    </dependency-->
+
+    <!-- TODO: Do we need this? And if we do, definitely not as scope=compile -->
+    <!--dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <!- TODO: version temporary defined due to PLC4X-22->
+        <exclusions>
+          <exclusion>
+            <artifactId>hamcrest-core</artifactId>
+            <groupId>org.hamcrest</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency-->
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-test</artifactId>
+      <!-- TODO: version temporary defined due to PLC4X-22-->
+      <version>${camel.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-protocol-driver-base</artifactId>
+      <version>0.4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <!--dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <version>1.2.0</version>
+      <scope>test</scope>
+    </dependency-->
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Camel BOM -->
+      <!-- TODO: version temporary disabled due to PLC4X-22-->
+      <!--dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-parent</artifactId>
+        <version>2.20.1</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency-->
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-package-maven-plugin</artifactId>
+        <version>2.20.1</version>
+        <executions>
+          <execution>
+            <id>prepare</id>
+            <goals>
+              <goal>prepare-components</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+          <execution>
+            <id>validate</id>
+            <goals>
+              <goal>validate-components</goal>
+            </goals>
+            <phase>prepare-package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- to generate the MANIFEST-FILE of the bundle -->
+      <!-- TODO: Seems this plugin is messing up the jqassistant execution. Also it doesn't seem to have any effect on the output as it is not executed at all and there is no MANIFEST.MF in the output -->
+      <!--plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>3.5.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}}.${project.artifactId}</Bundle-SymbolicName>
+            <Export-Service>org.apache.camel.spi.ComponentResolver;component=s7</Export-Service>
+          </instructions>
+        </configuration>
+      </plugin-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>check-dependencies</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <ignoredDependencies combine.children="append">
+                <ignoredDependency>org.apache.plc4x:plc4j-driver-ads</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

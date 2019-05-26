@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-protocols</artifactId>
-    <version>0.3.1</version>
+    <version>0.4.0</version>
   </parent>
 
   <artifactId>plc4j-protocol-iso-on-tcp</artifactId>
@@ -35,12 +35,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.3.1</version>
+      <version>0.4.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.3.1</version>
+      <version>0.4.0</version>
     </dependency>
 
     <dependency>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.3.1</version>
+      <version>0.4.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

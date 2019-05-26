@@ -41,7 +41,7 @@ namespace org
 						class PlcNotImplementedException : public PlcRuntimeException
 						{
 							public:
-								explicit PlcNotImplementedException(const std::string &message): PlcRuntimeException(message){}
+								explicit PlcNotImplementedException(const std::string& strMessage): PlcRuntimeException(strMessage){}
 						};
 					}
 				}

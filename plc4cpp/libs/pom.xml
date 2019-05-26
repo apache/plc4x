@@ -24,129 +24,17 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4cpp</artifactId>
-    <version>0.3.1</version>
+    <version>0.4.0</version>
   </parent>
 
   <artifactId>plc4cpp-libs</artifactId>
   <packaging>pom</packaging>
 
   <name>PLC4Cpp: Libs</name>
-  <description>Build of all the third party dependencies needed by the plc4cpp.</description>
+  <description>Wrapper project for PLC4Cpp third party libs.</description>
 
-  <!--
-    Project for building platform dependent versions of the base-libs used by the plc4cpp modules.
-    As building these libraries usually takes quite a lot of time, they are being built in the
-    normal "target" directory, however the finished libs are installed in a "libs" directory.
-
-    This is done to prevent the libs from being cleaned every time.
-  -->
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>license-check</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration>
-            <excludes combine.children="append">
-              <!-- Don't scan the libs directory -->
-              <exclude>libs/**</exclude>
-            </excludes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>build-dependencies</id>
-      <activation>
-        <file>
-          <missing>libs/boost</missing>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <!-- First download the sources for building the boost library -->
-          <plugin>
-            <groupId>com.googlecode.maven-download-plugin</groupId>
-            <artifactId>download-maven-plugin</artifactId>
-            <version>1.4.0</version>
-            <executions>
-              <execution>
-                <id>get-boost</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>wget</goal>
-                </goals>
-                <configuration>
-                  <url>${boost.url}</url>
-                  <unpack>true</unpack>
-                  <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <!--
-            Then execute two build phases:
-
-            1) bootstrap the build
-            2) Perform the actual build and install
-          -->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <id>bootstrap-boost</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>${boost.bootstrap.executable}</executable>
-                  <arguments>
-                    <argument>gcc</argument>
-                  </arguments>
-                  <workingDirectory>${project.build.directory}/libs/boost_${boost.version.underline}</workingDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>build-boost</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>${boost.build.executable}</executable>
-                  <arguments>
-                    <!-- Have the build install the built libraries -->
-                    <argument>install</argument>
-                    <!-- Tell it where to install the libraries and header files -->
-                    <argument>--prefix=${project.basedir}/libs/boost</argument>
-                    <!-- Build only the system module (speeds up build-time drastically) -->
-                    <argument>--with-system</argument>
-                    <!-- On Windows machines the build failed, if this was not explicitly set -->
-                    <argument>address-model=64</argument>
-                  </arguments>
-                  <workingDirectory>${project.build.directory}/libs/boost_${boost.version.underline}</workingDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  <modules>
+    <module>boost</module>
+  </modules>
 
 </project>

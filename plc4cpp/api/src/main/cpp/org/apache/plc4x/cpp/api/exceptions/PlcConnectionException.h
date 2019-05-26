@@ -38,9 +38,9 @@ namespace org
 						{
 							public:
 								PlcConnectionException(): PlcException() {}
-                                explicit PlcConnectionException(const std::string &message): PlcException(message){}
-								PlcConnectionException(const std::string &message, const std::exception &exception): PlcException(message, exception){}
-                                explicit PlcConnectionException(const std::exception &exception): PlcException(exception){}
+                                explicit PlcConnectionException(const std::string& strMessage): PlcException(strMessage){}
+								PlcConnectionException(const std::string& strMessage, const std::exception& exException): PlcException(strMessage, exException){}
+                                explicit PlcConnectionException(const std::exception& exException): PlcException(exException){}
 						};
 					}
 				}

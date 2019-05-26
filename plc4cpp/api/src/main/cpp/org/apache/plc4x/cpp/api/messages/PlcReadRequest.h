@@ -49,7 +49,7 @@ namespace org
 							PlcReadRequestBuilder* getBuilder() const;
 
 						private:
-							PlcReadRequestBuilder* _builder;
+							PlcReadRequestBuilder* _pPlcbuilder;
 						};
 												
 					}

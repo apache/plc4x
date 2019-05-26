@@ -14,14 +14,14 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: ../img/
+:imagesdir: ../images/
 
 == Continuous Integration
 
 We are currently using two different CI systems.
 
 - Apache's Jenkins at: https://builds.apache.org/view/M-R/job/PLC4X/
-- Travis at: https://travis-ci.org/apache/incubator-plc4x/
+- Travis at: https://travis-ci.org/apache/plc4x/
 
 Hereby Apache Jenkins clearly is responsible for running the full testsuite with all integration-tests.
 Also only jobs on Apache Jenkins are allowed to publish SNAPSHOT versions of the Maven artifacts to Apaches Nexus.

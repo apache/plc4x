@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: ../../img/
+:imagesdir: ../../images/
 
 == S7 Comm Plus (0x72)
 
@@ -31,7 +31,7 @@ Beyond that, it seems that implementing this protocol would require knowledge of
 As we can't reverse-engineer these keys, the only way we could get them, would be by disassembling the existing code, which would not be allowed.
 
 Therefore we have currently stopped working on this protocol type.
-Eventually things may change in the future, but for now we see no way we could finish this on a legally correct path.
+Probably things may change in the future, but for now we see no way we could finish this on a legally correct path.
 
 == Links
 
