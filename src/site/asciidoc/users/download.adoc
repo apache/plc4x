@@ -21,8 +21,29 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
-[#release-0.3.1]
-==== 0.3.1 (incubating) Official https://www.apache.org/dyn/closer.lua/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip[source release] [ https://www.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.asc[ASC] ]
+[#release-0.4.0]
+==== 0.4.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.4.0/apache-plc4x-0.4.0-source-release.zip[source release] [ https://www.apache.org/dist/plc4x/0.4.0/apache-plc4x-0.4.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/plc4x/0.4.0/apache-plc4x-0.4.0-source-release.zip.asc[ASC] ]
+
+This is the first release of Apache PLC4X as top-level project.
+
+===== New Features
+
+- The PlcConnection now supports a `ping` method to allow checking if an existing connection is still alive.
+- Support of the OPC-UA protocol with the `opc-ua-driver`.
+- Other Languages Support:
+-- Added first versions of a C# .Net PLC4X API (`plc4net`)
+-- Added first versions of a Python PLC4X API (`plc4py`)
+- Added an Interop server which allows to relay requests from other languages to a Java Server
+
+===== Incompatible changes
+
+- ElasticSearch example was updated to use ElasticSearch 7.0.1, this might cause problems with older Kibana versions.
+
+===== Bug Fixes
+
+=== Incubating Releases
+
+==== 0.3.1 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.sha512[SHA512] ] [ http://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.asc[ASC] ]
 
 ===== New Features
 
@@ -39,10 +60,8 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 - Renamed flags "F" to Siemens Standard "M" (Marker)
 - Fixed a bug in the DefaultS7MessageProcessor which didn't correctly merge together split up items
 
-=== Previous Releases
-
 [#release-0.3.0]
-==== 0.3.0 (incubating) Official http://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip[source release] [ http://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.sha512[SHA512] ] [ http://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.asc[ASC] ]
+==== 0.3.0 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.sha512[SHA512] ] [ http://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.asc[ASC] ]
 
 ===== New Features
 
@@ -71,7 +90,7 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 - Fixed a Bug where S7 was not able to read arrays.
 
 [#release-0.2.0]
-==== 0.2.0 (incubating) Official http://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip[source release] [ http://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.sha512[SHA512] ] [ http://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.asc[ASC] ]
+==== 0.2.0 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.sha512[SHA512] ] [ http://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.asc[ASC] ]
 
 ===== Changes:
 
@@ -81,7 +100,4 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 * Bug fixes
 
 [#release-0.1.0]
-==== 0.1.0 (incubating) Official http://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip[source release] [ http://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.asc[ASC] ]
-
-// Disabled as this is the first release ...
-//https://github.com/apache/incubator-plc4x/tree/rel/0.1.0/CHANGELOG.md[CHANGELOG]
+==== 0.1.0 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.asc[ASC] ]
