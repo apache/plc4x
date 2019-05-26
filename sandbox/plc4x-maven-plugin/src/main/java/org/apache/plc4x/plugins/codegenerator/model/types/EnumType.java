@@ -17,29 +17,45 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
-
-import org.apache.plc4x.plugins.codegenerator.model.fields.Field;
+package org.apache.plc4x.plugins.codegenerator.model.types;
 
 import java.util.List;
 
-public class ComplexType extends Type {
+public class EnumType extends Type {
 
-    private final boolean isAbstract;
-    private final List<Field> fields;
+    private final Type baseType;
+    private final List<EnumValue> values;
 
-    public ComplexType(String name, boolean isAbstract, List<Field> fields) {
+    public EnumType(String name, Type baseType, List<EnumValue> values) {
         super(name);
-        this.isAbstract = isAbstract;
-        this.fields = fields;
+        this.baseType = baseType;
+        this.values = values;
     }
 
-    public boolean isAbstract() {
-        return isAbstract;
+    public Type getBaseType() {
+        return baseType;
     }
 
-    public List<Field> getFields() {
-        return fields;
+    public List<EnumValue> getValues() {
+        return values;
+    }
+
+    public static class EnumValue {
+        private final String name;
+        private final Object value;
+
+        public EnumValue(String name, Object value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Object getValue() {
+            return value;
+        }
     }
 
 }

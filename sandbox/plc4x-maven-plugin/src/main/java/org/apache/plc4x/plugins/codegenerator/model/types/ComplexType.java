@@ -17,12 +17,29 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.types;
 
-public class SimpleType extends Type {
+import org.apache.plc4x.plugins.codegenerator.model.fields.Field;
 
-    public SimpleType(String name) {
+import java.util.List;
+
+public class ComplexType extends Type {
+
+    private final boolean isAbstract;
+    private final List<Field> fields;
+
+    public ComplexType(String name, boolean isAbstract, List<Field> fields) {
         super(name);
+        this.isAbstract = isAbstract;
+        this.fields = fields;
+    }
+
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    public List<Field> getFields() {
+        return fields;
     }
 
 }

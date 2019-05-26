@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.model.DiscriminatedComplexType;
+import org.apache.plc4x.plugins.codegenerator.model.types.DiscriminatedComplexType;
 
 import java.util.LinkedList;
 import java.util.List;

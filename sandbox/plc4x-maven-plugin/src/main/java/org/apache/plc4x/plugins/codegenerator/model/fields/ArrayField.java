@@ -19,8 +19,6 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.model.Type;
-
 public class ArrayField implements Field {
 
     private final String typeName;

@@ -17,28 +17,23 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.types;
 
-public abstract class Type {
+import org.apache.plc4x.plugins.codegenerator.model.fields.Field;
 
-    private final String name;
-    private Type parentType;
+import java.util.List;
 
-    public Type(String name) {
-        this.name = name;
-        this.parentType = null;
+public class DiscriminatedComplexType extends ComplexType {
+
+    private final String[] discriminatorValues;
+
+    public DiscriminatedComplexType(String name, String[] discriminatorValues, List<Field> fields) {
+        super(name, false, fields);
+        this.discriminatorValues = discriminatorValues;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Type getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public String[] getDiscriminatorValues() {
+        return discriminatorValues;
     }
 
 }

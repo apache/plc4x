@@ -21,9 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.parser;
 
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryBaseListener;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryParser;
-import org.apache.plc4x.plugins.codegenerator.model.ComplexType;
-import org.apache.plc4x.plugins.codegenerator.model.DiscriminatedComplexType;
-import org.apache.plc4x.plugins.codegenerator.model.SimpleType;
+import org.apache.plc4x.plugins.codegenerator.model.types.*;
 import org.apache.plc4x.plugins.codegenerator.model.fields.*;
 
 import java.util.*;
@@ -86,7 +84,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterConstField(ImaginaryParser.ConstFieldContext ctx) {
-        SimpleType type = new SimpleType(ctx.type.getText());
+        SimpleTypeReference type = new SimpleTypeReference(ctx.type.getText());
         String expected = ctx.expected.getText();
         Field field = new ConstField(type, expected);
         parserContexts.peek().add(field);
@@ -100,7 +98,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterDiscriminatorField(ImaginaryParser.DiscriminatorFieldContext ctx) {
-        SimpleType type = new SimpleType(ctx.type.getText());
+        SimpleTypeReference type = new SimpleTypeReference(ctx.type.getText());
         String name = ctx.name.getText();
         Field field = new DiscriminatorField(type, name);
         parserContexts.peek().add(field);
@@ -114,7 +112,12 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterSimpleField(ImaginaryParser.SimpleFieldContext ctx) {
-        SimpleType type = new SimpleType(ctx.type.getText());
+        Type type;
+        if(ctx.type.simpleTypeReference != null) {
+            type = new SimpleTypeReference(ctx.type.getText());
+        } else {
+            type = new ComplexTypeReference(ctx.type.getText());
+        }
         String name = ctx.name.getText();
         Field field = new SimpleField(type, name);
         parserContexts.peek().add(field);
@@ -122,7 +125,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterImplicitField(ImaginaryParser.ImplicitFieldContext ctx) {
-        SimpleType type = new SimpleType(ctx.type.getText());
+        SimpleTypeReference type = new SimpleTypeReference(ctx.type.getText());
         String serializationExpression = ctx.serializationExpression.getText();
         Field field = new ImplicitField(type, serializationExpression);
         parserContexts.peek().add(field);
@@ -130,7 +133,12 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterOptionalField(ImaginaryParser.OptionalFieldContext ctx) {
-        SimpleType type = new SimpleType(ctx.type.getText());
+        Type type;
+        if(ctx.type.simpleTypeReference != null) {
+            type = new SimpleTypeReference(ctx.type.getText());
+        } else {
+            type = new ComplexTypeReference(ctx.type.getText());
+        }
         String name = ctx.name.getText();
         String conditionExpression = ctx.condition.expr.getText();
         Field field = new OptionalField(type, name, conditionExpression);
@@ -139,7 +147,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterReservedField(ImaginaryParser.ReservedFieldContext ctx) {
-        SimpleType type = new SimpleType(ctx.type.getText());
+        SimpleTypeReference type = new SimpleTypeReference(ctx.type.getText());
         String expected = ctx.expected.getText();
         Field field = new ReservedField(type, expected);
         parserContexts.peek().add(field);

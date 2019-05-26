@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.parser;
 
-import org.apache.plc4x.plugins.codegenerator.model.ComplexType;
+import org.apache.plc4x.plugins.codegenerator.model.types.ComplexType;
 
 import java.io.InputStream;
 import java.util.Map;

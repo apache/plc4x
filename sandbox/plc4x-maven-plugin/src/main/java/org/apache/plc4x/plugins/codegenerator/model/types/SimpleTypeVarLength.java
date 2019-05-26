@@ -17,23 +17,12 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.types;
 
-import org.apache.plc4x.plugins.codegenerator.model.fields.Field;
+public class SimpleTypeVarLength extends SimpleTypeReference {
 
-import java.util.List;
-
-public class DiscriminatedComplexType extends ComplexType {
-
-    private final String[] discriminatorValues;
-
-    public DiscriminatedComplexType(String name, String[] discriminatorValues, List<Field> fields) {
-        super(name, false, fields);
-        this.discriminatorValues = discriminatorValues;
-    }
-
-    public String[] getDiscriminatorValues() {
-        return discriminatorValues;
+    public SimpleTypeVarLength(String name) {
+        super(name);
     }
 
 }

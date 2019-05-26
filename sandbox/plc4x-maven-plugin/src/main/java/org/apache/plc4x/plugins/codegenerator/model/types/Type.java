@@ -17,12 +17,28 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model;
+package org.apache.plc4x.plugins.codegenerator.model.types;
 
-public class SimpleTypeVarLength extends SimpleType {
+public abstract class Type {
 
-    public SimpleTypeVarLength(String name) {
-        super(name);
+    private final String name;
+    private Type parentType;
+
+    public Type(String name) {
+        this.name = name;
+        this.parentType = null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Type getParentType() {
+        return parentType;
+    }
+
+    public void setParentType(Type parentType) {
+        this.parentType = parentType;
     }
 
 }

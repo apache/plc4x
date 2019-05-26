@@ -20,11 +20,10 @@
 package org.apache.plc4x.plugins.codegenerator;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.plc4x.codegen.ast.ClassDeclaration;
-import org.apache.plc4x.plugins.codegenerator.model.EnumType;
-import org.apache.plc4x.plugins.codegenerator.model.SimpleType;
-import org.apache.plc4x.plugins.codegenerator.model.SimpleTypeVarLength;
-import org.apache.plc4x.plugins.codegenerator.model.Type;
+import org.apache.plc4x.plugins.codegenerator.model.types.EnumType;
+import org.apache.plc4x.plugins.codegenerator.model.types.SimpleTypeReference;
+import org.apache.plc4x.plugins.codegenerator.model.types.SimpleTypeVarLength;
+import org.apache.plc4x.plugins.codegenerator.model.types.Type;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 
@@ -82,7 +81,7 @@ public class ProtocolModel {
             if(simpleType.attributeValue(new QName("length", dfdlNamespace)) == null) {
                 types.put(new QName(typeName, targetNamespace), new SimpleTypeVarLength(typeName));
             } else {
-                types.put(new QName(typeName, targetNamespace), new SimpleType(typeName));
+                types.put(new QName(typeName, targetNamespace), new SimpleTypeReference(typeName));
             }
         }
     }

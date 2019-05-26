@@ -17,26 +17,12 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model.fields;
+package org.apache.plc4x.plugins.codegenerator.model.types;
 
-import org.apache.plc4x.plugins.codegenerator.model.types.Type;
+public class SimpleTypeReference extends Type {
 
-public class SimpleField implements Field {
-
-    private final Type type;
-    private final String name;
-
-    public SimpleField(Type type, String name) {
-        this.type = type;
-        this.name = name;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
+    public SimpleTypeReference(String name) {
+        super(name);
     }
 
 }

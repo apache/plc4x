@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.model.Type;
+import org.apache.plc4x.plugins.codegenerator.model.types.Type;
 
 public class DiscriminatorField implements Field {
 

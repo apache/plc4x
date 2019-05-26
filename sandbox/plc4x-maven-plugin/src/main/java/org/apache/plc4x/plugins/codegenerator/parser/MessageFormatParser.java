@@ -25,7 +25,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryLexer;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryParser;
-import org.apache.plc4x.plugins.codegenerator.model.ComplexType;
+import org.apache.plc4x.plugins.codegenerator.model.types.ComplexType;
 
 import java.io.IOException;
 import java.io.InputStream;
