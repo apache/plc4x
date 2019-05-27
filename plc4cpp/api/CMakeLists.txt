@@ -73,4 +73,3 @@ add_library(plc4cpp-api src/main/cpp/org/apache/plc4x/cpp/api/PlcConnection.cpp
     Import the boost headers
 ]]
 target_include_directories (plc4cpp-api PUBLIC target/dependencies/include)
-

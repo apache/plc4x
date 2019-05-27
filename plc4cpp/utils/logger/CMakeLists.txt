@@ -22,8 +22,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_library(plc4cpp-utils-logger 
-		src/main/cpp/org/apache/plc4x/cpp/utils/logger/BLogger.cpp
+add_library(plc4cpp-utils-logger src/main/cpp/org/apache/plc4x/cpp/utils/logger/BLogger.cpp
         src/main/cpp/org/apache/plc4x/cpp/utils/logger/DatDmp.cpp
 		src/main/cpp/org/apache/plc4x/cpp/utils/logger/DbgTrace.cpp
 		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ErrorCategory.cpp
