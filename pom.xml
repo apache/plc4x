@@ -1330,7 +1330,7 @@
                 <inherited>false</inherited>
                 <configuration>
                   <source>
-                    print "\nSkipping prerequisit-check\n\n"
+                    print "\nSkipping prerequisite-check\n\n"
                   </source>
                 </configuration>
               </execution>
