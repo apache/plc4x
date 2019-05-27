@@ -26,7 +26,7 @@ baseDirectory = project.model.pomFile.parent
 /*
  Checks if a given version number is at least as high as a given reference version.
 */
-def checkVersionAtLast(String current, String minimum) {
+def checkVersionAtLeast(String current, String minimum) {
     def currentSegments = current.tokenize('.')
     def minimumSegments = minimum.tokenize('.')
     def numSegments = Math.min(currentSegments.size(), minimumSegments.size())
@@ -56,7 +56,7 @@ def checkBison() {
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "2.4.0")
+        def result = checkVersionAtLeast(curVersion, "2.4.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -72,7 +72,7 @@ def checkDotnet() {
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "2.0.0")
+        def result = checkVersionAtLeast(curVersion, "2.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -88,7 +88,7 @@ def checkFlex() {
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "2.0.0")
+        def result = checkVersionAtLeast(curVersion, "2.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -104,7 +104,7 @@ def checkGcc() {
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "1.0.0")
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -120,7 +120,7 @@ def checkGit() {
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "1.0.0")
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -136,7 +136,7 @@ def checkGpp() {
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "1.0.0")
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -153,10 +153,10 @@ def checkPython() {
     def stdErr = new StringBuilder()
     process.consumeProcessOutput(stdOut, stdErr)
     process.waitForOrKill(500)
-    Matcher matcher = extractVersion(output)
+    Matcher matcher = extractVersion(stdErr)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "2.7.0")
+        def result = checkVersionAtLeast(curVersion, "2.7.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -174,7 +174,7 @@ def checkPython() {
  * @return
  */
 private Matcher extractVersion(input) {
-    def matcher = output =~ /(\d+\.\d+(\.\d+)?).*/
+    def matcher = input =~ /(\d+\.\d+(\.\d+)?).*/
     matcher
 }
 
