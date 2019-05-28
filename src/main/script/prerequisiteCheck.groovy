@@ -1,3 +1,5 @@
+import java.util.regex.Matcher
+
 /*
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -24,7 +26,7 @@ baseDirectory = project.model.pomFile.parent
 /*
  Checks if a given version number is at least as high as a given reference version.
 */
-def checkVersionAtLast(String current, String minimum) {
+def checkVersionAtLeast(String current, String minimum) {
     def currentSegments = current.tokenize('.')
     def minimumSegments = minimum.tokenize('.')
     def numSegments = Math.min(currentSegments.size(), minimumSegments.size())
@@ -51,10 +53,10 @@ def checkVersionAtLast(String current, String minimum) {
 def checkBison() {
     print "Detecting Bison version:  "
     def output = "bison --version".execute().text
-    def matcher = output =~ /.* (\d+\.\d+\.\d+).*/
+    Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "2.4.0")
+        def result = checkVersionAtLeast(curVersion, "2.4.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -67,10 +69,10 @@ def checkBison() {
 def checkDotnet() {
     print "Detecting Dotnet version: "
     def output = "dotnet --version".execute().text
-    def matcher = output =~ /(\d+\.\d+\.\d+).*/
+    Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "2.0.0")
+        def result = checkVersionAtLeast(curVersion, "2.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -83,10 +85,10 @@ def checkDotnet() {
 def checkFlex() {
     print "Detecting Flex version:   "
     def output = "flex --version".execute().text
-    def matcher = output =~ /.* (\d+\.\d+\.\d+).*/
+    Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "2.0.0")
+        def result = checkVersionAtLeast(curVersion, "2.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -99,10 +101,10 @@ def checkFlex() {
 def checkGcc() {
     print "Detecting Gcc version:    "
     def output = "gcc --version".execute().text
-    def matcher = output =~ /.* (\d+\.\d+\.\d+).*/
+    Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "1.0.0")
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -115,10 +117,10 @@ def checkGcc() {
 def checkGit() {
     print "Detecting Git version:    "
     def output = "git --version".execute().text
-    def matcher = output =~ /.* (\d+\.\d+\.\d+).*/
+    Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "1.0.0")
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -131,10 +133,10 @@ def checkGit() {
 def checkGpp() {
     print "Detecting G++ version:    "
     def output = "g++ --version".execute().text
-    def matcher = output =~ /.* (\d+\.\d+\.\d+).*/
+    Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "1.0.0")
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -151,10 +153,10 @@ def checkPython() {
     def stdErr = new StringBuilder()
     process.consumeProcessOutput(stdOut, stdErr)
     process.waitForOrKill(500)
-    def matcher = stdErr =~ /.* (\d+\.\d+\.\d+).*/
+    Matcher matcher = extractVersion(stdErr)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLast(curVersion, "2.7.0")
+        def result = checkVersionAtLeast(curVersion, "2.7.0")
         if(!result) {
             allConditionsMet = false
         }
@@ -162,7 +164,19 @@ def checkPython() {
         println "missing"
         allConditionsMet = false
     }
- }
+}
+
+/**
+ * Version extraction function/macro. It looks for occurance of x.y or x.y.z
+ * in passed input text (likely output from `program --version` command if found).
+ *
+ * @param input
+ * @return
+ */
+private Matcher extractVersion(input) {
+    def matcher = input =~ /(\d+\.\d+(\.\d+)?).*/
+    matcher
+}
 
 /////////////////////////////////////////////////////
 // Find out which OS and arch are bring used.

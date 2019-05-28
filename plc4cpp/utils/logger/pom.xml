@@ -92,18 +92,18 @@
           </execution>
           <!-- Actually executes the build -->
           <!-- Disabled for now till we figure out the reason for a compile error -->
-          <!--execution>
+          <execution>
             <id>cmake-compile</id>
             <phase>compile</phase>
             <goals>
               <goal>compile</goal>
             </goals>
             <configuration>
-              <!- The directory where the "generate" step generated the build configuration ->
+              <!-- The directory where the "generate" step generated the build configuration -->
               <projectDirectory>${project.build.directory}/build</projectDirectory>
               <classifier>${os.classifier}</classifier>
             </configuration>
-          </execution-->
+          </execution>
         </executions>
       </plugin>
 

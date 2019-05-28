@@ -1307,6 +1307,38 @@
   </repositories>
 
   <profiles>
+    <!-- Allows skipping of the pre-flight-check as needed when deploying on jenkins -->
+    <profile>
+      <id>skip-prerequisite-check</id>
+      <activation>
+      </activation>
+      <build>
+        <plugins>
+          <!-- Make some additional properties available to simplify keeping some content up to date -->
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <version>2.1</version>
+            <executions>
+              <!-- Do some pre-build checks and report any findings to the user -->
+              <execution>
+                <id>prerequisite-check</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <inherited>false</inherited>
+                <configuration>
+                  <source>
+                    print "\nSkipping prerequisite-check\n\n"
+                  </source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- Build PLC4X including the CPP modules -->
     <profile>
       <id>with-cpp</id>

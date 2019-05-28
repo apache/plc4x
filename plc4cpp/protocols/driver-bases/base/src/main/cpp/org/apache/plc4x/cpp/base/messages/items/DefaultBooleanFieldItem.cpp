@@ -47,8 +47,7 @@ namespace org
 							// ===================================================
 							bool DefaultBooleanFieldItem::isValidByte(int index)
 							{
-								bool value = getValue(index);
-								return value <= -127 && value >= -128;
+								return true;
 							}
 
 							// ===================================================
@@ -64,8 +63,7 @@ namespace org
 							// ===================================================
 							bool DefaultBooleanFieldItem::isValidShort(int index)
 							{
-								bool value = getValue(index);
-								return value >= -32768 && value <= 32767;
+								return true;
 							}
 
 							// ===================================================
@@ -82,8 +80,7 @@ namespace org
 							// ===================================================
 							bool DefaultBooleanFieldItem::isValidInteger(int index)
 							{
-								bool value = getValue(index);
-								return value >= 0 && value <= 2147483647;
+								return true;
 							}
 
 							// ===================================================
@@ -100,8 +97,7 @@ namespace org
 							// ===================================================
 							bool DefaultBooleanFieldItem::isValidLong(int index)
 							{
-								bool value = getValue(index);
-								return value >= -(2 ^ 63) && value <= (2 ^ 63) - 1;
+								return true;
 							}
 
 							// ===================================================
@@ -136,8 +132,7 @@ namespace org
 							// ===================================================
 							bool DefaultBooleanFieldItem::isValidFloat(int index)
 							{
-								bool value = getValue(index);
-								return value >= -3.4e38 && value <= 3.4e38;
+								return true;
 							}
 
 							// ===================================================
@@ -154,8 +149,7 @@ namespace org
 							// ===================================================
 							bool DefaultBooleanFieldItem::isValidDouble(int index)
 							{
-								bool value = getValue(index);
-								return value >= -1.7e308 && value <= 1.7e308;
+								return true;
 							}
 
 							// ===================================================
@@ -172,8 +166,7 @@ namespace org
 							// ===================================================
 							bool DefaultBooleanFieldItem::isValidBigDecimal(int index)
 							{
-								// same limits but higher precision
-								return isValidDouble(index);
+								return true;
 							}
 
 							// ===================================================

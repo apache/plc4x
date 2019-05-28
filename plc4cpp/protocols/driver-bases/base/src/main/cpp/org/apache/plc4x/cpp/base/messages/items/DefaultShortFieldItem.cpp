@@ -83,7 +83,7 @@ namespace org
 							bool DefaultShortFieldItem::isValidInteger(int index)
 							{
 								data_type value = getValue(index);
-								return value >= 0 && value <= 2147483647;
+								return value >= 0;
 							}
 
 							// ===================================================
