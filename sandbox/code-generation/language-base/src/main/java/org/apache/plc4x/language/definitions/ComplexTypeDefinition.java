@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.language.definitions;
 
+import org.apache.plc4x.language.fields.ConstField;
 import org.apache.plc4x.language.fields.Field;
 import org.apache.plc4x.language.fields.SimpleField;
 
@@ -28,8 +29,34 @@ public interface ComplexTypeDefinition extends TypeDefinition {
 
     boolean isAbstract();
 
+    /**
+     * Get all fields no matter the type.
+     *
+     * @return all fields ;-)
+     */
     List<Field> getFields();
 
+    /**
+     * Get only the fields which are of type SimpleField.
+     *
+     * @return all simple fields ;-)
+     */
     List<SimpleField> getSimpleFields();
+
+    List<ConstField> getConstFields();
+
+    /**
+     * In contrast to getSimpleFields, this also gets all simple fields of any parent type.
+     *
+     * @return all simple fields including any parents simple fields
+     */
+    List<SimpleField> getAllSimpleFields();
+
+    /**
+     * Returns all SimpleFields defined by any parent type.
+     *
+     * @return all parent types simple fields.
+     */
+    List<SimpleField> getParentSimpleFields();
 
 }

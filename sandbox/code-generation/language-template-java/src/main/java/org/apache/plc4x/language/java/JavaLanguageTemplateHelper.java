@@ -19,6 +19,10 @@
 
 package org.apache.plc4x.language.java;
 
+import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.definitions.DiscriminatedComplexTypeDefinition;
+import org.apache.plc4x.language.definitions.TypeDefinition;
+import org.apache.plc4x.language.fields.SimpleField;
 import org.apache.plc4x.language.references.ComplexTypeReference;
 import org.apache.plc4x.language.references.SimpleTypeReference;
 import org.apache.plc4x.language.references.TypeReference;
@@ -27,11 +31,62 @@ public class JavaLanguageTemplateHelper {
 
     public String getLanguageTypeNameForSpecType(TypeReference typeReference) {
         if(typeReference instanceof SimpleTypeReference) {
-            // TODO: Well this is where we probably will have to do something ... ;-)
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            switch (simpleTypeReference.getBaseType()) {
+                case BIT: {
+                    return "boolean";
+                }
+                case UINT: {
+                    if (simpleTypeReference.getSize() <= 4) {
+                        return "byte";
+                    }
+                    if (simpleTypeReference.getSize() <= 8) {
+                        return "short";
+                    }
+                    if (simpleTypeReference.getSize() <= 16) {
+                        return "int";
+                    }
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return "long";
+                    }
+                    return "BigInteger";
+                }
+                case INT: {
+                    if (simpleTypeReference.getSize() <= 8) {
+                        return "byte";
+                    }
+                    if (simpleTypeReference.getSize() <= 16) {
+                        return "short";
+                    }
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return "int";
+                    }
+                    if (simpleTypeReference.getSize() <= 64) {
+                        return "long";
+                    }
+                    return "BigInteger";
+                }
+                case FLOAT: {
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return "float";
+                    }
+                    if (simpleTypeReference.getSize() <= 64) {
+                        return "double";
+                    }
+                    return "BigDecimal";
+                }
+                case STRING: {
+                    return "String";
+                }
+            }
             return "Hurz";
         } else {
             return ((ComplexTypeReference) typeReference).getName();
         }
+    }
+
+    public boolean isDiscriminatedType(TypeDefinition typeDefinition) {
+        return typeDefinition instanceof DiscriminatedComplexTypeDefinition;
     }
 
 }

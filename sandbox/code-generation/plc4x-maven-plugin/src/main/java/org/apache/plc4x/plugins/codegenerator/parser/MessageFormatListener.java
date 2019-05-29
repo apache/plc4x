@@ -97,8 +97,9 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void enterConstField(ImaginaryParser.ConstFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
-        String expected = ctx.expected.getText();
-        Field field = new DefaultConstField(type, expected);
+        String name = ctx.name.id.getText();
+        String expected = ctx.expected.expr.getText();
+        Field field = new DefaultConstField(type, name, expected);
         parserContexts.peek().add(field);
     }
 
@@ -150,7 +151,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void enterReservedField(ImaginaryParser.ReservedFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
-        String expected = ctx.expected.getText();
+        String expected = ctx.expected.expr.getText();
         Field field = new DefaultReservedField(type, expected);
         parserContexts.peek().add(field);
     }
@@ -175,11 +176,10 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void exitCaseStatement(ImaginaryParser.CaseStatementContext ctx) {
         String typeName = ctx.name.getText();
-        int numDiscriminatorValues = (ctx.discriminatorValues.children != null) ?
-            ctx.discriminatorValues.children.size() : 0;
-        String[] discriminatorValues = new String[numDiscriminatorValues];
-        for (int i = 0; i < numDiscriminatorValues; i++) {
-            discriminatorValues[i] = ctx.discriminatorValues.children.get(i).getText();
+        List<ImaginaryParser.ExpressionContext> expressions = ctx.discriminatorValues.expression();
+        String[] discriminatorValues = new String[expressions.size()];
+        for (int i = 0; i < expressions.size(); i++) {
+            discriminatorValues[i] = expressions.get(i).expr.getText();
         }
         DefaultDiscriminatedComplexTypeDefinition type =
             new DefaultDiscriminatedComplexTypeDefinition(typeName, discriminatorValues, parserContexts.pop());

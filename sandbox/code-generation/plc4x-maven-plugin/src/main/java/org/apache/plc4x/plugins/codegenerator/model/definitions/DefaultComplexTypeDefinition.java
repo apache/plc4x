@@ -19,11 +19,15 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.definitions;
 
+import org.apache.plc4x.language.fields.ConstField;
 import org.apache.plc4x.language.fields.Field;
 import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.language.fields.SimpleField;
+import org.apache.plc4x.plugins.codegenerator.model.fields.DefaultConstField;
 import org.apache.plc4x.plugins.codegenerator.model.fields.DefaultSimpleField;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +54,30 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     public List<SimpleField> getSimpleFields() {
         return fields.stream().filter(field -> field instanceof DefaultSimpleField).map(
             field -> (DefaultSimpleField) field).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ConstField> getConstFields() {
+        return fields.stream().filter(field -> field instanceof DefaultConstField).map(
+            field -> (DefaultConstField) field).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SimpleField> getAllSimpleFields() {
+        List<SimpleField> fields = new LinkedList<>();
+        if(getParentType() != null) {
+            fields.addAll(((ComplexTypeDefinition)getParentType()).getAllSimpleFields());
+        }
+        fields.addAll(getSimpleFields());
+        return fields;
+    }
+
+    @Override
+    public List<SimpleField> getParentSimpleFields() {
+        if(getParentType() != null) {
+            return ((ComplexTypeDefinition)getParentType()).getAllSimpleFields();
+        }
+        return Collections.emptyList();
     }
 
 }

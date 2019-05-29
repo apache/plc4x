@@ -22,10 +22,22 @@ package org.apache.plc4x.plugins.codegenerator.model.fields;
 import org.apache.plc4x.language.fields.ReservedField;
 import org.apache.plc4x.language.references.TypeReference;
 
-public class DefaultReservedField extends DefaultConstField implements ReservedField {
+public class DefaultReservedField implements ReservedField {
+
+    private final TypeReference type;
+    private final Object referenceValue;
 
     public DefaultReservedField(TypeReference type, Object referenceValue) {
-        super(type, referenceValue);
+        this.type = type;
+        this.referenceValue = referenceValue;
+    }
+
+    public TypeReference getType() {
+        return type;
+    }
+
+    public Object getReferenceValue() {
+        return referenceValue;
     }
 
 }

@@ -19,6 +19,12 @@
 
 package org.apache.plc4x.language.fields;
 
-public interface ReservedField extends ConstField {
+import org.apache.plc4x.language.references.TypeReference;
+
+public interface ReservedField extends Field {
+
+    TypeReference getType();
+
+    Object getReferenceValue();
 
 }

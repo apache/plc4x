@@ -25,6 +25,8 @@ public interface ConstField extends Field {
 
     TypeReference getType();
 
+    String getName();
+
     Object getReferenceValue();
 
 }

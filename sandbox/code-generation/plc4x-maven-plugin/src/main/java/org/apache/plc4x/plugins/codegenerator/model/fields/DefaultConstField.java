@@ -25,15 +25,21 @@ import org.apache.plc4x.language.references.TypeReference;
 public class DefaultConstField implements ConstField {
 
     private final TypeReference type;
+    private final String name;
     private final Object referenceValue;
 
-    public DefaultConstField(TypeReference type, Object referenceValue) {
+    public DefaultConstField(TypeReference type, String name, Object referenceValue) {
         this.type = type;
+        this.name = name;
         this.referenceValue = referenceValue;
     }
 
     public TypeReference getType() {
         return type;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Object getReferenceValue() {
