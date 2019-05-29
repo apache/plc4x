@@ -22,20 +22,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_library(plc4cpp-utils-logger 
-		src/main/cpp/org/apache/plc4x/cpp/utils/logger/BLogger.cpp
-        src/main/cpp/org/apache/plc4x/cpp/utils/logger/DatDmp.cpp
-		src/main/cpp/org/apache/plc4x/cpp/utils/logger/DbgTrace.cpp
-		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ErrorCategory.cpp
-		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ErrorInfoException.cpp
-		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ExLog.cpp
+add_library(plc4cpp-utils-systemconfig 
+		src/main/cpp/org/apache/plc4x/cpp/utils/systemconfig/SystemConfiguration.cpp
         )
 
 #[[
     Import the headers for boost and the plc4cpp-utils module
 ]]
 
-TARGET_LINK_LIBRARIES (plc4cpp-utils-logger ${Boost_LIBRARIES})
-
-target_include_directories (plc4cpp-utils-logger PUBLIC ${Boost_INCLUDE_DIRS})
-
+target_include_directories (plc4cpp-utils-systemconfig PUBLIC ${Boost_INCLUDE_DIRS})

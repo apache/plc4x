@@ -27,7 +27,7 @@ set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(BOOST_ROOT "./libs/boost/target/boost_1_70_0/")
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost COMPONENTS filesystem log REQUIRED)
+find_package(Boost COMPONENTS)
 
 #[[ Trace CMAKE Variable ]]
 get_cmake_property(_variableNames VARIABLES)
@@ -42,6 +42,6 @@ endforeach()
 ]]
 add_subdirectory(api)
 add_subdirectory(protocols)
-add_subdirectory(drivers)
+#add_subdirectory(drivers)
 add_subdirectory(utils)
-add_subdirectory(examples)
+#add_subdirectory(examples)

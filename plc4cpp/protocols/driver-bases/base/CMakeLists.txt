@@ -64,7 +64,8 @@ add_library(plc4cpp-protocols-driver-base-base
 #[[
     Import the headers for boost and the plc4cpp-api module
 ]]
-target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC target/dependencies/include)
+
 target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ../../../api/src/main/cpp)
+target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ../../../protocols/driver-bases/base/src/main/cpp)
 target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ../../../utils/logger/src/main/cpp)

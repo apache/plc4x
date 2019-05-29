@@ -73,7 +73,7 @@ add_library(plc4cpp-api
 #[[
     Import the boost headers
 ]]
-target_include_directories (plc4cpp-api PUBLIC target/dependencies/include)
+
 target_include_directories (plc4cpp-api PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories (plc4cpp-api PUBLIC ../utils/logger/src/main/cpp)
 
