@@ -17,20 +17,27 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.parser;
+package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.fields.ConstField;
+import org.apache.plc4x.language.references.TypeReference;
 
-import java.io.InputStream;
-import java.util.Map;
+public class DefaultConstField implements ConstField {
 
-public class ManualMessageFormatParserTest {
+    private final TypeReference type;
+    private final Object referenceValue;
 
-    public static void main(String[] args) {
-        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
-        MessageFormatParser parser = new MessageFormatParser();
-        Map<String, ComplexTypeDefinition> types = parser.parse(spec);
-        System.out.println(types);
+    public DefaultConstField(TypeReference type, Object referenceValue) {
+        this.type = type;
+        this.referenceValue = referenceValue;
+    }
+
+    public TypeReference getType() {
+        return type;
+    }
+
+    public Object getReferenceValue() {
+        return referenceValue;
     }
 
 }

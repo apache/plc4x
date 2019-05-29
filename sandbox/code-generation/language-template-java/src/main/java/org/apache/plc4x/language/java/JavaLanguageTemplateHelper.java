@@ -19,14 +19,12 @@
 
 package org.apache.plc4x.language.java;
 
-import org.apache.plc4x.language.ComplexTypeReference;
-import org.apache.plc4x.language.LanguageTemplateHelper;
-import org.apache.plc4x.language.SimpleTypeReference;
-import org.apache.plc4x.language.TypeReference;
+import org.apache.plc4x.language.references.ComplexTypeReference;
+import org.apache.plc4x.language.references.SimpleTypeReference;
+import org.apache.plc4x.language.references.TypeReference;
 
-public class JavaLanguageTemplateHelper implements LanguageTemplateHelper {
+public class JavaLanguageTemplateHelper {
 
-    @Override
     public String getLanguageTypeNameForSpecType(TypeReference typeReference) {
         if(typeReference instanceof SimpleTypeReference) {
             // TODO: Well this is where we probably will have to do something ... ;-)

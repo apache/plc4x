@@ -17,20 +17,23 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.parser;
+package org.apache.plc4x.language.fields;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.references.TypeReference;
 
-import java.io.InputStream;
-import java.util.Map;
+public interface ArrayField extends Field {
 
-public class ManualMessageFormatParserTest {
+    TypeReference getType();
 
-    public static void main(String[] args) {
-        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
-        MessageFormatParser parser = new MessageFormatParser();
-        Map<String, ComplexTypeDefinition> types = parser.parse(spec);
-        System.out.println(types);
+    String getName();
+
+    LengthType getLengthType();
+
+    String getLengthExpression();
+
+    enum LengthType {
+        COUNT,
+        LENGTH
     }
 
 }

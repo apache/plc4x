@@ -51,7 +51,7 @@
   </prerequisites>
 
   <modules>
-    <module>language-template-base</module>
+    <module>language-base</module>
     <module>protocol-base</module>
     <module>plc4x-maven-plugin</module>
 

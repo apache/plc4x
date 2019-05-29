@@ -21,7 +21,17 @@ package org.apache.plc4x.plugins.codegenerator.parser;
 
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryBaseListener;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryParser;
-import org.apache.plc4x.plugins.codegenerator.model.types.*;
+import org.apache.plc4x.language.fields.ArrayField;
+import org.apache.plc4x.language.fields.Field;
+import org.apache.plc4x.language.fields.SwitchField;
+import org.apache.plc4x.language.references.SimpleTypeReference;
+import org.apache.plc4x.language.references.TypeReference;
+import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.definitions.DiscriminatedComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.model.definitions.DefaultComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.model.definitions.DefaultDiscriminatedComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.model.references.DefaultComplexTypeReference;
+import org.apache.plc4x.plugins.codegenerator.model.references.DefaultSimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.model.fields.*;
 
 import java.util.*;
@@ -29,9 +39,9 @@ import java.util.*;
 public class MessageFormatListener extends ImaginaryBaseListener {
 
     private Stack<List<Field>> parserContexts;
-    private Map<String, ComplexType> complexTypes;
+    private Map<String, ComplexTypeDefinition> complexTypes;
 
-    public Map<String, ComplexType> getComplexTypes() {
+    public Map<String, ComplexTypeDefinition> getComplexTypes() {
         return complexTypes;
     }
 
@@ -54,13 +64,15 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         // If the type has sub-types it's an abstract type.
         SwitchField switchField = getSwitchField();
         boolean abstractType = switchField != null;
-        ComplexType type = new ComplexType(typeName, abstractType, parserContexts.peek());
+        DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(typeName, abstractType, parserContexts.peek());
         complexTypes.put(typeName, type);
 
         // Set the parent type for all sub-types.
         if(switchField != null) {
-            for (DiscriminatedComplexType subtype : switchField.getCases()) {
-                subtype.setParentType(type);
+            for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
+                if(subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
+                    ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
+                }
             }
         }
 
@@ -69,7 +81,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterArrayField(ImaginaryParser.ArrayFieldContext ctx) {
-        String typeName = ctx.type.getText();
+        TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
         ArrayField.LengthType lengthType;
         if(ctx.lengthType.K_COUNT() != null) {
@@ -78,7 +90,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
             lengthType = ArrayField.LengthType.LENGTH;
         }
         String lengthExpression = ctx.lengthExpression.getText();
-        Field field = new ArrayField(typeName, name, lengthType, lengthExpression);
+        Field field = new DefaultArrayField(type, name, lengthType, lengthExpression);
         parserContexts.peek().add(field);
     }
 
@@ -86,7 +98,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     public void enterConstField(ImaginaryParser.ConstFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String expected = ctx.expected.getText();
-        Field field = new ConstField(type, expected);
+        Field field = new DefaultConstField(type, expected);
         parserContexts.peek().add(field);
     }
 
@@ -100,7 +112,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     public void enterDiscriminatorField(ImaginaryParser.DiscriminatorFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        Field field = new DiscriminatorField(type, name);
+        Field field = new DefaultDiscriminatorField(type, name);
         parserContexts.peek().add(field);
     }
 
@@ -112,9 +124,9 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterSimpleField(ImaginaryParser.SimpleFieldContext ctx) {
-        Type type = getType(ctx.type);
+        TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        Field field = new SimpleField(type, name);
+        Field field = new DefaultSimpleField(type, name);
         parserContexts.peek().add(field);
     }
 
@@ -122,16 +134,16 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     public void enterImplicitField(ImaginaryParser.ImplicitFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String serializationExpression = ctx.serializationExpression.getText();
-        Field field = new ImplicitField(type, serializationExpression);
+        Field field = new DefaultImplicitField(type, serializationExpression);
         parserContexts.peek().add(field);
     }
 
     @Override
     public void enterOptionalField(ImaginaryParser.OptionalFieldContext ctx) {
-        Type type = getType(ctx.type);
+        TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
         String conditionExpression = ctx.condition.expr.getText();
-        Field field = new OptionalField(type, name, conditionExpression);
+        Field field = new DefaultOptionalField(type, name, conditionExpression);
         parserContexts.peek().add(field);
     }
 
@@ -139,7 +151,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     public void enterReservedField(ImaginaryParser.ReservedFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String expected = ctx.expected.getText();
-        Field field = new ReservedField(type, expected);
+        Field field = new DefaultReservedField(type, expected);
         parserContexts.peek().add(field);
     }
 
@@ -150,7 +162,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         for(int i = 0; i < numDescriminators; i++) {
             discriminators[i] = ctx.discriminators.expression().get(i).getText();
         }
-        SwitchField switchField = new SwitchField(discriminators);
+        DefaultSwitchField switchField = new DefaultSwitchField(discriminators);
         parserContexts.peek().add(switchField);
     }
 
@@ -169,11 +181,11 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         for (int i = 0; i < numDiscriminatorValues; i++) {
             discriminatorValues[i] = ctx.discriminatorValues.children.get(i).getText();
         }
-        DiscriminatedComplexType type =
-            new DiscriminatedComplexType(typeName, discriminatorValues, parserContexts.pop());
+        DefaultDiscriminatedComplexTypeDefinition type =
+            new DefaultDiscriminatedComplexTypeDefinition(typeName, discriminatorValues, parserContexts.pop());
 
         // Add the type to the switch field definition.
-        SwitchField switchField = getSwitchField();
+        DefaultSwitchField switchField = getSwitchField();
         if(switchField == null) {
             throw new RuntimeException("This shouldn't have happened");
         }
@@ -183,32 +195,36 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         complexTypes.put(typeName, type);
     }
 
-    private Type getType(ImaginaryParser.TypeReferenceContext ctx) {
+    private TypeReference getTypeReference(ImaginaryParser.TypeReferenceContext ctx) {
         if(ctx.simpleTypeReference != null) {
+            SimpleTypeReference.SimpleBaseType simpleBaseType = SimpleTypeReference.SimpleBaseType.valueOf(
+                ctx.simpleTypeReference.base.getText().toUpperCase());
             if(ctx.simpleTypeReference.size != null) {
                 int size = Integer.valueOf(ctx.simpleTypeReference.size.getText());
-                return new SimpleTypeReference(ctx.simpleTypeReference.base.getText(), size);
+                return new DefaultSimpleTypeReference(simpleBaseType, size);
             } else {
-                return new SimpleTypeReference(ctx.simpleTypeReference.base.getText(), 1);
+                return new DefaultSimpleTypeReference(simpleBaseType, 1);
             }
         } else {
-            return new ComplexTypeReference(ctx.complexTypeReference.getText());
+            return new DefaultComplexTypeReference(ctx.complexTypeReference.getText());
         }
     }
 
     private SimpleTypeReference getSimpleTypeReference(ImaginaryParser.DataTypeContext ctx) {
+        SimpleTypeReference.SimpleBaseType simpleBaseType =
+            SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
         if(ctx.size != null) {
             int size = Integer.valueOf(ctx.size.getText());
-            return new SimpleTypeReference(ctx.base.getText(), size);
+            return new DefaultSimpleTypeReference(simpleBaseType, size);
         } else {
-            return new SimpleTypeReference(ctx.base.getText(), 1);
+            return new DefaultSimpleTypeReference(simpleBaseType, 1);
         }
     }
 
-    private SwitchField getSwitchField() {
+    private DefaultSwitchField getSwitchField() {
         for (Field field : parserContexts.peek()) {
-            if(field instanceof SwitchField) {
-                return (SwitchField) field;
+            if(field instanceof DefaultSwitchField) {
+                return (DefaultSwitchField) field;
             }
         }
         return null;

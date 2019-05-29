@@ -17,20 +17,32 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.parser;
+package org.apache.plc4x.language.definitions;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import java.util.List;
 
-import java.io.InputStream;
-import java.util.Map;
+public interface EnumTypeDefinition extends TypeDefinition {
 
-public class ManualMessageFormatParserTest {
+    TypeDefinition getBaseType();
 
-    public static void main(String[] args) {
-        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
-        MessageFormatParser parser = new MessageFormatParser();
-        Map<String, ComplexTypeDefinition> types = parser.parse(spec);
-        System.out.println(types);
+    List<EnumValue> getValues();
+
+    class EnumValue {
+        private final String name;
+        private final Object value;
+
+        public EnumValue(String name, Object value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Object getValue() {
+            return value;
+        }
     }
 
 }

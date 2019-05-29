@@ -17,20 +17,27 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.parser;
+package org.apache.plc4x.plugins.codegenerator.model.fields;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.fields.SimpleField;
+import org.apache.plc4x.language.references.TypeReference;
 
-import java.io.InputStream;
-import java.util.Map;
+public class DefaultSimpleField implements SimpleField {
 
-public class ManualMessageFormatParserTest {
+    private final TypeReference type;
+    private final String name;
 
-    public static void main(String[] args) {
-        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
-        MessageFormatParser parser = new MessageFormatParser();
-        Map<String, ComplexTypeDefinition> types = parser.parse(spec);
-        System.out.println(types);
+    public DefaultSimpleField(TypeReference type, String name) {
+        this.type = type;
+        this.name = name;
+    }
+
+    public TypeReference getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

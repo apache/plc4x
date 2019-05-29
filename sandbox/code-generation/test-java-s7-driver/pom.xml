@@ -47,7 +47,7 @@
             </goals>
             <configuration>
               <protocolName>s7</protocolName>
-              <languageTemplateName>java</languageTemplateName>
+              <languageName>java</languageName>
             </configuration>
           </execution>
         </executions>

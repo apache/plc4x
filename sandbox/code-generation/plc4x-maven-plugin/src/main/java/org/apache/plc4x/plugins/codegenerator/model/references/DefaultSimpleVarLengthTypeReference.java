@@ -17,20 +17,14 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.parser;
+package org.apache.plc4x.plugins.codegenerator.model.references;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.references.SimpleVarLengthTypeReference;
 
-import java.io.InputStream;
-import java.util.Map;
+public class DefaultSimpleVarLengthTypeReference extends DefaultSimpleTypeReference implements SimpleVarLengthTypeReference {
 
-public class ManualMessageFormatParserTest {
-
-    public static void main(String[] args) {
-        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
-        MessageFormatParser parser = new MessageFormatParser();
-        Map<String, ComplexTypeDefinition> types = parser.parse(spec);
-        System.out.println(types);
+    public DefaultSimpleVarLengthTypeReference(SimpleBaseType baseType) {
+        super(baseType, -1);
     }
 
 }

@@ -17,20 +17,12 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.parser;
+package org.apache.plc4x.language.definitions;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+public interface TypeDefinition {
 
-import java.io.InputStream;
-import java.util.Map;
+    String getName();
 
-public class ManualMessageFormatParserTest {
-
-    public static void main(String[] args) {
-        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
-        MessageFormatParser parser = new MessageFormatParser();
-        Map<String, ComplexTypeDefinition> types = parser.parse(spec);
-        System.out.println(types);
-    }
+    TypeDefinition getParentType();
 
 }

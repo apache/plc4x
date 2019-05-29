@@ -44,14 +44,14 @@ public class ${typeName} {
     private final ${helper.getLanguageTypeNameForSpecType(simpleField.type)} ${simpleField.name};
 </#list>
 
-    public ${typeName}(<#list type.simpleFields as simpleField>${simpleField.type.name} ${simpleField.name}<#sep>, </#sep></#list>) {
+    public ${typeName}(<#list type.simpleFields as simpleField>${helper.getLanguageTypeNameForSpecType(simpleField.type)} ${simpleField.name}<#sep>, </#sep></#list>) {
 <#list type.simpleFields as simpleField>
         this.${simpleField.name} = ${simpleField.name};
 </#list>
     }
 
 <#list type.simpleFields as simpleField>
-    public ${simpleField.type.name} get${simpleField.name?cap_first}() {
+    public ${helper.getLanguageTypeNameForSpecType(simpleField.type)} get${simpleField.name?cap_first}() {
         return ${simpleField.name};
     }
 

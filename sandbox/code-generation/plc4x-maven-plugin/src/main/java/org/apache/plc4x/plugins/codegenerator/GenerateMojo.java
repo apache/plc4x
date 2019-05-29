@@ -18,9 +18,6 @@ under the License.
 */
 package org.apache.plc4x.plugins.codegenerator;
 
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.core.ParseException;
-import freemarker.template.*;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -29,8 +26,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.plc4x.language.LanguageTemplate;
-import org.apache.plc4x.plugins.codegenerator.model.types.ComplexType;
+import org.apache.plc4x.language.LanguageOutput;
+import org.apache.plc4x.language.exceptions.GenerationException;
+import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.parser.MessageFormatParser;
 import org.apache.plc4x.protocol.Protocol;
 
@@ -38,8 +36,6 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -66,10 +62,10 @@ public class GenerateMojo extends AbstractMojo {
     private String protocolName;
 
     /**
-     * The name of the language template that will be used to generate the driver.
+     * The name of the language name that will be used to generate the driver.
      */
     @Parameter(required = true)
-    private String languageTemplateName;
+    private String languageName;
 
     public void execute()
         throws MojoExecutionException {
@@ -99,20 +95,6 @@ public class GenerateMojo extends AbstractMojo {
                 "Error creating classloader for loading message format schema from module dependencies", e);
         }
 
-        // Load the language template.
-        LanguageTemplate languageTemplate = null;
-        ServiceLoader<LanguageTemplate> languageTemplates = ServiceLoader.load(LanguageTemplate.class, moduleClassloader);
-        for (LanguageTemplate curLanguageTemplate : languageTemplates) {
-            if(curLanguageTemplate.getName().equalsIgnoreCase(languageTemplateName)) {
-                languageTemplate = curLanguageTemplate;
-                break;
-            }
-        }
-        if(languageTemplate == null) {
-            throw new MojoExecutionException(
-                "Unable to find language template '" + languageTemplateName + "' on modules classpath");
-        }
-
         // Load the protocol module.
         Protocol protocol = null;
         ServiceLoader<Protocol> protocols = ServiceLoader.load(Protocol.class, moduleClassloader);
@@ -124,7 +106,21 @@ public class GenerateMojo extends AbstractMojo {
         }
         if(protocol == null) {
             throw new MojoExecutionException(
-                "Unable to find protocol module '" + protocolName + "' on modules classpath");
+                "Unable to find protocol specification module '" + protocolName + "' on modules classpath");
+        }
+
+        // Load the language module.
+        LanguageOutput language = null;
+        ServiceLoader<LanguageOutput> languages = ServiceLoader.load(LanguageOutput.class, moduleClassloader);
+        for (LanguageOutput curLanguage : languages) {
+            if(curLanguage.getName().equalsIgnoreCase(languageName)) {
+                language = curLanguage;
+                break;
+            }
+        }
+        if(language == null) {
+            throw new MojoExecutionException(
+                "Unable to find language output module '" + languageName + "' on modules classpath");
         }
 
         // Try loading the file directly (Without classloader)
@@ -132,80 +128,14 @@ public class GenerateMojo extends AbstractMojo {
         if(schemaInputStream == null) {
             throw new MojoExecutionException("Error loading message-format schema for protocol '" + protocolName + "'");
         }
+        Map<String, ComplexTypeDefinition> types = new MessageFormatParser().parse(schemaInputStream);
 
-        Map<String, ComplexType> types = new MessageFormatParser().parse(schemaInputStream);
         try {
-            // Configure the Freemarker template engine
-            Configuration freemarkerConfiguration = getFreemarkerConfiguration();
-            freemarkerConfiguration.setClassLoaderForTemplateLoading(moduleClassloader, "/");
-
-            // Initialize all templates
-            List<Template> templateList = languageTemplate.getTemplates(freemarkerConfiguration);
-
-            // Iterate over the types and have content generated for each one
-            for (Map.Entry<String, ComplexType> typeEntry : types.entrySet()) {
-                // Prepare a new generation context
-                Map<String, Object> typeContext = new HashMap<>();
-                typeContext.put("packageName", "org.apache.plc4x." +
-                    languageTemplateName.toLowerCase() + "." + protocolName.toLowerCase());
-                typeContext.put("typeName", typeEntry.getKey());
-                typeContext.put("type", typeEntry.getValue());
-                typeContext.put("helper", languageTemplate.getHelper());
-
-                for(Template template : templateList) {
-                    // Create a variable size output location where the template can generate it's content to
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-                    // Have Freemarker generate the output
-                    template.process(typeContext, new OutputStreamWriter(output));
-
-                    // Create the means to read in the generated output back in again
-                    BufferedReader input = new BufferedReader(
-                        new InputStreamReader(new ByteArrayInputStream(output.toByteArray())));
-
-                    // Extract the output path from the first line of the generated content
-                    String outputFileName = input.readLine();
-                    File outputFile = new File(outputDir, outputFileName);
-
-                    // Create any missing directories
-                    if(!outputFile.getParentFile().exists()) {
-                        if(!outputFile.getParentFile().mkdirs()) {
-                            throw new MojoExecutionException(
-                                "Unable to create output directory " + outputFile.getParent());
-                        }
-                    }
-
-                    // Output the rest to that file
-                    BufferedWriter outputFileWriter = Files.newBufferedWriter(
-                        outputFile.toPath(), StandardCharsets.UTF_8);
-                    String line;
-                    while ((line = input.readLine()) != null) {
-                        outputFileWriter.write(line);
-                        outputFileWriter.newLine();
-                    }
-                    outputFileWriter.flush();
-                }
-                getLog().info("Generating type " + typeEntry.getKey());
-            }
-        } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException | ParseException e) {
-            throw new MojoExecutionException("Error resolving template", e);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error generating sources", e);
+            language.generate(outputDir, "org.apache.plc4x." + languageName.toLowerCase() +
+                "." + protocolName.toLowerCase(), types);
+        } catch (GenerationException e) {
+            getLog().error("Error generating sources", e);
         }
-    }
-
-    private Configuration getFreemarkerConfiguration() throws MojoExecutionException {
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
-        configuration.setDefaultEncoding("UTF-8");
-        configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        configuration.setLogTemplateExceptions(false);
-        configuration.setWrapUncheckedExceptions(true);
-        try {
-            configuration.setDirectoryForTemplateLoading(new File("/"));
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error initializing freemarker configuration");
-        }
-        return configuration;
     }
 
 }

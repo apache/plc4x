@@ -17,20 +17,21 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.parser;
+package org.apache.plc4x.plugins.codegenerator.model.references;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.references.ComplexTypeReference;
 
-import java.io.InputStream;
-import java.util.Map;
+public class DefaultComplexTypeReference implements ComplexTypeReference {
 
-public class ManualMessageFormatParserTest {
+    private final String name;
 
-    public static void main(String[] args) {
-        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
-        MessageFormatParser parser = new MessageFormatParser();
-        Map<String, ComplexTypeDefinition> types = parser.parse(spec);
-        System.out.println(types);
+    public DefaultComplexTypeReference(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 }

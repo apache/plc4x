@@ -17,20 +17,28 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.parser;
+package org.apache.plc4x.plugins.codegenerator.model.references;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.references.SimpleTypeReference;
 
-import java.io.InputStream;
-import java.util.Map;
+public class DefaultSimpleTypeReference implements SimpleTypeReference {
 
-public class ManualMessageFormatParserTest {
+    private final SimpleBaseType baseType;
+    private final int size;
 
-    public static void main(String[] args) {
-        InputStream spec = Thread.currentThread().getContextClassLoader().getResourceAsStream("specs/s7.spec");
-        MessageFormatParser parser = new MessageFormatParser();
-        Map<String, ComplexTypeDefinition> types = parser.parse(spec);
-        System.out.println(types);
+    public DefaultSimpleTypeReference(SimpleBaseType baseType, int size) {
+        this.baseType = baseType;
+        this.size = size;
+    }
+
+    @Override
+    public SimpleBaseType getBaseType() {
+        return baseType;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
     }
 
 }
