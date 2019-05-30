@@ -22,9 +22,12 @@ package org.apache.plc4x.plugins.codegenerator.model.definitions;
 import org.apache.plc4x.language.fields.ConstField;
 import org.apache.plc4x.language.fields.Field;
 import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.language.fields.PropertyField;
 import org.apache.plc4x.language.fields.SimpleField;
 import org.apache.plc4x.plugins.codegenerator.model.fields.DefaultConstField;
+import org.apache.plc4x.plugins.codegenerator.model.fields.DefaultOptionalField;
 import org.apache.plc4x.plugins.codegenerator.model.fields.DefaultSimpleField;
+import org.apache.plc4x.protocol.Protocol;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -63,19 +66,25 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     }
 
     @Override
-    public List<SimpleField> getAllSimpleFields() {
-        List<SimpleField> fields = new LinkedList<>();
+    public List<PropertyField> getPropertyFields() {
+        return fields.stream().filter(field -> (field instanceof PropertyField)).map(field -> (PropertyField) field)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PropertyField> getAllPropertyFields() {
+        List<PropertyField> fields = new LinkedList<>();
         if(getParentType() != null) {
-            fields.addAll(((ComplexTypeDefinition)getParentType()).getAllSimpleFields());
+            fields.addAll(((ComplexTypeDefinition)getParentType()).getAllPropertyFields());
         }
-        fields.addAll(getSimpleFields());
+        fields.addAll(getPropertyFields());
         return fields;
     }
 
     @Override
-    public List<SimpleField> getParentSimpleFields() {
+    public List<PropertyField> getParentPropertyFields() {
         if(getParentType() != null) {
-            return ((ComplexTypeDefinition)getParentType()).getAllSimpleFields();
+            return ((ComplexTypeDefinition)getParentType()).getAllPropertyFields();
         }
         return Collections.emptyList();
     }

@@ -23,6 +23,10 @@ import org.apache.plc4x.language.references.TypeReference;
 
 public interface DiscriminatorField extends Field {
 
+    default String getTypeName() {
+        return "discriminator";
+    }
+
     TypeReference getType();
 
     String getName();

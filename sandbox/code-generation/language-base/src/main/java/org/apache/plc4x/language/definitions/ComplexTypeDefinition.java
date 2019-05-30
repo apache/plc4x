@@ -21,6 +21,7 @@ package org.apache.plc4x.language.definitions;
 
 import org.apache.plc4x.language.fields.ConstField;
 import org.apache.plc4x.language.fields.Field;
+import org.apache.plc4x.language.fields.PropertyField;
 import org.apache.plc4x.language.fields.SimpleField;
 
 import java.util.List;
@@ -43,20 +44,32 @@ public interface ComplexTypeDefinition extends TypeDefinition {
      */
     List<SimpleField> getSimpleFields();
 
+    /**
+     * Get only the fields which are of type ConstField.
+     *
+     * @return all constant fields ;-)
+     */
     List<ConstField> getConstFields();
 
     /**
-     * In contrast to getSimpleFields, this also gets all simple fields of any parent type.
+     * Get only the fields which are of type SimpleField or OptionalField.
+     *
+     * @return all simple and optional fields ;-)
+     */
+    List<PropertyField> getPropertyFields();
+
+    /**
+     * In contrast to getFields, this also gets all property fields of any parent type.
      *
      * @return all simple fields including any parents simple fields
      */
-    List<SimpleField> getAllSimpleFields();
+    List<PropertyField> getAllPropertyFields();
 
     /**
-     * Returns all SimpleFields defined by any parent type.
+     * Returns all protery fields defined by any parent type.
      *
      * @return all parent types simple fields.
      */
-    List<SimpleField> getParentSimpleFields();
+    List<PropertyField> getParentPropertyFields();
 
 }

@@ -19,10 +19,8 @@
 
 package org.apache.plc4x.language.java;
 
-import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.language.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.language.definitions.TypeDefinition;
-import org.apache.plc4x.language.fields.SimpleField;
 import org.apache.plc4x.language.references.ComplexTypeReference;
 import org.apache.plc4x.language.references.SimpleTypeReference;
 import org.apache.plc4x.language.references.TypeReference;
@@ -82,6 +80,17 @@ public class JavaLanguageTemplateHelper {
             return "Hurz";
         } else {
             return ((ComplexTypeReference) typeReference).getName();
+        }
+    }
+
+    public String getReadMethodName(SimpleTypeReference simpleTypeReference) {
+        String languageTypeName = getLanguageTypeNameForSpecType(simpleTypeReference);
+        languageTypeName = languageTypeName.substring(0, 1).toUpperCase() + languageTypeName.substring(1);
+        if(simpleTypeReference.getBaseType().equals(SimpleTypeReference.SimpleBaseType.UINT)) {
+            return "readUnsigned" + languageTypeName;
+        } else {
+            return "read" + languageTypeName;
+
         }
     }
 

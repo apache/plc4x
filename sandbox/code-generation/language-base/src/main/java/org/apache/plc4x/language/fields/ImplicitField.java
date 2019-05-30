@@ -23,7 +23,13 @@ import org.apache.plc4x.language.references.TypeReference;
 
 public interface ImplicitField extends Field {
 
+    default String getTypeName() {
+        return "implicit";
+    }
+
     TypeReference getType();
+
+    String getName();
 
     String getSerializationExpression();
 

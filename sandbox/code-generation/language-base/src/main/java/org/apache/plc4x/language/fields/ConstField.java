@@ -23,6 +23,10 @@ import org.apache.plc4x.language.references.TypeReference;
 
 public interface ConstField extends Field {
 
+    default String getTypeName() {
+        return "const";
+    }
+
     TypeReference getType();
 
     String getName();

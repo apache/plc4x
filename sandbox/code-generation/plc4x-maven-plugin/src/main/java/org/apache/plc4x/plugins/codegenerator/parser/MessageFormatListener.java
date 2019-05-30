@@ -134,8 +134,9 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void enterImplicitField(ImaginaryParser.ImplicitFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
+        String name = ctx.name.id.getText();
         String serializationExpression = ctx.serializationExpression.getText();
-        Field field = new DefaultImplicitField(type, serializationExpression);
+        Field field = new DefaultImplicitField(type, name, serializationExpression);
         parserContexts.peek().add(field);
     }
 
@@ -158,12 +159,12 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterTypeSwitchField(ImaginaryParser.TypeSwitchFieldContext ctx) {
-        int numDescriminators = ctx.discriminators.expression().size();
-        String[] discriminators = new String[numDescriminators];
-        for(int i = 0; i < numDescriminators; i++) {
-            discriminators[i] = ctx.discriminators.expression().get(i).getText();
+        int numDiscriminators = ctx.discriminators.expression().size();
+        String[] discriminatorNames = new String[numDiscriminators];
+        for(int i = 0; i < numDiscriminators; i++) {
+            discriminatorNames[i] = ctx.discriminators.expression().get(i).expr.getText();
         }
-        DefaultSwitchField switchField = new DefaultSwitchField(discriminators);
+        DefaultSwitchField switchField = new DefaultSwitchField(discriminatorNames);
         parserContexts.peek().add(switchField);
     }
 

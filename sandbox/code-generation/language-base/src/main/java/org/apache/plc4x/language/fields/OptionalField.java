@@ -21,7 +21,11 @@ package org.apache.plc4x.language.fields;
 
 import org.apache.plc4x.language.references.TypeReference;
 
-public interface OptionalField extends Field {
+public interface OptionalField extends PropertyField {
+
+    default String getTypeName() {
+        return "optional";
+    }
 
     TypeReference getType();
 

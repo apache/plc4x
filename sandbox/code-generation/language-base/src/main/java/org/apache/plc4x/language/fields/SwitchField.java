@@ -25,6 +25,10 @@ import java.util.List;
 
 public interface SwitchField extends Field {
 
+    default String getTypeName() {
+        return "switch";
+    }
+
     String[] getDiscriminatorNames();
 
     List<DiscriminatedComplexTypeDefinition> getCases();

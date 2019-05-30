@@ -17,33 +17,16 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model.fields;
+package org.apache.plc4x.java.utils;
 
-import org.apache.plc4x.language.fields.ImplicitField;
-import org.apache.plc4x.language.references.TypeReference;
+public class ParseException extends Exception {
 
-public class DefaultImplicitField implements ImplicitField {
-
-    private final TypeReference type;
-    private final String name;
-    private final String serializationExpression;
-
-    public DefaultImplicitField(TypeReference type, String name, String serializationExpression) {
-        this.type = type;
-        this.name = name;
-        this.serializationExpression = serializationExpression;
+    public ParseException(String message) {
+        super(message);
     }
 
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSerializationExpression() {
-        return serializationExpression;
+    public ParseException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

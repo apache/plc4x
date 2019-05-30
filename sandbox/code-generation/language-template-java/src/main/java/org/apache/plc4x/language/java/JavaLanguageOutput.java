@@ -31,10 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JavaLanguageOutput implements LanguageOutput {
 
@@ -120,7 +117,9 @@ public class JavaLanguageOutput implements LanguageOutput {
     private List<Template> getTemplates(Configuration freemarkerConfiguration) throws IOException {
         ClassTemplateLoader classTemplateLoader = new ClassTemplateLoader(JavaLanguageOutput.class, "/");
         freemarkerConfiguration.setTemplateLoader(classTemplateLoader);
-        return Collections.singletonList(freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"));
+        return Arrays.asList(
+            freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/java/io-template.ftlh"));
     }
 
     private JavaLanguageTemplateHelper getHelper() {

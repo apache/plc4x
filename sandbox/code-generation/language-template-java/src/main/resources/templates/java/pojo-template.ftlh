@@ -51,24 +51,24 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 <#if type.constFields?has_content>
 
     // Constant values.
-<#list type.constFields as constField>
-    private static final ${helper.getLanguageTypeNameForSpecType(constField.type)} ${constField.name?upper_case} = ${constField.referenceValue};
+<#list type.constFields as field>
+    public static final ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name?upper_case} = ${field.referenceValue};
 </#list>
 </#if>
-<#if type.simpleFields?has_content>
+<#if type.propertyFields?has_content>
 
     // Properties.
-<#list type.simpleFields as simpleField>
-    private final ${helper.getLanguageTypeNameForSpecType(simpleField.type)} ${simpleField.name};
+<#list type.propertyFields as field>
+    private final ${helper.getLanguageTypeNameForSpecType(field.type)}<#if field.lengthType??>[]</#if> ${field.name};
 </#list>
 </#if>
 
-    public ${typeName}(<#list type.getAllSimpleFields() as simpleField>${helper.getLanguageTypeNameForSpecType(simpleField.type)} ${simpleField.name}<#sep>, </#sep></#list>) {
-<#if type.getParentSimpleFields()?has_content>
-        super(<#list type.getParentSimpleFields() as simpleField>${simpleField.name}<#sep>, </#sep></#list>);
+    public ${typeName}(<#list type.getAllPropertyFields() as field>${helper.getLanguageTypeNameForSpecType(field.type)}<#if field.lengthType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
+<#if type.getParentPropertyFields()?has_content>
+        super(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
 </#if>
-<#list type.simpleFields as simpleField>
-        this.${simpleField.name} = ${simpleField.name};
+<#list type.propertyFields as field>
+        this.${field.name} = ${field.name};
 </#list>
     }
 <#if type.abstract>
@@ -82,9 +82,9 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     }
 </#if>
 
-<#list type.simpleFields as simpleField>
-    public ${helper.getLanguageTypeNameForSpecType(simpleField.type)} get${simpleField.name?cap_first}() {
-        return ${simpleField.name};
+<#list type.propertyFields as field>
+    public ${helper.getLanguageTypeNameForSpecType(field.type)}<#if field.lengthType??>[]</#if> get${field.name?cap_first}() {
+        return ${field.name};
     }
 
 </#list>

@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////
 
 [type 'TPKTPacket'
-    [const    uint 8      'protocolId' '0x3']
-    [reserved uint 8      '0x0']
-    [implicit uint 16     'len'     'payload.size + 4']
-    [field    COTPPacket 'payload'  {payloadLength: 'len - 4'}]
+    [const    uint 8     'protocolId' '0x3']
+    [reserved uint 8     '0x00']
+    [implicit uint 16    'len'        'payload.size + 4']
+    [field    COTPPacket 'payload'    {payloadLength: 'len - 4'}]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -14,11 +14,11 @@
 ////////////////////////////////////////////////////////////////
 
 [discriminatedType 'COTPPacket' ['payloadLength']
-    [implicit uint 8 'headerLength' 'this.size - (payload.size + 1)']
+    [implicit      uint 8 'headerLength' 'this.size - (payload.size + 1)']
     [discriminator uint 8 'tpduCode']
     [typeSwitch 'tpduCode'
         ['0xF0' Data
-            [field bit 'eot']
+            [field bit    'eot']
             [field uint 7 'tpduRef']
         ]
         ['0xE0' ConnectionRequest
@@ -75,12 +75,12 @@
 ////////////////////////////////////////////////////////////////
 
 [discriminatedType 'S7Message' ['payloadLength']
-    [const    uint 8  'protocolId' '0x32']
-    [discriminator uint 8 'messageType']
-    [reserved uint 16 '0x00']
-    [field    uint 16 'tpduReference']
-    [implicit uint 16 'parameterLength' 'parameter.size']
-    [implicit uint 16 'payloadLength' 'payload.size']
+    [const         uint 8  'protocolId'      '0x32']
+    [discriminator uint 8  'messageType']
+    [reserved      uint 16 '0x0000']
+    [field         uint 16 'tpduReference']
+    [implicit      uint 16 'parameterLength' 'parameters.size']
+    [implicit      uint 16 'payloadLength'   'payloads.size']
     [typeSwitch 'messageType'
         ['0x01' Request
             [context string 'messageType' 'request']
@@ -94,8 +94,8 @@
             [context string 'messageType' 'userData']
         ]
     ]
-    [optionalField S7Parameter 'parameter' 'parameterLength > 0' {messageType: 'messageType'}]
-    [optionalField S7Payload 'payload' 'payloadLength > 0' {messageType: 'messageType', parameter: 'parameter'}]
+    [field S7Parameter 'parameter' {messageType: 'messageType'}]
+    [field S7Payload 'payload' {messageType: 'messageType', parameter: 'parameter'}]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -105,27 +105,27 @@
     [discriminator uint 8 'parameterType']
     [typeSwitch 'parameterType','messageType'
         ['0xF0' SetupCommunication
-            [reserved uint 8 '0x0']
-            [field uint 16 'maxAmqCaller']
-            [field uint 16 'maxAmqCallee']
-            [field uint 16 'pduLength']
+            [reserved uint 8  '0x00']
+            [field    uint 16 'maxAmqCaller']
+            [field    uint 16 'maxAmqCallee']
+            [field    uint 16 'pduLength']
         ]
         ['0x04','request' ReadVarRequest
-            [implicit uint 8 'numItems' 'items.size']
-            [arrayField S7VarRequestParameterItem 'items' count 'numItems']
+            [implicit   uint 8                    'numItems' 'items.size']
+            [arrayField S7VarRequestParameterItem 'items'    count 'numItems']
         ]
         ['0x04','response' ReadVarResponse
             [field uint 8 'numItems']
         ]
         ['0x05','request' WriteVarRequest
-            [implicit uint 8 'numItems' 'items.size']
-            [arrayField S7VarRequestParameterItem 'items' count 'numItems']
+            [implicit   uint 8                    'numItems' 'items.size']
+            [arrayField S7VarRequestParameterItem 'items'    count 'numItems']
         ]
         ['0x05','response' WriteVarResponse
             [field uint 8 'numItems']
         ]
         ['0x00','userData' UserData
-            [implicit uint 8 'numItems' 'items.size']
+            [implicit   uint 8       'numItems' 'items.size']
             [arrayField UserDataItem 'items' count 'numItems']
         ]
     ]
@@ -135,8 +135,8 @@
     [discriminator uint 8 'parameterItemType']
     [typeSwitch 'parameterItemType'
         ['0x12' Address
-            [implicit uint 8 'addressLength' 'address.size']
-            [field S7Address 'address']
+            [implicit uint 8    'addressLength' 'address.size']
+            [field    S7Address 'address']
         ]
     ]
 ]
@@ -149,7 +149,7 @@
             [field    uint 16 'numberOfElements']
             [field    uint 8  'dbNumber']
             [field    uint 8  'area']
-            [reserved uint 5  '0x0']
+            [reserved uint 5  '0x00']
             [field    uint 16 'byteAddress']
             [field    uint 3  'bitAddress']
         ]
@@ -192,10 +192,10 @@
 ]
 
 [type 'S7VarPayloadDataItem'
-    [field uint 8 'returnCode']
-    [field uint 8 'transportSize']
-    [field uint 16 'dataLength']
-    [arrayField uint 8 'data' count 'dataLength']
+    [field      uint 8  'returnCode']
+    [field      uint 8  'transportSize']
+    [field      uint 16 'dataLength']
+    [arrayField uint 8  'data' count 'dataLength']
 ]
 
 [type 'S7VarPayloadStatusItem'

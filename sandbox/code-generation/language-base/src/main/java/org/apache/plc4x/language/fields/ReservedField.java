@@ -23,6 +23,10 @@ import org.apache.plc4x.language.references.TypeReference;
 
 public interface ReservedField extends Field {
 
+    default String getTypeName() {
+        return "reserved";
+    }
+
     TypeReference getType();
 
     Object getReferenceValue();
