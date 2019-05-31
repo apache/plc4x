@@ -83,15 +83,12 @@
     [implicit      uint 16 'payloadLength'   'payloads.size']
     [typeSwitch 'messageType'
         ['0x01' S7MessageRequest
-            [context string 'messageType' '"request"']
         ]
         ['0x03' S7MessageResponse
-            [context string 'messageType' '"response"']
             [field uint 8 'errorClass']
             [field uint 8 'errorCode']
         ]
         ['0x07' S7MessageUserData
-            [context string 'messageType' '"userData"']
         ]
     ]
     [field S7Parameter 'parameter' ['messageType']]
@@ -110,21 +107,21 @@
             [field    uint 16 'maxAmqCallee']
             [field    uint 16 'pduLength']
         ]
-        ['0x04','request' S7ParameterReadVarRequest
+        ['0x04','0x01' S7ParameterReadVarRequest
             [implicit   uint 8                    'numItems' 'items.size']
             [arrayField S7VarRequestParameterItem 'items'    count 'numItems']
         ]
-        ['0x04','response' S7ParameterReadVarResponse
+        ['0x04','0x03' S7ParameterReadVarResponse
             [field uint 8 'numItems']
         ]
-        ['0x05','request' S7ParameterWriteVarRequest
+        ['0x05','0x01' S7ParameterWriteVarRequest
             [implicit   uint 8                    'numItems' 'items.size']
             [arrayField S7VarRequestParameterItem 'items'    count 'numItems']
         ]
-        ['0x05','response' S7ParameterWriteVarResponse
+        ['0x05','0x03' S7ParameterWriteVarResponse
             [field uint 8 'numItems']
         ]
-        ['0x00','userData' S7ParameterUserData
+        ['0x00','0x07' S7ParameterUserData
             [implicit   uint 8       'numItems' 'items.size']
             [arrayField UserDataItem 'items' count 'numItems']
         ]
