@@ -72,6 +72,14 @@ public class ${typeName}IO  {
         }
         jc.set("${field.name}", ${field.name});
         <#break>
+
+    <#case "context">
+
+        // Context Field (Artificial value not retrieved by the input, but the context)
+        JexlExpression ex${field.name?cap_first} = jexl.createExpression("${(field.valueExpression?replace("\"", "\\\"")?no_esc)}");
+        ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = (${helper.getLanguageTypeNameForSpecType(field.type)}) ex${field.name?cap_first}.evaluate(jc);
+        jc.set("${field.name}", ${field.name});
+        <#break>
     <#case "discriminator">
 
         // Discriminator Field (Used as input to a switch field)

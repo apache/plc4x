@@ -24,7 +24,6 @@ field
  | constField
  | contextField
  | discriminatorField
- | embeddedField
  | simpleField
  | implicitField
  | optionalField
@@ -41,15 +40,11 @@ constField
  ;
 
 contextField
- : K_CONTEXT type=dataType name=idExpression expression
+ : K_CONTEXT type=dataType name=idExpression valueExpression=expression
  ;
 
 discriminatorField
  : K_DISCRIMINATOR type=dataType name=idExpression
- ;
-
-embeddedField
- : K_EMBEDDED name=idExpression
  ;
 
 simpleField
@@ -113,6 +108,7 @@ innerExpression
  | innerExpression '.' IDENTIFIER // Field Reference
  | innerExpression BinaryOperator innerExpression  // Addition
  | '(' innerExpression ')'
+ | '"' innerExpression '"'
  ;
 
 context

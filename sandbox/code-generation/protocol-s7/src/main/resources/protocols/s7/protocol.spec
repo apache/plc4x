@@ -83,15 +83,15 @@
     [implicit      uint 16 'payloadLength'   'payloads.size']
     [typeSwitch 'messageType'
         ['0x01' S7MessageRequest
-            [context string 'messageType' 'request']
+            [context string 'messageType' '"request"']
         ]
         ['0x03' S7MessageResponse
-            [context string 'messageType' 'response']
+            [context string 'messageType' '"response"']
             [field uint 8 'errorClass']
             [field uint 8 'errorCode']
         ]
         ['0x07' S7MessageUserData
-            [context string 'messageType' 'userData']
+            [context string 'messageType' '"userData"']
         ]
     ]
     [field S7Parameter 'parameter' ['messageType']]

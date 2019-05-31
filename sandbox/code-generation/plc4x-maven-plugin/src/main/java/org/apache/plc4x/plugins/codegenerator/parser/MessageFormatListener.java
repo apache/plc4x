@@ -112,8 +112,11 @@ public class MessageFormatListener extends ImaginaryBaseListener {
 
     @Override
     public void enterContextField(ImaginaryParser.ContextFieldContext ctx) {
-        // This field type just adds something to the context (No parsing involved)
-        // TODO: Implement
+        SimpleTypeReference type = getSimpleTypeReference(ctx.type);
+        String name = ctx.name.id.getText();
+        String valueExpression = ctx.valueExpression.expr.getText();
+        Field field = new DefaultContextField(type, name, valueExpression);
+        parserContexts.peek().add(field);
     }
 
     @Override
@@ -122,12 +125,6 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         String name = ctx.name.id.getText();
         Field field = new DefaultDiscriminatorField(type, name);
         parserContexts.peek().add(field);
-    }
-
-    @Override
-    public void enterEmbeddedField(ImaginaryParser.EmbeddedFieldContext ctx) {
-        super.enterEmbeddedField(ctx);
-        // TODO: Implement
     }
 
     @Override
