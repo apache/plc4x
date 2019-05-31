@@ -21,6 +21,7 @@ package org.apache.plc4x.language.java;
 
 import org.apache.plc4x.language.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.language.definitions.TypeDefinition;
+import org.apache.plc4x.language.fields.ArrayField;
 import org.apache.plc4x.language.references.ComplexTypeReference;
 import org.apache.plc4x.language.references.SimpleTypeReference;
 import org.apache.plc4x.language.references.TypeReference;
@@ -195,6 +196,10 @@ public class JavaLanguageTemplateHelper {
 
     public boolean isDiscriminatedType(TypeDefinition typeDefinition) {
         return typeDefinition instanceof DiscriminatedComplexTypeDefinition;
+    }
+
+    public boolean isCountArray(ArrayField arrayField) {
+        return arrayField.getLengthType() == ArrayField.LengthType.COUNT;
     }
 
 }

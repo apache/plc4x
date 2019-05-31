@@ -24,6 +24,10 @@ import java.math.BigInteger;
 
 public class IoBuffer {
 
+    public int getPos() {
+        return 0;
+    }
+
     public boolean readBit() {
         return false;
     }

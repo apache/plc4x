@@ -45,6 +45,10 @@ import org.apache.plc4x.java.utils.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public class ${typeName}IO  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
@@ -61,7 +65,21 @@ public class ${typeName}IO  {
     <#case "array">
 
         // Array field
-        array ${field.name}
+        JexlExpression ex${field.name} = jexl.createExpression("${field.lengthExpression}");
+        int size = (int) ex${field.name}.evaluate(jc);
+        List<${helper.getLanguageTypeNameForSpecType(field.type)}> ${field.name}List = <#if helper.isCountArray(field)>new ArrayList<>(size)<#else>new LinkedList<>()</#if>;
+        <#if helper.isCountArray(field)>
+        for(int i = 0; i < size; i++) {
+            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getIoBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>);
+        }
+        <#else>
+        int endPos = io.getPos() + size;
+        while(io.getPos() < endPos) {
+            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getIoBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>);
+        }
+        </#if>
+        ${helper.getLanguageTypeNameForSpecType(field.type)}[] ${field.name} = ${field.name}List.toArray(new ${helper.getLanguageTypeNameForSpecType(field.type)}[0]);
+        jc.set("${field.name}", ${field.name});
         <#break>
     <#case "const">
 
