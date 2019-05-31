@@ -39,6 +39,7 @@ ${packageName?replace(".", "/")}/io/${typeName}IO.java
 package ${packageName}.io;
 
 import ${packageName}.*;
+import org.apache.commons.jexl3.*;
 import org.apache.plc4x.java.utils.IoBuffer;
 import org.apache.plc4x.java.utils.ParseException;
 import org.slf4j.Logger;
@@ -48,11 +49,19 @@ public class ${typeName}IO  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
-    public static <#if helper.isDiscriminatedType(type)>${typeName}Builder<#else>${typeName}</#if> parse(IoBuffer io) throws ParseException {
+    public static <#if helper.isDiscriminatedType(type)>${typeName}Builder<#else>${typeName}</#if> parse(IoBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+        JexlEngine jexl = new JexlBuilder().create();
+        JexlContext jc = new MapContext();
+        <#if type.parserArguments?has_content>
+        <#list type.parserArguments as parserArgument>
+        jc.set("${parserArgument.name}", ${parserArgument.name});
+        </#list></#if>
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
-        array
+
+        // Array field
+        array ${field.name}
         <#break>
     <#case "const">
 
@@ -61,23 +70,28 @@ public class ${typeName}IO  {
         if(${field.name} != ${typeName}.${field.name?upper_case}) {
             throw new ParseException("Expected constant value " + ${typeName}.${field.name?upper_case} + " but got " + ${field.name});
         }
+        jc.set("${field.name}", ${field.name});
         <#break>
     <#case "discriminator">
 
         // Discriminator Field (Used as input to a switch field)
         ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+        jc.set("${field.name}", ${field.name});
         <#break>
     <#case "implicit">
 
         // Implicit Field (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
         ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+        jc.set("${field.name}", ${field.name});
         <#break>
     <#case "optional">
 
         // Optional Field (Can be skipped, if a given expression evaluates to false)
+        ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = ${helper.getNullValueForType(field.type)};
         if(${field.conditionExpression}) {
-           simple
+            ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getIoBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io);</#if>;
         }
+        jc.set("${field.name}", ${field.name});
         <#break>
     <#case "reserved">
 
@@ -90,15 +104,19 @@ public class ${typeName}IO  {
         }
         <#break>
     <#case "simple">
-        simple
+
+        // Simple field
+        ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getIoBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
+        jc.set("${field.name}", ${field.name});
         <#break>
     <#case "switch">
 
         // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
         ${typeName}Builder builder = null;
         <#list field.cases as case>
-        if(<#list case.discriminatorValues as discriminatorValue>(${field.discriminatorNames[discriminatorValue?index]} == ${discriminatorValue})<#sep> && </#sep></#list>) {
-            builder = ${case.name}IO.parse(io);
+        JexlExpression ex${case.name} = jexl.createExpression("<#list case.discriminatorValues as discriminatorValue>(${field.discriminatorNames[discriminatorValue?index]} == ${discriminatorValue})<#sep> && </#sep></#list>");
+        if(ex${case.name}.evaluate(jc) == Boolean.TRUE) {
+            builder = ${case.name}IO.parse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }
         </#list>
         else {
@@ -107,6 +125,8 @@ public class ${typeName}IO  {
         <#break>
 </#switch>
 </#list>
+
+        // Create the instance
         <#if helper.isDiscriminatedType(type)>
         return new ${typeName}Builder(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
         <#elseif type.abstract>

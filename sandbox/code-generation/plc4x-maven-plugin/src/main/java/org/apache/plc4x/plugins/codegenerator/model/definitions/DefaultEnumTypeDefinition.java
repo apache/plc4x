@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.definitions;
 
+import org.apache.plc4x.language.definitions.Argument;
 import org.apache.plc4x.language.definitions.EnumTypeDefinition;
 import org.apache.plc4x.language.definitions.TypeDefinition;
 
@@ -29,8 +30,8 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
     private final TypeDefinition baseType;
     private final List<EnumValue> values;
 
-    public DefaultEnumTypeDefinition(String name, TypeDefinition baseType, List<EnumValue> values) {
-        super(name);
+    public DefaultEnumTypeDefinition(String name, Argument[] parserArguments, TypeDefinition baseType, List<EnumValue> values) {
+        super(name, parserArguments);
         this.baseType = baseType;
         this.values = values;
     }

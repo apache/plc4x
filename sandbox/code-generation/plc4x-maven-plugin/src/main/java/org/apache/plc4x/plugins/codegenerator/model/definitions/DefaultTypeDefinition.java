@@ -19,20 +19,27 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.definitions;
 
+import org.apache.plc4x.language.definitions.Argument;
 import org.apache.plc4x.language.definitions.TypeDefinition;
 
 public abstract class DefaultTypeDefinition {
 
     private final String name;
+    private final Argument[] parserArguments;
     private TypeDefinition parentType;
 
-    public DefaultTypeDefinition(String name) {
+    public DefaultTypeDefinition(String name, Argument[] parserArguments) {
         this.name = name;
+        this.parserArguments = parserArguments;
         this.parentType = null;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Argument[] getParserArguments() {
+        return parserArguments;
     }
 
     public TypeDefinition getParentType() {

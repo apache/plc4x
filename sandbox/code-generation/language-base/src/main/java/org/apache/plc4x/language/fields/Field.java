@@ -22,5 +22,6 @@ package org.apache.plc4x.language.fields;
 public interface Field {
 
     String getTypeName();
+    String[] getParams();
 
 }

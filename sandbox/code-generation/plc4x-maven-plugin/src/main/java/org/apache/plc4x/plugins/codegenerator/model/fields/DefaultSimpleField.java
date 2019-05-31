@@ -26,10 +26,12 @@ public class DefaultSimpleField implements SimpleField {
 
     private final TypeReference type;
     private final String name;
+    private final String[] params;
 
-    public DefaultSimpleField(TypeReference type, String name) {
+    public DefaultSimpleField(TypeReference type, String name, String[] params) {
         this.type = type;
         this.name = name;
+        this.params = params;
     }
 
     public TypeReference getType() {
@@ -38,6 +40,10 @@ public class DefaultSimpleField implements SimpleField {
 
     public String getName() {
         return name;
+    }
+
+    public String[] getParams() {
+        return params;
     }
 
 }

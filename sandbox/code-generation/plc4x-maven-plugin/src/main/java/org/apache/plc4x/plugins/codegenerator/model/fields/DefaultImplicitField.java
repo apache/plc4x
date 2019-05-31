@@ -46,4 +46,8 @@ public class DefaultImplicitField implements ImplicitField {
         return serializationExpression;
     }
 
+    public String[] getParams() {
+        return new String[0];
+    }
+
 }

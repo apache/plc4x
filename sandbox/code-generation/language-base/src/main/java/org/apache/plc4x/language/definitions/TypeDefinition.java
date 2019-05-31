@@ -23,6 +23,8 @@ public interface TypeDefinition {
 
     String getName();
 
+    Argument[] getParserArguments();
+
     TypeDefinition getParentType();
 
 }

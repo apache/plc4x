@@ -83,6 +83,101 @@ public class JavaLanguageTemplateHelper {
         }
     }
 
+    public String getNullValueForType(TypeReference typeReference) {
+        if(typeReference instanceof SimpleTypeReference) {
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            switch (simpleTypeReference.getBaseType()) {
+                case BIT: {
+                    return "false";
+                }
+                case UINT: {
+                    if (simpleTypeReference.getSize() <= 16) {
+                        return "0";
+                    }
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return "0l";
+                    }
+                    return "null";
+                }
+                case INT: {
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return "0";
+                    }
+                    if (simpleTypeReference.getSize() <= 64) {
+                        return "0l";
+                    }
+                    return "null";
+                }
+                case FLOAT: {
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return "0.0f";
+                    }
+                    if (simpleTypeReference.getSize() <= 64) {
+                        return "0.0";
+                    }
+                    return "null";
+                }
+                case STRING: {
+                    return "null";
+                }
+            }
+            return "Hurz";
+        } else {
+            return "null";
+        }
+    }
+
+    public String getIoBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT: {
+                return "readBit()";
+            }
+            case UINT: {
+                if (simpleTypeReference.getSize() <= 4) {
+                    return "readUnsignedByte(" + simpleTypeReference.getSize() + ")";
+                }
+                if (simpleTypeReference.getSize() <= 8) {
+                    return "readUnsignedShort(" + simpleTypeReference.getSize() + ")";
+                }
+                if (simpleTypeReference.getSize() <= 16) {
+                    return "readUnsignedInt(" + simpleTypeReference.getSize() + ")";
+                }
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "readUnsignedLong(" + simpleTypeReference.getSize() + ")";
+                }
+                return "readUnsignedBigInteger" + simpleTypeReference.getSize() + ")";
+            }
+            case INT: {
+                if (simpleTypeReference.getSize() <= 8) {
+                    return "readByte" + simpleTypeReference.getSize() + ")";
+                }
+                if (simpleTypeReference.getSize() <= 16) {
+                    return "readShort" + simpleTypeReference.getSize() + ")";
+                }
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "readInt" + simpleTypeReference.getSize() + ")";
+                }
+                if (simpleTypeReference.getSize() <= 64) {
+                    return "readLong" + simpleTypeReference.getSize() + ")";
+                }
+                return "readBigInteger" + simpleTypeReference.getSize() + ")";
+            }
+            case FLOAT: {
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "readFloat" + simpleTypeReference.getSize() + ")";
+                }
+                if (simpleTypeReference.getSize() <= 64) {
+                    return "readDouble" + simpleTypeReference.getSize() + ")";
+                }
+                return "readBigDecimal" + simpleTypeReference.getSize() + ")";
+            }
+            case STRING: {
+                return "readString" + simpleTypeReference.getSize() + ")";
+            }
+        }
+        return "Hurz";
+    }
+
     public String getReadMethodName(SimpleTypeReference simpleTypeReference) {
         String languageTypeName = getLanguageTypeNameForSpecType(simpleTypeReference);
         languageTypeName = languageTypeName.substring(0, 1).toUpperCase() + languageTypeName.substring(1);
@@ -92,6 +187,10 @@ public class JavaLanguageTemplateHelper {
             return "read" + languageTypeName;
 
         }
+    }
+
+    public boolean isSimpleType(TypeReference typeReference) {
+        return typeReference instanceof SimpleTypeReference;
     }
 
     public boolean isDiscriminatedType(TypeDefinition typeDefinition) {

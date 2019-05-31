@@ -28,12 +28,14 @@ public class DefaultArrayField implements ArrayField {
     private final String name;
     private final ArrayField.LengthType lengthType;
     private final String lengthExpression;
+    private final String[] params;
 
-    public DefaultArrayField(TypeReference type, String name, ArrayField.LengthType lengthType, String lengthExpression) {
+    public DefaultArrayField(TypeReference type, String name, ArrayField.LengthType lengthType, String lengthExpression, String[] params) {
         this.type = type;
         this.name = name;
         this.lengthType = lengthType;
         this.lengthExpression = lengthExpression;
+        this.params = params;
     }
 
     public TypeReference getType() {
@@ -50,6 +52,11 @@ public class DefaultArrayField implements ArrayField {
 
     public String getLengthExpression() {
         return lengthExpression;
+    }
+
+    @Override
+    public String[] getParams() {
+        return params;
     }
 
     public static enum LengthType {

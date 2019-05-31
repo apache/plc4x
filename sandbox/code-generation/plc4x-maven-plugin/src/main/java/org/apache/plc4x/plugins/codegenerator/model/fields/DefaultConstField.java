@@ -46,4 +46,8 @@ public class DefaultConstField implements ConstField {
         return referenceValue;
     }
 
+    public String[] getParams() {
+        return new String[0];
+    }
+
 }

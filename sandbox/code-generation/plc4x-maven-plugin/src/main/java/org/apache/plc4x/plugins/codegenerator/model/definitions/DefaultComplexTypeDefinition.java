@@ -19,15 +19,14 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.definitions;
 
+import org.apache.plc4x.language.definitions.Argument;
 import org.apache.plc4x.language.fields.ConstField;
 import org.apache.plc4x.language.fields.Field;
 import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.language.fields.PropertyField;
 import org.apache.plc4x.language.fields.SimpleField;
 import org.apache.plc4x.plugins.codegenerator.model.fields.DefaultConstField;
-import org.apache.plc4x.plugins.codegenerator.model.fields.DefaultOptionalField;
 import org.apache.plc4x.plugins.codegenerator.model.fields.DefaultSimpleField;
-import org.apache.plc4x.protocol.Protocol;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -39,8 +38,8 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     private final boolean isAbstract;
     private final List<Field> fields;
 
-    public DefaultComplexTypeDefinition(String name, boolean isAbstract, List<Field> fields) {
-        super(name);
+    public DefaultComplexTypeDefinition(String name, Argument[] parserArguments, boolean isAbstract, List<Field> fields) {
+        super(name, parserArguments);
         this.isAbstract = isAbstract;
         this.fields = fields;
     }

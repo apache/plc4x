@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.definitions;
 
+import org.apache.plc4x.language.definitions.Argument;
 import org.apache.plc4x.language.fields.Field;
 import org.apache.plc4x.language.definitions.DiscriminatedComplexTypeDefinition;
 
@@ -28,8 +29,8 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
 
     private final String[] discriminatorValues;
 
-    public DefaultDiscriminatedComplexTypeDefinition(String name, String[] discriminatorValues, List<Field> fields) {
-        super(name, false, fields);
+    public DefaultDiscriminatedComplexTypeDefinition(String name, Argument[] parserArguments, String[] discriminatorValues, List<Field> fields) {
+        super(name, parserArguments, false, fields);
         this.discriminatorValues = discriminatorValues;
     }
 

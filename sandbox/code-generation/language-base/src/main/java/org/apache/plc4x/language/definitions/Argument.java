@@ -17,31 +17,26 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model.fields;
+package org.apache.plc4x.language.definitions;
 
-import org.apache.plc4x.language.fields.ReservedField;
 import org.apache.plc4x.language.references.TypeReference;
 
-public class DefaultReservedField implements ReservedField {
+public class Argument {
 
     private final TypeReference type;
-    private final Object referenceValue;
+    private final String name;
 
-    public DefaultReservedField(TypeReference type, Object referenceValue) {
+    public Argument(TypeReference type, String name) {
         this.type = type;
-        this.referenceValue = referenceValue;
+        this.name = name;
     }
 
     public TypeReference getType() {
         return type;
     }
 
-    public Object getReferenceValue() {
-        return referenceValue;
-    }
-
-    public String[] getParams() {
-        return new String[0];
+    public String getName() {
+        return name;
     }
 
 }

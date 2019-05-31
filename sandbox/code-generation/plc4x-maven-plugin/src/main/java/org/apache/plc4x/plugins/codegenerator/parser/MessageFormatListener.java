@@ -21,6 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.parser;
 
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryBaseListener;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryParser;
+import org.apache.plc4x.language.definitions.Argument;
 import org.apache.plc4x.language.fields.ArrayField;
 import org.apache.plc4x.language.fields.Field;
 import org.apache.plc4x.language.fields.SwitchField;
@@ -60,11 +61,16 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void exitComplexType(ImaginaryParser.ComplexTypeContext ctx) {
         String typeName = ctx.name.id.getText();
+        Argument[] parserArguments = null;
+        if(ctx.params != null) {
+            parserArguments = getParserArguments(ctx.params.argument());
+        }
 
         // If the type has sub-types it's an abstract type.
         SwitchField switchField = getSwitchField();
         boolean abstractType = switchField != null;
-        DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(typeName, abstractType, parserContexts.peek());
+        DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(typeName, parserArguments,
+            abstractType, parserContexts.peek());
         complexTypes.put(typeName, type);
 
         // Set the parent type for all sub-types.
@@ -90,7 +96,8 @@ public class MessageFormatListener extends ImaginaryBaseListener {
             lengthType = ArrayField.LengthType.LENGTH;
         }
         String lengthExpression = ctx.lengthExpression.getText();
-        Field field = new DefaultArrayField(type, name, lengthType, lengthExpression);
+        String[] params = getFieldParams((ImaginaryParser.FieldDefinitionContext) ctx.parent.parent);
+        Field field = new DefaultArrayField(type, name, lengthType, lengthExpression, params);
         parserContexts.peek().add(field);
     }
 
@@ -127,7 +134,8 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     public void enterSimpleField(ImaginaryParser.SimpleFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        Field field = new DefaultSimpleField(type, name);
+        String[] params = getFieldParams((ImaginaryParser.FieldDefinitionContext) ctx.parent.parent);
+        Field field = new DefaultSimpleField(type, name, params);
         parserContexts.peek().add(field);
     }
 
@@ -145,7 +153,8 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
         String conditionExpression = ctx.condition.expr.getText();
-        Field field = new DefaultOptionalField(type, name, conditionExpression);
+        String[] params = getFieldParams((ImaginaryParser.FieldDefinitionContext) ctx.parent.parent);
+        Field field = new DefaultOptionalField(type, name, conditionExpression, params);
         parserContexts.peek().add(field);
     }
 
@@ -177,13 +186,20 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     @Override
     public void exitCaseStatement(ImaginaryParser.CaseStatementContext ctx) {
         String typeName = ctx.name.getText();
+        Argument[] parserArguments = null;
+        if(((ImaginaryParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params != null) {
+            parserArguments = getParserArguments(
+                ((ImaginaryParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params.argument());
+        }
+
         List<ImaginaryParser.ExpressionContext> expressions = ctx.discriminatorValues.expression();
         String[] discriminatorValues = new String[expressions.size()];
         for (int i = 0; i < expressions.size(); i++) {
             discriminatorValues[i] = expressions.get(i).expr.getText();
         }
         DefaultDiscriminatedComplexTypeDefinition type =
-            new DefaultDiscriminatedComplexTypeDefinition(typeName, discriminatorValues, parserContexts.pop());
+            new DefaultDiscriminatedComplexTypeDefinition(typeName, parserArguments,
+                discriminatorValues, parserContexts.pop());
 
         // Add the type to the switch field definition.
         DefaultSwitchField switchField = getSwitchField();
@@ -230,4 +246,26 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         }
         return null;
     }
+
+    private Argument[] getParserArguments(List<ImaginaryParser.ArgumentContext> params) {
+        Argument[] parserArguments = new Argument[params.size()];
+        for (int i = 0; i < params.size(); i++) {
+            TypeReference type = getTypeReference(params.get(i).type);
+            String name = params.get(i).name.id.getText();
+            parserArguments[i] = new Argument(type, name);
+        }
+        return parserArguments;
+    }
+
+    private String[] getFieldParams(ImaginaryParser.FieldDefinitionContext parentCtx) {
+        String[] params = null;
+        if(parentCtx.params != null) {
+            params = new String[parentCtx.params.expression().size()];
+            for(int i = 0; i < parentCtx.params.expression().size(); i++) {
+                params[i] = parentCtx.params.expression().get(i).expr.getText();
+            }
+        }
+        return params;
+    }
+
 }

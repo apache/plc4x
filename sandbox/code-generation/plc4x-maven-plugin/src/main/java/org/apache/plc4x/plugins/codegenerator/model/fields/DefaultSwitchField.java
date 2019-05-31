@@ -47,4 +47,8 @@ public class DefaultSwitchField implements SwitchField {
         return cases;
     }
 
+    public String[] getParams() {
+        return new String[0];
+    }
+
 }

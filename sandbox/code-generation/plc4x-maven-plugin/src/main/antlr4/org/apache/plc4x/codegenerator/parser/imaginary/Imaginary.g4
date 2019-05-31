@@ -11,12 +11,12 @@ complexTypeDefinition
 
 complexType
  : K_TYPE name=idExpression fieldDefinition+
- | K_DISCRIMINATED_TYPE name=idExpression (LBRACKET params=multipleExpressions RBRACKET)? fieldDefinition+
+ | K_DISCRIMINATED_TYPE name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  ;
 
 
 fieldDefinition
- : LBRACKET field (LCBRACKET context RCBRACKET)? RBRACKET
+ : LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 field
@@ -49,11 +49,11 @@ discriminatorField
  ;
 
 embeddedField
- : K_EMBEDDED name=idExpression LCBRACKET context RCBRACKET
+ : K_EMBEDDED name=idExpression
  ;
 
 simpleField
- : K_FIELD type=typeReference name=idExpression (LCBRACKET context RCBRACKET)?
+ : K_FIELD type=typeReference name=idExpression
  ;
 
 implicitField
@@ -88,6 +88,14 @@ dataType
  | base=K_UINT size=INTEGER_LITERAL
  | base=K_FLOAT size=INTEGER_LITERAL
  | base=K_STRING
+ ;
+
+argument
+ : type=typeReference name=idExpression
+ ;
+
+argumentList
+ : argument (',' argument)*
  ;
 
 expression

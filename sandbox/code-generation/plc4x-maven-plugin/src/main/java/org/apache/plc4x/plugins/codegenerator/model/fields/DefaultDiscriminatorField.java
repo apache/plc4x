@@ -40,4 +40,8 @@ public class DefaultDiscriminatorField implements DiscriminatorField {
         return name;
     }
 
+    public String[] getParams() {
+        return new String[0];
+    }
+
 }

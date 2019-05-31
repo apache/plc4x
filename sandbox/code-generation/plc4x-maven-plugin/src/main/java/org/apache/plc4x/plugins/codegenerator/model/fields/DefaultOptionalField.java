@@ -27,11 +27,13 @@ public class DefaultOptionalField implements OptionalField {
     private final TypeReference type;
     private final String name;
     private final String conditionExpression;
+    private final String[] params;
 
-    public DefaultOptionalField(TypeReference type, String name, String conditionExpression) {
+    public DefaultOptionalField(TypeReference type, String name, String conditionExpression, String[] params) {
         this.type = type;
         this.name = name;
         this.conditionExpression = conditionExpression;
+        this.params = params;
     }
 
     public TypeReference getType() {
@@ -44,6 +46,10 @@ public class DefaultOptionalField implements OptionalField {
 
     public String getConditionExpression() {
         return conditionExpression;
+    }
+
+    public String[] getParams() {
+        return params;
     }
 
 }
