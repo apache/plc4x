@@ -40,8 +40,9 @@ package ${packageName}.io;
 
 import ${packageName}.*;
 import org.apache.commons.jexl3.*;
-import org.apache.plc4x.java.utils.IoBuffer;
+import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.ParseException;
+import org.apache.plc4x.java.utils.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public class ${typeName}IO  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
-    public static <#if helper.isDiscriminatedType(type)>${typeName}Builder<#else>${typeName}</#if> parse(IoBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+    public static <#if helper.isDiscriminatedType(type)>${typeName}Builder<#else>${typeName}</#if> parse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         JexlEngine jexl = new JexlBuilder().create();
         JexlContext jc = new MapContext();
         <#if type.parserArguments?has_content>
@@ -67,18 +68,19 @@ public class ${typeName}IO  {
         // Array field
         JexlExpression ex${field.name} = jexl.createExpression("${field.lengthExpression}");
         int size = (int) ex${field.name}.evaluate(jc);
-        List<${helper.getLanguageTypeNameForSpecType(field.type)}> ${field.name}List = <#if helper.isCountArray(field)>new ArrayList<>(size)<#else>new LinkedList<>()</#if>;
         <#if helper.isCountArray(field)>
+        ${helper.getLanguageTypeNameForSpecType(field.type)}[] ${field.name} = new ${helper.getLanguageTypeNameForSpecType(field.type)}[size];
         for(int i = 0; i < size; i++) {
-            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getIoBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>);
+            ${field.name}[i] = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
         }
         <#else>
+        List<${helper.getLanguageTypeNameForSpecType(field.type)}> ${field.name}List = <#if helper.isCountArray(field)>new ArrayList<>(size)<#else>new LinkedList<>()</#if>;
         int endPos = io.getPos() + size;
         while(io.getPos() < endPos) {
-            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getIoBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>);
+            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>);
         }
-        </#if>
         ${helper.getLanguageTypeNameForSpecType(field.type)}[] ${field.name} = ${field.name}List.toArray(new ${helper.getLanguageTypeNameForSpecType(field.type)}[0]);
+        </#if>
         jc.set("${field.name}", ${field.name});
         <#break>
     <#case "const">
@@ -90,7 +92,6 @@ public class ${typeName}IO  {
         }
         jc.set("${field.name}", ${field.name});
         <#break>
-
     <#case "context">
 
         // Context Field (Artificial value not retrieved by the input, but the context)
@@ -115,7 +116,7 @@ public class ${typeName}IO  {
         // Optional Field (Can be skipped, if a given expression evaluates to false)
         ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = ${helper.getNullValueForType(field.type)};
         if(${field.conditionExpression}) {
-            ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getIoBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io);</#if>;
+            ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io);</#if>;
         }
         jc.set("${field.name}", ${field.name});
         <#break>
@@ -132,7 +133,7 @@ public class ${typeName}IO  {
     <#case "simple">
 
         // Simple field
-        ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getIoBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
         jc.set("${field.name}", ${field.name});
         <#break>
     <#case "switch">
@@ -160,6 +161,83 @@ public class ${typeName}IO  {
         <#else>
         return new ${typeName}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
         </#if>
+    }
+
+    public static void serialize(WriteBuffer io, ${typeName} value) throws ParseException {
+        JexlEngine jexl = new JexlBuilder().create();
+        JexlContext jc = new MapContext();
+        jc.set("this", value);
+<#list type.fields as field>
+<#switch field.typeName>
+    <#case "array">
+
+        // Array field
+        if(value.get${field.name?cap_first}() != null) {
+            for(${helper.getLanguageTypeNameForSpecType(field.type)} element : value.get${field.name?cap_first}()) {
+                <#if helper.isSimpleType(field.type)>
+                io.${helper.getWriteBufferReadMethodCall(field.type, "element")};
+                <#else>
+                ${helper.getLanguageTypeNameForSpecType(field.type)}IO.serialize(io, element);
+                </#if>
+            }
+        }
+        <#break>
+    <#case "const">
+
+        // Const Field
+        io.${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)};
+        <#break>
+    <#case "context">
+
+        // Context Field (Artificial value not retrieved by the input, but the context)
+        <#break>
+    <#case "discriminator">
+
+        // Discriminator Field (Used as input to a switch field)
+        io.${helper.getWriteBufferReadMethodCall(field.type, "value.getDiscriminatorValues()[0]")};
+        <#break>
+    <#case "implicit">
+
+        // Implicit Field (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+        JexlExpression ex${field.name?cap_first} = jexl.createExpression("${field.serializationExpression}");
+        io.${helper.getWriteBufferReadMethodCall(field.type, "ex" + field.name?cap_first + ".evaluate(jc)")};
+        <#break>
+    <#case "optional">
+
+        // Optional Field (Can be skipped, if a given expression evaluates to false)
+        if(value.get${field.name?cap_first}() != null) {
+            <#if helper.isSimpleType(field.type)>
+            io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
+            <#else>
+            ${helper.getLanguageTypeNameForSpecType(field.type)}IO.serialize(io, value.get${field.name?cap_first}());
+            </#if>
+        }
+        <#break>
+    <#case "reserved">
+
+        // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+        io.${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)};
+        <#break>
+    <#case "simple">
+
+        // Simple field
+        <#if helper.isSimpleType(field.type)>
+        io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
+        <#else>
+        ${helper.getLanguageTypeNameForSpecType(field.type)}IO.serialize(io, value.get${field.name?cap_first}());
+        </#if>
+        <#break>
+    <#case "switch">
+
+        // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
+        <#list field.cases as case>
+        if(value instanceof ${case.name}) {
+            ${case.name}IO.serialize(io, (${case.name}) value);
+        }<#sep> else </#sep>
+        </#list>
+        <#break>
+</#switch>
+</#list>
     }
 
 <#if type.abstract>

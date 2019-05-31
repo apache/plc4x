@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 
 [type 'TPKTPacket'
-    [const    uint 8     'protocolId' '0x3']
+    [const    uint 8     'protocolId' '0x03']
     [reserved uint 8     '0x00']
     [implicit uint 16    'len'        'payload.size + 4']
     [field    COTPPacket 'payload']
@@ -162,9 +162,9 @@
             [field         uint 16 'cpuFunctionType']
             [field         uint 8  'subFunctionGroup']
             [field         uint 8  'sequenceNumber']
-            [optionalField uint 8  'dataUnitReferenceNumber' 'parameterLength == 8']
-            [optionalField uint 8  'lastDataUnit' 'parameterLength == 8']
-            [optionalField uint 8  'errorCode' 'parameterLength == 8']
+            [optionalField uint 8  'dataUnitReferenceNumber' 'size == 8']
+            [optionalField uint 8  'lastDataUnit' 'size == 8']
+            [optionalField uint 8  'errorCode' 'size == 8']
         ]
     ]
 ]

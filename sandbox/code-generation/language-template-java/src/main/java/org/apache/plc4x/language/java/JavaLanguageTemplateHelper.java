@@ -128,7 +128,7 @@ public class JavaLanguageTemplateHelper {
         }
     }
 
-    public String getIoBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "readBit()";
@@ -174,6 +174,57 @@ public class JavaLanguageTemplateHelper {
             }
             case STRING: {
                 return "readString" + simpleTypeReference.getSize() + ")";
+            }
+        }
+        return "Hurz";
+    }
+
+    public String getWriteBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT: {
+                return "writeBit((boolean) " + fieldName + ")";
+            }
+            case UINT: {
+                if (simpleTypeReference.getSize() <= 4) {
+                    return "writeUnsignedByte(" + simpleTypeReference.getSize() + ", (byte) " + fieldName + ")";
+                }
+                if (simpleTypeReference.getSize() <= 8) {
+                    return "writeUnsignedShort(" + simpleTypeReference.getSize() + ", (short) " + fieldName + ")";
+                }
+                if (simpleTypeReference.getSize() <= 16) {
+                    return "writeUnsignedInt(" + simpleTypeReference.getSize() + ", (int) " + fieldName + ")";
+                }
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "writeUnsignedLong(" + simpleTypeReference.getSize() + ", (long) " + fieldName + ")";
+                }
+                return "writeUnsignedBigInteger" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
+            }
+            case INT: {
+                if (simpleTypeReference.getSize() <= 8) {
+                    return "writeByte" + simpleTypeReference.getSize() + ", (byte) " + fieldName + ")";
+                }
+                if (simpleTypeReference.getSize() <= 16) {
+                    return "writeShort" + simpleTypeReference.getSize() + ", (short) " + fieldName + ")";
+                }
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "writeInt" + simpleTypeReference.getSize() + ", (int) " + fieldName + ")";
+                }
+                if (simpleTypeReference.getSize() <= 64) {
+                    return "writeLong" + simpleTypeReference.getSize() + ", (long) " + fieldName + ")";
+                }
+                return "writeBigInteger" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
+            }
+            case FLOAT: {
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "writeFloat" + simpleTypeReference.getSize() + ", (float) " + fieldName + ")";
+                }
+                if (simpleTypeReference.getSize() <= 64) {
+                    return "writeDouble" + simpleTypeReference.getSize() + ", (double) " + fieldName + ")";
+                }
+                return "writeBigDecimal" + simpleTypeReference.getSize() + ", (BigDecimal) " + fieldName + ")";
+            }
+            case STRING: {
+                return "writeString" + simpleTypeReference.getSize() + ", (String) " + fieldName + ")";
             }
         }
         return "Hurz";

@@ -22,7 +22,7 @@ package org.apache.plc4x.java.utils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class IoBuffer {
+public class ReadBuffer {
 
     public int getPos() {
         return 0;

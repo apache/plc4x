@@ -42,9 +42,9 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 <#if helper.isDiscriminatedType(type)>
 
     // Discriminator values used by the parser to determine the type to be used. All values have to apply.
-    public static final String[] DISCRIMINATOR_VALUES = new String[] {
+    public static final Object[] DISCRIMINATOR_VALUES = new String[] {
     <#list type.discriminatorValues as discriminatorValue>
-        "${discriminatorValue}"<#sep>, </#sep>
+        ${discriminatorValue}<#sep>, </#sep>
     </#list>
     };
 </#if>
@@ -73,11 +73,11 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     }
 <#if type.abstract>
 
-    public abstract String[] getDiscriminatorValues();
+    public abstract Object[] getDiscriminatorValues();
 </#if>
 <#if helper.isDiscriminatedType(type)>
 
-    public String[] getDiscriminatorValues() {
+    public Object[] getDiscriminatorValues() {
         return DISCRIMINATOR_VALUES;
     }
 </#if>
