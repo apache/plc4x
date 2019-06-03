@@ -19,10 +19,34 @@
 
 package org.apache.plc4x.java.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class WriteBuffer {
+
+    private int bytePos;
+    private byte bitPos;
+    private ByteArrayOutputStream baos;
+    private DataOutputStream dos;
+
+    public WriteBuffer() {
+        bytePos = 0;
+        bitPos = 0;
+        baos = new ByteArrayOutputStream();
+        dos = new DataOutputStream(baos);
+    }
+
+    public byte[] getMessage() throws ParseException {
+        try {
+            dos.flush();
+        } catch (IOException e) {
+            throw new ParseException("Unable to flush buffer");
+        }
+        return baos.toByteArray();
+    }
 
     public void writeBit(boolean value) {
     }

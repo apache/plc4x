@@ -95,7 +95,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         } else {
             lengthType = ArrayField.LengthType.LENGTH;
         }
-        String lengthExpression = ctx.lengthExpression.getText();
+        String lengthExpression = ctx.lengthExpression.expr.getText();
         String[] params = getFieldParams((ImaginaryParser.FieldDefinitionContext) ctx.parent.parent);
         Field field = new DefaultArrayField(type, name, lengthType, lengthExpression, params);
         parserContexts.peek().add(field);
@@ -140,7 +140,7 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     public void enterImplicitField(ImaginaryParser.ImplicitFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        String serializationExpression = ctx.serializationExpression.getText();
+        String serializationExpression = ctx.serializationExpression.expr.getText();
         Field field = new DefaultImplicitField(type, name, serializationExpression);
         parserContexts.peek().add(field);
     }

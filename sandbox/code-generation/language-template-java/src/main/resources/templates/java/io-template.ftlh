@@ -55,6 +55,7 @@ public class ${typeName}IO  {
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
     public static <#if helper.isDiscriminatedType(type)>${typeName}Builder<#else>${typeName}</#if> parse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+        int startPos = io.getPos();
         JexlEngine jexl = new JexlBuilder().create();
         JexlContext jc = new MapContext();
         <#if type.parserArguments?has_content>
@@ -67,7 +68,10 @@ public class ${typeName}IO  {
 
         // Array field
         JexlExpression ex${field.name} = jexl.createExpression("${field.lengthExpression}");
-        int size = (int) ex${field.name}.evaluate(jc);
+        <#if field.lengthExpression?contains("curPos")>
+        jc.set("curPos", io.getPos() - startPos);
+        </#if>
+        int size = Integer.valueOf(ex${field.name}.evaluate(jc).toString());
         <#if helper.isCountArray(field)>
         ${helper.getLanguageTypeNameForSpecType(field.type)}[] ${field.name} = new ${helper.getLanguageTypeNameForSpecType(field.type)}[size];
         for(int i = 0; i < size; i++) {
@@ -147,7 +151,7 @@ public class ${typeName}IO  {
             builder = ${case.name}IO.parse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }
         </#list>
-        else {
+        if (builder == null) {
             throw new ParseException("Unsupported case for discriminated type");
         }
         <#break>

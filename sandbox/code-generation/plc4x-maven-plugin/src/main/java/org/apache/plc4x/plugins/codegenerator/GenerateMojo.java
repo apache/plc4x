@@ -136,6 +136,9 @@ public class GenerateMojo extends AbstractMojo {
         } catch (GenerationException e) {
             getLog().error("Error generating sources", e);
         }
+
+        // Add the generated sources to the project internally.
+        project.addCompileSourceRoot(outputDir.getPath());
     }
 
 }

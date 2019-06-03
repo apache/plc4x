@@ -107,6 +107,7 @@ innerExpression
  | IDENTIFIER   // Variable reference
  | innerExpression '.' IDENTIFIER // Field Reference
  | innerExpression BinaryOperator innerExpression  // Addition
+ | innerExpression LBRACKET INTEGER_LITERAL RBRACKET
  | '(' innerExpression ')'
  | '"' innerExpression '"'
  ;

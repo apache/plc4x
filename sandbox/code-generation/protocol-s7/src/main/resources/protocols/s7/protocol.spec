@@ -45,7 +45,7 @@
             [field uint 8  'rejectCause']
         ]
     ]
-    [arrayField COTPParameter 'parameters' length '(headerLength + 1) - cur']
+    [arrayField COTPParameter 'parameters' length '(headerLength + 1) - curPos']
     [field      S7Message     'payload']
 ]
 
@@ -101,7 +101,7 @@
 [discriminatedType 'S7Parameter' [uint 8 'messageType']
     [discriminator uint 8 'parameterType']
     [typeSwitch 'parameterType','messageType'
-        ['0xF0' SetupCommunication
+        ['0xF0' S7ParameterSetupCommunication
             [reserved uint 8  '0x00']
             [field    uint 16 'maxAmqCaller']
             [field    uint 16 'maxAmqCallee']
@@ -144,7 +144,7 @@
         ['0x10' S7AddressAny
             [field    uint 8  'transportSize']
             [field    uint 16 'numberOfElements']
-            [field    uint 8  'dbNumber']
+            [field    uint 16 'dbNumber']
             [field    uint 8  'area']
             [reserved uint 5  '0x00']
             [field    uint 16 'byteAddress']
@@ -173,7 +173,9 @@
 // Payloads
 
 [discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
-    [typeSwitch 'parameter.parameterType', 'messageType'
+    [typeSwitch 'parameter.discriminatorValues[0]', 'messageType'
+        ['0xF0' S7PayloadSetupCommunication]
+        ['0x04','0x01' S7PayloadReadVarRequest]
         ['0x04','0x03' S7PayloadReadVarResponse
             [arrayField S7VarPayloadDataItem 'items' count 'parameter.numItems']
         ]
