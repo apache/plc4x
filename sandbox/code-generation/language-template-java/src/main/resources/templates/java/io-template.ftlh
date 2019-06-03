@@ -115,7 +115,8 @@ public class ${typeName}IO  {
 
         // Optional Field (Can be skipped, if a given expression evaluates to false)
         ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = ${helper.getNullValueForType(field.type)};
-        if(${field.conditionExpression}) {
+        JexlExpression ex${field.name?cap_first} = jexl.createExpression("${field.conditionExpression}");
+        if(ex${field.name?cap_first}.evaluate(jc) == Boolean.TRUE) {
             ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io);</#if>;
         }
         jc.set("${field.name}", ${field.name});
@@ -205,7 +206,8 @@ public class ${typeName}IO  {
     <#case "optional">
 
         // Optional Field (Can be skipped, if a given expression evaluates to false)
-        if(value.get${field.name?cap_first}() != null) {
+        JexlExpression ex${field.name?cap_first} = jexl.createExpression("${field.conditionExpression}");
+        if(ex${field.name?cap_first}.evaluate(jc) == Boolean.TRUE) {
             <#if helper.isSimpleType(field.type)>
             io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
             <#else>
