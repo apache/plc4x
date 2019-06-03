@@ -174,16 +174,16 @@
 
 [discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
     [typeSwitch 'parameter.parameterType', 'messageType'
-        ['0x04','response' S7PayloadReadVarResponse
+        ['0x04','0x03' S7PayloadReadVarResponse
             [arrayField S7VarPayloadDataItem 'items' count 'parameter.numItems']
         ]
-        ['0x05','request' S7PayloadWriteVarRequest
+        ['0x05','0x01' S7PayloadWriteVarRequest
             [arrayField S7VarPayloadDataItem 'items' count 'parameter.numItems']
         ]
-        ['0x05','response' S7PayloadWriteVarResponse
+        ['0x05','0x03' S7PayloadWriteVarResponse
             [arrayField S7VarPayloadStatusItem 'items' count 'parameter.numItems']
         ]
-        ['0x00','userData' S7PayloadUserData
+        ['0x00','0x07' S7PayloadUserData
         ]
     ]
 ]
