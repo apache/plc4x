@@ -19,12 +19,16 @@
 
 package org.apache.plc4x.language.java;
 
+import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.language.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.language.definitions.TypeDefinition;
 import org.apache.plc4x.language.fields.ArrayField;
 import org.apache.plc4x.language.references.ComplexTypeReference;
 import org.apache.plc4x.language.references.SimpleTypeReference;
 import org.apache.plc4x.language.references.TypeReference;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JavaLanguageTemplateHelper {
 
@@ -251,6 +255,24 @@ public class JavaLanguageTemplateHelper {
 
     public boolean isCountArray(ArrayField arrayField) {
         return arrayField.getLengthType() == ArrayField.LengthType.COUNT;
+    }
+
+    public String toReadExpression(String expression) {
+        StringBuilder sb = new StringBuilder();
+        Pattern pattern = Pattern.compile("([^\\.]*)\\.([a-zA-Z\\d]+)(.*)");
+        Matcher matcher;
+        while ((matcher = pattern.matcher(expression)).matches()) {
+            String prefix = matcher.group(1);
+            String middle = matcher.group(2);
+            sb.append(prefix).append(".get").append(WordUtils.capitalize(middle)).append("()");
+            expression = matcher.group(3);
+        }
+        sb.append(expression);
+        return sb.toString();
+    }
+
+    public String toWriteExpression(String expression) {
+        return null;
     }
 
 }

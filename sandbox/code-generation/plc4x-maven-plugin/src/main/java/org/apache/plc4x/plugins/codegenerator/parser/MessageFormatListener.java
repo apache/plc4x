@@ -111,15 +111,6 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     }
 
     @Override
-    public void enterContextField(ImaginaryParser.ContextFieldContext ctx) {
-        SimpleTypeReference type = getSimpleTypeReference(ctx.type);
-        String name = ctx.name.id.getText();
-        String valueExpression = ctx.valueExpression.expr.getText();
-        Field field = new DefaultContextField(type, name, valueExpression);
-        parserContexts.peek().add(field);
-    }
-
-    @Override
     public void enterDiscriminatorField(ImaginaryParser.DiscriminatorFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = ctx.name.id.getText();
@@ -208,6 +199,12 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         // Add the type to the type list.
         complexTypes.put(typeName, type);
     }
+
+    /*@Override
+    public void exitExpression(ImaginaryParser.ExpressionContext ctx) {
+        ImaginaryParser.InnerExpressionContext expressionContext = ctx.innerExpression();
+        super.exitExpression(ctx);
+    }*/
 
     private TypeReference getTypeReference(ImaginaryParser.TypeReferenceContext ctx) {
         if(ctx.simpleTypeReference != null) {

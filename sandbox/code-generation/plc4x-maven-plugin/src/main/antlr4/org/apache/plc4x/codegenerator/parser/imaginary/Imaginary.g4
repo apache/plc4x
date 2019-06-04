@@ -1,4 +1,22 @@
 grammar Imaginary;
+/*
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+*/
 
 file
  : complexTypeDefinition* EOF
@@ -22,7 +40,6 @@ fieldDefinition
 field
  : arrayField
  | constField
- | contextField
  | discriminatorField
  | simpleField
  | implicitField
@@ -37,10 +54,6 @@ arrayField
 
 constField
  : K_CONST type=dataType name=idExpression expected=expression
- ;
-
-contextField
- : K_CONTEXT type=dataType name=idExpression valueExpression=expression
  ;
 
 discriminatorField
@@ -112,10 +125,6 @@ innerExpression
  | '"' innerExpression '"'
  ;
 
-context
- : IDENTIFIER ':' expression (',' IDENTIFIER ':' expression)*
- ;
-
 COMMENT
  : K_COMMENT [a-zA-Z0-9,.'":()/ \t\r\n\u000C-]*
  | '//' [a-zA-Z0-9,.'":()/ \t-]*
@@ -135,13 +144,6 @@ fragment HexNumeral
 fragment HexDigit
  : [0-9a-fA-F]
 ;
-
-modifier
- : K_CONST
- | K_RESERVED
- | K_IMPLICIT
- | K_EMBEDDED
- ;
 
 arrayType
  : K_COUNT

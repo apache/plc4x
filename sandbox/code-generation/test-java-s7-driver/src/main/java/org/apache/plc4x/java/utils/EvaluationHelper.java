@@ -17,37 +17,37 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.model.fields;
+package org.apache.plc4x.java.utils;
 
-import org.apache.plc4x.language.fields.ContextField;
-import org.apache.plc4x.language.references.TypeReference;
+public class EvaluationHelper {
 
-public class DefaultContextField implements ContextField {
-
-    private final TypeReference type;
-    private final String name;
-    private final String valueExpression;
-
-    public DefaultContextField(TypeReference type, String name, String valueExpression) {
-        this.type = type;
-        this.name = name;
-        this.valueExpression = valueExpression;
+    public static boolean equals(Object val1, Object val2) {
+        if(val1 instanceof Number && val2 instanceof Number) {
+            Number number1 = (Number) val1;
+            Number number2 = (Number) val2;
+            return number1.doubleValue() == number2.doubleValue();
+        }
+        return false;
     }
 
-    public TypeReference getType() {
-        return type;
+    public static boolean notEquals(Object val1, Object val2) {
+        return true;
     }
 
-    public String getName() {
-        return name;
+    public static boolean greater(Object val1, Object val2) {
+        return true;
     }
 
-    public String getValueExpression() {
-        return valueExpression;
+    public static boolean greaterEquals(Object val1, Object val2) {
+        return true;
     }
 
-    public String[] getParams() {
-        return new String[0];
+    public static boolean smaller(Object val1, Object val2) {
+        return true;
+    }
+
+    public static boolean smallerEquals(Object val1, Object val2) {
+        return true;
     }
 
 }

@@ -19,16 +19,10 @@
 
 package org.apache.plc4x.language.fields;
 
-import org.apache.plc4x.language.references.TypeReference;
-
 public interface SimpleField extends PropertyField {
 
     default String getTypeName() {
         return "simple";
     }
-
-    TypeReference getType();
-
-    String getName();
 
 }

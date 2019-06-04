@@ -19,17 +19,12 @@
 
 package org.apache.plc4x.language.fields;
 
-import org.apache.plc4x.language.references.TypeReference;
 
 public interface ArrayField extends PropertyField {
 
     default String getTypeName() {
         return "array";
     }
-
-    TypeReference getType();
-
-    String getName();
 
     LengthType getLengthType();
 

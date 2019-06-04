@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////
 
 [discriminatedType 'COTPPacket'
-    [implicit      uint 8 'headerLength' 'this.size - (payload.size + 1)']
+    [implicit      uint 8 'headerLength' 'size - (payload.size + 1)']
     [discriminator uint 8 'tpduCode']
     [typeSwitch 'tpduCode'
         ['0xF0' COTPPacketData

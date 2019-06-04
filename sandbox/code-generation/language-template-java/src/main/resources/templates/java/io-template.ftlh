@@ -40,6 +40,7 @@ package ${packageName}.io;
 
 import ${packageName}.*;
 import org.apache.commons.jexl3.*;
+import org.apache.plc4x.java.utils.EvaluationHelper;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.WriteBuffer;
@@ -54,9 +55,37 @@ public class ${typeName}IO  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
+<#assign needJexl=false>
+<#list type.fields as field>
+<#switch field.typeName>
+    <#case "array">
+    private static JexlExpression ex${field.name?cap_first};
+    <#assign needJexl=true>
+    <#break>
+    <#case "optional">
+    private static JexlExpression ex${field.name?cap_first};
+    <#assign needJexl=true>
+    <#break>
+    </#switch>
+</#list>
+<#if needJexl>
+    static {
+        JexlEngine jexl = new JexlBuilder().create();
+<#list type.fields as field>
+<#switch field.typeName>
+    <#case "array">
+        ex${field.name?cap_first} = jexl.createExpression("${field.lengthExpression}");
+        <#break>
+    <#case "optional">
+        ex${field.name?cap_first} = jexl.createExpression("${field.conditionExpression}");
+        <#break>
+</#switch>
+</#list>
+    }
+</#if>
+
     public static <#if helper.isDiscriminatedType(type)>${typeName}Builder<#else>${typeName}</#if> parse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
-        JexlEngine jexl = new JexlBuilder().create();
         JexlContext jc = new MapContext();
         <#if type.parserArguments?has_content>
         <#list type.parserArguments as parserArgument>
@@ -67,11 +96,10 @@ public class ${typeName}IO  {
     <#case "array">
 
         // Array field
-        JexlExpression ex${field.name} = jexl.createExpression("${field.lengthExpression}");
         <#if field.lengthExpression?contains("curPos")>
         jc.set("curPos", io.getPos() - startPos);
         </#if>
-        int size = Integer.valueOf(ex${field.name}.evaluate(jc).toString());
+        int size = Integer.valueOf(ex${field.name?cap_first}.evaluate(jc).toString());
         <#if helper.isCountArray(field)>
         ${helper.getLanguageTypeNameForSpecType(field.type)}[] ${field.name} = new ${helper.getLanguageTypeNameForSpecType(field.type)}[size];
         for(int i = 0; i < size; i++) {
@@ -96,13 +124,6 @@ public class ${typeName}IO  {
         }
         jc.set("${field.name}", ${field.name});
         <#break>
-    <#case "context">
-
-        // Context Field (Artificial value not retrieved by the input, but the context)
-        JexlExpression ex${field.name?cap_first} = jexl.createExpression("${(field.valueExpression?replace("\"", "\\\"")?no_esc)}");
-        ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = (${helper.getLanguageTypeNameForSpecType(field.type)}) ex${field.name?cap_first}.evaluate(jc);
-        jc.set("${field.name}", ${field.name});
-        <#break>
     <#case "discriminator">
 
         // Discriminator Field (Used as input to a switch field)
@@ -119,7 +140,6 @@ public class ${typeName}IO  {
 
         // Optional Field (Can be skipped, if a given expression evaluates to false)
         ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = ${helper.getNullValueForType(field.type)};
-        JexlExpression ex${field.name?cap_first} = jexl.createExpression("${field.conditionExpression}");
         if(ex${field.name?cap_first}.evaluate(jc) == Boolean.TRUE) {
             ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io);</#if>;
         }
@@ -146,10 +166,9 @@ public class ${typeName}IO  {
         // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
         ${typeName}Builder builder = null;
         <#list field.cases as case>
-        JexlExpression ex${case.name} = jexl.createExpression("<#list case.discriminatorValues as discriminatorValue>(${field.discriminatorNames[discriminatorValue?index]} == ${discriminatorValue})<#sep> && </#sep></#list>");
-        if(ex${case.name}.evaluate(jc) == Boolean.TRUE) {
+        if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toReadExpression(field.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) {
             builder = ${case.name}IO.parse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
-        }
+        }<#sep> else </#sep>
         </#list>
         if (builder == null) {
             throw new ParseException("Unsupported case for discriminated type");
