@@ -5,7 +5,7 @@
 [type 'TPKTPacket'
     [const    uint 8     'protocolId' '0x03']
     [reserved uint 8     '0x00']
-    [implicit uint 16    'len'        'payload.size + 4']
+    [implicit uint 16    'len'        'payload.lengthInBytes + 4']
     [field    COTPPacket 'payload']
 ]
 
@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////
 
 [discriminatedType 'COTPPacket'
-    [implicit      uint 8 'headerLength' 'size - (payload.size + 1)']
+    [implicit      uint 8 'headerLength' 'lengthInBytes - (payload.lengthInBytes + 1)']
     [discriminator uint 8 'tpduCode']
     [typeSwitch 'tpduCode'
         ['0xF0' COTPPacketData
@@ -79,8 +79,8 @@
     [discriminator uint 8  'messageType']
     [reserved      uint 16 '0x0000']
     [field         uint 16 'tpduReference']
-    [implicit      uint 16 'parameterLength' 'parameters.size']
-    [implicit      uint 16 'payloadLength'   'payloads.size']
+    [implicit      uint 16 'parameterLength' 'parameter.lengthInBytes']
+    [implicit      uint 16 'payloadLength'   'payload.lengthInBytes']
     [typeSwitch 'messageType'
         ['0x01' S7MessageRequest
         ]
@@ -108,21 +108,21 @@
             [field    uint 16 'pduLength']
         ]
         ['0x04','0x01' S7ParameterReadVarRequest
-            [implicit   uint 8                    'numItems' 'items.size']
+            [implicit   uint 8                    'numItems' 'items.size()']
             [arrayField S7VarRequestParameterItem 'items'    count 'numItems']
         ]
         ['0x04','0x03' S7ParameterReadVarResponse
             [field uint 8 'numItems']
         ]
         ['0x05','0x01' S7ParameterWriteVarRequest
-            [implicit   uint 8                    'numItems' 'items.size']
+            [implicit   uint 8                    'numItems' 'items.size()']
             [arrayField S7VarRequestParameterItem 'items'    count 'numItems']
         ]
         ['0x05','0x03' S7ParameterWriteVarResponse
             [field uint 8 'numItems']
         ]
         ['0x00','0x07' S7ParameterUserData
-            [implicit   uint 8       'numItems' 'items.size']
+            [implicit   uint 8       'numItems' 'items.size()']
             [arrayField UserDataItem 'items' count 'numItems']
         ]
     ]
@@ -132,7 +132,7 @@
     [discriminator uint 8 'parameterItemType']
     [typeSwitch 'parameterItemType'
         ['0x12' S7VarRequestParameterItemAddress
-            [implicit uint 8    'addressLength' 'address.size']
+            [implicit uint 8    'addressLength' 'address.lengthInBytes']
             [field    S7Address 'address']
         ]
     ]
@@ -158,13 +158,13 @@
     [discriminator uint 8 'itemType']
     [typeSwitch 'itemType'
         ['0x12' UserDataItemCPUFunctions
-            [implicit      uint 8  'parameterLength' 'size']
+            [implicit      uint 8  'parameterLength' 'lengthInBytes']
             [field         uint 16 'cpuFunctionType']
             [field         uint 8  'subFunctionGroup']
             [field         uint 8  'sequenceNumber']
-            [optionalField uint 8  'dataUnitReferenceNumber' 'size == 8']
-            [optionalField uint 8  'lastDataUnit' 'size == 8']
-            [optionalField uint 8  'errorCode' 'size == 8']
+            [optionalField uint 8  'dataUnitReferenceNumber' 'lengthInBytes == 8']
+            [optionalField uint 8  'lastDataUnit' 'lengthInBytes == 8']
+            [optionalField uint 8  'errorCode' 'lengthInBytes == 8']
         ]
     ]
 ]

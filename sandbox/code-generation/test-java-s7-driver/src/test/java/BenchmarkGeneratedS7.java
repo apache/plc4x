@@ -21,20 +21,50 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.s7.TPKTPacket;
 import org.apache.plc4x.java.s7.io.TPKTPacketIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.utils.WriteBuffer;
+
+import java.util.Arrays;
 
 public class BenchmarkGeneratedS7 {
 
     public static void main(String[] args) throws Exception {
-        byte[] data = Hex.decodeHex("0300006702f080320100000001005600000407120a10060001032b84000160120a10020001032b840001a0120a10010001032b840001a9120a10050001032b84000150120a10020001032b84000198120a10040001032b84000140120a10020001032b84000190");
+                                    //        00
+        byte[] rData = Hex.decodeHex("0300006702f080320100000001005600000407120a10060001032b84000160120a10020001032b840001a0120a10010001032b840001a9120a10050001032b84000150120a10020001032b84000198120a10040001032b84000140120a10020001032b84000190");
         long start = System.currentTimeMillis();
-        int numRuns = 20000;
+        int numRuns = 1;
+
+        // Benchmark the parsing code
+        TPKTPacket packet = null;
         for(int i = 0; i < numRuns; i++) {
-            ReadBuffer buf = new ReadBuffer(data);
-            TPKTPacket packet = TPKTPacketIO.parse(buf);
+            ReadBuffer rBuf = new ReadBuffer(rData);
+            packet = TPKTPacketIO.parse(rBuf);
         }
-        long end = System.currentTimeMillis();
-        System.out.println("Parsed " + numRuns + " packets in " + (end - start) + "ms");
-        System.out.println("That's " + ((float) (end - start) / numRuns) + "ms per packet");
+        long endParsing = System.currentTimeMillis();
+
+        System.out.println("Parsed " + numRuns + " packets in " + (endParsing - start) + "ms");
+        System.out.println("That's " + ((float) (endParsing - start) / numRuns) + "ms per packet");
+
+        // Benchmark the serializing code
+        byte[] oData = null;
+        for(int i = 0; i < numRuns; i++) {
+            WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
+            TPKTPacketIO.serialize(wBuf, packet);
+            oData = wBuf.getData();
+        }
+        long endSerializing = System.currentTimeMillis();
+
+        System.out.println("Serialized " + numRuns + " packets in " + (endSerializing - endParsing) + "ms");
+        System.out.println("That's " + ((float) (endSerializing - endParsing) / numRuns) + "ms per packet");
+        if(!Arrays.equals(rData, oData)) {
+            for(int i = 0; i < rData.length; i++) {
+                if(rData[i] != oData[i]) {
+                    System.out.println("Difference in byte " + i);
+                }
+            }
+            System.out.println("Not equals");
+        } else {
+            System.out.println("Bytes equal");
+        }
     }
 
 }

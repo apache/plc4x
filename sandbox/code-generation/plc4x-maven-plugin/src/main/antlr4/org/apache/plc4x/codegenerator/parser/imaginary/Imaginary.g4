@@ -117,8 +117,8 @@ multipleExpressions
 innerExpression
  : HEX_LITERAL
  | INTEGER_LITERAL
- | IDENTIFIER   // Variable reference
- | innerExpression '.' IDENTIFIER // Field Reference
+ | IDENTIFIER '()'?   // Variable reference or method call
+ | innerExpression '.' IDENTIFIER '()'? // Field Reference or method call
  | innerExpression BinaryOperator innerExpression  // Addition
  | innerExpression LBRACKET INTEGER_LITERAL RBRACKET
  | '(' innerExpression ')'

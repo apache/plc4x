@@ -190,31 +190,31 @@ public class JavaLanguageTemplateHelper {
             }
             case UINT: {
                 if (simpleTypeReference.getSize() <= 4) {
-                    return "writeUnsignedByte(" + simpleTypeReference.getSize() + ", (byte) " + fieldName + ")";
+                    return "writeUnsignedByte(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").byteValue())";
                 }
                 if (simpleTypeReference.getSize() <= 8) {
-                    return "writeUnsignedShort(" + simpleTypeReference.getSize() + ", (short) " + fieldName + ")";
+                    return "writeUnsignedShort(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").shortValue())";
                 }
                 if (simpleTypeReference.getSize() <= 16) {
-                    return "writeUnsignedInt(" + simpleTypeReference.getSize() + ", (int) " + fieldName + ")";
+                    return "writeUnsignedInt(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").intValue())";
                 }
                 if (simpleTypeReference.getSize() <= 32) {
-                    return "writeUnsignedLong(" + simpleTypeReference.getSize() + ", (long) " + fieldName + ")";
+                    return "writeUnsignedLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue()";
                 }
                 return "writeUnsignedBigInteger" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
             }
             case INT: {
                 if (simpleTypeReference.getSize() <= 8) {
-                    return "writeByte" + simpleTypeReference.getSize() + ", (byte) " + fieldName + ")";
+                    return "writeByte" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").byteValue())";
                 }
                 if (simpleTypeReference.getSize() <= 16) {
-                    return "writeShort" + simpleTypeReference.getSize() + ", (short) " + fieldName + ")";
+                    return "writeShort" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").shortValue())";
                 }
                 if (simpleTypeReference.getSize() <= 32) {
-                    return "writeInt" + simpleTypeReference.getSize() + ", (int) " + fieldName + ")";
+                    return "writeInt" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").intValue())";
                 }
                 if (simpleTypeReference.getSize() <= 64) {
-                    return "writeLong" + simpleTypeReference.getSize() + ", (long) " + fieldName + ")";
+                    return "writeLong" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
                 return "writeBigInteger" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
             }
@@ -272,7 +272,7 @@ public class JavaLanguageTemplateHelper {
     }
 
     public String toWriteExpression(String expression) {
-        return null;
+        return expression;
     }
 
 }

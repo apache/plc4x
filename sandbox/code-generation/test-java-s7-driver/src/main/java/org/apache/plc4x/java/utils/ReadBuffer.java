@@ -19,31 +19,28 @@
 
 package org.apache.plc4x.java.utils;
 
-import org.apache.commons.compress.utils.BitInputStream;
+import com.github.jinahya.bit.io.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.ByteOrder;
 
 public class ReadBuffer {
 
-    private BitInputStream bis;
+    private MyDefaultBitInput bi;
 
-    
     public ReadBuffer(byte[] input) {
-        ByteArrayInputStream bais = new ByteArrayInputStream(input);
-        bis = new BitInputStream(bais, ByteOrder.BIG_ENDIAN);
+        ArrayByteInput abi = new ArrayByteInput(input);
+        bi = new MyDefaultBitInput(abi);
     }
 
     public int getPos() {
-        return (int) bis.getBytesRead();
+        return (int) bi.getPos();
     }
 
     public boolean readBit() throws ParseException {
         try {
-            return bis.readBits(1) == 1;
+            return bi.readBoolean();
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }
@@ -57,7 +54,7 @@ public class ReadBuffer {
             throw new ParseException("unsigned byte can only contain max 4 bits");
         }
         try {
-            return (byte) bis.readBits(bitLength);
+            return bi.readByte(true, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }
@@ -71,7 +68,7 @@ public class ReadBuffer {
             throw new ParseException("unsigned short can only contain max 8 bits");
         }
         try {
-            return (short) bis.readBits(bitLength);
+            return bi.readShort(true, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }
@@ -85,7 +82,7 @@ public class ReadBuffer {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
-            return (int) bis.readBits(bitLength);
+            return bi.readInt(true, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }
@@ -99,7 +96,7 @@ public class ReadBuffer {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
-            return bis.readBits(bitLength);
+            return bi.readLong(true, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }
@@ -117,7 +114,7 @@ public class ReadBuffer {
             throw new ParseException("byte can only contain max 8 bits");
         }
         try {
-            return (byte) bis.readBits(bitLength);
+            return bi.readByte(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }
@@ -131,7 +128,7 @@ public class ReadBuffer {
             throw new ParseException("short can only contain max 16 bits");
         }
         try {
-            return (short) bis.readBits(bitLength);
+            return bi.readShort(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }
@@ -145,7 +142,7 @@ public class ReadBuffer {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            return (int) bis.readBits(bitLength);
+            return bi.readInt(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }
@@ -159,7 +156,7 @@ public class ReadBuffer {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            return bis.readBits(bitLength);
+            return bi.readLong(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
         }

@@ -66,11 +66,16 @@ public class ${typeName}IO  {
     private static JexlExpression ex${field.name?cap_first};
     <#assign needJexl=true>
     <#break>
-    </#switch>
+    <#case "implicit">
+    private static JexlExpression ex${field.name?cap_first};
+    <#assign needJexl=true>
+    <#break>
+</#switch>
 </#list>
 <#if needJexl>
+    private static JexlEngine jexl;
     static {
-        JexlEngine jexl = new JexlBuilder().create();
+        jexl = new JexlBuilder().create();
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -79,6 +84,9 @@ public class ${typeName}IO  {
     <#case "optional">
         ex${field.name?cap_first} = jexl.createExpression("${field.conditionExpression}");
         <#break>
+    <#case "implicit">
+        ex${field.name?cap_first} = jexl.createExpression("${field.serializationExpression}");
+        <#break>
 </#switch>
 </#list>
     }
@@ -86,11 +94,13 @@ public class ${typeName}IO  {
 
     public static <#if helper.isDiscriminatedType(type)>${typeName}Builder<#else>${typeName}</#if> parse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
+<#if needJexl>
         JexlContext jc = new MapContext();
         <#if type.parserArguments?has_content>
         <#list type.parserArguments as parserArgument>
         jc.set("${parserArgument.name}", ${parserArgument.name});
         </#list></#if>
+</#if>
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -122,19 +132,25 @@ public class ${typeName}IO  {
         if(${field.name} != ${typeName}.${field.name?upper_case}) {
             throw new ParseException("Expected constant value " + ${typeName}.${field.name?upper_case} + " but got " + ${field.name});
         }
+<#if needJexl>
         jc.set("${field.name}", ${field.name});
+</#if>
         <#break>
     <#case "discriminator">
 
         // Discriminator Field (Used as input to a switch field)
         ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+<#if needJexl>
         jc.set("${field.name}", ${field.name});
-        <#break>
+</#if>
+    <#break>
     <#case "implicit">
 
         // Implicit Field (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
         ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+<#if needJexl>
         jc.set("${field.name}", ${field.name});
+</#if>
         <#break>
     <#case "optional">
 
@@ -159,7 +175,9 @@ public class ${typeName}IO  {
 
         // Simple field
         ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
+<#if needJexl>
         jc.set("${field.name}", ${field.name});
+</#if>
         <#break>
     <#case "switch">
 
@@ -188,9 +206,9 @@ public class ${typeName}IO  {
     }
 
     public static void serialize(WriteBuffer io, ${typeName} value) throws ParseException {
-        JexlEngine jexl = new JexlBuilder().create();
-        JexlContext jc = new MapContext();
-        jc.set("this", value);
+<#if needJexl>
+        JexlContext jc = new ObjectContext<>(jexl, value);
+</#if>
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -223,13 +241,11 @@ public class ${typeName}IO  {
     <#case "implicit">
 
         // Implicit Field (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        JexlExpression ex${field.name?cap_first} = jexl.createExpression("${field.serializationExpression}");
         io.${helper.getWriteBufferReadMethodCall(field.type, "ex" + field.name?cap_first + ".evaluate(jc)")};
         <#break>
     <#case "optional">
 
         // Optional Field (Can be skipped, if a given expression evaluates to false)
-        JexlExpression ex${field.name?cap_first} = jexl.createExpression("${field.conditionExpression}");
         if(ex${field.name?cap_first}.evaluate(jc) == Boolean.TRUE) {
             <#if helper.isSimpleType(field.type)>
             io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
@@ -240,7 +256,7 @@ public class ${typeName}IO  {
         <#break>
     <#case "reserved">
 
-        // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+        // Reserved Field.
         io.${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)};
         <#break>
     <#case "simple">

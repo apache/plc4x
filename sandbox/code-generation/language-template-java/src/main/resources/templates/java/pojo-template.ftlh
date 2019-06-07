@@ -38,7 +38,34 @@ ${packageName?replace(".", "/")}/${typeName}.java
 
 package ${packageName};
 
-public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> {
+import org.apache.commons.jexl3.*;
+import org.apache.plc4x.java.utils.SizeAware;
+
+public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements SizeAware {
+
+<#assign needJexl=false>
+<#list type.fields as field>
+<#switch field.typeName>
+    <#case "optional">
+    private static JexlExpression ex${field.name?cap_first};
+    <#assign needJexl=true>
+    <#break>
+</#switch>
+</#list>
+<#if needJexl>
+    private static JexlEngine jexl;
+    static {
+    jexl = new JexlBuilder().create();
+<#list type.fields as field>
+<#switch field.typeName>
+    <#case "optional">
+    ex${field.name?cap_first} = jexl.createExpression("${field.conditionExpression}");
+    <#break>
+</#switch>
+</#list>
+    }
+</#if>
+
 <#if helper.isDiscriminatedType(type)>
 
     // Discriminator values used by the parser to determine the type to be used. All values have to apply.
@@ -88,4 +115,69 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     }
 
 </#list>
+    @Override
+    public int getLengthInBytes() {
+<#if needJexl>
+        JexlContext jc = new ObjectContext<>(jexl, this);
+</#if>
+        int lengthInBits = <#if type.parentType??>super.getLengthInBytes() * 8<#else>0</#if>;
+<#list type.fields as field>
+<#switch field.typeName>
+    <#case "array">
+
+        // Array field
+        <#if helper.isSimpleType(field.type)>
+            lengthInBits += ${field.type.size} * ${field.name}.length;
+        <#else>
+        for(SizeAware element : ${field.name}) {
+            lengthInBits += element.getLengthInBytes() * 8;
+        }
+        </#if>
+        <#break>
+    <#case "const">
+
+        // Const Field (${field.name})
+        lengthInBits += ${field.type.size};
+        <#break>
+    <#case "discriminator">
+
+        // Discriminator Field (${field.name})
+        lengthInBits += ${field.type.size};
+        <#break>
+    <#case "implicit">
+
+        // Implicit Field (${field.name})
+        lengthInBits += ${field.type.size};
+        <#break>
+    <#case "optional">
+
+        // Optional Field (${field.name})
+        if(ex${field.name?cap_first}.evaluate(jc) == Boolean.TRUE) {
+            lengthInBits += ${field.type.size};
+        }
+        <#break>
+    <#case "reserved">
+
+        // Reserved Field
+        lengthInBits += ${field.type.size};
+        <#break>
+    <#case "simple">
+
+        // Simple field (${field.name})
+        <#if helper.isSimpleType(field.type)>
+        lengthInBits += ${field.type.size};
+        <#else>
+        lengthInBits += ${field.name}.getLengthInBytes() * 8;
+        </#if>
+        <#break>
+    <#case "switch">
+
+        // Length of sub-type elements will be added by sub-type...
+        <#break>
+</#switch>
+</#list>
+
+        return lengthInBits / 8;
+    }
+
 }

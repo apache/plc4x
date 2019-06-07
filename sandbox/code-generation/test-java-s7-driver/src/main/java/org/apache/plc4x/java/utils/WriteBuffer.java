@@ -19,75 +19,168 @@
 
 package org.apache.plc4x.java.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+import com.github.jinahya.bit.io.BitOutput;
+import com.github.jinahya.bit.io.BufferByteOutput;
+import com.github.jinahya.bit.io.DefaultBitOutput;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 
 public class WriteBuffer {
 
-    private int bytePos;
-    private byte bitPos;
-    private ByteArrayOutputStream baos;
-    private DataOutputStream dos;
+    private ByteBuffer bb;
+    private BufferByteOutput bbo;
+    private BitOutput bo;
 
-    public WriteBuffer() {
-        bytePos = 0;
-        bitPos = 0;
-        baos = new ByteArrayOutputStream();
-        dos = new DataOutputStream(baos);
+    public WriteBuffer(int size) {
+        bb = ByteBuffer.allocate(size);
+        bbo = new BufferByteOutput<>(bb);
+        bo = new DefaultBitOutput<>(bbo);
     }
 
-    public byte[] getMessage() throws ParseException {
+    public byte[] getData() {
+        return bb.array();
+    }
+
+    public void writeBit(boolean value) throws ParseException {
         try {
-            dos.flush();
+            bo.writeBoolean(value);
         } catch (IOException e) {
-            throw new ParseException("Unable to flush buffer");
+            throw new ParseException("Error reading", e);
         }
-        return baos.toByteArray();
     }
 
-    public void writeBit(boolean value) {
+    public void writeUnsignedByte(int bitLength, byte value) throws ParseException {
+        if(bitLength <= 0) {
+            throw new ParseException("unsigned byte must contain at least 1 bit");
+        }
+        if(bitLength > 4) {
+            throw new ParseException("unsigned byte can only contain max 4 bits");
+        }
+        try {
+            bo.writeByte(true, bitLength, value);
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeUnsignedByte(int bitLength, byte value) {
+    public void writeUnsignedShort(int bitLength, short value) throws ParseException {
+        if(bitLength <= 0) {
+            throw new ParseException("unsigned short must contain at least 1 bit");
+        }
+        if(bitLength > 8) {
+            throw new ParseException("unsigned short can only contain max 8 bits");
+        }
+        try {
+            bo.writeShort(true, bitLength, value);
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeUnsignedShort(int bitLength, short value) {
+    public void writeUnsignedInt(int bitLength, int value) throws ParseException {
+        if(bitLength <= 0) {
+            throw new ParseException("unsigned int must contain at least 1 bit");
+        }
+        if(bitLength > 16) {
+            throw new ParseException("unsigned int can only contain max 16 bits");
+        }
+        try {
+            bo.writeInt(true, bitLength, value);
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeUnsignedInt(int bitLength, int value) {
+    public void writeUnsignedLong(int bitLength, long value) throws ParseException {
+        if(bitLength <= 0) {
+            throw new ParseException("unsigned long must contain at least 1 bit");
+        }
+        if(bitLength > 32) {
+            throw new ParseException("unsigned long can only contain max 32 bits");
+        }
+        try {
+            bo.writeLong(true, bitLength, value);
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeUnsignedLong(int bitLength, long value) {
+    public void writeUnsignedBigInteger(int bitLength, BigInteger value) throws ParseException {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public void writeUnsignedBigInteger(int bitLength, BigInteger value) {
+    public void writeByte(int bitLength, byte value) throws ParseException {
+        if(bitLength <= 0) {
+            throw new ParseException("byte must contain at least 1 bit");
+        }
+        if(bitLength > 8) {
+            throw new ParseException("byte can only contain max 8 bits");
+        }
+        try {
+            bo.writeByte(false, bitLength, value);
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeByte(int bitLength, byte value) {
+    public void writeShort(int bitLength, short value) throws ParseException {
+        if(bitLength <= 0) {
+            throw new ParseException("short must contain at least 1 bit");
+        }
+        if(bitLength > 16) {
+            throw new ParseException("short can only contain max 16 bits");
+        }
+        try {
+            bo.writeShort(false, bitLength, value);
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeShort(int bitLength, short value) {
+    public void writeInt(int bitLength, int value) throws ParseException {
+        if(bitLength <= 0) {
+            throw new ParseException("int must contain at least 1 bit");
+        }
+        if(bitLength > 32) {
+            throw new ParseException("int can only contain max 32 bits");
+        }
+        try {
+            bo.writeInt(false, bitLength, value);
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeInt(int bitLength, int value) {
+    public void writeLong(int bitLength, long value) throws ParseException {
+        if(bitLength <= 0) {
+            throw new ParseException("long must contain at least 1 bit");
+        }
+        if(bitLength > 64) {
+            throw new ParseException("long can only contain max 64 bits");
+        }
+        try {
+            bo.writeLong(false, bitLength, value);
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeLong(int bitLength, long value) {
+    public void writeBigInteger(int bitLength, BigInteger value) throws ParseException {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public void writeBigInteger(int bitLength, BigInteger value) {
+    public void writeFloat(int bitLength, float value) throws ParseException {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public void writeFloat(int bitLength, float value) {
+    public void writeDouble(int bitLength, double value) throws ParseException {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public void writeDouble(int bitLength, double value) {
-    }
-
-    public void writeBigDecimal(int bitLength, BigDecimal value) {
+    public void writeBigDecimal(int bitLength, BigDecimal value) throws ParseException {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
 }
