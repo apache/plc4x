@@ -127,7 +127,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Array field
         <#if helper.isSimpleType(field.type)>
-            lengthInBits += ${field.type.size} * ${field.name}.length;
+        lengthInBits += ${field.type.size} * ${field.name}.length;
         <#else>
         for(SizeAware element : ${field.name}) {
             lengthInBits += element.getLengthInBytes() * 8;
