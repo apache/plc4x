@@ -19,15 +19,11 @@
 
 package org.apache.plc4x.language.fields;
 
-import org.apache.plc4x.language.references.TypeReference;
-
-public interface DiscriminatorField extends Field {
+public interface DiscriminatorField extends TypedField {
 
     default String getTypeName() {
         return "discriminator";
     }
-
-    TypeReference getType();
 
     String getName();
 

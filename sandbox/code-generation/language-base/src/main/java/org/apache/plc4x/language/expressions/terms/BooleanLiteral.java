@@ -31,4 +31,9 @@ public class BooleanLiteral implements Literal {
         return value;
     }
 
+    @Override
+    public boolean contains(String str) {
+        return false;
+    }
+
 }

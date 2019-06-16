@@ -20,12 +20,14 @@
 package org.apache.plc4x.language.fields;
 
 
+import org.apache.plc4x.language.expressions.terms.Term;
+
 public interface OptionalField extends PropertyField {
 
     default String getTypeName() {
         return "optional";
     }
 
-    String getConditionExpression();
+    Term getConditionExpression();
 
 }

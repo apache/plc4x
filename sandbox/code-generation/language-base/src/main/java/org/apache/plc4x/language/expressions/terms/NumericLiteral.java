@@ -31,4 +31,9 @@ public class NumericLiteral implements Literal {
         return number;
     }
 
+    @Override
+    public boolean contains(String str) {
+        return false;
+    }
+
 }

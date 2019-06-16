@@ -60,7 +60,7 @@ public class JavaLanguageOutput implements LanguageOutput {
                 typeContext.put("packageName", packageName);
                 typeContext.put("typeName", typeEntry.getKey());
                 typeContext.put("type", typeEntry.getValue());
-                typeContext.put("helper", getHelper());
+                typeContext.put("helper", getHelper(types));
 
                 for(Template template : templateList) {
                     // Create a variable size output location where the template can generate it's content to
@@ -122,8 +122,8 @@ public class JavaLanguageOutput implements LanguageOutput {
             freemarkerConfiguration.getTemplate("templates/java/io-template.ftlh"));
     }
 
-    private JavaLanguageTemplateHelper getHelper() {
-        return new JavaLanguageTemplateHelper();
+    private JavaLanguageTemplateHelper getHelper(Map<String, ComplexTypeDefinition> types) {
+        return new JavaLanguageTemplateHelper(types);
     }
 
 }

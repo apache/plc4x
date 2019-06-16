@@ -49,4 +49,9 @@ public class TernaryTerm implements Term {
         return operation;
     }
 
+    @Override
+    public boolean contains(String str) {
+        return ((a != null) && a.contains(str)) || ((b != null) && b.contains(str))  ||((c != null) && c.contains(str));
+    }
+
 }

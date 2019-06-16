@@ -38,33 +38,9 @@ ${packageName?replace(".", "/")}/${typeName}.java
 
 package ${packageName};
 
-import org.apache.commons.jexl3.*;
 import org.apache.plc4x.java.utils.SizeAware;
 
 public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements SizeAware {
-
-<#assign needJexl=false>
-<#list type.fields as field>
-<#switch field.typeName>
-    <#case "optional">
-    private static JexlExpression ex${field.name?cap_first};
-    <#assign needJexl=true>
-    <#break>
-</#switch>
-</#list>
-<#if needJexl>
-    private static JexlEngine jexl;
-    static {
-    jexl = new JexlBuilder().create();
-<#list type.fields as field>
-<#switch field.typeName>
-    <#case "optional">
-    ex${field.name?cap_first} = jexl.createExpression("${field.conditionExpression}");
-    <#break>
-</#switch>
-</#list>
-    }
-</#if>
 
 <#if helper.isDiscriminatedType(type)>
 
@@ -79,18 +55,18 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
     // Constant values.
 <#list type.constFields as field>
-    public static final ${helper.getLanguageTypeNameForSpecType(field.type)} ${field.name?upper_case} = ${field.referenceValue};
+    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = ${field.referenceValue};
 </#list>
 </#if>
 <#if type.propertyFields?has_content>
 
     // Properties.
 <#list type.propertyFields as field>
-    private final ${helper.getLanguageTypeNameForSpecType(field.type)}<#if field.lengthType??>[]</#if> ${field.name};
+    private final ${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> ${field.name};
 </#list>
 </#if>
 
-    public ${typeName}(<#list type.getAllPropertyFields() as field>${helper.getLanguageTypeNameForSpecType(field.type)}<#if field.lengthType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
+    public ${typeName}(<#list type.getAllPropertyFields() as field>${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
 <#if type.getParentPropertyFields()?has_content>
         super(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
 </#if>
@@ -110,16 +86,13 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#if>
 
 <#list type.propertyFields as field>
-    public ${helper.getLanguageTypeNameForSpecType(field.type)}<#if field.lengthType??>[]</#if> get${field.name?cap_first}() {
+    public ${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> get${field.name?cap_first}() {
         return ${field.name};
     }
 
 </#list>
     @Override
     public int getLengthInBytes() {
-<#if needJexl>
-        JexlContext jc = new ObjectContext<>(jexl, this);
-</#if>
         int lengthInBits = <#if type.parentType??>super.getLengthInBytes() * 8<#else>0</#if>;
 <#list type.fields as field>
 <#switch field.typeName>
@@ -152,7 +125,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "optional">
 
         // Optional Field (${field.name})
-        if(ex${field.name?cap_first}.evaluate(jc) == Boolean.TRUE) {
+        if(${field.name} != null) {
             lengthInBits += ${field.type.size};
         }
         <#break>

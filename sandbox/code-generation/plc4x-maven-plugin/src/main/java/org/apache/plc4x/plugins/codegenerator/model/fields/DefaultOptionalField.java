@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.fields;
 
+import org.apache.plc4x.language.expressions.terms.Term;
 import org.apache.plc4x.language.fields.OptionalField;
 import org.apache.plc4x.language.references.TypeReference;
 
@@ -26,10 +27,10 @@ public class DefaultOptionalField implements OptionalField {
 
     private final TypeReference type;
     private final String name;
-    private final String conditionExpression;
+    private final Term conditionExpression;
     private final String[] params;
 
-    public DefaultOptionalField(TypeReference type, String name, String conditionExpression, String[] params) {
+    public DefaultOptionalField(TypeReference type, String name, Term conditionExpression, String[] params) {
         this.type = type;
         this.name = name;
         this.conditionExpression = conditionExpression;
@@ -44,7 +45,7 @@ public class DefaultOptionalField implements OptionalField {
         return name;
     }
 
-    public String getConditionExpression() {
+    public Term getConditionExpression() {
         return conditionExpression;
     }
 

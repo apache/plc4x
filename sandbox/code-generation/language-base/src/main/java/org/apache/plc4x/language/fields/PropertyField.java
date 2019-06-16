@@ -19,11 +19,7 @@
 
 package org.apache.plc4x.language.fields;
 
-import org.apache.plc4x.language.references.TypeReference;
-
-public interface PropertyField extends Field {
-
-    TypeReference getType();
+public interface PropertyField extends TypedField {
 
     String getName();
 

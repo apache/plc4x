@@ -19,18 +19,16 @@
 
 package org.apache.plc4x.language.fields;
 
-import org.apache.plc4x.language.references.TypeReference;
+import org.apache.plc4x.language.expressions.terms.Term;
 
-public interface ImplicitField extends Field {
+public interface ImplicitField extends TypedField {
 
     default String getTypeName() {
         return "implicit";
     }
 
-    TypeReference getType();
-
     String getName();
 
-    String getSerializationExpression();
+    Term getSerializationExpression();
 
 }

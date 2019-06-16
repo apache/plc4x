@@ -24,4 +24,9 @@ public class NullLiteral implements Literal {
     public NullLiteral() {
     }
 
+    @Override
+    public boolean contains(String str) {
+        return false;
+    }
+
 }

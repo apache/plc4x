@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.fields;
 
+import org.apache.plc4x.language.expressions.terms.Term;
 import org.apache.plc4x.language.fields.ImplicitField;
 import org.apache.plc4x.language.references.TypeReference;
 
@@ -26,9 +27,9 @@ public class DefaultImplicitField implements ImplicitField {
 
     private final TypeReference type;
     private final String name;
-    private final String serializationExpression;
+    private final Term serializationExpression;
 
-    public DefaultImplicitField(TypeReference type, String name, String serializationExpression) {
+    public DefaultImplicitField(TypeReference type, String name, Term serializationExpression) {
         this.type = type;
         this.name = name;
         this.serializationExpression = serializationExpression;
@@ -42,7 +43,7 @@ public class DefaultImplicitField implements ImplicitField {
         return name;
     }
 
-    public String getSerializationExpression() {
+    public Term getSerializationExpression() {
         return serializationExpression;
     }
 

@@ -19,18 +19,87 @@
 
 package org.apache.plc4x.language.java;
 
+import com.sun.org.apache.xpath.internal.operations.Variable;
 import org.apache.commons.text.WordUtils;
+import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.language.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.language.definitions.TypeDefinition;
-import org.apache.plc4x.language.fields.ArrayField;
+import org.apache.plc4x.language.expressions.terms.*;
+import org.apache.plc4x.language.fields.*;
 import org.apache.plc4x.language.references.ComplexTypeReference;
 import org.apache.plc4x.language.references.SimpleTypeReference;
 import org.apache.plc4x.language.references.TypeReference;
 
+import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JavaLanguageTemplateHelper {
+
+    private final Map<String, ComplexTypeDefinition> types;
+
+    public JavaLanguageTemplateHelper(Map<String, ComplexTypeDefinition> types) {
+        this.types = types;
+    }
+
+    public String getLanguageTypeNameForField(TypedField field) {
+        boolean optional = field instanceof OptionalField;
+        TypeReference typeReference = field.getType();
+        if(typeReference instanceof SimpleTypeReference) {
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            switch (simpleTypeReference.getBaseType()) {
+                case BIT: {
+                    return optional ? "Boolean" : "boolean";
+                }
+                case UINT: {
+                    if (simpleTypeReference.getSize() <= 4) {
+                        return optional ? "Byte" : "byte";
+                    }
+                    if (simpleTypeReference.getSize() <= 8) {
+                        return optional ? "Short" : "short";
+                    }
+                    if (simpleTypeReference.getSize() <= 16) {
+                        return optional ? "Integer" : "int";
+                    }
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return optional ? "Long" : "long";
+                    }
+                    return "BigInteger";
+                }
+                case INT: {
+                    if (simpleTypeReference.getSize() <= 8) {
+                        return optional ? "Byte" : "byte";
+                    }
+                    if (simpleTypeReference.getSize() <= 16) {
+                        return optional ? "Short" : "short";
+                    }
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return optional ? "Integer" : "int";
+                    }
+                    if (simpleTypeReference.getSize() <= 64) {
+                        return optional ? "Long" : "long";
+                    }
+                    return "BigInteger";
+                }
+                case FLOAT: {
+                    if (simpleTypeReference.getSize() <= 32) {
+                        return optional ? "Float" : "float";
+                    }
+                    if (simpleTypeReference.getSize() <= 64) {
+                        return optional ? "Double" : "double";
+                    }
+                    return "BigDecimal";
+                }
+                case STRING: {
+                    return "String";
+                }
+            }
+            return "Hurz";
+        } else {
+            return ((ComplexTypeReference) typeReference).getName();
+        }
+    }
 
     public String getLanguageTypeNameForSpecType(TypeReference typeReference) {
         if(typeReference instanceof SimpleTypeReference) {
@@ -130,6 +199,21 @@ public class JavaLanguageTemplateHelper {
         } else {
             return "null";
         }
+    }
+
+    public String getArgumentType(TypeReference typeReference, int index) {
+        if(typeReference instanceof ComplexTypeReference) {
+            ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
+            if(!types.containsKey(complexTypeReference.getName())) {
+                throw new RuntimeException("Could not find definition of complex type " + complexTypeReference.getName());
+            }
+            ComplexTypeDefinition complexTypeDefinition = types.get(complexTypeReference.getName());
+            if(complexTypeDefinition.getParserArguments().length <= index) {
+                throw new RuntimeException("Type " + complexTypeReference.getName() + " specifies too few parser arguments");
+            }
+            return getLanguageTypeNameForSpecType(complexTypeDefinition.getParserArguments()[index].getType());
+        }
+        return "Hurz";
     }
 
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
@@ -257,7 +341,7 @@ public class JavaLanguageTemplateHelper {
         return arrayField.getLengthType() == ArrayField.LengthType.COUNT;
     }
 
-    public String toReadExpression(String expression) {
+    public String toSwitchExpression(String expression) {
         StringBuilder sb = new StringBuilder();
         Pattern pattern = Pattern.compile("([^\\.]*)\\.([a-zA-Z\\d]+)(.*)");
         Matcher matcher;
@@ -271,8 +355,120 @@ public class JavaLanguageTemplateHelper {
         return sb.toString();
     }
 
-    public String toWriteExpression(String expression) {
-        return expression;
+    public String toDeserializationExpression(Term term) {
+        return toExpression(term, this::toVariableDeserializationExpression);
+    }
+
+    public String toSerializationExpression(Term term) {
+        return toExpression(term, this::toVariableSerializationExpression);
+    }
+
+    private String toExpression(Term term, Function<Term, String> variableExpressionGenerator) {
+        if(term instanceof Literal) {
+            if(term instanceof NullLiteral) {
+                return "null";
+            } else if(term instanceof BooleanLiteral) {
+                return Boolean.toString(((BooleanLiteral) term).getValue());
+            } else if(term instanceof NumericLiteral) {
+                return ((NumericLiteral) term).getNumber().toString();
+            } else if(term instanceof StringLiteral) {
+                return "\"" + ((StringLiteral) term).getValue() + "\"";
+            } else if(term instanceof VariableLiteral) {
+                return variableExpressionGenerator.apply(term);
+            } else {
+                throw new RuntimeException("Unsupported Literal type " + term.getClass().getName());
+            }
+        } else if (term instanceof UnaryTerm) {
+            UnaryTerm ut = (UnaryTerm) term;
+            Term a = ut.getA();
+            switch(ut.getOperation()) {
+                case "!":
+                    return "!(" + toExpression(a, variableExpressionGenerator) + ")";
+                case "-":
+                    return "-(" + toExpression(a, variableExpressionGenerator) + ")";
+                case "()":
+                    return "(" + toExpression(a, variableExpressionGenerator) + ")";
+                default:
+                    throw new RuntimeException("Unsupported unary operation type " + ut.getOperation());
+            }
+        } else if (term instanceof BinaryTerm) {
+            BinaryTerm bt = (BinaryTerm) term;
+            Term a = bt.getA();
+            Term b = bt.getB();
+            String operation = bt.getOperation();
+            return "(" + toExpression(a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(b, variableExpressionGenerator) + ")";
+        } else if (term instanceof TernaryTerm) {
+            TernaryTerm tt = (TernaryTerm) term;
+            if("if".equals(tt.getOperation())) {
+                Term a = tt.getA();
+                Term b = tt.getB();
+                Term c = tt.getC();
+                return "((" +  toExpression(a, variableExpressionGenerator) + ") ? " + toExpression(b, variableExpressionGenerator) + " : " + toExpression(c, variableExpressionGenerator) + ")";
+            } else {
+                throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
+            }
+        } else {
+            throw new RuntimeException("Unsupported Term type " + term.getClass().getName());
+        }
+    }
+
+    private String toVariableDeserializationExpression(Term term) {
+        VariableLiteral vl = (VariableLiteral) term;
+        // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
+        if("CAST".equals(vl.getName())) {
+            StringBuilder sb = new StringBuilder(vl.getName());
+            if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
+                throw new RuntimeException("A CAST expression expects exactly two arguments.");
+            }
+            sb.append("(").append(toVariableDeserializationExpression(vl.getArgs().get(0)))
+                .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
+            return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+        }
+        // All uppercase names are not fields, but utility methods.
+        else if(vl.getName().equals(vl.getName().toUpperCase())) {
+            StringBuilder sb = new StringBuilder(vl.getName());
+            if(vl.getArgs() != null) {
+                sb.append("(");
+                boolean firstArg = true;
+                for(Term arg : vl.getArgs()) {
+                    if(!firstArg) {
+                        sb.append(", ");
+                    }
+                    sb.append(toVariableDeserializationExpression(arg));
+                    firstArg = false;
+                }
+                sb.append(")");
+            }
+            return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+        }
+        return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+    }
+
+    private String toVariableSerializationExpression(Term term) {
+        VariableLiteral vl = (VariableLiteral) term;
+        // All uppercase names are not fields, but utility methods.
+        if(vl.getName().equals(vl.getName().toUpperCase())) {
+            StringBuilder sb = new StringBuilder(vl.getName());
+            if(vl.getArgs() != null) {
+                sb.append("(");
+                boolean firstArg = true;
+                for(Term arg : vl.getArgs()) {
+                    if(!firstArg) {
+                        sb.append(", ");
+                    }
+                    sb.append(toVariableSerializationExpression(arg));
+                    firstArg = false;
+                }
+                sb.append(")");
+            }
+            return sb.toString();
+        }
+        return "value." + toVariableExpressionRest(vl);
+    }
+
+    private String toVariableExpressionRest(VariableLiteral vl) {
+        return "get" + WordUtils.capitalize(vl.getName()) + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
+            ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
     }
 
 }

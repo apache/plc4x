@@ -24,7 +24,11 @@ expression
  ;
 
 identifierSegment
- : name=Identifier index=indexes? ('.' rest=identifierSegment)?
+ : name=Identifier args=arguments? index=indexes? ('.' rest=identifierSegment)?
+ ;
+
+arguments
+ : '(' (expression (',' expression)*)? ')'
  ;
 
 indexes

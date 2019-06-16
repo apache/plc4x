@@ -19,15 +19,11 @@
 
 package org.apache.plc4x.language.fields;
 
-import org.apache.plc4x.language.references.TypeReference;
-
-public interface ReservedField extends Field {
+public interface ReservedField extends TypedField {
 
     default String getTypeName() {
         return "reserved";
     }
-
-    TypeReference getType();
 
     Object getReferenceValue();
 

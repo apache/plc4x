@@ -19,22 +19,30 @@
 
 package org.apache.plc4x.language.expressions.terms;
 
+import java.util.List;
+
 public class VariableLiteral implements Literal {
 
     public static final int NO_INDEX = -1;
 
     private final String name;
+    private final List<Term> args;
     private final int index;
     private final VariableLiteral child;
 
-    public VariableLiteral(String name, int index, VariableLiteral child) {
+    public VariableLiteral(String name, List<Term> args, int index, VariableLiteral child) {
         this.name = name;
+        this.args = args;
         this.index = index;
         this.child = child;
     }
 
     public String getName() {
         return name;
+    }
+
+    public List<Term> getArgs() {
+        return args;
     }
 
     public int getIndex() {
@@ -47,6 +55,21 @@ public class VariableLiteral implements Literal {
 
     public boolean isIndexed() {
         return index != NO_INDEX;
+    }
+
+    @Override
+    public boolean contains(String str) {
+        if(((name != null) && name.contains(str)) || ((child != null) && child.contains(str))) {
+            return true;
+        }
+        if(args != null) {
+            for(Term arg : args) {
+                if(arg.contains(str)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

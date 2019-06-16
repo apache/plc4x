@@ -37,4 +37,9 @@ public class UnaryTerm implements Term {
         return operation;
     }
 
+    @Override
+    public boolean contains(String str) {
+        return (a != null) && a.contains(str);
+    }
+
 }

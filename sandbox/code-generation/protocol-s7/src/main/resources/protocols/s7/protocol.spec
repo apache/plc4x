@@ -45,11 +45,11 @@
             [field uint 8  'rejectCause']
         ]
     ]
-    [arrayField COTPParameter 'parameters' length '(headerLength + 1) - curPos']
+    [arrayField COTPParameter 'parameters' length '(headerLength + 1) - curPos' ['(headerLength + 1) - curPos']]
     [field      S7Message     'payload']
 ]
 
-[discriminatedType 'COTPParameter'
+[discriminatedType 'COTPParameter' [uint 8 'rest']
     [discriminator uint 8 'parameterType']
     [typeSwitch 'parameterType'
         ['0xC0' COTPParameterTpduSize
@@ -108,21 +108,21 @@
             [field    uint 16 'pduLength']
         ]
         ['0x04','0x01' S7ParameterReadVarRequest
-            [implicit   uint 8                    'numItems' 'items.size()']
+            [implicit   uint 8                    'numItems' 'COUNT(items)']
             [arrayField S7VarRequestParameterItem 'items'    count 'numItems']
         ]
         ['0x04','0x03' S7ParameterReadVarResponse
             [field uint 8 'numItems']
         ]
         ['0x05','0x01' S7ParameterWriteVarRequest
-            [implicit   uint 8                    'numItems' 'items.size()']
+            [implicit   uint 8                    'numItems' 'COUNT(items)']
             [arrayField S7VarRequestParameterItem 'items'    count 'numItems']
         ]
         ['0x05','0x03' S7ParameterWriteVarResponse
             [field uint 8 'numItems']
         ]
         ['0x00','0x07' S7ParameterUserData
-            [implicit   uint 8       'numItems' 'items.size()']
+            [implicit   uint 8       'numItems' 'COUNT(items)']
             [arrayField UserDataItem 'items' count 'numItems']
         ]
     ]
@@ -162,9 +162,9 @@
             [field         uint 16 'cpuFunctionType']
             [field         uint 8  'subFunctionGroup']
             [field         uint 8  'sequenceNumber']
-            [optionalField uint 8  'dataUnitReferenceNumber' 'lengthInBytes == 8']
-            [optionalField uint 8  'lastDataUnit' 'lengthInBytes == 8']
-            [optionalField uint 8  'errorCode' 'lengthInBytes == 8']
+            [optionalField uint 8  'dataUnitReferenceNumber' 'parameterLength == 8']
+            [optionalField uint 8  'lastDataUnit' 'parameterLength == 8']
+            [optionalField uint 8  'errorCode' 'parameterLength == 8']
         ]
     ]
 ]
@@ -177,13 +177,13 @@
         ['0xF0' S7PayloadSetupCommunication]
         ['0x04','0x01' S7PayloadReadVarRequest]
         ['0x04','0x03' S7PayloadReadVarResponse
-            [arrayField S7VarPayloadDataItem 'items' count 'parameter.numItems']
+            [arrayField S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
         ]
         ['0x05','0x01' S7PayloadWriteVarRequest
-            [arrayField S7VarPayloadDataItem 'items' count 'parameter.numItems']
+            [arrayField S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
         ]
         ['0x05','0x03' S7PayloadWriteVarResponse
-            [arrayField S7VarPayloadStatusItem 'items' count 'parameter.numItems']
+            [arrayField S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
         ['0x00','0x07' S7PayloadUserData
         ]

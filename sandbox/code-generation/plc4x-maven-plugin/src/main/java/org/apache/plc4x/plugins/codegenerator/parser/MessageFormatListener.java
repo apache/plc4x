@@ -19,9 +19,11 @@
 
 package org.apache.plc4x.plugins.codegenerator.parser;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryBaseListener;
 import org.apache.plc4x.codegenerator.parser.imaginary.ImaginaryParser;
 import org.apache.plc4x.language.definitions.Argument;
+import org.apache.plc4x.language.expressions.terms.Term;
 import org.apache.plc4x.language.fields.ArrayField;
 import org.apache.plc4x.language.fields.Field;
 import org.apache.plc4x.language.fields.SwitchField;
@@ -29,12 +31,14 @@ import org.apache.plc4x.language.references.SimpleTypeReference;
 import org.apache.plc4x.language.references.TypeReference;
 import org.apache.plc4x.language.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.language.definitions.DiscriminatedComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.model.definitions.DefaultComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.model.definitions.DefaultDiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.model.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.model.references.DefaultSimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.model.fields.*;
 
+import java.io.InputStream;
 import java.util.*;
 
 public class MessageFormatListener extends ImaginaryBaseListener {
@@ -95,7 +99,10 @@ public class MessageFormatListener extends ImaginaryBaseListener {
         } else {
             lengthType = ArrayField.LengthType.LENGTH;
         }
-        String lengthExpression = ctx.lengthExpression.expr.getText();
+        String lengthExpressionString = ctx.lengthExpression.expr.getText();
+        InputStream inputStream = IOUtils.toInputStream(lengthExpressionString);
+        ExpressionStringParser parser = new ExpressionStringParser();
+        Term lengthExpression =  parser.parse(inputStream);
         String[] params = getFieldParams((ImaginaryParser.FieldDefinitionContext) ctx.parent.parent);
         Field field = new DefaultArrayField(type, name, lengthType, lengthExpression, params);
         parserContexts.peek().add(field);
@@ -131,7 +138,10 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     public void enterImplicitField(ImaginaryParser.ImplicitFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        String serializationExpression = ctx.serializationExpression.expr.getText();
+        String serializationExpressionString = ctx.serializationExpression.expr.getText();
+        InputStream inputStream = IOUtils.toInputStream(serializationExpressionString);
+        ExpressionStringParser parser = new ExpressionStringParser();
+        Term serializationExpression =  parser.parse(inputStream);
         Field field = new DefaultImplicitField(type, name, serializationExpression);
         parserContexts.peek().add(field);
     }
@@ -140,7 +150,10 @@ public class MessageFormatListener extends ImaginaryBaseListener {
     public void enterOptionalField(ImaginaryParser.OptionalFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        String conditionExpression = ctx.condition.expr.getText();
+        String conditionExpressionString = ctx.condition.expr.getText();
+        InputStream inputStream = IOUtils.toInputStream(conditionExpressionString);
+        ExpressionStringParser parser = new ExpressionStringParser();
+        Term conditionExpression =  parser.parse(inputStream);
         String[] params = getFieldParams((ImaginaryParser.FieldDefinitionContext) ctx.parent.parent);
         Field field = new DefaultOptionalField(type, name, conditionExpression, params);
         parserContexts.peek().add(field);
@@ -260,6 +273,10 @@ public class MessageFormatListener extends ImaginaryBaseListener {
             }
         }
         return params;
+    }
+
+    private Term parseExpression(String expressionString) {
+        return null;
     }
 
 }

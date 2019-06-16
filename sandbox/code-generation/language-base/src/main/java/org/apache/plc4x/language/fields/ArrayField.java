@@ -20,6 +20,8 @@
 package org.apache.plc4x.language.fields;
 
 
+import org.apache.plc4x.language.expressions.terms.Term;
+
 public interface ArrayField extends PropertyField {
 
     default String getTypeName() {
@@ -28,7 +30,7 @@ public interface ArrayField extends PropertyField {
 
     LengthType getLengthType();
 
-    String getLengthExpression();
+    Term getLengthExpression();
 
     enum LengthType {
         COUNT,

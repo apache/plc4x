@@ -82,8 +82,14 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     @Override
+    public void enterIdentifierExpression(ExpressionParser.IdentifierExpressionContext ctx) {
+        parserContexts.push(new LinkedList<>());
+    }
+
+    @Override
     public void exitIdentifierExpression(ExpressionParser.IdentifierExpressionContext ctx) {
-        parserContexts.peek().add(getVariableLiteral(ctx.identifierSegment()));
+        List<Term> args = parserContexts.pop();
+        parserContexts.peek().add(getVariableLiteral(ctx.identifierSegment(), args));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -223,11 +229,11 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     // Helpers
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    private VariableLiteral getVariableLiteral(ExpressionParser.IdentifierSegmentContext ctx) {
+    private VariableLiteral getVariableLiteral(ExpressionParser.IdentifierSegmentContext ctx, List<Term> args) {
         String name = ctx.name.getText();
         int index = (ctx.index != null) ? Integer.valueOf(ctx.index.getText()) : VariableLiteral.NO_INDEX;
-        VariableLiteral child = (ctx.rest != null) ? getVariableLiteral(ctx.rest) : null;
-        return new VariableLiteral(name, index, child);
+        VariableLiteral child = (ctx.rest != null) ? getVariableLiteral(ctx.rest, args) : null;
+        return new VariableLiteral(name, args, index, child);
     }
 
     private UnaryTerm getUnaryTerm(String op, List<Term> terms) {

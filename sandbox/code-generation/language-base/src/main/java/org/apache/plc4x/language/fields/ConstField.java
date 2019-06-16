@@ -21,15 +21,11 @@ package org.apache.plc4x.language.fields;
 
 import org.apache.plc4x.language.references.TypeReference;
 
-public interface ConstField extends Field {
+public interface ConstField extends PropertyField {
 
     default String getTypeName() {
         return "const";
     }
-
-    TypeReference getType();
-
-    String getName();
 
     Object getReferenceValue();
 

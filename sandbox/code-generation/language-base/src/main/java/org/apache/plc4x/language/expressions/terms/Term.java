@@ -21,4 +21,6 @@ package org.apache.plc4x.language.expressions.terms;
 
 public interface Term {
 
+    boolean contains(String str);
+
 }

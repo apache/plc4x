@@ -17,23 +17,12 @@
  under the License.
  */
 
-package org.apache.plc4x.language.expressions.terms;
+package org.apache.plc4x.language.fields;
 
-public class StringLiteral implements Literal {
+import org.apache.plc4x.language.references.TypeReference;
 
-    private final String value;
+public interface TypedField extends Field {
 
-    public StringLiteral(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public boolean contains(String str) {
-        return (value != null) && value.contains(str);
-    }
+    TypeReference getType();
 
 }

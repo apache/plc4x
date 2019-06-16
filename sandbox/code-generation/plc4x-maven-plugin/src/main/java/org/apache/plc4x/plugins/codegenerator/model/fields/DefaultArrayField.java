@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.model.fields;
 
+import org.apache.plc4x.language.expressions.terms.Term;
 import org.apache.plc4x.language.fields.ArrayField;
 import org.apache.plc4x.language.references.TypeReference;
 
@@ -27,10 +28,10 @@ public class DefaultArrayField implements ArrayField {
     private final TypeReference type;
     private final String name;
     private final ArrayField.LengthType lengthType;
-    private final String lengthExpression;
+    private final Term lengthExpression;
     private final String[] params;
 
-    public DefaultArrayField(TypeReference type, String name, ArrayField.LengthType lengthType, String lengthExpression, String[] params) {
+    public DefaultArrayField(TypeReference type, String name, ArrayField.LengthType lengthType, Term lengthExpression, String[] params) {
         this.type = type;
         this.name = name;
         this.lengthType = lengthType;
@@ -50,7 +51,7 @@ public class DefaultArrayField implements ArrayField {
         return lengthType;
     }
 
-    public String getLengthExpression() {
+    public Term getLengthExpression() {
         return lengthExpression;
     }
 
