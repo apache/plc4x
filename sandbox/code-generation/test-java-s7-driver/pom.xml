@@ -58,7 +58,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
-      <artifactId>plc4x-code-generation-language-driver-base-java</artifactId>
+      <artifactId>plc4x-code-generation-driver-base-java</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
 

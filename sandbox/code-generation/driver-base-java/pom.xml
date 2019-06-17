@@ -27,9 +27,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4x-code-generation-language-driver-base-java</artifactId>
+  <artifactId>plc4x-code-generation-driver-base-java</artifactId>
 
-  <name>Sandbox: Code Generation: Language Driver Base: Java</name>
+  <name>Sandbox: Code Generation: Driver Base: Java</name>
   <description>Base stuff containing shared base classes for java drivers.</description>
 
   <dependencies>
