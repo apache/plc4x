@@ -19,7 +19,8 @@
 
 package org.apache.plc4x.java.utils;
 
-import com.github.jinahya.bit.io.*;
+import com.github.jinahya.bit.io.ArrayByteInput;
+import com.github.jinahya.bit.io.MyDefaultBitInput;
 
 import java.io.IOException;
 import java.math.BigDecimal;

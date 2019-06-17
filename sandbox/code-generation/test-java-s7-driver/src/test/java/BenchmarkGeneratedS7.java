@@ -31,7 +31,7 @@ public class BenchmarkGeneratedS7 {
                                     //        00
         byte[] rData = Hex.decodeHex("0300006702f080320100000001005600000407120a10060001032b84000160120a10020001032b840001a0120a10010001032b840001a9120a10050001032b84000150120a10020001032b84000198120a10040001032b84000140120a10020001032b84000190");
         long start = System.currentTimeMillis();
-        int numRunsParse = 2000000£;
+        int numRunsParse = 2000000;
 
         // Benchmark the parsing code
         TPKTPacket packet = null;
@@ -45,17 +45,17 @@ public class BenchmarkGeneratedS7 {
         System.out.println("That's " + ((float) (endParsing - start) / numRunsParse) + "ms per packet");
 
         // Benchmark the serializing code
-        int numRunsSerailze = 2000000;
+        int numRunsSerialize = 2000000;
         byte[] oData = null;
-        for(int i = 0; i < numRunsSerailze; i++) {
+        for(int i = 0; i < numRunsSerialize; i++) {
             WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
             TPKTPacketIO.serialize(wBuf, packet);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();
 
-        System.out.println("Serialized " + numRunsSerailze + " packets in " + (endSerializing - endParsing) + "ms");
-        System.out.println("That's " + ((float) (endSerializing - endParsing) / numRunsSerailze) + "ms per packet");
+        System.out.println("Serialized " + numRunsSerialize + " packets in " + (endSerializing - endParsing) + "ms");
+        System.out.println("That's " + ((float) (endSerializing - endParsing) / numRunsSerialize) + "ms per packet");
         if(!Arrays.equals(rData, oData)) {
             for(int i = 0; i < rData.length; i++) {
                 if(rData[i] != oData[i]) {

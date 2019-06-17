@@ -56,6 +56,7 @@
     <module>plc4x-maven-plugin</module>
 
     <module>language-template-java</module>
+    <module>language-driver-base-java</module>
     <module>protocol-s7</module>
 
     <module>test-java-s7-driver</module>

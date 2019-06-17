@@ -22,6 +22,7 @@ package org.apache.plc4x.java.utils;
 import com.github.jinahya.bit.io.BitOutput;
 import com.github.jinahya.bit.io.BufferByteOutput;
 import com.github.jinahya.bit.io.DefaultBitOutput;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
