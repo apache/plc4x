@@ -81,7 +81,7 @@ pipeline {
         stage('Build Maven Plugin') {
             steps {
                 echo 'Building Maven Plugin'
-                sh 'mvn -f sandbox/code-generation/plc4x-maven-plugin/pom.xml -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                sh 'mvn -f sandbox/code-generation/pom.xml -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
             }
             post {
                 always {
