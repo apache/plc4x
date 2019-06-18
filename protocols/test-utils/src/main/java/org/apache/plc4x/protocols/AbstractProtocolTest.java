@@ -39,7 +39,7 @@ public abstract class AbstractProtocolTest {
         this.testsuiteName = testsuiteName;
     }
 
-    @TestFactory
+    //@TestFactory
     public List<DynamicTest> getTestsuiteTests() {
         DFDLTestSuite testSuite = new DFDLTestSuite(Misc.getRequiredResource(testsuiteName), true, true, false,
             Runner.defaultRoundTripDefaultDefault(),
