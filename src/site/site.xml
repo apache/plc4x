@@ -104,6 +104,7 @@
       <item name="Bug &amp; Issue Tracker" href="developers/issues.html"/>
       <item name="Building PLC4X" href="developers/building.html"/>
       <item name="Code Analysis" href="developers/sonar.html"/>
+      <item name="Code Generation" href="developers/code-generation.html"/>
       <item name="Continuous Integration" href="developers/ci.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
       <item name="Decision Making" href="developers/decisions.html"/>
