@@ -783,6 +783,7 @@
 
             <!-- Jenkins build related files -->
             <exclude>.repository/**</exclude>
+            <exclude>local-snapshots-dir/**</exclude>
 
             <!-- Data files created by examples running an embedded elasticsearch -->
             <exclude>elasticsearch-data/**</exclude>
