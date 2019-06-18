@@ -62,7 +62,7 @@
 
     <module>driver-base-java</module>
 
-    <module>test-java-s7-driver</module>
+    <!--module>test-java-s7-driver</module-->
   </modules>
 
   <build>
