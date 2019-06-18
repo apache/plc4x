@@ -1,5 +1,12 @@
 grammar Expression;
 
+// Borrowed part of this Grammar:
+// https://github.com/bkiers/tiny-language-antlr4/blob/master/src/main/antlr4/tl/antlr4/TL.g4
+// Which is under UNLICENCE:
+// https://unlicense.org/
+// Which is regarded beint Category A:
+// https://issues.apache.org/jira/browse/LEGAL-463
+
 expressionString
  : expression EOF
  ;

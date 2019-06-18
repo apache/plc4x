@@ -762,6 +762,14 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
 
+            <!-- License Files for other licenses -->
+            <exclude>**/UNLICENSE</exclude>
+            <!--
+              Explicitly exclude this file as I was unable
+              to add a new license to the configuration.
+            -->
+            <exclude>**/Expression.g4</exclude>
+
             <!-- Maven related files -->
             <exclude>**/target/**</exclude>
 
