@@ -18,4 +18,288 @@
 
 == Code Generation
 
+As hand-writing code for a lot of drivers in multiple languages would be quite a nightmare, we have invested a very large amount of time into finding a way to automate this.
+
+So in the end we need 3 parts:
+
+1. Protocol definition
+2. Language template
+3. A maven plugin which generates the code
+
+This maven plugin uses a given protocol definition as well as a language template and generates code for reading/writing data in that protocol with the given language.
+
+[ditaa,code-generation-intro]
+....
+                  +------------+
+                  |c05A        |
+                  |  Language  |
+       +--------->|    Base    |------------+
+       |          |            |            |
+       |          +------------+            v
++------------+                       +------------+      +------------+
+|c05A        |                       |c05A        |      |            |
+|   Types    |                       |   PLC4X    |      |            |
+|    Base    |                       |   Maven    |----->|    Code    |
+|            |                       |   Plugin   |      |            |
++------------+                       +------------+      +------------+
+       |          +------------+            ^
+       |          |c05A        |            |
+       |          |  Protocol  |            |
+       +--------->|    Base    |------------+
+                  |            |
+                  +------------+
+....
+
+The `Types Base` module provides all the structures the `Protocol` modules output which are then used in the `Language` templates to generate code.
+
+`Protocol Base` and `Language Base` hereby just provide the interfaces that reference these types and provide the API for the `plc4x-maven-plugin` to use.
+
+These modules are also maintained in a repository which is separate from the rest of the PLC4X code.
+
+This is due to some restrictions in the Maven build system. If you are interested in understanding the reasons - please read the chapter on `Problems with Maven` near the end of this page.
+
+Concrete protocol spec parsers and templates that actually generate code are implemented in derived modules.
+
+Also didn't we want to tie ourselves to only one way to specify protocols and to generate code.
+
+This adds another layer to the hierarchy.
+
+So for example in case of generating a Siemens S7 Driver for Java this would look like this:
+
+[ditaa,code-generation-intro-s7-java]
+....
+               +------------+
+               |c05A        |
+               |   Types    |
+       +-------|    Base    |--------+
+       |       |            |        |
+       |       +------------+        |
+       v                             v
++------------+                +------------+
+|c05A        |                |c05A        |
+|  Protocol  |                |  Language  |
+|    Base    |                |    Base    |
+|            |                |            |
++------------+                +------------+
+       |                             |
+       |                             |
+       v                             v
++------------+                +------------+
+|c0BA        |                |c0BA        |
+|  Protocol  |                |  Language  |
+|    Base    |                |    Base    |
+|   MSpec    |                | Freemarker |
++------------+                +------------+
+       |                             |
+       |                             |
+       v                             v
++------------+                +------------+
+|c0BA        |                |c0BA        |
+|     S7     |                |    Java    |
+|  Protocol  |                |  Language  |
+|            |                |            |
++------------+                +------------+
+       |                             |
+       |                             |
+       |       +------------+        |
+       |       |c05A        |        |
+       |       |   PLC4X    |        |
+       +------>|   Maven    |<-------+
+               |   Plugin   |
+               +------------+
+                      |
+                      |
+                      v
+               +------------+
+               |c0BA        |
+               |     S7     |
+               |    Java    |
+               |    Code    |
+               +------------+
+....
+
+The dark blue parts are the ones released externally, the turquoise ones are part of the main PLC4X repo.
+
+=== Introduction
+
+The maven plugin is built up very modular.
+
+So in general it is possible to add new forms of providing protocol definitions as well as language templates.
+
+For the formats of specifying a protocol we have tried out numerous tools and frameworks, however the results were never quite satisfying.
+
+Usually using them required a large amount of workarounds, which made the solution quite complicated.
+
+In the end only DFDL and the corresponding Apache project https://daffodil.apache.org[Apache Daffodil (incubating)] seemed to provide what we were looking for.
+
+With this we were able to provide first driver versions fully specified in XML.
+
+The downside was, that the PLC4X community regarded this XML format as pretty complicated and when implementing an experimental code generator we quickly noticed that generating a nice object model would not be possible, due to the lack ability to model the inheritance of types in DFDL.
+
+In the end we came up with our own solution.
+
+=== The MSpec format
+
+The `MSpec` format (Message Specification) was a result of a brainstorming session after evaluating a lot of other options.
+
+We simply sat down and started to write some imaginary format (`imaginary` was even the initial Name we used) and created parses for this afterwards and fine tuned spec and parsers as part of the process of implementing first protocols and language templates.
+
+It's a text-based format and for example part of the spec for the S7 format looks like this:
+
+....
+[discriminatedType 'S7Message'
+    [const         uint 8  'protocolId'      '0x32']
+    [discriminator uint 8  'messageType']
+    [reserved      uint 16 '0x0000']
+    [field         uint 16 'tpduReference']
+    [implicit      uint 16 'parameterLength' 'parameter.lengthInBytes']
+    [implicit      uint 16 'payloadLength'   'payload.lengthInBytes']
+    [typeSwitch 'messageType'
+        ['0x01' S7MessageRequest
+        ]
+        ['0x03' S7MessageResponse
+            [field uint 8 'errorClass']
+            [field uint 8 'errorCode']
+        ]
+        ['0x07' S7MessageUserData
+        ]
+    ]
+    [field S7Parameter 'parameter' ['messageType']]
+    [field S7Payload   'payload'   ['messageType', 'parameter']]
+]
+....
+
+So the root elements are always `discriminatedType` elements which have a name.
+
+An elements start is declared by an opening square bracket `[` and ended with a closing one `]`.
+
+Every `discriminatedType` contains a list of fields that can have different types.
+
+The list of available types are:
+
+- const: expects a given value
+- reserved: expects a given value, but only warns if condition is not meet
+- field: simple or complex typed object
+- array: array of simple or complex typed objects
+- optional: simple or complex typed object, that is only present in some conditions
+- implicit: a field required for parsing, but is usually defined though other data
+- discriminator: special type of simple typed field which is used to determine the concrete type of an object (max one per type and always has to be accompanied with a `switch` field)
+- typeSwitch: not a real field, but indicates the existence of sub-types, which are declared inline
+
+The full syntax and explanations of these type follow in the following chapters.
+
+Another thing we have to explain are how types are specified.
+
+In general we distinguish between two types of types:
+
+- simple types
+- complex types
+
+==== Simple Types
+
+Simple types are usually raw data the format is:
+
+    {base-type} {size}
+
+The base types available are currently:
+
+- bit: Simple boolean value
+- uint: The input is treated as unsigned integer value
+- int: The input is treated as signed integer value
+- float: The input is treated as floating point number
+- string: The input is treated as string
+
+The size value then provides how many `bits` should be read.
+
+So reading an unsigned byte would be: `uint 8`.
+
+==== Complex Types
+
+In contrast to simple types, complex type references simply reference other complex types.
+
+How the parser should interpret them is defined in the referenced types definition.
+
+In the example above, for example the `S7Parameter` is defined in another part of the spec.
+
+==== Field Types and their Syntax
+
+===== const Field
+
+    [const {type} {size} '{name}' '{reference}']
+
+A const field simply reads a given simple type and compares to a given reference value.
+
+It makes the parser throw an Exception if the value does not match.
+
+===== reserved Field
+
+    [reserved {type} {size} '{name}' '{reference}']
+
+In general this field type behaves exactly the same way as the `const` field, but with the difference, that it doesn't throw an Exception if the reference is not matched, but instead allows to log the value.
+
+This is used in order to detect `reserved` fields in some protocols, where the manufacturer defined the field to be a given value, but with the option to use it in the future.
+
+This way the application will not break in the future if devices start using the field and it informs us that we should probably have a look at what the new values mean.
+
+===== field Field
+
+===== array Field
+
+===== optional Field
+
+===== implicit Field
+
+===== discriminator Field
+
+===== typeSwitch Field
+
+
+== Problems with Maven
+
+=== Why are the 4 modules released separately?
+
+We mentioned in the introduction, that the first 4 modules are maintained and released from outside the main PLC4X repository.
+
+This is due to some restrictions in Maven, which result from the way Maven generally works.
+
+The main problem is that when starting a build, in the `validate` phase, Maven goes through the configuration, downloads the plugins and configures these.
+This means that Maven also tries to download the dependencies of the plugins too.
+
+In case of using a Maven plugin in a project which also produces the maven plugin, this is guaranteed to fail - Especially during releases.
+While during normal development, Maven will probably just download the latest `SNAPSHOT` from our Maven repository and be happy with this and not complain that this version will be overwritten later on in the build.
+It will just use the new version as soon as it has to.
+
+During releases however the release plugin changes the version to a release version and then spawns a build.
+In this case the build will fail because there is no Plugin with that version to download.
+In this case the only option would be to manually build and install the plugin in the release version and to re-start the release (Which is not a nice thing for the release manager).
+
+For this reason we have stripped down the plugin and it's dependencies to an absolute minimum and have released (or will release) that separately from the rest, hoping due to the minimality of the dependencies that we will not have to do it very often.
+
+As soon as the tooling is released, the version is updated in the PLC4X build and the release version is used without any complications.
+
+=== Why are the protocol and language dependencies done so strangely?
+
+It would certainly be a lot cleaner, if we provided the modules as plugin dependencies.
+
+However, as we mentioned in the previous sub-chapter, Maven tries to download and configure the plugins prior to running the build.
+So during a release the new versions of the modules wouldn't exist, this would cause the build to fail.
+
+We could release the protocol- and the language modules separately too, but we want the language and protocol modules to be part of the project, to not over-complicate things - especially during a release.
+
+So the Maven plugin is built in a way, that it uses the modules dependencies and creates it's own Classloader to contain all of these modules at runtime.
+
+This brings the benefit of being able to utilize Maven's capability of determining the build order and dynamically creating the modules build classpath.
+
+Adding a normal dependency however would make Maven deploy the artifacts with the rest of the modules.
+
+We don't want that as the modules are useless as soon as they have been used to generate the code.
+
+So we use a trick that is usually used in Web applications, for example:
+Here the vendor of a Servlet engine is expected to provide an implementation of the `Servlet API`.
+It is forbidden for an application to bring this along, but it is required to build the application.
+
+For this the Maven scope `provided`, which tells Maven to provide it during the build, but to exclude it from any applications it builds because it will be provided by the system running the application.
+
+This is not quite true, but it does the trick.
+
 
