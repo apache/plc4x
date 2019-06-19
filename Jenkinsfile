@@ -192,7 +192,7 @@ pipeline {
             }
             steps {
                 echo 'Building Site'
-                sh 'mvn -P${JENKINS_PROFILE} -P${JENKINS_PROFILE},with-java,with-dotnet,with-python,with-proxies site'
+                sh 'mvn -P${JENKINS_PROFILE},with-java,with-dotnet,with-python,with-proxies site'
             }
         }
 
@@ -203,7 +203,7 @@ pipeline {
             steps {
                 echo 'Staging Site'
                 // Build a directory containing the aggregated website.
-                sh 'mvn -P${JENKINS_PROFILE} site:stage'
+                sh 'mvn -P${JENKINS_PROFILE},with-java,with-dotnet,with-python,with-proxies site:stage'
                 // Make sure the script is executable.
                 sh 'chmod +x tools/clean-site.sh'
                 // Remove some redundant resources, which shouldn't be required.
