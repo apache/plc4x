@@ -22,100 +22,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!--
-    This is intentionally set to the apache parent as this way
-    we can release this module separately from the rest of the project
-  -->
   <parent>
-    <groupId>org.apache</groupId>
-    <artifactId>apache</artifactId>
-    <version>21</version>
-    <relativePath/>
+    <groupId>org.apache.plc4x.sandbox</groupId>
+    <artifactId>plc4x-sandbox</artifactId>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.plc4x.plugins</groupId>
   <artifactId>plc4x-code-generaton</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Sandbox: Code Generation</name>
 
-  <properties>
-    <maven.version>3.3.9</maven.version>
-    <antlr.version>4.7.2</antlr.version>
-    <java.version>1.8</java.version>
-  </properties>
-
-  <prerequisites>
-    <maven>${maven.version}</maven>
-  </prerequisites>
-
   <modules>
-    <module>language-base</module>
-    <module>protocol-base</module>
-
-    <module>plc4x-maven-plugin</module>
-
-    <module>language-template-java</module>
-
+    <module>protocol-base-mspec</module>
     <module>protocol-s7</module>
+
+    <module>language-base-freemarker</module>
+    <module>language-java</module>
 
     <module>driver-base-java</module>
 
     <!--module>test-java-s7-driver</module-->
   </modules>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-          <configuration>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
-            <testSource>${java.version}</testSource>
-            <testTarget>${java.version}</testTarget>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.6.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.antlr</groupId>
-          <artifactId>antlr4-maven-plugin</artifactId>
-          <version>${antlr.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 </project>

@@ -19,9 +19,13 @@
 
 package org.apache.plc4x.protocol.s7;
 
-import org.apache.plc4x.protocol.Protocol;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
+import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 import java.io.InputStream;
+import java.util.Map;
 
 public class S7Protocol implements Protocol {
 
@@ -31,8 +35,12 @@ public class S7Protocol implements Protocol {
     }
 
     @Override
-    public InputStream getMessageFormatSchema() {
-        return S7Protocol.class.getResourceAsStream("/protocols/s7/protocol.spec");
+    public Map<String, ComplexTypeDefinition> getTypeDefinitions() throws GenerationException {
+        InputStream schemaInputStream = S7Protocol.class.getResourceAsStream("/protocols/s7/protocol.spec");
+        if(schemaInputStream == null) {
+            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
+        }
+        return new MessageFormatParser().parse(schemaInputStream);
     }
 
 }
