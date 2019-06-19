@@ -102,6 +102,9 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
+
+    <plc4x-code-generation.version>1.0.0-SNAPSHOT</plc4x-code-generation.version>
+
     <antlr.version>4.7.2</antlr.version>
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
@@ -110,7 +113,7 @@
     <boost.version.underline-short>1_70</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
-    <commons-codec.version>1.11</commons-codec.version>
+    <commons-codec.version>1.12</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
     <commons-configuration2.version>2.2</commons-configuration2.version>
     <commons-io.version>2.6</commons-io.version>
@@ -118,12 +121,13 @@
     <commons-lang3.version>3.7</commons-lang3.version>
     <commons-math3.version>3.5</commons-math3.version>
     <commons-pool2.version>2.6.0</commons-pool2.version>
-    <commons-text.version>1.4</commons-text.version>
+    <commons-text.version>1.6</commons-text.version>
     <crc.version>1.0.1</crc.version>
     <daffodil.version>2.3.0</daffodil.version>
     <elasticsearch.version>7.0.1</elasticsearch.version>
     <equalsverifier.version>3.0.2</equalsverifier.version>
     <findbugs.version>3.0.1</findbugs.version>
+    <freemarker.version>2.3.28</freemarker.version>
     <groovy.version>2.5.3</groovy.version>
     <gson.version>2.8.0</gson.version>
     <guava.version>27.0.1-jre</guava.version>
@@ -344,6 +348,11 @@
         <version>${equalsverifier.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>${antlr.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
         <version>${commons-collections4.version}</version>
@@ -501,6 +510,16 @@
         </exclusions>
       </dependency>
       <dependency>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-code-generation-language-base</artifactId>
+        <version>${plc4x-code-generation.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-code-generation-protocol-base</artifactId>
+        <version>${plc4x-code-generation.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>${assertj.version}</version>
@@ -546,6 +565,16 @@
         <groupId>org.elasticsearch.plugin</groupId>
         <artifactId>transport-netty4-client</artifactId>
         <version>${elasticsearch.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${freemarker.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.jinahya</groupId>
+        <artifactId>bit-io</artifactId>
+        <version>1.4.2</version>
       </dependency>
       <dependency>
         <groupId>com.github.snksoft</groupId>
@@ -1041,6 +1070,18 @@
         </plugin>
 
         <plugin>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4-maven-plugin</artifactId>
+          <version>${antlr.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.plc4x.plugins</groupId>
+          <artifactId>plc4x-maven-plugin</artifactId>
+          <version>${plc4x-code-generation.version}</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>buildnumber-maven-plugin</artifactId>
           <version>1.4</version>
@@ -1394,9 +1435,9 @@
       <id>with-proxies</id>
     </profile>
 
-    <!-- Profile for linux -->
+    <!-- Profile for linux (Self-Enabling) -->
     <profile>
-      <id>unix</id>
+      <id>os-unix</id>
       <activation>
         <os>
           <family>unix</family>
@@ -1415,9 +1456,9 @@
         <thrift.compiler.executable>thrift</thrift.compiler.executable>
       </properties>
     </profile>
-    <!-- Profile for mac -->
+    <!-- Profile for mac (Self-Enabling) -->
     <profile>
-      <id>max</id>
+      <id>os-mac</id>
       <activation>
         <os>
           <family>mac</family>
@@ -1436,9 +1477,9 @@
         <thrift.compiler.executable>thrift</thrift.compiler.executable>
       </properties>
     </profile>
-    <!-- profile for windows -->
+    <!-- profile for windows (Self-Enabling) -->
     <profile>
-      <id>windows</id>
+      <id>os-windows</id>
       <activation>
         <os>
           <family>windows</family>
@@ -1593,6 +1634,9 @@
       </reporting>
     </profile>
 
+    <!--
+      Self enabling fake-plugin configuration to help Eclipse use Maven right
+    -->
     <profile>
       <id>only-eclipse</id>
       <activation>

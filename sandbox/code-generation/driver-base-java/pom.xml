@@ -36,13 +36,11 @@
     <dependency>
       <groupId>com.github.jinahya</groupId>
       <artifactId>bit-io</artifactId>
-      <version>1.4.2</version>
     </dependency>
 
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.12</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
