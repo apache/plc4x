@@ -23,7 +23,7 @@
 
   <parent>
     <groupId>org.apache.plc4x.plugins</groupId>
-    <artifactId>plc4x-code-generaton</artifactId>
+    <artifactId>plc4x-code-generaton-external</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
