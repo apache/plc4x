@@ -33,7 +33,7 @@ See `config/sink.properties` for example configuration.
 
 1) Download the latest version of Apache Kafka binaries from here: https://kafka.apache.org/downloads
 2) Unpack the archive.
-3) Copy the target/apache-kafka-0.4.0-SNAPSHOT.jar to the Kafka "libs" directory.
+3) Copy the target/apache-kafka-0.5.0-SNAPSHOT.jar to the Kafka "libs" directory.
 4) Copy the files in the "config" to Kafka's "configs" directory (maybe inside a "plc4x" subdirectory)
 5) Open 4 console windows and change directory into that directory
 6) Start Zookeeper: 
