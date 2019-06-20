@@ -156,6 +156,19 @@ pipeline {
             }
         }
 
+        stage('Code Quality on SonarCloud') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                echo 'Checking Code Quality on SonarCloud'
+                def sonarcloudParams="-Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_plc4x -Dsonar.branch.name=develop"
+                withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    sh 'mvn -P${JENKINS_PROFILE},with-java,with-dotnet,with-python,with-proxies sonar:sonar ${sonarcloudParams}'
+                }
+            }
+        }
+        
         stage('Deploy') {
             when {
                 branch 'develop'
