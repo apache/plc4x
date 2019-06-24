@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: ../images/
+:imagesdir: ../../images/
 
 == Code Generation
 
@@ -136,224 +136,218 @@ With this we were able to provide first driver versions fully specified in XML.
 
 The downside was, that the PLC4X community regarded this XML format as pretty complicated and when implementing an experimental code generator we quickly noticed that generating a nice object model would not be possible, due to the lack ability to model the inheritance of types in DFDL.
 
-In the end we came up with our own solution.
+In the end we came up with our own solution which we called `MSpec` and is described in the link:protocol/mspec.adoc[MSpec Format description].
 
-=== The MSpec format
+=== Configuration
 
-The `MSpec` format (Message Specification) was a result of a brainstorming session after evaluating a lot of other options.
+The `plc4x-maven-plugin` has a very limited set of configuration options.
 
-We simply sat down and started to write some imaginary format (`imaginary` was even the initial Name we used) and created parses for this afterwards and fine tuned spec and parsers as part of the process of implementing first protocols and language templates.
+In general all you need to specify, is the `protocolName` and the `languageName`.
 
-It's a text-based format.
+There is also an additional parameter: `outputDir`, which defaults to `${project.build.directory}/generated-sources/plc4x/` and usually shouldn't require being changed.
 
-At the root level of these specs are a set of `type` or `discriminatedType` blocks.
-
-`type` elements are objects that are independent from the input.
-
-An example would be the `TPKTPacket` of the S7 format:
+Here's an example of a driver pom for building a `S7` driver for `java`:
 
 ....
-[type 'TPKTPacket'
-    [const    uint 8     'protocolId' '0x03']
-    [reserved uint 8     '0x00']
-    [implicit uint 16    'len'        'payload.lengthInBytes + 4']
-    [field    COTPPacket 'payload']
-]
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.plc4x.plugins</groupId>
+    <artifactId>plc4x-code-generaton</artifactId>
+    <version>0.5.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>test-java-s7-driver</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>s7</protocolName>
+              <languageName>java</languageName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-driver-base-java</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-language-java</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-protocol-s7</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>
 ....
 
-A `discriminatedType` type is in contrast an object who's content is dependent in the input.
+So the plugin configuration is pretty straight forward, all that is specified, is the `protocolName` and the `languageName`.
 
-Every discriminated type can contain at most one `discriminator` field and exactly one `typeSwitch` element.
+The dependency:
 
-For example part of the spec for the S7 format looks like this:
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-driver-base-java</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+    </dependency>
 
-....
-[discriminatedType 'S7Message'
-    [const         uint 8  'protocolId'      '0x32']
-    [discriminator uint 8  'messageType']
-    [reserved      uint 16 '0x0000']
-    [field         uint 16 'tpduReference']
-    [implicit      uint 16 'parameterLength' 'parameter.lengthInBytes']
-    [implicit      uint 16 'payloadLength'   'payload.lengthInBytes']
-    [typeSwitch 'messageType'
-        ['0x01' S7MessageRequest
-        ]
-        ['0x03' S7MessageResponse
-            [field uint 8 'errorClass']
-            [field uint 8 'errorCode']
-        ]
-        ['0x07' S7MessageUserData
-        ]
-    ]
-    [field S7Parameter 'parameter' ['messageType']]
-    [field S7Payload   'payload'   ['messageType', 'parameter']]
-]
-....
+For example contains all classes the generated code relies on.
 
-An types start is declared by an opening square bracket `[` and ended with a closing one `]`.
+The definitions of both the `s7` protocol as well as the `java` language are provided by the two dependencies:
 
-Also to both provide a name as first argument.
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-language-java</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
 
-Every type definition contains a list of fields that can have different types.
+and:
 
-The list of available types are:
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-protocol-s7</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
 
-- const: expects a given value
-- reserved: expects a given value, but only warns if condition is not meet
-- field: simple or complex typed object
-- array: array of simple or complex typed objects
-- optional: simple or complex typed object, that is only present in some conditions
-- implicit: a field required for parsing, but is usually defined though other data
-- discriminator: special type of simple typed field which is used to determine the concrete type of an object (max one per type and always has to be accompanied with a `switch` field) (reserved for `discriminatedType`)
-- typeSwitch: not a real field, but indicates the existence of sub-types, which are declared inline (reserved for `discriminatedType`)
+The reason for why the dependencies are added as code-dependencies and why the scope is set the way it is is described in the <<Why are the protocol and language dependencies done so strangely?>> section.
 
-The full syntax and explanations of these type follow in the following chapters.
+=== Custom Modules
 
-Another thing we have to explain are how types are specified.
+The plugin uses the https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html[Java Serviceloader] mechanism to find modules.
 
-In general we distinguish between two types of types used in field definitions:
+==== Protocol Modules
 
-- simple types
-- complex types
+In order to provide a new protocol module, all that is required, it so create a module containing a `META-INF/services/org.apache.plc4x.plugins.codegenerator.protocol.Protocol` file referencing an implementation of the `org.apache.plc4x.plugins.codegenerator.protocol.Protocol` interface.
 
-==== Simple Types
-
-Simple types are usually raw data the format is:
-
-    {base-type} {size}
-
-The base types available are currently:
-
-- *bit*: Simple boolean value
-- *uint*: The input is treated as unsigned integer value
-- *int*: The input is treated as signed integer value
-- *float*: The input is treated as floating point number
-- *string*: The input is treated as string
-
-The size value then provides how many `bits` should be read.
-
-In case of `string` types, it refers to the number of characters.
-
-So reading an unsigned byte would be: `uint 8`.
-
-==== Complex Types
-
-In contrast to simple types, complex type reference other complex types (Root elements of the spec document).
-
-How the parser should interpret them is defined in the referenced types definition.
-
-In the example above, for example the `S7Parameter` is defined in another part of the spec.
-
-==== Field Types and their Syntax
-
-===== const Field
-
-    [const {simple-type} {size} '{name}' '{reference}']
-
-A const field simply reads a given simple type and compares to a given reference value.
-
-It makes the parser throw an Exception if the value does not match.
-
-===== reserved Field
-
-    [reserved {simple-type} {size} '{name}' '{reference}']
-
-In general this field type behaves exactly the same way as the `const` field, but with the difference, that it doesn't throw an Exception if the reference is not matched, but instead allows to log the value.
-
-This is used in order to detect `reserved` fields in some protocols, where the manufacturer defined the field to be a given value, but with the option to use it in the future.
-
-This way the application will not break in the future if devices start using the field and it informs us that we should probably have a look at what the new values mean.
-
-===== field Field
-
-    [field {simple-type} {size} '{name}']
-
-    [field {complex-type} '{name}']
-
-===== array Field
-
-    [arrayField {simple-type} {size} '{name}' {'count' or 'length'} '{count or length expression}']
-
-    [arrayField {complex-type} '{name}' {'count' or 'length'} '{count or length expression}']
-
-===== optional Field
-
-    [optionalField {simple-type} {size} '{name}' '{optional-expression}']
-
-    [optionalField {complex-type} '{name}' '{optional-expression}']
-
-===== implicit Field
-
-    [implicit {simple-type} {size} '{name}' '{serialization-expression}']
-
-    [implicit {complex-type} '{name}' '{serialization-expression}']
-
-===== discriminator Field
-
-    [discriminator {simple-type} {size} '{name}']
-
-===== typeSwitch Field
-
-    [typeSwitch '{arument-1}', '{arument-2}', ...
-        ['{argument-1-value-1}' {subtype-1-name}
-            ... Fields ...
-        ]
-        ['{vargument-1-value-2}', '{argument-2-value-1}' {subtype-2-name}
-            ... Fields ...
-        ]
-        ['{vargument-1-value-3}', '{argument-2-value-2}' {subtype-2-name}
-            ... Fields ...
-        ]
-
-A type switch element must contain a list of at least one argument expression.
-
-Each sub-type declares a comma-separated list of concrete values.
-
-It must contain at most as many elements as arguments are declared for the type switch.
-
-The matching type is found during parsing by starting with the first argument.
-
-If it matches and there are no more values, the type is found, if more values are provided, they are compared to the other argument values.
-
-If no type is found, an exception is thrown.
-
-Inside each sub-type can declare fields using a subset of the types (`discriminator` and `typeSwitch` can't be used here)
-
-===== Parameters
-
-Some times it is necessary to pass along additional parameters.
-
-If a complex type requires parameters, these are declared in the header of that type.
+This interface is located in the `org.apache.plc4x.plugins:plc4x-code-generation-protocol-base` module and generally only defines two methods:
 
 ....
-[discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
-    [typeSwitch 'parameter.discriminatorValues[0]', 'messageType'
-        ['0xF0' S7PayloadSetupCommunication]
-        ['0x04','0x01' S7PayloadReadVarRequest]
-        ['0x04','0x03' S7PayloadReadVarResponse
-            [arrayField S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
-        ]
-        ['0x05','0x01' S7PayloadWriteVarRequest
-            [arrayField S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
-        ]
-        ['0x05','0x03' S7PayloadWriteVarResponse
-            [arrayField S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
-        ]
-        ['0x00','0x07' S7PayloadUserData
-        ]
-    ]
-]
+package org.apache.plc4x.plugins.codegenerator.protocol;
+
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+
+import java.util.Map;
+
+public interface Protocol {
+
+    /**
+     * The name of the protocol what the plugin will use to select the correct protocol module.
+     *
+     * @return the name of the protocol.
+     */
+    String getName();
+
+    /**
+     * Returns a map of complex type definitions for which code has to be generated.
+     *
+     * @return the Map of types that need to be generated.
+     * @throws GenerationException if anything goes wrong parsing.
+     */
+    Map<String, ComplexTypeDefinition> getTypeDefinitions() throws GenerationException;
+
+}
 ....
 
-Therefore wherever a complex type is referenced an additional list of parameters can be passed to the next type.
+These implementations could use any form of way to generate the Map of `ComplexTypeDefinition`'s.
+They could even be hard coded.
 
-Here comes an example of this in above snippet:
+However we have currently implemented utilities for universally providing input:
 
-    [field S7Payload   'payload'   ['messageType', 'parameter']]
+- link:protocol/mspec.html[MSpec Format] PLC4X proprietary format.
 
-== Problems with Maven
+==== Language Modules
 
-=== Why are the 4 modules released separately?
+Analog to the <<Protocol Modules>> the Language modules are constructed equally.
+
+The `Language` interface is very simplistic too and is located in the `org.apache.plc4x.plugins:plc4x-code-generation-language-base` module and generally only defines two methods:
+
+....
+package org.apache.plc4x.plugins.codegenerator.language;
+
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+
+import java.io.File;
+import java.util.Map;
+
+public interface LanguageOutput {
+
+    /**
+     * The name of the template is what the plugin will use to select the correct language module.
+     *
+     * @return the name of the template.
+     */
+    String getName();
+
+    void generate(File outputDir, String packageName, Map<String, ComplexTypeDefinition> types)
+        throws GenerationException;
+
+}
+....
+
+The file for registering Language modules is located at: `META-INF/services/org.apache.plc4x.plugins.codegenerator.language.LanguageOutput`
+
+Same as with the protocol modules, the language modules could too be implemented in any thinkable way, however we have already implemented some helpers for using:
+
+- link:language/freemarker.html[Apache Freemarker Format] Generate output using https://freemarker.apache.org[Apache Freemarker] Project.
+
+=== Problems with Maven
+
+==== Why are the 4 modules released separately?
 
 We mentioned in the introduction, that the first 4 modules are maintained and released from outside the main PLC4X repository.
 
@@ -374,7 +368,7 @@ For this reason we have stripped down the plugin and it's dependencies to an abs
 
 As soon as the tooling is released, the version is updated in the PLC4X build and the release version is used without any complications.
 
-=== Why are the protocol and language dependencies done so strangely?
+==== Why are the protocol and language dependencies done so strangely?
 
 It would certainly be a lot cleaner, if we provided the modules as plugin dependencies.
 

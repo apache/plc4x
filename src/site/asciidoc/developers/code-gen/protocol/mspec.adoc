@@ -1,0 +1,230 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../../images/
+
+== The MSpec format
+
+The `MSpec` format (Message Specification) was a result of a brainstorming session after evaluating a lot of other options.
+
+We simply sat down and started to write some imaginary format (`imaginary` was even the initial Name we used) and created parses for this afterwards and fine tuned spec and parsers as part of the process of implementing first protocols and language templates.
+
+It's a text-based format.
+
+At the root level of these specs are a set of `type` or `discriminatedType` blocks.
+
+`type` elements are objects that are independent from the input.
+
+An example would be the `TPKTPacket` of the S7 format:
+
+....
+[type 'TPKTPacket'
+    [const    uint 8     'protocolId' '0x03']
+    [reserved uint 8     '0x00']
+    [implicit uint 16    'len'        'payload.lengthInBytes + 4']
+    [field    COTPPacket 'payload']
+]
+....
+
+A `discriminatedType` type is in contrast an object who's content is dependent in the input.
+
+Every discriminated type can contain at most one `discriminator` field and exactly one `typeSwitch` element.
+
+For example part of the spec for the S7 format looks like this:
+
+....
+[discriminatedType 'S7Message'
+    [const         uint 8  'protocolId'      '0x32']
+    [discriminator uint 8  'messageType']
+    [reserved      uint 16 '0x0000']
+    [field         uint 16 'tpduReference']
+    [implicit      uint 16 'parameterLength' 'parameter.lengthInBytes']
+    [implicit      uint 16 'payloadLength'   'payload.lengthInBytes']
+    [typeSwitch 'messageType'
+        ['0x01' S7MessageRequest
+        ]
+        ['0x03' S7MessageResponse
+            [field uint 8 'errorClass']
+            [field uint 8 'errorCode']
+        ]
+        ['0x07' S7MessageUserData
+        ]
+    ]
+    [field S7Parameter 'parameter' ['messageType']]
+    [field S7Payload   'payload'   ['messageType', 'parameter']]
+]
+....
+
+An types start is declared by an opening square bracket `[` and ended with a closing one `]`.
+
+Also to both provide a name as first argument.
+
+Every type definition contains a list of fields that can have different types.
+
+The list of available types are:
+
+- const: expects a given value
+- reserved: expects a given value, but only warns if condition is not meet
+- field: simple or complex typed object
+- array: array of simple or complex typed objects
+- optional: simple or complex typed object, that is only present in some conditions
+- implicit: a field required for parsing, but is usually defined though other data
+- discriminator: special type of simple typed field which is used to determine the concrete type of an object (max one per type and always has to be accompanied with a `switch` field) (reserved for `discriminatedType`)
+- typeSwitch: not a real field, but indicates the existence of sub-types, which are declared inline (reserved for `discriminatedType`)
+
+The full syntax and explanations of these type follow in the following chapters.
+
+Another thing we have to explain are how types are specified.
+
+In general we distinguish between two types of types used in field definitions:
+
+- simple types
+- complex types
+
+=== Simple Types
+
+Simple types are usually raw data the format is:
+
+    {base-type} {size}
+
+The base types available are currently:
+
+- *bit*: Simple boolean value
+- *uint*: The input is treated as unsigned integer value
+- *int*: The input is treated as signed integer value
+- *float*: The input is treated as floating point number
+- *string*: The input is treated as string
+
+The size value then provides how many `bits` should be read.
+
+In case of `string` types, it refers to the number of characters.
+
+So reading an unsigned byte would be: `uint 8`.
+
+=== Complex Types
+
+In contrast to simple types, complex type reference other complex types (Root elements of the spec document).
+
+How the parser should interpret them is defined in the referenced types definition.
+
+In the example above, for example the `S7Parameter` is defined in another part of the spec.
+
+=== Field Types and their Syntax
+
+==== const Field
+
+    [const {simple-type} {size} '{name}' '{reference}']
+
+A const field simply reads a given simple type and compares to a given reference value.
+
+It makes the parser throw an Exception if the value does not match.
+
+==== reserved Field
+
+    [reserved {simple-type} {size} '{name}' '{reference}']
+
+In general this field type behaves exactly the same way as the `const` field, but with the difference, that it doesn't throw an Exception if the reference is not matched, but instead allows to log the value.
+
+This is used in order to detect `reserved` fields in some protocols, where the manufacturer defined the field to be a given value, but with the option to use it in the future.
+
+This way the application will not break in the future if devices start using the field and it informs us that we should probably have a look at what the new values mean.
+
+==== field Field
+
+    [field {simple-type} {size} '{name}']
+
+    [field {complex-type} '{name}']
+
+==== array Field
+
+    [arrayField {simple-type} {size} '{name}' {'count' or 'length'} '{count or length expression}']
+
+    [arrayField {complex-type} '{name}' {'count' or 'length'} '{count or length expression}']
+
+==== optional Field
+
+    [optionalField {simple-type} {size} '{name}' '{optional-expression}']
+
+    [optionalField {complex-type} '{name}' '{optional-expression}']
+
+==== implicit Field
+
+    [implicit {simple-type} {size} '{name}' '{serialization-expression}']
+
+    [implicit {complex-type} '{name}' '{serialization-expression}']
+
+==== discriminator Field
+
+    [discriminator {simple-type} {size} '{name}']
+
+==== typeSwitch Field
+
+    [typeSwitch '{arument-1}', '{arument-2}', ...
+        ['{argument-1-value-1}' {subtype-1-name}
+            ... Fields ...
+        ]
+        ['{vargument-1-value-2}', '{argument-2-value-1}' {subtype-2-name}
+            ... Fields ...
+        ]
+        ['{vargument-1-value-3}', '{argument-2-value-2}' {subtype-2-name}
+            ... Fields ...
+        ]
+
+A type switch element must contain a list of at least one argument expression.
+
+Each sub-type declares a comma-separated list of concrete values.
+
+It must contain at most as many elements as arguments are declared for the type switch.
+
+The matching type is found during parsing by starting with the first argument.
+
+If it matches and there are no more values, the type is found, if more values are provided, they are compared to the other argument values.
+
+If no type is found, an exception is thrown.
+
+Inside each sub-type can declare fields using a subset of the types (`discriminator` and `typeSwitch` can't be used here)
+
+==== Parameters
+
+Some times it is necessary to pass along additional parameters.
+
+If a complex type requires parameters, these are declared in the header of that type.
+
+....
+[discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
+    [typeSwitch 'parameter.discriminatorValues[0]', 'messageType'
+        ['0xF0' S7PayloadSetupCommunication]
+        ['0x04','0x01' S7PayloadReadVarRequest]
+        ['0x04','0x03' S7PayloadReadVarResponse
+            [arrayField S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
+        ]
+        ['0x05','0x01' S7PayloadWriteVarRequest
+            [arrayField S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
+        ]
+        ['0x05','0x03' S7PayloadWriteVarResponse
+            [arrayField S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
+        ]
+        ['0x00','0x07' S7PayloadUserData
+        ]
+    ]
+]
+....
+
+Therefore wherever a complex type is referenced an additional list of parameters can be passed to the next type.
+
+Here comes an example of this in above snippet:
+
+    [field S7Payload   'payload'   ['messageType', 'parameter']]
