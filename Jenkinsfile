@@ -75,31 +75,6 @@ pipeline {
             }
         }
 
-        /**
-         * As the maven build requires the maven plugin to exist, we have to ensure it's built first.
-         */
-        stage('Build Maven Plugin') {
-            when {
-                branch 'develop'
-            }
-            // Only the official build nodes have the credentials to deploy setup.
-            agent {
-                node {
-                    label 'ubuntu'
-                }
-            }
-            steps {
-                echo 'Building Maven Plugin'
-                sh 'mvn -f sandbox/code-generation/external/pom.xml -P${JENKINS_PROFILE} ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean deploy'
-            }
-            post {
-                always {
-                    junit(testResults: '**/surefire-reports/*.xml', allowEmptyResults: true)
-                    junit(testResults: '**/failsafe-reports/*.xml', allowEmptyResults: true)
-                }
-            }
-        }
-
         stage('Build') {
             when {
                 expression {
