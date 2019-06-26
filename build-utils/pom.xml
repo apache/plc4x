@@ -36,6 +36,8 @@
   <modules>
     <module>language-base-freemarker</module>
     <module>protocol-base-mspec</module>
+
+    <module>language-java</module>
   </modules>
 
 </project>
