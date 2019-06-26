@@ -43,7 +43,7 @@ public class MessageFormatParser {
             MessageFormatListener listener = new MessageFormatListener();
             walker.walk(listener, tree);
             return listener.getComplexTypes();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

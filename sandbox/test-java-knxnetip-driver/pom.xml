@@ -28,9 +28,9 @@
     <version>0.5.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-java-s7-driver</artifactId>
+  <artifactId>test-java-knxnetip-driver</artifactId>
 
-  <name>Sandbox: Test Generated S7 Driver</name>
+  <name>Sandbox: Test Generated KNXNet/IP Driver</name>
 
   <build>
     <plugins>
@@ -45,7 +45,7 @@
               <goal>generate-driver</goal>
             </goals>
             <configuration>
-              <protocolName>s7</protocolName>
+              <protocolName>knxnetip</protocolName>
               <languageName>java</languageName>
             </configuration>
           </execution>
@@ -77,7 +77,7 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-s7</artifactId>
+      <artifactId>plc4x-protocols-knxnetip</artifactId>
       <version>0.5.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>

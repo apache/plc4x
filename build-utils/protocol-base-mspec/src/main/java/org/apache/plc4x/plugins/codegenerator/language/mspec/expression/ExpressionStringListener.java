@@ -44,6 +44,9 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     @Override
     public void exitExpressionString(ExpressionParser.ExpressionStringContext ctx) {
         List<Term> roots = parserContexts.pop();
+        if(roots.isEmpty()) {
+            throw new RuntimeException("Empty Expression not supported.");
+        }
         if(roots.size() != 1) {
             throw new RuntimeException("Expression can only contain one root term.");
         }

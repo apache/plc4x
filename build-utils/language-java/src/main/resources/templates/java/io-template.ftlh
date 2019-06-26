@@ -66,16 +66,16 @@ public class ${typeName}IO  {
         <#if field.lengthExpression.contains("curPos")>
         curPos = io.getPos() - startPos;
         </#if>
-        int size = ${helper.toDeserializationExpression(field.lengthExpression)};
+        int ${field.name}Size = ${helper.toDeserializationExpression(field.lengthExpression)};
         <#if helper.isCountArray(field)>
-        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[size];
-        for(int i = 0; i < size; i++) {
+        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[${field.name}Size];
+        for(int i = 0; i < ${field.name}Size; i++) {
             ${field.name}[i] = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
         }
         <#else>
         List<${helper.getLanguageTypeNameForField(field)}> ${field.name}List = <#if helper.isCountArray(field)>new ArrayList<>(size)<#else>new LinkedList<>()</#if>;
-        int endPos = io.getPos() + size;
-        while(io.getPos() < endPos) {
+        int ${field.name}EndPos = io.getPos() + ${field.name}Size;
+        while(io.getPos() < ${field.name}EndPos) {
             <#if field.lengthExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
             </#if>

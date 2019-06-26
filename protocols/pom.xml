@@ -190,15 +190,8 @@
   </build>
 
   <modules>
-    <!-- Base definitions of the simple types used by all drivers -->
-    <module>plc4x</module>
-
-    <!-- DFDL and SCXML based protocols -->
-    <module>knxnet-ip</module>
+    <module>knxnetip</module>
     <module>s7</module>
-
-    <!-- Stuff for testing -->
-    <module>test-utils</module>
   </modules>
 
   <profiles>

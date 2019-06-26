@@ -224,7 +224,7 @@ public class MessageFormatListener extends MSpecBaseListener {
             SimpleTypeReference.SimpleBaseType simpleBaseType = SimpleTypeReference.SimpleBaseType.valueOf(
                 ctx.simpleTypeReference.base.getText().toUpperCase());
             if(ctx.simpleTypeReference.size != null) {
-                int size = Integer.valueOf(ctx.simpleTypeReference.size.getText());
+                int size = Integer.parseInt(ctx.simpleTypeReference.size.getText());
                 return new DefaultSimpleTypeReference(simpleBaseType, size);
             } else {
                 return new DefaultSimpleTypeReference(simpleBaseType, 1);
@@ -238,7 +238,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
         if(ctx.size != null) {
-            int size = Integer.valueOf(ctx.size.getText());
+            int size = Integer.parseInt(ctx.size.getText());
             return new DefaultSimpleTypeReference(simpleBaseType, size);
         } else {
             return new DefaultSimpleTypeReference(simpleBaseType, 1);

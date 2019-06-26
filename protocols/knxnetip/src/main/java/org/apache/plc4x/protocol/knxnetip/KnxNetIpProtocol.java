@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.protocol.s7;
+package org.apache.plc4x.protocol.knxnetip;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
@@ -27,16 +27,16 @@ import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationExcepti
 import java.io.InputStream;
 import java.util.Map;
 
-public class S7Protocol implements Protocol {
+public class KnxNetIpProtocol implements Protocol {
 
     @Override
     public String getName() {
-        return "s7";
+        return "knxnetip";
     }
 
     @Override
     public Map<String, ComplexTypeDefinition> getTypeDefinitions() throws GenerationException {
-        InputStream schemaInputStream = S7Protocol.class.getResourceAsStream("/protocols/s7/protocol.mspec");
+        InputStream schemaInputStream = KnxNetIpProtocol.class.getResourceAsStream("/protocols/knxnetip/knxnetip.mspec");
         if(schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
