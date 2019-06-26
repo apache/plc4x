@@ -169,6 +169,8 @@
   </properties>
 
   <modules>
+    <module>build-utils</module>
+
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
 
@@ -508,6 +510,11 @@
             <artifactId>plexus-utils</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-code-generation-types-base</artifactId>
+        <version>${plc4x-code-generation.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.plc4x.plugins</groupId>

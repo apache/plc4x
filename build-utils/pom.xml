@@ -23,33 +23,19 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4x-parent</artifactId>
     <version>0.5.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-utils</artifactId>
+  <artifactId>plc4x-build-utils</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4J: Utils</name>
-  <description>A collection of utilities used in multiple modules.</description>
+  <name>PLC4X: Build Utils</name>
+  <description>Some build related utilities.</description>
 
   <modules>
-    <module>driver-base-java</module>
-
-    <module>connection-pool</module>
-    <module>opm</module>
-    <module>raw-sockets</module>
-    <module>test-utils</module>
-    <module>scraper</module>
+    <module>language-base-freemarker</module>
+    <module>protocol-base-mspec</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <module>interop</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

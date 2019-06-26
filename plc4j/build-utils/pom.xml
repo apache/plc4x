@@ -27,29 +27,14 @@
     <version>0.5.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-utils</artifactId>
+  <artifactId>plc4j-build-utils</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4J: Utils</name>
-  <description>A collection of utilities used in multiple modules.</description>
+  <name>PLC4J: Build Utils</name>
+  <description>Some build related utilities for Java modules.</description>
 
   <modules>
-    <module>driver-base-java</module>
-
-    <module>connection-pool</module>
-    <module>opm</module>
-    <module>raw-sockets</module>
-    <module>test-utils</module>
-    <module>scraper</module>
+    <module>language-java</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <module>interop</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>
