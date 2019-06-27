@@ -38,8 +38,10 @@ ${packageName?replace(".", "/")}/${typeName}.java
 
 package ${packageName};
 
+import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.utils.SizeAware;
 
+<#if type.abstract>@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")</#if>
 public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements SizeAware {
 
 <#if helper.isDiscriminatedType(type)>
@@ -66,7 +68,8 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#list>
 </#if>
 
-    public ${typeName}(<#list type.getAllPropertyFields() as field>${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public ${typeName}(<#list type.getAllPropertyFields() as field>@JsonProperty("${field.name}") ${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
 <#if type.getParentPropertyFields()?has_content>
         super(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
 </#if>
@@ -80,6 +83,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#if>
 <#if helper.isDiscriminatedType(type)>
 
+    @JsonIgnore
     public Object[] getDiscriminatorValues() {
         return DISCRIMINATOR_VALUES;
     }
@@ -92,6 +96,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
 </#list>
     @Override
+    @JsonIgnore
     public int getLengthInBytes() {
         int lengthInBits = <#if type.parentType??>super.getLengthInBytes() * 8<#else>0</#if>;
 <#list type.fields as field>
