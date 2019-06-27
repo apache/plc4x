@@ -17,26 +17,55 @@
  under the License.
  */
 
+package org.apache.plc4x.java.knxnetip;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.s7.TPKTPacket;
-import org.apache.plc4x.java.s7.io.TPKTPacketIO;
+import org.apache.plc4x.java.knxnetip.io.KNXNetIPMessageIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-public class BenchmarkGeneratedS7 {
+public class IOTest {
 
-    public static void main(String[] args) throws Exception {
-        byte[] rData = Hex.decodeHex("0300006702f080320100000001005600000407120a10060001032b84000160120a10020001032b840001a0120a10010001032b840001a9120a10050001032b84000150120a10020001032b84000198120a10040001032b84000140120a10020001032b84000190");
+    @Test
+    public void testXml() throws Exception {
+        byte[] rData = Hex.decodeHex("0610020500180801c0a82a46c4090801c0a82a46c40a0203");
+        ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
+        ReadBuffer rBuf = new ReadBuffer(rData);
+        KNXNetIPMessage packet = KNXNetIPMessageIO.parse(rBuf);
+        String xml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(packet);
+        System.out.println(xml);
+        KNXNetIPMessage pack2 = mapper.readValue(xml, KNXNetIPMessage.class);
+        System.out.println(pack2);
+    }
+
+    @Test
+    public void testJson() throws Exception {
+        byte[] rData = Hex.decodeHex("0610020500180801c0a82a46c4090801c0a82a46c40a0203");
+        ObjectMapper mapper = new ObjectMapper().enableDefaultTyping();
+        ReadBuffer rBuf = new ReadBuffer(rData);
+        KNXNetIPMessage packet = KNXNetIPMessageIO.parse(rBuf);
+        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(packet);
+        System.out.println(json);
+        KNXNetIPMessage pack2 = mapper.readValue(json, KNXNetIPMessage.class);
+        System.out.println(pack2);
+    }
+
+    @Test
+    public void testParser() throws Exception {
+        byte[] rData = Hex.decodeHex("0610020500180801c0a82a46c4090801c0a82a46c40a0203");
         long start = System.currentTimeMillis();
         int numRunsParse = 2000000;
 
         // Benchmark the parsing code
-        TPKTPacket packet = null;
+        KNXNetIPMessage packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBuffer(rData);
-            packet = TPKTPacketIO.parse(rBuf);
+            packet = KNXNetIPMessageIO.parse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 
@@ -48,7 +77,7 @@ public class BenchmarkGeneratedS7 {
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
-            TPKTPacketIO.serialize(wBuf, packet);
+            KNXNetIPMessageIO.serialize(wBuf, packet);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();
