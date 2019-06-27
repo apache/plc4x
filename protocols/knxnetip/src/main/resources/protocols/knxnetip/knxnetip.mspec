@@ -19,40 +19,40 @@
 
 [discriminatedType 'KNXNetIPMessage'
     [implicit      uint 8  'headerLength' 'lengthInBytes']
-    [const         uint 8  'protocolVersion' '0x0A']
+    [const         uint 8  'protocolVersion' '0x10']
     [discriminator uint 16 'msgType']
     [implicit      uint 16 'totalLength' 'lengthInBytes']
     [typeSwitch 'msgType'
         ['0x0201' SearchRequest
-            [field HPAIDiscoveryEndpoint 'hPAIDiscoveryEndpoint']
+            [field HPAIDiscoveryEndpoint 'hpaiIDiscoveryEndpoint']
         ]
         ['0x0202' SearchResponse
-            [field HPAIControlEndpoint 'hPAIControlEndpoint']
-            [field DIBDeviceInfo       'dIBDeviceInfo']
-            [field DIBSuppSvcFamilies  'dIBSuppSvcFamilies']
+            [field HPAIControlEndpoint 'hpaiControlEndpoint']
+            [field DIBDeviceInfo       'dibDeviceInfo']
+            [field DIBSuppSvcFamilies  'dibSuppSvcFamilies']
         ]
         ['0x0203' DescriptionRequest
-            [field HPAIControlEndpoint 'hPAIControlEndpoint']
+            [field HPAIControlEndpoint 'hpaiControlEndpoint']
         ]
         ['0x0204' DescriptionResponse
-            [field DIBDeviceInfo       'dIBDeviceInfo']
-            [field DIBSuppSvcFamilies  'dIBSuppSvcFamilies']
+            [field DIBDeviceInfo       'dibDeviceInfo']
+            [field DIBSuppSvcFamilies  'dibSuppSvcFamilies']
         ]
         ['0x0205' ConnectionRequest
-            [field HPAIDiscoveryEndpoint        'hPAIDiscoveryEndpoint']
-            [field HPAIDataEndpoint             'hPAIDataEndpoint']
+            [field HPAIDiscoveryEndpoint        'hpaiDiscoveryEndpoint']
+            [field HPAIDataEndpoint             'hpaiDataEndpoint']
             [field ConnectionRequestInformation 'connectionRequestInformation']
         ]
         ['0x0206' ConnectionResponse
             [field uint 8 'communicationChannelId']
             [field uint 8 'status']
-            [field HPAIDataEndpoint            'hPAIDataEndpoint']
+            [field HPAIDataEndpoint            'hpaiDataEndpoint']
             [field ConnectionResponseDataBlock 'connectionResponseDataBlock']
         ]
         ['0x0207' ConnectionStateRequest
             [field    uint 8 'communicationChannelId']
             [reserved uint 8 '0x00']
-            [field HPAIControlEndpoint 'hPAIControlEndpoint']
+            [field HPAIControlEndpoint 'hpaiControlEndpoint']
         ]
         ['0x0208' ConnectionStateResponse
             [field uint 8 'communicationChannelId']
@@ -61,7 +61,7 @@
         ['0x0209' DisconnectRequest
             [field    uint 8 'communicationChannelId']
             [reserved uint 8 '0x00']
-            [field HPAIControlEndpoint 'hPAIControlEndpoint']
+            [field HPAIControlEndpoint 'hpaiControlEndpoint']
         ]
         ['0x020A' DisconnectResponse
             [field uint 8 'communicationChannelId']
@@ -136,17 +136,29 @@
     [field    uint 16   'ipPort']
 ]
 
-[type 'ConnectionRequestInformation'
-    [implicit uint 8    'structureLength' 'lengthInBytes']
-    [field    uint 8    'connectionType']
-    [field    uint 8    'knxLayer']
-    [reserved uint 8    '0x00']
+[discriminatedType 'ConnectionRequestInformation'
+    [implicit      uint 8    'structureLength' 'lengthInBytes']
+    [discriminator uint 8    'connectionType']
+    [typeSwitch 'connectionType'
+        ['0x03' ConnectionRequestInformationDeviceManagement
+        ]
+        ['0x04' ConnectionRequestInformationTunnelConnection
+            [field    uint 8    'knxLayer']
+            [reserved uint 8    '0x00']
+        ]
+    ]
 ]
 
-[type 'ConnectionResponseDataBlock'
-    [implicit uint 8     'structureLength' 'lengthInBytes']
-    [field    uint 8     'connectionType']
-    [field    KNXAddress 'knxAddress']
+[discriminatedType 'ConnectionResponseDataBlock'
+    [implicit      uint 8     'structureLength' 'lengthInBytes']
+    [discriminator uint 8     'connectionType']
+    [typeSwitch 'connectionType'
+        ['0x03' ConnectionResponseDataBlockDeviceManagement
+        ]
+        ['0x04' ConnectionResponseDataBlockTunnelConnection
+            [field         KNXAddress 'knxAddress']
+        ]
+    ]
 ]
 
 [type 'IPAddress'
