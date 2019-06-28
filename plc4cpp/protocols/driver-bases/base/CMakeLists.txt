@@ -24,7 +24,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(plc4cpp-protocols-driver-base-base 
         src/main/cpp/org/apache/plc4x/cpp/base/connection/AbstractPlcConnection.cpp
-        #src/main/cpp/org/apache/plc4x/cpp/base/connection/BoostConnection.cpp
+        src/main/cpp/org/apache/plc4x/cpp/base/connection/BoostConnection.cpp
         src/main/cpp/org/apache/plc4x/cpp/base/connection/ChannelFactory.cpp
         src/main/cpp/org/apache/plc4x/cpp/base/connection/DefaultPlcFieldHandler.cpp
         src/main/cpp/org/apache/plc4x/cpp/base/connection/PlcFieldHandler.cpp

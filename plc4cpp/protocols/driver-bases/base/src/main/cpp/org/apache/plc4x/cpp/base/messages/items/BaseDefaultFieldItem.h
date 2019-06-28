@@ -113,7 +113,7 @@ namespace org
 							protected:
 								//BaseDefaultFieldItem() { this._values = new array<T>(0); }
 								inline BaseDefaultFieldItem(T* values) { _values = values; }
-								inline T getValue(int index)
+								inline T getValue(unsigned int index)
 								{
 									if ((index < 0 || (index >= _values.size())))
 									{
