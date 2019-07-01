@@ -117,10 +117,10 @@
     [field      DeviceStatus 'deviceStatus']
     [field      KNXAddress   'knxAddress']
     [field      ProjectInstallationIdentifier 'projectInstallationIdentifier']
-    [arrayField uint 8 'knxNetIpDeviceSerialNumber' count '6']
-    [field      uint 8       'knxNetIpDeviceMulticastAddress']
-    [arrayField uint 8 'knxNetIpDeviceMacAddress'   count '6']
-    [arrayField uint 8 'deviceFriendlyName'         count '30']
+    [arrayField uint 8       'knxNetIpDeviceSerialNumber' count '6']
+    [field      IPAddress    'knxNetIpDeviceMulticastAddress']
+    [field      MACAddress   'knxNetIpDeviceMacAddress']
+    [arrayField uint 8       'deviceFriendlyName'         count '30']
 ]
 
 [type 'DIBSuppSvcFamilies'
@@ -163,6 +163,10 @@
 
 [type 'IPAddress'
     [arrayField uint 8 'addr' count '4']
+]
+
+[type 'MACAddress'
+    [arrayField uint 8 'addr' count '6']
 ]
 
 [type 'KNXAddress'
