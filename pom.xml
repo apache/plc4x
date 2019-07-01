@@ -123,7 +123,7 @@
     <commons-pool2.version>2.6.0</commons-pool2.version>
     <commons-text.version>1.6</commons-text.version>
     <crc.version>1.0.1</crc.version>
-    <elasticsearch.version>7.0.1</elasticsearch.version>
+    <elasticsearch.version>7.2.0</elasticsearch.version>
     <equalsverifier.version>3.0.2</equalsverifier.version>
     <findbugs.version>3.0.1</findbugs.version>
     <freemarker.version>2.3.28</freemarker.version>
