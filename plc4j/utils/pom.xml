@@ -35,11 +35,12 @@
 
   <modules>
     <module>driver-base-java</module>
+    <module>protocol-test-utils</module>
+    <module>raw-sockets</module>
+    <module>test-utils</module>
 
     <module>connection-pool</module>
     <module>opm</module>
-    <module>raw-sockets</module>
-    <module>test-utils</module>
     <module>scraper</module>
   </modules>
 

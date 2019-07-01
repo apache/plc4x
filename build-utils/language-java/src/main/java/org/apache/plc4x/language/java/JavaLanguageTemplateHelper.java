@@ -24,14 +24,14 @@ import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLang
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.OptionalField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.TypedField;
+import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -329,6 +329,30 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             return "read" + languageTypeName;
 
         }
+    }
+
+    public Collection<ComplexTypeReference> getComplexTypes(ComplexTypeDefinition complexTypeDefinition) {
+        Map<String, ComplexTypeReference> types = new HashMap<>();
+        for (Field field : complexTypeDefinition.getFields()) {
+            if(field instanceof TypedField) {
+                TypedField typedField = (TypedField) field;
+                if(typedField.getType() instanceof ComplexTypeReference) {
+                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) typedField.getType();
+                    types.put(complexTypeReference.getName(),  complexTypeReference);
+                }
+            } else if(field instanceof SwitchField) {
+                SwitchField switchField = (SwitchField) field;
+                for (DiscriminatedComplexTypeDefinition cas : switchField.getCases()) {
+                    types.put(cas.getName(), new ComplexTypeReference() {
+                        @Override
+                        public String getName() {
+                            return cas.getName();
+                        }
+                    });
+                }
+            }
+        }
+        return types.values();
     }
 
     public boolean isSimpleType(TypeReference typeReference) {

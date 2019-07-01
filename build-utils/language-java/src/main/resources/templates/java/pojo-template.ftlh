@@ -39,10 +39,11 @@ ${packageName?replace(".", "/")}/${typeName}.java
 package ${packageName};
 
 import com.fasterxml.jackson.annotation.*;
+import org.apache.plc4x.java.utils.Message;
 import org.apache.plc4x.java.utils.SizeAware;
 
 <#if type.abstract>@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")</#if>
-public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements SizeAware {
+public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements SizeAware, Message {
 
 <#if helper.isDiscriminatedType(type)>
 

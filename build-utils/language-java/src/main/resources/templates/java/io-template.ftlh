@@ -39,10 +39,8 @@ ${packageName?replace(".", "/")}/io/${typeName}IO.java
 package ${packageName}.io;
 
 import ${packageName}.*;
-import org.apache.plc4x.java.utils.EvaluationHelper;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.WriteBuffer;
+<#if helper.getComplexTypes(type)?has_content>import ${packageName}.io.*;</#if>
+import org.apache.plc4x.java.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,11 +49,29 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ${typeName}IO  {
+public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>, ${typeName}> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
-    public static <#if helper.isDiscriminatedType(type)>${typeName}Builder<#else>${typeName}</#if> parse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+<#if helper.getComplexTypes(type)?has_content>
+    // IO Helpers.
+<#list helper.getComplexTypes(type) as complexType>
+    private final ${complexType.name}IO ${complexType.name?uncap_first}IO;
+</#list>
+
+    public ${typeName}IO() {
+<#list helper.getComplexTypes(type) as complexType>
+        ${complexType.name?uncap_first}IO = new ${complexType.name}IO();
+</#list>
+   }
+
+</#if>
+    public ${typeName}<#if helper.isDiscriminatedType(type)>Builder</#if> parse(ReadBuffer io, Object... args) throws ParseException {
+<#if type.parserArguments?has_content>
+<#list type.parserArguments as parserArgument>
+        ${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name} = (${helper.getLanguageTypeNameForSpecType(parserArgument.type)}) args[${parserArgument?index}];
+</#list>
+</#if>
         int startPos = io.getPos();
         int curPos;
 <#list type.fields as field>
@@ -70,7 +86,7 @@ public class ${typeName}IO  {
         <#if helper.isCountArray(field)>
         ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[${field.name}Size];
         for(int i = 0; i < ${field.name}Size; i++) {
-            ${field.name}[i] = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
+            ${field.name}[i] = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
         }
         <#else>
         List<${helper.getLanguageTypeNameForField(field)}> ${field.name}List = <#if helper.isCountArray(field)>new ArrayList<>(size)<#else>new LinkedList<>()</#if>;
@@ -79,7 +95,7 @@ public class ${typeName}IO  {
             <#if field.lengthExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
             </#if>
-            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${parserArgument})<#sep>, </#sep></#list></#if>)</#if>);
+            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${parserArgument})<#sep>, </#sep></#list></#if>)</#if>);
         }
         ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = ${field.name}List.toArray(new ${helper.getLanguageTypeNameForField(field)}[0]);
         </#if>
@@ -107,7 +123,7 @@ public class ${typeName}IO  {
         // Optional Field (Can be skipped, if a given expression evaluates to false)
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
         if(${helper.toDeserializationExpression(field.conditionExpression)}) {
-            ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io);</#if>;
+            ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io);</#if>;
         }
         <#break>
     <#case "reserved">
@@ -123,7 +139,7 @@ public class ${typeName}IO  {
     <#case "simple">
 
         // Simple field
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
         <#break>
     <#case "switch">
 
@@ -131,7 +147,7 @@ public class ${typeName}IO  {
         ${typeName}Builder builder = null;
         <#list field.cases as case>
         if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) {
-            builder = ${case.name}IO.parse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+            builder = ${case.name?uncap_first}IO.parse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
         if (builder == null) {
@@ -151,7 +167,7 @@ public class ${typeName}IO  {
         </#if>
     }
 
-    public static void serialize(WriteBuffer io, ${typeName} value) throws ParseException {
+    public void serialize(WriteBuffer io, ${typeName} value) throws ParseException {
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -162,7 +178,7 @@ public class ${typeName}IO  {
                 <#if helper.isSimpleType(field.type)>
                 io.${helper.getWriteBufferReadMethodCall(field.type, "element")};
                 <#else>
-                ${helper.getLanguageTypeNameForField(field)}IO.serialize(io, element);
+                ${field.type.name?uncap_first}IO.serialize(io, element);
                 </#if>
             }
         }
@@ -193,7 +209,7 @@ public class ${typeName}IO  {
             <#if helper.isSimpleType(field.type)>
             io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
             <#else>
-            ${helper.getLanguageTypeNameForField(field)}IO.serialize(io, value.get${field.name?cap_first}());
+            ${field.type.name?uncap_first}IO.serialize(io, value.get${field.name?cap_first}());
             </#if>
         }
         <#break>
@@ -208,7 +224,7 @@ public class ${typeName}IO  {
         <#if helper.isSimpleType(field.type)>
         io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
         <#else>
-        ${helper.getLanguageTypeNameForField(field)}IO.serialize(io, value.get${field.name?cap_first}());
+        ${field.type.name?uncap_first}IO.serialize(io, value.get${field.name?cap_first}());
         </#if>
         <#break>
     <#case "switch">
@@ -216,7 +232,7 @@ public class ${typeName}IO  {
         // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
         <#list field.cases as case>
         if(value instanceof ${case.name}) {
-            ${case.name}IO.serialize(io, (${case.name}) value);
+            ${case.name?uncap_first}IO.serialize(io, (${case.name}) value);
         }<#sep> else </#sep>
         </#list>
         <#break>

@@ -36,7 +36,7 @@ public class IOTest {
         byte[] rData = Hex.decodeHex("0610020500180801c0a82a46c4090801c0a82a46c40a0203");
         ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         ReadBuffer rBuf = new ReadBuffer(rData);
-        KNXNetIPMessage packet = KNXNetIPMessageIO.parse(rBuf);
+        KNXNetIPMessage packet = new KNXNetIPMessageIO().parse(rBuf);
         String xml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(packet);
         System.out.println(xml);
         KNXNetIPMessage pack2 = mapper.readValue(xml, KNXNetIPMessage.class);
@@ -48,7 +48,7 @@ public class IOTest {
         byte[] rData = Hex.decodeHex("0610020500180801c0a82a46c4090801c0a82a46c40a0203");
         ObjectMapper mapper = new ObjectMapper().enableDefaultTyping();
         ReadBuffer rBuf = new ReadBuffer(rData);
-        KNXNetIPMessage packet = KNXNetIPMessageIO.parse(rBuf);
+        KNXNetIPMessage packet = new KNXNetIPMessageIO().parse(rBuf);
         String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(packet);
         System.out.println(json);
         KNXNetIPMessage pack2 = mapper.readValue(json, KNXNetIPMessage.class);
@@ -59,13 +59,15 @@ public class IOTest {
     public void testParser() throws Exception {
         byte[] rData = Hex.decodeHex("0610020500180801c0a82a46c4090801c0a82a46c40a0203");
         long start = System.currentTimeMillis();
-        int numRunsParse = 2000000;
+        int numRunsParse = 20000;
+
+        KNXNetIPMessageIO knxNetIPMessageIO = new KNXNetIPMessageIO();
 
         // Benchmark the parsing code
         KNXNetIPMessage packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBuffer(rData);
-            packet = KNXNetIPMessageIO.parse(rBuf);
+            packet = knxNetIPMessageIO.parse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 
@@ -73,11 +75,11 @@ public class IOTest {
         System.out.println("That's " + ((float) (endParsing - start) / numRunsParse) + "ms per packet");
 
         // Benchmark the serializing code
-        int numRunsSerialize = 2000000;
+        int numRunsSerialize = 20000;
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
-            KNXNetIPMessageIO.serialize(wBuf, packet);
+            knxNetIPMessageIO.serialize(wBuf, packet);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();

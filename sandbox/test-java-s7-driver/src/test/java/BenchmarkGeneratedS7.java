@@ -31,12 +31,13 @@ public class BenchmarkGeneratedS7 {
         byte[] rData = Hex.decodeHex("0300006702f080320100000001005600000407120a10060001032b84000160120a10020001032b840001a0120a10010001032b840001a9120a10050001032b84000150120a10020001032b84000198120a10040001032b84000140120a10020001032b84000190");
         long start = System.currentTimeMillis();
         int numRunsParse = 2000000;
+        TPKTPacketIO tpktPacketIO = new TPKTPacketIO();
 
         // Benchmark the parsing code
         TPKTPacket packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBuffer(rData);
-            packet = TPKTPacketIO.parse(rBuf);
+            packet = tpktPacketIO.parse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 
@@ -48,7 +49,7 @@ public class BenchmarkGeneratedS7 {
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
-            TPKTPacketIO.serialize(wBuf, packet);
+            tpktPacketIO.serialize(wBuf, packet);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();
