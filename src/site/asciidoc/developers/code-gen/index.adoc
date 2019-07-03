@@ -136,7 +136,7 @@ With this we were able to provide first driver versions fully specified in XML.
 
 The downside was, that the PLC4X community regarded this XML format as pretty complicated and when implementing an experimental code generator we quickly noticed that generating a nice object model would not be possible, due to the lack ability to model the inheritance of types in DFDL.
 
-In the end we came up with our own solution which we called `MSpec` and is described in the link:protocol/mspec.adoc[MSpec Format description].
+In the end we came up with our own solution which we called `MSpec` and is described in the link:protocol/mspec.html[MSpec Format description].
 
 === Configuration
 
