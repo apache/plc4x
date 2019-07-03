@@ -27,7 +27,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <SearchRequest className="org.apache.plc4x.java.knxnetip.SearchRequest">
-        <protocolVersion>16</protocolVersion>
         <hpaiIDiscoveryEndpoint>
           <hostProtocolCode>1</hostProtocolCode>
           <ipAddress>
@@ -50,7 +49,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <SearchResponse className="org.apache.plc4x.java.knxnetip.SearchResponse">
-        <protocolVersion>16</protocolVersion>
         <hpaiControlEndpoint>
           <hostProtocolCode>1</hostProtocolCode>
           <ipAddress>
@@ -146,6 +144,9 @@
             <serviceIds className="org.apache.plc4x.java.knxnetip.KnxNetIpDeviceManagement">
               <version>1</version>
             </serviceIds>
+            <serviceIds className="org.apache.plc4x.java.knxnetip.KnxNetIpTunneling">
+              <version>1</version>
+            </serviceIds>
           </serviceIds>
         </dibSuppSvcFamilies>
       </SearchResponse>
@@ -158,7 +159,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DescriptionRequest className="org.apache.plc4x.java.knxnetip.DescriptionRequest">
-        <protocolVersion>16</protocolVersion>
         <hpaiControlEndpoint>
           <hostProtocolCode>1</hostProtocolCode>
           <ipAddress>
@@ -181,7 +181,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DescriptionResponse className="org.apache.plc4x.java.knxnetip.DescriptionResponse">
-        <protocolVersion>16</protocolVersion>
         <dibDeviceInfo>
           <descriptionType>1</descriptionType>
           <knxMedium>2</knxMedium>
@@ -265,6 +264,9 @@
             <serviceIds className="org.apache.plc4x.java.knxnetip.KnxNetIpDeviceManagement">
               <version>1</version>
             </serviceIds>
+            <serviceIds className="org.apache.plc4x.java.knxnetip.KnxNetIpTunneling">
+              <version>1</version>
+            </serviceIds>
           </serviceIds>
         </dibSuppSvcFamilies>
       </DescriptionResponse>
@@ -277,7 +279,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <ConnectionRequest className="org.apache.plc4x.java.knxnetip.ConnectionRequest">
-        <protocolVersion>16</protocolVersion>
         <hpaiDiscoveryEndpoint>
           <hostProtocolCode>1</hostProtocolCode>
           <ipAddress>
@@ -315,7 +316,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <ConnectionResponse className="org.apache.plc4x.java.knxnetip.ConnectionResponse">
-        <protocolVersion>16</protocolVersion>
         <communicationChannelId>102</communicationChannelId>
         <status>0</status>
         <hpaiDataEndpoint>
@@ -347,7 +347,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <ConnectionStateRequest className="org.apache.plc4x.java.knxnetip.ConnectionStateRequest">
-        <protocolVersion>16</protocolVersion>
         <communicationChannelId>102</communicationChannelId>
         <hpaiControlEndpoint>
           <hostProtocolCode>1</hostProtocolCode>
@@ -371,7 +370,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <ConnectionStateResponse className="org.apache.plc4x.java.knxnetip.ConnectionStateResponse">
-        <protocolVersion>16</protocolVersion>
         <communicationChannelId>102</communicationChannelId>
         <status>0</status>
       </ConnectionStateResponse>
@@ -384,27 +382,33 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DeviceConfigurationRequest className="org.apache.plc4x.java.knxnetip.DeviceConfigurationRequest">
-        <protocolVersion>16</protocolVersion>
-        <communicationChannelId>103</communicationChannelId>
-        <sequenceCounter>0</sequenceCounter>
-        <cemi>
-          <test>252</test>
+        <deviceConfigurationRequestDataBlock>
+          <communicationChannelId>103</communicationChannelId>
+          <sequenceCounter>0</sequenceCounter>
+        </deviceConfigurationRequestDataBlock>
+        <cemi className="org.apache.plc4x.java.knxnetip.CEMIMPropReadReq">
+          <interfaceObjectType>0</interfaceObjectType>
+          <objectInstance>1</objectInstance>
+          <propertyId>83</propertyId>
+          <numberOfElements>1</numberOfElements>
+          <startIndex>1</startIndex>
         </cemi>
       </DeviceConfigurationRequest>
     </xml>
   </testcase>
 
   <testcase>
-    <name>Device Configuration Response</name>
+    <name>Device Configuration Ack</name>
     <raw>06100311000a04670000</raw>
     <root-type>KNXNetIPMessage</root-type>
     <xml>
-      <DeviceConfigurationResponse className="org.apache.plc4x.java.knxnetip.DeviceConfigurationResponse">
-        <protocolVersion>16</protocolVersion>
-        <communicationChannelId>103</communicationChannelId>
-        <sequenceCounter>0</sequenceCounter>
-        <status>0</status>
-      </DeviceConfigurationResponse>
+      <DeviceConfigurationAck className="org.apache.plc4x.java.knxnetip.DeviceConfigurationAck">
+        <deviceConfigurationAckDataBlock>
+          <communicationChannelId>103</communicationChannelId>
+          <sequenceCounter>0</sequenceCounter>
+          <status>0</status>
+        </deviceConfigurationAckDataBlock>
+      </DeviceConfigurationAck>
     </xml>
   </testcase>
 
@@ -414,7 +418,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DisconnectRequest className="org.apache.plc4x.java.knxnetip.DisconnectRequest">
-        <protocolVersion>16</protocolVersion>
         <communicationChannelId>103</communicationChannelId>
         <hpaiControlEndpoint>
           <hostProtocolCode>1</hostProtocolCode>
@@ -438,7 +441,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DisconnectResponse className="org.apache.plc4x.java.knxnetip.DisconnectResponse">
-        <protocolVersion>16</protocolVersion>
         <communicationChannelId>102</communicationChannelId>
         <status>0</status>
       </DisconnectResponse>
@@ -451,11 +453,32 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <TunnelingRequest className="org.apache.plc4x.java.knxnetip.TunnelingRequest">
-        <protocolVersion>16</protocolVersion>
-        <communicationChannelId>107</communicationChannelId>
-        <sequenceCounter>0</sequenceCounter>
-        <cemi>
-          <test>43</test>
+        <tunnelingRequestDataBlock>
+          <communicationChannelId>107</communicationChannelId>
+          <sequenceCounter>0</sequenceCounter>
+        </tunnelingRequestDataBlock>
+        <cemi className="org.apache.plc4x.java.knxnetip.CEMILBusmonInd">
+          <additionalInformationLength>7</additionalInformationLength>
+          <additionalInformation>
+            <additionalInformation>3</additionalInformation>
+            <additionalInformation>1</additionalInformation>
+            <additionalInformation>5</additionalInformation>
+            <additionalInformation>4</additionalInformation>
+            <additionalInformation>2</additionalInformation>
+            <additionalInformation>69</additionalInformation>
+            <additionalInformation>2</additionalInformation>
+          </additionalInformation>
+          <rawFrame>
+            <rawFrame>188</rawFrame>
+            <rawFrame>54</rawFrame>
+            <rawFrame>10</rawFrame>
+            <rawFrame>30</rawFrame>
+            <rawFrame>12</rawFrame>
+            <rawFrame>225</rawFrame>
+            <rawFrame>0</rawFrame>
+            <rawFrame>129</rawFrame>
+            <rawFrame>13</rawFrame>
+          </rawFrame>
         </cemi>
       </TunnelingRequest>
     </xml>
@@ -467,10 +490,11 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <TunnelingResponse className="org.apache.plc4x.java.knxnetip.TunnelingResponse">
-        <protocolVersion>16</protocolVersion>
-        <communicationChannelId>107</communicationChannelId>
-        <sequenceCounter>0</sequenceCounter>
-        <status>0</status>
+        <tunnelingResponseDataBlock>
+          <communicationChannelId>107</communicationChannelId>
+          <sequenceCounter>0</sequenceCounter>
+          <status>0</status>
+        </tunnelingResponseDataBlock>
       </TunnelingResponse>
     </xml>
   </testcase>
@@ -481,7 +505,6 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <ConnectionRequest className="org.apache.plc4x.java.knxnetip.ConnectionRequest">
-        <protocolVersion>16</protocolVersion>
         <hpaiDiscoveryEndpoint>
           <hostProtocolCode>1</hostProtocolCode>
           <ipAddress>

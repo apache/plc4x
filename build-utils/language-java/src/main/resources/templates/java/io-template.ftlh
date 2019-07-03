@@ -95,7 +95,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
             <#if field.lengthExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
             </#if>
-            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${parserArgument})<#sep>, </#sep></#list></#if>)</#if>);
+            ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument)})<#sep>, </#sep></#list></#if>)</#if>);
         }
         ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = ${field.name}List.toArray(new ${helper.getLanguageTypeNameForField(field)}[0]);
         </#if>
@@ -139,7 +139,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
     <#case "simple">
 
         // Simple field
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument)})<#sep>, </#sep></#list></#if>)</#if>;
         <#break>
     <#case "switch">
 
@@ -147,7 +147,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
         ${typeName}Builder builder = null;
         <#list field.cases as case>
         if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) {
-            builder = ${case.name?uncap_first}IO.parse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+            builder = ${case.name?uncap_first}IO.parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
         if (builder == null) {

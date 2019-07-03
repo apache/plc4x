@@ -22,6 +22,7 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,8 +49,8 @@ public class DefaultSwitchField implements SwitchField {
         return cases;
     }
 
-    public String[] getParams() {
-        return new String[0];
+    public Term[] getParams() {
+        return new Term[0];
     }
 
 }

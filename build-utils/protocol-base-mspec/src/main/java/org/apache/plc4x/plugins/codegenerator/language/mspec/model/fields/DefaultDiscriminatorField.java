@@ -21,6 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 public class DefaultDiscriminatorField implements DiscriminatorField {
 
@@ -40,8 +41,8 @@ public class DefaultDiscriminatorField implements DiscriminatorField {
         return name;
     }
 
-    public String[] getParams() {
-        return new String[0];
+    public Term[] getParams() {
+        return new Term[0];
     }
 
 }

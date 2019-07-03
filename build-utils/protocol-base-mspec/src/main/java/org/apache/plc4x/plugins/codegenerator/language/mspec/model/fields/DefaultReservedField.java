@@ -21,6 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 public class DefaultReservedField implements ReservedField {
 
@@ -40,8 +41,8 @@ public class DefaultReservedField implements ReservedField {
         return referenceValue;
     }
 
-    public String[] getParams() {
-        return new String[0];
+    public Term[] getParams() {
+        return new Term[0];
     }
 
 }

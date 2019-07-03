@@ -103,7 +103,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         InputStream inputStream = IOUtils.toInputStream(lengthExpressionString);
         ExpressionStringParser parser = new ExpressionStringParser();
         Term lengthExpression =  parser.parse(inputStream);
-        String[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
+        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
         Field field = new DefaultArrayField(type, name, lengthType, lengthExpression, params);
         parserContexts.peek().add(field);
     }
@@ -129,7 +129,7 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterSimpleField(MSpecParser.SimpleFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        String[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
+        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
         Field field = new DefaultSimpleField(type, name, params);
         parserContexts.peek().add(field);
     }
@@ -154,7 +154,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         InputStream inputStream = IOUtils.toInputStream(conditionExpressionString);
         ExpressionStringParser parser = new ExpressionStringParser();
         Term conditionExpression =  parser.parse(inputStream);
-        String[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
+        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
         Field field = new DefaultOptionalField(type, name, conditionExpression, params);
         parserContexts.peek().add(field);
     }
@@ -187,10 +187,15 @@ public class MessageFormatListener extends MSpecBaseListener {
     @Override
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
         String typeName = ctx.name.getText();
-        Argument[] parserArguments = null;
+        List<Argument> parserArguments = new LinkedList<>();
+        // Add all the arguments from the parent type.
         if(((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params != null) {
-            parserArguments = getParserArguments(
-                ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params.argument());
+            parserArguments.addAll(Arrays.asList(getParserArguments(
+                ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params.argument())));
+        }
+        // Add all eventually existing local arguments.
+        if(ctx.argumentList() != null) {
+            parserArguments.addAll(Arrays.asList(getParserArguments(ctx.argumentList().argument())));
         }
 
         List<MSpecParser.ExpressionContext> expressions = ctx.discriminatorValues.expression();
@@ -199,7 +204,7 @@ public class MessageFormatListener extends MSpecBaseListener {
             discriminatorValues[i] = expressions.get(i).expr.getText();
         }
         DefaultDiscriminatedComplexTypeDefinition type =
-            new DefaultDiscriminatedComplexTypeDefinition(typeName, parserArguments,
+            new DefaultDiscriminatedComplexTypeDefinition(typeName, parserArguments.toArray(new Argument[0]),
                 discriminatorValues, parserContexts.pop());
 
         // Add the type to the switch field definition.
@@ -264,19 +269,21 @@ public class MessageFormatListener extends MSpecBaseListener {
         return parserArguments;
     }
 
-    private String[] getFieldParams(MSpecParser.FieldDefinitionContext parentCtx) {
-        String[] params = null;
+    private Term[] getFieldParams(MSpecParser.FieldDefinitionContext parentCtx) {
+        Term[] params = null;
         if(parentCtx.params != null) {
-            params = new String[parentCtx.params.expression().size()];
+            params = new Term[parentCtx.params.expression().size()];
             for(int i = 0; i < parentCtx.params.expression().size(); i++) {
-                params[i] = parentCtx.params.expression().get(i).expr.getText();
+                params[i] = parseExpression(parentCtx.params.expression().get(i).expr.getText());
             }
         }
         return params;
     }
 
     private Term parseExpression(String expressionString) {
-        return null;
+        InputStream inputStream = IOUtils.toInputStream(expressionString);
+        ExpressionStringParser parser = new ExpressionStringParser();
+        return parser.parse(inputStream);
     }
 
 }

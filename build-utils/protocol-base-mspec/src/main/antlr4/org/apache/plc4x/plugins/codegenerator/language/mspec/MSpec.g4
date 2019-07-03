@@ -87,7 +87,7 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET discriminatorValues=multipleExpressions name=IDENTIFIER fieldDefinition* RBRACKET
+ : LBRACKET discriminatorValues=multipleExpressions name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
  ;
 
 dataType

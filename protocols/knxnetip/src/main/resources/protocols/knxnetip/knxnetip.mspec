@@ -18,7 +18,7 @@
 //
 
 [discriminatedType 'KNXNetIPMessage'
-    [implicit      uint 8  'headerLength' 'lengthInBytes']
+    [implicit      uint 8  'headerLength'    '6']
     [const         uint 8  'protocolVersion' '0x10']
     [discriminator uint 16 'msgType']
     [implicit      uint 16 'totalLength' 'lengthInBytes']
@@ -67,31 +67,19 @@
             [field uint 8 'communicationChannelId']
             [field uint 8 'status']
         ]
-        ['0x0310' DeviceConfigurationRequest
-            [implicit uint 8 'structureLength' 'lengthInBytes']
-            [field    uint 8 'communicationChannelId']
-            [field    uint 8 'sequenceCounter']
-            [reserved uint 8 '0x00']
-            [field    CEMI 'cEMI']
+        ['0x0310' DeviceConfigurationRequest [uint 16 'totalLength']
+            [field DeviceConfigurationRequestDataBlock 'deviceConfigurationRequestDataBlock']
+            [field CEMI                                'cEMI' ['totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)']]
         ]
-        ['0x0311' DeviceConfigurationResponse
-            [implicit uint 8 'structureLength' 'lengthInBytes']
-            [field    uint 8 'communicationChannelId']
-            [field    uint 8 'sequenceCounter']
-            [field    uint 8 'status']
+        ['0x0311' DeviceConfigurationAck
+            [field DeviceConfigurationAckDataBlock 'deviceConfigurationAckDataBlock']
         ]
-        ['0x0420' TunnelingRequest
-            [implicit uint 8 'structureLength' 'lengthInBytes']
-            [field    uint 8 'communicationChannelId']
-            [field    uint 8 'sequenceCounter']
-            [reserved uint 8 '0x00']
-            [field    CEMI 'cEMI']
+        ['0x0420' TunnelingRequest [uint 16 'totalLength']
+            [field TunnelingRequestDataBlock 'tunnelingRequestDataBlock']
+            [field CEMI                      'cEMI' ['totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)']]
         ]
         ['0x0421' TunnelingResponse
-            [implicit uint 8 'structureLength' 'lengthInBytes']
-            [field    uint 8 'communicationChannelId']
-            [field    uint 8 'sequenceCounter']
-            [field    uint 8 'status']
+            [field TunnelingResponseDataBlock 'tunnelingResponseDataBlock']
         ]
     ]
 ]
@@ -126,7 +114,7 @@
 [type 'DIBSuppSvcFamilies'
     [implicit   uint 8       'structureLength' 'lengthInBytes']
     [field      uint 8       'descriptionType']
-    [arrayField ServiceId    'serviceIds' length '3']
+    [arrayField ServiceId    'serviceIds' count '3']
 ]
 
 [type 'HPAIDataEndpoint'
@@ -159,6 +147,34 @@
             [field         KNXAddress 'knxAddress']
         ]
     ]
+]
+
+[type 'DeviceConfigurationRequestDataBlock'
+    [implicit uint 8 'structureLength' 'lengthInBytes']
+    [field    uint 8 'communicationChannelId']
+    [field    uint 8 'sequenceCounter']
+    [reserved uint 8 '0x00']
+]
+
+[type 'DeviceConfigurationAckDataBlock'
+    [implicit uint 8 'structureLength' 'lengthInBytes']
+    [field    uint 8 'communicationChannelId']
+    [field    uint 8 'sequenceCounter']
+    [field    uint 8 'status']
+]
+
+[type 'TunnelingRequestDataBlock'
+    [implicit uint 8 'structureLength' 'lengthInBytes']
+    [field    uint 8 'communicationChannelId']
+    [field    uint 8 'sequenceCounter']
+    [reserved uint 8 '0x00']
+]
+
+[type 'TunnelingResponseDataBlock'
+    [implicit uint 8 'structureLength' 'lengthInBytes']
+    [field    uint 8 'communicationChannelId']
+    [field    uint 8 'sequenceCounter']
+    [field    uint 8 'status']
 ]
 
 [type 'IPAddress'
@@ -200,7 +216,28 @@
     ]
 ]
 
-[type 'CEMI'
-    [field uint 8 'test']
+[discriminatedType 'CEMI' [uint 8 'size']
+    [discriminator uint 8 'messageCode']
+    [typeSwitch 'messageCode'
+        ['0xFC' CEMIMPropReadReq
+            [field uint 16 'interfaceObjectType']
+            [field uint  8 'objectInstance']
+            [field uint  8 'propertyId']
+            [field uint  4 'numberOfElements']
+            [field uint 12 'startIndex']
+        ]
+        ['0xFB' CEMIMPropReadCon
+            [field uint 16 'interfaceObjectType']
+            [field uint  8 'objectInstance']
+            [field uint  8 'propertyId']
+            [field uint  4 'numberOfElements']
+            [field uint 12 'startIndex']
+        ]
+        ['0x2B' CEMILBusmonInd
+            [field      uint 8 'additionalInformationLength']
+            [arrayField uint 8 'additionalInformation' count 'additionalInformationLength']
+            [arrayField uint 8 'rawFrame'              count 'size - (additionalInformationLength + 2)']
+        ]
+    ]
 ]
 

@@ -21,14 +21,15 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 public class DefaultSimpleField implements SimpleField {
 
     private final TypeReference type;
     private final String name;
-    private final String[] params;
+    private final Term[] params;
 
-    public DefaultSimpleField(TypeReference type, String name, String[] params) {
+    public DefaultSimpleField(TypeReference type, String name, Term[] params) {
         this.type = type;
         this.name = name;
         this.params = params;
@@ -42,7 +43,7 @@ public class DefaultSimpleField implements SimpleField {
         return name;
     }
 
-    public String[] getParams() {
+    public Term[] getParams() {
         return params;
     }
 

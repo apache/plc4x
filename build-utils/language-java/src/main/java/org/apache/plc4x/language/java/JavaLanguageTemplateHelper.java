@@ -390,6 +390,9 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
     }
 
     private String toExpression(Term term, Function<Term, String> variableExpressionGenerator) {
+        if(term == null) {
+            return "";
+        }
         if(term instanceof Literal) {
             if(term instanceof NullLiteral) {
                 return "null";

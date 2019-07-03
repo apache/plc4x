@@ -29,9 +29,9 @@ public class DefaultArrayField implements ArrayField {
     private final String name;
     private final ArrayField.LengthType lengthType;
     private final Term lengthExpression;
-    private final String[] params;
+    private final Term[] params;
 
-    public DefaultArrayField(TypeReference type, String name, ArrayField.LengthType lengthType, Term lengthExpression, String[] params) {
+    public DefaultArrayField(TypeReference type, String name, ArrayField.LengthType lengthType, Term lengthExpression, Term[] params) {
         this.type = type;
         this.name = name;
         this.lengthType = lengthType;
@@ -56,7 +56,7 @@ public class DefaultArrayField implements ArrayField {
     }
 
     @Override
-    public String[] getParams() {
+    public Term[] getParams() {
         return params;
     }
 

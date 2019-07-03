@@ -28,9 +28,9 @@ public class DefaultOptionalField implements OptionalField {
     private final TypeReference type;
     private final String name;
     private final Term conditionExpression;
-    private final String[] params;
+    private final Term[] params;
 
-    public DefaultOptionalField(TypeReference type, String name, Term conditionExpression, String[] params) {
+    public DefaultOptionalField(TypeReference type, String name, Term conditionExpression, Term[] params) {
         this.type = type;
         this.name = name;
         this.conditionExpression = conditionExpression;
@@ -49,7 +49,7 @@ public class DefaultOptionalField implements OptionalField {
         return conditionExpression;
     }
 
-    public String[] getParams() {
+    public Term[] getParams() {
         return params;
     }
 
