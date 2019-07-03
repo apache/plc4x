@@ -162,6 +162,9 @@ def checkPython() {
         }
     } else {
         println "missing"
+        // For debugging regular build failures on our build vm
+        println "StdOut: " + stdOut
+        println "StrErr: " + stdErr
         allConditionsMet = false
     }
 }
