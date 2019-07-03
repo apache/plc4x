@@ -24,9 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.utils.MessageIO;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.utils.*;
 import org.apache.plc4x.protocol.test.exceptions.ProtocolTestsuiteException;
 import org.apache.plc4x.protocol.test.model.ProtocolTestsuite;
 import org.apache.plc4x.protocol.test.model.Testcase;
@@ -39,9 +37,7 @@ import org.xmlunit.diff.Diff;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ProtocolTestsuiteRunner {
 
@@ -110,7 +106,21 @@ public class ProtocolTestsuiteRunner {
             Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreWhitespace().build();
             if(diff.hasDifferences()) {
                 // TODO: Add some more information ...
-                throw new ProtocolTestsuiteException("Differences were found");
+                throw new ProtocolTestsuiteException("Differences were found after parsing.");
+            }
+            WriteBuffer writeBuffer = new WriteBuffer(((SizeAware) msg).getLengthInBytes());
+            messageIO.serialize(writeBuffer, msg);
+            byte[] data = writeBuffer.getData();
+            if(!Arrays.equals(testcase.getRaw(), data)) {
+                int i;
+                for(i = 0; i < data.length; i++) {
+                    if(data[i] != testcase.getRaw()[i]) {
+                        break;
+                    }
+                }
+                throw new ProtocolTestsuiteException("Differences were found after serializing.\nExpected: " +
+                    Hex.encodeHexString(testcase.getRaw()) + "\nBut Got:  " + Hex.encodeHexString(data) +
+                    "\n          " + String.join("", Collections.nCopies(i, "--")) + "^");
             }
         } catch (ParseException e) {
             throw new ProtocolTestsuiteException("Unable to parse message", e);
