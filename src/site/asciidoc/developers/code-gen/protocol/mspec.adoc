@@ -179,7 +179,7 @@ This way the application will not break in the future if devices start using the
         ['{vargument-1-value-2}', '{argument-2-value-1}' {subtype-2-name}
             ... Fields ...
         ]
-        ['{vargument-1-value-3}', '{argument-2-value-2}' {subtype-2-name}
+        ['{vargument-1-value-3}', '{argument-2-value-2}' {subtype-2-name} [uint 8 'existing-attribute-1', uint 16 'existing-attribute-2']
             ... Fields ...
         ]
 
@@ -196,6 +196,10 @@ If it matches and there are no more values, the type is found, if more values ar
 If no type is found, an exception is thrown.
 
 Inside each sub-type can declare fields using a subset of the types (`discriminator` and `typeSwitch` can't be used here)
+
+The third case in above code-snippet also passes a named attribute to the sub-type.
+The name must be identical to any argument or named field parsed before the switchType.
+These arguments are then available for expressions or passing on in the subtypes.
 
 ==== Parameters
 
