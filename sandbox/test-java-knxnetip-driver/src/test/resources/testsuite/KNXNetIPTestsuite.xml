@@ -460,13 +460,19 @@
         <cemi className="org.apache.plc4x.java.knxnetip.CEMILBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
           <additionalInformation>
-            <additionalInformation>3</additionalInformation>
-            <additionalInformation>1</additionalInformation>
-            <additionalInformation>5</additionalInformation>
-            <additionalInformation>4</additionalInformation>
-            <additionalInformation>2</additionalInformation>
-            <additionalInformation>69</additionalInformation>
-            <additionalInformation>2</additionalInformation>
+            <additionalInformation className="org.apache.plc4x.java.knxnetip.CEMIAdditionalInformationBusmonitorInfo">
+              <frameErrorFlag>false</frameErrorFlag>
+              <bitErrorFlag>false</bitErrorFlag>
+              <parityErrorFlag>false</parityErrorFlag>
+              <unknownFlag>false</unknownFlag>
+              <lostFlag>false</lostFlag>
+              <sequenceNumber>5</sequenceNumber>
+            </additionalInformation>
+            <additionalInformation className="org.apache.plc4x.java.knxnetip.CEMIAdditionalInformationRelativeTimestamp">
+              <relativeTimestamp>
+                <timestamp>17666</timestamp>
+              </relativeTimestamp>
+            </additionalInformation>
           </additionalInformation>
           <rawFrame>
             <rawFrame>188</rawFrame>
@@ -481,6 +487,7 @@
           </rawFrame>
         </cemi>
       </TunnelingRequest>
+
     </xml>
   </testcase>
 

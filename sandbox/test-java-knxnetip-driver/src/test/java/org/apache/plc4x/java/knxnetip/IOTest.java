@@ -33,7 +33,7 @@ public class IOTest {
 
     @Test
     public void testXml() throws Exception {
-        byte[] rData = Hex.decodeHex("0610020500180801c0a82a46c4090801c0a82a46c40a0203");
+        byte[] rData = Hex.decodeHex("06100420001c046b00002b0703010504024502bc360a1e0ce100810d");
         ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         ReadBuffer rBuf = new ReadBuffer(rData);
         KNXNetIPMessage packet = new KNXNetIPMessageIO().parse(rBuf);

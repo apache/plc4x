@@ -32,6 +32,8 @@ import org.dom4j.*;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
@@ -41,7 +43,7 @@ import java.util.*;
 
 public class ProtocolTestsuiteRunner {
 
-    private static final Namespace TEST_NAMESPACE = new Namespace("test", "https://plc4x.apache.org/schemas/testsuite.xsd");
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolTestsuiteRunner.class);
 
     private final String testsuiteDocument;
 
@@ -50,7 +52,7 @@ public class ProtocolTestsuiteRunner {
     }
 
     @TestFactory
-    public List<DynamicTest> getTestsuiteTests() throws ProtocolTestsuiteException {
+    public Iterable<DynamicTest> getTestsuiteTests() throws ProtocolTestsuiteException {
         ProtocolTestsuite testSuite = parseTestsuite(ProtocolTestsuiteRunner.class.getResourceAsStream(testsuiteDocument));
         List<DynamicTest> dynamicTests = new LinkedList<>();
         for(Testcase testcase : testSuite.getTestcases()) {
@@ -86,6 +88,7 @@ public class ProtocolTestsuiteRunner {
 
                 testcases.add(new Testcase(name, description, raw, rootType, xmlElement));
             }
+            LOGGER.info(String.format("Found %d testcases.", testcases.size()));
             return new ProtocolTestsuite(testsuiteName.getTextTrim(), testcases);
         } catch (DocumentException e) {
             throw new ProtocolTestsuiteException("Error parsing testsuite xml", e);

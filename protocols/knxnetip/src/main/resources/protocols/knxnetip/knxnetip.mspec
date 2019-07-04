@@ -69,17 +69,19 @@
         ]
         ['0x0310' DeviceConfigurationRequest [uint 16 'totalLength']
             [field DeviceConfigurationRequestDataBlock 'deviceConfigurationRequestDataBlock']
-            [field CEMI                                'cEMI' ['totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)']]
+            [field CEMI                                'cemi' ['totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)']]
         ]
         ['0x0311' DeviceConfigurationAck
             [field DeviceConfigurationAckDataBlock 'deviceConfigurationAckDataBlock']
         ]
         ['0x0420' TunnelingRequest [uint 16 'totalLength']
             [field TunnelingRequestDataBlock 'tunnelingRequestDataBlock']
-            [field CEMI                      'cEMI' ['totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)']]
+            [field CEMI                      'cemi' ['totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)']]
         ]
         ['0x0421' TunnelingResponse
             [field TunnelingResponseDataBlock 'tunnelingResponseDataBlock']
+        ]
+        ['0x0530' RoutingIndication
         ]
     ]
 ]
@@ -193,7 +195,7 @@
 
 [type 'DeviceStatus'
     [reserved uint 7 '0x00']
-    [field    bit  1 'programMode']
+    [field    bit    'programMode']
 ]
 
 [type 'ProjectInstallationIdentifier'
@@ -219,6 +221,29 @@
 [discriminatedType 'CEMI' [uint 8 'size']
     [discriminator uint 8 'messageCode']
     [typeSwitch 'messageCode'
+        ['0x10' CEMILRawReq
+        ]
+        ['0x11' CEMILDataReq
+        ]
+        ['0x13' CEMILPollDataReq
+        ]
+
+        ['0x25' CEMILPollDataCon
+        ]
+        ['0x29' CEMILDataInd
+        ]
+        ['0x2B' CEMILBusmonInd
+            [field      uint 8                    'additionalInformationLength']
+            [arrayField CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [arrayField uint 8                    'rawFrame'              count  'size - (additionalInformationLength + 2)']
+        ]
+        ['0x2D' CEMILRawInd
+        ]
+        ['0x2E' CEMILDataCon
+        ]
+        ['0x2F' CEMILRawCon
+        ]
+
         ['0xFC' CEMIMPropReadReq
             [field uint 16 'interfaceObjectType']
             [field uint  8 'objectInstance']
@@ -233,11 +258,44 @@
             [field uint  4 'numberOfElements']
             [field uint 12 'startIndex']
         ]
-        ['0x2B' CEMILBusmonInd
-            [field      uint 8 'additionalInformationLength']
-            [arrayField uint 8 'additionalInformation' count 'additionalInformationLength']
-            [arrayField uint 8 'rawFrame'              count 'size - (additionalInformationLength + 2)']
+    ]
+]
+
+[discriminatedType 'CEMIAdditionalInformation'
+    [discriminator uint 8 'additionalInformationType']
+    [typeSwitch 'additionalInformationType'
+        ['0x03' CEMIAdditionalInformationBusmonitorInfo
+            [implicit uint 8 'len' '1']
+            [field    bit    'frameErrorFlag']
+            [field    bit    'bitErrorFlag']
+            [field    bit    'parityErrorFlag']
+            [field    bit    'unknownFlag']
+            [field    bit    'lostFlag']
+            [field    uint 3 'sequenceNumber']
+        ]
+        ['0x04' CEMIAdditionalInformationRelativeTimestamp
+            [implicit uint 8  'len' '2']
+            [field RelativeTimestamp 'relativeTimestamp']
         ]
     ]
 ]
 
+[type 'CEMIControlField1'
+    [field    bit    'standardFrame']
+    [reserved uint 1 '0x00']
+    [field    bit    'doNotRepeat']
+    [field    bit    'broadcast']
+    [field    uint 2 'priority']
+    [field    bit    'ackRequested']
+    [field    bit    'error']
+]
+
+[type 'CEMIControlField2'
+    [field    bit    'groupAddress']
+    [field    uint 3 'hopCount']
+    [field    uint 3 'extendedFrameFormat']
+]
+
+[type 'RelativeTimestamp'
+    [field    uint 16 'timestamp']
+]
