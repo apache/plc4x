@@ -130,7 +130,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
 
         // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
         {
-            ${helper.getLanguageTypeNameForField(field)} reserved = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+            ${helper.getLanguageTypeNameForField(field)} reserved = io.${helper.getReadBufferReadMethodCall(field.type)};
             if(reserved != ${field.referenceValue}) {
                 LOGGER.info("Expected constant value " + ${field.referenceValue} + " but got " + reserved + " for reserved field.");
             }
