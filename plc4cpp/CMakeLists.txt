@@ -24,18 +24,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
 
-set(BOOST_ROOT "./libs/boost/target/boost_1_70_0/")
+# Variable to help "find_package" find the root of boost.
+set(BOOST_ROOT "${PROJECT_SOURCE_DIR}/target/lib/boost/")
+set(BOOST_INCLUDEDIR "${PROJECT_SOURCE_DIR}/target/lib/boost/include/")
+set(BOOST_LIBRARYDIR "${PROJECT_SOURCE_DIR}/target/lib/boost/lib/")
+# Force CMake to use the boost version provided in BOOST_ROOT
+set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
+
+# Ensure the listed modules are found and environment variables for boost are set.
 find_package(Boost COMPONENTS thread date_time system regex log)
 
-#[[ Trace CMAKE Variable ]]
+# Trace all CMAKE Variables
 get_cmake_property(_variableNames VARIABLES)
 list (SORT _variableNames)
 foreach (_variableName ${_variableNames})
     message(STATUS "${_variableName}=${${_variableName}}")
 endforeach()
-
 
 #[[
     Build all the modules of PLC4Cpp

@@ -31,7 +31,7 @@ add_executable(helloplc4x
 
 TARGET_LINK_LIBRARIES (helloplc4x ${Boost_LIBRARIES} plc4cpp-driver-s7 plc4cpp-utils-logger plc4cpp-api)
 
-target_include_directories (helloplc4x PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories (helloplc4x PUBLIC ${BOOST_INCLUDEDIR})
 target_include_directories (helloplc4x PUBLIC ../../api/src/main/cpp)
 target_include_directories (helloplc4x PUBLIC ../../utils/logger/src/main/cpp)
 

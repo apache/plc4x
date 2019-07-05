@@ -38,20 +38,71 @@
     <sonar.language>c++</sonar.language>
   </properties-->
 
-  <modules>
-    <module>api</module>
-    <module>protocols</module>
-    <module>utils</module>
-
-    <module>examples</module>
-    <module>integrations</module>
-
-    <!-- Third party libs -->
-    <module>libs</module>
-  </modules>
-
   <build>
     <plugins>
+      <plugin>
+        <groupId>com.googlecode.cmake-maven-project</groupId>
+        <artifactId>cmake-maven-plugin</artifactId>
+        <version>3.7.2-b1</version>
+        <executions>
+          <!-- Uses a CMake generator to generate the build using the build tool of choice -->
+          <execution>
+            <id>cmake-generate</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <!--
+                Actually the path to the CMakeList.txt file which then again
+                tells to tool where to find the sources.
+              -->
+              <sourcePath>${project.basedir}</sourcePath>
+              <!--
+                Path to where the build configuration is generated
+                (This directory is then used in the compile step to actually perform the build)
+              -->
+              <targetPath>${project.build.directory}/build</targetPath>
+              <!--
+                Name of the generator the compile step will be executing.
+              -->
+              <generator>${cmake.generator}</generator>
+              <!--
+                The classifier of the current platform. One of
+                [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
+                It defines the version and type of the cmake installation to download.
+              -->
+              <classifier>${os.classifier}</classifier>
+              <environmentVariables>
+                <BOOST_ROOT>${project.build.directory}/lib</BOOST_ROOT>
+                <BOOST_INCLUDEDIR>${project.build.directory}/lib/boost/includes</BOOST_INCLUDEDIR>
+                <BOOST_LIBRARYDIR>${project.build.directory}/lib/boost/lib</BOOST_LIBRARYDIR>
+                <Boost_NO_SYSTEM_PATHS>ON</Boost_NO_SYSTEM_PATHS>
+              </environmentVariables>
+            </configuration>
+          </execution>
+          <!-- Actually executes the build -->
+          <execution>
+            <id>cmake-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <!-- The directory where the "generate" step generated the build configuration -->
+              <projectDirectory>${project.build.directory}/build</projectDirectory>
+              <classifier>${os.classifier}</classifier>
+              <environmentVariables>
+                <BOOST_ROOT>${project.build.directory}/lib</BOOST_ROOT>
+                <BOOST_INCLUDEDIR>${project.build.directory}/lib/boost/includes</BOOST_INCLUDEDIR>
+                <BOOST_LIBRARYDIR>${project.build.directory}/lib/boost/lib</BOOST_LIBRARYDIR>
+                <Boost_NO_SYSTEM_PATHS>ON</Boost_NO_SYSTEM_PATHS>
+              </environmentVariables>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Prevent the jar plugin from building a jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

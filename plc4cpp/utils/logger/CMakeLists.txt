@@ -31,11 +31,8 @@ add_library(plc4cpp-utils-logger
 		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ExLog.cpp
         )
 
-#[[
-    Import the headers for boost and the plc4cpp-utils module
-]]
 
 TARGET_LINK_LIBRARIES (plc4cpp-utils-logger ${Boost_LIBRARIES})
 
-target_include_directories (plc4cpp-utils-logger PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories (plc4cpp-utils-logger PUBLIC ${BOOST_INCLUDEDIR})
 
