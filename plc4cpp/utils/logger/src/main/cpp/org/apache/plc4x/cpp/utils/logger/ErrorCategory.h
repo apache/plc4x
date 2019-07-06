@@ -20,7 +20,7 @@ under the License.
 #ifndef _ERRORCATEGORY_H_
 #define _ERRORCATEGORY_H_
 
-#include <boost\system\error_code.hpp>
+#include <boost/system/error_code.hpp>
 #include <string>
 
 namespace org
