@@ -38,8 +38,99 @@
     <sonar.language>c++</sonar.language>
   </properties-->
 
+  <properties>
+    <boost-includes.dir>${project.build.directory}/lib/boost/includes</boost-includes.dir>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <boost-includes.dir>${project.build.directory}/lib/boost/includes/boost-${boost.version.underline-short}</boost-includes.dir>
+      </properties>
+   </profile>
+  </profiles>
+
   <build>
     <plugins>
+      <!-- First download the sources for building the boost library -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <id>get-boost</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${boost.url}</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+        Then execute two boost build phases:
+
+        1) bootstrap the boost build
+        2) Perform the actual boost build and install
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>bootstrap</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${boost.bootstrap.executable}</executable>
+              <arguments>
+                <argument>gcc</argument>
+              </arguments>
+              <workingDirectory>${project.build.directory}/boost_${boost.version.underline}</workingDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${boost.build.executable}</executable>
+              <arguments>
+                <!-- Have the build install the built libraries -->
+                <argument>install</argument>
+                <!-- Tell it where to install the libraries and header files -->
+                <argument>--prefix=${project.build.directory}/lib/boost</argument>
+                <!-- List of modules to build -->
+                <argument>--with-system</argument>
+                <argument>--with-thread</argument>
+                <argument>--with-date_time</argument>
+                <argument>--with-regex</argument>
+                <argument>--with-log</argument>
+                <!-- On Windows machines the build failed, if this was not explicitly set -->
+                <argument>address-model=64</argument>
+              </arguments>
+              <workingDirectory>${project.build.directory}/boost_${boost.version.underline}</workingDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
@@ -75,7 +166,7 @@
               <classifier>${os.classifier}</classifier>
               <environmentVariables>
                 <BOOST_ROOT>${project.build.directory}/lib</BOOST_ROOT>
-                <BOOST_INCLUDEDIR>${project.build.directory}/lib/boost/includes</BOOST_INCLUDEDIR>
+                <BOOST_INCLUDEDIR>${boost-includes.dir}</BOOST_INCLUDEDIR>
                 <BOOST_LIBRARYDIR>${project.build.directory}/lib/boost/lib</BOOST_LIBRARYDIR>
                 <Boost_NO_SYSTEM_PATHS>ON</Boost_NO_SYSTEM_PATHS>
               </environmentVariables>
@@ -94,7 +185,7 @@
               <classifier>${os.classifier}</classifier>
               <environmentVariables>
                 <BOOST_ROOT>${project.build.directory}/lib</BOOST_ROOT>
-                <BOOST_INCLUDEDIR>${project.build.directory}/lib/boost/includes</BOOST_INCLUDEDIR>
+                <BOOST_INCLUDEDIR>${boost-includes.dir}</BOOST_INCLUDEDIR>
                 <BOOST_LIBRARYDIR>${project.build.directory}/lib/boost/lib</BOOST_LIBRARYDIR>
                 <Boost_NO_SYSTEM_PATHS>ON</Boost_NO_SYSTEM_PATHS>
               </environmentVariables>
