@@ -60,3 +60,9 @@ target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ${Boost_IN
 target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ../../../api/src/main/cpp)
 target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ../../../protocols/driver-bases/base/src/main/cpp)
 target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ../../../utils/logger/src/main/cpp)
+
+target_link_libraries (plc4cpp-protocols-driver-base-base
+                        ${Boost_LIBRARIES}
+                        plc4cpp-utils-logger
+                        plc4cpp-api
+                      )
