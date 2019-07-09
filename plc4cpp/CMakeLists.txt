@@ -31,6 +31,7 @@ set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_DEBUG ON)
+set(Boost_ARCHITECTURE "-x64")
 
 # Ensure the listed modules are found and environment variables for boost are set.
 find_package(Boost COMPONENTS thread date_time system regex log)
