@@ -17,12 +17,7 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.7)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-add_library(plc4cpp-api 
+add_library(plc4cpp-api
         src/main/cpp/org/apache/plc4x/cpp/PlcDriverManager.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/PlcConnection.cpp
         src/main/cpp/org/apache/plc4x/cpp/api/authentication/PlcAuthentication.cpp

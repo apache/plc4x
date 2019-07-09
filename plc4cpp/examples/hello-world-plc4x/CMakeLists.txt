@@ -17,19 +17,10 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.7)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 add_executable(helloplc4x
                 src/main/cpp/org/apache/plc4x/cpp/examples/helloplc4x/helloplc4x.cpp)
 
-#[[
-    Import the headers for boost and the plc4cpp-api module
-]]
-
-TARGET_LINK_LIBRARIES (helloplc4x ${Boost_LIBRARIES} plc4cpp-driver-s7 plc4cpp-utils-logger plc4cpp-api)
+target_link_libraries (helloplc4x ${Boost_LIBRARIES} plc4cpp-driver-s7 plc4cpp-utils-logger plc4cpp-api)
 
 target_include_directories (helloplc4x PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories (helloplc4x PUBLIC ../../api/src/main/cpp)

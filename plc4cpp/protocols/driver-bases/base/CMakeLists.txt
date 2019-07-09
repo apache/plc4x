@@ -17,12 +17,7 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.7)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-add_library(plc4cpp-protocols-driver-base-base 
+add_library(plc4cpp-protocols-driver-base-base
         src/main/cpp/org/apache/plc4x/cpp/base/connection/AbstractPlcConnection.cpp
         src/main/cpp/org/apache/plc4x/cpp/base/connection/BoostConnection.cpp
         src/main/cpp/org/apache/plc4x/cpp/base/connection/ChannelFactory.cpp
@@ -60,10 +55,6 @@ add_library(plc4cpp-protocols-driver-base-base
         src/main/cpp/org/apache/plc4x/cpp/base/messages/PlcReader.cpp
         src/main/cpp/org/apache/plc4x/cpp/base/messages/PlcWriter.cpp
         )
-
-#[[
-    Import the headers for boost and the plc4cpp-api module
-]]
 
 target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories (plc4cpp-protocols-driver-base-base PUBLIC ../../../api/src/main/cpp)

@@ -17,12 +17,7 @@
   under the License.
 ]]
 
-cmake_minimum_required(VERSION 3.7)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-add_library(plc4cpp-utils-logger 
+add_library(plc4cpp-utils-logger
 		src/main/cpp/org/apache/plc4x/cpp/utils/logger/BLogger.cpp
         src/main/cpp/org/apache/plc4x/cpp/utils/logger/DatDmp.cpp
 		src/main/cpp/org/apache/plc4x/cpp/utils/logger/DbgTrace.cpp
@@ -31,8 +26,4 @@ add_library(plc4cpp-utils-logger
 		src/main/cpp/org/apache/plc4x/cpp/utils/logger/ExLog.cpp
         )
 
-
-TARGET_LINK_LIBRARIES (plc4cpp-utils-logger ${Boost_LIBRARIES})
-
 target_include_directories (plc4cpp-utils-logger PUBLIC ${Boost_INCLUDE_DIRS})
-
