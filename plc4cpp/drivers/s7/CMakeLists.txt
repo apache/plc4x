@@ -42,3 +42,7 @@ TARGET_LINK_LIBRARIES (plc4cpp-driver-s7
                         plc4cpp-protocols-driver-base-base
                         plc4cpp-utils-systemconfig
                       )
+
+if(MINGW)
+    TARGET_LINK_LIBRARIES(plc4cpp-driver-s7 ws2_32)
+endif()

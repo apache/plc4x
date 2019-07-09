@@ -302,6 +302,7 @@
               <classifier>${os.classifier}</classifier>
               <environmentVariables>
                 <BOOST_ROOT>${project.build.directory}</BOOST_ROOT>
+                <BOOST_LIBRARYDIR>${project.build.directory}/lib/boost/lib</BOOST_LIBRARYDIR>
                 <Boost_NO_SYSTEM_PATHS>ON</Boost_NO_SYSTEM_PATHS>
               </environmentVariables>
             </configuration>
@@ -326,6 +327,7 @@
               <classifier>${os.classifier}</classifier>
               <environmentVariables>
                 <BOOST_ROOT>${project.build.directory}</BOOST_ROOT>
+                <BOOST_LIBRARYDIR>${project.build.directory}/lib/boost/lib</BOOST_LIBRARYDIR>
                 <Boost_NO_SYSTEM_PATHS>ON</Boost_NO_SYSTEM_PATHS>
               </environmentVariables>
             </configuration>
