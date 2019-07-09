@@ -31,7 +31,7 @@ int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
     return 1;
 }
 
-_declspec(dllexport) PlcDriver* _CreatePlcDriverInstance()
+__declspec(dllexport) PlcDriver* __CreatePlcDriverInstance()
 {
     return new S7PlcDriver;
 }
