@@ -27,9 +27,7 @@ add_library(plc4cpp-driver-s7 SHARED
         src/main/cpp/org/apache/plc4x/cpp/s7/S7PlcDriver.cpp
 		src/main/cpp/org/apache/plc4x/cpp/s7/connection/S7PlcConnection.cpp
             )
-#[[
-    Import the headers for boost and the plc4cpp-api module
-]]
+
 target_include_directories (plc4cpp-driver-s7 PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories (plc4cpp-driver-s7 PUBLIC ../../api/src/main/cpp)
 target_include_directories (plc4cpp-driver-s7 PUBLIC ../../protocols/driver-bases/base/src/main/cpp)

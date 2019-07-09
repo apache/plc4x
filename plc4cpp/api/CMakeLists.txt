@@ -70,10 +70,6 @@ add_library(plc4cpp-api
         src/main/cpp/org/apache/plc4x/cpp/api/types/ValueTypeObject.cpp
         )
 
-#[[
-    Import the boost headers
-]]
-
-target_include_directories (plc4cpp-api PUBLIC ${BOOST_INCLUDEDIR})
+target_include_directories (plc4cpp-api PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories (plc4cpp-api PUBLIC ../utils/logger/src/main/cpp)
 

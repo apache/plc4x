@@ -26,8 +26,4 @@ add_library(plc4cpp-utils-systemconfig
 		src/main/cpp/org/apache/plc4x/cpp/utils/systemconfig/SystemConfiguration.cpp
         )
 
-#[[
-    Import the headers for boost and the plc4cpp-utils module
-]]
-
-target_include_directories (plc4cpp-utils-systemconfig PUBLIC ${BOOST_INCLUDEDIR})
+target_include_directories (plc4cpp-utils-systemconfig PUBLIC ${Boost_INCLUDE_DIRS})
