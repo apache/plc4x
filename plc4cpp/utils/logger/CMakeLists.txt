@@ -27,3 +27,5 @@ add_library(plc4cpp-utils-logger
         )
 
 target_include_directories (plc4cpp-utils-logger PUBLIC ${Boost_INCLUDE_DIRS})
+
+target_link_libraries (plc4cpp-utils-logger ${Boost_LIBRARIES})
