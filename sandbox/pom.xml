@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.plc4x.sandbox</groupId>
@@ -35,8 +35,9 @@
   <description>Place where new stuff is located before it is regarded production-quality.</description>
 
   <modules>
-    <module>dynamic-driver-base</module>
-    <module>dynamic-driver-s7</module>
+    <module>code-gen</module>
+    <module>test-java-knxnetip-driver</module>
+    <module>test-java-s7-driver</module>
   </modules>
 
 </project>

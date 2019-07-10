@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4py</artifactId>
@@ -58,7 +58,6 @@
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-protocols-proxy</artifactId>
-                  <version>0.4.0-SNAPSHOT</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/protocol-spec</outputDirectory>
@@ -66,7 +65,6 @@
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-tools-thrift</artifactId>
-                  <version>0.4.0-SNAPSHOT</version>
                   <type>zip</type>
                   <classifier>compiler-${os.classifier}</classifier>
                   <overWrite>true</overWrite>
@@ -87,7 +85,6 @@
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
                   <artifactId>interop-server</artifactId>
-                  <version>0.4.0-SNAPSHOT</version>
                   <type>jar</type>
                   <classifier>jar-with-dependencies</classifier>
                   <overWrite>true</overWrite>
@@ -160,7 +157,7 @@
               <executable>python</executable>
               <workingDirectory>${project.build.directory}/python</workingDirectory>
               <arguments>
-                <argument>../../setup.py</argument>
+                <argument>${project.basedir}/setup.py</argument>
                 <argument>build</argument>
                 <argument>--build-base=${project.build.directory}/python</argument>
               </arguments>
@@ -176,7 +173,7 @@
               <executable>python</executable>
               <workingDirectory>${project.build.directory}/python</workingDirectory>
               <arguments>
-                <argument>../../setup.py</argument>
+                <argument>${project.basedir}/setup.py</argument>
                 <argument>sdist</argument>
                 <argument>--dist-dir=${project.build.directory}/python</argument>
               </arguments>
@@ -191,11 +188,32 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>interop-server</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-      <type>pom</type>
+      <classifier>jar-with-dependencies</classifier>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-protocols-proxy</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-tools-thrift</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+        <type>zip</type>
+        <classifier>compiler-${os.classifier}</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>interop-server</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+        <classifier>jar-with-dependencies</classifier>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

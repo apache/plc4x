@@ -105,8 +105,8 @@ ABS_BASE_DIR=`pwd`
 URL=${BASE_URL}
 mywget ${URL}/KEYS
 
-DST_VER_DIR=${VER}-incubating
-URL=${BASE_URL}/${VER}-incubating
+DST_VER_DIR=${VER}
+URL=${BASE_URL}/${VER}
 if [ ${IS_RC} ]; then
   DST_VER_DIR=${DST_VER_DIR}/${RC_SFX}
   URL=${URL}/${RC_SFX}
@@ -116,7 +116,7 @@ mkdir -p ${DST_VER_DIR}
 cd ${DST_VER_DIR}
 mywget ${URL}/README
 mywget ${URL}/RELEASE_NOTES
-getSignedBundle ${URL}/apache-plc4x-incubating-${VER}-source-release.zip
+getSignedBundle ${URL}/apache-plc4x-${VER}-source-release.zip
 
 echo
 echo Done Downloading to ${DST_BASE_DIR}

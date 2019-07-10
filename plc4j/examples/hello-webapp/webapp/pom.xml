@@ -18,14 +18,13 @@
   under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-hello-webapp</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-webapp-webapp</artifactId>
@@ -62,6 +61,10 @@
         <executions>
           <!-- Unpack the client content into this module in order to be able to serve the client too. -->
           <execution>
+            <!--
+              REMARK: This might fail if you don't at least build till the "package" phase.
+              The reason is that in this case the dependency reference points to a directory instead of an archive.
+            -->
             <id>copy-client</id>
             <phase>prepare-package</phase>
             <goals>
@@ -72,7 +75,6 @@
                 <artifactItem>
                   <groupId>org.apache.plc4x.examples</groupId>
                   <artifactId>plc4j-hello-webapp-client</artifactId>
-                  <version>0.4.0-SNAPSHOT</version>
                   <type>war</type>
                   <outputDirectory>${project.build.outputDirectory}/static/</outputDirectory>
                 </artifactItem>
@@ -107,7 +109,7 @@
     <dependency>
       <groupId>org.apache.plc4x.examples</groupId>
       <artifactId>plc4j-hello-webapp-service</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
+      <version>0.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -131,11 +133,20 @@
     <dependency>
       <groupId>org.apache.plc4x.examples</groupId>
       <artifactId>plc4j-hello-webapp-client</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
       <type>war</type>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.plc4x.examples</groupId>
+        <artifactId>plc4j-hello-webapp-client</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+        <type>war</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

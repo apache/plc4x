@@ -64,8 +64,7 @@ namespace org
 							// ===================================================
 							bool DefaultByteFieldItem::isValidShort(int index)
 							{
-								char value = getValue(index);
-								return value >= -32768 && value <= 32767;
+								return true;
 							}
 
 							// ===================================================
@@ -83,7 +82,7 @@ namespace org
 							bool DefaultByteFieldItem::isValidInteger(int index)
 							{
 								char value = getValue(index);
-								return value >= 0 && value <= 2147483647;
+								return value >= 0;
 							}
 
 							// ===================================================

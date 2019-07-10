@@ -29,7 +29,7 @@ under the License.
 #define IMPEXP __declspec(dllimport)
 #endif 	// __dll__*/
 
-extern "C" __declspec(dllexport) org::apache::plc4x::cpp::spi::PlcDriver* __CreatePlcDriverInstance();
+//extern "C" __declspec(dllexport) org::apache::plc4x::cpp::spi::PlcDriver* __CreatePlcDriverInstance();
 
 
 #endif	// DLLEXPORTS_H

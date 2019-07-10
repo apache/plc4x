@@ -375,7 +375,7 @@ namespace org
                             if (errorCode != system::errc::success)
                             {
                                 int iErrCode = errorCode.value();
-                                if (iErrCode != NO_ERROR)
+                                /*if (iErrCode != NO_ERROR)
                                 {
                                     // WSAECONNRESET = 10054, WSAECONNABORTED = 10053, EPIPE, ECONNABORTED indicates "broken Connection"
                                     if (iErrCode == WSAECONNRESET || iErrCode == WSAECONNABORTED || iErrCode == EPIPE)
@@ -388,7 +388,7 @@ namespace org
                                     _strErrorMessage = stm.str();
                                     LOG_TRACE(_strErrorMessage.c_str()); DEBUG_TRACE1("%s", _strErrorMessage.c_str());
                                     // TODO: Signal
-                                }
+                                }*/
                             }
                         }
 
@@ -401,7 +401,7 @@ namespace org
                             if (errorCode != system::errc::success && errorCode.value() != ENOENT)
                             {
                                 int iErrCode = errorCode.value();
-                                if (iErrCode != NO_ERROR)
+                                /*if (iErrCode != NO_ERROR)
                                 {
                                     // WSAECONNRESET = 10054, WSAECONNABORTED = 10053, EPIPE, ECONNABORTED indicates "broken Connection"
                                     if (iErrCode == WSAECONNRESET || iErrCode == WSAECONNABORTED || iErrCode == EPIPE)
@@ -414,7 +414,7 @@ namespace org
                                     _strErrorMessage = stm.str();
                                     LOG_TRACE(_strErrorMessage.c_str()); DEBUG_TRACE1("%s", _strErrorMessage.c_str());
                                     // TODO: Signal
-                                }
+                                }*/
                             }
                         }
 

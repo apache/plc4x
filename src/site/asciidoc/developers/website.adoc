@@ -175,3 +175,24 @@ Only on these machines are jobs allowed to push changes to a Git repo and here o
 See https://builds.apache.org/view/M-R/job/PLC4X/job/PLC4X%20Site/ for details on the PLC4X Jenkins Website build job.
 
 As soon as content is updated in the `asf-site` the `gitpubsub` mechanism will make those changes available at https://plc4x.apache.org
+
+== Bells and Whistles
+
+=== Making all pom properties available to asciidoctor
+
+While trying to automate keeping the content of the release documentation up-to-date, we added a groovy script to automatically calculate some version numbers.
+Unfortunately it wasn't possible to use these in asciidoctor using the normal `attributes` as the values aren't set as soon as Maven configures the plugin.
+
+We came up with an option to still achieve this:
+
+* The `groovy-maven-plugin` sets the dynamic properties in the `provide-custom-properties` execution.
+* Then we use the `properties-maven-plugin` to write all maven properties into a property file `target/pom.adoc`.
+* As Asciidoctor doesn't understand property files, we use the `replacer` to convert the content into an Asciidoctor property file in the `convert-property-to-adoc` execution.
+* Now we provide access to the location of this file by setting the `pom-adoc` attribute.
+* If we now need to access the properties, all we need to do, is to import the `pom.adoc` file with the following statement:
+
+   include::{pom-adoc}[]
+
+* After this all maven properties can be accessed via:
+
+   We are currently working on releasing ApachePLC4X {current-full-version}

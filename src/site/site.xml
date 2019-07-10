@@ -104,6 +104,10 @@
       <item name="Bug &amp; Issue Tracker" href="developers/issues.html"/>
       <item name="Building PLC4X" href="developers/building.html"/>
       <item name="Code Analysis" href="developers/sonar.html"/>
+      <item name="Code Generation" href="developers/code-gen/index.html">
+        <item name="Protocol: MSpec Format" href="developers/code-gen/protocol/mspec.html"/>
+        <item name="Language: Apache Freemarker" href="developers/code-gen/language/freemarker.html"/>
+      </item>
       <item name="Continuous Integration" href="developers/ci.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
       <item name="Decision Making" href="developers/decisions.html"/>

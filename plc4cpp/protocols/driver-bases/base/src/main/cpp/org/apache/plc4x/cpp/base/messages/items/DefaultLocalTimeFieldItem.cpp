@@ -36,7 +36,7 @@ namespace org
 							// ==================================================
 							bool DefaultLocalTimeFieldItem::isValidTime(int index)
 							{
-								return getValue(index) != NULL; ;
+								return true;
 							}
 
 							// ===================================================
@@ -65,7 +65,7 @@ namespace org
 							// ===================================================
 							bool DefaultLocalTimeFieldItem::isValidDate(int index)
 							{
-								return getValue(index) != NULL;
+								return true;
 							}
 
 							// ===================================================

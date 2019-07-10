@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-tools</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-tools-thrift</artifactId>
@@ -38,37 +38,106 @@
     <thrift.with.python>OFF</thrift.with.python>
   </properties>
 
-  <!--
-    Project for building platform dependent versions of the base-libs used by the plc4cpp modules.
-    As building these libraries usually takes quite a lot of time, they are being built in the
-    normal "target" directory, however the finished libs are installed in a "libs" directory.
-
-    This is done to prevent the libs from being cleaned every time.
-  -->
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>license-check</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration>
-            <excludes combine.children="append">
-              <!-- Don't scan the bin directory -->
-              <exclude>bin/**</exclude>
-            </excludes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <plugins>
+      <!-- First download the sources for building the thrift compiler -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <id>get-thrift</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>http://www.apache.org/dyn/closer.lua?action=download&amp;filename=/thrift/${thrift.version}/thrift-${thrift.version}.tar.gz</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.googlecode.cmake-maven-project</groupId>
+        <artifactId>cmake-maven-plugin</artifactId>
+        <version>3.7.2-b1</version>
+        <executions>
+          <!-- Uses a CMake generator to generate the build using the build tool of choice -->
+          <execution>
+            <id>cmake-generate</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <sourcePath>${project.build.directory}/thrift-${thrift.version}</sourcePath>
+              <targetPath>${project.build.directory}/build</targetPath>
+              <generator>${cmake.generator}</generator>
+              <!--
+                The classifier of the current platform. One of
+                [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
+                It defines the version and type of the cmake installation to download.
+              -->
+              <classifier>${os.classifier}</classifier>
+              <options>
+                <!-- Disable testing for now -->
+                <option>-DBUILD_TESTING=OFF</option>
+                <option>-DBUILD_C_GLIB=OFF</option>
+                <option>-DBUILD_CPP=${thrift.with.cpp}</option>
+                <!-- Don't build Java, as the libs are available via Maven -->
+                <option>-DBUILD_JAVA=OFF</option>
+                <option>-DBUILD_PYTHON=${thrift.with.python}</option>
+                <option>-DBUILD_HASKELL=OFF</option>
+              </options>
+            </configuration>
+          </execution>
+          <!-- Actually executes the build -->
+          <execution>
+            <id>cmake-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <!-- The directory where the "generate" step generated the build configuration -->
+              <projectDirectory>${project.build.directory}/build</projectDirectory>
+              <classifier>${os.classifier}</classifier>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Add the thrift compiler executable to the build -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>source-release-assembly</id>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>package-thrift-compiler</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.artifactId}-${project.version}</finalName>
+              <descriptors>
+                <descriptor>src/assembly/compiler.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>
@@ -123,116 +192,6 @@
                   <finalName>${project.artifactId}-${project.version}</finalName>
                   <descriptors>
                     <descriptor>src/assembly/python.xml</descriptor>
-                  </descriptors>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>build-thrift</id>
-      <activation>
-        <file>
-          <missing>bin/thrift</missing>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <!-- First download the sources for building the thrift compiler -->
-          <plugin>
-            <groupId>com.googlecode.maven-download-plugin</groupId>
-            <artifactId>download-maven-plugin</artifactId>
-            <version>1.4.0</version>
-            <executions>
-              <execution>
-                <id>get-thrift</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>wget</goal>
-                </goals>
-                <configuration>
-                  <url>http://www.apache.org/dyn/closer.lua?action=download&amp;filename=/thrift/${thrift.version}/thrift-${thrift.version}.tar.gz</url>
-                  <unpack>true</unpack>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>com.googlecode.cmake-maven-project</groupId>
-            <artifactId>cmake-maven-plugin</artifactId>
-            <version>3.7.2-b1</version>
-            <executions>
-              <!-- Uses a CMake generator to generate the build using the build tool of choice -->
-              <execution>
-                <id>cmake-generate</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>generate</goal>
-                </goals>
-                <configuration>
-                  <sourcePath>${project.build.directory}/thrift-${thrift.version}</sourcePath>
-                  <targetPath>${project.build.directory}/build</targetPath>
-                  <generator>${cmake.generator}</generator>
-                  <!--
-                    The classifier of the current platform. One of
-                    [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
-                    It defines the version and type of the cmake installation to download.
-                  -->
-                  <classifier>${os.classifier}</classifier>
-                  <options>
-                    <!-- Disable testing for now -->
-                    <option>-DBUILD_TESTING=OFF</option>
-                    <option>-DBUILD_C_GLIB=OFF</option>
-                    <option>-DBUILD_CPP=${thrift.with.cpp}</option>
-                    <!-- Don't build Java, as the libs are available via Maven -->
-                    <option>-DBUILD_JAVA=OFF</option>
-                    <option>-DBUILD_PYTHON=${thrift.with.python}</option>
-                    <option>-DBUILD_HASKELL=OFF</option>
-                  </options>
-                </configuration>
-              </execution>
-              <!-- Actually executes the build -->
-              <execution>
-                <id>cmake-compile</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <!-- The directory where the "generate" step generated the build configuration -->
-                  <projectDirectory>${project.build.directory}/build</projectDirectory>
-                  <classifier>${os.classifier}</classifier>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!-- Add the thrift compiler executable to the build -->
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.1</version>
-            <executions>
-              <execution>
-                <id>source-release-assembly</id>
-                <configuration>
-                  <skip>true</skip>
-                </configuration>
-              </execution>
-              <execution>
-                <id>package-thrift-compiler</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <finalName>${project.artifactId}-${project.version}</finalName>
-                  <descriptors>
-                    <descriptor>src/assembly/compiler.xml</descriptor>
                   </descriptors>
                 </configuration>
               </execution>

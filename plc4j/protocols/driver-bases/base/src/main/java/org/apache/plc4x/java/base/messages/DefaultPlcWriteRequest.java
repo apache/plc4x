@@ -209,12 +209,12 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
 
         @Override
         public Builder addItem(String name, String fieldQuery, byte[]... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
+            return addItem(name, fieldQuery, values, fieldHandler::encodeByteArray);
         }
 
         @Override
         public Builder addItem(String name, String fieldQuery, Byte[]... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
+            return addItem(name, fieldQuery, values, fieldHandler::encodeByteArray);
         }
 
         @Override

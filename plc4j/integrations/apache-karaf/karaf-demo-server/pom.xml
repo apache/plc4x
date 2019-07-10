@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-apache-karaf</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-karaf-demo-server</artifactId>
@@ -50,36 +50,36 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>karaf-ads-feature</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
+      <artifactId>plc4j-karaf-ads-feature</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>karaf-ethernet-ip-feature</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
+      <artifactId>plc4j-karaf-ethernet-ip-feature</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>karaf-modbus-feature</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
+      <artifactId>plc4j-karaf-modbus-feature</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>karaf-s7-feature</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
+      <artifactId>plc4j-karaf-s7-feature</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>karaf-simulated-feature</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
+      <artifactId>plc4j-karaf-simulated-feature</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
@@ -113,11 +113,11 @@
           <usedDependencies>
             <usedDependency>org.apache.karaf.features:framework</usedDependency>
             <usedDependency>org.apache.karaf.features:standard</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-ads-feature</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-ethernet-ip-feature</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-modbus-feature</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-s7-feature</usedDependency>
-            <usedDependency>org.apache.plc4x:karaf-simulated-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-ads-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-ethernet-ip-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-modbus-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-s7-feature</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-karaf-simulated-feature</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4cpp</artifactId>
@@ -54,7 +54,7 @@
   <profiles>
     <!-- Profile for linux -->
     <profile>
-      <id>unix</id>
+      <id>os-unix</id>
       <activation>
         <os>
           <family>unix</family>
@@ -95,7 +95,7 @@
     </profile>
     <!-- Profile for mac -->
     <profile>
-      <id>mac</id>
+      <id>os-mac</id>
       <activation>
         <os>
           <family>mac</family>
@@ -136,7 +136,7 @@
     </profile>
     <!-- profile for windows -->
     <profile>
-      <id>windows</id>
+      <id>os-windows</id>
       <activation>
         <os>
           <family>windows</family>
@@ -326,18 +326,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!-- Prevent the jar plugin from building a jar -->
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <phase/>
-          </execution>
-        </executions>
-      </plugin-->
     </plugins>
   </build>
 

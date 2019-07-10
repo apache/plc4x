@@ -18,7 +18,7 @@ under the License.
 */
 
 #include "PlcDriverManager.h"
-#include <windows.h>
+//#include <windows.h>
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 #include <iostream>
@@ -135,7 +135,7 @@ namespace org
                             {
                                 std::string strDriverName = what[1].str();                                    
                                     
-                                try
+                                /*try
                                 {
                                     //TODO: Only implemented for Windows
                                     HINSTANCE hdll = NULL;
@@ -157,7 +157,7 @@ namespace org
                                 }
                                 catch (...)
                                 {
-                                }
+                                }*/
                             }
                         }
                     }
