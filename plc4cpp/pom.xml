@@ -226,6 +226,8 @@
                     <argument>--with-log</argument>
                     <!-- On Windows machines the build failed, if this was not explicitly set -->
                     <argument>address-model=64</argument>
+                    <!-- On Linux machines the build of llibraries using boos failed, if this is not set -->
+                    <argument>cxxflags=-fPIC</argument>
                   </arguments>
                   <workingDirectory>${project.build.directory}/boost_${boost.version.underline}</workingDirectory>
                 </configuration>
