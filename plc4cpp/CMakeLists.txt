@@ -22,7 +22,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Save the root directory
 set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
+
+# Tell the tooling where to find our Boost installation
+set(BOOST_INCLUDEDIR "${PLC4CPP_ROOT_DIR}/target/lib/boost/include")
+set(BOOST_LIBRARYDIR "${PLC4CPP_ROOT_DIR}/target/lib/boost/lib")
 
 # Disable usage of Boost-CMake
 set(Boost_NO_BOOST_CMAKE ON)
@@ -30,7 +35,6 @@ set(Boost_NO_BOOST_CMAKE ON)
 set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_DEBUG ON)
 set(Boost_ARCHITECTURE "-x64")
 
 # Ensure the listed modules are found and environment variables for boost are set.

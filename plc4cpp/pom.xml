@@ -300,11 +300,6 @@
                 It defines the version and type of the cmake installation to download.
               -->
               <classifier>${os.classifier}</classifier>
-              <environmentVariables>
-                <BOOST_INCLUDEDIR>${project.build.directory}/lib/boost/include</BOOST_INCLUDEDIR>
-                <BOOST_LIBRARYDIR>${project.build.directory}/lib/boost/lib</BOOST_LIBRARYDIR>
-                <Boost_NO_SYSTEM_PATHS>ON</Boost_NO_SYSTEM_PATHS>
-              </environmentVariables>
             </configuration>
           </execution>
           <!-- Actually executes the build -->
@@ -325,18 +320,13 @@
               <!-- The directory where the "generate" step generated the build configuration -->
               <projectDirectory>${project.build.directory}/build</projectDirectory>
               <classifier>${os.classifier}</classifier>
-              <environmentVariables>
-                <BOOST_INCLUDEDIR>${project.build.directory}/lib/boost/include</BOOST_INCLUDEDIR>
-                <BOOST_LIBRARYDIR>${project.build.directory}/lib/boost/lib</BOOST_LIBRARYDIR>
-                <Boost_NO_SYSTEM_PATHS>ON</Boost_NO_SYSTEM_PATHS>
-              </environmentVariables>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
       <!-- Prevent the jar plugin from building a jar -->
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -345,7 +335,7 @@
             <phase/>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
     </plugins>
   </build>
 
