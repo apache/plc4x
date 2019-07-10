@@ -37,3 +37,11 @@ Make sure the `bin` directory containing the executable `mingw32-make.exe` is on
 3. Select the `plc4cpp` subdirectory
 4. Wait till the IDE is ready (little icon in the lower left corner)
 5. Build everything by selecting the menu `Build/Build All` (or similar)
+
+## Building PLC4CPP in CLion
+
+1. Open CLion
+2. Open Local Directory
+3. Select the `plc4cpp` subdirectory
+4. Wait till the IDE is ready (little icon in the lower center)
+5. Build everything by selecting the menu `Build/Build All in Debug` (or similar)
