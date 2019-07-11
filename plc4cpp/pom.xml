@@ -47,10 +47,6 @@
     target/lib/boost is found.
   -->
 
-  <properties>
-    <cmake-version>3.14.5</cmake-version>
-  </properties>
-
   <profiles>
     <!-- Profile for linux -->
     <profile>
@@ -60,11 +56,6 @@
           <family>unix</family>
         </os>
       </activation>
-      <properties>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</cmake.url>
-        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64</cmake.root-dir>
-        <cmake.child-dir>bin/cmake</cmake.child-dir>
-      </properties>
       <!-- Make the cmake executable executable -->
       <build>
         <plugins>
@@ -101,11 +92,6 @@
           <family>mac</family>
         </os>
       </activation>
-      <properties>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Darwin-x86_64.tar.gz</cmake.url>
-        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-Darwin-x86_64</cmake.root-dir>
-        <cmake.child-dir>CMake.app/Contents/BIN/cmake</cmake.child-dir>
-      </properties>
       <!-- Make the cmake executable executable -->
       <build>
         <plugins>
@@ -133,20 +119,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <!-- profile for windows -->
-    <profile>
-      <id>os-windows</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-win64-x64.zip</cmake.url>
-        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-win64-x64</cmake.root-dir>
-        <cmake.child-dir>bin/cmake.exe</cmake.child-dir>
-      </properties>
     </profile>
     <!--
       Build Boost, if it's not available yet.
