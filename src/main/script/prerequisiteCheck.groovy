@@ -169,6 +169,26 @@ def checkPython() {
     }
 }
 
+/*
+ * This check does an extremely simple check, if the boost library exists in the maven local repo.
+ * We're not checking if it could be resolved.
+ */
+def checkBoost() {
+    print "Detecting Boost library:  "
+    def localRepoBaseDir = session.getLocalRepository().getBasedir()
+    def expectedFile = new File(localRepoBaseDir, "org/apache/plc4x/plc4x-tools-boost/" + project.version +
+        "/plc4x-tools-boost-" + project.version + "-lib-" + project.properties["os.classifier"] + ".zip")
+    if(!expectedFile.exists()) {
+        println "              missing"
+        println ""
+        println "Missing the Boost library. This has to be built by activating the Maven profile 'with-boost'. This only has to be built once."
+        println ""
+        allConditionsMet = false
+    } else {
+        println "              OK"
+    }
+}
+
 /**
  * Version extraction function/macro. It looks for occurance of x.y or x.y.z
  * in passed input text (likely output from `program --version` command if found).
@@ -200,6 +220,7 @@ println "Detected Arch: " + arch
 /////////////////////////////////////////////////////
 
 println "Enabled profiles:"
+def boostEnabled = false
 def cppEnabled = false
 def dotnetEnabled = false
 def javaEnabled = false
@@ -208,7 +229,10 @@ def proxiesEnabled = false
 def sandboxEnabled = false
 def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
-    if(activeProfile == "with-cpp") {
+    if(activeProfile == "with-boost") {
+        boostEnabled = true
+        println "boost"
+    } else if(activeProfile == "with-cpp") {
         cppEnabled = true
         println "cpp"
     } else if(activeProfile == "with-dotnet") {
@@ -276,9 +300,13 @@ if(proxiesEnabled || cppEnabled) {
     checkGpp()
 }
 
-// TODO: Doesn't work yet
 if(pythonEnabled) {
     checkPython()
+}
+
+// We only need this check, if boost is not enabled but we're enabling cpp.
+if(!boostEnabled && cppEnabled) {
+    checkBoost()
 }
 
 if(!allConditionsMet) {

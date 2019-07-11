@@ -34,6 +34,12 @@
 
   <profiles>
     <profile>
+      <id>with-boost</id>
+      <modules>
+        <module>boost</module>
+      </modules>
+    </profile>
+    <profile>
       <id>with-proxies</id>
       <modules>
         <module>thrift</module>
