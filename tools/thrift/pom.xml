@@ -38,14 +38,162 @@
     <thrift.with.python>OFF</thrift.with.python>
   </properties>
 
+  <profiles>
+    <!-- Profile for linux -->
+    <profile>
+      <id>os-unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <!-- Make the cmake executable executable (Seems not to be per default) -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <id>make-cmake-executable</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <basedir>${cmake.root-dir}</basedir>
+                  <executable>chmod</executable>
+                  <arguments>
+                    <argument>+x</argument>
+                    <argument>${cmake.child-dir}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Profile for mac -->
+    <profile>
+      <id>os-mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <!-- Make the cmake executable executable (Seems not to be per default) -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <id>make-cmake-executable</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <basedir>${cmake.root-dir}</basedir>
+                  <executable>chmod</executable>
+                  <arguments>
+                    <argument>+x</argument>
+                    <argument>${cmake.child-dir}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- If C++ is enabled, we need to add another assembly to the build to package the libraries -->
+    <profile>
+      <id>with-cpp</id>
+      <properties>
+        <thrift.with.cpp>ON</thrift.with.cpp>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.1</version>
+            <executions>
+              <execution>
+                <id>package-thrift-cpp</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
+                  <descriptors>
+                    <descriptor>src/assembly/cpp.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- If Python is enabled, we need to add another assembly to the build to package the libraries -->
+    <profile>
+      <id>with-python</id>
+      <properties>
+        <thrift.with.python>ON</thrift.with.python>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.1</version>
+            <executions>
+              <execution>
+                <id>package-thrift-python</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
+                  <descriptors>
+                    <descriptor>src/assembly/python.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
-      <!-- First download the sources for building the thrift compiler -->
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
         <version>1.4.0</version>
         <executions>
+          <!-- Download the CMake binary distribution for this platform. -->
+          <execution>
+            <id>get-cmake</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${cmake.url}</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+          </execution>
+          <!-- Download the sources for building the thrift compiler -->
           <execution>
             <id>get-thrift</id>
             <phase>generate-sources</phase>
@@ -74,6 +222,14 @@
               <goal>generate</goal>
             </goals>
             <configuration>
+              <!--
+                We need to use a newer version of cmake, so disable downloading
+                and tell the plugin where to find that version.
+              -->
+              <downloadBinaries>false</downloadBinaries>
+              <cmakeRootDir>${cmake.root-dir}</cmakeRootDir>
+              <cmakeChildDir>${cmake.child-dir}</cmakeChildDir>
+
               <sourcePath>${project.build.directory}/thrift-${thrift.version}</sourcePath>
               <targetPath>${project.build.directory}/build</targetPath>
               <generator>${cmake.generator}</generator>
@@ -92,6 +248,7 @@
                 <option>-DBUILD_JAVA=OFF</option>
                 <option>-DBUILD_PYTHON=${thrift.with.python}</option>
                 <option>-DBUILD_HASKELL=OFF</option>
+                <option>--debug</option>
               </options>
             </configuration>
           </execution>
@@ -103,6 +260,14 @@
               <goal>compile</goal>
             </goals>
             <configuration>
+              <!--
+                We need to use a newer version of cmake, so disable downloading
+                and tell the plugin where to find that version.
+              -->
+              <downloadBinaries>false</downloadBinaries>
+              <cmakeRootDir>${cmake.root-dir}</cmakeRootDir>
+              <cmakeChildDir>${cmake.child-dir}</cmakeChildDir>
+
               <!-- The directory where the "generate" step generated the build configuration -->
               <projectDirectory>${project.build.directory}/build</projectDirectory>
               <classifier>${os.classifier}</classifier>
@@ -139,67 +304,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>with-cpp</id>
-      <properties>
-        <thrift.with.cpp>ON</thrift.with.cpp>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.1</version>
-            <executions>
-              <execution>
-                <id>package-thrift-cpp</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <finalName>${project.artifactId}-${project.version}</finalName>
-                  <descriptors>
-                    <descriptor>src/assembly/cpp.xml</descriptor>
-                  </descriptors>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>with-python</id>
-      <properties>
-        <thrift.with.python>ON</thrift.with.python>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.1</version>
-            <executions>
-              <execution>
-                <id>package-thrift-python</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <finalName>${project.artifactId}-${project.version}</finalName>
-                  <descriptors>
-                    <descriptor>src/assembly/python.xml</descriptor>
-                  </descriptors>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
