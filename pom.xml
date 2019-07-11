@@ -113,6 +113,7 @@
     <boost.version.underline-short>1_70</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
+    <cmake-version>3.14.5</cmake-version>
     <commons-codec.version>1.12</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
     <commons-configuration2.version>2.2</commons-configuration2.version>
@@ -1479,6 +1480,9 @@
       <properties>
         <os.suffix>linux</os.suffix>
         <os.classifier>linux-x86_64</os.classifier>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</cmake.url>
+        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64</cmake.root-dir>
+        <cmake.child-dir>bin/cmake</cmake.child-dir>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
@@ -1500,6 +1504,9 @@
       <properties>
         <os.suffix>mac</os.suffix>
         <os.classifier>mac-x86_64</os.classifier>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Darwin-x86_64.tar.gz</cmake.url>
+        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-Darwin-x86_64</cmake.root-dir>
+        <cmake.child-dir>CMake.app/Contents/BIN/cmake</cmake.child-dir>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
@@ -1521,6 +1528,9 @@
       <properties>
         <os.suffix>win</os.suffix>
         <os.classifier>windows-x86_64</os.classifier>
+        <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-win64-x64.zip</cmake.url>
+        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-win64-x64</cmake.root-dir>
+        <cmake.child-dir>bin/cmake.exe</cmake.child-dir>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
         <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
