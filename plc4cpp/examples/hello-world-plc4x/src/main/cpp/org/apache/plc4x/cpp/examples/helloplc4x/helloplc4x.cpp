@@ -43,17 +43,14 @@ int main(int argc, char *argv[])
         System.exit(1);
     }*/
 
-   cout << "Hurz";
-
     // Establish a connection to the plc using the url provided as first argument
     try 
     {
-        cout << "Wolf";
+
         PlcDriverManager plcDriverManager;
         //options.getConnectionString()
-        cout << "Lamm";
+
         PlcConnection* plcConnection = plcDriverManager.getConnection("s7://10.10.64.20/0/1");
-        cout << "Grüne Wiese";
 
         // Check if this connection support reading of data.
         /*if (!plcConnection.getMetadata().canRead()) {

@@ -18,20 +18,23 @@ under the License.
 */
 
 //-------- DllMain.cpp --------//
-#define __dll__
 #include "dllexports.h"
 #include "S7PlcDriver.h"
-//#include <windows.h>
+#if defined (_WIN32)
+    #include <windows.h>
+#endif
 
 using namespace org::apache::plc4x::cpp::s7;
 using namespace org::apache::plc4x::cpp::spi;
 
-/*int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
+#if defined (_WIN32)
+int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
 {
     return 1;
 }
+#endif
 
-__declspec(dllexport) PlcDriver* __CreatePlcDriverInstance()
+extern "C" PlcDriver* _CreatePlcDriverInstance()
 {
     return new S7PlcDriver;
-}*/
+}

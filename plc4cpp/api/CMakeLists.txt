@@ -68,3 +68,4 @@ add_library(plc4cpp-api
 target_include_directories (plc4cpp-api PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories (plc4cpp-api PUBLIC ../utils/logger/src/main/cpp)
 
+target_link_libraries (plc4cpp-api ${CMAKE_DL_LIBS})

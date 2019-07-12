@@ -18,7 +18,12 @@ under the License.
 */
 
 #include "PlcDriverManager.h"
-//#include <windows.h>
+#if defined (_WIN32)
+    #include <windows.h>
+#elif (__linux__) || (defined (__APPLE__) && defined (__MACH__))
+    #include <dlfcn.h>
+#endif
+
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 #include <iostream>
@@ -125,7 +130,7 @@ namespace org
                     boost::regex exFilter(PLC_DRIVER_TEMPLATE);
                     boost::smatch what;
                         
-                    for (fs::recursive_directory_iterator itDirFiles("../.."); itDirFiles != fs::recursive_directory_iterator(); itDirFiles++)
+                    for (fs::recursive_directory_iterator itDirFiles("./"); itDirFiles != fs::recursive_directory_iterator(); itDirFiles++)
                     {
                         if (boost::filesystem::is_regular_file(*itDirFiles))
                         {
@@ -135,14 +140,22 @@ namespace org
                             {
                                 std::string strDriverName = what[1].str();                                    
                                     
-                                /*try
+                                try
                                 {
+#if defined (_WIN32)
                                     //TODO: Only implemented for Windows
                                     HINSTANCE hdll = NULL;
                                     hdll = LoadLibrary((itDirFiles->path().string().c_str()));
                                     if (hdll != NULL)
                                     {
                                         CreatePlcDriver = (pfCreatePlcDriver)GetProcAddress(hdll, PLC_CREATE_DRIVER_INSTANCE.c_str());
+#elif defined (__linux__) || (defined (__APPLE__) && defined (__MACH__))
+                                    void *hdll = NULL;
+                                    hdll = dlopen((itDirFiles->path().string().c_str()),RTLD_NOW);
+                                    if (hdll != NULL)
+                                    {
+                                        CreatePlcDriver = (pfCreatePlcDriver)dlsym(hdll, PLC_CREATE_DRIVER_INSTANCE.c_str());
+#endif
                                         if (CreatePlcDriver != NULL)
                                         {
                                             PlcDriver* pPlcDriver = NULL;
@@ -157,7 +170,7 @@ namespace org
                                 }
                                 catch (...)
                                 {
-                                }*/
+                                }
                             }
                         }
                     }
