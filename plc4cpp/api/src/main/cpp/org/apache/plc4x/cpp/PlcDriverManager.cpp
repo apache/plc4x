@@ -143,7 +143,6 @@ namespace org
                                 try
                                 {
 #if defined (_WIN32)
-                                    //TODO: Only implemented for Windows
                                     HINSTANCE hdll = NULL;
                                     hdll = LoadLibrary((itDirFiles->path().string().c_str()));
                                     if (hdll != NULL)
