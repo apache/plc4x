@@ -127,7 +127,8 @@
     <profile>
       <id>with-proxies</id>
       <properties>
-        <option.with-proxies>ON</option.with-proxies>
+        <!-- Disabled for now as the thrift code seems to have issues with boost 1.70 -->
+        <!--option.with-proxies>ON</option.with-proxies-->
       </properties>
       <build>
         <plugins>
