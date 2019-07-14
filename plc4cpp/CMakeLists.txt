@@ -25,6 +25,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Save the root directory
 set(PLC4CPP_ROOT_DIR ${CMAKE_SOURCE_DIR})
+# Define some user-defined profiles
+set(WITH_PROXIES OFF CACHE BOOL "Enable building Thrift based proxy driver")
 
 # Tell the tooling where to find our Boost installation
 set(BOOST_INCLUDEDIR "${PLC4CPP_ROOT_DIR}/target/lib/boost/include")

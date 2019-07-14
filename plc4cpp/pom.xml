@@ -38,6 +38,10 @@
     <sonar.language>c++</sonar.language>
   </properties-->
 
+  <properties>
+    <option.with-proxies>OFF</option.with-proxies>
+  </properties>
+
   <!--
     Notes:
     - It turns out that the default version of CMake the cmake-maven-plugin uses is too
@@ -120,6 +124,42 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>with-proxies</id>
+      <properties>
+        <option.with-proxies>ON</option.with-proxies>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>get-boost</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems combine.children="append">
+                    <!-- Get the pre-packaged boost library -->
+                    <artifactItem>
+                      <groupId>org.apache.plc4x</groupId>
+                      <artifactId>plc4x-tools-thrift</artifactId>
+                      <version>0.5.0-SNAPSHOT</version>
+                      <type>zip</type>
+                      <classifier>cpp-${os.classifier}</classifier>
+                      <outputDirectory>${project.build.directory}/lib/thrift</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
@@ -145,7 +185,9 @@
         </executions>
       </plugin>
 
-      <!-- Get the pre-packaged boost library -->
+      <!--
+        Get additional stuff we need for the build.
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -158,6 +200,7 @@
             </goals>
             <configuration>
               <artifactItems>
+                <!-- Get the pre-packaged boost library -->
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-tools-boost</artifactId>
@@ -166,12 +209,60 @@
                   <classifier>lib-${os.classifier}</classifier>
                   <outputDirectory>${project.build.directory}/lib/boost</outputDirectory>
                 </artifactItem>
+                <!-- Unpack the protocol spec for the proxy driver -->
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-proxy</artifactId>
+                  <version>0.5.0-SNAPSHOT</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/protocol-spec</outputDirectory>
+                </artifactItem>
+                <!-- Unpack the thrift compiler -->
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-tools-thrift</artifactId>
+                  <version>0.5.0-SNAPSHOT</version>
+                  <type>zip</type>
+                  <classifier>compiler-${os.classifier}</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/thrift-compiler</outputDirectory>
+                  <destFileName>${thrift.compiler.executable}</destFileName>
+                </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
+      <!--
+        Generate the code for the Thrift-based interop server
+      -->
+      <plugin>
+        <groupId>org.apache.thrift.tools</groupId>
+        <artifactId>maven-thrift-plugin</artifactId>
+        <version>0.1.11</version>
+        <configuration>
+          <thriftExecutable>${project.build.directory}/thrift-compiler/${thrift.compiler.executable}</thriftExecutable>
+          <thriftSourceRoot>${project.build.directory}/protocol-spec</thriftSourceRoot>
+          <includes>
+            <include>**/interop.thrift</include>
+          </includes>
+          <generator>cpp</generator>
+          <outputDirectory>${project.build.directory}/generated-sources/drivers/proxy</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>thrift-sources</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+        Do the actual build.
+      -->
       <plugin>
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
@@ -212,6 +303,9 @@
                 It defines the version and type of the cmake installation to download.
               -->
               <classifier>${os.classifier}</classifier>
+              <options>
+                <option>-DWITH_PROXIES:BOOL=${option.with-proxies}</option>
+              </options>
             </configuration>
           </execution>
           <!-- Actually executes the build -->

@@ -17,4 +17,10 @@
   under the License.
 ]]
 
+# Only build the proxy module, if the "with-proxies" profile is enabled.
+message(STATUS "With proxy = ${WITH_PROXIES}")
+if(WITH_PROXIES)
+    add_subdirectory(proxy)
+endif()
+
 add_subdirectory(s7)
