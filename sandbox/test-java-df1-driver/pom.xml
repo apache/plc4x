@@ -78,6 +78,27 @@
       <scope>provided</scope>
     </dependency>
 
+  <!--  &lt;!&ndash; https://mvnrepository.com/artifact/org.rxtx/rxtx &ndash;&gt;
+    <dependency>
+      <groupId>org.rxtx</groupId>
+      <artifactId>rxtx</artifactId>
+      <version>2.1.7</version>
+    </dependency>-->
+
+    <dependency>
+      <groupId>com.github.purejavacomm</groupId>
+      <artifactId>purejavacomm</artifactId>
+      <version>1.0.2.RELEASE</version>
+    </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/com.fazecast/jSerialComm -->
+    <dependency>
+      <groupId>com.fazecast</groupId>
+      <artifactId>jSerialComm</artifactId>
+      <version>2.5.1</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
