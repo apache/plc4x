@@ -44,10 +44,9 @@ import org.apache.plc4x.java.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>, ${typeName}> {
 
@@ -97,7 +96,14 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
             </#if>
             ${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument)})<#sep>, </#sep></#list></#if>)</#if>);
         }
-        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = ${field.name}List.toArray(new ${helper.getLanguageTypeNameForField(field)}[0]);
+        <#if helper.isSimpleType(field.type)>
+        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[${field.name}List.size()];
+        for(int i = 0; i < ${field.name}List.size(); i++) {
+            ${field.name}[i] = (${helper.getLanguageTypeNameForField(field)}) ${field.name}List.get(i);
+        }
+        <#else>
+        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = ${field.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[0]);
+        </#if>
         </#if>
         <#break>
     <#case "const">
@@ -200,7 +206,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
     <#case "implicit">
 
         // Implicit Field (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + helper.toSerializationExpression(field.serializationExpression) + ")")};
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + helper.toSerializationExpression(field.serializationExpression) + ")")?no_esc};
         <#break>
     <#case "optional">
 
@@ -238,6 +244,48 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
         <#break>
 </#switch>
 </#list>
+    }
+
+    private static Map<String, Method> staticMethods;
+
+    /**
+     * Notice, this method doesn't support using multiple static methods with the same name
+     * but with different argument types. In this case it will use the first used method and
+     * probably fail for all others.
+     *
+     * @param fullyQualifiedMethodName Fully qualified Class name with method name (Example "a.b.c.Foo.bar")
+     * @param args arguments passed to the static method.
+     * @return
+     */
+    private static Object STATIC_CALL(String fullyQualifiedMethodName, Object... args) {
+        if(staticMethods == null) {
+            staticMethods = new HashMap<>();
+        }
+        // Get the method handle and cache it for later usage.
+        if(!staticMethods.containsKey(fullyQualifiedMethodName)) {
+            // Get the types of the arguments.
+            Class<?>[] argTypes = new Class[args.length];
+            for(int i = 0; i < args.length; i++) {
+                argTypes[i] = args[i].getClass();
+            }
+            // Get the method handle.
+            String className = fullyQualifiedMethodName.substring(0, fullyQualifiedMethodName.lastIndexOf("."));
+            String methodName = fullyQualifiedMethodName.substring(className.length());
+            try {
+                Class clazz = Class.forName(className);
+                Method method = clazz.getMethod(methodName, argTypes);
+                staticMethods.put(fullyQualifiedMethodName, method);
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                throw new RuntimeException("Error finding static method", e);
+            }
+        }
+        Method method = staticMethods.get(fullyQualifiedMethodName);
+        try {
+            // Invoke the static method.
+            return method.invoke(null, args);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException("Error invoking static method", e);
+        }
     }
 
     private static int COUNT(Object obj) {
