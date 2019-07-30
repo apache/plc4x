@@ -89,7 +89,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
             ${field.name}[i] = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
         }
         <#else>
-        List<${helper.getLanguageTypeNameForField(field)}> ${field.name}List = <#if helper.isCountArray(field)>new ArrayList<>(size)<#else>new LinkedList<>()</#if>;
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> ${field.name}List = <#if helper.isCountArray(field)>new ArrayList<>(size)<#else>new LinkedList<>()</#if>;
         int ${field.name}EndPos = io.getPos() + ${field.name}Size;
         while(io.getPos() < ${field.name}EndPos) {
             <#if field.lengthExpression.contains("curPos")>

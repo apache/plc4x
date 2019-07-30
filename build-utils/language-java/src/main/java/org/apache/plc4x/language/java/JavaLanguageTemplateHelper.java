@@ -47,49 +47,57 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
 
     public String getLanguageTypeNameForField(TypedField field) {
         boolean optional = field instanceof OptionalField;
+        return getLanguageTypeNameForField(!optional, field);
+    }
+
+    public String getNonPrimitiveLanguageTypeNameForField(TypedField field) {
+        return getLanguageTypeNameForField(false, field);
+    }
+
+    private String getLanguageTypeNameForField(boolean allowPrimitive, TypedField field) {
         TypeReference typeReference = field.getType();
         if(typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case BIT: {
-                    return optional ? "Boolean" : "boolean";
+                    return allowPrimitive ? "boolean" : "Boolean";
                 }
                 case UINT: {
                     if (simpleTypeReference.getSize() <= 4) {
-                        return optional ? "Byte" : "byte";
+                        return allowPrimitive ? "byte" : "Byte";
                     }
                     if (simpleTypeReference.getSize() <= 8) {
-                        return optional ? "Short" : "short";
+                        return allowPrimitive ? "short" : "Short";
                     }
                     if (simpleTypeReference.getSize() <= 16) {
-                        return optional ? "Integer" : "int";
+                        return allowPrimitive ? "int" : "Integer";
                     }
                     if (simpleTypeReference.getSize() <= 32) {
-                        return optional ? "Long" : "long";
+                        return allowPrimitive ? "long" : "Long";
                     }
                     return "BigInteger";
                 }
                 case INT: {
                     if (simpleTypeReference.getSize() <= 8) {
-                        return optional ? "Byte" : "byte";
+                        return allowPrimitive ? "byte" : "Byte";
                     }
                     if (simpleTypeReference.getSize() <= 16) {
-                        return optional ? "Short" : "short";
+                        return allowPrimitive ? "short" : "Short";
                     }
                     if (simpleTypeReference.getSize() <= 32) {
-                        return optional ? "Integer" : "int";
+                        return allowPrimitive ? "int" : "Integer";
                     }
                     if (simpleTypeReference.getSize() <= 64) {
-                        return optional ? "Long" : "long";
+                        return allowPrimitive ? "long" : "Long";
                     }
                     return "BigInteger";
                 }
                 case FLOAT: {
                     if (simpleTypeReference.getSize() <= 32) {
-                        return optional ? "Float" : "float";
+                        return allowPrimitive ? "float" : "Float";
                     }
                     if (simpleTypeReference.getSize() <= 64) {
-                        return optional ? "Double" : "double";
+                        return allowPrimitive ? "double" : "Double";
                     }
                     return "BigDecimal";
                 }
