@@ -21,10 +21,10 @@ package org.apache.plc4x.protocol.df1;
 
 import com.fazecast.jSerialComm.SerialPort;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.df1.TPKTPacket;
-import org.apache.plc4x.java.df1.io.TPKTPacketIO;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+//import org.apache.plc4x.java.df1.TPKTPacket;
+//import org.apache.plc4x.java.df1.io.TPKTPacketIO;
+//import org.apache.plc4x.java.utils.ReadBuffer;
+//import org.apache.plc4x.java.utils.WriteBuffer;
 import purejavacomm.CommPortIdentifier;
 
 import java.io.InputStream;
