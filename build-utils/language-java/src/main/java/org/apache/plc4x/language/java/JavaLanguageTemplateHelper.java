@@ -483,8 +483,30 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
 
     private String toVariableSerializationExpression(Term term) {
         VariableLiteral vl = (VariableLiteral) term;
+        if("STATIC_CALL".equals(vl.getName())) {
+            StringBuilder sb = new StringBuilder();
+            if(!(vl.getArgs().get(0) instanceof StringLiteral)) {
+                throw new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
+            }
+            String methodName = ((StringLiteral) vl.getArgs().get(0)).getValue();
+            methodName = methodName.substring(1, methodName.length() - 1);
+            sb.append(methodName).append("(");
+            for(int i = 1; i < vl.getArgs().size(); i++) {
+                Term arg = vl.getArgs().get(i);
+                if(i > 1) {
+                    sb.append(", ");
+                }
+                if(arg instanceof VariableLiteral) {
+                    sb.append(toVariableSerializationExpression(arg));
+                } else if(arg instanceof StringLiteral) {
+                    sb.append(((StringLiteral) arg).getValue());
+                }
+            }
+            sb.append(")");
+            return sb.toString();
+        }
         // All uppercase names are not fields, but utility methods.
-        if(vl.getName().equals(vl.getName().toUpperCase())) {
+        else if(vl.getName().equals(vl.getName().toUpperCase())) {
             StringBuilder sb = new StringBuilder(vl.getName());
             if(vl.getArgs() != null) {
                 sb.append("(");
@@ -493,7 +515,11 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     if(!firstArg) {
                         sb.append(", ");
                     }
-                    sb.append(toVariableSerializationExpression(arg));
+                    if(arg instanceof VariableLiteral) {
+                        sb.append(toVariableSerializationExpression(arg));
+                    } else if(arg instanceof StringLiteral) {
+                        sb.append(((StringLiteral) arg).getValue());
+                    }
                     firstArg = false;
                 }
                 sb.append(")");

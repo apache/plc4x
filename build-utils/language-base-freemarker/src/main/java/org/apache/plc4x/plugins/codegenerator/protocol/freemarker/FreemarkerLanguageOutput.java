@@ -56,6 +56,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
             // Iterate over the types and have content generated for each one
             for (Map.Entry<String, ComplexTypeDefinition> typeEntry : types.entrySet()) {
+                LOGGER.info("Generating type " + typeEntry.getKey());
+
                 // Prepare a new generation context
                 Map<String, Object> typeContext = new HashMap<>();
                 typeContext.put("packageName", packageName);
@@ -96,7 +98,6 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                     }
                     outputFileWriter.flush();
                 }
-                LOGGER.info("Generating type " + typeEntry.getKey());
             }
         } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException | ParseException e) {
             throw new GenerationException("Error resolving template", e);
