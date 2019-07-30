@@ -173,7 +173,12 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
         </#if>
     }
 
-    public void serialize(WriteBuffer io, ${typeName} value) throws ParseException {
+    public void serialize(WriteBuffer io, ${typeName} value, Object... args) throws ParseException {
+<#if type.parserArguments?has_content>
+<#list type.parserArguments as parserArgument>
+        ${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name} = (${helper.getLanguageTypeNameForSpecType(parserArgument.type)}) args[${parserArgument?index}];
+</#list>
+</#if>
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
