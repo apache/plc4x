@@ -255,6 +255,9 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
 </#switch>
 </#list>
     }
+    public static int CRC(Object... args) {
+        return 0;
+    }
 
     private static int COUNT(Object obj) {
         if(obj.getClass().isArray()) {

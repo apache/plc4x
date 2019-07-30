@@ -100,7 +100,7 @@ public class BenchmarkGeneratedDf1 {
         System.out.print(comPort.getSystemPortName() + " | ");
         System.out.print(comPort.getPortDescription() + " | ");
         System.out.print(comPort.getDescriptivePortName() + " | Baud rate: ");
-        System.out.print(comPort.getBaudRate());
+        System.out.println(comPort.getBaudRate());
 
 //        System.out.println(comPort.getReadTimeout());
 //        System.out.println(comPort.getWriteTimeout());
