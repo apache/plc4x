@@ -28,7 +28,7 @@ complexTypeDefinition
  ;
 
 complexType
- : K_TYPE name=idExpression fieldDefinition+
+ : K_TYPE name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | K_DISCRIMINATED_TYPE name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  ;
 
