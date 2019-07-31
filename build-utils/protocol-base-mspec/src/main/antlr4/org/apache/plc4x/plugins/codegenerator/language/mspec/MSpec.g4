@@ -119,6 +119,7 @@ innerExpression
  | INTEGER_LITERAL
  | (IDENTIFIER | arrayType) ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
  | innerExpression '.' innerExpression // Field Reference or method call
+ | innerExpression '[' + INTEGER_LITERAL + ']' // Array index
  | innerExpression BinaryOperator innerExpression  // Addition
  | '(' innerExpression ')'
  | '"' innerExpression '"'

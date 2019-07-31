@@ -21,7 +21,7 @@
 This module provides the (experimental) Python support for the interop server.
 Or, simpler, a python 3 binding for PLC4X.
 
-The only thing which needs to be done as _installation_ is to run the `initialize_interop_server.sh` skript to build the interop server and copy it to `lib/`  forder.
+The only thing which needs to be done as _installation_ is to run the `initialize_interop_server.sh` script to build the interop server and copy it to `lib/`  forder.
 
 Then, you are good to go.
 

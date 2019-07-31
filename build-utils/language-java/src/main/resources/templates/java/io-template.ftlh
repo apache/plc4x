@@ -206,21 +206,25 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
     <#case "discriminator">
 
         // Discriminator Field (Used as input to a switch field)
-        io.${helper.getWriteBufferReadMethodCall(field.type, "value.getDiscriminatorValues()[0]")};
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.getDiscriminatorValues()[0];
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
         <#break>
     <#case "implicit">
 
         // Implicit Field (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + helper.toSerializationExpression(field.serializationExpression) + ")")?no_esc};
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)});
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
         <#break>
     <#case "optional">
 
         // Optional Field (Can be skipped, if the value is null)
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = null;
         if(value.get${field.name?cap_first}() != null) {
+            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.get${field.name?cap_first}();
             <#if helper.isSimpleType(field.type)>
-            io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
+            io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
             <#else>
-            ${field.type.name?uncap_first}IO.serialize(io, value.get${field.name?cap_first}());
+            ${field.type.name?uncap_first}IO.serialize(io, ${field.name});
             </#if>
         }
         <#break>
@@ -232,10 +236,11 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
     <#case "simple">
 
         // Simple field
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.get${field.name?cap_first}();
         <#if helper.isSimpleType(field.type)>
-        io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
         <#else>
-        ${field.type.name?uncap_first}IO.serialize(io, value.get${field.name?cap_first}());
+        ${field.type.name?uncap_first}IO.serialize(io, ${field.name}<#if field.params?has_content>, <#list field.params as term>(${helper.getArgumentType(field.type, term?index)}) (${helper.toDeserializationExpression(term)})<#sep>, </#sep></#list></#if>);
         </#if>
         <#break>
     <#case "switch">
@@ -243,7 +248,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
         // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
         <#list field.cases as case>
         if(value instanceof ${case.name}) {
-            ${case.name?uncap_first}IO.serialize(io, (${case.name}) value);
+            ${case.name?uncap_first}IO.serialize(io, (${case.name}) value<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
         <#break>
@@ -252,48 +257,6 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
     }
     public static int CRC(Object... args) {
         return 0;
-    }
-
-    private static Map<String, Method> staticMethods;
-
-    /**
-     * Notice, this method doesn't support using multiple static methods with the same name
-     * but with different argument types. In this case it will use the first used method and
-     * probably fail for all others.
-     *
-     * @param fullyQualifiedMethodName Fully qualified Class name with method name (Example "a.b.c.Foo.bar")
-     * @param args arguments passed to the static method.
-     * @return
-     */
-    private static Object STATIC_CALL(String fullyQualifiedMethodName, Object... args) {
-        if(staticMethods == null) {
-            staticMethods = new HashMap<>();
-        }
-        // Get the method handle and cache it for later usage.
-        if(!staticMethods.containsKey(fullyQualifiedMethodName)) {
-            // Get the types of the arguments.
-            Class<?>[] argTypes = new Class[args.length];
-            for(int i = 0; i < args.length; i++) {
-                argTypes[i] = args[i].getClass();
-            }
-            // Get the method handle.
-            String className = fullyQualifiedMethodName.substring(0, fullyQualifiedMethodName.lastIndexOf("."));
-            String methodName = fullyQualifiedMethodName.substring(className.length());
-            try {
-                Class clazz = Class.forName(className);
-                Method method = clazz.getMethod(methodName, argTypes);
-                staticMethods.put(fullyQualifiedMethodName, method);
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                throw new RuntimeException("Error finding static method", e);
-            }
-        }
-        Method method = staticMethods.get(fullyQualifiedMethodName);
-        try {
-            // Invoke the static method.
-            return method.invoke(null, args);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException("Error invoking static method", e);
-        }
     }
 
     private static int COUNT(Object obj) {

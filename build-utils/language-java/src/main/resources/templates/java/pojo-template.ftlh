@@ -50,7 +50,8 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     // Discriminator values used by the parser to determine the type to be used. All values have to apply.
     public static final Object[] DISCRIMINATOR_VALUES = new Object[] {
     <#list type.discriminatorValues as discriminatorValue>
-        ${discriminatorValue}<#sep>, </#sep>
+        <#-- There are rare occasions where the discriminator is defined by a parser argument, in this case we currently can't detect the type -->
+        <#if type.discriminatorField??>(${helper.getLanguageTypeNameForField(type.discriminatorField)}) </#if>${discriminatorValue}<#sep>, </#sep>
     </#list>
     };
 </#if>
