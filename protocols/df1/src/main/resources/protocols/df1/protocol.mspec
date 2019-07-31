@@ -38,7 +38,7 @@
             [field    DF1Command   'command' ['payloadSize']]
         ]
         ['0x03' DF1SymbolMessageFrameEnd
-            [implicit uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.protocol.df1.DF1Utils.CRCCheck", messageStartSymbol.destinationAddress, messageStartSymbol.sourceAddress, messageStartSymbol.command.discriminatorValues, messageStartSymbol.command.status, messageStartSymbol.command.transactionCounter, symbolType)']
+            [implicit uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.protocol.df1.DF1Utils.CRCCheck", messageStartSymbol.destinationAddress, messageStartSymbol.sourceAddress, messageStartSymbol.command.discriminatorValues, messageStartSymbol.command.status, messageStartSymbol.command.transactionCounter, discriminatorValues[0])']
         ]
         ['0x06' DF1SymbolMessageFrameACK
         ]
