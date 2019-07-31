@@ -21,6 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 
 import java.util.List;
@@ -32,6 +33,14 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
     public DefaultDiscriminatedComplexTypeDefinition(String name, Argument[] parserArguments, String[] discriminatorValues, List<Field> fields) {
         super(name, parserArguments, false, fields);
         this.discriminatorValues = discriminatorValues;
+    }
+
+    public DiscriminatorField getDiscriminatorField() {
+        // For a discriminated type, the discriminator is always defined in the parent type,
+        // which is always a DefaultComplexTypeDefinition instance.
+        return ((DefaultComplexTypeDefinition) getParentType()).getFields().stream().filter(
+            field -> field instanceof DiscriminatorField).map(
+                field -> (DiscriminatorField) field).findFirst().orElse(null);
     }
 
     public String[] getDiscriminatorValues() {

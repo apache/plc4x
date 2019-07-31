@@ -21,6 +21,7 @@ package org.apache.plc4x.language.java;
 
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -393,8 +394,8 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return toExpression(term, this::toVariableDeserializationExpression);
     }
 
-    public String toSerializationExpression(Term term) {
-        return toExpression(term, this::toVariableSerializationExpression);
+    public String toSerializationExpression(Term term, Argument[] parserArguments) {
+        return toExpression(term, term1 -> toVariableSerializationExpression(term1, parserArguments));
     }
 
     private String toExpression(Term term, Function<Term, String> variableExpressionGenerator) {
@@ -481,7 +482,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
     }
 
-    private String toVariableSerializationExpression(Term term) {
+    private String toVariableSerializationExpression(Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         if("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
@@ -497,7 +498,21 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     sb.append(", ");
                 }
                 if(arg instanceof VariableLiteral) {
-                    sb.append(toVariableSerializationExpression(arg));
+                    VariableLiteral va = (VariableLiteral) arg;
+                    boolean isSerializerArg = false;
+                    if(parserArguments != null) {
+                        for (Argument parserArgument : parserArguments) {
+                            if (parserArgument.getName().equals(va.getName())) {
+                                isSerializerArg = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(isSerializerArg) {
+                        sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
+                    } else {
+                        sb.append(toVariableSerializationExpression(va, null));
+                    }
                 } else if(arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
                 }
@@ -515,8 +530,23 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     if(!firstArg) {
                         sb.append(", ");
                     }
+
                     if(arg instanceof VariableLiteral) {
-                        sb.append(toVariableSerializationExpression(arg));
+                        VariableLiteral va = (VariableLiteral) arg;
+                        boolean isSerializerArg = false;
+                        if(parserArguments != null) {
+                            for (Argument parserArgument : parserArguments) {
+                                if (parserArgument.getName().equals(va.getName())) {
+                                    isSerializerArg = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if(isSerializerArg) {
+                            sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
+                        } else {
+                            sb.append(toVariableSerializationExpression(va, null));
+                        }
                     } else if(arg instanceof StringLiteral) {
                         sb.append(((StringLiteral) arg).getValue());
                     }
@@ -526,7 +556,20 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
             return sb.toString();
         }
-        return "value." + toVariableExpressionRest(vl);
+        boolean isSerializerArg = false;
+        if(parserArguments != null) {
+            for (Argument parserArgument : parserArguments) {
+                if (parserArgument.getName().equals(vl.getName())) {
+                    isSerializerArg = true;
+                    break;
+                }
+            }
+        }
+        if(isSerializerArg) {
+            return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+        } else {
+            return "value." + toVariableExpressionRest(vl);
+        }
     }
 
     private String toVariableExpressionRest(VariableLiteral vl) {

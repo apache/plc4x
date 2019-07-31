@@ -206,21 +206,25 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
     <#case "discriminator">
 
         // Discriminator Field (Used as input to a switch field)
-        io.${helper.getWriteBufferReadMethodCall(field.type, "value.getDiscriminatorValues()[0]")};
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.getDiscriminatorValues()[0];
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
         <#break>
     <#case "implicit">
 
         // Implicit Field (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + helper.toSerializationExpression(field.serializationExpression) + ")")?no_esc};
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)});
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
         <#break>
     <#case "optional">
 
         // Optional Field (Can be skipped, if the value is null)
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = null;
         if(value.get${field.name?cap_first}() != null) {
+            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.get${field.name?cap_first}();
             <#if helper.isSimpleType(field.type)>
-            io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
+            io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
             <#else>
-            ${field.type.name?uncap_first}IO.serialize(io, value.get${field.name?cap_first}());
+            ${field.type.name?uncap_first}IO.serialize(io, ${field.name});
             </#if>
         }
         <#break>
@@ -232,10 +236,11 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
     <#case "simple">
 
         // Simple field
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.get${field.name?cap_first}();
         <#if helper.isSimpleType(field.type)>
-        io.${helper.getWriteBufferReadMethodCall(field.type, "value.get" + field.name?cap_first + "()")};
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
         <#else>
-        ${field.type.name?uncap_first}IO.serialize(io, value.get${field.name?cap_first}());
+        ${field.type.name?uncap_first}IO.serialize(io, ${field.name}<#if field.params?has_content>, <#list field.params as term>(${helper.getArgumentType(field.type, term?index)}) (${helper.toDeserializationExpression(term)})<#sep>, </#sep></#list></#if>);
         </#if>
         <#break>
     <#case "switch">
@@ -243,7 +248,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
         // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
         <#list field.cases as case>
         if(value instanceof ${case.name}) {
-            ${case.name?uncap_first}IO.serialize(io, (${case.name}) value);
+            ${case.name?uncap_first}IO.serialize(io, (${case.name}) value<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
         <#break>

@@ -232,7 +232,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
 
     private VariableLiteral getVariableLiteral(ExpressionParser.IdentifierSegmentContext ctx, List<Term> args) {
         String name = ctx.name.getText();
-        int index = (ctx.index != null) ? Integer.valueOf(ctx.index.getText()) : VariableLiteral.NO_INDEX;
+        int index = (ctx.index != null) ? Integer.valueOf(ctx.index.getText().substring(1, ctx.index.getText().length() - 1)) : VariableLiteral.NO_INDEX;
         VariableLiteral child = (ctx.rest != null) ? getVariableLiteral(ctx.rest, args) : null;
         return new VariableLiteral(name, args, index, child);
     }
