@@ -346,7 +346,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             for(int counter = 0; counter < readValueIds.size(); counter++){
                 PlcResponseCode resultCode = PlcResponseCode.OK;
                 BaseDefaultFieldItem stringItem = null;
-                if(readValues == null || readValues.size() <= counter || readValues.get(counter).getStatusCode() != StatusCode.GOOD){
+                if(readValues == null || readValues.size() <= counter || !readValues.get(counter).getStatusCode().isGood()){
                     resultCode = PlcResponseCode.NOT_FOUND;
                 }else{
                     stringItem = encodeFieldItem(readValues.get(counter));
