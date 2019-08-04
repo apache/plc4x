@@ -25,14 +25,20 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class TcpSocketChannelFactory implements ChannelFactory {
+
+    private static final Logger logger = LoggerFactory.getLogger(TcpSocketChannelFactory.class);
 
     private static final int PING_TIMEOUT_MS = 1_000;
 
@@ -49,14 +55,27 @@ public class TcpSocketChannelFactory implements ChannelFactory {
         throws PlcConnectionException {
         try {
             Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(new NioEventLoopGroup());
+            final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+            bootstrap.group(workerGroup);
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
             bootstrap.option(ChannelOption.TCP_NODELAY, true);
+            // TODO we should use an explicit (configurable?) timeout here
+            // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
             bootstrap.handler(channelHandler);
             // Start the client.
-            ChannelFuture f = bootstrap.connect(address, port).sync();
-            f.awaitUninterruptibly();
+            final ChannelFuture f = bootstrap.connect(address, port);
+            f.addListener(new GenericFutureListener<Future<? super Void>>() {
+                @Override public void operationComplete(Future<? super Void> future) throws Exception {
+                    if (!future.isSuccess()) {
+                        logger.info("Unable to connect, shutting down worker thread.");
+                        workerGroup.shutdownGracefully();
+                    }
+                }
+            });
+            // Wait for sync
+            f.sync();
+            f.awaitUninterruptibly(); // jf: unsure if we need that
             // Wait till the session is finished initializing.
             return f.channel();
         } catch (InterruptedException e) {
