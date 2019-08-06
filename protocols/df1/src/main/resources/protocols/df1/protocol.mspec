@@ -18,14 +18,18 @@
 //
 
 
-[type 'DF1ReadRequest'
-    [field    DF1SymbolMessageFrameStart    'messageFrameStart' ['0', 'null']]
-    [field    DF1SymbolMessageFrameEnd      'messageFrameEnd' ['0', 'messageFrameStart']]
+[type 'ReadRequest'
+    [field    DF1Symbol    'messageFrameStart' ['0', 'null']]
+    [field    DF1Symbol    'messageFrameEnd' ['0', 'messageFrameStart']]
 ]
 
-[type 'DF1ReadResponse' [uint 8 'payloadSize']
-    [field    DF1SymbolMessageFrameStart    'messageFrameStart' ['payloadSize', 'null']]
-    [field    DF1SymbolMessageFrameEnd      'messageFrameEnd' ['0', 'messageFrameStart']]
+[type 'ReadResponse' [uint 8 'payloadSize']
+    [field    DF1Symbol    'messageFrameStart' ['payloadSize', 'null']]
+    [field    DF1Symbol    'messageFrameEnd' ['0', 'messageFrameStart']]
+]
+
+[type 'Result'
+    [field    DF1Symbol    'result' ['0', 'null']]
 ]
 
 [discriminatedType 'DF1Symbol' [uint 8 'payloadSize', DF1SymbolMessageFrameStart 'messageStartSymbol']
@@ -38,7 +42,7 @@
             [field    DF1Command   'command' ['payloadSize']]
         ]
         ['0x03' DF1SymbolMessageFrameEnd
-            [implicit uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.protocol.df1.DF1Utils.CRCCheck", messageStartSymbol.destinationAddress, messageStartSymbol.sourceAddress, messageStartSymbol.command.discriminatorValues, messageStartSymbol.command.status, messageStartSymbol.command.transactionCounter, discriminatorValues[0])']
+            [implicit uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.protocol.df1.DF1Utils.CRCCheck", discriminatorValues[0], messageStartSymbol)']
         ]
         ['0x06' DF1SymbolMessageFrameACK
         ]
