@@ -77,6 +77,11 @@ public class TcpSocketChannelFactory implements ChannelFactory {
             f.sync();
             f.awaitUninterruptibly(); // jf: unsure if we need that
             // Wait till the session is finished initializing.
+            // Add Listener to shutdown the loop
+            f.channel().closeFuture().addListener(future -> {
+                logger.debug("Channel was closed, shutting down the event loop");
+                workerGroup.shutdownGracefully();
+            });
             return f.channel();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

@@ -62,7 +62,7 @@ import java.util.*;
  * Communication Layer between the Application level ({@link Plc4XS7Protocol}) and the lower level (tcp) that sends and receives {@link S7Message}s.
  * This layer also handles the control over the "wire", i.e., the queues of incoming and outgoing messages.
  * Furthermore, here {@link S7Message}s are marshalled and unmarshalled to {@link ByteBuf}s to be send over wire.
- *
+ * <p>
  * Before messages are send to the wire an optional {@link S7MessageProcessor} can be applied.
  *
  * @see S7MessageProcessor
@@ -72,6 +72,8 @@ public class S7Protocol extends ChannelDuplexHandler {
     private static final byte S7_PROTOCOL_MAGIC_NUMBER = 0x32;
 
     private static final Logger logger = LoggerFactory.getLogger(S7Protocol.class);
+
+    private int i = 0;
 
     private final MessageToMessageDecoder<Object> decoder = new MessageToMessageDecoder<Object>() {
 
@@ -115,11 +117,11 @@ public class S7Protocol extends ChannelDuplexHandler {
         this.queue = new PendingWriteQueue(ctx);
         try {
             Field prevField = FieldUtils.getField(ctx.getClass(), "prev", true);
-            if(prevField != null) {
+            if (prevField != null) {
                 ChannelHandlerContext prevContext = (ChannelHandlerContext) prevField.get(ctx);
                 prevChannelHandler = prevContext.handler();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Error accessing field 'prev'", e);
         }
     }
@@ -154,9 +156,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 new SetupCommunicationRequestMessage((short) 0, maxAmqCaller, maxAmqCallee, pduSize, null);
 
             ctx.channel().writeAndFlush(setupCommunicationRequest);
-        }
-
-        else {
+        } else {
             super.userEventTriggered(ctx, evt);
         }
     }
@@ -168,7 +168,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
         try {
-            if(msg instanceof S7Message) {
+            if (msg instanceof S7Message) {
                 S7Message in = (S7Message) msg;
 
                 // Give message processors to process the incoming message.
@@ -221,9 +221,9 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     private void encodePayloads(S7Message in, ByteBuf buf) throws PlcProtocolException {
-        if(in.getPayloads() != null) {
+        if (in.getPayloads() != null) {
             Iterator<S7Payload> payloadIterator = in.getPayloads().iterator();
-            while(payloadIterator.hasNext()) {
+            while (payloadIterator.hasNext()) {
                 S7Payload payload = payloadIterator.next();
                 switch (payload.getType()) {
                     case WRITE_VAR:
@@ -248,14 +248,14 @@ public class S7Protocol extends ChannelDuplexHandler {
             buf.writeShort(payloadItem.getData().length);
             buf.writeBytes(payloadItem.getData());
             // if this is not the last item and it's payload is exactly one byte, we need to output a fill-byte.
-            if((payloadItem.getData().length == 1) && !lastItem) {
+            if ((payloadItem.getData().length == 1) && !lastItem) {
                 buf.writeByte(0x00);
             }
         }
     }
 
     private void encodeCpuServicesPayload(CpuServicesPayload cpuServicesPayload, ByteBuf buf)
-            throws PlcProtocolException {
+        throws PlcProtocolException {
         buf.writeByte(cpuServicesPayload.getReturnCode().getCode());
         // This seems to be constantly set to this.
         buf.writeByte(DataTransportSize.OCTET_STRING.getCode());
@@ -403,8 +403,8 @@ public class S7Protocol extends ChannelDuplexHandler {
         // for future extensions.
         buf.writeShort((short) (s7AnyRequestItem.getByteOffset() >> 5));
         buf.writeByte((byte) ((
-                (s7AnyRequestItem.getByteOffset() & 0x1F) << 3)
-                | (s7AnyRequestItem.getBitOffset() & 0x07)));
+            (s7AnyRequestItem.getByteOffset() & 0x1F) << 3)
+            | (s7AnyRequestItem.getBitOffset() & 0x07)));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,6 +418,14 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) {
+        // FIXME Remove
+        logger.trace("Intercepting and firing exception");
+        System.out.println("i = " + i);
+        if (i++ > 10) {
+            System.out.println("Throwing...");
+            throw new RuntimeException("bäm!");
+        }
+
         if (logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
         }
@@ -473,29 +481,29 @@ public class S7Protocol extends ChannelDuplexHandler {
             // Get the corresponding request message.
             S7RequestMessage requestMessage = (requestTpdu != null) ? (S7RequestMessage) requestTpdu.getParent() : null;
 
-            if(requestMessage != null) {
+            if (requestMessage != null) {
                 // Set this individual request to "acknowledged".
                 requestMessage.setAcknowledged(true);
 
                 // Give the request and response to a message processor to process the incoming message.
-                if(messageProcessor != null) {
+                if (messageProcessor != null) {
                     try {
                         responseMessage = messageProcessor.processResponse(requestMessage, responseMessage);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         logger.error("Error processing message", e);
                         ctx.fireExceptionCaught(e);
                         return;
                     }
                 }
 
-                if(responseMessage != null) {
+                if (responseMessage != null) {
                     out.add(responseMessage);
 
                     // If this is a USER_DATA packet the probability is high that this is
                     // a response to the identification request, we have to handle that.
-                    if(responseMessage.getMessageType() == MessageType.USER_DATA) {
+                    if (responseMessage.getMessageType() == MessageType.USER_DATA) {
                         for (S7Payload payload : responseMessage.getPayloads()) {
-                            if(payload instanceof CpuServicesPayload) {
+                            if (payload instanceof CpuServicesPayload) {
                                 handleIdentifyRemote(ctx, (CpuServicesPayload) payload);
                             }
                         }
@@ -510,9 +518,9 @@ public class S7Protocol extends ChannelDuplexHandler {
             // CpuService responses are encoded as requests.
             for (S7Parameter s7Parameter : s7Parameters) {
                 // Only if we have a response parameter, the payload is a response payload.
-                if(s7Parameter instanceof CpuServicesResponseParameter) {
+                if (s7Parameter instanceof CpuServicesResponseParameter) {
                     for (S7Payload s7Payload : s7Payloads) {
-                        if(s7Payload instanceof CpuServicesPayload) {
+                        if (s7Payload instanceof CpuServicesPayload) {
                             CpuServicesPayload cpuServicesPayload = (CpuServicesPayload) s7Payload;
                             handleIdentifyRemote(ctx, cpuServicesPayload);
                         }
@@ -529,10 +537,10 @@ public class S7Protocol extends ChannelDuplexHandler {
         pduSize = setupCommunicationParameter.getPduLength();
 
         logger.info("S7Connection established pdu-size {}, max-amq-caller {}, " +
-                "max-amq-callee {}", pduSize, maxAmqCaller, maxAmqCallee);
+            "max-amq-callee {}", pduSize, maxAmqCaller, maxAmqCallee);
 
         // Only if the controller type is set to "ANY", then try to identify the PLC type.
-        if(controllerType == S7ControllerType.ANY) {
+        if (controllerType == S7ControllerType.ANY) {
             // Prepare a message to request the remote to identify itself.
             S7RequestMessage identifyRemoteMessage = new S7RequestMessage(MessageType.USER_DATA, (short) 2,
                 Collections.singletonList(new CpuServicesRequestParameter(
@@ -544,7 +552,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
         // If a concrete type was specified, then we're done here.
         else {
-            if(logger.isInfoEnabled()) {
+            if (logger.isInfoEnabled()) {
                 logger.info(String.format("Successfully connected to S7: %s", controllerType.name()));
                 logger.info(String.format("- max amq caller: %s", maxAmqCaller));
                 logger.info(String.format("- max amq callee: %s", maxAmqCallee));
@@ -559,15 +567,15 @@ public class S7Protocol extends ChannelDuplexHandler {
     private void handleIdentifyRemote(ChannelHandlerContext ctx, CpuServicesPayload cpuServicesPayload) {
         controllerType = S7ControllerType.ANY;
         for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
-            if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
+            if (sslDataRecord instanceof SslModuleIdentificationDataRecord) {
                 SslModuleIdentificationDataRecord sslModuleIdentificationDataRecord =
                     (SslModuleIdentificationDataRecord) sslDataRecord;
-                if(sslModuleIdentificationDataRecord.getIndex() == (short) 0x0001) {
+                if (sslModuleIdentificationDataRecord.getIndex() == (short) 0x0001) {
                     controllerType = lookupControllerType(sslModuleIdentificationDataRecord.getArticleNumber());
                 }
             }
         }
-        if(logger.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             logger.info(String.format("Successfully connected to S7: %s", controllerType.name()));
             logger.info(String.format("- max amq caller: %s", maxAmqCaller));
             logger.info(String.format("- max amq callee: %s", maxAmqCallee));
@@ -581,11 +589,11 @@ public class S7Protocol extends ChannelDuplexHandler {
     private List<S7Payload> decodePayloads(ByteBuf userData, boolean isResponse, short userDataLength, List<S7Parameter> s7Parameters) {
         List<S7Payload> s7Payloads = new LinkedList<>();
         for (S7Parameter s7Parameter : s7Parameters) {
-            if(s7Parameter instanceof VarParameter) {
+            if (s7Parameter instanceof VarParameter) {
                 VarParameter readWriteVarParameter = (VarParameter) s7Parameter;
                 VarPayload varPayload = decodeVarPayload(userData, isResponse, userDataLength, readWriteVarParameter);
                 s7Payloads.add(varPayload);
-            } else if(s7Parameter instanceof CpuServicesParameter) {
+            } else if (s7Parameter instanceof CpuServicesParameter) {
                 CpuServicesPayload cpuServicesPayload = decodeCpuServicesPayload(userData);
                 s7Payloads.add(cpuServicesPayload);
             }
@@ -621,7 +629,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 i += S7SizeHelper.getPayloadLength(payload);
 
                 // It seems that odd-byte payloads require a fill byte, but only if it's not the last item.
-                if((length % 2== 1) && (userData.readableBytes() > 0)) {
+                if ((length % 2 == 1) && (userData.readableBytes() > 0)) {
                     userData.readByte();
                     i++;
                 }
@@ -634,24 +642,24 @@ public class S7Protocol extends ChannelDuplexHandler {
     private CpuServicesPayload decodeCpuServicesPayload(ByteBuf userData) {
         DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-        if(dataTransportSize != DataTransportSize.OCTET_STRING) {
+        if (dataTransportSize != DataTransportSize.OCTET_STRING) {
             // TODO: Output an error.
         }
         short length = userData.readShort();
         SslId sslId = SslId.valueOf(userData.readShort());
         short sslIndex = userData.readShort();
         // If the length is 4 there is no `partial list length in bytes` and `partial list count` parameters.
-        if(length == 4) {
+        if (length == 4) {
             return new CpuServicesPayload(returnCode, sslId, sslIndex);
         }
         // If the length is not 4, then it has to be at least 8.
-        else if(length >= 8) {
+        else if (length >= 8) {
             // TODO: We should probably ensure we don't read more than this.
             // Skip the partial list length in words.
             userData.skipBytes(2);
             short partialListCount = userData.readShort();
             List<SslDataRecord> sslDataRecords = new LinkedList<>();
-            for(int i = 0; i < partialListCount; i++) {
+            for (int i = 0; i < partialListCount; i++) {
                 short index = userData.readShort();
                 byte[] articleNumberBytes = new byte[20];
                 userData.readBytes(articleNumberBytes);
@@ -707,14 +715,14 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     private CpuServicesParameter decodeCpuServicesParameter(ByteBuf in) {
-        if(in.readShort() != 0x0112) {
+        if (in.readShort() != 0x0112) {
             if (logger.isErrorEnabled()) {
                 logger.error("Expecting 0x0112 for CPU_SERVICES parameter");
             }
             return null;
         }
         byte parameterLength = in.readByte();
-        if((parameterLength != 4) && (parameterLength != 8)) {
+        if ((parameterLength != 4) && (parameterLength != 8)) {
             if (logger.isErrorEnabled()) {
                 logger.error("Parameter length should be 4 or 8, but was {}", parameterLength);
             }
@@ -732,7 +740,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         CpuServicesParameterSubFunctionGroup subFunctionGroup =
             CpuServicesParameterSubFunctionGroup.valueOf(in.readByte());
         byte sequenceNumber = in.readByte();
-        if(!requestParameter) {
+        if (!requestParameter) {
             return new CpuServicesRequestParameter(functionGroup, subFunctionGroup, sequenceNumber);
         } else {
             byte dataUnitReferenceNumber = in.readByte();
@@ -760,7 +768,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 short dbNumber = in.readShort();
                 byte memoryAreaCode = in.readByte();
                 MemoryArea memoryArea = MemoryArea.valueOf(memoryAreaCode);
-                if(memoryArea == null) {
+                if (memoryArea == null) {
                     throw new PlcRuntimeException("Unknown memory area '" + memoryAreaCode + "'");
                 }
                 short byteAddress = (short) (in.readShort() << 5);
@@ -770,8 +778,8 @@ public class S7Protocol extends ChannelDuplexHandler {
                 // Bits 4-8 belong to the byte address
                 byteAddress = (short) (byteAddress | (tmp >> 3));
                 S7AnyVarParameterItem item = new S7AnyVarParameterItem(
-                        specificationType, memoryArea, dataType,
-                        length, dbNumber, byteAddress, bitAddress);
+                    specificationType, memoryArea, dataType,
+                    length, dbNumber, byteAddress, bitAddress);
                 items.add(item);
             } else {
                 logger.error("Error parsing item type");
@@ -788,7 +796,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
 
     private synchronized void trySendingMessages(ChannelHandlerContext ctx) {
-        while(sentButUnacknowledgedTpdus.size() < maxAmqCaller) {
+        while (sentButUnacknowledgedTpdus.size() < maxAmqCaller) {
             // Get the TPDU that is up next in the queue.
             DataTpdu curTpdu = (DataTpdu) queue.current();
 
@@ -805,7 +813,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                     ctx.fireExceptionCaught(e);
                 }
 
-                if(curTpdu.getParent() != null) {
+                if (curTpdu.getParent() != null) {
                     // Add it to the list of sentButUnacknowledgedTpdus.
                     // (It seems that the S7 drops the value of the COTP reference id, so we have to use the S7 one)
                     S7RequestMessage s7RequestMessage = (S7RequestMessage) curTpdu.getParent();
@@ -823,7 +831,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     private S7ControllerType lookupControllerType(String articleNumber) {
-        if(!articleNumber.startsWith("6ES7 ")) {
+        if (!articleNumber.startsWith("6ES7 ")) {
             return S7ControllerType.ANY;
         }
 
@@ -838,7 +846,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             case "4":
                 return S7ControllerType.S7_400;
             default:
-                if(logger.isInfoEnabled()) {
+                if (logger.isInfoEnabled()) {
                     logger.info(String.format("Looking up unknown article number %s", articleNumber));
                 }
                 return S7ControllerType.ANY;

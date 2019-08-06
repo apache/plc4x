@@ -25,6 +25,7 @@ import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -293,6 +294,9 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             if (!f.isSuccess()) {
                 future.completeExceptionally(f.cause());
             }
+        });
+        channel.closeFuture().addListener(f -> {
+            future.completeExceptionally(new PlcRuntimeException("Connection was unexpectedly closed during read. This is most likely due to a problem in the connection layer."));
         });
         return future
             .thenApply(PlcReadResponse.class::cast);

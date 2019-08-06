@@ -38,75 +38,22 @@ public class HelloPlc4x {
      * @param args ignored.
      */
     public static void main(String[] args) throws Exception {
-        CliOptions options = CliOptions.fromArgs(args);
-        if (options == null) {
-            CliOptions.printHelp();
-            // Could not parse.
-            System.exit(1);
-        }
-
         // Establish a connection to the plc using the url provided as first argument
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getConnectionString())) {
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.167.210/0/0")) {
 
-            // Check if this connection support reading of data.
-            if (!plcConnection.getMetadata().canRead()) {
-                logger.error("This connection doesn't support reading.");
-                return;
-            }
+            for (int i = 0; i <= 100; i++) {
+                PlcReadResponse response = plcConnection.readRequestBuilder()
+                    .addItem("field", "%DB400:DBW10:INT")
+                    .build()
+                    .execute()
+                    .get();
 
-            // Create a new read request:
-            // - Give the single item requested the alias name "value"
-            PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addItem("value-" + i, options.getFieldAddress()[i]);
-            }
-            PlcReadRequest readRequest = builder.build();
-
-            //////////////////////////////////////////////////////////
-            // Read synchronously ...
-            // NOTICE: the ".get()" immediately lets this thread pause until
-            // the response is processed and available.
-            logger.info("Synchronous request ...");
-            PlcReadResponse syncResponse = readRequest.execute().get();
-            // Simply iterating over the field names returned in the response.
-            printResponse(syncResponse);
-
-            //////////////////////////////////////////////////////////
-            // Read asynchronously ...
-            // Register a callback executed as soon as a response arrives.
-            logger.info("Asynchronous request ...");
-            CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
-            asyncResponse.whenComplete((readResponse, throwable) -> {
-                if (readResponse != null) {
-                    printResponse(readResponse);
-                } else {
-                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
-                }
-            });
-        }
-    }
-
-    private static void printResponse(PlcReadResponse response) {
-        for (String fieldName : response.getFieldNames()) {
-            if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-                int numValues = response.getNumberOfValues(fieldName);
-                // If it's just one element, output just one single line.
-                if(numValues == 1) {
-                    logger.info("Value[" + fieldName + "]: " + response.getObject(fieldName));
-                }
-                // If it's more than one element, output each in a single row.
-                else {
-                    logger.info("Value[" + fieldName + "]:");
-                    for(int i = 0; i < numValues; i++) {
-                        logger.info(" - " + response.getObject(fieldName, i));
-                    }
-                }
-            }
-            // Something went wrong, to output an error message instead.
-            else {
-                logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
+                System.out.println(response.getResponseCode("field"));
+                Thread.sleep(100);
             }
         }
+
+        System.out.println("The loop is finished");
     }
 
 }

@@ -45,6 +45,8 @@ import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -52,6 +54,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -67,6 +70,8 @@ import java.util.stream.IntStream;
  * the {@link PlcRequestContainer}s future with the {@link PlcResponse}.
  */
 public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequestContainer> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XS7Protocol.class);
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
@@ -129,8 +134,13 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 // Clear the list
                 requests.clear();
             }
+            // Close Context
+            LOGGER.warn("Receiving exception, closing connection!", cause);
+            ctx.close();
         } else {
-            super.exceptionCaught(ctx, cause);
+            // Close Context
+            LOGGER.warn("Receiving exception, closing connection!", cause);
+            ctx.close();
         }
     }
 
