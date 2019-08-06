@@ -47,17 +47,17 @@
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>
-      <version>0.3.0-M1</version>
+      <version>0.3.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-core</artifactId>
-      <version>0.3.0-M1</version>
+      <version>0.3.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-client</artifactId>
-      <version>0.3.0-M1</version>
+      <version>0.3.2</version>
     </dependency>
 
     <dependency>
