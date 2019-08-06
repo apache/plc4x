@@ -20,23 +20,16 @@
 package org.apache.plc4x.protocol.df1;
 
 import com.fazecast.jSerialComm.SerialPort;
-import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.df1.DF1Command;
+import org.apache.plc4x.java.df1.DF1Symbol;
+import org.apache.plc4x.java.df1.DF1SymbolMessageFrameStart;
+import org.apache.plc4x.java.df1.io.DF1SymbolIO;
+import org.apache.plc4x.java.utils.ReadBuffer;
+
 //import org.apache.plc4x.java.df1.TPKTPacket;
 //import org.apache.plc4x.java.df1.io.TPKTPacketIO;
-import org.apache.plc4x.java.df1.DF1Command;
-import org.apache.plc4x.java.df1.DF1SymbolMessageFrameStart;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
-import org.apache.plc4x.java.df1.DF1Symbol;
-import org.apache.plc4x.java.df1.io.DF1SymbolIO;
-import purejavacomm.CommPortIdentifier;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.BitSet;
-
-public class BenchmarkGeneratedDf1 {
+public class BenchmarkManualDf1 {
 
     public static void main(String[] args) throws Exception {
 //        byte[] rData = Hex.decodeHex("0300006702f080320100000001005600000407120a10060001032b84000160120a10020001032b840001a0120a10010001032b840001a9120a10050001032b84000150120a10020001032b84000198120a10040001032b84000140120a10020001032b84000190");
