@@ -60,9 +60,4 @@ public class DefaultArrayField implements ArrayField {
         return params;
     }
 
-    public static enum LengthType {
-        COUNT,
-        LENGTH
-    }
-
 }

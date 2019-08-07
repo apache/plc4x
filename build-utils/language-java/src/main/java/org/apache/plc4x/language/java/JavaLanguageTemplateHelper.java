@@ -376,6 +376,14 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return arrayField.getLengthType() == ArrayField.LengthType.COUNT;
     }
 
+    public boolean isLengthArray(ArrayField arrayField) {
+        return arrayField.getLengthType() == ArrayField.LengthType.LENGTH;
+    }
+
+    public boolean isTerminatedArray(ArrayField arrayField) {
+        return arrayField.getLengthType() == ArrayField.LengthType.TERMINATED;
+    }
+
     public String toSwitchExpression(String expression) {
         StringBuilder sb = new StringBuilder();
         Pattern pattern = Pattern.compile("([^\\.]*)\\.([a-zA-Z\\d]+)(.*)");
@@ -390,8 +398,8 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return sb.toString();
     }
 
-    public String toDeserializationExpression(Term term) {
-        return toExpression(term, this::toVariableDeserializationExpression);
+    public String toDeserializationExpression(Term term, Argument[] parserArguments) {
+        return toExpression(term, term1 -> toVariableDeserializationExpression(term1, parserArguments));
     }
 
     public String toSerializationExpression(Term term, Argument[] parserArguments) {
@@ -450,7 +458,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         }
     }
 
-    private String toVariableDeserializationExpression(Term term) {
+    private String toVariableDeserializationExpression(Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         if("CAST".equals(vl.getName())) {
@@ -458,9 +466,46 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
                 throw new RuntimeException("A CAST expression expects exactly two arguments.");
             }
-            sb.append("(").append(toVariableDeserializationExpression(vl.getArgs().get(0)))
+            sb.append("(").append(toVariableDeserializationExpression(vl.getArgs().get(0), parserArguments))
                 .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
             return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+        }
+        else if("STATIC_CALL".equals(vl.getName())) {
+            StringBuilder sb = new StringBuilder();
+            if(!(vl.getArgs().get(0) instanceof StringLiteral)) {
+                throw new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
+            }
+            String methodName = ((StringLiteral) vl.getArgs().get(0)).getValue();
+            methodName = methodName.substring(1, methodName.length() - 1);
+            sb.append(methodName).append("(");
+            for(int i = 1; i < vl.getArgs().size(); i++) {
+                Term arg = vl.getArgs().get(i);
+                if(i > 1) {
+                    sb.append(", ");
+                }
+                if(arg instanceof VariableLiteral) {
+                    VariableLiteral va = (VariableLiteral) arg;
+                    // "io" is the default name of the reader argument which is always available.
+                    boolean isDeserializerArg = "io".equals(va.getName());
+                    if(parserArguments != null) {
+                        for (Argument parserArgument : parserArguments) {
+                            if (parserArgument.getName().equals(va.getName())) {
+                                isDeserializerArg = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(isDeserializerArg) {
+                        sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
+                    } else {
+                        sb.append(toVariableDeserializationExpression(va, null));
+                    }
+                } else if(arg instanceof StringLiteral) {
+                    sb.append(((StringLiteral) arg).getValue());
+                }
+            }
+            sb.append(")");
+            return sb.toString();
         }
         // All uppercase names are not fields, but utility methods.
         else if(vl.getName().equals(vl.getName().toUpperCase())) {
@@ -472,7 +517,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     if(!firstArg) {
                         sb.append(", ");
                     }
-                    sb.append(toVariableDeserializationExpression(arg));
+                    sb.append(toVariableDeserializationExpression(arg, parserArguments));
                     firstArg = false;
                 }
                 sb.append(")");
@@ -499,7 +544,8 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 }
                 if(arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
-                    boolean isSerializerArg = false;
+                    // "io" and "value" are always available in every parser.
+                    boolean isSerializerArg = "io".equals(va.getName()) || "value".equals(va.getName());
                     if(parserArguments != null) {
                         for (Argument parserArgument : parserArguments) {
                             if (parserArgument.getName().equals(va.getName())) {

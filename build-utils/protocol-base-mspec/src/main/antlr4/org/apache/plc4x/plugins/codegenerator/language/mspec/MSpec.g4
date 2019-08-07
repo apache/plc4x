@@ -148,6 +148,7 @@ fragment HexDigit
 arrayType
  : K_COUNT
  | K_LENGTH
+ | K_TERMINATED
  ;
 
 idExpression
@@ -170,6 +171,7 @@ K_TYPE_SWITCH : 'typeSwitch';
 
 K_COUNT : 'count';
 K_LENGTH : 'length';
+K_TERMINATED : 'terminated';
 
 K_BIT : 'bit';
 K_INT : 'int';

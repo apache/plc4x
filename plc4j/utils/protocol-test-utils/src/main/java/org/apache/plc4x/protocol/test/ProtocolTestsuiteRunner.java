@@ -59,7 +59,7 @@ public class ProtocolTestsuiteRunner {
             String testcaseName = testcase.getName();
             String testcaseLabel = testSuite.getName() + ": " + testcaseName;
             DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, () ->
-                run(testcase)
+                run(testSuite, testcase)
             );
             dynamicTests.add(test);
         }
@@ -71,6 +71,7 @@ public class ProtocolTestsuiteRunner {
             SAXReader reader = new SAXReader();
             Document document = reader.read(testsuiteDocumentXml);
             Element testsuiteXml = document.getRootElement();
+            boolean littleEndian = !"true".equals(testsuiteXml.attributeValue("bigEndian"));
             Element testsuiteName = testsuiteXml.element(new QName("name"));
             List<Element> testcasesXml = testsuiteXml.elements(new QName("testcase"));
             List<Testcase> testcases = new ArrayList<>(testcasesXml.size());
@@ -89,7 +90,7 @@ public class ProtocolTestsuiteRunner {
                 testcases.add(new Testcase(name, description, raw, rootType, xmlElement));
             }
             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
-            return new ProtocolTestsuite(testsuiteName.getTextTrim(), testcases);
+            return new ProtocolTestsuite(testsuiteName.getTextTrim(), testcases, littleEndian);
         } catch (DocumentException e) {
             throw new ProtocolTestsuiteException("Error parsing testsuite xml", e);
         } catch (DecoderException e) {
@@ -97,9 +98,9 @@ public class ProtocolTestsuiteRunner {
         }
     }
 
-    private void run(Testcase testcase) throws ProtocolTestsuiteException {
+    private void run(ProtocolTestsuite testSuite, Testcase testcase) throws ProtocolTestsuiteException {
         ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
-        ReadBuffer readBuffer = new ReadBuffer(testcase.getRaw());
+        ReadBuffer readBuffer = new ReadBuffer(testcase.getRaw(), testSuite.isLittleEndian());
         String referenceXml = testcase.getXml().elements().get(0).asXML();
 
         MessageIO messageIO = getMessageIOForTestcase(testcase);
@@ -108,10 +109,9 @@ public class ProtocolTestsuiteRunner {
             String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(msg);
             Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreWhitespace().build();
             if(diff.hasDifferences()) {
-                // TODO: Add some more information ...
-                throw new ProtocolTestsuiteException("Differences were found after parsing.");
+                throw new ProtocolTestsuiteException("Differences were found after parsing.\n" + diff.toString());
             }
-            WriteBuffer writeBuffer = new WriteBuffer(((SizeAware) msg).getLengthInBytes());
+            WriteBuffer writeBuffer = new WriteBuffer(((SizeAware) msg).getLengthInBytes(), testSuite.isLittleEndian());
             messageIO.serialize(writeBuffer, msg);
             byte[] data = writeBuffer.getData();
             if(!Arrays.equals(testcase.getRaw(), data)) {

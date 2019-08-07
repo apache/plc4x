@@ -21,16 +21,13 @@ package org.apache.plc4x.protocol.df1;
 
 import com.fazecast.jSerialComm.SerialPort;
 import org.apache.plc4x.java.df1.*;
-import org.apache.plc4x.java.df1.io.ReadRequestIO;
-import org.apache.plc4x.java.df1.io.ReadResponseIO;
-import org.apache.plc4x.java.df1.io.ResultIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
 
 public class BenchmarkGeneratedDf1 {
 
     public static void main(String[] args) throws Exception {
-        // Manually build a message
+        /*// Manually build a message
         ReadRequest readRequest = new ReadRequest(new DF1SymbolMessageFrameStart((short) 0x09, (short) 0x00, new DF1ReadRequest((short) 0x00, 0x01, 0x0B, (short) 0x02)), new DF1SymbolMessageFrameEnd());
 
         // Serialize the message
@@ -78,7 +75,7 @@ public class BenchmarkGeneratedDf1 {
             System.out.println("Didn't get an ACK");
         }
 
-        comPort.closePort();
+        comPort.closePort();*/
     }
 
 }

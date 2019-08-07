@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 /**
@@ -34,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class EndToEndTest {
 
-    @org.junit.Test
+    @Test
     public void helloDf1() {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("df1:serial:///COM4")) {
             PlcReadRequest request = plcConnection.readRequestBuilder()

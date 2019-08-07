@@ -17,32 +17,17 @@
 // under the License.
 //
 
-
-[type 'ReadRequest'
-    [field    DF1Symbol    'messageFrameStart' ['0', 'null']]
-    [field    DF1Symbol    'messageFrameEnd' ['0', 'messageFrameStart']]
-]
-
-[type 'ReadResponse' [uint 8 'payloadSize']
-    [field    DF1Symbol    'messageFrameStart' ['payloadSize', 'null']]
-    [field    DF1Symbol    'messageFrameEnd' ['0', 'messageFrameStart']]
-]
-
-[type 'Result'
-    [field    DF1Symbol    'result' ['0', 'null']]
-]
-
-[discriminatedType 'DF1Symbol' [uint 8 'payloadSize', DF1SymbolMessageFrameStart 'messageStartSymbol']
+[discriminatedType 'DF1Symbol'
     [const            uint 8       'messageStart' '0x10']
     [discriminator    uint 8       'symbolType']
     [typeSwitch 'symbolType'
-        ['0x02' DF1SymbolMessageFrameStart
+        ['0x02' DF1SymbolMessageFrame
             [field    uint 8       'destinationAddress']
             [field    uint 8       'sourceAddress']
-            [field    DF1Command   'command' ['payloadSize']]
-        ]
-        ['0x03' DF1SymbolMessageFrameEnd
-            [implicit uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.protocol.df1.DF1Utils.CRCCheck", discriminatorValues[0], messageStartSymbol)']
+            [field    DF1Command   'command']
+            [const    uint 8       'messageEnd' '0x10']
+            [const    uint 8       'endTransaction' '0x03']
+            [implicit uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.CRCCheck", value)']
         ]
         ['0x06' DF1SymbolMessageFrameACK
         ]
@@ -51,17 +36,17 @@
     ]
 ]
 
-[discriminatedType 'DF1Command' [uint 8 'payloadSize']
-    [discriminator uint 8  'commandType']
+[discriminatedType 'DF1Command'
+    [discriminator uint 8  'commandCode']
     [field    uint 8       'status']
     [field    uint 16      'transactionCounter']
-    [typeSwitch 'commandType'
-        ['0x01' DF1ReadRequest
-         [field uint 16    'address']
-         [field uint 8     'size']
+    [typeSwitch 'commandCode'
+        ['0x01' DF1UnprotectedReadRequest
+            [field uint 16    'address']
+            [field uint 8     'size']
         ]
-        ['0x41' DF1ReadResponse
-         [arrayField uint 8 'data' length 'payloadSize']
+        ['0x41' DF1UnprotectedReadResponse
+            [arrayField uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", io)']
         ]
     ]
 ]
