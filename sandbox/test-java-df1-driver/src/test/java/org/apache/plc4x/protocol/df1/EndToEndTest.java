@@ -37,7 +37,7 @@ public class EndToEndTest {
 
     @org.junit.Test
     public void helloDf1() {
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("df1:serial///dev/cu.usbserial-AL065SUZ")) {
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("df1:serial:///COM4")) {
             PlcReadRequest request = plcConnection.readRequestBuilder()
                 .addItem("erstes", "17:INTEGER")
                 .build();

@@ -76,18 +76,18 @@ public class BenchmarkManualDf1 {
 //        }
 
 
-        byte[] rData = {0x10, 0x02, 0x00, 0x09, 0x41, 0x00, 0x01, 0x00, 0x1F, 0x1F, 0x10, 0x03, 0x1A, 0x2B};
-
- /*       DF1SymbolIO df1SymbolIO = new DF1SymbolIO();
-        DF1Symbol packet;
-        ReadBuffer rBuf = new ReadBuffer(rData);
-        int statusWord = (rData[7]<<8) + rData[6];
-        DF1Command messageCommand = new DF1Command((short)rData[5]); //,(short)statusWord);
-        DF1SymbolMessageFrameStart messageStart = new DF1SymbolMessageFrameStart((short)rData[3],(short)rData[2], messageCommand);
-        packet = df1SymbolIO.parse(rBuf, (short) (rData.length-12), messageStart);
-
-        System.out.println("x: " + packet);
-        System.exit(0);
+//        byte[] rData = {0x10, 0x02, 0x00, 0x09, 0x41, 0x00, 0x01, 0x00, 0x1F, 0x1F, 0x10, 0x03, 0x1A, 0x2B};
+//
+//        DF1SymbolIO df1SymbolIO = new DF1SymbolIO();
+//        DF1Symbol packet;
+//        ReadBuffer rBuf = new ReadBuffer(rData);
+//        int statusWord = (rData[7]<<8) + rData[6];
+//        DF1Command messageCommand = new DF1Command((short)rData[5]); //,(short)statusWord);
+//        DF1SymbolMessageFrameStart messageStart = new DF1SymbolMessageFrameStart((short)rData[3],(short)rData[2], messageCommand);
+//        packet = df1SymbolIO.parse(rBuf, (short) (rData.length-12), messageStart);
+//
+//        System.out.println("x: " + packet);
+//        System.exit(0);
 
 
 
@@ -105,7 +105,9 @@ public class BenchmarkManualDf1 {
 //        System.out.println(comPort.getWriteTimeout());
 
 
-        DF1SymbolIO df1message = new DF1SymbolIO();
+        System.exit(0);
+
+//        DF1SymbolIO df1message = new DF1SymbolIO();
 
 
         byte[] c_STX = {0x02};
@@ -198,7 +200,7 @@ public class BenchmarkManualDf1 {
             System.out.print(Integer.toHexString(c_RCV2) + " | "); }
         System.out.println("");
 
-        comPort.closePort();*/
+        comPort.closePort();
 
     }
 
