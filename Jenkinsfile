@@ -124,9 +124,10 @@ pipeline {
                 branch 'develop'
             }
             steps {
-                echo 'Checking Code Quality'
-                withSonarQubeEnv('ASF Sonar Analysis') {
-                    sh 'mvn -P${JENKINS_PROFILE},with-boost,with-java,with-dotnet,with-python,with-proxies sonar:sonar'
+                echo 'Checking Code Quality on SonarCloud'
+                def sonarcloudParams="-Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_plc4x -Dsonar.branch.name=develop"
+                withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    sh 'mvn -P${JENKINS_PROFILE},with-boost,with-java,with-dotnet,with-python,with-proxies sonar:sonar ${sonarcloudParams}'
                 }
             }
         }
