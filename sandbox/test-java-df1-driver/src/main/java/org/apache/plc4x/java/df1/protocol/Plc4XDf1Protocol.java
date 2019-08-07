@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcRequestContainer> {
+public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRequestContainer> {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4XDf1Protocol.class);
 
@@ -48,8 +48,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
                 int transactionId = this.transactionId.getAndIncrement();
                 logger.debug("Creating request for offset {}, with length {} and transaction id {}", address, size, transactionId);
                 // TODO: differentiate commands
-                DF1SymbolMessageFrameStart frameStart = new DF1SymbolMessageFrameStart((short) 0x09, (short) 0x00, new DF1ReadRequest((short) 0x00, transactionId, address, size));
-                out.add(frameStart);
+                out.add(new DF1UnprotectedReadRequest((short) 0x00, transactionId, address, size));
             }
         } else {
             throw new IllegalStateException("This should not happen!");
@@ -57,7 +56,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, DF1Symbol msg, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, DF1Command msg, List<Object> out) throws Exception {
         System.out.println("Hello");
     }
 

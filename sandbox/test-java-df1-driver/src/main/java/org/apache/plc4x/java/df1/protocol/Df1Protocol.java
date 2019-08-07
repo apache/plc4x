@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.base.PlcByteToMessageCodec;
+import org.apache.plc4x.java.df1.DF1Command;
 import org.apache.plc4x.java.df1.DF1Symbol;
 import org.apache.plc4x.java.df1.DF1SymbolMessageFrame;
 import org.apache.plc4x.java.df1.DF1UnprotectedReadRequest;
@@ -36,17 +37,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Df1Protocol extends PlcByteToMessageCodec<DF1Symbol> {
+public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
 
     private static final Logger logger = LoggerFactory.getLogger(Df1Protocol.class);
 
+    private final short localAddr;
+    private final short remoteAddr;
     private final DF1SymbolIO df1SymbolIO;
 
-    private Map<Integer, Short> readRequestSizes;
-
-    public Df1Protocol() {
+    public Df1Protocol(short localAddr, short remoteAddr) {
+        this.localAddr = localAddr;
+        this.remoteAddr = remoteAddr;
         df1SymbolIO = new DF1SymbolIO();
-        readRequestSizes = new HashMap<>();
     }
 
     @Override
@@ -54,21 +56,14 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Symbol> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, DF1Symbol msg, ByteBuf out) throws Exception {
-        // Remember the size of the request as we need this to decode the response.
-        if(msg instanceof DF1SymbolMessageFrame) {
-            DF1SymbolMessageFrame frame = (DF1SymbolMessageFrame) msg;
-            if(frame.getCommand() instanceof DF1UnprotectedReadRequest) {
-                DF1UnprotectedReadRequest unprotectedReadRequest = (DF1UnprotectedReadRequest) frame.getCommand();
-                int transactionCounter = unprotectedReadRequest.getTransactionCounter();
-                readRequestSizes.put(transactionCounter, unprotectedReadRequest.getSize());
-            }
-        }
+    protected void encode(ChannelHandlerContext ctx, DF1Command msg, ByteBuf out) throws Exception {
+        // Create a new df1 frame for transmitting the command
+        DF1SymbolMessageFrame frame = new DF1SymbolMessageFrame(remoteAddr, localAddr, msg);
 
         // Serialize the message
         // TODO: Create the buffer with the correct size.
         WriteBuffer writeBuffer = new WriteBuffer(100);
-        df1SymbolIO.serialize(writeBuffer, msg);
+        df1SymbolIO.serialize(writeBuffer, frame);
         byte[] data = writeBuffer.getData();
 
         // Send the serialized data
@@ -106,7 +101,7 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Symbol> {
                             break;
                         }
                         case (short) 0x41: {
-                            int transactionCounter = in.getUnsignedShort(6);
+                            /*int transactionCounter = in.getUnsignedShort(6);
                             if(!readRequestSizes.containsKey(transactionCounter)) {
                                 logger.warn("Unknown transaction counter: {}", transactionCounter);
                                 if (logger.isDebugEnabled()) {
@@ -119,7 +114,8 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Symbol> {
                             size = readRequestSizes.remove(transactionCounter);
                             if(in.readableBytes() < 8 + size) {
                                 return;
-                            }
+                            }*/
+                            // TODO: Let's just assume all is good for now ...
                             break;
                         }
                     }
