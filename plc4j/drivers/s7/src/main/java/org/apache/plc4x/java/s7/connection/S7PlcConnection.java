@@ -286,43 +286,4 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         return new DefaultPlcWriteRequest.Builder(this, new S7PlcFieldHandler());
     }
 
-    @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        InternalPlcReadRequest internalReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
-        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
-            new PlcRequestContainer<>(internalReadRequest, future);
-        sendRequest(future, container);
-        return future
-            .thenApply(PlcReadResponse.class::cast);
-    }
-
-    @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        InternalPlcWriteRequest internalWriteRequest = checkInternal(writeRequest, InternalPlcWriteRequest.class);
-        CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
-            new PlcRequestContainer<>(internalWriteRequest, future);
-        sendRequest(future, container);
-        return future
-            .thenApply(PlcWriteResponse.class::cast);
-    }
-
-    /**
-     * Sends the request to the netty channel in a robust manner.
-     */
-    private void sendRequest(CompletableFuture<?> future, PlcRequestContainer<?, ?> container) {
-        GenericFutureListener<Future<? super Void>> closeListener = f -> {
-            future.completeExceptionally(new PlcRuntimeException("Connection was unexpectedly closed during read. This is most likely due to a problem in the connection layer."));
-        };
-        channel.closeFuture().addListener(closeListener);
-        channel.writeAndFlush(container).addListener(f -> {
-            if (!f.isSuccess()) {
-                future.completeExceptionally(f.cause());
-            }
-            // Remove the close listener, as it completed
-            channel.closeFuture().removeListener(closeListener);
-        });
-    }
-
 }

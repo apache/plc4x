@@ -418,13 +418,13 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) {
-        // FIXME Remove
-        logger.trace("Intercepting and firing exception");
-        System.out.println("i = " + i);
-        if (i++ > 10) {
-            System.out.println("Throwing...");
-            throw new RuntimeException("bäm!");
-        }
+//        // FIXME Remove
+//        logger.trace("Intercepting and firing exception");
+//        System.out.println("i = " + i);
+//        if (i++ > 10) {
+//            System.out.println("Throwing...");
+//            throw new RuntimeException("bäm!");
+//        }
 
         if (logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));

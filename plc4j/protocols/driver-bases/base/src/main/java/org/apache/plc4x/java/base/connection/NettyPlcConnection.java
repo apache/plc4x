@@ -22,9 +22,17 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.base.messages.*;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -127,6 +135,41 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
 
     protected void sendChannelCreatedEvent() {
         // Implemented in sub-classes, if needed.
+    }
+
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        InternalPlcReadRequest internalReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
+        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
+            new PlcRequestContainer<>(internalReadRequest, future);
+        sendRequest(future, container);
+        return future
+            .thenApply(PlcReadResponse.class::cast);
+    }
+
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        InternalPlcWriteRequest internalWriteRequest = checkInternal(writeRequest, InternalPlcWriteRequest.class);
+        CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
+            new PlcRequestContainer<>(internalWriteRequest, future);
+        sendRequest(future, container);
+        return future
+            .thenApply(PlcWriteResponse.class::cast);
+    }
+
+    /**
+     * Sends the request to the netty channel in a robust manner.
+     */
+    private void sendRequest(CompletableFuture<?> future, PlcRequestContainer<?, ?> container) {
+        channel.closeFuture().addListener(f -> {
+            future.completeExceptionally(new PlcRuntimeException("Connection was unexpectedly closed during read. This is most likely due to a problem in the connection layer."));
+        });
+        channel.writeAndFlush(container).addListener(f -> {
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
+            }
+            // Remove the close listener, as it completed
+        });
     }
 
 }

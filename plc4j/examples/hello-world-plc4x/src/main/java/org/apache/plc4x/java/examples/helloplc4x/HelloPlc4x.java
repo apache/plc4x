@@ -39,17 +39,23 @@ public class HelloPlc4x {
      */
     public static void main(String[] args) throws Exception {
         // Establish a connection to the plc using the url provided as first argument
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.167.210/0/0")) {
+        for (int j = 1; j <= 5; j++) {
+            try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://192.168.167.210/0/0")) {
 
-            for (int i = 0; i <= 100; i++) {
-                PlcReadResponse response = plcConnection.readRequestBuilder()
-                    .addItem("field", "%DB400:DBW10:INT")
-                    .build()
-                    .execute()
-                    .get();
+                for (int i = 0; i <= 10; i++) {
+                    try {
+                        PlcReadResponse response = plcConnection.readRequestBuilder()
+                            .addItem("field", "%DB400:DBW10:INT")
+                            .build()
+                            .execute()
+                            .get();
 
-                System.out.println(response.getResponseCode("field"));
-                Thread.sleep(100);
+                        System.out.println(response.getResponseCode("field"));
+                    } catch (Exception e) {
+                        System.out.println("error...");
+                    }
+                    Thread.sleep(100);
+                }
             }
         }
 
