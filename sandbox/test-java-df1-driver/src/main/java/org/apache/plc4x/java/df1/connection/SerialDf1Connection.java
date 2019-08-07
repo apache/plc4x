@@ -19,23 +19,59 @@
 package org.apache.plc4x.java.df1.connection;
 
 import io.netty.channel.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.SerialChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.df1.protocol.Df1Protocol;
 import org.apache.plc4x.java.df1.protocol.Plc4XDf1Protocol;
 import org.apache.plc4x.java.df1.util.Df1FieldHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
 public class SerialDf1Connection extends BaseDf1Connection implements PlcReader, PlcWriter {
 
+    private static final Logger logger = LoggerFactory.getLogger(SerialDf1Connection.class);
+
+    private short localAddr;
+    private short remoteAddr;
+
     public SerialDf1Connection(String comPortName, String params) {
-        super(new SerialChannelFactory(comPortName));
+        this(new SerialChannelFactory(comPortName), params);
+    }
+
+    public SerialDf1Connection(ChannelFactory channelFactory, String params) {
+        super(channelFactory, false);
+        this.localAddr = (short) 0x00;
+        this.remoteAddr = (short) 0x09;
+
+        // Override some of the settings, if they are asked for.
+        if (!StringUtils.isEmpty(params)) {
+            for (String param : params.split("&")) {
+                String[] paramElements = param.split("=");
+                String paramName = paramElements[0];
+                if (paramElements.length == 2) {
+                    String paramValue = paramElements[1];
+                    switch (paramName) {
+                        case "local-addr":
+                            this.localAddr = Short.parseShort(paramValue);
+                            break;
+                        case "remote-addr":
+                            this.remoteAddr = Short.parseShort(paramValue);
+                            break;
+                        default:
+                            logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -65,7 +101,7 @@ public class SerialDf1Connection extends BaseDf1Connection implements PlcReader,
                         }
                     }
                 });
-                pipeline.addLast(new Df1Protocol());
+                pipeline.addLast(new Df1Protocol(localAddr, remoteAddr));
                 pipeline.addLast(new Plc4XDf1Protocol());
             }
         };
