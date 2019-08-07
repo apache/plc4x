@@ -50,6 +50,10 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Symbol> {
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    }
+
+    @Override
     protected void encode(ChannelHandlerContext ctx, DF1Symbol msg, ByteBuf out) throws Exception {
         // Remember the size of the request as we need this to decode the response.
         if(msg instanceof DF1SymbolMessageFrame) {
@@ -140,4 +144,10 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Symbol> {
         out.add(resp);
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
+        //super.exceptionCaught(ctx, cause);
+    }
 }

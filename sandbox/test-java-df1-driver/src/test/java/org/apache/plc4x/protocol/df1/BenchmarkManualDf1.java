@@ -75,18 +75,18 @@ public class BenchmarkManualDf1 {
 //        }
 
 
-        byte[] rData = {0x10, 0x02, 0x00, 0x09, 0x41, 0x00, 0x01, 0x00, 0x1F, 0x1F, 0x10, 0x03, 0x1A, 0x2B};
-
- /*       DF1SymbolIO df1SymbolIO = new DF1SymbolIO();
-        DF1Symbol packet;
-        ReadBuffer rBuf = new ReadBuffer(rData);
-        int statusWord = (rData[7]<<8) + rData[6];
-        DF1Command messageCommand = new DF1Command((short)rData[5]); //,(short)statusWord);
-        DF1SymbolMessageFrameStart messageStart = new DF1SymbolMessageFrameStart((short)rData[3],(short)rData[2], messageCommand);
-        packet = df1SymbolIO.parse(rBuf, (short) (rData.length-12), messageStart);
-
-        System.out.println("x: " + packet);
-        System.exit(0);
+//        byte[] rData = {0x10, 0x02, 0x00, 0x09, 0x41, 0x00, 0x01, 0x00, 0x1F, 0x1F, 0x10, 0x03, 0x1A, 0x2B};
+//
+//        DF1SymbolIO df1SymbolIO = new DF1SymbolIO();
+//        DF1Symbol packet;
+//        ReadBuffer rBuf = new ReadBuffer(rData);
+//        int statusWord = (rData[7]<<8) + rData[6];
+//        DF1Command messageCommand = new DF1Command((short)rData[5]); //,(short)statusWord);
+//        DF1SymbolMessageFrameStart messageStart = new DF1SymbolMessageFrameStart((short)rData[3],(short)rData[2], messageCommand);
+//        packet = df1SymbolIO.parse(rBuf, (short) (rData.length-12), messageStart);
+//
+//        System.out.println("x: " + packet);
+//        System.exit(0);
 
 
 
@@ -97,14 +97,15 @@ public class BenchmarkManualDf1 {
 //        comPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, 0, 0);
 
         System.out.print(comPort.getSystemPortName() + " | ");
-        System.out.print(comPort.getPortDescription() + " | ");
+        //System.out.print(comPort.getPortDescription() + " | ");
         System.out.print(comPort.getDescriptivePortName() + " | Baud rate: ");
         System.out.println(comPort.getBaudRate());
 //        System.out.println(comPort.getReadTimeout());
 //        System.out.println(comPort.getWriteTimeout());
 
 
-        DF1SymbolIO df1message = new DF1SymbolIO();
+
+//        DF1SymbolIO df1message = new DF1SymbolIO();
 
 
         byte[] c_STX = {0x02};
@@ -156,6 +157,10 @@ public class BenchmarkManualDf1 {
         comPort.writeBytes(c_ETX, 1);
 
 
+        comPort.closePort();
+        System.exit(0);
+
+
 //        int[] crcmsg = {c_DST[0], c_SRC[0], c_CMD[0], c_STS[0], c_TNS[0], c_TNS[1], c_ADR[0], c_ADR[1], c_SZE[0], c_ETX[0]}; // fullduplex CRC
         int[] crcmsg = {c_DST[0], c_SRC[0], c_CMD[0], c_STS[0], c_TNS[0], c_TNS[1], c_FNC[0], c_ETX[0]};                       // diagnostic status request
 //        int[] crcmsg = {0x11, 0x02, 0x09, 0x00, 0x01, 0x00, 0x41, 0x00, 0x12, 0x00, 0x0c, 0x03}; // halfduplex CRC
@@ -197,7 +202,7 @@ public class BenchmarkManualDf1 {
             System.out.print(Integer.toHexString(c_RCV2) + " | "); }
         System.out.println("");
 
-        comPort.closePort();*/
+        comPort.closePort();
 
     }
 
