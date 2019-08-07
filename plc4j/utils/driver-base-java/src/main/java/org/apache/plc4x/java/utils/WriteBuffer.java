@@ -30,10 +30,10 @@ import java.nio.ByteBuffer;
 
 public class WriteBuffer {
 
-    private ByteBuffer bb;
-    private BufferByteOutput bbo;
-    private BitOutput bo;
-    private boolean littleEndian;
+    private final ByteBuffer bb;
+    private final BufferByteOutput bbo;
+    private final BitOutput bo;
+    private final boolean littleEndian;
 
     public WriteBuffer(int size) {
         this(size, true);

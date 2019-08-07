@@ -22,7 +22,6 @@ package org.apache.plc4x.protocol.df1;
 import com.fazecast.jSerialComm.SerialPort;
 import org.apache.plc4x.java.df1.DF1Command;
 import org.apache.plc4x.java.df1.DF1Symbol;
-import org.apache.plc4x.java.df1.DF1SymbolMessageFrameStart;
 import org.apache.plc4x.java.df1.io.DF1SymbolIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
 

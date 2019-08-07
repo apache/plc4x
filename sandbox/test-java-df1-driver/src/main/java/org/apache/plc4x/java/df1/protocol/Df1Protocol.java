@@ -23,9 +23,9 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.base.PlcByteToMessageCodec;
-import org.apache.plc4x.java.df1.DF1ReadRequest;
 import org.apache.plc4x.java.df1.DF1Symbol;
-import org.apache.plc4x.java.df1.DF1SymbolMessageFrameStart;
+import org.apache.plc4x.java.df1.DF1SymbolMessageFrame;
+import org.apache.plc4x.java.df1.DF1UnprotectedReadRequest;
 import org.apache.plc4x.java.df1.io.DF1SymbolIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
@@ -52,12 +52,12 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Symbol> {
     @Override
     protected void encode(ChannelHandlerContext ctx, DF1Symbol msg, ByteBuf out) throws Exception {
         // Remember the size of the request as we need this to decode the response.
-        if(msg instanceof DF1SymbolMessageFrameStart) {
-            DF1SymbolMessageFrameStart frameStart = (DF1SymbolMessageFrameStart) msg;
-            if(frameStart.getCommand() instanceof DF1ReadRequest) {
-                DF1ReadRequest readRequest = (DF1ReadRequest) frameStart.getCommand();
-                int transactionCounter = readRequest.getTransactionCounter();
-                readRequestSizes.put(transactionCounter, readRequest.getSize());
+        if(msg instanceof DF1SymbolMessageFrame) {
+            DF1SymbolMessageFrame frame = (DF1SymbolMessageFrame) msg;
+            if(frame.getCommand() instanceof DF1UnprotectedReadRequest) {
+                DF1UnprotectedReadRequest unprotectedReadRequest = (DF1UnprotectedReadRequest) frame.getCommand();
+                int transactionCounter = unprotectedReadRequest.getTransactionCounter();
+                readRequestSizes.put(transactionCounter, unprotectedReadRequest.getSize());
             }
         }
 

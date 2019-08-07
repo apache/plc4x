@@ -96,8 +96,12 @@ public class MessageFormatListener extends MSpecBaseListener {
         ArrayField.LengthType lengthType;
         if(ctx.lengthType.K_COUNT() != null) {
             lengthType = ArrayField.LengthType.COUNT;
-        } else {
+        } else if(ctx.lengthType.K_LENGTH() != null){
             lengthType = ArrayField.LengthType.LENGTH;
+        } else if(ctx.lengthType.K_TERMINATED() != null) {
+            lengthType = ArrayField.LengthType.TERMINATED;
+        } else {
+            throw new RuntimeException("Unsupported lenghtType for arrayField");
         }
         String lengthExpressionString = ctx.lengthExpression.expr.getText();
         InputStream inputStream = IOUtils.toInputStream(lengthExpressionString);

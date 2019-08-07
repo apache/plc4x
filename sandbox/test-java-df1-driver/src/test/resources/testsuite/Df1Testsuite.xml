@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/testsuite.xsd"
+                bigEndian="true">
+
+  <name>Allen-Bradley DF1</name>
+
+  <testcase>
+    <name>Unprotected Read Address Request</name>
+    <raw>10020900010001001100021003546F</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1SymbolMessageFrame className="org.apache.plc4x.java.df1.DF1SymbolMessageFrame">
+        <destinationAddress>9</destinationAddress>
+        <sourceAddress>0</sourceAddress>
+        <command className="org.apache.plc4x.java.df1.DF1UnprotectedReadRequest">
+          <status>0</status>
+          <transactionCounter>1</transactionCounter>
+          <address>17</address>
+          <size>2</size>
+        </command>
+      </DF1SymbolMessageFrame>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Unprotected Read Address Response</name>
+    <raw>10020A0941000100FFFF1003DFB9</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1SymbolMessageFrame className="org.apache.plc4x.java.df1.DF1SymbolMessageFrame">
+        <destinationAddress>10</destinationAddress>
+        <sourceAddress>9</sourceAddress>
+        <command className="org.apache.plc4x.java.df1.DF1UnprotectedReadResponse">
+          <status>0</status>
+          <transactionCounter>1</transactionCounter>
+          <data>
+            <data>255</data>
+            <data>255</data>
+          </data>
+        </command>
+      </DF1SymbolMessageFrame>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ACK Response</name>
+    <raw>1006</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1SymbolMessageFrameACK className="org.apache.plc4x.java.df1.DF1SymbolMessageFrameACK"/>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>NACK Response</name>
+    <raw>1015</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1SymbolMessageFrameNAK className="org.apache.plc4x.java.df1.DF1SymbolMessageFrameNAK"/>
+    </xml>
+  </testcase>
+
+</test:testsuite>
