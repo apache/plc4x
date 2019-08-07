@@ -98,14 +98,13 @@ public class BenchmarkManualDf1 {
 //        comPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, 0, 0);
 
         System.out.print(comPort.getSystemPortName() + " | ");
-        System.out.print(comPort.getPortDescription() + " | ");
+        //System.out.print(comPort.getPortDescription() + " | ");
         System.out.print(comPort.getDescriptivePortName() + " | Baud rate: ");
         System.out.println(comPort.getBaudRate());
 //        System.out.println(comPort.getReadTimeout());
 //        System.out.println(comPort.getWriteTimeout());
 
 
-        System.exit(0);
 
 //        DF1SymbolIO df1message = new DF1SymbolIO();
 
@@ -157,6 +156,10 @@ public class BenchmarkManualDf1 {
 //        comPort.writeBytes(c_SZE, 1);
         comPort.writeBytes(c_DLE, 1);
         comPort.writeBytes(c_ETX, 1);
+
+
+        comPort.closePort();
+        System.exit(0);
 
 
 //        int[] crcmsg = {c_DST[0], c_SRC[0], c_CMD[0], c_STS[0], c_TNS[0], c_TNS[1], c_ADR[0], c_ADR[1], c_SZE[0], c_ETX[0]}; // fullduplex CRC

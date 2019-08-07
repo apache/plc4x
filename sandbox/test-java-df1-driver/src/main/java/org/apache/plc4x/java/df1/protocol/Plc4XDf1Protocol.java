@@ -19,22 +19,46 @@
 package org.apache.plc4x.java.df1.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.df1.DF1Symbol;
+import org.apache.plc4x.java.df1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcRequestContainer> {
 
+    private static final Logger logger = LoggerFactory.getLogger(Plc4XDf1Protocol.class);
+
+    private final AtomicInteger transactionId = new AtomicInteger(0);
+
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
-
+        if (msg.getRequest() instanceof PlcReadRequest) {
+            for (PlcField field : ((PlcReadRequest) msg.getRequest()).getFields()) {
+                if (!(field instanceof Df1Field)) {
+                    throw new IllegalArgumentException("Invalid field type found inside Df1 Request");
+                }
+                int address = ((Df1Field) field).getAddress();
+                short size = (short) ((Df1Field) field).getAddress();
+                int transactionId = this.transactionId.getAndIncrement();
+                logger.debug("Creating request for offset {}, with length {} and transaction id {}", address, size, transactionId);
+                // TODO: differentiate commands
+                DF1SymbolMessageFrameStart frameStart = new DF1SymbolMessageFrameStart((short) 0x09, (short) 0x00, new DF1ReadRequest((short) 0x00, transactionId, address, size));
+                out.add(frameStart);
+            }
+        } else {
+            throw new IllegalStateException("This should not happen!");
+        }
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, DF1Symbol msg, List<Object> out) throws Exception {
-
+        System.out.println("Hello");
     }
 
 }

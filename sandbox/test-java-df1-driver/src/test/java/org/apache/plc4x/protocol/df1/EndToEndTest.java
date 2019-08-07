@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 import java.util.concurrent.TimeUnit;
-
 /**
  * TODO write comment
  *
@@ -40,11 +39,12 @@ public class EndToEndTest {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("df1:serial:///COM4")) {
             PlcReadRequest request = plcConnection.readRequestBuilder()
                 .addItem("erstes", "17:INTEGER")
+                .addItem("zweites", "17:INTEGER")
                 .build();
 
             PlcReadResponse response = request.execute().get(1, TimeUnit.SECONDS);
 
-            System.out.println(request);
+            System.out.println(response);
         } catch (PlcConnectionException e) {
             e.printStackTrace();
         } catch (Exception e) {

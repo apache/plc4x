@@ -67,7 +67,7 @@ public class DF1PlcDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("DF1 connections don't support authentication.");
+        throw new PlcConnectionException("DF1 connections doesn't support authentication.");
     }
 
 }
