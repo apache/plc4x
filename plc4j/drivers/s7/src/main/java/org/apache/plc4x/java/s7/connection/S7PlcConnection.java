@@ -20,6 +20,8 @@ package org.apache.plc4x.java.s7.connection;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -290,13 +292,16 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
             new PlcRequestContainer<>(internalReadRequest, future);
+        GenericFutureListener<Future<? super Void>> closeListener = f -> {
+            future.completeExceptionally(new PlcRuntimeException("Connection was unexpectedly closed during read. This is most likely due to a problem in the connection layer."));
+        };
+        channel.closeFuture().addListener(closeListener);
         channel.writeAndFlush(container).addListener(f -> {
             if (!f.isSuccess()) {
                 future.completeExceptionally(f.cause());
             }
-        });
-        channel.closeFuture().addListener(f -> {
-            future.completeExceptionally(new PlcRuntimeException("Connection was unexpectedly closed during read. This is most likely due to a problem in the connection layer."));
+            // Remove the close listener, as it completed
+            channel.closeFuture().removeListener(closeListener);
         });
         return future
             .thenApply(PlcReadResponse.class::cast);
