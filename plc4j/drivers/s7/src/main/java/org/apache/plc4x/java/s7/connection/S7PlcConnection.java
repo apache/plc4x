@@ -292,6 +292,26 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
         PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
             new PlcRequestContainer<>(internalReadRequest, future);
+        sendRequest(future, container);
+        return future
+            .thenApply(PlcReadResponse.class::cast);
+    }
+
+    @Override
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        InternalPlcWriteRequest internalWriteRequest = checkInternal(writeRequest, InternalPlcWriteRequest.class);
+        CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
+            new PlcRequestContainer<>(internalWriteRequest, future);
+        sendRequest(future, container);
+        return future
+            .thenApply(PlcWriteResponse.class::cast);
+    }
+
+    /**
+     * Sends the request to the netty channel in a robust manner.
+     */
+    private void sendRequest(CompletableFuture<?> future, PlcRequestContainer<?, ?> container) {
         GenericFutureListener<Future<? super Void>> closeListener = f -> {
             future.completeExceptionally(new PlcRuntimeException("Connection was unexpectedly closed during read. This is most likely due to a problem in the connection layer."));
         };
@@ -303,23 +323,6 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             // Remove the close listener, as it completed
             channel.closeFuture().removeListener(closeListener);
         });
-        return future
-            .thenApply(PlcReadResponse.class::cast);
-    }
-
-    @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        InternalPlcWriteRequest internalWriteRequest = checkInternal(writeRequest, InternalPlcWriteRequest.class);
-        CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
-            new PlcRequestContainer<>(internalWriteRequest, future);
-        channel.writeAndFlush(container).addListener(f -> {
-            if (!f.isSuccess()) {
-                future.completeExceptionally(f.cause());
-            }
-        });
-        return future
-            .thenApply(PlcWriteResponse.class::cast);
     }
 
 }
