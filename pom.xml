@@ -1196,7 +1196,6 @@
               However this config section is used by the asciidoctor site plugin extension. So plead
               ignore this error, it's actually ok.
             -->
-            <!--
             <asciidoc>
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
@@ -1206,7 +1205,7 @@
               <requires>
                 <require>asciidoctor-diagram</require>
               </requires>
-            </asciidoc>-->
+            </asciidoc>
           </configuration>
           <dependencies>
             <!-- All dependencies needed by the reflow skin -->
