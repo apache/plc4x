@@ -61,8 +61,7 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
         DF1SymbolMessageFrame frame = new DF1SymbolMessageFrame(remoteAddr, localAddr, msg);
 
         // Serialize the message
-        // TODO: Create the buffer with the correct size.
-        WriteBuffer writeBuffer = new WriteBuffer(100);
+        WriteBuffer writeBuffer = new WriteBuffer(frame.getLengthInBytes());
         df1SymbolIO.serialize(writeBuffer, frame);
         byte[] data = writeBuffer.getData();
 
