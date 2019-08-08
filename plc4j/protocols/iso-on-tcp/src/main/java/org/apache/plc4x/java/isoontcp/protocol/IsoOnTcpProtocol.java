@@ -61,6 +61,10 @@ public class IsoOnTcpProtocol extends PlcByteToMessageCodec<IsoOnTcpMessage> {
 
         // Output the payload.
         out.writeBytes(userData);
+
+        // Release the ByteBuf and the IsoOnTcpMessage
+        userData.release();
+        in.release();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,8 +101,10 @@ public class IsoOnTcpProtocol extends PlcByteToMessageCodec<IsoOnTcpMessage> {
                 // Skip the 4 bytes we peeked into manually.
                 in.skipBytes(4);
                 // Simply place the current buffer to the output ... the next handler will continue.
+                // TODO we have to free the ByteBuff here (but also propagate that through the object)
                 ByteBuf payload = in.readBytes(packetLength - 4);
                 out.add(new IsoOnTcpMessage(payload));
+                payload.release();
             /*} else {
                 chunkedResponse = Unpooled.buffer(packetLength);
                 chunkedResponse.writeBytes(in, packetLength);*/

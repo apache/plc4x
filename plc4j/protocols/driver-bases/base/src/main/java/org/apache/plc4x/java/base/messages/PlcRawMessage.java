@@ -32,15 +32,31 @@ public class PlcRawMessage implements PlcProtocolMessage {
     public PlcRawMessage(ByteBuf userData, PlcProtocolMessage parent) {
         this.userData = userData;
         this.parent = parent;
+        // Retain ByteBuf for Rec Counting
+        this.userData.retain();
     }
 
     public ByteBuf getUserData() {
+        // Increment Ref Count because the client has to free the object also
+        this.userData.retain();
         return userData;
     }
 
     @Override
     public PlcProtocolMessage getParent() {
         return parent;
+    }
+
+    /**
+     * This method calls the release method of the underlying Netty {@link ByteBuf} and
+     * has to be called when the Message Object is no longer used.
+     *
+     * Otherwise this could lead to a LEAK.
+     *
+     * Important, this should not be called TWICE but exactly ONCE.
+     */
+    public void release() {
+        this.userData.release();
     }
 
 }
