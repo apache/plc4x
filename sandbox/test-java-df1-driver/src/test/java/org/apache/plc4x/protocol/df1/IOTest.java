@@ -31,9 +31,9 @@ public class IOTest {
 
     @Test
     public void testXml() throws Exception {
-        byte[] rData = Hex.decodeHex("10020A0941000100FFFF1003473D");
+        byte[] rData = Hex.decodeHex("10020900010001001100021003546F");
         ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
-        ReadBuffer rBuf = new ReadBuffer(rData);
+        ReadBuffer rBuf = new ReadBuffer(rData, false);
         DF1Symbol symbol = new DF1SymbolIO().parse(rBuf);
         String xml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(symbol);
         System.out.println(xml);
@@ -43,9 +43,9 @@ public class IOTest {
 
     @Test
     public void testJson() throws Exception {
-        byte[] rData = Hex.decodeHex("10020900010001001100021003ABE2");
+        byte[] rData = Hex.decodeHex("10020A0941000100FFFF1003DFB9");
         ObjectMapper mapper = new ObjectMapper().enableDefaultTyping();
-        ReadBuffer rBuf = new ReadBuffer(rData);
+        ReadBuffer rBuf = new ReadBuffer(rData, false);
         DF1Symbol symbol = new DF1SymbolIO().parse(rBuf);
         String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(symbol);
         System.out.println(json);

@@ -62,6 +62,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = ${field.referenceValue};
 </#list>
 </#if>
+<#-- Prpoerty fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
 
     // Properties.
@@ -71,6 +72,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#if>
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    <#-- getAllPropertyFields() returns not only the property fields of this type but also of it's parents -->
     public ${typeName}(<#list type.getAllPropertyFields() as field>@JsonProperty("${field.name}") ${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
 <#if type.getParentPropertyFields()?has_content>
         super(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
@@ -114,6 +116,11 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         }
         </#if>
         <#break>
+    <#case "checksum">
+
+        // Checksum Field (${field.name})
+        lengthInBits += ${field.type.size};
+        <#break>
     <#case "const">
 
         // Const Field (${field.name})
@@ -129,10 +136,33 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         // Implicit Field (${field.name})
         lengthInBits += ${field.type.size};
         <#break>
+    <#case "manualArray">
+
+        // Manual Array Field (${field.name})
+        <#if helper.isSimpleType(field.type)>
+        lengthInBits += ${field.type.size} * ${field.name}.length;
+        <#else>
+        for(SizeAware element : ${field.name}) {
+            lengthInBits += element.getLengthInBytes() * 8;
+        }
+        </#if>
+        <#break>
+    <#case "manual">
+
+        // Manual Field (${field.name})
+        lengthInBits += ${field.type.size};
+        <#break>
     <#case "optional">
 
         // Optional Field (${field.name})
         if(${field.name} != null) {
+            lengthInBits += ${field.type.size};
+        }
+        <#break>
+    <#case "padding">
+
+        // Padding Field (${field.name})
+        if((boolean) (${helper.toDeserializationExpression(field.paddingCondition, type.parserArguments)})) {
             lengthInBits += ${field.type.size};
         }
         <#break>
