@@ -27,15 +27,15 @@ public class DefaultArrayField implements ArrayField {
 
     private final TypeReference type;
     private final String name;
-    private final ArrayField.LengthType lengthType;
-    private final Term lengthExpression;
+    private final LoopType loopType;
+    private final Term loopExpression;
     private final Term[] params;
 
-    public DefaultArrayField(TypeReference type, String name, ArrayField.LengthType lengthType, Term lengthExpression, Term[] params) {
+    public DefaultArrayField(TypeReference type, String name, LoopType loopType, Term loopExpression, Term[] params) {
         this.type = type;
         this.name = name;
-        this.lengthType = lengthType;
-        this.lengthExpression = lengthExpression;
+        this.loopType = loopType;
+        this.loopExpression = loopExpression;
         this.params = params;
     }
 
@@ -47,12 +47,12 @@ public class DefaultArrayField implements ArrayField {
         return name;
     }
 
-    public ArrayField.LengthType getLengthType() {
-        return lengthType;
+    public LoopType getLoopType() {
+        return loopType;
     }
 
-    public Term getLengthExpression() {
-        return lengthExpression;
+    public Term getLoopExpression() {
+        return loopExpression;
     }
 
     @Override

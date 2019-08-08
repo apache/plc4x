@@ -96,11 +96,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterArrayField(MSpecParser.ArrayFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        ArrayField.LengthType lengthType = ArrayField.LengthType.valueOf(ctx.lengthType.getText().toUpperCase());
-        String lengthExpressionString = ctx.lengthExpression.expr.getText();
-        Term lengthExpression =  getExpressionTerm(lengthExpressionString);
+        ArrayField.LoopType loopType = ArrayField.LoopType.valueOf(ctx.loopType.getText().toUpperCase());
+        String loopExpressionString = ctx.loopExpression.expr.getText();
+        Term loopExpression =  getExpressionTerm(loopExpressionString);
         Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultArrayField(type, name, lengthType, lengthExpression, params);
+        Field field = new DefaultArrayField(type, name, loopType, loopExpression, params);
         if(parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -155,16 +155,19 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterManualArrayField(MSpecParser.ManualArrayFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        ManualArrayField.LengthType lengthType = ManualArrayField.LengthType.valueOf(
-            ctx.lengthType.getText().toUpperCase());
-        String lengthExpressionString = ctx.lengthExpression.expr.getText();
-        Term lengthExpression =  getExpressionTerm(lengthExpressionString);
+        ManualArrayField.LoopType loopType = ManualArrayField.LoopType.valueOf(
+            ctx.loopType.getText().toUpperCase());
+        String loopExpressionString = ctx.loopExpression.expr.getText();
+        Term loopExpression =  getExpressionTerm(loopExpressionString);
         String serializationExpressionString = ctx.serializationExpression.expr.getText();
         Term serializationExpression = getExpressionTerm(serializationExpressionString);
         String deserializationExpressionString = ctx.deserializationExpression.expr.getText();
         Term deserializationExpression = getExpressionTerm(deserializationExpressionString);
+        String lengthExpressionString = ctx.lengthExpression.expr.getText();
+        Term lengthExpression =  getExpressionTerm(lengthExpressionString);
         Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultManualArrayField(type, name, lengthType, lengthExpression, serializationExpression, deserializationExpression, params);
+        Field field = new DefaultManualArrayField(type, name, loopType, loopExpression, serializationExpression,
+            deserializationExpression, lengthExpression, params);
         if(parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }

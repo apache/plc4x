@@ -373,15 +373,27 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
     }
 
     public boolean isCountArray(ArrayField arrayField) {
-        return arrayField.getLengthType() == ArrayField.LengthType.COUNT;
+        return arrayField.getLoopType() == ArrayField.LoopType.COUNT;
     }
 
     public boolean isLengthArray(ArrayField arrayField) {
-        return arrayField.getLengthType() == ArrayField.LengthType.LENGTH;
+        return arrayField.getLoopType() == ArrayField.LoopType.LENGTH;
     }
 
     public boolean isTerminatedArray(ArrayField arrayField) {
-        return arrayField.getLengthType() == ArrayField.LengthType.TERMINATED;
+        return arrayField.getLoopType() == ArrayField.LoopType.TERMINATED;
+    }
+
+    public boolean isCountArray(ManualArrayField arrayField) {
+        return arrayField.getLoopType() == ManualArrayField.LoopType.COUNT;
+    }
+
+    public boolean isLengthArray(ManualArrayField arrayField) {
+        return arrayField.getLoopType() == ManualArrayField.LoopType.LENGTH;
+    }
+
+    public boolean isTerminatedArray(ManualArrayField arrayField) {
+        return arrayField.getLoopType() == ManualArrayField.LoopType.TERMINATED;
     }
 
     public String toSwitchExpression(String expression) {
@@ -545,7 +557,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 if(arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
                     // "io" and "value" are always available in every parser.
-                    boolean isSerializerArg = "io".equals(va.getName()) || "value".equals(va.getName());
+                    boolean isSerializerArg = "io".equals(va.getName()) || "value".equals(va.getName()) || "element".equals(va.getName());
                     if(parserArguments != null) {
                         for (Argument parserArgument : parserArguments) {
                             if (parserArgument.getName().equals(va.getName())) {

@@ -53,7 +53,7 @@ field
  ;
 
 arrayField
- : 'array' type=typeReference name=idExpression lengthType=arrayType lengthExpression=expression
+ : 'array' type=typeReference name=idExpression loopType=arrayType loopExpression=expression
  ;
 
 checksumField
@@ -73,11 +73,11 @@ implicitField
  ;
 
 manualArrayField
- : 'manualArray' type=typeReference name=idExpression lengthType=arrayType lengthExpression=expression serializationExpression=expression deserializationExpression=expression
+ : 'manualArray' type=typeReference name=idExpression loopType=arrayType loopExpression=expression deserializationExpression=expression serializationExpression=expression lengthExpression=expression
  ;
 
 manualField
- : 'manual' type=typeReference name=idExpression serializationExpression=expression deserializationExpression=expression
+ : 'manual' type=typeReference name=idExpression deserializationExpression=expression serializationExpression=expression lengthExpression=expression
  ;
 
 optionalField
