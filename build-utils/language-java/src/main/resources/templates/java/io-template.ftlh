@@ -133,6 +133,15 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
             </#if>
         </#if>
         <#break>
+    <#case "checksum">
+
+        // Checksum Field
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+        ${helper.getLanguageTypeNameForField(field)} _${field.name}Ref = (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.checksumExpression, type.parserArguments)});
+        if(${field.name} != _${field.name}Ref) {
+            throw new ParseException("Checksum verification failed. Expected " + _${field.name}Ref + " but got " + ${field.name});
+        }
+        <#break>
     <#case "const">
 
         // Const Field
@@ -151,12 +160,29 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
         // Implicit Field (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
         <#break>
+    <#case "manualArray">
+
+        <#-- TODO: Implement this -->
+        <#break>
+    <#case "manual">
+
+        <#-- TODO: Implement this -->
+        <#break>
     <#case "optional">
 
         // Optional Field (Can be skipped, if a given expression evaluates to false)
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
         if(${helper.toDeserializationExpression(field.conditionExpression, type.parserArguments)}) {
             ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io);</#if>;
+        }
+        <#break>
+    <#case "padding">
+
+        // Padding Field
+        boolean _${field.name}NeedsPadding = (boolean) (${helper.toDeserializationExpression(field.paddingCondition, type.parserArguments)});
+        if(_${field.name}NeedsPadding) {
+            // Just read the padding data and ignore it
+            io.${helper.getReadBufferReadMethodCall(field.type)};
         }
         <#break>
     <#case "reserved">
@@ -221,6 +247,12 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
             }
         }
         <#break>
+    <#case "checksum">
+
+        // Checksum Field (Calculated)
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.checksumExpression, type.parserArguments)});
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        <#break>
     <#case "const">
 
         // Const Field
@@ -242,6 +274,14 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)});
         io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
         <#break>
+    <#case "manualArray">
+
+        <#-- TODO: Implement this -->
+        <#break>
+    <#case "manual">
+
+        <#-- TODO: Implement this -->
+        <#break>
     <#case "optional">
 
         // Optional Field (Can be skipped, if the value is null)
@@ -255,9 +295,18 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
             </#if>
         }
         <#break>
+    <#case "padding">
+
+        // Padding Field
+        boolean _${field.name}NeedsPadding = (boolean) (${helper.toSerializationExpression(field.paddingCondition, type.parserArguments)});
+        if(_${field.name}NeedsPadding) {
+            ${helper.getLanguageTypeNameForField(field)} _${field.name}PaddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.paddingValue, type.parserArguments)});
+            io.${helper.getWriteBufferReadMethodCall(field.type, "(_" + field.name + "PaddingValue)")?no_esc};
+        }
+        <#break>
     <#case "reserved">
 
-        // Reserved Field.
+        // Reserved Field
         io.${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)};
         <#break>
     <#case "simple">

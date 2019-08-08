@@ -22,12 +22,12 @@
     [discriminator    uint 8       'symbolType']
     [typeSwitch 'symbolType'
         ['0x02' DF1SymbolMessageFrame
-            [field    uint 8       'destinationAddress']
-            [field    uint 8       'sourceAddress']
-            [field    DF1Command   'command']
+            [simple   uint 8       'destinationAddress']
+            [simple   uint 8       'sourceAddress']
+            [simple   DF1Command   'command']
             [const    uint 8       'messageEnd' '0x10']
             [const    uint 8       'endTransaction' '0x03']
-            [implicit uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.CRCCheck", value)']
+            [checksum uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.crcCheck", destinationAddress, sourceAddress, command)']
         ]
         ['0x06' DF1SymbolMessageFrameACK
         ]
@@ -38,15 +38,15 @@
 
 [discriminatedType 'DF1Command'
     [discriminator uint 8  'commandCode']
-    [field    uint 8       'status']
-    [field    uint 16      'transactionCounter']
+    [simple    uint 8       'status']
+    [simple    uint 16      'transactionCounter']
     [typeSwitch 'commandCode'
         ['0x01' DF1UnprotectedReadRequest
-            [field uint 16    'address']
-            [field uint 8     'size']
+            [simple uint 16    'address']
+            [simple uint 8     'size']
         ]
         ['0x41' DF1UnprotectedReadResponse
-            [arrayField uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", io)']
+            [array  uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", io)']
         ]
     ]
 ]
