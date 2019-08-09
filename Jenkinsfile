@@ -95,6 +95,19 @@ pipeline {
             }
         }
 
+        stage('Code Quality') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                echo 'Checking Code Quality on SonarCloud'
+                withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    sh 'echo mvn -P${JENKINS_PROFILE},with-boost,with-java,with-dotnet,with-python,with-proxies sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN} -Dsonar.password='
+                    sh 'mvn -P${JENKINS_PROFILE},with-boost,with-java,with-dotnet,with-python,with-proxies sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN} -Dsonar.password='
+                }
+            }
+        }
+
         stage('Build develop') {
             when {
                 branch 'develop'
@@ -117,18 +130,6 @@ pipeline {
                 always {
                     junit(testResults: '**/surefire-reports/*.xml', allowEmptyResults: true)
                     junit(testResults: '**/failsafe-reports/*.xml', allowEmptyResults: true)
-                }
-            }
-        }
-
-        stage('Code Quality') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo 'Checking Code Quality on SonarCloud'
-                withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-                    sh 'mvn -P${JENKINS_PROFILE},with-boost,with-java,with-dotnet,with-python,with-proxies sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN} -Dsonar.password='
                 }
             }
         }
