@@ -36,7 +36,7 @@ public class S7Protocol implements Protocol {
 
     @Override
     public Map<String, ComplexTypeDefinition> getTypeDefinitions() throws GenerationException {
-        InputStream schemaInputStream = S7Protocol.class.getResourceAsStream("/protocols/s7/protocol.mspec");
+        InputStream schemaInputStream = S7Protocol.class.getResourceAsStream("/protocols/s7/s7.mspec");
         if(schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }

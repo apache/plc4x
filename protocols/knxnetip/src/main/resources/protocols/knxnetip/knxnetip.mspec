@@ -24,62 +24,62 @@
     [implicit      uint 16 'totalLength' 'lengthInBytes']
     [typeSwitch 'msgType'
         ['0x0201' SearchRequest
-            [field HPAIDiscoveryEndpoint 'hpaiIDiscoveryEndpoint']
+            [simple HPAIDiscoveryEndpoint 'hpaiIDiscoveryEndpoint']
         ]
         ['0x0202' SearchResponse
-            [field HPAIControlEndpoint 'hpaiControlEndpoint']
-            [field DIBDeviceInfo       'dibDeviceInfo']
-            [field DIBSuppSvcFamilies  'dibSuppSvcFamilies']
+            [simple HPAIControlEndpoint 'hpaiControlEndpoint']
+            [simple DIBDeviceInfo       'dibDeviceInfo']
+            [simple DIBSuppSvcFamilies  'dibSuppSvcFamilies']
         ]
         ['0x0203' DescriptionRequest
-            [field HPAIControlEndpoint 'hpaiControlEndpoint']
+            [simple HPAIControlEndpoint 'hpaiControlEndpoint']
         ]
         ['0x0204' DescriptionResponse
-            [field DIBDeviceInfo       'dibDeviceInfo']
-            [field DIBSuppSvcFamilies  'dibSuppSvcFamilies']
+            [simple DIBDeviceInfo       'dibDeviceInfo']
+            [simple DIBSuppSvcFamilies  'dibSuppSvcFamilies']
         ]
         ['0x0205' ConnectionRequest
-            [field HPAIDiscoveryEndpoint        'hpaiDiscoveryEndpoint']
-            [field HPAIDataEndpoint             'hpaiDataEndpoint']
-            [field ConnectionRequestInformation 'connectionRequestInformation']
+            [simple HPAIDiscoveryEndpoint        'hpaiDiscoveryEndpoint']
+            [simple HPAIDataEndpoint             'hpaiDataEndpoint']
+            [simple ConnectionRequestInformation 'connectionRequestInformation']
         ]
         ['0x0206' ConnectionResponse
-            [field uint 8 'communicationChannelId']
-            [field uint 8 'status']
-            [field HPAIDataEndpoint            'hpaiDataEndpoint']
-            [field ConnectionResponseDataBlock 'connectionResponseDataBlock']
+            [simple uint 8 'communicationChannelId']
+            [simple uint 8 'status']
+            [simple HPAIDataEndpoint            'hpaiDataEndpoint']
+            [simple ConnectionResponseDataBlock 'connectionResponseDataBlock']
         ]
         ['0x0207' ConnectionStateRequest
-            [field    uint 8 'communicationChannelId']
+            [simple   uint 8 'communicationChannelId']
             [reserved uint 8 '0x00']
-            [field HPAIControlEndpoint 'hpaiControlEndpoint']
+            [simple   HPAIControlEndpoint 'hpaiControlEndpoint']
         ]
         ['0x0208' ConnectionStateResponse
-            [field uint 8 'communicationChannelId']
-            [field uint 8 'status']
+            [simple uint 8 'communicationChannelId']
+            [simple uint 8 'status']
         ]
         ['0x0209' DisconnectRequest
-            [field    uint 8 'communicationChannelId']
+            [simple   uint 8 'communicationChannelId']
             [reserved uint 8 '0x00']
-            [field HPAIControlEndpoint 'hpaiControlEndpoint']
+            [simple   HPAIControlEndpoint 'hpaiControlEndpoint']
         ]
         ['0x020A' DisconnectResponse
-            [field uint 8 'communicationChannelId']
-            [field uint 8 'status']
+            [simple uint 8 'communicationChannelId']
+            [simple uint 8 'status']
         ]
         ['0x0310' DeviceConfigurationRequest [uint 16 'totalLength']
-            [field DeviceConfigurationRequestDataBlock 'deviceConfigurationRequestDataBlock']
-            [field CEMI                                'cemi' ['totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)']]
+            [simple DeviceConfigurationRequestDataBlock 'deviceConfigurationRequestDataBlock']
+            [simple CEMI                                'cemi' ['totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)']]
         ]
         ['0x0311' DeviceConfigurationAck
-            [field DeviceConfigurationAckDataBlock 'deviceConfigurationAckDataBlock']
+            [simple DeviceConfigurationAckDataBlock 'deviceConfigurationAckDataBlock']
         ]
         ['0x0420' TunnelingRequest [uint 16 'totalLength']
-            [field TunnelingRequestDataBlock 'tunnelingRequestDataBlock']
-            [field CEMI                      'cemi' ['totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)']]
+            [simple TunnelingRequestDataBlock 'tunnelingRequestDataBlock']
+            [simple CEMI                      'cemi' ['totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)']]
         ]
         ['0x0421' TunnelingResponse
-            [field TunnelingResponseDataBlock 'tunnelingResponseDataBlock']
+            [simple TunnelingResponseDataBlock 'tunnelingResponseDataBlock']
         ]
         ['0x0530' RoutingIndication
         ]
@@ -88,42 +88,42 @@
 
 [type 'HPAIDiscoveryEndpoint'
     [implicit uint 8    'structureLength' 'lengthInBytes']
-    [field    uint 8    'hostProtocolCode']
-    [field    IPAddress 'ipAddress']
-    [field    uint 16   'ipPort']
+    [simple   uint 8    'hostProtocolCode']
+    [simple   IPAddress 'ipAddress']
+    [simple   uint 16   'ipPort']
 ]
 
 [type 'HPAIControlEndpoint'
     [implicit uint 8    'structureLength' 'lengthInBytes']
-    [field    uint 8    'hostProtocolCode']
-    [field    IPAddress 'ipAddress']
-    [field    uint 16   'ipPort']
+    [simple   uint 8    'hostProtocolCode']
+    [simple   IPAddress 'ipAddress']
+    [simple   uint 16   'ipPort']
 ]
 
 [type 'DIBDeviceInfo'
-    [implicit   uint 8       'structureLength' 'lengthInBytes']
-    [field      uint 8       'descriptionType']
-    [field      uint 8       'knxMedium']
-    [field      DeviceStatus 'deviceStatus']
-    [field      KNXAddress   'knxAddress']
-    [field      ProjectInstallationIdentifier 'projectInstallationIdentifier']
-    [arrayField uint 8       'knxNetIpDeviceSerialNumber' count '6']
-    [field      IPAddress    'knxNetIpDeviceMulticastAddress']
-    [field      MACAddress   'knxNetIpDeviceMacAddress']
-    [arrayField uint 8       'deviceFriendlyName'         count '30']
+    [implicit uint 8       'structureLength' 'lengthInBytes']
+    [simple   uint 8       'descriptionType']
+    [simple   uint 8       'knxMedium']
+    [simple   DeviceStatus 'deviceStatus']
+    [simple   KNXAddress   'knxAddress']
+    [simple   ProjectInstallationIdentifier 'projectInstallationIdentifier']
+    [array    uint 8       'knxNetIpDeviceSerialNumber' count '6']
+    [simple   IPAddress    'knxNetIpDeviceMulticastAddress']
+    [simple   MACAddress   'knxNetIpDeviceMacAddress']
+    [array    uint 8       'deviceFriendlyName'         count '30']
 ]
 
 [type 'DIBSuppSvcFamilies'
-    [implicit   uint 8       'structureLength' 'lengthInBytes']
-    [field      uint 8       'descriptionType']
-    [arrayField ServiceId    'serviceIds' count '3']
+    [implicit uint 8       'structureLength' 'lengthInBytes']
+    [simple   uint 8       'descriptionType']
+    [array    ServiceId    'serviceIds' count '3']
 ]
 
 [type 'HPAIDataEndpoint'
     [implicit uint 8    'structureLength' 'lengthInBytes']
-    [field    uint 8    'hostProtocolCode']
-    [field    IPAddress 'ipAddress']
-    [field    uint 16   'ipPort']
+    [simple   uint 8    'hostProtocolCode']
+    [simple   IPAddress 'ipAddress']
+    [simple   uint 16   'ipPort']
 ]
 
 [discriminatedType 'ConnectionRequestInformation'
@@ -133,7 +133,7 @@
         ['0x03' ConnectionRequestInformationDeviceManagement
         ]
         ['0x04' ConnectionRequestInformationTunnelConnection
-            [field    uint 8    'knxLayer']
+            [simple   uint 8    'knxLayer']
             [reserved uint 8    '0x00']
         ]
     ]
@@ -146,74 +146,74 @@
         ['0x03' ConnectionResponseDataBlockDeviceManagement
         ]
         ['0x04' ConnectionResponseDataBlockTunnelConnection
-            [field         KNXAddress 'knxAddress']
+            [simple KNXAddress 'knxAddress']
         ]
     ]
 ]
 
 [type 'DeviceConfigurationRequestDataBlock'
     [implicit uint 8 'structureLength' 'lengthInBytes']
-    [field    uint 8 'communicationChannelId']
-    [field    uint 8 'sequenceCounter']
+    [simple   uint 8 'communicationChannelId']
+    [simple   uint 8 'sequenceCounter']
     [reserved uint 8 '0x00']
 ]
 
 [type 'DeviceConfigurationAckDataBlock'
     [implicit uint 8 'structureLength' 'lengthInBytes']
-    [field    uint 8 'communicationChannelId']
-    [field    uint 8 'sequenceCounter']
-    [field    uint 8 'status']
+    [simple   uint 8 'communicationChannelId']
+    [simple   uint 8 'sequenceCounter']
+    [simple   uint 8 'status']
 ]
 
 [type 'TunnelingRequestDataBlock'
     [implicit uint 8 'structureLength' 'lengthInBytes']
-    [field    uint 8 'communicationChannelId']
-    [field    uint 8 'sequenceCounter']
+    [simple   uint 8 'communicationChannelId']
+    [simple   uint 8 'sequenceCounter']
     [reserved uint 8 '0x00']
 ]
 
 [type 'TunnelingResponseDataBlock'
     [implicit uint 8 'structureLength' 'lengthInBytes']
-    [field    uint 8 'communicationChannelId']
-    [field    uint 8 'sequenceCounter']
-    [field    uint 8 'status']
+    [simple   uint 8 'communicationChannelId']
+    [simple   uint 8 'sequenceCounter']
+    [simple   uint 8 'status']
 ]
 
 [type 'IPAddress'
-    [arrayField uint 8 'addr' count '4']
+    [array uint 8 'addr' count '4']
 ]
 
 [type 'MACAddress'
-    [arrayField uint 8 'addr' count '6']
+    [array uint 8 'addr' count '6']
 ]
 
 [type 'KNXAddress'
-    [field uint 4 'mainGroup']
-    [field uint 4 'middleGroup']
-    [field uint 8 'subGroup']
+    [simple uint 4 'mainGroup']
+    [simple uint 4 'middleGroup']
+    [simple uint 8 'subGroup']
 ]
 
 [type 'DeviceStatus'
     [reserved uint 7 '0x00']
-    [field    bit    'programMode']
+    [simple   bit    'programMode']
 ]
 
 [type 'ProjectInstallationIdentifier'
-    [field uint 8 'projectNumber']
-    [field uint 8 'installationNumber']
+    [simple uint 8 'projectNumber']
+    [simple uint 8 'installationNumber']
 ]
 
 [discriminatedType 'ServiceId'
     [discriminator uint 8 'serviceType']
     [typeSwitch 'serviceType'
         ['0x02' KnxNetIpCore
-            [field uint 8 'version']
+            [simple uint 8 'version']
         ]
         ['0x03' KnxNetIpDeviceManagement
-            [field uint 8 'version']
+            [simple uint 8 'version']
         ]
         ['0x04' KnxNetIpTunneling
-            [field uint 8 'version']
+            [simple uint 8 'version']
         ]
     ]
 ]
@@ -233,9 +233,9 @@
         ['0x29' CEMILDataInd
         ]
         ['0x2B' CEMILBusmonInd
-            [field      uint 8                    'additionalInformationLength']
-            [arrayField CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [arrayField uint 8                    'rawFrame'              count  'size - (additionalInformationLength + 2)']
+            [simple uint 8                    'additionalInformationLength']
+            [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [array  uint 8                    'rawFrame'              count  'size - (additionalInformationLength + 2)']
         ]
         ['0x2D' CEMILRawInd
         ]
@@ -245,18 +245,18 @@
         ]
 
         ['0xFC' CEMIMPropReadReq
-            [field uint 16 'interfaceObjectType']
-            [field uint  8 'objectInstance']
-            [field uint  8 'propertyId']
-            [field uint  4 'numberOfElements']
-            [field uint 12 'startIndex']
+            [simple uint 16 'interfaceObjectType']
+            [simple uint  8 'objectInstance']
+            [simple uint  8 'propertyId']
+            [simple uint  4 'numberOfElements']
+            [simple uint 12 'startIndex']
         ]
         ['0xFB' CEMIMPropReadCon
-            [field uint 16 'interfaceObjectType']
-            [field uint  8 'objectInstance']
-            [field uint  8 'propertyId']
-            [field uint  4 'numberOfElements']
-            [field uint 12 'startIndex']
+            [simple uint 16 'interfaceObjectType']
+            [simple uint  8 'objectInstance']
+            [simple uint  8 'propertyId']
+            [simple uint  4 'numberOfElements']
+            [simple uint 12 'startIndex']
         ]
     ]
 ]
@@ -266,36 +266,36 @@
     [typeSwitch 'additionalInformationType'
         ['0x03' CEMIAdditionalInformationBusmonitorInfo
             [implicit uint 8 'len' '1']
-            [field    bit    'frameErrorFlag']
-            [field    bit    'bitErrorFlag']
-            [field    bit    'parityErrorFlag']
-            [field    bit    'unknownFlag']
-            [field    bit    'lostFlag']
-            [field    uint 3 'sequenceNumber']
+            [simple    bit    'frameErrorFlag']
+            [simple    bit    'bitErrorFlag']
+            [simple    bit    'parityErrorFlag']
+            [simple    bit    'unknownFlag']
+            [simple    bit    'lostFlag']
+            [simple    uint 3 'sequenceNumber']
         ]
         ['0x04' CEMIAdditionalInformationRelativeTimestamp
             [implicit uint 8  'len' '2']
-            [field RelativeTimestamp 'relativeTimestamp']
+            [simple   RelativeTimestamp 'relativeTimestamp']
         ]
     ]
 ]
 
 [type 'CEMIControlField1'
-    [field    bit    'standardFrame']
+    [simple   bit    'standardFrame']
     [reserved uint 1 '0x00']
-    [field    bit    'doNotRepeat']
-    [field    bit    'broadcast']
-    [field    uint 2 'priority']
-    [field    bit    'ackRequested']
-    [field    bit    'error']
+    [simple   bit    'doNotRepeat']
+    [simple   bit    'broadcast']
+    [simple   uint 2 'priority']
+    [simple   bit    'ackRequested']
+    [simple   bit    'error']
 ]
 
 [type 'CEMIControlField2'
-    [field    bit    'groupAddress']
-    [field    uint 3 'hopCount']
-    [field    uint 3 'extendedFrameFormat']
+    [simple   bit    'groupAddress']
+    [simple   uint 3 'hopCount']
+    [simple   uint 3 'extendedFrameFormat']
 ]
 
 [type 'RelativeTimestamp'
-    [field    uint 16 'timestamp']
+    [simple   uint 16 'timestamp']
 ]

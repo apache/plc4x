@@ -30,14 +30,20 @@ import java.nio.ByteBuffer;
 
 public class WriteBuffer {
 
-    private ByteBuffer bb;
-    private BufferByteOutput bbo;
-    private BitOutput bo;
+    private final ByteBuffer bb;
+    private final BufferByteOutput bbo;
+    private final BitOutput bo;
+    private final boolean littleEndian;
 
     public WriteBuffer(int size) {
+        this(size, true);
+    }
+
+    public WriteBuffer(int size, boolean littleEndian) {
         bb = ByteBuffer.allocate(size);
         bbo = new BufferByteOutput<>(bb);
         bo = new DefaultBitOutput<>(bbo);
+        this.littleEndian = littleEndian;
     }
 
     public byte[] getData() {
@@ -88,6 +94,9 @@ public class WriteBuffer {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
+            if(!littleEndian) {
+                value = Integer.reverseBytes(value) >> 16;
+            }
             bo.writeInt(true, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -102,6 +111,9 @@ public class WriteBuffer {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
+            if(!littleEndian) {
+                value = Long.reverseBytes(value) >> 32;
+            }
             bo.writeLong(true, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -134,6 +146,9 @@ public class WriteBuffer {
             throw new ParseException("short can only contain max 16 bits");
         }
         try {
+            if(!littleEndian) {
+                value = Short.reverseBytes(value);
+            }
             bo.writeShort(false, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -148,6 +163,9 @@ public class WriteBuffer {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
+            if(!littleEndian) {
+                value = Integer.reverseBytes(value);
+            }
             bo.writeInt(false, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -162,6 +180,9 @@ public class WriteBuffer {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
+            if(!littleEndian) {
+                value = Long.reverseBytes(value);
+            }
             bo.writeLong(false, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);

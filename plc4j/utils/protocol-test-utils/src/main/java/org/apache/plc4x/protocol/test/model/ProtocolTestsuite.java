@@ -25,10 +25,12 @@ public class ProtocolTestsuite {
 
     private final String name;
     private final List<Testcase> testcases;
+    private final boolean littleEndian;
 
-    public ProtocolTestsuite(String name, List<Testcase> testcases) {
+    public ProtocolTestsuite(String name, List<Testcase> testcases, boolean littleEndian) {
         this.name = name;
         this.testcases = testcases;
+        this.littleEndian = littleEndian;
     }
 
     public String getName() {
@@ -37,6 +39,10 @@ public class ProtocolTestsuite {
 
     public List<Testcase> getTestcases() {
         return testcases;
+    }
+
+    public boolean isLittleEndian() {
+        return littleEndian;
     }
 
 }

@@ -28,8 +28,8 @@ complexTypeDefinition
  ;
 
 complexType
- : K_TYPE name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
- | K_DISCRIMINATED_TYPE name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
+ : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
+ | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  ;
 
 
@@ -39,45 +39,65 @@ fieldDefinition
 
 field
  : arrayField
+ | checksumField
  | constField
  | discriminatorField
- | simpleField
  | implicitField
+ | manualArrayField
+ | manualField
  | optionalField
+ | paddingField
  | reservedField
+ | simpleField
  | typeSwitchField
  ;
 
 arrayField
- : K_ARRAY type=typeReference name=idExpression lengthType=arrayType lengthExpression=expression
+ : 'array' type=typeReference name=idExpression lengthType=arrayType lengthExpression=expression
+ ;
+
+checksumField
+ : 'checksum' type=dataType name=idExpression checksumExpression=expression
  ;
 
 constField
- : K_CONST type=dataType name=idExpression expected=expression
+ : 'const' type=dataType name=idExpression expected=expression
  ;
 
 discriminatorField
- : K_DISCRIMINATOR type=dataType name=idExpression
- ;
-
-simpleField
- : K_FIELD type=typeReference name=idExpression
+ : 'discriminator' type=dataType name=idExpression
  ;
 
 implicitField
- : K_IMPLICIT type=dataType name=idExpression serializationExpression=expression
+ : 'implicit' type=dataType name=idExpression serializationExpression=expression
+ ;
+
+manualArrayField
+ : 'manualArray' type=typeReference name=idExpression lengthType=arrayType lengthExpression=expression serializationExpression=expression deserializationExpression=expression
+ ;
+
+manualField
+ : 'manual' type=typeReference name=idExpression serializationExpression=expression deserializationExpression=expression
  ;
 
 optionalField
- : K_OPTIONAL_FIELD type=typeReference name=idExpression condition=expression
+ : 'optional' type=typeReference name=idExpression condition=expression
+ ;
+
+paddingField
+ : 'padding' type=dataType name=idExpression paddingValue=expression paddingCondition=expression
  ;
 
 reservedField
- : K_RESERVED type=dataType expected=expression
+ : 'reserved' type=dataType expected=expression
+ ;
+
+simpleField
+ : 'simple' type=typeReference name=idExpression
  ;
 
 typeSwitchField
- : K_TYPE_SWITCH discriminators=multipleExpressions caseStatement*
+ : 'typeSwitch' discriminators=multipleExpressions caseStatement*
  ;
 
 
@@ -91,11 +111,11 @@ caseStatement
  ;
 
 dataType
- : base=K_BIT
- | base=K_INT size=INTEGER_LITERAL
- | base=K_UINT size=INTEGER_LITERAL
- | base=K_FLOAT size=INTEGER_LITERAL
- | base=K_STRING
+ : base='bit'
+ | base='int' size=INTEGER_LITERAL
+ | base='uint' size=INTEGER_LITERAL
+ | base='float' size=INTEGER_LITERAL
+ | base='string'
  ;
 
 argument
@@ -146,8 +166,9 @@ fragment HexDigit
 ;
 
 arrayType
- : K_COUNT
- | K_LENGTH
+ : 'count'
+ | 'length'
+ | 'terminated'
  ;
 
 idExpression
@@ -155,30 +176,6 @@ idExpression
  ;
 
 fragment K_COMMENT : '<--';
-K_ARRAY : 'arrayField';
-K_CONST : 'const';
-K_CONTEXT : 'context';
-K_DISCRIMINATED_TYPE : 'discriminatedType';
-K_DISCRIMINATOR : 'discriminator';
-K_EMBEDDED : 'embedded';
-K_FIELD : 'field';
-K_IMPLICIT : 'implicit';
-K_OPTIONAL_FIELD : 'optionalField';
-K_RESERVED : 'reserved';
-K_TYPE : 'type';
-K_TYPE_SWITCH : 'typeSwitch';
-
-K_COUNT : 'count';
-K_LENGTH : 'length';
-
-K_BIT : 'bit';
-K_INT : 'int';
-K_UINT : 'uint';
-K_FLOAT : 'float';
-K_UINT5 : 'uint5';
-K_UINT8 : 'uint8';
-K_UINT16 : 'uint16';
-K_STRING: 'string';
 
 TICK : '\'';
 TIMES : 'x';
@@ -196,6 +193,7 @@ BinaryOperator
  | '<'
  | '>='
  | '<='
+ | '%'
  ;
 
 ZERO : '0';

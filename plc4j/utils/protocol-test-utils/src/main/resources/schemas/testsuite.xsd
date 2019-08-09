@@ -48,6 +48,7 @@
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
+            <xs:attribute name="bigEndian" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
 
