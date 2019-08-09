@@ -110,6 +110,8 @@ public class DF1Utils {
 
     public static boolean dataTerminate(ReadBuffer io) {
         try {
+            // The byte sequence 0x10 followed by 0x03 indicates the end of the message,
+            // so if we would read this, we abort the loop and stop reading data.
             if ((io.peekByte(0) == (byte) 0x10) && (io.peekByte(1) == (byte) 0x03)) {
                 return true;
             }
@@ -117,6 +119,43 @@ public class DF1Utils {
             // Just ignore and return false.
         }
         return false;
+    }
+
+    public static short readData(ReadBuffer io) {
+        try {
+            // If we read a 0x10, this has to be followed by another 0x10, which is how
+            // this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
+            if ((io.peekByte(0) == (byte) 0x10) && (io.peekByte(1) == 0x10)) {
+                io.readByte(8);
+            }
+            return io.readUnsignedShort(8);
+        } catch (ParseException e) {
+            throw new RuntimeException("Error parsing data", e);
+        }
+    }
+
+    public static void writeData(WriteBuffer io, short data) {
+        try {
+            // If a value is 0x10, this has to be duplicated in order to be escaped.
+            if ((data == (short) 0x10)) {
+                io.writeUnsignedShort(8, (short) 0x10);
+            }
+            io.writeUnsignedShort(8, data);
+        } catch (ParseException e) {
+            throw new RuntimeException("Error parsing data", e);
+        }
+    }
+
+    public static int dataLength(short[] data) {
+        int i = 0;
+        for(short dataByte : data) {
+            // If a value is 0x10, this has to be duplicated which increases the message size by one.
+            if(dataByte == 0x10) {
+                i++;
+            }
+            i++;
+        }
+        return i;
     }
 
 }

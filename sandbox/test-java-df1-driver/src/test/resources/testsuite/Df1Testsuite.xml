@@ -61,6 +61,26 @@
   </testcase>
 
   <testcase>
+    <name>Unprotected Read Address Response (Containing 0x10 in the data)</name>
+    <raw>10020A09410001001010FF1003BAAD</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1SymbolMessageFrame className="org.apache.plc4x.java.df1.DF1SymbolMessageFrame">
+        <destinationAddress>10</destinationAddress>
+        <sourceAddress>9</sourceAddress>
+        <command className="org.apache.plc4x.java.df1.DF1UnprotectedReadResponse">
+          <status>0</status>
+          <transactionCounter>1</transactionCounter>
+          <data>
+            <data>16</data>
+            <data>255</data>
+          </data>
+        </command>
+      </DF1SymbolMessageFrame>
+    </xml>
+  </testcase>
+
+  <testcase>
     <name>ACK Response</name>
     <raw>1006</raw>
     <root-type>DF1Symbol</root-type>

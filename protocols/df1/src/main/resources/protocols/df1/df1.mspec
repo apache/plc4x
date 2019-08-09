@@ -46,7 +46,7 @@
             [simple uint 8     'size']
         ]
         ['0x41' DF1UnprotectedReadResponse
-            [array  uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", io)']
+            [manualArray  uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.readData", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.writeData", io, element)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataLength", data)']
         ]
     ]
 ]

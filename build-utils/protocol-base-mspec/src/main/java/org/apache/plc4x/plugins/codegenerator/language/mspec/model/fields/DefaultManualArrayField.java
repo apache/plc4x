@@ -27,19 +27,21 @@ public class DefaultManualArrayField implements ManualArrayField {
 
     private final TypeReference type;
     private final String name;
-    private final LengthType lengthType;
-    private final Term lengthExpression;
+    private final LoopType loopType;
+    private final Term loopExpression;
     private final Term serializationExpression;
     private final Term deserializationExpression;
+    private final Term lengthExpression;
     private final Term[] params;
 
-    public DefaultManualArrayField(TypeReference type, String name, LengthType lengthType, Term lengthExpression, Term serializationExpression, Term deserializationExpression, Term[] params) {
+    public DefaultManualArrayField(TypeReference type, String name, LoopType loopType, Term loopExpression, Term serializationExpression, Term deserializationExpression, Term lengthExpression, Term[] params) {
         this.type = type;
         this.name = name;
-        this.lengthType = lengthType;
-        this.lengthExpression = lengthExpression;
+        this.loopType = loopType;
+        this.loopExpression = loopExpression;
         this.serializationExpression = serializationExpression;
         this.deserializationExpression = deserializationExpression;
+        this.lengthExpression = lengthExpression;
         this.params = params;
     }
 
@@ -51,12 +53,12 @@ public class DefaultManualArrayField implements ManualArrayField {
         return name;
     }
 
-    public LengthType getLengthType() {
-        return lengthType;
+    public LoopType getLoopType() {
+        return loopType;
     }
 
-    public Term getLengthExpression() {
-        return lengthExpression;
+    public Term getLoopExpression() {
+        return loopExpression;
     }
 
     public Term getSerializationExpression() {
@@ -65,6 +67,10 @@ public class DefaultManualArrayField implements ManualArrayField {
 
     public Term getDeserializationExpression() {
         return deserializationExpression;
+    }
+
+    public Term getLengthExpression() {
+        return lengthExpression;
     }
 
     @Override

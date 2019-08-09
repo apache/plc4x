@@ -67,13 +67,13 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
     // Properties.
 <#list type.propertyFields as field>
-    private final ${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> ${field.name};
+    private final ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name};
 </#list>
 </#if>
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     <#-- getAllPropertyFields() returns not only the property fields of this type but also of it's parents -->
-    public ${typeName}(<#list type.getAllPropertyFields() as field>@JsonProperty("${field.name}") ${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
+    public ${typeName}(<#list type.getAllPropertyFields() as field>@JsonProperty("${field.name}") ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
 <#if type.getParentPropertyFields()?has_content>
         super(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
 </#if>
@@ -94,7 +94,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#if>
 
 <#list type.propertyFields as field>
-    public ${helper.getLanguageTypeNameForField(field)}<#if field.lengthType??>[]</#if> get${field.name?cap_first}() {
+    public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
         return ${field.name};
     }
 
@@ -139,18 +139,12 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "manualArray">
 
         // Manual Array Field (${field.name})
-        <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.size} * ${field.name}.length;
-        <#else>
-        for(SizeAware element : ${field.name}) {
-            lengthInBits += element.getLengthInBytes() * 8;
-        }
-        </#if>
+        lengthInBits += ${helper.toDeserializationExpression(field.lengthExpression, null)} * 8;
         <#break>
     <#case "manual">
 
         // Manual Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${helper.toDeserializationExpression(field.lengthExpression, null)} * 8;
         <#break>
     <#case "optional">
 
