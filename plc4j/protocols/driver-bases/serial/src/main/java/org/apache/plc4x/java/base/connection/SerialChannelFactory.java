@@ -25,8 +25,11 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.jsc.JSerialCommChannel;
 import io.netty.channel.jsc.JSerialCommDeviceAddress;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.oio.OioEventLoopGroup;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+
+import java.util.concurrent.Executor;
 
 public class SerialChannelFactory implements ChannelFactory {
 
@@ -43,10 +46,8 @@ public class SerialChannelFactory implements ChannelFactory {
 
         try {
             Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(new OioEventLoopGroup());
-            bootstrap.channel(JSerialCommChannel.class);
-            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
+            bootstrap.group(new NioEventLoopGroup(0, (Executor)null, new SerialSelectorProvider()));
+            bootstrap.channel(SerialChannel.class);
             bootstrap.handler(channelHandler);
             // Start the client.
             ChannelFuture f = bootstrap.connect(address).sync();
