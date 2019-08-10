@@ -1,6 +1,7 @@
 # User-specific stuff:
 .idea/**
 *.iml
+.vscode/**
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
