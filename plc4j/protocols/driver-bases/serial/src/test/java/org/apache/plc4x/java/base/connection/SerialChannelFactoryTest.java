@@ -19,12 +19,21 @@
 
 package org.apache.plc4x.java.base.connection;
 
-import io.netty.channel.ChannelHandler;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFactory;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * TODO write comment
@@ -34,24 +43,39 @@ import static org.junit.Assert.*;
  */
 public class SerialChannelFactoryTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(SerialChannelFactoryTest.class);
+
     @Test
-    public void createChannel() throws PlcConnectionException {
+    public void createChannel() throws PlcConnectionException, InterruptedException, UnknownHostException {
         SerialChannelFactory asdf = new SerialChannelFactory("asdf");
-        asdf.createChannel(new ChannelHandler() {
-            @Override
-            public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-
-            }
-
-            @Override
-            public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-
-            }
-
-            @Override
-            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-
+        final TcpSocketChannelFactory factory = new TcpSocketChannelFactory(InetAddress.getLocalHost(), 5432);
+        final Channel channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
+            @Override protected void initChannel(SerialChannel ch) throws Exception {
+                ch.pipeline().addLast(new DemoCodec());
             }
         });
+        Thread.sleep(100);
+        for (int i = 1; i <= 10; i++) {
+            Thread.sleep(10);
+            SerialChannelHandler.DummyHandler.INSTANCE.fireEvent(1);
+        }
+        Thread.sleep(100);
+        channel.close().sync();
+    }
+
+    private static class DemoCodec extends ByteToMessageCodec<Object> {
+        @Override protected void encode(ChannelHandlerContext channelHandlerContext, Object o, ByteBuf byteBuf) throws Exception {
+            // do nothing here
+        }
+
+        @Override protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
+            byteBuf.markReaderIndex();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 1; i <= byteBuf.readableBytes(); i++) {
+                sb.append(byteBuf.readByte() + ", ");
+            }
+            byteBuf.resetReaderIndex();
+            logger.debug("We currently have {} readable bytes: {}", byteBuf.readableBytes(), sb.toString());
+        }
     }
 }

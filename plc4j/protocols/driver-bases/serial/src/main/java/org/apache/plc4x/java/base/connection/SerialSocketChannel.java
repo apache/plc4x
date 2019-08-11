@@ -19,6 +19,10 @@
 
 package org.apache.plc4x.java.base.connection;
 
+import org.apache.commons.lang3.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -36,6 +40,10 @@ import java.util.Set;
  */
 class SerialSocketChannel extends SocketChannel {
 
+    private static final Logger logger = LoggerFactory.getLogger(SerialSocketChannel.class);
+
+    private SerialChannel child =  null;
+
     /**
      * Initializes a new instance of this class.
      *
@@ -47,96 +55,104 @@ class SerialSocketChannel extends SocketChannel {
 
     @Override
     public SocketChannel bind(SocketAddress local) throws IOException {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public <T> SocketChannel setOption(SocketOption<T> name, T value) throws IOException {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public SocketChannel shutdownInput() throws IOException {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public SocketChannel shutdownOutput() throws IOException {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public Socket socket() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean isConnected() {
-        return false;
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean isConnectionPending() {
-        return false;
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean connect(SocketAddress remote) throws IOException {
-        return false;
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean finishConnect() throws IOException {
-        return false;
+        throw new NotImplementedException("");
     }
 
     @Override
     public SocketAddress getRemoteAddress() throws IOException {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public int read(ByteBuffer dst) throws IOException {
-        return 0;
+        throw new NotImplementedException("");
     }
 
     @Override
     public long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
-        return 0;
+        throw new NotImplementedException("");
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        return 0;
+        throw new NotImplementedException("");
     }
 
     @Override
     public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
-        return 0;
+        throw new NotImplementedException("");
     }
 
     @Override
     public SocketAddress getLocalAddress() throws IOException {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public <T> T getOption(SocketOption<T> name) throws IOException {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public Set<SocketOption<?>> supportedOptions() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     protected void implCloseSelectableChannel() throws IOException {
-
+        throw new NotImplementedException("");
     }
 
     @Override
     protected void implConfigureBlocking(boolean block) throws IOException {
+        logger.debug("Requesting Blocking mode to '{}'", block ? "blocking" : "non blocking");
+    }
 
+    public SerialChannel getChild() {
+        return child;
+    }
+
+    public void setChild(SerialChannel child) {
+        this.child = child;
     }
 }
