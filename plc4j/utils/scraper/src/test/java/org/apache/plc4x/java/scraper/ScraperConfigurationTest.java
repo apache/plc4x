@@ -24,8 +24,9 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.scraper.config.JobConfiguration;
-import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
+import org.apache.plc4x.java.scraper.config.JobConfigurationClassicImpl;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Nested;
@@ -58,7 +59,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "        a: DBasdf\n" +
                         "        b: DBbsdf\n";
 
-        ScraperConfiguration configuration = mapper.readValue(yaml, ScraperConfiguration.class);
+        ScraperConfiguration configuration = mapper.readValue(yaml, ScraperConfigurationClassicImpl.class);
 
         assertThat(configuration.getJobConfigurations()).hasSize(1);
         JobConfiguration conf = configuration.getJobConfigurations().get(0);
@@ -71,7 +72,7 @@ class ScraperConfigurationTest implements WithAssertions {
             .containsEntry("a3", "b");
 
         assertThat(conf.getName()).isEqualTo("job1");
-        assertThat(((JobConfigurationImpl)conf).getScrapeRate()).isEqualTo(10);
+        assertThat(conf.getScrapeRate()).isEqualTo(10);
         assertThat(conf.getSources())
             .hasSize(3);
 
@@ -91,7 +92,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "      sources:\n" +
                         "        - a1\n";
 
-        assertThatThrownBy(() -> mapper.readValue(jobs, ScraperConfiguration.class))
+        assertThatThrownBy(() -> mapper.readValue(jobs, ScraperConfigurationClassicImpl.class))
             .isInstanceOf(MismatchedInputException.class);
     }
 
@@ -112,7 +113,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "      a: DBasdf\n" +
                         "      b: DBbsdf\n";
 
-        assertThatCode(() -> ScraperConfiguration.fromYaml(yaml))
+        assertThatCode(() -> ScraperConfiguration.fromYaml(yaml, ScraperConfigurationClassicImpl.class))
             .doesNotThrowAnyException();
     }
 
@@ -141,7 +142,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "    ]\n" +
                         "}";
 
-        assertThatCode(() -> ScraperConfiguration.fromJson(json))
+        assertThatCode(() -> ScraperConfiguration.fromJson(json, ScraperConfigurationClassicImpl.class))
             .doesNotThrowAnyException();
     }
 
@@ -156,7 +157,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "      - s1\n" +
                         "    fields:\n";
 
-        assertThatThrownBy(() -> ScraperConfiguration.fromYaml(yaml))
+        assertThatThrownBy(() -> ScraperConfiguration.fromYaml(yaml, ScraperConfigurationClassicImpl.class))
             .isInstanceOf(PlcRuntimeException.class)
             .hasStackTraceContaining("unreferenced sources: [s1]");
     }
@@ -173,7 +174,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "    fields:\n" +
                         "      field1: 'DB1 Field 1'\n";
 
-        List<ScrapeJob> jobs = ScraperConfiguration.fromYaml(yaml).getJobs();
+        List<ScrapeJob> jobs = ScraperConfiguration.fromYaml(yaml, ScraperConfigurationClassicImpl.class).getJobs();
         assertThat(jobs).hasSize(1);
 
         ScrapeJob job = jobs.get(0);
@@ -193,12 +194,12 @@ class ScraperConfigurationTest implements WithAssertions {
 
         @Test
         void json() throws IOException {
-            ScraperConfiguration conf = ScraperConfiguration.fromFile("src/test/resources/config.json");
+            ScraperConfiguration conf = ScraperConfiguration.fromFile("src/test/resources/config.json", ScraperConfigurationClassicImpl.class);
         }
 
         @Test
         void yaml() throws IOException {
-            ScraperConfiguration conf = ScraperConfiguration.fromFile("src/test/resources/config.yml");
+            ScraperConfiguration conf = ScraperConfiguration.fromFile("src/test/resources/config.yml", ScraperConfigurationClassicImpl.class);
         }
     }
 }

@@ -83,19 +83,18 @@ public enum TransportSize {
     // Date
     // -----------------------------------------
     // IEC date (yyyy-m-d)
-    // TODO: Find the code
-    DATE(0x00, "X", 2, null, null, S7ControllerType.ANY),
+    DATE(0x02, "X", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
 
     // -----------------------------------------
     // Time of day
     // -----------------------------------------
     // Time (hh:mm:ss.S)
-    TIME_OF_DAY(0x0A, "X", 4, null, null, S7ControllerType.ANY),
+    TIME_OF_DAY(0x02, "X", 4, null, DataTransportSize.BYTE_WORD_DWORD,S7ControllerType.ANY),
 
     // -----------------------------------------
     // Date and time of day
     // -----------------------------------------
-    DATE_AND_TIME(0x0F, "X", 8, null, null, S7ControllerType.ANY),
+    DATE_AND_TIME(0x02, "X", 8,null, null, S7ControllerType.S7_1500, S7ControllerType.S7_300, S7ControllerType.S7_400),
 
     // -----------------------------------------
     // ASCII Strings

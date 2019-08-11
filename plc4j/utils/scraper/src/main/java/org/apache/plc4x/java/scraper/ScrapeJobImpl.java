@@ -19,14 +19,15 @@
 
 package org.apache.plc4x.java.scraper;
 
-import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
+import org.apache.plc4x.java.scraper.config.JobConfigurationClassicImpl;
+import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
 
 import java.util.Map;
 
 /**
  * POJO Object to transport all Job information.
- * Is generated from {@link org.apache.plc4x.java.scraper.config.ScraperConfiguration} by
- * merging the sources and the {@link JobConfigurationImpl}.
+ * Is generated from {@link ScraperConfigurationClassicImpl} by
+ * merging the sources and the {@link JobConfigurationClassicImpl}.
  *
  * @deprecated Scraper is deprecated please use {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
  */
