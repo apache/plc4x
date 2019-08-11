@@ -19,11 +19,13 @@
 
 package org.apache.plc4x.java.base.connection;
 
+import com.fazecast.jSerialComm.SerialPort;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFactory;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -46,8 +48,18 @@ public class SerialChannelFactoryTest {
     private static final Logger logger = LoggerFactory.getLogger(SerialChannelFactoryTest.class);
 
     @Test
+    public void showAllPorts() {
+        System.out.println("-------------------------------------");
+        System.out.println(" Starting to Display all Serial Ports");
+        System.out.println("-------------------------------------");
+        for (SerialPort commPort : SerialPort.getCommPorts()) {
+            System.out.println(commPort.getDescriptivePortName());
+        }
+    }
+
+    @Test
     public void createChannel() throws PlcConnectionException, InterruptedException, UnknownHostException {
-        SerialChannelFactory asdf = new SerialChannelFactory("asdf");
+        SerialChannelFactory asdf = new SerialChannelFactory("TEST-port1");
         final TcpSocketChannelFactory factory = new TcpSocketChannelFactory(InetAddress.getLocalHost(), 5432);
         final Channel channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
             @Override protected void initChannel(SerialChannel ch) throws Exception {
@@ -61,6 +73,25 @@ public class SerialChannelFactoryTest {
         }
         Thread.sleep(100);
         channel.close().sync();
+    }
+
+    @Test
+    public void createChannelToSBL() throws PlcConnectionException, InterruptedException, UnknownHostException {
+        SerialChannelFactory asdf = new SerialChannelFactory("JBLFlip3-SPPDev");
+        Channel channel = null;
+        try {
+            channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
+                @Override protected void initChannel(SerialChannel ch) throws Exception {
+                    ch.pipeline().addLast(new DemoCodec());
+                }
+            });
+        } catch (Exception e) {
+            // do nothing
+        }
+        Thread.sleep(5_000);
+        if (channel != null) {
+            channel.close().sync();
+        }
     }
 
     private static class DemoCodec extends ByteToMessageCodec<Object> {

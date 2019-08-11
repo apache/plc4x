@@ -22,13 +22,12 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.jsc.JSerialCommChannel;
-import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.oio.OioEventLoopGroup;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
+import java.net.SocketAddress;
 import java.util.concurrent.Executor;
 
 public class SerialChannelFactory implements ChannelFactory {
@@ -42,15 +41,27 @@ public class SerialChannelFactory implements ChannelFactory {
     @Override
     public Channel createChannel(ChannelHandler channelHandler)
         throws PlcConnectionException {
-        JSerialCommDeviceAddress address = new JSerialCommDeviceAddress(serialPort);
+        SocketAddress address = new SerialSocketAddress(serialPort);
 
         try {
             Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(new NioEventLoopGroup(0, (Executor)null, new SerialSelectorProvider()));
+            final NioEventLoopGroup eventLoop = new NioEventLoopGroup(0, (Executor) null, new SerialSelectorProvider());
+            bootstrap.group(eventLoop);
             bootstrap.channel(SerialChannel.class);
             bootstrap.handler(channelHandler);
             // Start the client.
-            ChannelFuture f = bootstrap.connect(address).sync();
+            ChannelFuture f = bootstrap.connect(address);
+            f.addListener(new GenericFutureListener<Future<? super Void>>() {
+                    @Override public void operationComplete(Future<? super Void> future) throws Exception {
+                        if (future.isSuccess()) {
+                            System.out.println("Connection sucesfull!");
+                        } else {
+                            System.out.println("Connection not sucessfull: " + future.cause().getMessage());
+                            eventLoop.shutdownGracefully();
+                        }
+                    }
+                });
+            f.sync();
             f.awaitUninterruptibly();
             // Wait till the session is finished initializing.
             return f.channel();

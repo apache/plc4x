@@ -19,9 +19,7 @@
 
 package org.apache.plc4x.java.base.connection;
 
-import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
+import com.sun.org.apache.xml.internal.serializer.utils.SerializerMessages_ca;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.AbstractChannel;
@@ -37,7 +35,6 @@ import io.netty.channel.EventLoop;
 import io.netty.channel.FileRegion;
 import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.VoidChannelPromise;
-import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import io.netty.channel.nio.AbstractNioByteChannel;
 import io.netty.channel.nio.AbstractNioChannel;
 import io.netty.channel.nio.NioEventLoop;
@@ -163,14 +160,18 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
     @Override
     protected boolean doConnect(SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
         this.remoteAddress = remoteAddress;
-        if (!(remoteAddress instanceof JSerialCommDeviceAddress)) {
-            throw new IllegalArgumentException("Socket Address has to be of type " + JSerialCommDeviceAddress.class);
+        if (!(remoteAddress instanceof SerialSocketAddress)) {
+            throw new IllegalArgumentException("Socket Address has to be of type " + SerialSocketAddress.class);
         }
-        logger.debug("Connecting to Socket Address '{}'", ((JSerialCommDeviceAddress) remoteAddress).value());
+        logger.debug("Connecting to Socket Address '{}'", ((SerialSocketAddress) remoteAddress).getIdentifier());
 
         try {
-            // TODO this should take port from remote Adress
-            comPort = SerialChannelHandler.DummyHandler.INSTANCE;
+            // A bit hacky but to make a Test Connection start the String with TEST
+            if (((SerialSocketAddress) remoteAddress).getIdentifier().startsWith("TEST")) {
+                comPort = SerialChannelHandler.DummyHandler.INSTANCE;
+            } else {
+                comPort = new SerialChannelHandler.SerialPortHandler(remoteAddress);
+            }
             logger.debug("Using Com Port {}, trying to open port", comPort.getIdentifier());
             if (comPort.open()) {
                 logger.debug("Opened port successful to {}", comPort.getIdentifier());
@@ -186,6 +187,12 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             e.printStackTrace();
             this.active = false;
             return false;
+        }
+    }
+
+    @Override protected void doClose() throws Exception {
+        if (this.comPort != null) {
+            this.comPort.close();
         }
     }
 
@@ -383,6 +390,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
         @Override
         public void connect(SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) {
+            SerialChannel.this.remoteAddress = remoteAddress;
             eventLoop().execute(() -> {
                 try {
                     final boolean sucess = doConnect(remoteAddress, localAddress);
@@ -392,7 +400,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                         // Finally, close the promise
                         promise.setSuccess();
                     } else {
-                        promise.setFailure(new RuntimeException("Unable to open the com port " + remoteAddress.toString()));
+                        promise.setFailure(new RuntimeException("Unable to open the com port '" + ((SerialSocketAddress) remoteAddress).getIdentifier() + "'"));
                     }
                 } catch (Exception e) {
                     promise.setFailure(e);
@@ -407,9 +415,16 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
         @Override
         public void close(ChannelPromise promise) {
-            logger.debug("Closing the Serial Port '{}'", this.remoteAddress());
-            // TODO this should close the Serial Port
-            throw new NotImplementedException("");
+            logger.debug("Closing the Serial Port '{}'", ((SerialSocketAddress) SerialChannel.this.remoteAddress).getIdentifier());
+            eventLoop().execute(() -> {
+                try {
+                    doClose();
+                    promise.setSuccess();
+                } catch (Exception e) {
+                    logger.warn("Unable to close the connection", e);
+                    promise.setFailure(e);
+                }
+            });
         }
 
         @Override

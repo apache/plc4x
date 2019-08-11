@@ -6,6 +6,7 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import io.netty.channel.jsc.JSerialCommDeviceAddress;
 
 import java.net.SocketAddress;
+import java.nio.channels.SelectionKey;
 
 /**
  * This is a wrapper mostly for testing {@link SerialChannel}, @{@link SerialPollingSelector},
@@ -30,6 +31,8 @@ public abstract class SerialChannelHandler {
      */
     abstract void registerSelectionKey(SerialSelectionKey selectionKey);
 
+    public abstract void close();
+
     public static class DummyHandler extends SerialChannelHandler {
 
         public static final DummyHandler INSTANCE = new DummyHandler(null);
@@ -52,6 +55,10 @@ public abstract class SerialChannelHandler {
             this.selectionKey = selectionKey;
         }
 
+        @Override public void close() {
+            // NOOP
+        }
+
         public void fireEvent(int readyOp) {
             ((SerialPollingSelector) this.selectionKey.selector())
                 .addEvent(new SerialPollingSelector.SelectorEvent(this.selectionKey, readyOp));
@@ -65,7 +72,7 @@ public abstract class SerialChannelHandler {
 
         public SerialPortHandler(SocketAddress address) {
             super(address);
-            comPort = SerialPort.getCommPort(((JSerialCommDeviceAddress) address).value());
+            comPort = SerialPort.getCommPort(((SerialSocketAddress) address).getIdentifier());
         }
 
         @Override public boolean open() {
@@ -85,10 +92,14 @@ public abstract class SerialChannelHandler {
 
                 @Override
                 public void serialEvent(SerialPortEvent event) {
-                    // TODO notify the selector that something happens
-                    selectionKey.selector().wakeup();
+                    ((SerialPollingSelector) selectionKey.selector())
+                        .addEvent(new SerialPollingSelector.SelectorEvent(selectionKey, SelectionKey.OP_READ));
                 }
             });
+        }
+
+        @Override public void close() {
+            this.comPort.closePort();
         }
     }
 }
