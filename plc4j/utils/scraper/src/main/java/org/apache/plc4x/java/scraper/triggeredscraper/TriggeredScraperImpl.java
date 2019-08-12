@@ -89,6 +89,8 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * By default a {@link PooledPlcDriverManager} is used.
      * @param config Configuration to use.
      * @param resultHandler handler the defines the processing of acquired data
+     * @param triggerCollector the trigger collector
+     * @throws ScraperException something went wrong
      */
     public TriggeredScraperImpl(ScraperConfiguration config, ResultHandler resultHandler, TriggerCollector triggerCollector) throws ScraperException {
         this(resultHandler, createPooledDriverManager(), config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
@@ -99,6 +101,8 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param config Configuration to use.
      * @param plcDriverManager external DriverManager
      * @param resultHandler handler the defines the processing of acquired data
+     * @param triggerCollector the trigger collector
+     * @throws ScraperException something went wrong
      */
     public TriggeredScraperImpl(ScraperConfiguration config, PlcDriverManager plcDriverManager, ResultHandler resultHandler,TriggerCollector triggerCollector) throws ScraperException {
         this(resultHandler, plcDriverManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
@@ -109,6 +113,10 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param config Configuration to use.
      * @param plcDriverManager external DriverManager
      * @param resultHandler handler the defines the processing of acquired data
+     * @param triggerCollector the trigger collector
+     * @param poolSizeExecutor the pool size of the executor
+     * @param poolSizeScheduler the pool size of the scheduler
+     * @throws ScraperException something went wrong
      */
     public TriggeredScraperImpl(ScraperConfigurationTriggeredImpl config, PlcDriverManager plcDriverManager, ResultHandler resultHandler, TriggerCollector triggerCollector, int poolSizeScheduler, int poolSizeExecutor) throws ScraperException {
         this(resultHandler, plcDriverManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT,poolSizeScheduler,poolSizeExecutor);
@@ -275,9 +283,9 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param requestTimeoutMs  maximum awaiting for the the future to return a result
      * @param info              additional info for trace reasons
      * @return the {@link PlcConnection} used for acquiring data from PLC endpoint
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws TimeoutException
+     * @throws InterruptedException something went wrong
+     * @throws ExecutionException something went wrong
+     * @throws TimeoutException something went wrong
      */
     public static PlcConnection getPlcConnection(PlcDriverManager plcDriverManager,
                                                  String connectionString,
@@ -320,9 +328,9 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param executorService   ExecuterService holding a pool as threads handling requests and stuff
      * @param requestTimeoutMs  maximum awaiting for the the future to return a result
      * @return the {@link PlcConnection} used for acquiring data from PLC endpoint
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws TimeoutException
+     * @throws InterruptedException something went wrong
+     * @throws ExecutionException something went wrong
+     * @throws TimeoutException something went wrong
      */
     public static PlcConnection getPlcConnection(PlcDriverManager plcDriverManager,
                                                  String connectionString,

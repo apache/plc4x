@@ -32,6 +32,7 @@ public interface TriggerCollector {
      * @param plcConnectionString the connection string to the regarding source
      * @param maxAwaitingTime max awaiting time until request shall be submitted
      * @return a uuid under that the request is handled internally
+     * @throws ScraperException something went wrong
      */
     String submitTrigger(String plcField, String plcConnectionString, long maxAwaitingTime) throws ScraperException;
 
@@ -39,6 +40,7 @@ public interface TriggerCollector {
      * requests the result of submitted plc request with default timeout
      * @param uuid uuid that represents the request
      * @return the object acquired by requesting plc instance
+     * @throws ScraperException something went wrong
      */
     Object requestResult(String uuid) throws ScraperException;
 
@@ -47,6 +49,7 @@ public interface TriggerCollector {
      * @param uuid uuid that represents the request
      * @param timeout timeout until response shall be acquired
      * @return the object acquired by requesting plc instance
+     * @throws ScraperException something went wrong
      */
     Object requestResult(String uuid, long timeout) throws ScraperException;
 

@@ -36,11 +36,13 @@ public interface ScrapeJob {
 
     /**
      * alias -&gt; connection-string
+     * @return something...
      */
     Map<String, String> getSourceConnections();
 
     /**
      * alias -&gt; field-query
+     * @return something...
      */
     Map<String, String> getFields();
 }
