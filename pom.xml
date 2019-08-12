@@ -1614,9 +1614,8 @@
             <artifactId>maven-enforcer-plugin</artifactId>
             <version>3.0.0-M2</version> <!--$NO-MVN-MAN-VER$-->
             <executions>
-              <!-- Make sure no dependencies are used for which known vulnerabilities exist. -->
               <execution>
-                <id>sanity-checks</id>
+                <id>check-at-least-java-8</id>
                 <phase>validate</phase>
                 <goals>
                   <goal>enforce</goal>
@@ -1629,6 +1628,41 @@
                     <!--reactorModuleConvergence/-->
                   </rules>
                 </configuration>
+              </execution>
+              <!-- Ensure we're not mixing dependency versions -->
+              <execution>
+                <id>enforce-version-convergence</id>
+                <configuration>
+                  <rules>
+                    <dependencyConvergence/>
+                  </rules>
+                </configuration>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+              </execution>
+              <!--
+                  Fails the build if classes are included from multiple
+                  artifacts and these are not identical.
+              -->
+              <execution>
+                  <id>enforce-ban-duplicate-classes</id>
+                  <goals>
+                      <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                      <rules>
+                          <banDuplicateClasses>
+                              <scopes>
+                                  <scope>compile</scope>
+                                  <scope>provided</scope>
+                              </scopes>
+                              <findAllDuplicates>true</findAllDuplicates>
+                              <ignoreWhenIdentical>true</ignoreWhenIdentical>
+                          </banDuplicateClasses>
+                      </rules>
+                      <fail>true</fail>
+                  </configuration>
               </execution>
             </executions>
           </plugin>
