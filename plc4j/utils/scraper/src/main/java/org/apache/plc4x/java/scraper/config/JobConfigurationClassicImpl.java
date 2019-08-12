@@ -39,7 +39,7 @@ public class JobConfigurationClassicImpl extends JobConfigurationImpl {
      *
      * @param name          Job Name / identifier
      * @param triggerConfig configuration string for triggered jobs
-     * @param scrapeRate
+     * @param scrapeRate    rate in which the data should be acquired
      * @param sources       source alias (<b>not</b> connection string but the alias (from @{@link ScraperConfigurationClassicImpl}).
      * @param fields        Map from field alias (how it is named in the result map) to plc4x field query
      */

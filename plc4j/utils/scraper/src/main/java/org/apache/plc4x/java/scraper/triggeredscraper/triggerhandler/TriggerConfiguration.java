@@ -58,7 +58,7 @@ public class TriggerConfiguration{
      * @param scrapeInterval scrape interval of triggered variable
      * @param triggerElementList list of triggerElemts with concat that combined is used as triger
      * @param triggeredScrapeJobImpl the job which is valid for the configuration
-     * @throws ScraperException when something goes wrong with configuration
+     * @throws ScraperConfigurationException when something goes wrong with configuration
      */
     public TriggerConfiguration(TriggerType triggerType,
                                 String scrapeInterval,
@@ -359,7 +359,7 @@ public class TriggerConfiguration{
      * @param jobTriggerStrategy config-string from file
      * @param triggeredScrapeJob job belonging to the config
      * @return created TriggerConfiguration
-     * @throws ScraperException when something goes wrong
+     * @throws ScraperConfigurationException when something goes wrong
      */
     public static TriggerConfiguration createConfiguration(String jobTriggerStrategy,TriggeredScrapeJobImpl triggeredScrapeJob) throws ScraperConfigurationException {
         Matcher matcher = TRIGGER_STRATEGY_PATTERN.matcher(jobTriggerStrategy);

@@ -89,6 +89,7 @@ public class ScraperImpl implements Scraper {
      * By default a {@link PooledPlcDriverManager} is used.
      * @param config Configuration to use.
      * @param resultHandler handler for acquired data
+     * @throws ScraperException something went wrong ...
      */
     public ScraperImpl(ScraperConfiguration config, ResultHandler resultHandler) throws ScraperException {
         this(resultHandler, createPooledDriverManager(), config.getJobs());
