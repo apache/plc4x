@@ -153,6 +153,8 @@ def checkPython() {
     def stdErr = new StringBuilder()
     process.consumeProcessOutput(stdOut, stdErr)
     process.waitForOrKill(500)
+    println "StdOut: " + stdOut
+    println "StrErr: " + stdErr
     Matcher matcher = extractVersion(stdErr)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -165,6 +167,18 @@ def checkPython() {
         // For debugging regular build failures on our build vm
         println "StdOut: " + stdOut
         println "StrErr: " + stdErr
+        println "matcher size: " + matcher.size()
+        for(int i = 0; i < matcher.size(); i++) {
+            println "matcher[" + i + "]=" + matcher[i]
+        }
+        // Example for a failed python detection:
+        //
+        //Detecting Python version: missing
+        //StdOut:
+        //StrErr: Python 2.7.12
+        // Example of a successful detection
+        //StrErr:
+        //2.7.15        OK
         allConditionsMet = false
     }
 }
@@ -190,7 +204,7 @@ def checkBoost() {
 }
 
 /**
- * Version extraction function/macro. It looks for occurance of x.y or x.y.z
+ * Version extraction function/macro. It looks for occurrence of x.y or x.y.z
  * in passed input text (likely output from `program --version` command if found).
  *
  * @param input
