@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
-import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
@@ -34,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class Plc4xSinkTask extends SinkTask {
+
     private String url;
 
     private PlcConnection plcConnection;
@@ -45,8 +45,8 @@ public class Plc4xSinkTask extends SinkTask {
 
     @Override
     public void start(Map<String, String> props) {
-        AbstractConfig config = new AbstractConfig(Plc4xSinkConnector.CONFIG_DEF, props);
-        url = config.getString(Plc4xSinkConnector.URL_CONFIG);
+        /*AbstractConfig config = new AbstractConfig(Plc4xSinkConnector.CONFIG_DEF, props);
+        url = config.getString(Plc4xSinkConnector.URL_CONFIG);*/
 
         openConnection();
 

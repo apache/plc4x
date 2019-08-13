@@ -18,21 +18,16 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
+import org.apache.plc4x.kafka.config.SourceConfig;
+import org.apache.plc4x.kafka.exceptions.ConfigurationException;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Plc4xSourceConnector extends SourceConnector {
 
@@ -58,10 +53,18 @@ public class Plc4xSourceConnector extends SourceConnector {
         .define(JSON_CONFIG, ConfigDef.Type.STRING, JSON_DEFAULT, ConfigDef.Importance.HIGH, JSON_DOC)
         .define(RATE_CONFIG, ConfigDef.Type.INT, RATE_DEFAULT, ConfigDef.Importance.MEDIUM, RATE_DOC);
 
-    private String topic;
-    private List<String> queries;
-    private String json;
-    private Integer rate;
+    private SourceConfig sourceConfig;
+
+    @Override
+    public void start(Map<String, String> props) {
+        try {
+            sourceConfig = SourceConfig.fromPropertyMap(props);
+        } catch (ConfigurationException e) {
+        }
+    }
+
+    @Override
+    public void stop() {}
 
     @Override
     public Class<? extends Task> taskClass() {
@@ -72,7 +75,7 @@ public class Plc4xSourceConnector extends SourceConnector {
     @SuppressWarnings("unchecked")
     public List<Map<String, String>> taskConfigs(int maxTasks) {
         List<Map<String, String>> configs = new LinkedList<>();
-        if (json.isEmpty()) {
+        /*if (json.isEmpty()) {
             Map<String, List<String>> groupedByHost = new HashMap<>();
             queries.stream().map(query -> query.split("#", 2)).collect(Collectors.groupingBy(parts -> parts[0])).forEach((host, q) ->
                 groupedByHost.put(host, q.stream().map(parts -> parts[1]).collect(Collectors.toList())));
@@ -121,21 +124,9 @@ public class Plc4xSourceConnector extends SourceConnector {
             } catch (IOException e) {
                 log.error("ERROR CONFIGURING TASK", e);
             }
-        }
+        }*/
         return configs;
     }
-
-    @Override
-    public void start(Map<String, String> props) {
-        AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
-        topic = config.getString(TOPIC_CONFIG);
-        queries = config.getList(QUERIES_CONFIG);
-        rate = config.getInt(RATE_CONFIG);
-        json = config.getString(JSON_CONFIG);
-    }
-
-    @Override
-    public void stop() {}
 
     @Override
     public ConfigDef config() {

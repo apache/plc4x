@@ -30,14 +30,13 @@ import java.util.List;
 import java.util.Map;
 
 public class Plc4xSinkConnector extends SinkConnector {
-    static final String URL_CONFIG = "url";
-    private static final String URL_DOC = "Connection string used by PLC4X to connect to the PLC";
 
-    static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC);
+    private static final String URL_CONFIG = "url";
+    private static final String URL_DOC = "Connection string used by PLC4X to connect to the PLC";
+    private static final ConfigDef CONFIG_DEF =
+        new ConfigDef().define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC);
 
     private String url;
-    private String query;
 
     @Override
     public Class<? extends Task> taskClass() {
