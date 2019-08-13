@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 public class DF1PlcDriver implements PlcDriver {
 
+    // TODO there is only serial, I guess?
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");
     public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>/?[a-zA-Z0-9/]*)");
     public static final Pattern DF1_URI_PATTERN = Pattern.compile("^df1:(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/?" + "(?<params>\\?.*)?");
