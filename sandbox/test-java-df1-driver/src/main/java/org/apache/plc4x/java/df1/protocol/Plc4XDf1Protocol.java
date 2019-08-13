@@ -76,7 +76,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
     protected void decode(ChannelHandlerContext ctx, DF1Command msg, List<Object> out) throws Exception {
         logger.trace("Received DF1 Command incoming {}", msg);
         // TODO fetch right transaction id from msg
-        int transactionId = -1;
+        int transactionId = msg.getTransactionCounter();
         if (!requests.containsKey(transactionId)) {
             logger.warn("Received a response to unknown transaction id {}", transactionId);
             ctx.fireExceptionCaught(new RuntimeException("Received a response to unknown transaction id"));
