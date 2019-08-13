@@ -30,7 +30,6 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.base.messages.InternalPlcRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
@@ -91,21 +90,30 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
         // Handle the response.
         PlcResponse response = null;
         if (request instanceof PlcReadRequest) {
-            // TODO handle read response
             /*
             Things to do
             - check response code (if there is something like that?
             - cast the bytes to right datatype
             - create Response
              */
-            // We can do this as we have only one field in DF1
-            final String field = ((PlcReadRequest) request).getFieldNames().iterator().next();
+            // We can do this as we have only one fieldName in DF1
+            final String fieldName = ((PlcReadRequest) request).getFieldNames().iterator().next();
             // TODO can there be another code than ok?
             final PlcResponseCode responseCode = PlcResponseCode.OK;
-            // TODO the field item has to be of suitable type
-            final BaseDefaultFieldItem responseItem = new DefaultIntegerFieldItem(-1);
+            final Df1Field field = (Df1Field) ((PlcReadRequest) request).getField(fieldName);
+            // Cast byte and create response item
+            final BaseDefaultFieldItem responseItem;
+            switch (field.getDataType()) {
+                case INTEGER:
+                    // TODO cast the bytes to Integer
+                    responseItem = new DefaultIntegerFieldItem(-1);
+                    break;
+                // TODO add all other cases here...
+                default:
+                    throw new NotImplementedException("The DataType " + field.getDataType() + " is currently not implemented!");
+            }
             response = new DefaultPlcReadResponse(((InternalPlcReadRequest) request),
-                Collections.singletonMap(field,
+                Collections.singletonMap(fieldName,
                     Pair.of(responseCode, responseItem)));
         } else if (request instanceof PlcWriteRequest) {
             logger.warn("Writing is currently not implemented but received a write response?!");
