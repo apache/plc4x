@@ -19,15 +19,31 @@
 package org.apache.plc4x.java.df1.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.df1.*;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.df1.DF1Command;
+import org.apache.plc4x.java.df1.DF1UnprotectedReadRequest;
+import org.apache.plc4x.java.df1.Df1Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRequestContainer> {
@@ -35,9 +51,11 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
     private static final Logger logger = LoggerFactory.getLogger(Plc4XDf1Protocol.class);
 
     private final AtomicInteger transactionId = new AtomicInteger(0);
+    private Map<Integer, PlcRequestContainer> requests = new ConcurrentHashMap<>();
 
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
+        logger.trace("Received Request {} to send out", msg);
         if (msg.getRequest() instanceof PlcReadRequest) {
             for (PlcField field : ((PlcReadRequest) msg.getRequest()).getFields()) {
                 if (!(field instanceof Df1Field)) {
@@ -57,7 +75,49 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
 
     @Override
     protected void decode(ChannelHandlerContext ctx, DF1Command msg, List<Object> out) throws Exception {
-        System.out.println("Hello");
+        logger.trace("Received DF1 Command incoming {}", msg);
+        // TODO fetch right transaction id from msg
+        int transactionId = -1;
+        if (!requests.containsKey(transactionId)) {
+            logger.warn("Received a response to unknown transaction id {}", transactionId);
+            ctx.fireExceptionCaught(new RuntimeException("Received a response to unknown transaction id"));
+            ctx.close();
+            return;
+        }
+        // As every response has a matching request, get this request based on the tpdu.
+        PlcRequestContainer requestContainer = requests.remove(transactionId);
+        PlcRequest request = requestContainer.getRequest();
+
+        // Handle the response.
+        PlcResponse response = null;
+        if (request instanceof PlcReadRequest) {
+            // TODO handle read response
+            /*
+            Things to do
+            - check response code (if there is something like that?
+            - cast the bytes to right datatype
+            - create Response
+             */
+            // We can do this as we have only one field in DF1
+            final String field = ((PlcReadRequest) request).getFieldNames().iterator().next();
+            // TODO can there be another code than ok?
+            final PlcResponseCode responseCode = PlcResponseCode.OK;
+            // TODO the field item has to be of suitable type
+            final BaseDefaultFieldItem responseItem = new DefaultIntegerFieldItem(-1);
+            response = new DefaultPlcReadResponse(((InternalPlcReadRequest) request),
+                Collections.singletonMap(field,
+                    Pair.of(responseCode, responseItem)));
+        } else if (request instanceof PlcWriteRequest) {
+            logger.warn("Writing is currently not implemented but received a write response?!");
+            ctx.close();
+            throw new NotImplementedException("This is currently not implemented!");
+        }
+
+        // Confirm the response being handled.
+        if (response != null) {
+            requestContainer.getResponseFuture().complete(response);
+        }
     }
+
 
 }
