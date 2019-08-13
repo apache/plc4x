@@ -33,25 +33,7 @@ public class Plc4xSourceConnector extends SourceConnector {
 
     private static final Logger log = LoggerFactory.getLogger(Plc4xSourceConnector.class);
 
-    private static final String TOPIC_CONFIG = "topic";
-    private static final String TOPIC_DOC = "Kafka topic to publish to";
-
-    private static final String QUERIES_CONFIG = "queries";
-    private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
-
-    private static final String JSON_CONFIG = "json.url";
-    private static final String JSON_DEFAULT = "";
-    private static final String JSON_DOC = "JSON configuration";
-
-    private static final String RATE_CONFIG = "rate";
-    private static final Integer RATE_DEFAULT = 1000;
-    private static final String RATE_DOC = "Polling rate";
-
-    private static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
-        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, new LinkedList<>(), ConfigDef.Importance.HIGH, QUERIES_DOC)
-        .define(JSON_CONFIG, ConfigDef.Type.STRING, JSON_DEFAULT, ConfigDef.Importance.HIGH, JSON_DOC)
-        .define(RATE_CONFIG, ConfigDef.Type.INT, RATE_DEFAULT, ConfigDef.Importance.MEDIUM, RATE_DOC);
+    private static final ConfigDef CONFIG_DEF = new ConfigDef();
 
     private SourceConfig sourceConfig;
 
