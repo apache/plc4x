@@ -30,6 +30,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -37,6 +38,7 @@ import java.lang.reflect.Method;
 import java.net.SocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
+import java.nio.channels.SocketChannel;
 import java.util.concurrent.RejectedExecutionException;
 
 /**
@@ -220,6 +222,9 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
     }
 
     private class SerialNioUnsafe implements NioUnsafe {
+
+        private boolean inFlush0; // Copied from AbstractUnsafe
+        private Throwable initialCloseCause; // Copied from AbstractUnsafe
 
         private volatile ChannelOutboundBuffer outboundBuffer;
 
@@ -483,10 +488,95 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             throw new NotImplementedException("");
         }
 
+        //
+        // Start Copied from AbstractUnsafe
+        //
+
         @Override
-        public void flush() {
-            throw new NotImplementedException("");
+        public final void flush() {
+            assert eventLoop().inEventLoop();
+
+            ChannelOutboundBuffer outboundBuffer = this.outboundBuffer;
+            if (outboundBuffer == null) {
+                return;
+            }
+
+            outboundBuffer.addFlush();
+            flush0();
         }
+
+        @SuppressWarnings("deprecation")
+        protected void flush0() {
+            if (inFlush0) {
+                // Avoid re-entrance
+                return;
+            }
+
+            final ChannelOutboundBuffer outboundBuffer = this.outboundBuffer;
+            if (outboundBuffer == null || outboundBuffer.isEmpty()) {
+                return;
+            }
+
+            inFlush0 = true;
+
+            // Mark all pending write requests as failure if the channel is inactive.
+            if (!isActive()) {
+                try {
+                    if (isOpen()) {
+                        callFailFlushed(true);
+                    } else {
+                        // Do not trigger channelWritabilityChanged because the channel is closed already.
+                        callFailFlushed(false);
+                    }
+                } finally {
+                    inFlush0 = false;
+                }
+                return;
+            }
+
+            try {
+                doWrite(outboundBuffer);
+            } catch (Throwable t) {
+                if (t instanceof IOException && config().isAutoClose()) {
+                    /**
+                     * Just call {@link #close(ChannelPromise, Throwable, boolean)} here which will take care of
+                     * failing all flushed messages and also ensure the actual close of the underlying transport
+                     * will happen before the promises are notified.
+                     *
+                     * This is needed as otherwise {@link #isActive()} , {@link #isOpen()} and {@link #isWritable()}
+                     * may still return {@code true} even if the channel should be closed as result of the exception.
+                     */
+                    initialCloseCause = t;
+                    close(voidPromise());
+                    throw new RuntimeException("Unable to flush", t);
+                } else {
+                    try {
+                        shutdownOutput(voidPromise());
+                        throw new RuntimeException("Unable to flush", t);
+                    } catch (Throwable t2) {
+                        initialCloseCause = t;
+                        close(voidPromise());
+                        throw new RuntimeException("Unable to flush", t);
+                    }
+                }
+            } finally {
+                inFlush0 = false;
+            }
+        }
+
+        private void callFailFlushed(boolean notify) {
+            try {
+                Method failFlushed = ChannelOutboundBuffer.class.getDeclaredMethod("failFlushed", Throwable.class, boolean.class);
+                failFlushed.setAccessible(true);
+                failFlushed.invoke(new RuntimeException("Unable to Flush!"), notify);
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to call Failed Flushed!");
+            }
+        }
+
+        //
+        // End Copied from AbstractUnsafe
+        //
 
         @Override
         public ChannelPromise voidPromise() {
