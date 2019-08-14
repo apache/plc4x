@@ -119,7 +119,7 @@
       <version>1.3.11</version>
     </dependency>
 
-    <!-- Logging
+    <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -132,7 +132,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-    </dependency>-->
+    </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>

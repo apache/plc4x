@@ -66,7 +66,8 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
         byte[] data = writeBuffer.getData();
 
         // Send the serialized data
-        out.writeBytes(data);
+        ctx.writeAndFlush(data);
+        // out.writeBytes(data);
     }
 
     @Override

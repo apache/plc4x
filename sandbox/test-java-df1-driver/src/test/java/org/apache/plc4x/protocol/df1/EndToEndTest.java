@@ -43,7 +43,7 @@ public class EndToEndTest {
                 .addItem("zweites", "17:INTEGER")
                 .build();
 
-            PlcReadResponse response = request.execute().get(1, TimeUnit.SECONDS);
+            PlcReadResponse response = request.execute().get(100, TimeUnit.SECONDS);
 
             System.out.println(response);
         } catch (PlcConnectionException e) {

@@ -30,6 +30,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -220,7 +221,20 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
     private class SerialNioUnsafe implements NioUnsafe {
 
+        private volatile ChannelOutboundBuffer outboundBuffer;
+
         private RecvByteBufAllocator.Handle recvHandle;
+
+        public SerialNioUnsafe() {
+            try {
+                Constructor<ChannelOutboundBuffer> ctor = ChannelOutboundBuffer.class.getDeclaredConstructor(AbstractChannel.class);
+                ctor.setAccessible(true);
+                this.outboundBuffer = ctor.newInstance(SerialChannel.this);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                logger.warn("Problem with reflection", e);
+                throw new RuntimeException("Problem providing Buffer", e);
+            }
+        }
 
         @Override
         public SelectableChannel ch() {
@@ -481,7 +495,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
         @Override
         public ChannelOutboundBuffer outboundBuffer() {
-            throw new NotImplementedException("");
+            return this.outboundBuffer;
         }
     }
 }
