@@ -26,11 +26,13 @@ public class Df1Field implements PlcField {
     private final int address;
     private final int size;
     private final DataType dataType;
+    private final addressType address_type;
 
     public Df1Field(int address, int size, DataType dataType) {
         this.address = address;
         this.size = size;
         this.dataType = dataType;
+        this.address_type = address_type;
     }
 
     public int getAddress() {
@@ -47,5 +49,10 @@ public class Df1Field implements PlcField {
 
     public static PlcField of(String fieldQuery) {
         return new Df1Field(11, 2, DataType.INTEGER);
+    }
+
+    public enum addressType {
+        OFFSET,
+        LOGICAL
     }
 }
