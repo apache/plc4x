@@ -144,7 +144,14 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
     @Override
     protected int doWriteBytes(ByteBuf buf) throws Exception {
-        throw new NotImplementedException("");
+        // Here we really write bytes to Socket!
+        if (!active) {
+            return 0;
+        }
+        logger.debug("Trying to write bytes to wire...");
+        int bytesWritten = comPort.write(buf);
+        logger.debug("Wrote {} bytes to wire!", bytesWritten);
+        return bytesWritten;
     }
 
     @Override

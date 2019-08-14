@@ -59,6 +59,12 @@ public abstract class SerialChannelHandler {
      */
     public abstract int read(ByteBuf buf);
 
+    /**
+     *
+     * @return Number of bytes written to wire
+     */
+    public abstract int write(ByteBuf buf);
+
     public static class DummyHandler extends SerialChannelHandler {
 
         public static final DummyHandler INSTANCE = new DummyHandler(null);
@@ -88,6 +94,12 @@ public abstract class SerialChannelHandler {
         @Override
         public int read(ByteBuf buf) {
             buf.writeByte(1);
+            return 1;
+        }
+
+        @Override
+        public int write(ByteBuf buf) {
+            System.out.println("Haha i wrote something");
             return 1;
         }
 
@@ -142,6 +154,15 @@ public abstract class SerialChannelHandler {
             comPort.readBytes(buffer, bytesToRead);
             buf.writeBytes(buffer);
             return bytesToRead;
+        }
+
+        @Override
+        public int write(ByteBuf buf) {
+            int expectedToWrite = buf.readableBytes();
+            byte[] bytes = new byte[expectedToWrite];
+            buf.readBytes(bytes);
+            int bytesWritten = comPort.writeBytes(bytes, expectedToWrite);
+            return bytesWritten;
         }
     }
 }
