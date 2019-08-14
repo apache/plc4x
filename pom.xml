@@ -145,7 +145,7 @@
     <lucene.version>8.0.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.24.5</mockito.version>
-    <netty.version>4.1.13.Final</netty.version>
+    <netty.version>4.1.35.Final</netty.version>
     <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
     <owasp-dependency-check.version>5.0.0-M1</owasp-dependency-check.version>
     <pcap4j.version>1.7.3</pcap4j.version>
