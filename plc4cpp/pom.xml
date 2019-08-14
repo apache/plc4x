@@ -33,12 +33,9 @@
   <name>PLC4Cpp</name>
   <description>Implementation of the protocol adapters for usage as C++ library.</description>
 
-  <!-- Disabled for now as C++ support is currently not installed in Apache SonarQube -->
-  <!--properties>
-    <sonar.language>c++</sonar.language>
-  </properties-->
-
   <properties>
+    <!-- Tell Sonar where to find the c++ sources -->
+    <sonar.sources>api/src/main/cpp,drivers/proxy/src/main/cpp,drivers/s7/src/main/cpp,protocols/driver-bases/base/src/main/cpp,protocols/s7/src/main/cpp,utils/logger/src/main/cpp,utils/systemconfig/src/main/cpp</sonar.sources>
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 

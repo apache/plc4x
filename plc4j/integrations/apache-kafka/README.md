@@ -19,15 +19,11 @@
 
 # Kafka Connect PLC4X Connector
 
-The PLC4X Connector streams data from and to any device accessible through the PLC4X interface.
+The PLC4X Connector streams data from any device accessible through the PLC4X interface.
 
 ## Source Connector
 
 See `config/source.properties` for example configuration.
-
-## Sink Connector
-
-See `config/sink.properties` for example configuration.
 
 ## Quickstart
 
@@ -42,7 +38,7 @@ In order to start a Kafka Connect system the following steps have to be performe
 
 1) Download the latest version of Apache Kafka binaries from here: https://kafka.apache.org/downloads
 2) Unpack the archive.
-3) Copy the target/apache-kafka-0.5.0-SNAPSHOT.jar to the Kafka "libs" directory.
+3) Copy the target/apache-kafka-0.5.0-SNAPSHOT-jar-with-dependencies.jar to the Kafka "libs" directory.
 4) Copy the files in the "config" to Kafka's "configs" directory (maybe inside a "plc4x" subdirectory)
 
 ### Start a Kafka Broker
