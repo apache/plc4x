@@ -19,22 +19,9 @@
 
 package org.apache.plc4x.java.base.connection;
 
-import com.sun.org.apache.xml.internal.serializer.utils.SerializerMessages_ca;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.AbstractChannel;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelConfig;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOutboundBuffer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.DefaultChannelConfig;
-import io.netty.channel.DefaultChannelPipeline;
-import io.netty.channel.EventLoop;
-import io.netty.channel.FileRegion;
-import io.netty.channel.RecvByteBufAllocator;
-import io.netty.channel.VoidChannelPromise;
+import io.netty.channel.*;
 import io.netty.channel.nio.AbstractNioByteChannel;
 import io.netty.channel.nio.AbstractNioChannel;
 import io.netty.channel.nio.NioEventLoop;

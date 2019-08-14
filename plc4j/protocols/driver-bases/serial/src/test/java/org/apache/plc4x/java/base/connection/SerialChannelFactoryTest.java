@@ -22,19 +22,14 @@ package org.apache.plc4x.java.base.connection;
 import com.fazecast.jSerialComm.SerialPort;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFactory;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.jsc.JSerialCommDeviceAddress;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
