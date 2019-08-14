@@ -61,7 +61,7 @@ public class JobConfigurationTriggeredImplBuilder {
     }
 
     private JobConfigurationTriggeredImpl buildInternal() {
-        return new JobConfigurationTriggeredImpl(name, triggerConfig,null, sources, fields);
+        return new JobConfigurationTriggeredImpl(name, triggerConfig, null, sources, fields);
     }
 
     public ScraperConfigurationTriggeredImplBuilder build() {

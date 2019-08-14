@@ -139,8 +139,22 @@ public class SourceConfig {
         return sources;
     }
 
+    public Source getSource(String sourceName) {
+        if(sources == null) {
+            return null;
+        }
+        return sources.stream().filter(source -> source.getName().equals(sourceName)).findFirst().orElse(null);
+    }
+
     public List<Job> getJobs() {
         return jobs;
+    }
+
+    public Job getJob(String jobName) {
+        if(jobs == null) {
+            return null;
+        }
+        return jobs.stream().filter(job -> job.getName().equals(jobName)).findFirst().orElse(null);
     }
 
 }
