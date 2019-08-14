@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.df1.protocol;
 
+import com.github.jinahya.bit.io.DefaultBitInput;
+import com.github.jinahya.bit.io.DefaultBitOutput;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -32,10 +34,13 @@ import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultFloatFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
 import org.apache.plc4x.java.df1.DF1Command;
 import org.apache.plc4x.java.df1.DF1UnprotectedReadRequest;
+import org.apache.plc4x.java.df1.DF1UnprotectedReadResponse;
 import org.apache.plc4x.java.df1.Df1Field;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultArrayField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +69,6 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
                 short size = (short) ((Df1Field) field).getAddress();
                 int transactionId = this.transactionId.getAndIncrement();
                 logger.debug("Creating request for offset {}, with length {} and transaction id {}", address, size, transactionId);
-                // TODO: differentiate commands
                 out.add(new DF1UnprotectedReadRequest((short) 0x00, transactionId, address, size));
             }
         } else {
@@ -103,10 +107,19 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
             final Df1Field field = (Df1Field) ((PlcReadRequest) request).getField(fieldName);
             // Cast byte and create response item
             final BaseDefaultFieldItem responseItem;
+            short[] data = ((DF1UnprotectedReadResponse)msg).getData();
             switch (field.getDataType()) {
+                case BIT:
+                    break;
                 case INTEGER:
                     // TODO cast the bytes to Integer
                     responseItem = new DefaultIntegerFieldItem(-1);
+                    break;
+                case FLOAT:
+                    break;
+                case BIT_STRING:
+                    break;
+                case ARRAY:
                     break;
                 // TODO add all other cases here...
                 default:
