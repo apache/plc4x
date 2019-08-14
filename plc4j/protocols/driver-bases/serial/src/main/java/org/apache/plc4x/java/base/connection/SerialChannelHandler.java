@@ -52,7 +52,12 @@ public abstract class SerialChannelHandler {
 
     public abstract void close();
 
-    public abstract void read(ByteBuf buf);
+    /**
+     *
+     * @param buf
+     * @return Return the amoubnt of bytes written into the buffer
+     */
+    public abstract int read(ByteBuf buf);
 
     public static class DummyHandler extends SerialChannelHandler {
 
@@ -81,8 +86,9 @@ public abstract class SerialChannelHandler {
         }
 
         @Override
-        public void read(ByteBuf buf) {
+        public int read(ByteBuf buf) {
             buf.writeByte(1);
+            return 1;
         }
 
         public void fireEvent(int readyOp) {
@@ -129,12 +135,13 @@ public abstract class SerialChannelHandler {
         }
 
         @Override
-        public void read(ByteBuf buf) {
+        public int read(ByteBuf buf) {
             int bytesToRead = comPort.bytesAvailable();
             assert bytesToRead > 0;
             byte[] buffer = new byte[bytesToRead];
             comPort.readBytes(buffer, bytesToRead);
             buf.writeBytes(buffer);
+            return bytesToRead;
         }
     }
 }
