@@ -29,6 +29,7 @@ import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class SerialChannelFactoryTest {
     @Test
     public void createChannel() throws PlcConnectionException, InterruptedException, UnknownHostException {
         SerialChannelFactory asdf = new SerialChannelFactory("TEST-port1");
-        final TcpSocketChannelFactory factory = new TcpSocketChannelFactory(InetAddress.getLocalHost(), 5432);
+        // final TcpSocketChannelFactory factory = new TcpSocketChannelFactory(InetAddress.getLocalHost(), 5432);
         final Channel channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
             @Override protected void initChannel(SerialChannel ch) throws Exception {
                 ch.pipeline().addLast(new DemoCodec());
