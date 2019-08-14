@@ -66,10 +66,18 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
                     throw new IllegalArgumentException("Invalid field type found inside Df1 Request");
                 }
                 int address = ((Df1Field) field).getAddress();
-                short size = (short) ((Df1Field) field).getAddress();
+                short size = ((Df1Field) field).getDataType().getLength();
                 int transactionId = this.transactionId.getAndIncrement();
                 logger.debug("Creating request for offset {}, with length {} and transaction id {}", address, size, transactionId);
-                out.add(new DF1UnprotectedReadRequest((short) 0x00, transactionId, address, size));
+                switch (((Df1Field) field).getAddress_type()) {
+                    case OFFSET:
+                        out.add(new DF1UnprotectedReadRequest((short) 0x00, transactionId, address, size));
+                        break;
+                    case LOGICAL:
+                        // TODO: add 'protected typed logical read ' to mspec and case
+                        throw new NotImplementedException("not yet implemented in mspec");
+                }
+
             }
         } else {
             throw new IllegalStateException("This should not happen!");
@@ -79,7 +87,6 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
     @Override
     protected void decode(ChannelHandlerContext ctx, DF1Command msg, List<Object> out) throws Exception {
         logger.trace("Received DF1 Command incoming {}", msg);
-        // TODO fetch right transaction id from msg
         int transactionId = msg.getTransactionCounter();
         if (!requests.containsKey(transactionId)) {
             logger.warn("Received a response to unknown transaction id {}", transactionId);
@@ -104,9 +111,10 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Command, PlcRe
             final String fieldName = ((PlcReadRequest) request).getFieldNames().iterator().next();
             // TODO can there be another code than ok?
             final PlcResponseCode responseCode = PlcResponseCode.OK;
+            // TODO maybe check for different status bytes
             final Df1Field field = (Df1Field) ((PlcReadRequest) request).getField(fieldName);
             // Cast byte and create response item
-            final BaseDefaultFieldItem responseItem;
+            BaseDefaultFieldItem responseItem = null;
             short[] data = ((DF1UnprotectedReadResponse)msg).getData();
             switch (field.getDataType()) {
                 case BIT:

@@ -28,7 +28,7 @@ public class Df1Field implements PlcField {
     private final DataType dataType;
     private final addressType address_type;
 
-    public Df1Field(int address, int size, DataType dataType) {
+    public Df1Field(int address, int size, DataType dataType, addressType address_type) {
         this.address = address;
         this.size = size;
         this.dataType = dataType;
@@ -47,8 +47,10 @@ public class Df1Field implements PlcField {
         return dataType;
     }
 
+    public addressType getAddress_type() { return address_type; }
+
     public static PlcField of(String fieldQuery) {
-        return new Df1Field(11, 2, DataType.INTEGER);
+        return new Df1Field(11, 2, DataType.INTEGER, addressType.OFFSET);
     }
 
     public enum addressType {
