@@ -26,6 +26,7 @@ import io.netty.channel.nio.AbstractNioByteChannel;
 import io.netty.channel.nio.AbstractNioChannel;
 import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.socket.DuplexChannel;
+import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
     private boolean active = false;
     private SerialSelectionKey selectionKey;
     private SerialChannelHandler comPort;
+    private final DefaultChannelPipeline pipeline; // Copied from AbstractChannel
 
 
     public SerialChannel() {
@@ -74,6 +76,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
     protected SerialChannel(Channel parent, SelectableChannel ch) {
         super(parent, ch);
         config = new DefaultChannelConfig(this);
+        pipeline = newChannelPipeline();
     }
 
     @Override
@@ -490,9 +493,43 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             }
         }
 
+        /**
+         * Copied and adapted from {@link io.netty.channel.nio.AbstractNioChannel.AbstractNioUnsafe}
+         */
         @Override
         public void write(Object msg, ChannelPromise promise) {
-            throw new NotImplementedException("");
+            assert eventLoop().inEventLoop();
+
+            ChannelOutboundBuffer outboundBuffer = this.outboundBuffer;
+            if (outboundBuffer == null) {
+                // If the outboundBuffer is null we know the channel was closed and so
+                // need to fail the future right away. If it is not null the handling of the rest
+                // will be done in flush0()
+                // See https://github.com/netty/netty/issues/2362
+                close(voidPromise());
+                ReferenceCountUtil.release(msg);
+                throw new RuntimeException("Unable to write", initialCloseCause);
+            }
+
+            int size;
+            try {
+                msg = filterOutboundMessage(msg);
+                // Reflection due to privacy
+                Method estimatorHandle = DefaultChannelPipeline.class.getDeclaredMethod("estimatorHandle");
+                estimatorHandle.setAccessible(true);
+                MessageSizeEstimator.Handle handle = (MessageSizeEstimator.Handle) estimatorHandle.invoke(pipeline);
+                // end of reflection
+                size = handle.size(msg);
+                if (size < 0) {
+                    size = 0;
+                }
+            } catch (Throwable t) {
+                close(voidPromise());
+                ReferenceCountUtil.release(msg);
+                throw new RuntimeException("Problem during write", t);
+            }
+
+            outboundBuffer.addMessage(msg, size, promise);
         }
 
         //
