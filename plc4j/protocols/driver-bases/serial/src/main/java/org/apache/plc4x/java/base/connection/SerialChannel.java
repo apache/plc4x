@@ -135,6 +135,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         }
         // TODO Here we really read the bytes
         logger.debug("Trying to read bytes from wire...");
+        comPort.read(buf);
         buf.writeByte(0x01);
         return 1;
     }

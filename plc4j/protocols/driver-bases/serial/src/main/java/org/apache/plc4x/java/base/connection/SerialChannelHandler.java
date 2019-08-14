@@ -22,6 +22,7 @@ package org.apache.plc4x.java.base.connection;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
+import io.netty.buffer.ByteBuf;
 
 import java.net.SocketAddress;
 import java.nio.channels.SelectionKey;
@@ -51,6 +52,8 @@ public abstract class SerialChannelHandler {
 
     public abstract void close();
 
+    public abstract void read(ByteBuf buf);
+
     public static class DummyHandler extends SerialChannelHandler {
 
         public static final DummyHandler INSTANCE = new DummyHandler(null);
@@ -75,6 +78,11 @@ public abstract class SerialChannelHandler {
 
         @Override public void close() {
             // NOOP
+        }
+
+        @Override
+        public void read(ByteBuf buf) {
+            buf.writeByte(1);
         }
 
         public void fireEvent(int readyOp) {
@@ -118,6 +126,15 @@ public abstract class SerialChannelHandler {
 
         @Override public void close() {
             this.comPort.closePort();
+        }
+
+        @Override
+        public void read(ByteBuf buf) {
+            int bytesToRead = comPort.bytesAvailable();
+            assert bytesToRead > 0;
+            byte[] buffer = new byte[bytesToRead];
+            comPort.readBytes(buffer, bytesToRead);
+            buf.writeBytes(buffer);
         }
     }
 }
