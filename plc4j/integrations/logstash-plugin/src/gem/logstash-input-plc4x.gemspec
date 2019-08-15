@@ -19,7 +19,7 @@
 
 Gem::Specification.new do |s|
   s.name            = '${project.artifactId}'
-  s.version         = ${project.version}
+  s.version         = '${project.version}'
   s.licenses        = ['Apache-2.0']
   s.summary         = "${project.name}"
   s.description     = "${project.description}"
