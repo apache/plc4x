@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class JavaInputExampleTest {
+public class Plc4xInputTest {
 
     @Test
     @Ignore
-    public void testJavaInputExample() {
+    public void testPlc4xInput() {
         String prefix = "This is message";
         long eventCount = 5;
         Map<String, Object> configValues = new HashMap<>();
