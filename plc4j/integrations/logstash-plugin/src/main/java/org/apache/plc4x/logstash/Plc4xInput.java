@@ -6,11 +6,17 @@ import co.elastic.logstash.api.Input;
 import co.elastic.logstash.api.LogstashPlugin;
 import co.elastic.logstash.api.PluginConfigSpec;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
@@ -18,24 +24,23 @@ import java.util.function.Consumer;
 @LogstashPlugin(name="plc4x_input")
 public class Plc4xInput implements Input {
 
-    public static final PluginConfigSpec<Long> EVENT_COUNT_CONFIG =
-            PluginConfigSpec.numSetting("count", 3);
+    public static final PluginConfigSpec<Map<String, Object>> FIELDS_CONFIG =
+            PluginConfigSpec.hashSetting("fields");
 
-    public static final PluginConfigSpec<String> PREFIX_CONFIG =
-            PluginConfigSpec.stringSetting("prefix", "message");
+    public static final PluginConfigSpec<String> CONNECTION_STRING_CONFIG =
+            PluginConfigSpec.requiredStringSetting("connection_string");
+    private final String connectionString;
+    private final Map<String, Object> fields;
 
     private String id;
-    private long count;
-    private String prefix;
-    private final CountDownLatch done = new CountDownLatch(1);
-    private volatile boolean stopped;
+    private PlcConnection plcConnection;
 
     // all plugins must provide a constructor that accepts id, Configuration, and Context
     public Plc4xInput(String id, Configuration config, Context context) {
         // constructors should validate configuration options
         this.id = id;
-        count = config.get(EVENT_COUNT_CONFIG);
-        prefix = config.get(PREFIX_CONFIG);
+        fields = config.get(FIELDS_CONFIG);
+        connectionString = config.get(CONNECTION_STRING_CONFIG);
     }
 
     @Override
@@ -49,17 +54,28 @@ public class Plc4xInput implements Input {
         // events should loop indefinitely until they receive a stop request. Inputs that produce
         // a finite sequence of events should loop until that sequence is exhausted or until they
         // receive a stop request, whichever comes first.
+        // Establish a connection to the plc using the url provided as first argument
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
 
-        int eventCount = 0;
-        try {
-            while (!stopped && eventCount < count) {
-                eventCount++;
-                consumer.accept(Collections.singletonMap("message",
-                        prefix + " " + StringUtils.center(eventCount + " of " + count, 20)));
+            // Check if this connection support reading of data.
+            if (!plcConnection.getMetadata().canRead()) {
+                System.err.println("This connection doesn't support reading.");
+                return;
             }
-        } finally {
-            stopped = true;
-            done.countDown();
+
+            // Create a new read request:
+            PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+            for (String key: fields.keySet()
+                 ) {
+                builder.addItem(key, fields.get(key).toString());
+            }
+            PlcReadRequest readRequest = builder.build();
+
+            PlcReadResponse syncResponse = readRequest.execute().get();
+        } catch (PlcConnectionException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -76,7 +92,7 @@ public class Plc4xInput implements Input {
     @Override
     public Collection<PluginConfigSpec<?>> configSchema() {
         // should return a list of all configuration options for this plugin
-        return Arrays.asList(EVENT_COUNT_CONFIG, PREFIX_CONFIG);
+        return Arrays.asList(FIELDS_CONFIG, CONNECTION_STRING_CONFIG);
     }
 
     @Override
