@@ -39,6 +39,7 @@
     <module>apache-nifi</module>
     <module>apache-karaf</module>
     <module>apache-calcite</module>
+    <module>logstash-plugin</module>
   </modules>
 
 </project>
