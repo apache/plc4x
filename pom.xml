@@ -143,6 +143,7 @@
     <junit.version>4.12</junit.version>
     <log4j.version>2.11.1</log4j.version>
     <logback.version>1.2.3</logback.version>
+    <logstash.version>7.3.0</logstash.version>
     <lucene.version>8.0.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.24.5</mockito.version>
@@ -1547,6 +1548,7 @@
         <thrift.configure.executable>./configure</thrift.configure.executable>
         <thrift.make.executable>make</thrift.make.executable>
         <thrift.compiler.executable>thrift</thrift.compiler.executable>
+        <gradlew.executable>./gradlew</gradlew.executable>
       </properties>
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
@@ -1571,6 +1573,7 @@
         <thrift.configure.executable>./configure</thrift.configure.executable>
         <thrift.make.executable>make</thrift.make.executable>
         <thrift.compiler.executable>thrift</thrift.compiler.executable>
+        <gradlew.executable>./gradlew</gradlew.executable>
       </properties>
     </profile>
     <!-- profile for windows (Self-Enabling) -->
@@ -1596,6 +1599,7 @@
         <thrift.configure.executable>configure</thrift.configure.executable>
         <thrift.make.executable>make</thrift.make.executable>
         <thrift.compiler.executable>thrift.exe</thrift.compiler.executable>
+        <gradlew.executable>gradlew.bat</gradlew.executable>
       </properties>
     </profile>
 
