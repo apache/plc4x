@@ -35,33 +35,14 @@
 
   <build>
     <plugins>
-      <!-- Create a fat-jar containing all the dependencies -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>assemble-all</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Prepare the gemspec file containing the project information -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
-            <id>build-gem</id>
-            <phase>pre-integration-test</phase>
+            <id>generate-gem-resources</id>
+            <phase>generate-resources</phase>
             <goals>
               <goal>resources</goal>
             </goals>
@@ -73,6 +54,54 @@
                   <targetPath>${project.build.directory}/gem</targetPath>
                 </resource>
               </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Create a fat-jar containing all the dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>assemble-all</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <outputDirectory>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${project.version}</outputDirectory>
+              <finalName>logstash-input-plc4x-${project.version}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              <attach>false</attach>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <classesDirectory>${project.build.directory}/gem</classesDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.coderplus.maven.plugins</groupId>
+        <artifactId>copy-rename-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <id>rename-file</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>rename</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
+              <destinationFile>${project.artifactId}-${project.version}.gem</destinationFile>
             </configuration>
           </execution>
         </executions>
