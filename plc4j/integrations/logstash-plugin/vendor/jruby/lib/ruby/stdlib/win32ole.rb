@@ -1,1 +1,0 @@
-require 'jruby/win32ole/stub'

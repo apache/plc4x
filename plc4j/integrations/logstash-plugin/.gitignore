@@ -78,8 +78,12 @@ hs_err_pid*
 
 .idea
 
-.gradle
-/build/
+.gradle/
+build/
+vendor/
+lib/
+
+*.gemspec
 
 # Ignore Gradle GUI config
 gradle-app.setting

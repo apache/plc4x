@@ -1,1 +1,0 @@
-# this file is provided for backward-compatibility with code that does `require "java"`
