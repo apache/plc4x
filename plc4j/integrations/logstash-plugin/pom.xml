@@ -96,6 +96,7 @@
               <arguments>
                 <argument>build</argument>
                 <argument>gem/logstash-input-plc4x.gemspec</argument>
+                <argument>--output=${project.artifactId}-${project.version}.gem</argument>
               </arguments>
               <workingDirectory>${project.build.directory}</workingDirectory>
             </configuration>
@@ -129,7 +130,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${project.build.directory}/plc4j-logstash-plugin-0.5.0.pre.SNAPSHOT.gem</file>
+                  <file>${project.build.directory}/${project.artifactId}-${project.version}.gem</file>
                   <type>gem</type>
                 </artifact>
               </artifacts>
