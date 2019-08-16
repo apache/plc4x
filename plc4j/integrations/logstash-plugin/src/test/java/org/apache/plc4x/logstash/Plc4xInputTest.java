@@ -20,7 +20,6 @@ package org.apache.plc4x.logstash;
 
 import co.elastic.logstash.api.Configuration;
 import org.apache.plc4x.logstash.configuration.Job;
-import org.apache.plc4x.logstash.configuration.Source;
 import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.logstash.plugins.ConfigurationImpl;
@@ -35,9 +34,8 @@ public class Plc4xInputTest {
         Map<String, Object> configValues = new HashMap<>();
 
         Job job1 = new Job(300, Arrays.asList("testfield=RANDOM/foo:INTEGER"), Arrays.asList("TestConnection"));
-        Source testConnection = new Source("test:hurzpurzfurz", "TestConnection");
 
-        configValues.put(Plc4xInput.SOURCE_CONFIG.name(), Maps.newHashMap(testConnection.getSourceAlias(), testConnection));
+        configValues.put(Plc4xInput.SOURCE_CONFIG.name(), Maps.newHashMap("TestConnection", "test:hurzpurzfurz"));
         configValues.put(Plc4xInput.JOB_CONFIG.name(),  Maps.newHashMap("job1", job1));
 
 

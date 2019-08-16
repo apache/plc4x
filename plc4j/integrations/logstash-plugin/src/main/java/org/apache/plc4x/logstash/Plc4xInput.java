@@ -30,7 +30,6 @@ import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.T
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.apache.plc4x.logstash.configuration.Job;
-import org.apache.plc4x.logstash.configuration.Source;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -83,7 +82,7 @@ public class Plc4xInput implements Input {
 
         for (String sourceName : sources.keySet()) {
             //TODO: check !
-            builder.addSource(sourceName, ((Source) sources.get(sourceName)).getConnectionUri());
+            builder.addSource(sourceName, ((String) sources.get(sourceName)));
         }
 
         for (String jobName : jobs.keySet()) {
@@ -97,7 +96,7 @@ public class Plc4xInput implements Input {
                 String[] fieldSegments = query.split("=");
                 if(fieldSegments.length != 2) {
                     System.err.println(String.format("Error in job configuration '%s'. " +
-                            "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
+                            "The field segment expects a format {field-alias}={field-address}, but got '%s'",
                         jobName, query));
                     continue;
                 }
