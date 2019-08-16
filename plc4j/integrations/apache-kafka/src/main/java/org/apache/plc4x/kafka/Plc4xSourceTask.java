@@ -127,7 +127,7 @@ public class Plc4xSourceTask extends SourceTask {
             JobConfigurationTriggeredImplBuilder jobBuilder = builder.job(
                 jobName, String.format("(SCHEDULED,%s)", rate)).source(connectionName);
             for(int i = 3; i < jobConfigSegments.length; i++) {
-                String[] fieldSegments = jobConfigSegments[i].split("=");
+                String[] fieldSegments = jobConfigSegments[i].split("#");
                 if(fieldSegments.length != 2) {
                     log.warn(String.format("Error in job configuration '%s'. " +
                             "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
@@ -139,6 +139,7 @@ public class Plc4xSourceTask extends SourceTask {
                 jobBuilder.field(fieldAlias, fieldAddress);
                 topics.put(jobName, topic);
             }
+            jobBuilder.build();
         }
 
         ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
