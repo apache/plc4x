@@ -29,6 +29,8 @@ import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.logstash.configuration.Job;
+import org.apache.plc4x.logstash.configuration.Source;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,13 +43,13 @@ import java.util.function.Consumer;
 @LogstashPlugin(name="plc4x_input")
 public class Plc4xInput implements Input {
 
-    public static final PluginConfigSpec<List<Object>> QUERY_CONFIG =
-            PluginConfigSpec.arraySetting("queries");
+    public static final PluginConfigSpec<Map<String, Object>> JOB_CONFIG =
+            PluginConfigSpec.hashSetting("jobs");
 
-    public static final PluginConfigSpec<String> CONNECTION_STRING_CONFIG =
-            PluginConfigSpec.requiredStringSetting("connection_string");
-    private final String connectionString;
-    private final List<Object> queries;
+    public static final PluginConfigSpec<Map<String, Object>> SOURCE_CONFIG =
+            PluginConfigSpec.hashSetting("sources");
+    private final Map<String, Object> sources;
+    private final Map<String, Object> jobs;
 
     private String id;
     private PlcDriverManager plcDriverManager;
@@ -60,8 +62,8 @@ public class Plc4xInput implements Input {
     public Plc4xInput(String id, Configuration config, Context context) {
         // constructors should validate configuration options
         this.id = id;
-        queries = config.get(QUERY_CONFIG);
-        connectionString = config.get(CONNECTION_STRING_CONFIG);
+        jobs = config.get(JOB_CONFIG);
+        sources = config.get(SOURCE_CONFIG);
     }
 
     @Override
@@ -78,42 +80,32 @@ public class Plc4xInput implements Input {
         // Establish a connection to the plc using the url provided as first argument
         ScraperConfigurationTriggeredImplBuilder builder = new ScraperConfigurationTriggeredImplBuilder();
         //TODO: use multiple sources:
-        String connectionName = "connection1";
-        builder.addSource(connectionName, connectionString);
 
-        List<Object> jobConfigs = queries;
+        for (String sourceName : sources.keySet()) {
+            //TODO: check !
+            builder.addSource(sourceName, ((Source) sources.get(sourceName)).getConnectionUri());
+        }
 
-        for (Object jobConfig : jobConfigs) {
-            if (!(jobConfig instanceof String)){
-                System.err.println("Query String is not String!");
-                continue;
-            }
-            String config = (String) jobConfig;
-            String[] jobConfigSegments = config.split(":");
-            if(jobConfigSegments.length < 4) {
-                //TODO: use logging from logstash
-                System.out.println(String.format("Error in job configuration '%s'. " +
-                    "The configuration expects at least 4 segments: " +
-                    "{job-name}:{rate}(:{field-alias}#{field-address})+", jobConfig));
-                continue;
-            }
-
-            String jobName = jobConfigSegments[0];
-            Integer rate = Integer.valueOf(jobConfigSegments[1]);
+        for (String jobName : jobs.keySet()) {
+            Job job = ((Job) jobs.get(jobName));
             JobConfigurationTriggeredImplBuilder jobBuilder = builder.job(
-                jobName, String.format("(SCHEDULED,%s)", rate)).source(connectionName);
-            for(int i = 3; i < jobConfigSegments.length; i++) {
-                String[] fieldSegments = jobConfigSegments[i].split("=");
+                jobName, String.format("(SCHEDULED,%s)", job.getRate()));
+            for (String source : job.getSources()) {
+                jobBuilder.source(source);
+            }
+            for (String query : job.getQueries()) {
+                String[] fieldSegments = query.split("=");
                 if(fieldSegments.length != 2) {
                     System.err.println(String.format("Error in job configuration '%s'. " +
                             "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
-                        jobName, jobConfigSegments[i]));
+                        jobName, query));
                     continue;
                 }
                 String fieldAlias = fieldSegments[0];
                 String fieldAddress = fieldSegments[1];
                 jobBuilder.field(fieldAlias, fieldAddress);
             }
+            jobBuilder.build();
         }
 
         ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
@@ -148,7 +140,7 @@ public class Plc4xInput implements Input {
     @Override
     public Collection<PluginConfigSpec<?>> configSchema() {
         // should return a list of all configuration options for this plugin
-        return Arrays.asList(QUERY_CONFIG, CONNECTION_STRING_CONFIG);
+        return Arrays.asList(JOB_CONFIG, SOURCE_CONFIG);
     }
 
     @Override
