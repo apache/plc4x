@@ -113,11 +113,11 @@ public class Plc4xSourceTask extends SourceTask {
 
         List<String> jobConfigs = config.getList(QUERIES_CONFIG);
         for (String jobConfig : jobConfigs) {
-            String[] jobConfigSegments = jobConfig.split(":");
+            String[] jobConfigSegments = jobConfig.split("\\|");
             if(jobConfigSegments.length < 4) {
                 log.warn(String.format("Error in job configuration '%s'. " +
                     "The configuration expects at least 4 segments: " +
-                    "{job-name}:{topic}:{rate}(:{field-alias}#{field-address})+", jobConfig));
+                    "{job-name}|{topic}|{rate}(|{field-alias}#{field-address})+", jobConfig));
                 continue;
             }
 
