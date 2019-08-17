@@ -83,12 +83,12 @@ public class Plc4xSourceConnector extends SourceConnector {
                 if(job == null) {
                     log.warn(String.format("Couldn't find referenced job '%s'", jobReference.getName()));
                 } else if(jobReference.isEnabled()) {
-                    query.append(",").append(jobReference.getName()).append(":").append(jobReference.getTopic());
-                    query.append(":").append(job.getInterval());
+                    query.append(",").append(jobReference.getName()).append("|").append(jobReference.getTopic());
+                    query.append("|").append(job.getInterval());
                     for (Map.Entry<String, String> field : job.getFields().entrySet()) {
                         String fieldName = field.getKey();
                         String fieldAddress = field.getValue();
-                        query.append(":").append(fieldName).append("#").append(fieldAddress);
+                        query.append("|").append(fieldName).append("#").append(fieldAddress);
                     }
                 }
             }
