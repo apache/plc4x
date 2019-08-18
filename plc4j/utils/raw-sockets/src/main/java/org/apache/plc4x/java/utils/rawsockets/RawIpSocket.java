@@ -22,7 +22,6 @@ import org.pcap4j.packet.namednumber.*;
 import org.pcap4j.util.ByteArrays;
 import org.pcap4j.util.LinkLayerAddress;
 import org.pcap4j.util.MacAddress;
-import org.pcap4j.util.NifSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

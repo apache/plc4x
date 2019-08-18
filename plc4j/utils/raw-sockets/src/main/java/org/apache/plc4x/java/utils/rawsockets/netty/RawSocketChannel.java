@@ -21,7 +21,6 @@ package org.apache.plc4x.java.utils.rawsockets.netty;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioByteStreamChannel;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.utils.rawsockets.RawIpSocket;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
