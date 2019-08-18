@@ -19,19 +19,34 @@ under the License.
 package org.apache.plc4x.java.utils.rawsockets.netty;
 
 import io.netty.channel.*;
+import io.netty.channel.oio.OioByteStreamChannel;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.utils.rawsockets.RawIpSocket;
+import org.pcap4j.core.PcapHandle;
+import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
 
 import java.net.SocketAddress;
 
-public class RawSocketChannel extends AbstractChannel {
+public class RawSocketChannel extends OioByteStreamChannel {
 
     private static final ChannelMetadata METADATA = new ChannelMetadata(false, 16);
+
+    PcapHandle handle;
 
     protected class RawByteUnsafe extends AbstractChannel.AbstractUnsafe {
         @Override
         public void connect(SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) {
-            //getPipeline()
-            promise.setSuccess();
+            // Connect?!
+            try {
+                doConnect(remoteAddress, localAddress);
+                pipeline().fireChannelActive();
+                promise.setSuccess();
+            } catch (Exception e) {
+                promise.setFailure(e);
+            }
         }
+
     }
 
     public RawSocketChannel() {
@@ -46,6 +61,12 @@ public class RawSocketChannel extends AbstractChannel {
     @Override
     protected boolean isCompatible(EventLoop loop) {
         return true;
+    }
+
+    @Override
+    protected void doConnect(SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
+        PcapNetworkInterface nif = Pcaps.findAllDevs().get(0);
+        this.handle = nif.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
     }
 
     @Override
@@ -65,17 +86,19 @@ public class RawSocketChannel extends AbstractChannel {
 
     @Override
     protected void doDisconnect() throws Exception {
-        System.out.println("disconnect");
+        throw new NotImplementedException("");
     }
 
     @Override
     protected void doClose() throws Exception {
-        System.out.println("close");
+        if (this.handle != null) {
+            this.handle.close();
+        }
     }
 
     @Override
     protected void doBeginRead() throws Exception {
-        System.out.println("beginRead");
+        this.handle.getNextRawPacketEx();
     }
 
     @Override
@@ -101,6 +124,16 @@ public class RawSocketChannel extends AbstractChannel {
     @Override
     public ChannelMetadata metadata() {
         return METADATA;
+    }
+
+    @Override
+    protected boolean isInputShutdown() {
+        return false;
+    }
+
+    @Override
+    protected ChannelFuture shutdownInput() {
+        return null;
     }
 
 }
