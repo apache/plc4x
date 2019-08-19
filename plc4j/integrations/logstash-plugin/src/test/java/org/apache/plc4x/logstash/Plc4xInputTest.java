@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.logstash;
 
 import co.elastic.logstash.api.Configuration;
-import org.apache.plc4x.logstash.configuration.Job;
 import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.logstash.plugins.ConfigurationImpl;
@@ -32,11 +31,17 @@ public class Plc4xInputTest {
     @Test
     public void testPlc4xInput() {
         Map<String, Object> configValues = new HashMap<>();
+        Map<String, Object> jobValues = new HashMap<>();
 
-        Job job1 = new Job(300, Arrays.asList("testfield=RANDOM/foo:INTEGER"), Arrays.asList("TestConnection"));
+        List<String> queries = Arrays.asList("testfield=RANDOM/foo:INTEGER");
+        List<String> sources = Arrays.asList("TestConnection");
+
+        jobValues.put("rate", 300);
+        jobValues.put("queries", queries);
+        jobValues.put("sources", sources);
 
         configValues.put(Plc4xInput.SOURCE_CONFIG.name(), Maps.newHashMap("TestConnection", "test:hurzpurzfurz"));
-        configValues.put(Plc4xInput.JOB_CONFIG.name(),  Maps.newHashMap("job1", job1));
+        configValues.put(Plc4xInput.JOB_CONFIG.name(),  Maps.newHashMap("job1", jobValues));
 
 
         Configuration config = new ConfigurationImpl(configValues);

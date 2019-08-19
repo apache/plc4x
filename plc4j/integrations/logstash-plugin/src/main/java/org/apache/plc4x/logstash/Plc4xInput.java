@@ -29,7 +29,6 @@ import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
-import org.apache.plc4x.logstash.configuration.Job;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -86,25 +85,30 @@ public class Plc4xInput implements Input {
         }
 
         for (String jobName : jobs.keySet()) {
-            Job job = ((Job) jobs.get(jobName));
-            JobConfigurationTriggeredImplBuilder jobBuilder = builder.job(
-                jobName, String.format("(SCHEDULED,%s)", job.getRate()));
-            for (String source : job.getSources()) {
-                jobBuilder.source(source);
-            }
-            for (String query : job.getQueries()) {
-                String[] fieldSegments = query.split("=");
-                if(fieldSegments.length != 2) {
-                    System.err.println(String.format("Error in job configuration '%s'. " +
-                            "The field segment expects a format {field-alias}={field-address}, but got '%s'",
-                        jobName, query));
-                    continue;
+            Object o = jobs.get(jobName);
+            if (o instanceof  Map) {
+                Map job = (Map<String, Object>) o;
+                JobConfigurationTriggeredImplBuilder jobBuilder = builder.job(
+                    jobName, String.format("(SCHEDULED,%s)", job.get("rate")));
+                for (String source : ((List<String>) job.get("sources"))) {
+                    jobBuilder.source(source);
                 }
-                String fieldAlias = fieldSegments[0];
-                String fieldAddress = fieldSegments[1];
-                jobBuilder.field(fieldAlias, fieldAddress);
+                for (String query : ((List<String>) job.get("queries"))) {
+                    String[] fieldSegments = query.split("=");
+                    if (fieldSegments.length != 2) {
+                        System.err.println(String.format("Error in job configuration '%s'. " +
+                                "The field segment expects a format {field-alias}={field-address}, but got '%s'",
+                            jobName, query));
+                        continue;
+                    }
+                    String fieldAlias = fieldSegments[0];
+                    String fieldAddress = fieldSegments[1];
+                    jobBuilder.field(fieldAlias, fieldAddress);
+                }
+                jobBuilder.build();
+            } else {
+                System.err.println("Jobs of wrong Type!");
             }
-            jobBuilder.build();
         }
 
         ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
