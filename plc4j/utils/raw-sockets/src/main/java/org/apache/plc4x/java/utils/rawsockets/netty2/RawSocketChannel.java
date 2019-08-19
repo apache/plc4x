@@ -26,6 +26,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.oio.OioByteStreamChannel;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.utils.rawsockets.RawSocketException;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannelConfig;
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PacketListener;
@@ -42,7 +44,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * TODO write comment
@@ -77,8 +78,26 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
     @Override
     protected void doConnect(SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
+        if(!(remoteAddress instanceof RawSocketAddress)) {
+            logger.error("Expecting remote address of type RawSocketAddress");
+            pipeline().fireExceptionCaught(new RawSocketException("Expecting remote address of type RawSocketAddress"));
+            return;
+        }
+        RawSocketAddress rawSocketAddress = (RawSocketAddress) remoteAddress;
+        // If no device name was provided, try to find out which device would be able
+        // to connect to the given hostname.
+        if(rawSocketAddress.getDeviceName() == null) {
+            if(rawSocketAddress.getHostName() == null) {
+                logger.error("At least one of 'device name' or 'host name' has to be set.");
+                pipeline().fireExceptionCaught(new RawSocketException(
+                    "At least one of 'device name' or 'host name' has to be set."));
+                return;
+            }
+            // TODO: Implement this ...
+        }
+
         logger.debug("Connecting...");
-        nif = Pcaps.getDevByName("en0");
+        nif = Pcaps.getDevByName(rawSocketAddress.getDeviceName());
         handle = nif.openLive(65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
         buffer = Unpooled.buffer();
         // Start loop in another Thread

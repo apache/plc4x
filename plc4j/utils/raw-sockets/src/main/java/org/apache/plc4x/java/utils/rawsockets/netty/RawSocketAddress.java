@@ -22,15 +22,29 @@ import java.net.SocketAddress;
 
 public class RawSocketAddress extends SocketAddress {
     private static final long serialVersionUID = 1L;
-    
+
+    private String deviceName;
+
     private String hostName;
 
-    public RawSocketAddress(String hostName) {
+    private int port;
+
+    public RawSocketAddress(String deviceName, String hostName, int port) {
+        this.deviceName = deviceName;
         this.hostName = hostName;
+        this.port = port;
     }
 
-    String getHostName() {
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public String getHostName() {
         return hostName;
+    }
+
+    public int getPort() {
+        return port;
     }
 
 }
