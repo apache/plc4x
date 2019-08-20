@@ -38,7 +38,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
 // class name must match plugin name
-@LogstashPlugin(name="plc4x_input")
+@LogstashPlugin(name="plc4x")
 public class Plc4xInput implements Input {
 
     public static final PluginConfigSpec<Map<String, Object>> JOB_CONFIG =

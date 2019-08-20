@@ -19,7 +19,7 @@
 
 require "logstash/inputs/base"
 require "logstash/namespace"
-require "logstash-input-java_input_example_jars"
+require "logstash-input-plc4x_jars"
 require "java"
 
 class LogStash::Inputs::Plc4xInput < LogStash::Inputs::Base

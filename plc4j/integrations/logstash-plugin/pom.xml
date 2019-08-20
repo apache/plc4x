@@ -130,7 +130,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${project.build.directory}/${project.artifactId}-${project.version}.gem</file>
+                  <file>${project.build.directory}/gem/${project.artifactId}-${project.version}.gem</file>
                   <type>gem</type>
                 </artifact>
               </artifacts>
@@ -167,10 +167,6 @@
       <artifactId>plc4j-driver-simulated</artifactId>
       <version>0.5.0-SNAPSHOT</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
     </dependency>
   </dependencies>
 

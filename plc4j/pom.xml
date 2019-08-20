@@ -252,6 +252,7 @@
                 <ignoredDependency>org.codehaus.groovy:groovy-test-junit5</ignoredDependency>
                 <ignoredDependency>org.codehaus.groovy:groovy</ignoredDependency>
                 <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
+                <ignoredDependency>org.apache.plc4x:plc4j-driver-simulated</ignoredDependency>
               </ignoredDependencies>
             </configuration>
           </execution>
