@@ -19,39 +19,38 @@ under the License.
 package org.apache.plc4x.logstash;
 
 import co.elastic.logstash.api.Configuration;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.assertj.core.util.Maps;
+import org.junit.jupiter.api.Test;
 import org.logstash.plugins.ConfigurationImpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Plc4xInputTest {
 
     @Test
-    @Ignore
     public void testPlc4xInput() {
-        String prefix = "This is message";
-        long eventCount = 5;
         Map<String, Object> configValues = new HashMap<>();
-//        configValues.put(Plc4xInput.PREFIX_CONFIG.name(), prefix);
-//        configValues.put(Plc4xInput.EVENT_COUNT_CONFIG.name(), eventCount);
+        Map<String, Object> jobValues = new HashMap<>();
+
+        List<String> queries = Arrays.asList("testfield=RANDOM/foo:INTEGER");
+        List<String> sources = Arrays.asList("TestConnection");
+
+        jobValues.put("rate", 300);
+        jobValues.put("queries", queries);
+        jobValues.put("sources", sources);
+
+        configValues.put(Plc4xInput.SOURCE_CONFIG.name(), Maps.newHashMap("TestConnection", "test:hurzpurzfurz"));
+        configValues.put(Plc4xInput.JOB_CONFIG.name(),  Maps.newHashMap("job1", jobValues));
+
+
         Configuration config = new ConfigurationImpl(configValues);
         Plc4xInput input = new Plc4xInput("test-id", config, null);
         TestConsumer testConsumer = new TestConsumer();
         input.start(testConsumer);
 
         List<Map<String, Object>> events = testConsumer.getEvents();
-        Assert.assertEquals(eventCount, events.size());
-        for (int k = 1; k <= events.size(); k++) {
-            Assert.assertEquals(prefix + " " + StringUtils.center(k + " of " + eventCount, 20),
-                    events.get(k - 1).get("message"));
-        }
+        System.out.println(events.size());
     }
 
     private static class TestConsumer implements Consumer<Map<String, Object>> {

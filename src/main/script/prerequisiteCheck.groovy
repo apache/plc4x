@@ -146,6 +146,22 @@ def checkGpp() {
     }
 }
 
+def checkGem() {
+    print "Detecting Gem version:    "
+    def output = "gem --version".execute().text
+    Matcher matcher = extractVersion(output)
+    if(matcher.size() > 0) {
+        def curVersion = matcher[0][1]
+        def result = checkVersionAtLeast(curVersion, "3.0.0")
+        if(!result) {
+            allConditionsMet = false
+        }
+    } else {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
 def checkPython() {
     print "Detecting Python version: "
     def process = ("python --version").execute()
@@ -241,6 +257,7 @@ def javaEnabled = false
 def pythonEnabled = false
 def proxiesEnabled = false
 def sandboxEnabled = false
+def logstashEnabled = false
 def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
     if(activeProfile == "with-boost") {
@@ -264,6 +281,9 @@ for (def activeProfile : activeProfiles) {
     } else if(activeProfile == "with-sandbox") {
         sandboxEnabled = true
         println "sandbox"
+    } else if(activeProfile == "with-logstash") {
+        logstashEnabled = true
+        println "logstash"
     }
 }
 println ""
@@ -321,6 +341,10 @@ if(pythonEnabled) {
 // We only need this check, if boost is not enabled but we're enabling cpp.
 if(!boostEnabled && cppEnabled) {
     checkBoost()
+}
+
+if(javaEnabled && logstashEnabled) {
+    checkGem()
 }
 
 if(!allConditionsMet) {

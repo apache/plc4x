@@ -64,7 +64,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
-            <id>assemble-all</id>
+            <id>build-data-fragment</id>
             <phase>prepare-package</phase>
             <goals>
               <goal>single</goal>
@@ -82,26 +82,58 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <classesDirectory>${project.build.directory}/gem</classesDirectory>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.coderplus.maven.plugins</groupId>
-        <artifactId>copy-rename-maven-plugin</artifactId>
-        <version>1.0</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>rename-file</id>
-            <phase>generate-sources</phase>
+            <id>run-gem-build</id>
+            <phase>package</phase>
             <goals>
-              <goal>rename</goal>
+              <goal>exec</goal>
             </goals>
             <configuration>
-              <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-              <destinationFile>${project.artifactId}-${project.version}.gem</destinationFile>
+              <executable>gem</executable>
+              <arguments>
+                <argument>build</argument>
+                <argument>gem/logstash-input-plc4x.gemspec</argument>
+                <argument>--output=${project.artifactId}-${project.version}.gem</argument>
+              </arguments>
+              <workingDirectory>${project.build.directory}</workingDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <phase>none</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>attach-gem</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/${project.artifactId}-${project.version}.gem</file>
+                  <type>gem</type>
+                </artifact>
+              </artifacts>
             </configuration>
           </execution>
         </executions>
@@ -117,6 +149,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-connection-pool</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
       <version>0.5.0-SNAPSHOT</version>
     </dependency>
@@ -124,6 +161,16 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-tools-logstash-core</artifactId>
       <version>${project.version}-${logstash.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-simulated</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
   </dependencies>
 
