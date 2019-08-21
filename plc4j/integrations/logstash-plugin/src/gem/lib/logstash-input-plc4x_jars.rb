@@ -18,4 +18,5 @@
 # ----------------------------------------------------------------------------
 
 require 'jar_dependencies'
+# TODO replace 0.5.0 with version
 require_jar('${project.groupId}', 'logstash-input-plc4x', '0.5.0')

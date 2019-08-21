@@ -22,8 +22,8 @@ require 'logstash/namespace'
 require 'logstash-input-plc4x_jars'
 require 'java'
 
-class LogStash::Inputs::Plc4xInput < LogStash::Inputs::Base
+class LogStash::Inputs::Plc4jLogstashPlugin < LogStash::Inputs::Base
   config_name 'plc4x'
 
-  def self.javaClass() org.apache.plc4x.logstash.Plc4xInput.java_class; end
+  def self.javaClass() Java::org.apache.plc4x.logstash.Plc4x.java_class; end
 end

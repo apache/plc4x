@@ -40,12 +40,12 @@ public class Plc4xInputTest {
         jobValues.put("queries", queries);
         jobValues.put("sources", sources);
 
-        configValues.put(Plc4xInput.SOURCE_CONFIG.name(), Maps.newHashMap("TestConnection", "test:hurzpurzfurz"));
-        configValues.put(Plc4xInput.JOB_CONFIG.name(),  Maps.newHashMap("job1", jobValues));
+        configValues.put(Plc4x.SOURCE_CONFIG.name(), Maps.newHashMap("TestConnection", "test:hurzpurzfurz"));
+        configValues.put(Plc4x.JOB_CONFIG.name(),  Maps.newHashMap("job1", jobValues));
 
 
         Configuration config = new ConfigurationImpl(configValues);
-        Plc4xInput input = new Plc4xInput("test-id", config, null);
+        Plc4x input = new Plc4x("test-id", config, null);
         TestConsumer testConsumer = new TestConsumer();
         input.start(testConsumer);
 

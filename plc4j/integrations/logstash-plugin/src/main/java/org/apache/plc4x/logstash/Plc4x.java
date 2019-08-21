@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 
 // class name must match plugin name
 @LogstashPlugin(name="plc4x")
-public class Plc4xInput implements Input {
+public class Plc4x implements Input {
 
     public static final PluginConfigSpec<Map<String, Object>> JOB_CONFIG =
             PluginConfigSpec.hashSetting("jobs");
@@ -57,7 +57,7 @@ public class Plc4xInput implements Input {
     private final CountDownLatch done = new CountDownLatch(1);
 
     // all plugins must provide a constructor that accepts id, Configuration, and Context
-    public Plc4xInput(String id, Configuration config, Context context) {
+    public Plc4x(String id, Configuration config, Context context) {
         // constructors should validate configuration options
         this.id = id;
         jobs = config.get(JOB_CONFIG);
