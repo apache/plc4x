@@ -190,26 +190,19 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
     private String getFilter(RawSocketAddress rawSocketAddress) {
         StringBuilder sb = new StringBuilder();
-        if(rawSocketAddress.getProtocolId() != RawSocketAddress.ALL_PROTOCOLS) {
-            sb.append("ether proto ").append(rawSocketAddress.getProtocolId());
-        }
         if(rawSocketAddress instanceof RawSocketIpAddress) {
+            sb.append("(ether proto \\ip)");
             RawSocketIpAddress rawSocketIpAddress = (RawSocketIpAddress) rawSocketAddress;
             // Add a filter for source or target address.
             if(rawSocketIpAddress.getAddress() != null) {
-                if(sb.length() > 0) {
-                    sb.append(" and ");
-                }
-                sb.append("ip.addr == ").append(rawSocketIpAddress.getAddress().getHostAddress());
+                sb.append(" and (host ").append(rawSocketIpAddress.getAddress().getHostAddress()).append(")");
             }
             // Add a filter for TCP or UDP port.
             if(rawSocketIpAddress.getPort() != RawSocketIpAddress.ALL_PORTS) {
-                if(sb.length() > 0) {
-                    sb.append(" and ");
-                }
-                sb.append("((tcp and (tcp.port == ").append(rawSocketIpAddress.getPort()).append(
-                    ")) or (udp and (udp.port == ").append(rawSocketIpAddress.getPort()).append(")))");
+                sb.append(" and (port ").append(rawSocketIpAddress.getPort()).append(")");
             }
+        } else if(rawSocketAddress.getProtocolId() != RawSocketAddress.ALL_PROTOCOLS) {
+            sb.append("(ether proto ").append(rawSocketAddress.getProtocolId()).append(")");
         }
         return sb.toString();
     }
@@ -260,11 +253,6 @@ public class RawSocketChannel extends OioByteStreamChannel {
                 }
             }
             throw new SocketTimeoutException();
-        }
-
-        @Override
-        public int read(byte[] b, int off, int len) {
-            throw new UnsupportedOperationException("Not implemented");
         }
     }
 

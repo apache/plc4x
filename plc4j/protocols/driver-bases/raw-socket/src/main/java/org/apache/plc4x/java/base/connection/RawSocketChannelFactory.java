@@ -25,8 +25,8 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class RawSocketChannelFactory implements ChannelFactory {
             bootstrap.handler(channelHandler);
 
             // Start the client.
-            ChannelFuture f = bootstrap.connect(new RawSocketAddress(deviceName, address, port, protocolId)).sync();
+            ChannelFuture f = bootstrap.connect(new RawSocketIpAddress(deviceName, protocolId, address, port)).sync();
             f.addListener(new GenericFutureListener<Future<? super Void>>() {
                 @Override public void operationComplete(Future<? super Void> future) throws Exception {
                     if (!future.isSuccess()) {
