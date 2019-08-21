@@ -13,9 +13,10 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.utils.rawsockets;
+package org.apache.plc4x.java.utils.rawsockets.attic;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.plc4x.java.utils.rawsockets.RawSocketException;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.*;
@@ -287,7 +288,8 @@ public class RawIpSocket {
     }
 
     /**
-     * Iterate through all devices and find the first that would be able to connect to the given address.
+     * Iterate through all devices and find the first that would be able to connect to the given address
+     * because it's ip address and subnet mask would allow direct communication.
      *
      * @param remoteAddress address we want to connect to.
      * @return PcapNetworkInterface interface that should be able to connect to the given address.
@@ -295,15 +297,8 @@ public class RawIpSocket {
      */
     private FirstHop getFirstHop(InetAddress remoteAddress) throws RawSocketException {
         byte[] remoteIp = remoteAddress.getAddress();
+
         // Iterate over all network interfaces.
-
-
-//        try {
-//            new NifSelector().selectNetworkInterface().getLinkLayerAddresses();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         try {
             // First try if we can connect to the remote device directly.
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {

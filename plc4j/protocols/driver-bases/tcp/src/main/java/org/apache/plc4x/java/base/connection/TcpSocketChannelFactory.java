@@ -54,8 +54,9 @@ public class TcpSocketChannelFactory implements ChannelFactory {
     public Channel createChannel(ChannelHandler channelHandler)
         throws PlcConnectionException {
         try {
-            Bootstrap bootstrap = new Bootstrap();
             final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+
+            Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);

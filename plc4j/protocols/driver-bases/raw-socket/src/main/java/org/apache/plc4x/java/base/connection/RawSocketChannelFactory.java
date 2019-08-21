@@ -18,24 +18,33 @@ under the License.
 */
 package org.apache.plc4x.java.base.connection;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.*;
+import io.netty.channel.oio.OioEventLoopGroup;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 
 public class RawSocketChannelFactory implements ChannelFactory {
 
+    private static final Logger logger = LoggerFactory.getLogger(RawSocketChannelFactory.class);
+
     private static final int PING_TIMEOUT_MS = 1_000;
 
+    private final String deviceName;
     private final InetAddress address;
     private final int port;
     private final int protocolId;
 
-    public RawSocketChannelFactory(InetAddress address, int port, int protocolId) {
+    public RawSocketChannelFactory(String deviceName, InetAddress address, int port, int protocolId) {
+        this.deviceName = deviceName;
         this.address = address;
         this.port = port;
         this.protocolId = protocolId;
@@ -44,36 +53,46 @@ public class RawSocketChannelFactory implements ChannelFactory {
     @Override
     public Channel createChannel(ChannelHandler channelHandler)
         throws PlcConnectionException {
-        /*try {
+        try {
+            final EventLoopGroup workerGroup = new OioEventLoopGroup();
+
             Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(new NioEventLoopGroup());
+            bootstrap.group(workerGroup);
             bootstrap.channel(RawSocketChannel.class);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
             bootstrap.option(ChannelOption.TCP_NODELAY, true);
+            // TODO we should use an explicit (configurable?) timeout here
+            // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
             bootstrap.handler(channelHandler);
+
             // Start the client.
-            ChannelFuture f = bootstrap.connect(address).sync();
+            ChannelFuture f = bootstrap.connect(new RawSocketAddress(deviceName, address, port, protocolId)).sync();
+            f.addListener(new GenericFutureListener<Future<? super Void>>() {
+                @Override public void operationComplete(Future<? super Void> future) throws Exception {
+                    if (!future.isSuccess()) {
+                        logger.info("Unable to connect, shutting down worker thread.");
+                        workerGroup.shutdownGracefully();
+                    }
+                }
+            });
+            // Wait for sync
+            f.sync();
             f.awaitUninterruptibly();
             // Wait till the session is finished initializing.
             return f.channel();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException("Error creating channel.", e);
-        }*/
-        return null;
+        }
     }
 
     @Override
     public void ping() throws PlcException {
-        // TODO: Replace this check with a more accurate one ...
-        InetSocketAddress address = new InetSocketAddress(getAddress(), getPort());
-        try (Socket s = new Socket()) {
-            s.connect(address, PING_TIMEOUT_MS);
-            // TODO keep the address for a (timely) next request???
-            s.setReuseAddress(true);
-        } catch (Exception e) {
-            throw new PlcConnectionException("Unable to ping remote host");
-        }
+        // Raw-Sockets are absolutely passive, so there is nothing to do for a ping.
+    }
+
+    public String getDeviceName() {
+        return deviceName;
     }
 
     public InetAddress getAddress() {
@@ -82,6 +101,10 @@ public class RawSocketChannelFactory implements ChannelFactory {
 
     public int getPort() {
         return port;
+    }
+
+    public int getProtocolId() {
+        return protocolId;
     }
 
 }

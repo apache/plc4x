@@ -13,8 +13,9 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.utils.rawsockets;
+package org.apache.plc4x.java.utils.rawsockets.attic;
 
+import org.apache.plc4x.java.utils.rawsockets.RawSocketException;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.*;

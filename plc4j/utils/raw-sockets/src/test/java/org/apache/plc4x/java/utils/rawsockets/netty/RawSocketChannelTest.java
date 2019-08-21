@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.utils.rawsockets.netty2;
+package org.apache.plc4x.java.utils.rawsockets.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -25,14 +25,14 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
 import org.junit.Assert;
 import org.junit.Test;
-import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
 
 /**
  * TODO write comment
@@ -76,9 +76,11 @@ public class RawSocketChannelTest {
             });
             // Start the client.
             PcapNetworkInterface loopbackDevice = Pcaps.findAllDevs().stream().filter(
-                pcapNetworkInterface -> pcapNetworkInterface.isLoopBack()).findFirst().orElse(null);
+                PcapNetworkInterface::isLoopBack).findFirst().orElse(null);
             Assert.assertNotNull("Couldn't find loopback device", loopbackDevice);
-            final ChannelFuture f = bootstrap.connect(new RawSocketAddress(loopbackDevice.getName(), "127.0.0.1", 1234));
+            final ChannelFuture f = bootstrap.connect(
+                new RawSocketIpAddress(loopbackDevice.getName(), RawSocketAddress.ALL_PROTOCOLS,
+                    InetAddress.getByName("127.0.0.1"), 1234));
             // Wait for sync
             f.sync();
             // Wait till the session is finished initializing.
