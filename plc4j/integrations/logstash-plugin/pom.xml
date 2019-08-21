@@ -117,15 +117,15 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>jruby/jruby-${jruby.version}/bin/jruby</executable>
+              <executable>../jruby/jruby-${jruby.version}/bin/jruby</executable>
               <arguments>
                 <argument>-S</argument>
-                <argument>jruby/jruby-${jruby.version}/bin/gem</argument>
+                <argument>../jruby/jruby-${jruby.version}/bin/gem</argument>
                 <argument>build</argument>
-                <argument>gem/logstash-input-plc4x.gemspec</argument>
+                <argument>logstash-input-plc4x.gemspec</argument>
                 <!--argument>-output=${project.artifactId}-${project.version}.gem</argument-->
               </arguments>
-              <workingDirectory>${project.build.directory}</workingDirectory>
+              <workingDirectory>${project.build.directory}/gem</workingDirectory>
             </configuration>
           </execution>
         </executions>
