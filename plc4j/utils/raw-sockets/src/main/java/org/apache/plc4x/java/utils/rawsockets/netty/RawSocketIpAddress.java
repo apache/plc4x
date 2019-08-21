@@ -19,28 +19,28 @@ under the License.
 package org.apache.plc4x.java.utils.rawsockets.netty;
 
 import java.net.InetAddress;
-import java.net.SocketAddress;
 
-public class RawSocketAddress extends SocketAddress {
+public class RawSocketIpAddress extends RawSocketAddress {
     private static final long serialVersionUID = 1L;
 
-    public static final int ALL_PROTOCOLS = -1;
+    public static final int ALL_PORTS = -1;
 
-    private final String deviceName;
+    private final InetAddress address;
 
-    private final int protocolId;
+    private final int port;
 
-    public RawSocketAddress(String deviceName, int protocolId) {
-        this.deviceName = deviceName;
-        this.protocolId = protocolId;
+    public RawSocketIpAddress(String deviceName, int protocolId, InetAddress address, int port) {
+        super(deviceName, protocolId);
+        this.address = address;
+        this.port = port;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public InetAddress getAddress() {
+        return address;
     }
 
-    public int getProtocolId() {
-        return protocolId;
+    public int getPort() {
+        return port;
     }
 
 }
