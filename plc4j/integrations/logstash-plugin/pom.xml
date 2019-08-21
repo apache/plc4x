@@ -36,8 +36,10 @@
   <properties>
     <jruby.version>9.2.8.0</jruby.version>
   </properties>
+
   <build>
     <plugins>
+      <!-- Download and unpack jruby -->
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
@@ -59,7 +61,7 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Prepare the gemspec file containing the project information -->
+      <!-- Prepare all the resources the gem build needs -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -95,14 +97,15 @@
             </goals>
             <configuration>
               <descriptors>src/assembly/assembly.xml</descriptors>
-              <outputDirectory>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${project.version}</outputDirectory>
-              <finalName>logstash-input-plc4x-${project.version}</finalName>
+              <outputDirectory>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/0.5.0</outputDirectory>
+              <finalName>logstash-input-plc4x-0.5.0</finalName>
               <appendAssemblyId>false</appendAssemblyId>
               <attach>false</attach>
             </configuration>
           </execution>
         </executions>
       </plugin>
+      <!-- Execute the gem build using jruby -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>

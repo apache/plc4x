@@ -18,4 +18,4 @@
 # ----------------------------------------------------------------------------
 
 require 'jar_dependencies'
-require_jar('${project.groupId}', 'logstash-input-plc4x', '${project.version}')
+require_jar('${project.groupId}', 'logstash-input-plc4x', '0.5.0')
