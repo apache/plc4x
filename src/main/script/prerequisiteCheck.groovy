@@ -146,7 +146,7 @@ def checkGpp() {
     }
 }
 
-def checkGem() {
+/*def checkGem() {
     print "Detecting Gem version:    "
     def output = "gem --version".execute().text
     Matcher matcher = extractVersion(output)
@@ -160,7 +160,7 @@ def checkGem() {
         println "missing"
         allConditionsMet = false
     }
-}
+}*/
 
 def checkPython() {
     print "Detecting Python version: "
@@ -343,9 +343,9 @@ if(!boostEnabled && cppEnabled) {
     checkBoost()
 }
 
-if(javaEnabled && logstashEnabled) {
+/*if(javaEnabled && logstashEnabled) {
     checkGem()
-}
+}*/
 
 if(!allConditionsMet) {
     throw new RuntimeException("Not all conditions met, see log for details.")

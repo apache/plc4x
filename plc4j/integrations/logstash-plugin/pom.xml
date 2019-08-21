@@ -33,8 +33,32 @@
   <name>PLC4J: Integrations: Logstash plugin</name>
   <description>Integration module for integrating PLC4X into Elastic Logstash.</description>
 
+  <properties>
+    <jruby.version>9.2.8.0</jruby.version>
+  </properties>
   <build>
     <plugins>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.4.1</version>
+        <executions>
+          <execution>
+            <id>get-jruby</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://repo1.maven.org/maven2/org/jruby/jruby-dist/${jruby.version}/jruby-dist-${jruby.version}-bin.tar.gz</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/jruby</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Prepare the gemspec file containing the project information -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -92,11 +116,13 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>gem</executable>
+              <executable>jruby/jruby-${jruby.version}/bin/jruby</executable>
               <arguments>
+                <argument>-S</argument>
+                <argument>jruby/jruby-${jruby.version}/bin/gem</argument>
                 <argument>build</argument>
                 <argument>gem/logstash-input-plc4x.gemspec</argument>
-                <argument>--output=${project.artifactId}-${project.version}.gem</argument>
+                <!--argument>-output=${project.artifactId}-${project.version}.gem</argument-->
               </arguments>
               <workingDirectory>${project.build.directory}</workingDirectory>
             </configuration>
