@@ -114,7 +114,6 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <skip>true</skip>
               <executable>jruby/jruby-${jruby.version}/bin/jruby</executable>
               <arguments>
                 <argument>-S</argument>
