@@ -39,7 +39,45 @@
 
   <build>
     <plugins>
-      <!-- Download and unpack jruby -->
+      <!--
+        As ruby and gem seem to have problems wirh Maven SNAPSHOT versions,
+        calculate how the version would be without the "SNAPSHOT" prefix and
+        make this available in the property "current-full-version".
+      -->
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <id>provide-custom-properties</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>
+                // Calculate some version related stuff
+                def currentVersion = project.version as String
+                def match = (currentVersion =~ /(\d+)\.(\d+)\.(\d+)(-SNAPSHOT)?/)
+                print "\nCurrent version:                  " + currentVersion
+                if(match.count >= 1) {
+                  def majorVersion = match[0][1] as Integer
+                  def minorVersion = match[0][2] as Integer
+                  def bugfixVersion = match[0][3] as Integer
+
+                  def currentFullVersion = majorVersion + "." + minorVersion + "." + bugfixVersion
+
+                  print "\nCurrent full version:             " + currentFullVersion + " (current-full-version)"
+                  project.properties['current-full-version'] = currentFullVersion
+                }
+                print "\n"
+              </source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Download and unpack JRuby -->
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
@@ -97,15 +135,18 @@
             </goals>
             <configuration>
               <descriptors>src/assembly/assembly.xml</descriptors>
-              <outputDirectory>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/0.5.0</outputDirectory>
-              <finalName>logstash-input-plc4x-0.5.0</finalName>
+              <!-- Redirect the output to where gem will find it -->
+              <outputDirectory>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${current-full-version}</outputDirectory>
+              <!-- Ignore the error ... this variable is calculated in the "validate" phase -->
+              <finalName>logstash-input-plc4x-${current-full-version}</finalName>
               <appendAssemblyId>false</appendAssemblyId>
+              <!-- The output is just an intermediate file, so make sure it's not installed or deployed -->
               <attach>false</attach>
             </configuration>
           </execution>
         </executions>
       </plugin>
-      <!-- Execute the gem build using jruby -->
+      <!-- Execute the Gem build using JRuby -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -123,13 +164,13 @@
                 <argument>../jruby/jruby-${jruby.version}/bin/gem</argument>
                 <argument>build</argument>
                 <argument>logstash-input-plc4x.gemspec</argument>
-                <!--argument>-output=${project.artifactId}-${project.version}.gem</argument-->
               </arguments>
               <workingDirectory>${project.build.directory}/gem</workingDirectory>
             </configuration>
           </execution>
         </executions>
       </plugin>
+      <!-- JRuby and Gem will produce the output artifact, so lets skip the default exscution -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -143,7 +184,8 @@
           </execution>
         </executions>
       </plugin>
-      <!--plugin>
+      <!-- Manually tell maven to add the gem artifact built by JRuby and Gem -->
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>3.0.0</version>
@@ -157,14 +199,15 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${project.build.directory}/gem/${project.artifactId}-${project.version}.gem</file>
+                  <!-- Ignore the error ... this variable is calculated in the "validate" phase -->
+                  <file>${project.build.directory}/gem/${project.artifactId}-${current-full-version}.gem</file>
                   <type>gem</type>
                 </artifact>
               </artifacts>
             </configuration>
           </execution>
         </executions>
-      </plugin-->
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

@@ -17,13 +17,13 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
-require "logstash/inputs/base"
-require "logstash/namespace"
-require "logstash-input-plc4x_jars"
-require "java"
+require 'logstash/inputs/base'
+require 'logstash/namespace'
+require 'logstash-input-plc4x_jars'
+require 'java'
 
 class LogStash::Inputs::Plc4xInput < LogStash::Inputs::Base
-  config_name "plc4x"
+  config_name 'plc4x'
 
   def self.javaClass() org.apache.plc4x.logstash.Plc4xInput.java_class; end
 end
