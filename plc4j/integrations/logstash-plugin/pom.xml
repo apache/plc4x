@@ -208,6 +208,10 @@
           </execution>
         </executions>
       </plugin>
+      <!--
+        We are referencing libraries that are not directly used, we have to tell the dependency
+        plugin that they are used and it shouldn't complain and break the build.
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
