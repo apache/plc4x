@@ -16,13 +16,8 @@
  specific language governing permissions and limitations
  under the License.
  */
-
 package org.apache.plc4x.java.utils;
 
-public interface MessageIO<PARSER_TYPE, SERIALIZER_TYPE> {
-
-    PARSER_TYPE parse(ReadBuffer io, Object... args) throws ParseException;
-
-    void serialize(WriteBuffer io, SERIALIZER_TYPE value, Object... args) throws ParseException;
+public interface MessageIO<PARSER_TYPE, SERIALIZER_TYPE> extends MessageInput<PARSER_TYPE>, MessageOutput<SERIALIZER_TYPE> {
 
 }

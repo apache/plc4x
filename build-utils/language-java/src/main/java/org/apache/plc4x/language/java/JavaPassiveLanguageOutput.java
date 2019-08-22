@@ -19,25 +19,30 @@
 
 package org.apache.plc4x.language.java;
 
-import freemarker.template.*;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import org.apache.plc4x.language.java.JavaLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-public class JavaLanguageOutput extends FreemarkerLanguageOutput {
+public class JavaPassiveLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     public String getName() {
-        return "Java";
+        return "Java-Passive";
     }
 
     protected List<Template> getTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
             freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/java/io-template.ftlh"));
+            // The passive variant doesn't generate serialize methods in the IO modules.
+            freemarkerConfiguration.getTemplate("templates/java/passive-io-template.ftlh"));
     }
 
     protected FreemarkerLanguageTemplateHelper getHelper(Map<String, ComplexTypeDefinition> types) {
