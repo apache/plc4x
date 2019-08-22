@@ -19,10 +19,7 @@ under the License.
 package org.apache.plc4x.java.base.connection;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.*;
 import io.netty.channel.jsc.JSerialCommChannel;
 import io.netty.channel.jsc.JSerialCommDeviceAddress;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -43,8 +40,10 @@ public class SerialChannelFactory implements ChannelFactory {
         JSerialCommDeviceAddress address = new JSerialCommDeviceAddress(serialPort);
 
         try {
+            final EventLoopGroup workerGroup = new OioEventLoopGroup();
+
             Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(new OioEventLoopGroup());
+            bootstrap.group(workerGroup);
             bootstrap.channel(JSerialCommChannel.class);
 //            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
 //            bootstrap.option(ChannelOption.TCP_NODELAY, true);

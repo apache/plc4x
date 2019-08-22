@@ -13,9 +13,10 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.utils.rawsockets;
+package org.apache.plc4x.java.utils.rawsockets.attic;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.plc4x.java.utils.rawsockets.RawSocketException;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.*;
@@ -31,10 +32,7 @@ import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class RawIpSocket {
@@ -42,7 +40,7 @@ public class RawIpSocket {
     private static final Logger logger = LoggerFactory.getLogger(RawIpSocket.class);
 
     private static final int SNAPLEN = 65536;
-    private static final int READ_TIMEOUT = 10;
+    private static final int READ_TIMEOUT = 10000;
 
     private static final String GATEWAY_ONLY_NETMASK = "255.255.255.255";
 
@@ -236,8 +234,11 @@ public class RawIpSocket {
                 pool.execute(() -> {
                     try {
                         receiveHandle.loop(-1, listener);
-                    } catch (PcapNativeException | InterruptedException | NotOpenException e) {
+                    } catch (PcapNativeException | NotOpenException e) {
                         logger.error("Error receiving ARP lookup", e);
+                    } catch (InterruptedException e) {
+                        logger.error("Interrupted! Error receiving ARP lookup", e);
+                        Thread.currentThread().interrupt();
                     }
                 });
 
@@ -287,7 +288,8 @@ public class RawIpSocket {
     }
 
     /**
-     * Iterate through all devices and find the first that would be able to connect to the given address.
+     * Iterate through all devices and find the first that would be able to connect to the given address
+     * because it's ip address and subnet mask would allow direct communication.
      *
      * @param remoteAddress address we want to connect to.
      * @return PcapNetworkInterface interface that should be able to connect to the given address.
@@ -295,6 +297,7 @@ public class RawIpSocket {
      */
     private FirstHop getFirstHop(InetAddress remoteAddress) throws RawSocketException {
         byte[] remoteIp = remoteAddress.getAddress();
+
         // Iterate over all network interfaces.
         try {
             // First try if we can connect to the remote device directly.
@@ -322,8 +325,12 @@ public class RawIpSocket {
                         // If the current address would be able to connect to the remote
                         // address, return this device.
                         if (matches) {
+                            if (dev.getLinkLayerAddresses().isEmpty()) {
+                                continue;
+                            }
+                            LinkLayerAddress localMacAddress = dev.getLinkLayerAddresses().iterator().next();
                             return new FirstHop(dev, localAddress.getAddress(),
-                                dev.getLinkLayerAddresses().iterator().next(),
+                                localMacAddress,
                                 getMacAddress(dev, localAddress.getAddress(), remoteAddress));
                         }
                     }

@@ -120,6 +120,7 @@
     <commons-io.version>2.6</commons-io.version>
     <commons-lang.version>2.6</commons-lang.version>
     <commons-lang3.version>3.7</commons-lang3.version>
+    <commons-logging.version>1.2</commons-logging.version>
     <commons-math3.version>3.5</commons-math3.version>
     <commons-pool2.version>2.6.0</commons-pool2.version>
     <commons-text.version>1.6</commons-text.version>
@@ -145,10 +146,10 @@
     <lucene.version>8.0.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.24.5</mockito.version>
-    <netty.version>4.1.13.Final</netty.version>
+    <netty.version>4.1.39.Final</netty.version>
     <netty-transport-jserialcomm.version>1.0.0</netty-transport-jserialcomm.version>
     <owasp-dependency-check.version>5.0.0-M1</owasp-dependency-check.version>
-    <pcap4j.version>1.7.3</pcap4j.version>
+    <pcap4j.version>1.8.2</pcap4j.version>
     <scala.version>2.12.6</scala.version>
     <slf4j.version>1.7.25</slf4j.version>
     <snakeyaml.version>1.23</snakeyaml.version>
@@ -271,6 +272,11 @@
         <version>${commons-io.version}</version>
       </dependency>
       <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons-logging.version}</version>
+      </dependency>
+      <dependency>
         <groupId>io.dropwizard</groupId>
         <artifactId>metrics-core</artifactId>
         <version>${metrics-core.version}</version>
@@ -314,6 +320,11 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-transport-rxtx</artifactId>
         <version>${netty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>2.3.1</version>
       </dependency>
       <dependency>
         <groupId>jaxen</groupId>
@@ -400,6 +411,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>${commons-text.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>4.4.10</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -553,6 +569,11 @@
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-xml</artifactId>
         <version>${groovy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.woodstox</groupId>
+        <artifactId>stax2-api</artifactId>
+        <version>4.1</version>
       </dependency>
       <dependency>
         <groupId>org.dom4j</groupId>
@@ -1640,44 +1661,45 @@
                     <requireJavaVersion>
                       <version>1.8.0</version>
                     </requireJavaVersion>
-                    <!--reactorModuleConvergence/-->
                   </rules>
                 </configuration>
               </execution>
               <!-- Ensure we're not mixing dependency versions -->
               <execution>
                 <id>enforce-version-convergence</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
                 <configuration>
                   <rules>
                     <dependencyConvergence/>
                   </rules>
                 </configuration>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
               </execution>
               <!--
                   Fails the build if classes are included from multiple
                   artifacts and these are not identical.
               -->
               <execution>
-                  <id>enforce-ban-duplicate-classes</id>
-                  <goals>
-                      <goal>enforce</goal>
-                  </goals>
-                  <configuration>
-                      <rules>
-                          <banDuplicateClasses>
-                              <scopes>
-                                  <scope>compile</scope>
-                                  <scope>provided</scope>
-                              </scopes>
-                              <findAllDuplicates>true</findAllDuplicates>
-                              <ignoreWhenIdentical>true</ignoreWhenIdentical>
-                          </banDuplicateClasses>
-                      </rules>
-                      <fail>true</fail>
-                  </configuration>
+                <id>enforce-ban-duplicate-classes</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <banDuplicateClasses>
+                      <scopes>
+                        <scope>compile</scope>
+                        <scope>provided</scope>
+                      </scopes>
+                      <findAllDuplicates>true</findAllDuplicates>
+                      <ignoreWhenIdentical>true</ignoreWhenIdentical>
+                    </banDuplicateClasses>
+                  </rules>
+                  <fail>true</fail>
+                </configuration>
               </execution>
             </executions>
             <dependencies>
