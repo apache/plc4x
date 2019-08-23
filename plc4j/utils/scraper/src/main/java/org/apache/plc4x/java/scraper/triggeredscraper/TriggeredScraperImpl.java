@@ -62,9 +62,9 @@ import java.util.stream.Collectors;
  *     right now boolean variables as well as numeric variables could be used as data-types
  *     available comparators are ==,!= for all data-types and &gt;,&gt;=,&lt;,&lt;= for numeric data-types
  */
-public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
+public class TriggeredScraperImplImpl implements Scraper, TriggeredScraperImplMBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperImplImpl.class);
     private static final String MX_DOMAIN = "org.apache.plc4x.java";
 
     private static final int DEFAULT_FUTURE_TIME_OUT = 2000;
@@ -92,7 +92,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param triggerCollector the trigger collector
      * @throws ScraperException something went wrong
      */
-    public TriggeredScraperImpl(ScraperConfiguration config, ResultHandler resultHandler, TriggerCollector triggerCollector) throws ScraperException {
+    public TriggeredScraperImplImpl(ScraperConfiguration config, ResultHandler resultHandler, TriggerCollector triggerCollector) throws ScraperException {
         this(resultHandler, createPooledDriverManager(), config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
     }
 
@@ -104,7 +104,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param triggerCollector the trigger collector
      * @throws ScraperException something went wrong
      */
-    public TriggeredScraperImpl(ScraperConfiguration config, PlcDriverManager plcDriverManager, ResultHandler resultHandler,TriggerCollector triggerCollector) throws ScraperException {
+    public TriggeredScraperImplImpl(ScraperConfiguration config, PlcDriverManager plcDriverManager, ResultHandler resultHandler, TriggerCollector triggerCollector) throws ScraperException {
         this(resultHandler, plcDriverManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
     }
 
@@ -118,7 +118,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param poolSizeScheduler the pool size of the scheduler
      * @throws ScraperException something went wrong
      */
-    public TriggeredScraperImpl(ScraperConfigurationTriggeredImpl config, PlcDriverManager plcDriverManager, ResultHandler resultHandler, TriggerCollector triggerCollector, int poolSizeScheduler, int poolSizeExecutor) throws ScraperException {
+    public TriggeredScraperImplImpl(ScraperConfigurationTriggeredImpl config, PlcDriverManager plcDriverManager, ResultHandler resultHandler, TriggerCollector triggerCollector, int poolSizeScheduler, int poolSizeExecutor) throws ScraperException {
         this(resultHandler, plcDriverManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT,poolSizeScheduler,poolSizeExecutor);
     }
 
@@ -130,11 +130,11 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param triggerCollector a collection that centralizes the trigger requests and joins them to grouped plc requests
      * @param futureTimeOut max duration of future to return a result
      */
-    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut) {
+    public TriggeredScraperImplImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs, TriggerCollector triggerCollector, long futureTimeOut) {
         this(resultHandler,plcDriverManager,jobs,triggerCollector,futureTimeOut,20,5);
     }
 
-    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut, int poolSizeScheduler, int poolSizeExecutor) {
+    public TriggeredScraperImplImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs, TriggerCollector triggerCollector, long futureTimeOut, int poolSizeScheduler, int poolSizeExecutor) {
         this.resultHandler = resultHandler;
         Validate.notEmpty(jobs);
         this.driverManager = plcDriverManager;
