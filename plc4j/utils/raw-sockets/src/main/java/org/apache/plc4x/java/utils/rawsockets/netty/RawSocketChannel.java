@@ -28,6 +28,7 @@ import io.netty.channel.oio.OioByteStreamChannel;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.utils.rawsockets.RawSocketException;
 import org.pcap4j.core.*;
+import org.pcap4j.packet.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,9 +48,10 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(RawSocketChannel.class);
 
+    private final RawSocketChannelConfig config;
+
     private RawSocketAddress remoteRawSocketAddress;
     private SocketAddress localAddress;
-    private final RawSocketChannelConfig config;
     private PcapHandle handle;
     private Thread loopThread;
 
@@ -108,7 +110,12 @@ public class RawSocketChannel extends OioByteStreamChannel {
         // forwards the bytes read to the buffer.
         loopThread = new Thread(() -> {
             try {
-                handle.loop(-1, (PacketListener) packet -> buffer.writeBytes(packet.getRawData()));
+                handle.loop(-1, new PacketListener() {
+                    @Override
+                    public void gotPacket(Packet packet) {
+                        buffer.writeBytes(config.getPacketHandler().getData(packet));
+                    }
+                });
             } catch (PcapNativeException | NotOpenException e) {
                 // TODO this should close everything automatically
                 logger.error("Pcap4j loop thread died!", e);

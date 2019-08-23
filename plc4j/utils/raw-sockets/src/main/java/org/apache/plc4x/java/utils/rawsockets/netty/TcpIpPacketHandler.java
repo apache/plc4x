@@ -18,15 +18,20 @@ under the License.
 */
 package org.apache.plc4x.java.utils.rawsockets.netty;
 
-import io.netty.channel.ChannelOption;
+import org.pcap4j.packet.*;
 
-public class RawSocketChannelOption<T> extends ChannelOption<T> {
+public class TcpIpPacketHandler implements PacketHandler {
 
-    public static final ChannelOption<PacketHandler> PACKET_HANDLER =
-        ChannelOption.valueOf(PacketHandler.class, "PACKET_HANDLER");
-
-    protected RawSocketChannelOption() {
-        super(null);
+    @Override
+    public byte[] getData(Packet packet) {
+        EthernetPacket ethernetPacket = (EthernetPacket) packet;
+        IpV4Packet ipv4Packet = (IpV4Packet) ethernetPacket.getPayload();
+        TcpPacket tcpPacket = (TcpPacket) ipv4Packet.getPayload();
+        if(tcpPacket.getPayload() instanceof UnknownPacket) {
+            UnknownPacket unknownPacket = (UnknownPacket) tcpPacket.getPayload();
+            return tcpPacket.getPayload().getRawData();
+        }
+        return new byte[0];
     }
 
 }
