@@ -26,7 +26,9 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannelOption;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
+import org.apache.plc4x.java.utils.rawsockets.netty.TcpIpPacketHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +61,7 @@ public class RawSocketChannelFactory implements ChannelFactory {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(RawSocketChannel.class);
+            bootstrap.option(RawSocketChannelOption.PACKET_HANDLER, new TcpIpPacketHandler());
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
             bootstrap.option(ChannelOption.TCP_NODELAY, true);
             // TODO we should use an explicit (configurable?) timeout here

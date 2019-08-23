@@ -25,14 +25,14 @@
     [const    uint 8     'protocolId' '0x03']
     [reserved uint 8     '0x00']
     [implicit uint 16    'len'        'payload.lengthInBytes + 4']
-    [simple   COTPPacket 'payload']
+    [simple   COTPPacket 'payload' ['len - 4']]
 ]
 
 ////////////////////////////////////////////////////////////////
 // COTP
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'COTPPacket'
+[discriminatedType 'COTPPacket' [uint 16 'cotpLen']
     [implicit      uint 8 'headerLength' 'lengthInBytes - (payload.lengthInBytes + 1)']
     [discriminator uint 8 'tpduCode']
     [typeSwitch 'tpduCode'
@@ -64,12 +64,13 @@
             [simple uint 8  'rejectCause']
         ]
     ]
-    [array  COTPParameter 'parameters' length '(headerLength + 1) - curPos' ['(headerLength + 1) - curPos']]
-    [simple S7Message     'payload']
+    [array    COTPParameter 'parameters' length '(headerLength + 1) - curPos' ['(headerLength + 1) - curPos']]
+    [optional S7Message     'payload'    'curPos < cotpLen']
 ]
 
 [discriminatedType 'COTPParameter' [uint 8 'rest']
     [discriminator uint 8 'parameterType']
+    [implicit      uint 8 'parameterLength' 'lengthInBytes - 2']
     [typeSwitch 'parameterType'
         ['0xC0' COTPParameterTpduSize
             [simple uint 8 'tpduSize']
@@ -209,12 +210,13 @@
     ]
 ]
 
+// This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
 [type 'S7VarPayloadDataItem'
     [simple  uint 8  'returnCode']
     [simple  uint 8  'transportSize']
     [simple  uint 16 'dataLength']
-    [array   uint 8  'data' count 'dataLength']
-    [padding uint 8  'pad' '0x00' 'dataLength % 2 == 1']
+    [array   uint 8  'data' count 'dataLength / 8']
+    [padding uint 8  'pad' '0x00' '(dataLength / 8) % 2 == 1']
 ]
 
 [type 'S7VarPayloadStatusItem'
