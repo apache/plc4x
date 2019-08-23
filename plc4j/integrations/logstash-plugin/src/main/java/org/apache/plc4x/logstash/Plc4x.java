@@ -20,7 +20,6 @@ package org.apache.plc4x.logstash;
 
 import co.elastic.logstash.api.*;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.scraper.ResultHandler;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTriggeredImplBuilder;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImplBuilder;
@@ -30,16 +29,15 @@ import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.T
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 // class name must match plugin name
 @LogstashPlugin(name="plc4x")
 public class Plc4x implements Input {
+    static Logger logger = Logger.getLogger(Plc4x.class.getName());
 
     public static final PluginConfigSpec<Map<String, Object>> JOB_CONFIG =
             PluginConfigSpec.hashSetting("jobs");
@@ -80,8 +78,13 @@ public class Plc4x implements Input {
         //TODO: use multiple sources:
 
         for (String sourceName : sources.keySet()) {
-            //TODO: check !
-            builder.addSource(sourceName, ((String) sources.get(sourceName)));
+            Object o = sources.get(sourceName);
+            if(o instanceof String) {
+                String source = (String)o;
+                builder.addSource(sourceName, source);
+            } else {
+                logger.severe("URL of source " + sourceName + "has the wrong typ!");
+            }
         }
 
         for (String jobName : jobs.keySet()) {
@@ -93,21 +96,16 @@ public class Plc4x implements Input {
                 for (String source : ((List<String>) job.get("sources"))) {
                     jobBuilder.source(source);
                 }
-                for (String query : ((List<String>) job.get("queries"))) {
-                    String[] fieldSegments = query.split("=");
-                    if (fieldSegments.length != 2) {
-                        System.err.println(String.format("Error in job configuration '%s'. " +
-                                "The field segment expects a format {field-alias}={field-address}, but got '%s'",
-                            jobName, query));
-                        continue;
-                    }
-                    String fieldAlias = fieldSegments[0];
-                    String fieldAddress = fieldSegments[1];
+                Map<String, Object> queries = (Map<String, Object>) job.get("queries");
+                for (String queryName : queries.keySet()) {
+
+                    String fieldAlias = queryName;
+                    String fieldAddress = (String) queries.get(queryName);
                     jobBuilder.field(fieldAlias, fieldAddress);
                 }
                 jobBuilder.build();
             } else {
-                System.err.println("Jobs of wrong Type!");
+                logger.severe("Jobs of wrong Type!");
             }
         }
 
@@ -115,17 +113,30 @@ public class Plc4x implements Input {
         try {
             plcDriverManager = new PooledPlcDriverManager();
             triggerCollector = new TriggerCollectorImpl(plcDriverManager);
-            scraper = new TriggeredScraperImpl(scraperConfig, new ResultHandler() {
-                @Override
-                public void handle(String jobName, String sourceName, Map<String, Object> results) {
-                    //TODO: use jobname etc for multiple connections
+            scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
+
+                //TODO: use jobname etc for multiple connections
+                for (Map.Entry<String, Object> result : results.entrySet()) {
+                    // Get field-name and -value from the results.
+                    String fieldName = result.getKey();
+                    Object fieldValue = result.getValue();
+
+                    System.out.println("fieldName: " + fieldName);
+                    System.out.println("fieldValue: " + fieldValue);
                     consumer.accept(results);
                 }
             }, triggerCollector);
             scraper.start();
             triggerCollector.start();
         } catch (ScraperException e) {
-            System.err.println("Error starting the scraper: "+ e);
+            logger.severe("Error starting the scraper: "+ e);
+        }
+        while(true) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -33,14 +33,15 @@ public class Plc4xInputTest {
         Map<String, Object> configValues = new HashMap<>();
         Map<String, Object> jobValues = new HashMap<>();
 
-        List<String> queries = Arrays.asList("testfield=RANDOM/foo:INTEGER");
+        Map<String,Object> queries = new HashMap<>();
+        queries.put("testfield", "ns=2;i=4");
         List<String> sources = Arrays.asList("TestConnection");
 
         jobValues.put("rate", 300);
         jobValues.put("queries", queries);
         jobValues.put("sources", sources);
 
-        configValues.put(Plc4x.SOURCE_CONFIG.name(), Maps.newHashMap("TestConnection", "test:hurzpurzfurz"));
+        configValues.put(Plc4x.SOURCE_CONFIG.name(), Maps.newHashMap("TestConnection", "opcua:tcp://localhost:4840/freeopcua/server/"));
         configValues.put(Plc4x.JOB_CONFIG.name(),  Maps.newHashMap("job1", jobValues));
 
 
@@ -68,5 +69,4 @@ public class Plc4xInputTest {
             return events;
         }
     }
-
 }
