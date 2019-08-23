@@ -169,6 +169,9 @@
               <ignoredDependencies combine.children="append">
                 <ignoredDependency>org.apache.plc4x:plc4j-driver-ads</ignoredDependency>
               </ignoredDependencies>
+              <usedDependencies combine.children="append">
+                <usedDependency>javax.activation:javax.activation-api</usedDependency>
+              </usedDependencies>
             </configuration>
           </execution>
         </executions>
