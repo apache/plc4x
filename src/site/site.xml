@@ -107,6 +107,7 @@
       <item name="Code Generation" href="developers/code-gen/index.html">
         <item name="Protocol: MSpec Format" href="developers/code-gen/protocol/mspec.html"/>
         <item name="Language: Apache Freemarker" href="developers/code-gen/language/freemarker.html"/>
+        <item name="Example: DF1 MSpec" href="developers/code-gen/protocol/df1.html"/>
       </item>
       <item name="Continuous Integration" href="developers/ci.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
