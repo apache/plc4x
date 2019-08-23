@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
+
 /**
  * TODO write comment
  *
@@ -39,15 +40,15 @@ public class EndToEndTest {
     public void helloDf1() {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("df1:serial:///COM4")) {
             PlcReadRequest request = plcConnection.readRequestBuilder()
-                .addItem("erstes", "17:INTEGER")
-                .addItem("zweites", "17:INTEGER")
+                .addItem("hurz", "5:INTEGER")
                 .build();
 
             PlcReadResponse response = request.execute().get(100, TimeUnit.SECONDS);
 
+
+            // TODO: get the actual read bytes from the response
             System.out.println(response);
-        } catch (PlcConnectionException e) {
-            e.printStackTrace();
+            System.out.println("Response code was " + response.getResponseCode("erster"));
         } catch (Exception e) {
             e.printStackTrace();
         }

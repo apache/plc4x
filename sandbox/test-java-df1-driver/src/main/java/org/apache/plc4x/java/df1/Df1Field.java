@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.df1;
 
+import com.sun.jna.StringArray;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.df1.fields.DataType;
 
@@ -50,7 +51,8 @@ public class Df1Field implements PlcField {
     public addressType getAddress_type() { return address_type; }
 
     public static PlcField of(String fieldQuery) {
-        return new Df1Field(11, 2, DataType.INTEGER, addressType.OFFSET);
+        String[] tmp = fieldQuery.split(":");
+        return new Df1Field(Integer.parseInt(tmp[0]), DataType.valueOf(tmp[1]).getLength(),DataType.valueOf(tmp[1]), addressType.OFFSET);
     }
 
     public enum addressType {

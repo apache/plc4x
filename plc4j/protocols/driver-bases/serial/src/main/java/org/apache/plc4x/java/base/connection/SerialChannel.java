@@ -526,6 +526,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             } catch (Throwable t) {
                 close(voidPromise());
                 ReferenceCountUtil.release(msg);
+                logger.error("Problem during write", t);
                 throw new RuntimeException("Problem during write", t);
             }
 

@@ -120,7 +120,11 @@ public abstract class SerialChannelHandler {
         }
 
         @Override public boolean open() {
-            return comPort.openPort();
+            if (comPort.openPort()) {
+                comPort.setComPortParameters(19200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+                return true;
+            }
+            return false;
         }
 
         @Override public String getIdentifier() {
