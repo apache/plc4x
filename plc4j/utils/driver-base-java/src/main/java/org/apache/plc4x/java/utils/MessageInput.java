@@ -16,17 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.utils.rawsockets.netty;
+package org.apache.plc4x.java.utils;
 
-import io.netty.channel.ChannelOption;
+public interface MessageInput<PARSER_TYPE> {
 
-public class RawSocketChannelOption<T> extends ChannelOption<T> {
-
-    public static final ChannelOption<PacketHandler> PACKET_HANDLER =
-        ChannelOption.valueOf(PacketHandler.class, "PACKET_HANDLER");
-
-    protected RawSocketChannelOption() {
-        super(null);
-    }
+    PARSER_TYPE parse(ReadBuffer io, Object... args) throws ParseException;
 
 }

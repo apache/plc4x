@@ -150,7 +150,11 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Optional Field (${field.name})
         if(${field.name} != null) {
+        <#if helper.isSimpleType(field.type)>
             lengthInBits += ${field.type.size};
+        <#else>
+            lengthInBits += ${field.name}.getLengthInBytes() * 8;
+        </#if>
         }
         <#break>
     <#case "padding">

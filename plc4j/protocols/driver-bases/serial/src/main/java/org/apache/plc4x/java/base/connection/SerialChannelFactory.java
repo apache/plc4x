@@ -45,8 +45,6 @@ public class SerialChannelFactory implements ChannelFactory {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(JSerialCommChannel.class);
-//            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-//            bootstrap.option(ChannelOption.TCP_NODELAY, true);
             bootstrap.handler(channelHandler);
             // Start the client.
             ChannelFuture f = bootstrap.connect(address).sync();
