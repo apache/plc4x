@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.df1.util;
 
+import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.plc4x.java.df1.*;
 import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.ReadBuffer;
@@ -46,62 +47,39 @@ public class DF1Utils {
                 writeBuffer.writeUnsignedShort(8, (byte) 0x03);
 
                 byte[] data = writeBuffer.getData();
+                return calculateCRC(data);
 
-                int tmp = 0;
-                int crcL, crcR;
-
-                for (int newByte : data) {
-                    crcL = tmp >> 8;
-                    crcR = tmp & 0xFF;
-                    tmp = (crcL << 8) + (newByte ^ crcR);
-                    for (int j=0; j<8; j++)
-                        if (tmp % 2 == 1) {     // check if LSB shifted out is 1 or 0
-                            tmp = tmp >> 1;
-                            tmp = tmp ^ 0xA001;
-                        } else {
-                            tmp = tmp >> 1;
-                        }
-                }
-
-                return (short) tmp;
             } catch (ParseException e) {
-                throw new RuntimeException("Something wen't wrong during the CRC check", e);
+                throw new RuntimeException("Something went wrong during the CRC check", e);
             }
         } else if(command instanceof DF1UnprotectedReadResponse) {
             DF1UnprotectedReadResponse unprotectedReadResponseCommand = (DF1UnprotectedReadResponse) command;
             try {
+                // TODO: size has to be dependent on actual size requested
                 WriteBuffer writeBuffer = new WriteBuffer(10, false);
                 writeBuffer.writeUnsignedShort(8, destinationAddress);
                 writeBuffer.writeUnsignedShort(8, sourceAddress);
                 writeBuffer.writeUnsignedShort(8, commandDiscriminatorValues);
                 writeBuffer.writeUnsignedShort(8, status);
                 writeBuffer.writeUnsignedInt(16, (short) transactionCounter);
+                boolean escape10 = false;
                 for (short data : unprotectedReadResponseCommand.getData()) {
+//                    if (escape10 == true){
+//                        if (data == 0x10) {
+//
+//                        }
+//                    } else{
+//
+//                    }
                     writeBuffer.writeUnsignedShort(8,  data);
                 }
                 writeBuffer.writeUnsignedShort(8, (byte) 0x03);
 
                 byte[] data = writeBuffer.getData();
+                return calculateCRC(data);
 
-                int tmp = 0;
-                int crcL, crcR;
-
-                for (int newByte : data) {
-                    crcL = tmp >> 8;
-                    crcR = tmp & 0xFF;
-                    tmp = (crcL << 8) + (newByte ^ crcR);
-                    for (int j=0; j<8; j++)
-                        if (tmp % 2 == 1) {     // check if LSB shifted out is 1 or 0
-                            tmp = tmp >> 1;
-                            tmp = tmp ^ 0xA001;
-                        } else {
-                            tmp = tmp >> 1;
-                        }
-                }
-
-                return (short) tmp;
             } catch (ParseException e) {
-                throw new RuntimeException("Something wen't wrong during the CRC check", e);
+                throw new RuntimeException("Something went wrong during the CRC check", e);
             }
         }
 
@@ -158,4 +136,22 @@ public class DF1Utils {
         return i;
     }
 
+    private static short calculateCRC(byte[] crcBytes) {
+        int tmp = 0;
+        int crcL, crcR;
+
+        for (int newByte : crcBytes) {
+            crcL = tmp >> 8;
+            crcR = tmp & 0xFF;
+            tmp = (crcL << 8) + (newByte ^ crcR);
+            for (int j = 0; j < 8; j++)
+                if (tmp % 2 == 1) {     // check if LSB shifted out is 1 or 0
+                    tmp = tmp >> 1;
+                    tmp = tmp ^ 0xA001;
+                } else {
+                    tmp = tmp >> 1;
+                }
+        }
+        return (short)tmp;
+    }
 }

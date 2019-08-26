@@ -19,17 +19,26 @@
 package org.apache.plc4x.java.df1.fields;
 
 public enum DataType {
+    BIT((short)1),
+    BIT_STRING((short)-1),
+    BYTE_STRING((short)-1),
+    INTEGER((short)2),
+    TIMER((short)-1),
+    COUNTER((short)-1),
+    GENERAL_COUNT_STRUCTURE((short)-1),
+    FLOAT((short)-1),
+    ARRAY((short)-1),
+    ADDRESS((short)-1),
+    BINARY_CODED_DECIMAL((short)-1);
 
-    BIT,
-    BIT_STRING,
-    BYTE_STRING,
-    INTEGER,
-    TIMER,
-    COUNTER,
-    GENERAL_COUNT_STRUCTURE,
-    FLOAT,
-    ARRAY,
-    ADDRESS,
-    BINARY_CODED_DECIMAL
+    private final short length;
+
+    DataType(short length) {
+        this.length = length;
+    }
+
+    public short getLength() {
+        return length;
+    }
 
 }

@@ -97,11 +97,6 @@
       <artifactId>commons-codec</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>se.koc</groupId>
-      <artifactId>netty-transport-jserialcomm</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
 </project>

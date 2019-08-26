@@ -89,11 +89,6 @@
       <version>0.5.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>se.koc</groupId>
-      <artifactId>netty-transport-jserialcomm</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
 </project>
