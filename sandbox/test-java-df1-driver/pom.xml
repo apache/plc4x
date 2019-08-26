@@ -111,14 +111,6 @@
       <version>1.0.2.RELEASE</version>
     </dependency>
 
-
-    <!-- https://mvnrepository.com/artifact/com.fazecast/jSerialComm -->
-    <dependency>
-      <groupId>com.fazecast</groupId>
-      <artifactId>jSerialComm</artifactId>
-      <version>1.3.11</version>
-    </dependency>
-
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
