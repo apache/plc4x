@@ -30,11 +30,9 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.base.messages.InternalPlcReadResponse;
-import org.apache.plc4x.java.base.messages.PlcReader;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +71,12 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
     }
 
     @Override
+    protected void sendChannelCreatedEvent() {
+        // Send an event to the pipeline telling the Protocol filters what's going on.
+        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+    }
+
+    @Override
     public PlcField prepareField(String fieldQuery) throws PlcInvalidFieldException {
         return AbEthField.of(fieldQuery);
     }
@@ -103,6 +107,11 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
     @Override
     public boolean canRead() {
         return true;
+    }
+
+    @Override
+    public PlcReadRequest.Builder readRequestBuilder() {
+        return new DefaultPlcReadRequest.Builder(this, new AbEthFieldHandler());
     }
 
     @Override

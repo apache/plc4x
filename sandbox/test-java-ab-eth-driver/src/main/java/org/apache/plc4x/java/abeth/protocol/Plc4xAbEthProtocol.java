@@ -18,11 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.abeth.protocol;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.abeth.*;
 import org.apache.plc4x.java.abeth.model.AbEthField;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
@@ -35,13 +39,18 @@ import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultShortFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulationPacket, PlcRequestContainer> {
 
@@ -145,11 +154,56 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
     }
 
     private PlcResponse decodeReadResponse(
-        CIPEncapsulationReadResponse cipResponse, PlcRequestContainer requestContainer) {
+        CIPEncapsulationReadResponse plcReadResponse, PlcRequestContainer requestContainer) {
 
-        InternalPlcReadRequest readRequest = (InternalPlcReadRequest) requestContainer.getRequest();
+        InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
 
-        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
-        return new DefaultPlcReadResponse(readRequest, fields);
+        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values = new HashMap<>();
+        for (String fieldName : plcReadRequest.getFieldNames()) {
+            AbEthField field = (AbEthField) plcReadRequest.getField(fieldName);
+            PlcResponseCode responseCode = decodeResponseCode(plcReadResponse.getResponse().getStatus());
+
+            BaseDefaultFieldItem fieldItem = null;
+            if (responseCode == PlcResponseCode.OK) {
+                try {
+                    switch (field.getFileType()) {
+                        case HURZ:
+                            if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
+                                DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
+                                short[] data = df1PTLR.getData();
+                                Short[] convData = new Short[data.length];
+                                for(int i = 0; i < data.length; i++) {
+                                    convData[i] = data[i];
+                                }
+                                fieldItem = new DefaultShortFieldItem(convData);
+                            }
+                            break;
+                        default:
+                            logger.warn("Problem during decoding of field {}: Decoding of file type not implemented; " +
+                                "FieldInformation: {}", fieldName, field);
+                    }
+                }
+                catch (Exception e) {
+                    logger.warn("Some other error occurred casting field {}, FieldInformation: {}",fieldName, field,e);
+                }
+            }
+            Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
+            values.put(fieldName, result);
+        }
+
+        return new DefaultPlcReadResponse(plcReadRequest, values);
     }
+
+    private PlcResponseCode decodeResponseCode(short status) {
+        if(status == 0) {
+            return PlcResponseCode.OK;
+        }
+        return PlcResponseCode.NOT_FOUND;
+    }
+
+    private BaseDefaultFieldItem decodeReadResponseUnsignedByteField(AbEthField field, ByteBuf data) {
+        Short[] shorts = null;//readAllValues(Short.class, field, i -> data.readUnsignedByte());
+        return new DefaultShortFieldItem(shorts);
+    }
+
 }

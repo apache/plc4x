@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 public class AbEthField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^N(?<fileNumber>\\d{1,7})\\:(?<elementNumber>\\d{1,7})/(?<subElementNumber>\\d{1,7}):(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
+        Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})/(?<subElementNumber>\\d{1,7}):(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
 
     private static final String FILE_NUMBER = "fileNumber";
     private static final String ELEMENT_NUMBER = "elementNumber";
@@ -70,13 +70,17 @@ public class AbEthField implements PlcField {
         return subElementNumber;
     }
 
+    public static boolean matches(String fieldString) {
+        return ADDRESS_PATTERN.matcher(fieldString).matches();
+    }
+
     public static AbEthField of(String fieldString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(fieldString);
         if(matcher.matches()) {
             short fileNumber = Short.parseShort(matcher.group(FILE_NUMBER));
             short elementNumber = Short.parseShort(matcher.group(ELEMENT_NUMBER));
             short subElementNumber = Short.parseShort(matcher.group(SUB_ELEMENT_NUMBER));
-            FileType fileType = FileType.valueOf(Short.parseShort(matcher.group(DATA_TYPE)));
+            FileType fileType = FileType.valueOf(matcher.group(DATA_TYPE).toUpperCase());
             short byteSize = Short.parseShort(matcher.group(SIZE));
             return new AbEthField(byteSize, fileNumber, fileType,elementNumber, subElementNumber);
         }

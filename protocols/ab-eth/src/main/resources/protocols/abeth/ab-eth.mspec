@@ -64,7 +64,6 @@
     [typeSwitch 'commandCode'
         ['0x4F' DF1CommandResponseMessageProtectedTypedLogicalRead [uint 8 'status']
             [array    uint 8 'data' length 'payloadLength - 8']
-            [optional uint 8 'extendedStatus' 'status != 0']
         ]
     ]
 ]

@@ -23,6 +23,7 @@ import java.util.Map;
 
 public enum FileType {
 
+    HURZ((short) 0x64),
     STATUS((short) 0x84),
     BIT((short) 0x85),
     TIMER((short) 0x86),
