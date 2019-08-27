@@ -24,7 +24,7 @@ import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTri
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImplBuilder;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
-import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImplMBean;
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
@@ -50,7 +50,7 @@ public class Plc4x implements Input {
     private String id;
     private PlcDriverManager plcDriverManager;
     private TriggerCollector triggerCollector;
-    private TriggeredScraperImplMBean scraper;
+    private TriggeredScraperImpl scraper;
 
     private final CountDownLatch done = new CountDownLatch(1);
 
@@ -113,7 +113,7 @@ public class Plc4x implements Input {
         try {
             plcDriverManager = new PooledPlcDriverManager();
             triggerCollector = new TriggerCollectorImpl(plcDriverManager);
-            scraper = new TriggeredScraperImplMBean(scraperConfig, (jobName, sourceName, results) -> {
+            scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
 
                 //TODO: use jobname etc for multiple connections
                 for (Map.Entry<String, Object> result : results.entrySet()) {
