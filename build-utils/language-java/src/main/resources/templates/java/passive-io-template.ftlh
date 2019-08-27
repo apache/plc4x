@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${packageName?replace(".", "/")}/io/${typeName}IO.java
+org/apache/plc4x/${helper.languagePackageName(languageName)}/${helper.protocolPackageName(protocolName)}/io/${typeName}IO.java
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -36,10 +36,10 @@ ${packageName?replace(".", "/")}/io/${typeName}IO.java
   under the License.
 */
 
-package ${packageName}.io;
+package org.apache.plc4x.${helper.languagePackageName(languageName)}.${helper.protocolPackageName(protocolName)}.io;
 
-import ${packageName}.*;
-<#if helper.getComplexTypes(type)?has_content>import ${packageName}.io.*;</#if>
+import org.apache.plc4x.${helper.languagePackageName(languageName)}.${helper.protocolPackageName(protocolName)}.*;
+<#if helper.getComplexTypes(type)?has_content>import org.apache.plc4x.${helper.languagePackageName(languageName)}.${helper.protocolPackageName(protocolName)}.io.*;</#if>
 import org.apache.plc4x.java.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,7 +226,7 @@ public class ${typeName}IO implements MessageInput<${typeName}<#if helper.isDisc
     <#case "optional">
 
         // Optional Field (${field.name}) (Can be skipped, if a given expression evaluates to false)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = null;
         if(${helper.toDeserializationExpression(field.conditionExpression, type.parserArguments)?no_esc}) {
             ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io);</#if>;
         }

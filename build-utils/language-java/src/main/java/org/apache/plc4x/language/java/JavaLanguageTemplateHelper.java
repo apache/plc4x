@@ -46,6 +46,14 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         this.types = types;
     }
 
+    public String languagePackageName(String languageName) {
+        return String.join("", languageName.split("\\-"));
+    }
+
+    public String protocolPackageName(String protocolName) {
+        return String.join("", protocolName.split("\\-"));
+    }
+
     public String getLanguageTypeNameForField(TypedField field) {
         boolean optional = field instanceof OptionalField;
         return getLanguageTypeNameForField(!optional, field);
@@ -294,7 +302,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     return "writeUnsignedInt(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").intValue())";
                 }
                 if (simpleTypeReference.getSize() <= 32) {
-                    return "writeUnsignedLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue()";
+                    return "writeUnsignedLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
                 return "writeUnsignedBigInteger" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
             }
