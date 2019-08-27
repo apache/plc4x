@@ -190,9 +190,10 @@
   </build>
 
   <modules>
+    <module>ab-eth</module>
+    <module>df1</module>
     <module>knxnetip</module>
     <module>s7</module>
-    <module>df1</module>
   </modules>
 
   <profiles>

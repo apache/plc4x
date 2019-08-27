@@ -162,7 +162,6 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
 
     /**
      * detects if {@link PlcReadResponse} is valid
-     * //ToDo CHECK: is this thing S7 specific? if not this comment can be removed
      * @param response the {@link PlcReadResponse} that should be validated
      */
     private void validateResponse(PlcReadResponse response) {

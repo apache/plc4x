@@ -52,8 +52,6 @@ public class RawSocketChannelTest {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(RawSocketChannel.class);
-            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
             // TODO we should use an explicit (configurable?) timeout here
             // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
             bootstrap.handler(new ChannelInitializer<RawSocketChannel>() {

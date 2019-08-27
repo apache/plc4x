@@ -57,7 +57,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-df1-driver</artifactId>
+      <artifactId>test-java-ab-eth-driver</artifactId>
       <version>0.5.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -91,7 +91,7 @@
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
-            <usedDependency>org.apache.plc4x.sandbox:test-java-df1-driver</usedDependency>
+            <usedDependency>org.apache.plc4x.sandbox:test-java-ab-eth-driver</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>

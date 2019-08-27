@@ -36,8 +36,10 @@
 
   <modules>
     <module>code-gen</module>
+    <module>test-java-ab-eth-driver</module>
     <module>test-java-knxnetip-driver</module>
     <module>test-java-s7-driver</module>
+    <module>test-java-passive-s7-driver</module>
     <module>test-java-df1-driver</module>
   </modules>
 

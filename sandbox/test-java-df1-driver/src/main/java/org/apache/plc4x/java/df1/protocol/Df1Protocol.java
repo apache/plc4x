@@ -61,45 +61,52 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
         DF1SymbolMessageFrame frame = new DF1SymbolMessageFrame(remoteAddr, localAddr, msg);
 
         // Serialize the message
-        WriteBuffer writeBuffer = new WriteBuffer(frame.getLengthInBytes());
+        WriteBuffer writeBuffer = new WriteBuffer(frame.getLengthInBytes(), false);
         df1SymbolIO.serialize(writeBuffer, frame);
         byte[] data = writeBuffer.getData();
 
         // Send the serialized data
+        // ctx.writeAndFlush(data);
         out.writeBytes(data);
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        short size = 0x00;
+        DF1Symbol resp;
 
-        // Yes, it's a little complicated, but we need to find out if we've got enough data.
-        if(in.readableBytes() > 2) {
-            if(in.getUnsignedByte(0) != (short) 0x10) {
-                logger.warn("Expecting DF1 magic number: {}", 0x10);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Got Data: {}", ByteBufUtil.hexDump(in));
-                }
-                exceptionCaught(ctx, new PlcProtocolException(
-                    String.format("Expecting DF1 magic number: %02X", 0x10)));
-                return;
-            }
+//        do {
 
-            short symbolType = in.getUnsignedByte(1);
-            switch (symbolType) {
-                case (short) 0x02: {
-                    if(in.readableBytes() < 5) {
-                        return;
+            in.markReaderIndex();
+
+            short size = 0x00;
+
+            // Yes, it's a little complicated, but we need to find out if we've got enough data.
+            if (in.readableBytes() > 1) {
+                if (in.getUnsignedByte(0) != (short) 0x10) {
+                    logger.warn("Expecting DF1 magic number: {}", 0x10);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Got Data: {}", ByteBufUtil.hexDump(in));
                     }
-                    short commandType = in.getUnsignedByte(4);
-                    switch (commandType) {
-                        case (short) 0x01: {
-                            if(in.readableBytes() < 11) {
-                                return;
-                            }
-                            break;
+                    exceptionCaught(ctx, new PlcProtocolException(
+                        String.format("Expecting DF1 magic number: %02X", 0x10)));
+                    return;
+                }
+
+                short symbolType = in.getUnsignedByte(1);
+                switch (symbolType) {
+                    case (short) 0x02: {
+                        if (in.readableBytes() < 5) {
+                            return;
                         }
-                        case (short) 0x41: {
+                        short commandType = in.getUnsignedByte(4);
+                        switch (commandType) {
+                            case (short) 0x01: {
+                                if (in.readableBytes() < 11) {
+                                    return;
+                                }
+                                break;
+                            }
+                            case (short) 0x41: {
                             /*int transactionCounter = in.getUnsignedShort(6);
                             if(!readRequestSizes.containsKey(transactionCounter)) {
                                 logger.warn("Unknown transaction counter: {}", transactionCounter);
@@ -114,26 +121,31 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
                             if(in.readableBytes() < 8 + size) {
                                 return;
                             }*/
-                            // TODO: Let's just assume all is good for now ...
-                            break;
+                                // TODO: Let's just assume all is good for now ...
+                                break;
+                            }
                         }
+                        break;
                     }
-                    break;
-                }
-                case (short) 0x03: {
-                    if(in.readableBytes() < 4) {
-                        return;
+                    case (short) 0x03: {
+                        if (in.readableBytes() < 4) {
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
-        }
 
-        // Parse the message received from the DF1 device
-        byte[] data = new byte[in.readableBytes()];
-        in.readBytes(data);
-        ReadBuffer readBuffer = new ReadBuffer(data);
-        DF1Symbol resp = df1SymbolIO.parse(readBuffer, size);
+            // Parse the message received from the DF1 device
+            byte[] data = new byte[in.readableBytes()];
+            in.readBytes(data);
+            ReadBuffer readBuffer = new ReadBuffer(data, false);
+
+            resp = df1SymbolIO.parse(readBuffer, size);
+
+//        } while (readWasSucessfull);
+//        // TODO if unableto read
+//        in.resetReaderIndex();
 
         // Add the received message to the output
         out.add(resp);

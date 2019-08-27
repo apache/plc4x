@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${packageName?replace(".", "/")}/${typeName}.java
+org/apache/plc4x/${helper.languagePackageName(languageName)}/${helper.protocolPackageName(protocolName)}/${typeName}.java
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -36,7 +36,7 @@ ${packageName?replace(".", "/")}/${typeName}.java
   under the License.
 */
 
-package ${packageName};
+package org.apache.plc4x.${helper.languagePackageName(languageName)}.${helper.protocolPackageName(protocolName)};
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.utils.Message;
@@ -150,7 +150,11 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Optional Field (${field.name})
         if(${field.name} != null) {
+        <#if helper.isSimpleType(field.type)>
             lengthInBits += ${field.type.size};
+        <#else>
+            lengthInBits += ${field.name}.getLengthInBytes() * 8;
+        </#if>
         }
         <#break>
     <#case "padding">

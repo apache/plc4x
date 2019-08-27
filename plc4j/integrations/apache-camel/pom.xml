@@ -93,12 +93,13 @@
       <version>0.5.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-    <!--dependency>
+    <dependency>
+      <!-- avoids java.lang.NoClassDefFoundError: javax/activation/DataHandler in Plc4XProducerTest on Java 11-->
       <groupId>javax.activation</groupId>
       <artifactId>javax.activation-api</artifactId>
       <version>1.2.0</version>
       <scope>test</scope>
-    </dependency-->
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -168,6 +169,9 @@
               <ignoredDependencies combine.children="append">
                 <ignoredDependency>org.apache.plc4x:plc4j-driver-ads</ignoredDependency>
               </ignoredDependencies>
+              <usedDependencies combine.children="append">
+                <usedDependency>javax.activation:javax.activation-api</usedDependency>
+              </usedDependencies>
             </configuration>
           </execution>
         </executions>

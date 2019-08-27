@@ -83,6 +83,8 @@ public class HelloPlc4x {
                     logger.error("An error occurred: " + throwable.getMessage(), throwable);
                 }
             });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

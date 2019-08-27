@@ -1,0 +1,94 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Example: DF1 MSpec
+
+The DF1 protocol has three basic messages: a command message, acknowledge and not acknowledge.
+A `0x10` is used as delimiter to differentiate between the messages and parts of the command message.
+
+[width="25%",cols="^,^"]
+|============
+|ACK | NAK
+
+|10 06 |10 15
+|============
+
+
+This is what a read command message looks like in full-duplex mode using CRC as checksum:
+[cols="^,^,^,^,^,^,^,^,^,^,^,^,^"]
+|===
+|Name | DLE | STX | DST | SRC | CMD | STS | TNS | ADDR | SIZE | DLE | ETX | CRC
+
+|Value | 10 | 02 | XX | XX | 01 | 00 | XX XX | XX XX | 02 | 10 | 03 | XX XX
+|===
+
+The according response with the requested byte data:
+[cols="^,^,^,^,^,^,^,^,^,^,^,^,^"]
+|===
+|Name | DLE | STX | DST | SRC | CMD | STS | TNS | DATA | SIZE | DLE | ETX | CRC
+
+|Value | 10 | 02 | XX | XX | 41 | 00 | XX XX | XX XX | 02 | 10 | 03 | XX XX
+|===
+
+Every message starts with a `DLE = 0x10`. The second byte is used to differentiate what type of message will follow.
+In the case of a command message it is `0x02`. DST and SRC specify the target and source of the message.
+`CMD = 0x01` means an unprotected read is requested, the command response code is always attained with the addition of `0x40`. STS is a status byte,
+TNS is the transaction counter that is incremented by the master and used to recognize the specific message response.
+ADDR is the memory address being requested, size specifies how many bytes are to be read.
+DLE + ETX mark the end of the message, the last two bytes are the CRC that is calculated using the previously sent bytes.
+
+Here is the MSpec to model the behaviour:
+
+....
+[discriminatedType 'DF1Symbol'
+    [const            uint 8       'messageStart' '0x10']
+    [discriminator    uint 8       'symbolType']
+    [typeSwitch 'symbolType'
+        ['0x02' DF1SymbolMessageFrame
+            [simple   uint 8       'destinationAddress']
+            [simple   uint 8       'sourceAddress']
+            [simple   DF1Command   'command']
+            [const    uint 8       'messageEnd' '0x10']
+            [const    uint 8       'endTransaction' '0x03']
+            [checksum uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.crcCheck", destinationAddress, sourceAddress, command)']
+        ]
+        ['0x06' DF1SymbolMessageFrameACK
+        ]
+        ['0x15' DF1SymbolMessageFrameNAK
+        ]
+    ]
+]
+
+[discriminatedType 'DF1Command'
+    [discriminator uint 8  'commandCode']
+    [simple    uint 8       'status']
+    [simple    uint 16      'transactionCounter']
+    [typeSwitch 'commandCode'
+        ['0x01' DF1UnprotectedReadRequest
+            [simple uint 16    'address']
+            [simple uint 8     'size']
+        ]
+        ['0x41' DF1UnprotectedReadResponse
+            [manualArray  uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.readData", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.writeData", io, element)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataLength", data)']
+        ]
+    ]
+]
+....
+
+The basic object is the DF1Symbol, where the second byte is used to distinguish between the different message types using a typeSwitch.
+In the case of a command message, the message frame contains the DF1Command to further differentiate between the command types.
+Currently only the unprotected read and its response are implemented.

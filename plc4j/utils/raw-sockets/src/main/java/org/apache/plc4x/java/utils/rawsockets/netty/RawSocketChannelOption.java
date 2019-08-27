@@ -22,7 +22,8 @@ import io.netty.channel.ChannelOption;
 
 public class RawSocketChannelOption<T> extends ChannelOption<T> {
 
-    public static final ChannelOption<Boolean> SOME_OPTION = valueOf(RawSocketChannelOption.class, "SOME_OPTION");
+    public static final ChannelOption<PacketHandler> PACKET_HANDLER =
+        ChannelOption.valueOf(PacketHandler.class, "PACKET_HANDLER");
 
     protected RawSocketChannelOption() {
         super(null);

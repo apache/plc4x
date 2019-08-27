@@ -143,31 +143,33 @@ public class BenchmarkManualDf1 {
 //        comPort.writeBytes(message, message.length);
 
 
-        comPort.writeBytes(c_DLE, 1);     // fullduplex msg Seite 235
-        comPort.writeBytes(c_STX, 1);
-        comPort.writeBytes(c_DST, 1);
-        comPort.writeBytes(c_SRC, 1);
-        comPort.writeBytes(c_CMD, 1);
-        comPort.writeBytes(c_STS, 1);
-        comPort.writeBytes(c_TNS, 2);
-        comPort.writeBytes(c_FNC, 1);
+//        comPort.writeBytes(c_DLE, 1);     // fullduplex msg Seite 235
+//        comPort.writeBytes(c_STX, 1);
+//        comPort.writeBytes(c_DST, 1);
+//        comPort.writeBytes(c_SRC, 1);
+//        comPort.writeBytes(c_CMD, 1);
+//        comPort.writeBytes(c_STS, 1);
+//        comPort.writeBytes(c_TNS, 2);
+//        comPort.writeBytes(c_FNC, 1);
 //        comPort.writeBytes(c_ADR, 2);
 //        comPort.writeBytes(c_SZE, 1);
-        comPort.writeBytes(c_DLE, 1);
-        comPort.writeBytes(c_ETX, 1);
+//        comPort.writeBytes(c_DLE, 1);
+//        comPort.writeBytes(c_ETX, 1);
 
-
-        comPort.closePort();
-        System.exit(0);
+        byte[] msg = {0x10, 0x02,   0x09, 0x00,   0x01, 0x00,   0x01, 0x00,   0x0b, 0x00,   0x02,   0x10, 0x03};
+        comPort.writeBytes(msg, 13);
 
 
 //        int[] crcmsg = {c_DST[0], c_SRC[0], c_CMD[0], c_STS[0], c_TNS[0], c_TNS[1], c_ADR[0], c_ADR[1], c_SZE[0], c_ETX[0]}; // fullduplex CRC
-        int[] crcmsg = {c_DST[0], c_SRC[0], c_CMD[0], c_STS[0], c_TNS[0], c_TNS[1], c_FNC[0], c_ETX[0]};                       // diagnostic status request
+//        int[] crcmsg = {c_DST[0], c_SRC[0], c_CMD[0], c_STS[0], c_TNS[0], c_TNS[1], c_FNC[0], c_ETX[0]};                       // diagnostic status request
 //        int[] crcmsg = {0x11, 0x02, 0x09, 0x00, 0x01, 0x00, 0x41, 0x00, 0x12, 0x00, 0x0c, 0x03}; // halfduplex CRC
+        int[] crcmsg = { 0x09, 0x00,   0x01, 0x00,   0x01, 0x00,   0x0b, 0x00,   0x02,   0x03};
 
         int[] c_CRC = CalcCRC(crcmsg);
         byte[] crc1 = {(byte)c_CRC[0]};
         byte[] crc2 = {(byte)c_CRC[1]};
+        System.out.println("crc1: " + Integer.toHexString(crc1[0]));
+        System.out.println("crc2: " + Integer.toHexString(crc2[0]));
         comPort.writeBytes(crc1, 1);
         comPort.writeBytes(crc2, 1);
 
