@@ -109,11 +109,16 @@ public class ProtocolTestsuiteRunner {
             String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(msg);
             Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreWhitespace().build();
             if(diff.hasDifferences()) {
+                System.out.println(xmlString);
                 throw new ProtocolTestsuiteException("Differences were found after parsing.\n" + diff.toString());
             }
             WriteBuffer writeBuffer = new WriteBuffer(((SizeAware) msg).getLengthInBytes(), testSuite.isLittleEndian());
             messageIO.serialize(writeBuffer, msg);
             byte[] data = writeBuffer.getData();
+            if(testcase.getRaw().length != data.length) {
+                LOGGER.info("Expected a byte array with a length of " + testcase.getRaw().length +
+                    " but got one with " + data.length);
+            }
             if(!Arrays.equals(testcase.getRaw(), data)) {
                 int i;
                 for(i = 0; i < data.length; i++) {
