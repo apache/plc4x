@@ -24,7 +24,7 @@ import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTri
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImplBuilder;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
-import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImplMBean;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
@@ -50,7 +50,7 @@ public class Plc4x implements Input {
     private String id;
     private PlcDriverManager plcDriverManager;
     private TriggerCollector triggerCollector;
-    private TriggeredScraperImpl scraper;
+    private TriggeredScraperImplMBean scraper;
 
     private final CountDownLatch done = new CountDownLatch(1);
 
@@ -113,29 +113,30 @@ public class Plc4x implements Input {
         try {
             plcDriverManager = new PooledPlcDriverManager();
             triggerCollector = new TriggerCollectorImpl(plcDriverManager);
-            scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
+            scraper = new TriggeredScraperImplMBean(scraperConfig, (jobName, sourceName, results) -> {
 
                 //TODO: use jobname etc for multiple connections
                 for (Map.Entry<String, Object> result : results.entrySet()) {
                     // Get field-name and -value from the results.
                     String fieldName = result.getKey();
                     Object fieldValue = result.getValue();
-
-                    System.out.println("fieldName: " + fieldName);
-                    System.out.println("fieldValue: " + fieldValue);
-                    consumer.accept(results);
+                    logger.finest("fieldName: " + fieldName);
+                    logger.finest("fieldValue: " + fieldValue);
                 }
+                consumer.accept(results);
             }, triggerCollector);
             scraper.start();
             triggerCollector.start();
         } catch (ScraperException e) {
             logger.severe("Error starting the scraper: "+ e);
         }
-        while(true) {
+        // TODO discuss with stefan and chris
+        while(scraper.isRunning()) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(1000);
+                // or maybe just yield(); ?
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.severe("Error thead sleep plc4x plugin: "+ e);
             }
         }
     }

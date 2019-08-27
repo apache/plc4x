@@ -50,8 +50,9 @@ public class Plc4xInputTest {
         TestConsumer testConsumer = new TestConsumer();
         input.start(testConsumer);
 
+
         List<Map<String, Object>> events = testConsumer.getEvents();
-        System.out.println(events.size());
+        System.out.println("events size: " + events.size());
     }
 
     private static class TestConsumer implements Consumer<Map<String, Object>> {
