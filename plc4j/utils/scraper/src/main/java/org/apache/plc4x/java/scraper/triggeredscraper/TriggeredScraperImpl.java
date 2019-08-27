@@ -158,12 +158,12 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
 
         // Register MBean
-        mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        /*mBeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
             mBeanServer.registerMBean(this, new ObjectName(MX_DOMAIN, "scraper", "scraper"));
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
             LOGGER.debug("Unable to register Scraper as MBean", e);
-        }
+        }*/
     }
 
 
@@ -256,11 +256,11 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @param task task to register
      */
     private void registerTaskMBean(ScraperTask task) {
-        try {
+        /*try {
             mBeanServer.registerMBean(task, new ObjectName(MX_DOMAIN + ":type=ScrapeTask,name=" + task.getJobName() + "-" + task.getConnectionAlias()));
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
             LOGGER.debug("Unable to register Task as MBean", e);
-        }
+        }*/
     }
 
     @Override
