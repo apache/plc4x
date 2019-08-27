@@ -200,7 +200,7 @@
               <artifacts>
                 <artifact>
                   <!-- Ignore the error ... this variable is calculated in the "validate" phase -->
-                  <file>${project.build.directory}/gem/${project.artifactId}-${current-full-version}.gem</file>
+                  <file>${project.build.directory}/gem/logstash-input-plc4x-${current-full-version}.gem</file>
                   <type>gem</type>
                 </artifact>
               </artifacts>

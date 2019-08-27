@@ -20,6 +20,7 @@ package org.apache.plc4x.logstash;
 
 import co.elastic.logstash.api.Configuration;
 import org.assertj.core.util.Maps;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.logstash.plugins.ConfigurationImpl;
 
@@ -29,13 +30,14 @@ import java.util.function.Consumer;
 public class Plc4xInputTest {
 
     @Test
+    @Disabled("This test only works with a running instance of the freeopcua server running on the same machine")
     public void testPlc4xInput() {
         Map<String, Object> configValues = new HashMap<>();
         Map<String, Object> jobValues = new HashMap<>();
 
         Map<String,Object> queries = new HashMap<>();
         queries.put("testfield", "ns=2;i=4");
-        List<String> sources = Arrays.asList("TestConnection");
+        List<String> sources = Collections.singletonList("TestConnection");
 
         jobValues.put("rate", 300);
         jobValues.put("queries", queries);
