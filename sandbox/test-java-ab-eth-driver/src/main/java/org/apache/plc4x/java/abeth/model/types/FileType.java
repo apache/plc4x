@@ -35,7 +35,8 @@ public enum FileType {
     INPUT((short) 0x8C),
     STRING((short) 0x8D),
     ASCII((short) 0x8E),
-    BCD((short) 0x8F);
+    BCD((short) 0x8F),
+    INTBIT((short) 0x89); // reads single bit from Integer file, no official AB type
 
     private final short typeCode;
 

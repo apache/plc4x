@@ -167,7 +167,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
             if (responseCode == PlcResponseCode.OK) {
                 try {
                     switch (field.getFileType()) {
-                        case HURZ:
+                        case INTEGER: //HURZ
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
@@ -176,6 +176,13 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                     convData[i] = data[i];
                                 }
                                 fieldItem = new DefaultShortFieldItem(convData);
+                            }
+                            break;
+                        case INTBIT:
+                            if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
+                                DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
+                                short[] data = df1PTLR.getData();
+
                             }
                             break;
                         default:
