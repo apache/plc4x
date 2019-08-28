@@ -26,3 +26,36 @@ This is a Java plugin for [Logstash](https://github.com/elastic/logstash).
 It is fully free and fully open source. The license is Apache 2.0, meaning you are free to use it however you want.
 
 The documentation for Logstash Java plugins is available [here](https://www.elastic.co/guide/en/logstash/6.7/contributing-java-plugin.html).
+
+Example input pipeline for logstash:
+```
+## logstash pipeline config - input
+input {
+	## use plc4x plugin (logstash-input-plc4x)
+	plc4x {
+		## define sources (opc-ua examples)
+		sources => {
+			source1 => "opcua:tcp://opcua-server:4840/"
+			source2 => "opcua:tcp://opcua-server1:4840/"
+		}
+		## define jobs
+		jobs => {
+			job1 => {
+				# pull rate in milliseconds
+				rate => 1000
+				# sources queried by job1
+				sources => ["source1"]
+				# defined queries [logstash_internal_fieldname => "IIoT query"]
+				queries =>  {
+					PreStage => "ns=2;i=3"
+					MidStage => "ns=2;i=4"
+					PostStage => "ns=2;i=5"
+					Motor => "ns=2;i=6"
+					ConvoyerBeltTimestamp => "ns=2;i=7"
+					RobotArmTimestamp => "ns=2;i=8"
+				}
+			}
+		}
+	}
+}
+```
