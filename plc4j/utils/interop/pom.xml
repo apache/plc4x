@@ -130,7 +130,6 @@
               <mainClass>org.apache.plc4x.interop.impl.Server</mainClass>
             </manifest>
           </archive>
-
         </configuration>
         <executions>
           <execution>

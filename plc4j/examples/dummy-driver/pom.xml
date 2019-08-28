@@ -67,6 +67,21 @@
 
   <build>
     <plugins>
+      <!-- Disable building the uber-jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>generate-uber-jar</id>
+            <phase>none</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- This is currently a work in progress ... skip this till it reaches a slightly more mature state -->
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>

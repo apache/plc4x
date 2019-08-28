@@ -833,6 +833,7 @@
           </execution>
         </executions>
         <configuration>
+          <useMavenDefaultExcludes>true</useMavenDefaultExcludes>
           <excludes>
             <!-- Git related files -->
             <exclude>**/.git/**</exclude>
@@ -848,6 +849,7 @@
 
             <!-- Maven related files -->
             <exclude>**/target/**</exclude>
+            <exclude>target/**</exclude>
 
             <!-- Eclipse related files -->
             <exclude>**/.project</exclude>
@@ -1105,6 +1107,7 @@
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
+          <version>0.13</version>
           <configuration>
             <!--
                 Make rat output the files with missing licensed directly into the
@@ -1207,6 +1210,19 @@
           <version>3.1.1</version>
           <configuration>
             <finalName>apache-plc4x-${project.version}</finalName>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.1</version>
+          <configuration>
+            <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}</outputFile>
+            <transformers>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+            </transformers>
+            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
           </configuration>
         </plugin>
 

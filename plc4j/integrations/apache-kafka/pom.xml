@@ -38,19 +38,17 @@
   <!-- Build a fat jar so the user only needs to drop in this one jar -->
   <build>
     <plugins>
+      <!-- Build a fat jar containing all dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
         <executions>
           <execution>
-            <id>assemble-all</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>shade</goal>
             </goals>
-            <configuration>
-              <descriptors>src/assembly/assembly.xml</descriptors>
-            </configuration>
           </execution>
         </executions>
       </plugin>
