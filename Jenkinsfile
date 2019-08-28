@@ -128,7 +128,7 @@ pipeline {
             steps {
                 echo 'Checking Code Quality on SonarCloud'
                 withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-                    sh 'mvn -P${JENKINS_PROFILE},with-boost,with-java,with-dotnet,with-cpp,with-python,with-proxies,with-sandbox,with-logstash sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
+                    sh 'mvn -P${JENKINS_PROFILE},with-jav,with-python,with-proxies,with-sandbox,with-logstash sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
                 }
             }
         }
