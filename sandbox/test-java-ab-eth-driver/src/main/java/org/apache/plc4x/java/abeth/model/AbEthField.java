@@ -28,11 +28,14 @@ import java.util.regex.Pattern;
 public class AbEthField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})/(?<subElementNumber>\\d{1,7}):(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
+//        Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})/(?<bitNumber>\\d{1,7}):(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
+        Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})(/(?<bitNumber>\\d{1,7}))?:(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
+
 
     private static final String FILE_NUMBER = "fileNumber";
     private static final String ELEMENT_NUMBER = "elementNumber";
-    private static final String SUB_ELEMENT_NUMBER = "subElementNumber";
+//    private static final String SUB_ELEMENT_NUMBER = "subElementNumber";
+    private static final String BIT_NUMBER = "bitNumber";
     private static final String DATA_TYPE = "dataType";
     private static final String SIZE = "size";
 
@@ -40,14 +43,14 @@ public class AbEthField implements PlcField {
     private final short fileNumber;
     private final FileType fileType;
     private final short elementNumber;
-    private final short subElementNumber;
+    private final short bitNumber;
 
-    public AbEthField(short byteSize, short fileNumber, FileType fileType, short elementNumber, short subElementNumber) {
+    public AbEthField(short byteSize, short fileNumber, FileType fileType, short elementNumber, short bitNumber) {
         this.byteSize = byteSize;
         this.fileNumber = fileNumber;
         this.fileType = fileType;
         this.elementNumber = elementNumber;
-        this.subElementNumber = subElementNumber;
+        this.bitNumber = bitNumber;
     }
 
     public short getByteSize() {
@@ -66,8 +69,8 @@ public class AbEthField implements PlcField {
         return elementNumber;
     }
 
-    public short getSubElementNumber() {
-        return subElementNumber;
+    public short getBitNumber() {
+        return bitNumber;
     }
 
     public static boolean matches(String fieldString) {
@@ -79,10 +82,10 @@ public class AbEthField implements PlcField {
         if(matcher.matches()) {
             short fileNumber = Short.parseShort(matcher.group(FILE_NUMBER));
             short elementNumber = Short.parseShort(matcher.group(ELEMENT_NUMBER));
-            short subElementNumber = Short.parseShort(matcher.group(SUB_ELEMENT_NUMBER));
+            short bitNumber = (matcher.group(BIT_NUMBER) != null) ? Short.parseShort(matcher.group(BIT_NUMBER)) : 0;  //Short.parseShort(matcher.group(BIT_NUMBER));
             FileType fileType = FileType.valueOf(matcher.group(DATA_TYPE).toUpperCase());
             short byteSize = Short.parseShort(matcher.group(SIZE));
-            return new AbEthField(byteSize, fileNumber, fileType,elementNumber, subElementNumber);
+            return new AbEthField(byteSize, fileNumber, fileType,elementNumber, bitNumber);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }

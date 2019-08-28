@@ -39,6 +39,7 @@ import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultShortFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +86,12 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
         PlcRequest request = msg.getRequest();
+
+        // reset counter since two byte values are possible in DF1
+        if (transactionCounterGenerator.get() > 65000) {
+            transactionCounterGenerator.set(10);
+        }
+
         if (request instanceof PlcReadRequest) {
             PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
 
@@ -97,7 +104,8 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
                 DF1RequestProtectedTypedLogicalRead logicalRead = new DF1RequestProtectedTypedLogicalRead(
                     abEthField.getByteSize(), abEthField.getFileNumber(), abEthField.getFileType().getTypeCode(),
-                    abEthField.getElementNumber(), abEthField.getSubElementNumber());
+                    abEthField.getElementNumber(), (short) 0); // Subelementnumber default to zero
+                // TODO: make target and origin address changeable
                 DF1RequestMessage requestMessage = new DF1CommandRequestMessage(
                     (short) 8, (short) 5, (short) 0, transactionCounterGenerator.incrementAndGet(), logicalRead);
                 CIPEncapsulationReadRequest read = new CIPEncapsulationReadRequest(
@@ -167,7 +175,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
             if (responseCode == PlcResponseCode.OK) {
                 try {
                     switch (field.getFileType()) {
-                        case INTEGER: //HURZ
+                        case INTEGER: // output as single bytes
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
@@ -178,11 +186,15 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 fieldItem = new DefaultShortFieldItem(convData);
                             }
                             break;
-                        case INTBIT:
+                        case SINGLEBIT:
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
-
+                                if (field.getBitNumber() < 8) {
+                                    fieldItem = new DefaultBooleanFieldItem((data[0] & (1 <<  field.getBitNumber())) != 0);          // read from first byte
+                                } else {
+                                    fieldItem = new DefaultBooleanFieldItem((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
+                                }
                             }
                             break;
                         default:
