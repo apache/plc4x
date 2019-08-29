@@ -891,6 +891,9 @@
 
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
+
+            <!-- Exclude a temp file needed by Docker -->
+            <exclude>project_version</exclude>
           </excludes>
         </configuration>
       </plugin>
