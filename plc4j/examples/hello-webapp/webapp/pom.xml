@@ -61,24 +61,14 @@
         <executions>
           <!-- Unpack the client content into this module in order to be able to serve the client too. -->
           <execution>
-            <!--
-              REMARK: This might fail if you don't at least build till the "package" phase.
-              The reason is that in this case the dependency reference points to a directory instead of an archive.
-            -->
             <id>copy-client</id>
             <phase>prepare-package</phase>
             <goals>
-              <goal>unpack</goal>
+              <goal>unpack-dependencies</goal>
             </goals>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.plc4x.examples</groupId>
-                  <artifactId>plc4j-hello-webapp-client</artifactId>
-                  <type>war</type>
-                  <outputDirectory>${project.build.outputDirectory}/static/</outputDirectory>
-                </artifactItem>
-              </artifactItems>
+              <includeArtifactIds>plc4j-hello-webapp-client</includeArtifactIds>
+              <outputDirectory>${project.build.outputDirectory}/static/</outputDirectory>
             </configuration>
           </execution>
         </executions>
