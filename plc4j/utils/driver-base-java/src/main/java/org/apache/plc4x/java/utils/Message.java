@@ -20,4 +20,7 @@
 package org.apache.plc4x.java.utils;
 
 public interface Message {
+
+    int getLengthInBytes();
+
 }

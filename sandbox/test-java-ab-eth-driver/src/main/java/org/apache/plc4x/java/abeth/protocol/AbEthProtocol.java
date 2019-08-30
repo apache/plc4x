@@ -18,48 +18,14 @@ under the License.
 */
 package org.apache.plc4x.java.abeth.protocol;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
 import org.apache.plc4x.java.abeth.readwrite.io.CIPEncapsulationPacketIO;
-import org.apache.plc4x.java.base.PlcByteToMessageCodec;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.plc4x.java.base.GeneratedDriverByteToMessageCodec;
 
-import java.util.List;
-
-public class AbEthProtocol extends PlcByteToMessageCodec<CIPEncapsulationPacket> {
-
-    private static final Logger logger = LoggerFactory.getLogger(AbEthProtocol.class);
-
-    private CIPEncapsulationPacketIO io;
+public class AbEthProtocol extends GeneratedDriverByteToMessageCodec<CIPEncapsulationPacket> {
 
     public AbEthProtocol() {
-        io = new CIPEncapsulationPacketIO();
-    }
-
-    @Override
-    protected void encode(ChannelHandlerContext ctx, CIPEncapsulationPacket cipEncapsulationPacket, ByteBuf byteBuf) throws Exception {
-        WriteBuffer buffer = new WriteBuffer(cipEncapsulationPacket.getLengthInBytes());
-        io.serialize(buffer, cipEncapsulationPacket);
-        byteBuf.writeBytes(buffer.getData());
-    }
-
-    @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
-        byte[] bytes = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(bytes);
-        ReadBuffer readBuffer = new ReadBuffer(bytes);
-        while (readBuffer.getPos() < bytes.length) {
-            try {
-                CIPEncapsulationPacket packet = io.parse(readBuffer);
-                out.add(packet);
-            } catch (Exception e) {
-                logger.warn("Error decoding package: " + e.getMessage());
-            }
-        }
+        super(new CIPEncapsulationPacketIO());
     }
 
 }

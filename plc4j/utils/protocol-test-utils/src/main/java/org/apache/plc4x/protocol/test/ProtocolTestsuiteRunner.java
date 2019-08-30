@@ -112,7 +112,7 @@ public class ProtocolTestsuiteRunner {
                 System.out.println(xmlString);
                 throw new ProtocolTestsuiteException("Differences were found after parsing.\n" + diff.toString());
             }
-            WriteBuffer writeBuffer = new WriteBuffer(((SizeAware) msg).getLengthInBytes(), testSuite.isLittleEndian());
+            WriteBuffer writeBuffer = new WriteBuffer(((Message) msg).getLengthInBytes(), testSuite.isLittleEndian());
             messageIO.serialize(writeBuffer, msg);
             byte[] data = writeBuffer.getData();
             if(testcase.getRaw().length != data.length) {
