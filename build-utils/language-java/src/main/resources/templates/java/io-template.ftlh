@@ -48,7 +48,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>, ${typeName}> {
+public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInput<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>><#else>MessageIO<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>, ${typeName}></#if> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
@@ -281,6 +281,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
         </#if>
     }
 
+<#if outputFlavor != "passive">
     public void serialize(WriteBuffer io, ${typeName} value, Object... args) throws ParseException {
 <#if type.parserArguments?has_content>
 <#list type.parserArguments as parserArgument>
@@ -389,6 +390,7 @@ public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscrim
 </#switch>
 </#list>
     }
+</#if>
 
     private static int COUNT(Object obj) {
         if(obj.getClass().isArray()) {
