@@ -47,6 +47,7 @@
             <configuration>
               <protocolName>ab-eth</protocolName>
               <languageName>java</languageName>
+              <outputFlavor>read-write</outputFlavor>
             </configuration>
           </execution>
         </executions>

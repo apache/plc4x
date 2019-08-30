@@ -23,19 +23,16 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.base.PlcByteToMessageCodec;
-import org.apache.plc4x.java.df1.DF1Command;
-import org.apache.plc4x.java.df1.DF1Symbol;
-import org.apache.plc4x.java.df1.DF1SymbolMessageFrame;
-import org.apache.plc4x.java.df1.DF1UnprotectedReadRequest;
-import org.apache.plc4x.java.df1.io.DF1SymbolIO;
+import org.apache.plc4x.java.df1.readwrite.DF1Command;
+import org.apache.plc4x.java.df1.readwrite.DF1Symbol;
+import org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame;
+import org.apache.plc4x.java.df1.readwrite.io.DF1SymbolIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
 

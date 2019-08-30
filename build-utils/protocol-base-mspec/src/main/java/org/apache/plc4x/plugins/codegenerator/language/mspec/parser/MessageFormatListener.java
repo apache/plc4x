@@ -251,6 +251,18 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     @Override
+    public void enterVirtualField(MSpecParser.VirtualFieldContext ctx) {
+        SimpleTypeReference type = getSimpleTypeReference(ctx.type);
+        String name = ctx.name.id.getText();
+        String valueExpressionString = ctx.valueExpression.expr.getText();
+        Term valueExpression = getExpressionTerm(valueExpressionString);
+        Field field = new DefaultVirtualField(type, name, valueExpression);
+        if(parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
     public void enterCaseStatement(MSpecParser.CaseStatementContext ctx) {
         List<Field> parserContext = new LinkedList<>();
         parserContexts.push(parserContext);

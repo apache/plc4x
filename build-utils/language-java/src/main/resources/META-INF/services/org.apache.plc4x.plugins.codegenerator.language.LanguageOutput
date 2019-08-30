@@ -16,5 +16,4 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-org.apache.plc4x.language.java.JavaActiveLanguageOutput
-org.apache.plc4x.language.java.JavaPassiveLanguageOutput
+org.apache.plc4x.language.java.JavaLanguageOutput

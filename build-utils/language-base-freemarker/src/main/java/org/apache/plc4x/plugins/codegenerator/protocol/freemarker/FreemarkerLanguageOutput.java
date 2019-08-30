@@ -41,7 +41,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String languageName, String protocolName, Map<String, ComplexTypeDefinition> types)
+    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, ComplexTypeDefinition> types)
         throws GenerationException {
 
         try {
@@ -62,6 +62,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 Map<String, Object> typeContext = new HashMap<>();
                 typeContext.put("languageName", languageName);
                 typeContext.put("protocolName", protocolName);
+                typeContext.put("outputFlavor", outputFlavor);
                 typeContext.put("typeName", typeEntry.getKey());
                 typeContext.put("type", typeEntry.getValue());
                 typeContext.put("helper", getHelper(types));

@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.df1.protocol;
 
-import com.github.jinahya.bit.io.DefaultBitInput;
-import com.github.jinahya.bit.io.DefaultBitOutput;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
@@ -35,10 +32,9 @@ import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultFloatFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
 import org.apache.plc4x.java.df1.*;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultArrayField;
+import org.apache.plc4x.java.df1.readwrite.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

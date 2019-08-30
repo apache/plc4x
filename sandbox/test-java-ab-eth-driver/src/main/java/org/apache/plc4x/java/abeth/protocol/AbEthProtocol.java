@@ -20,13 +20,9 @@ package org.apache.plc4x.java.abeth.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.plc4x.java.abeth.CIPEncapsulationConnectionRequest;
-import org.apache.plc4x.java.abeth.CIPEncapsulationConnectionResponse;
-import org.apache.plc4x.java.abeth.CIPEncapsulationPacket;
-import org.apache.plc4x.java.abeth.io.CIPEncapsulationPacketIO;
+import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
+import org.apache.plc4x.java.abeth.readwrite.io.CIPEncapsulationPacketIO;
 import org.apache.plc4x.java.base.PlcByteToMessageCodec;
-import org.apache.plc4x.java.base.events.ConnectEvent;
-import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
 import org.slf4j.Logger;

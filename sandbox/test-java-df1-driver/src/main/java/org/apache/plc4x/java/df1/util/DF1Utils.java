@@ -18,8 +18,9 @@
  */
 package org.apache.plc4x.java.df1.util;
 
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.plc4x.java.df1.*;
+import org.apache.plc4x.java.df1.readwrite.DF1Command;
+import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadRequest;
+import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse;
 import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;

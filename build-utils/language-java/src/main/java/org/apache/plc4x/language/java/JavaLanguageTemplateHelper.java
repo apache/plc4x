@@ -46,12 +46,10 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         this.types = types;
     }
 
-    public String languagePackageName(String languageName) {
-        return String.join("", languageName.split("\\-"));
-    }
-
-    public String protocolPackageName(String protocolName) {
-        return String.join("", protocolName.split("\\-"));
+    public String packageName(String protocolName, String languageName, String languageFlavorName) {
+        return "org.apache.plc4x." + String.join("", languageName.split("\\-")) + "." +
+            String.join("", protocolName.split("\\-")) + "." +
+            String.join("", languageFlavorName.split("\\-"));
     }
 
     public String getLanguageTypeNameForField(TypedField field) {

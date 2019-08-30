@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-org/apache/plc4x/${helper.languagePackageName(languageName)}/${helper.protocolPackageName(protocolName)}/${typeName}.java
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${typeName}.java
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -36,7 +36,7 @@ org/apache/plc4x/${helper.languagePackageName(languageName)}/${helper.protocolPa
   under the License.
 */
 
-package org.apache.plc4x.${helper.languagePackageName(languageName)}.${helper.protocolPackageName(protocolName)};
+package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.utils.Message;
@@ -96,6 +96,12 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 <#list type.propertyFields as field>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
         return ${field.name};
+    }
+
+</#list>
+<#list type.virtualFields as field>
+    public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
+        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.valueExpression)});;
     }
 
 </#list>
@@ -181,6 +187,10 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "switch">
 
         // Length of sub-type elements will be added by sub-type...
+        <#break>
+    <#case "virtual">
+
+        // A virtual field doesn't have any in- or output.
         <#break>
 </#switch>
 </#list>

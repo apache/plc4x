@@ -21,8 +21,8 @@ package org.apache.plc4x.javapassive.s7.protocol;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.javapassive.s7.S7Message;
-import org.apache.plc4x.javapassive.s7.TPKTPacket;
+import org.apache.plc4x.java.s7.passive.S7Message;
+import org.apache.plc4x.java.s7.passive.TPKTPacket;
 
 import java.util.List;
 

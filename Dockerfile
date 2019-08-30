@@ -70,12 +70,12 @@ RUN ./mvnw -P with-java,with-cpp,with-boost,with-dotnet,with-python,with-proxies
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version
 
-# Move the file to a place we can reference it from without a version
-RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-storage-elasticsearch/target/plc4j-hello-storage-elasticsearch-$PROJECT_VERSION-uber-jar.jar plc4xdemo.jar
-
 ##########################################################################################
 # Build a demo container
 ##########################################################################################
+
+# Move the file to a place we can reference it from without a version
+RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-storage-elasticsearch/target/plc4j-hello-storage-elasticsearch-$PROJECT_VERSION-uber-jar.jar plc4xdemo.jar
 
 # Now create an actuall deployment container
 FROM azul/zulu-openjdk:latest

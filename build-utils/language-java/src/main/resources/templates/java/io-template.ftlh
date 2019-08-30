@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-org/apache/plc4x/${helper.languagePackageName(languageName)}/${helper.protocolPackageName(protocolName)}/io/${typeName}IO.java
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/io/${typeName}IO.java
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -36,10 +36,10 @@ org/apache/plc4x/${helper.languagePackageName(languageName)}/${helper.protocolPa
   under the License.
 */
 
-package org.apache.plc4x.${helper.languagePackageName(languageName)}.${helper.protocolPackageName(protocolName)}.io;
+package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
 
-import org.apache.plc4x.${helper.languagePackageName(languageName)}.${helper.protocolPackageName(protocolName)}.*;
-<#if helper.getComplexTypes(type)?has_content>import org.apache.plc4x.${helper.languagePackageName(languageName)}.${helper.protocolPackageName(protocolName)}.io.*;</#if>
+import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
+<#if helper.getComplexTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
 import org.apache.plc4x.java.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class ${typeName}IO implements MessageInput<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>> {
+public class ${typeName}IO implements MessageIO<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>, ${typeName}> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
@@ -279,6 +279,115 @@ public class ${typeName}IO implements MessageInput<${typeName}<#if helper.isDisc
         <#else>
         return new ${typeName}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
         </#if>
+    }
+
+    public void serialize(WriteBuffer io, ${typeName} value, Object... args) throws ParseException {
+<#if type.parserArguments?has_content>
+<#list type.parserArguments as parserArgument>
+        ${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name} = (${helper.getLanguageTypeNameForSpecType(parserArgument.type)}) args[${parserArgument?index}];
+</#list>
+</#if>
+<#list type.fields as field>
+<#switch field.typeName>
+    <#case "array">
+
+        // Array Field (${field.name})
+        if(value.get${field.name?cap_first}() != null) {
+            for(${helper.getLanguageTypeNameForField(field)} element : value.get${field.name?cap_first}()) {
+                <#if helper.isSimpleType(field.type)>
+                io.${helper.getWriteBufferReadMethodCall(field.type, "element")};
+                <#else>
+                ${field.type.name?uncap_first}IO.serialize(io, element);
+                </#if>
+            }
+        }
+        <#break>
+    <#case "checksum">
+
+        // Checksum Field (${field.name}) (Calculated)
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.checksumExpression, type.parserArguments)});
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        <#break>
+    <#case "const">
+
+        // Const Field (${field.name})
+        io.${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)};
+        <#break>
+    <#case "discriminator">
+
+        // Discriminator Field (${field.name}) (Used as input to a switch field)
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.getDiscriminatorValues()[0];
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
+        <#break>
+    <#case "implicit">
+
+        // Implicit Field (${field.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)});
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        <#break>
+    <#case "manualArray">
+
+        // Manual Array Field (${field.name})
+        if(value.get${field.name?cap_first}() != null) {
+            for(${helper.getLanguageTypeNameForField(field)} element : value.get${field.name?cap_first}()) {
+                ${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)};
+            }
+        }
+        <#break>
+    <#case "manual">
+
+        // Manual Field (${field.name})
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)});
+         io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+       <#break>
+    <#case "optional">
+
+        // Optional Field (${field.name}) (Can be skipped, if the value is null)
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = null;
+        if(value.get${field.name?cap_first}() != null) {
+            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.get${field.name?cap_first}();
+            <#if helper.isSimpleType(field.type)>
+            io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
+            <#else>
+            ${field.type.name?uncap_first}IO.serialize(io, ${field.name});
+            </#if>
+        }
+        <#break>
+    <#case "padding">
+
+        // Padding Field (${field.name})
+        boolean _${field.name}NeedsPadding = (boolean) (${helper.toSerializationExpression(field.paddingCondition, type.parserArguments)});
+        if(_${field.name}NeedsPadding) {
+            ${helper.getLanguageTypeNameForField(field)} _${field.name}PaddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.paddingValue, type.parserArguments)});
+            io.${helper.getWriteBufferReadMethodCall(field.type, "(_" + field.name + "PaddingValue)")?no_esc};
+        }
+        <#break>
+    <#case "reserved">
+
+        // Reserved Field
+        io.${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)};
+        <#break>
+    <#case "simple">
+
+        // Simple Field (${field.name})
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.get${field.name?cap_first}();
+        <#if helper.isSimpleType(field.type)>
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
+        <#else>
+        ${field.type.name?uncap_first}IO.serialize(io, ${field.name}<#if field.params?has_content>, <#list field.params as term>(${helper.getArgumentType(field.type, term?index)}) (${helper.toDeserializationExpression(term, type.parserArguments)})<#sep>, </#sep></#list></#if>);
+        </#if>
+        <#break>
+    <#case "switch">
+
+        // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
+        <#list field.cases as case>
+        if(value instanceof ${case.name}) {
+            ${case.name?uncap_first}IO.serialize(io, (${case.name}) value<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+        }<#sep> else </#sep>
+        </#list>
+        <#break>
+</#switch>
+</#list>
     }
 
     private static int COUNT(Object obj) {

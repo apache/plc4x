@@ -21,10 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.fields.ConstField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
-import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
+import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -64,7 +61,13 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
 
     @Override
     public List<PropertyField> getPropertyFields() {
-        return fields.stream().filter(field -> ((field instanceof PropertyField) && !(field instanceof ConstField))).map(field -> (PropertyField) field)
+        return fields.stream().filter(field -> ((field instanceof PropertyField) && !(field instanceof ConstField) && !(field instanceof VirtualField))).map(field -> (PropertyField) field)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VirtualField> getVirtualFields() {
+        return fields.stream().filter(field -> (field instanceof VirtualField)).map(field -> (VirtualField) field)
             .collect(Collectors.toList());
     }
 

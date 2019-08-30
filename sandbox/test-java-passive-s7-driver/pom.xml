@@ -46,7 +46,8 @@
             </goals>
             <configuration>
               <protocolName>s7</protocolName>
-              <languageName>java-passive</languageName>
+              <languageName>java</languageName>
+              <outputFlavor>passive</outputFlavor>
             </configuration>
           </execution>
         </executions>

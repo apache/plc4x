@@ -50,6 +50,7 @@ field
  | reservedField
  | simpleField
  | typeSwitchField
+ | virtualField
  ;
 
 arrayField
@@ -98,6 +99,10 @@ simpleField
 
 typeSwitchField
  : 'typeSwitch' discriminators=multipleExpressions caseStatement*
+ ;
+
+virtualField
+ : 'virtual' type=dataType name=idExpression valueExpression=expression
  ;
 
 

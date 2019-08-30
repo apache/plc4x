@@ -18,8 +18,8 @@
  */
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.s7.TPKTPacket;
-import org.apache.plc4x.java.s7.io.TPKTPacketIO;
+import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
+import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
 

@@ -18,8 +18,8 @@
  */
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.javapassive.s7.TPKTPacket;
-import org.apache.plc4x.javapassive.s7.io.TPKTPacketIO;
+import org.apache.plc4x.java.s7.passive.TPKTPacket;
+import org.apache.plc4x.java.s7.passive.io.TPKTPacketIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
 
 public class BenchmarkGeneratedPassiveS7 {

@@ -47,6 +47,7 @@
             <configuration>
               <protocolName>df1</protocolName>
               <languageName>java</languageName>
+              <outputFlavor>read-write</outputFlavor>
             </configuration>
           </execution>
         </executions>
