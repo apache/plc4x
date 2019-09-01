@@ -23,7 +23,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultManualArrayField implements ManualArrayField {
+public class DefaultManualArrayField extends DefaultTaggedField implements ManualArrayField {
 
     private final TypeReference type;
     private final String name;
@@ -34,7 +34,8 @@ public class DefaultManualArrayField implements ManualArrayField {
     private final Term lengthExpression;
     private final Term[] params;
 
-    public DefaultManualArrayField(TypeReference type, String name, LoopType loopType, Term loopExpression, Term serializationExpression, Term deserializationExpression, Term lengthExpression, Term[] params) {
+    public DefaultManualArrayField(String[] tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term serializationExpression, Term deserializationExpression, Term lengthExpression, Term[] params) {
+        super(tags);
         this.type = type;
         this.name = name;
         this.loopType = loopType;

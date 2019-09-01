@@ -27,11 +27,13 @@ public abstract class DefaultTypeDefinition {
 
     private final String name;
     private final Argument[] parserArguments;
+    private final String[] tags;
     private TypeDefinition parentType;
 
-    public DefaultTypeDefinition(String name, Argument[] parserArguments) {
+    public DefaultTypeDefinition(String name, Argument[] parserArguments, String[] tags) {
         this.name = name;
         this.parserArguments = parserArguments;
+        this.tags = tags;
         this.parentType = null;
     }
 
@@ -41,6 +43,10 @@ public abstract class DefaultTypeDefinition {
 
     public Argument[] getParserArguments() {
         return parserArguments;
+    }
+
+    public String[] getTags() {
+        return tags;
     }
 
     public TypeDefinition getParentType() {

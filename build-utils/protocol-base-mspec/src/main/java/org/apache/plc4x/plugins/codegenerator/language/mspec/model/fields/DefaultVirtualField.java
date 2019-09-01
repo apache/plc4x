@@ -23,13 +23,14 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultVirtualField implements VirtualField {
+public class DefaultVirtualField extends DefaultTaggedField implements VirtualField {
 
     private final TypeReference type;
     private final String name;
     private final Term valueExpression;
 
-    public DefaultVirtualField(TypeReference type, String name, Term valueExpression) {
+    public DefaultVirtualField(String[] tags, TypeReference type, String name, Term valueExpression) {
+        super(tags);
         this.type = type;
         this.name = name;
         this.valueExpression = valueExpression;

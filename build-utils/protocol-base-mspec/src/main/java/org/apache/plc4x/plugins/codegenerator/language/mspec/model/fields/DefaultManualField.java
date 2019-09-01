@@ -23,7 +23,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ManualField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultManualField implements ManualField {
+public class DefaultManualField extends DefaultTaggedField implements ManualField {
 
     private final TypeReference type;
     private final String name;
@@ -31,7 +31,8 @@ public class DefaultManualField implements ManualField {
     private final Term deserializationExpression;
     private final Term[] params;
 
-    public DefaultManualField(TypeReference type, String name, Term serializationExpression, Term deserializationExpression, Term[] params) {
+    public DefaultManualField(String[] tags, TypeReference type, String name, Term serializationExpression, Term deserializationExpression, Term[] params) {
+        super(tags);
         this.type = type;
         this.name = name;
         this.serializationExpression = serializationExpression;

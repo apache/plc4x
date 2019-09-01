@@ -34,7 +34,7 @@ public class DefaultSwitchField implements SwitchField {
 
     public DefaultSwitchField(String[] discriminatorNames) {
         this.discriminatorNames = discriminatorNames;
-        cases = new LinkedList<>();
+        this.cases = new LinkedList<>();
     }
 
     public String[] getDiscriminatorNames() {

@@ -23,12 +23,13 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultDiscriminatorField implements DiscriminatorField {
+public class DefaultDiscriminatorField extends DefaultTaggedField implements DiscriminatorField {
 
     private final TypeReference type;
     private final String name;
 
-    public DefaultDiscriminatorField(TypeReference type, String name) {
+    public DefaultDiscriminatorField(String[] tags, TypeReference type, String name) {
+        super(tags);
         this.type = type;
         this.name = name;
     }

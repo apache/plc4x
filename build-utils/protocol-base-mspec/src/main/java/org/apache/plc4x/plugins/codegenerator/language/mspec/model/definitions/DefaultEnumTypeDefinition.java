@@ -30,8 +30,8 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
     private final TypeDefinition baseType;
     private final List<EnumTypeDefinition.EnumValue> values;
 
-    public DefaultEnumTypeDefinition(String name, Argument[] parserArguments, TypeDefinition baseType, List<EnumValue> values) {
-        super(name, parserArguments);
+    public DefaultEnumTypeDefinition(String name, Argument[] parserArguments, String[] tags, TypeDefinition baseType, List<EnumValue> values) {
+        super(name, parserArguments, tags);
         this.baseType = baseType;
         this.values = values;
     }

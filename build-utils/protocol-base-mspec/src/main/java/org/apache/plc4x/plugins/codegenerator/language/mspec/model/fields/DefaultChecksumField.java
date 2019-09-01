@@ -23,13 +23,14 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultChecksumField implements ChecksumField {
+public class DefaultChecksumField extends DefaultTaggedField implements ChecksumField {
 
     private final TypeReference type;
     private final String name;
     private final Term checksumExpression;
 
-    public DefaultChecksumField(TypeReference type, String name, Term checksumExpression) {
+    public DefaultChecksumField(String[] tags, TypeReference type, String name, Term checksumExpression) {
+        super(tags);
         this.type = type;
         this.name = name;
         this.checksumExpression = checksumExpression;

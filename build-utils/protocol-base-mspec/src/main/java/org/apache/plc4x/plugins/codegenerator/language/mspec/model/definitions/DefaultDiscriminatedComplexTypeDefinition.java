@@ -30,8 +30,8 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
 
     private final String[] discriminatorValues;
 
-    public DefaultDiscriminatedComplexTypeDefinition(String name, Argument[] parserArguments, String[] discriminatorValues, List<Field> fields) {
-        super(name, parserArguments, false, fields);
+    public DefaultDiscriminatedComplexTypeDefinition(String name, Argument[] parserArguments, String[] tags, String[] discriminatorValues, List<Field> fields) {
+        super(name, parserArguments, tags, false, fields);
         this.discriminatorValues = discriminatorValues;
     }
 

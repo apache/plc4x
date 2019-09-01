@@ -33,8 +33,8 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     private final boolean isAbstract;
     private final List<Field> fields;
 
-    public DefaultComplexTypeDefinition(String name, Argument[] parserArguments, boolean isAbstract, List<Field> fields) {
-        super(name, parserArguments);
+    public DefaultComplexTypeDefinition(String name, Argument[] parserArguments, String[] tags, boolean isAbstract, List<Field> fields) {
+        super(name, parserArguments, tags);
         this.isAbstract = isAbstract;
         this.fields = fields;
     }

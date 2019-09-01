@@ -23,7 +23,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultPaddingField implements PaddingField {
+public class DefaultPaddingField extends DefaultTaggedField implements PaddingField {
 
     private final TypeReference type;
     private final String name;
@@ -31,7 +31,8 @@ public class DefaultPaddingField implements PaddingField {
     private final Term paddingCondition;
     private final Term[] params;
 
-    public DefaultPaddingField(TypeReference type, String name, Term paddingValue, Term paddingCondition, Term[] params) {
+    public DefaultPaddingField(String[] tags, TypeReference type, String name, Term paddingValue, Term paddingCondition, Term[] params) {
+        super(tags);
         this.type = type;
         this.name = name;
         this.paddingValue = paddingValue;

@@ -23,14 +23,15 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.OptionalField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultOptionalField implements OptionalField {
+public class DefaultOptionalField extends DefaultTaggedField implements OptionalField {
 
     private final TypeReference type;
     private final String name;
     private final Term conditionExpression;
     private final Term[] params;
 
-    public DefaultOptionalField(TypeReference type, String name, Term conditionExpression, Term[] params) {
+    public DefaultOptionalField(String[] tags, TypeReference type, String name, Term conditionExpression, Term[] params) {
+        super(tags);
         this.type = type;
         this.name = name;
         this.conditionExpression = conditionExpression;
