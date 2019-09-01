@@ -170,6 +170,12 @@ http://win-builds.org/doku.php/download_and_installation_from_windows
 Make sure the `bin` directory containing the executable `mingw32-make.exe`
 is on your systems `PATH`.
 
+Building with Docker
+-------------------------------
+
+   docker build -t plc4x .
+
+   docker run -p 9200:9200 -p 9300:9300 --name plc4x plc4x
 
 Licensing
 ---------

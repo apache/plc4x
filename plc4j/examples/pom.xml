@@ -74,7 +74,8 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <transformers combine.children="append">
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>${app.main.class}</mainClass>
                 </transformer>

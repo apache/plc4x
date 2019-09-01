@@ -122,7 +122,7 @@
             <goals>
               <goal>shade</goal>
             </goals>
-            <configuration combine.children="append">
+            <configuration>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
