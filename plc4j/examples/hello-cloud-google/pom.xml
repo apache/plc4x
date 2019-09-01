@@ -69,9 +69,40 @@
       <artifactId>logback-classic</artifactId>
     </dependency>
 
+    <!-- Required driver implementation -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ethernet-ip</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-modbus</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-opcua</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-simulated</artifactId>
       <version>0.5.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -84,7 +115,12 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>

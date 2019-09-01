@@ -38,7 +38,12 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -50,12 +55,6 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
       <version>0.5.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.5.0-SNAPSHOT</version>
-      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -69,6 +68,44 @@
     <dependency>
       <groupId>javax.annotation</groupId>
       <artifactId>javax.annotation-api</artifactId>
+    </dependency>
+
+    <!-- Required driver implementation -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ethernet-ip</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-modbus</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-opcua</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-s7</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-simulated</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 
