@@ -181,9 +181,11 @@ public class MessageFormatListener extends MSpecBaseListener {
         Term serializationExpression = getExpressionTerm(serializationExpressionString);
         String deserializationExpressionString = ctx.deserializationExpression.expr.getText();
         Term deserializationExpression = getExpressionTerm(deserializationExpressionString);
+        String lengthExpressionString = ctx.lengthExpression.expr.getText();
+        Term lengthExpression =  getExpressionTerm(lengthExpressionString);
         Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
         Field field = new DefaultManualField(null, type, name, serializationExpression, deserializationExpression,
-            params);
+            lengthExpression, params);
         if(parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }

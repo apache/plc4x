@@ -29,14 +29,16 @@ public class DefaultManualField extends DefaultTaggedField implements ManualFiel
     private final String name;
     private final Term serializationExpression;
     private final Term deserializationExpression;
+    private final Term lengthExpression;
     private final Term[] params;
 
-    public DefaultManualField(String[] tags, TypeReference type, String name, Term serializationExpression, Term deserializationExpression, Term[] params) {
+    public DefaultManualField(String[] tags, TypeReference type, String name, Term serializationExpression, Term deserializationExpression, Term lengthExpression, Term[] params) {
         super(tags);
         this.type = type;
         this.name = name;
         this.serializationExpression = serializationExpression;
         this.deserializationExpression = deserializationExpression;
+        this.lengthExpression = lengthExpression;
         this.params = params;
     }
 
@@ -54,6 +56,10 @@ public class DefaultManualField extends DefaultTaggedField implements ManualFiel
 
     public Term getDeserializationExpression() {
         return deserializationExpression;
+    }
+
+    public Term getLengthExpression() {
+        return lengthExpression;
     }
 
     public Term[] getParams() {
