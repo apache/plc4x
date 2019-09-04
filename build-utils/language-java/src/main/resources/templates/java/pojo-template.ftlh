@@ -100,7 +100,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#list>
 <#list type.virtualFields as field>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
-        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.valueExpression)});;
+        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.valueExpression, type.parserArguments)});
     }
 
 </#list>
