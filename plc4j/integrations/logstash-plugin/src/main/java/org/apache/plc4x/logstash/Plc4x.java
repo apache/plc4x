@@ -75,7 +75,6 @@ public class Plc4x implements Input {
         // receive a stop request, whichever comes first.
         // Establish a connection to the plc using the url provided as first argument
         ScraperConfigurationTriggeredImplBuilder builder = new ScraperConfigurationTriggeredImplBuilder();
-        //TODO: use multiple sources:
 
         for (String sourceName : sources.keySet()) {
             Object o = sources.get(sourceName);
@@ -115,7 +114,6 @@ public class Plc4x implements Input {
             triggerCollector = new TriggerCollectorImpl(plcDriverManager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
 
-                //TODO: use jobname etc for multiple connections
                 for (Map.Entry<String, Object> result : results.entrySet()) {
                     // Get field-name and -value from the results.
                     String fieldName = result.getKey();
