@@ -27,6 +27,10 @@ It is fully free and fully open source. The license is Apache 2.0, meaning you a
 
 The documentation for Logstash Java plugins is available [here](https://www.elastic.co/guide/en/logstash/6.7/contributing-java-plugin.html).
 
+OPC UA demo server implementation [here](https://github.com/stefah/opcua-demo-server-plc4x).
+
+Elasticsearch demo showcase [here](https://github.com/stefah/plc4x-elasticsearch-demo)
+
 Example input pipeline for logstash:
 ```
 ## logstash pipeline config - input
@@ -59,3 +63,14 @@ input {
 	}
 }
 ```
+
+
+To install the plugin:
+1) Open directory *infrastructure/logstash* in the elasticsearch demo showcase.
+2) Copy the logstasg-input-plc4x plugin *logstash-input-plc4x-0.5.0.gem* to *infrastructure/logstash/plugin*
+3) Create pipeline file in *infrastructure/logstash/pipeline* (see example pipeline above)
+4) Adjust the Dockerfile in *infrastructure*:
+- Add pipeline and plugin folder 
+*ADD plugin plugin*
+*ADD pipeline pipeline*
+- install the plugin *RUN logstash-plugin install plugin/logstash-input-plc4x-0.5.0.gem*
