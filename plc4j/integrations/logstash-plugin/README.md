@@ -70,7 +70,5 @@ To install the plugin:
 2) Copy the logstasg-input-plc4x plugin *logstash-input-plc4x-0.5.0.gem* to *infrastructure/logstash/plugin*
 3) Create pipeline file in *infrastructure/logstash/pipeline* (see example pipeline above)
 4) Adjust the Dockerfile in *infrastructure*:
-- Add pipeline and plugin folder 
-*ADD plugin plugin*
-*ADD pipeline pipeline*
-- install the plugin *RUN logstash-plugin install plugin/logstash-input-plc4x-0.5.0.gem*
+- to copy both folders: *ADD plugin plugin* and *ADD pipeline pipeline*
+- to install the plugin: *RUN logstash-plugin install plugin/logstash-input-plc4x-0.5.0.gem*
