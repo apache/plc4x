@@ -34,11 +34,16 @@
   <description>A collection of utilities used in multiple modules.</description>
 
   <modules>
+    <!-- Base module for all types of PLC4X drivers -->
     <module>driver-base-java</module>
-    <module>protocol-test-utils</module>
+    <!-- Non-default input options -->
     <module>raw-sockets</module>
+    <module>pcap-sockets</module>
+    <!-- Utilities for building tests -->
     <module>test-utils</module>
+    <module>protocol-test-utils</module>
 
+    <!-- Utilities used externally by users -->
     <module>connection-pool</module>
     <module>opm</module>
     <module>scraper</module>

@@ -16,26 +16,22 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.utils.rawsockets.netty;
+package org.apache.plc4x.java.utils.pcapsockets.netty;
 
-import org.pcap4j.packet.*;
+import java.io.File;
+import java.net.SocketAddress;
 
-/**
- * Little helper to automatically unwrap TCP packets to only
- * pass along the payload and not the raw Ethernet packet.
- */
-public class TcpIpPacketHandler implements PacketHandler {
+public class PcapSocketAddress extends SocketAddress {
+    private static final long serialVersionUID = 1L;
 
-    @Override
-    public byte[] getData(Packet packet) {
-        EthernetPacket ethernetPacket = (EthernetPacket) packet;
-        IpV4Packet ipv4Packet = (IpV4Packet) ethernetPacket.getPayload();
-        TcpPacket tcpPacket = (TcpPacket) ipv4Packet.getPayload();
-        if(tcpPacket.getPayload() instanceof UnknownPacket) {
-            UnknownPacket unknownPacket = (UnknownPacket) tcpPacket.getPayload();
-            return unknownPacket.getRawData();
-        }
-        return new byte[0];
+    private File pcapFile;
+
+    public PcapSocketAddress(File pcapFile) {
+        this.pcapFile = pcapFile;
+    }
+
+    public File getPcapFile() {
+        return pcapFile;
     }
 
 }

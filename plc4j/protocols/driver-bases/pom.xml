@@ -35,6 +35,7 @@
 
   <modules>
     <module>base</module>
+    <module>pcap-socket</module>
     <module>raw-socket</module>
     <module>serial</module>
     <module>tcp</module>

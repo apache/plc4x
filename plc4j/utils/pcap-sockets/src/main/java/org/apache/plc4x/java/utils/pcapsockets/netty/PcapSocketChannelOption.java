@@ -16,26 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.utils.rawsockets.netty;
+package org.apache.plc4x.java.utils.pcapsockets.netty;
 
-import org.pcap4j.packet.*;
+import io.netty.channel.ChannelOption;
 
-/**
- * Little helper to automatically unwrap TCP packets to only
- * pass along the payload and not the raw Ethernet packet.
- */
-public class TcpIpPacketHandler implements PacketHandler {
+public class PcapSocketChannelOption<T> extends ChannelOption<T> {
 
-    @Override
-    public byte[] getData(Packet packet) {
-        EthernetPacket ethernetPacket = (EthernetPacket) packet;
-        IpV4Packet ipv4Packet = (IpV4Packet) ethernetPacket.getPayload();
-        TcpPacket tcpPacket = (TcpPacket) ipv4Packet.getPayload();
-        if(tcpPacket.getPayload() instanceof UnknownPacket) {
-            UnknownPacket unknownPacket = (UnknownPacket) tcpPacket.getPayload();
-            return unknownPacket.getRawData();
-        }
-        return new byte[0];
+    public static final ChannelOption<PacketHandler> PACKET_HANDLER =
+        ChannelOption.valueOf(PacketHandler.class, "PACKET_HANDLER");
+
+    /**
+     * Option to increase/decrease the replay speed of the recording.
+     * 1.0 being real-time.
+     */
+    public static final ChannelOption<Float> SPEED_FACTOR =
+        ChannelOption.valueOf(Float.class, "SPEED_FACTOR");
+
+    protected PcapSocketChannelOption() {
+        super(null);
     }
 
 }
