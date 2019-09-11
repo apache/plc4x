@@ -61,20 +61,21 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         flowFile.getAttributes().forEach((field, value) -> {
             String address = getAddress(field);
             if(address != null) {
-                builder.addItem(field, address, value);
+                // TODO: Convert the String into the right type ...
+                builder.addItem(field, address, Boolean.valueOf(value));
             }
         });
         PlcWriteRequest writeRequest = builder.build();
 
         // Send the request to the PLC.
-        CompletableFuture<? extends PlcWriteResponse> future = writeRequest.execute();
-        future.whenComplete((response, throwable) -> {
-            if (throwable != null) {
-                session.transfer(session.create(), FAILURE);
-            } else {
-                session.transfer(session.create(), SUCCESS);
-            }
-        });
+        try {
+            final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
+            // TODO: Evaluate the response and create flow files for successful and unsuccessful updates
+            session.transfer(flowFile, SUCCESS);
+        } catch (Exception e) {
+            flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
+            session.transfer(flowFile, FAILURE);
+        }
     }
 
 }
