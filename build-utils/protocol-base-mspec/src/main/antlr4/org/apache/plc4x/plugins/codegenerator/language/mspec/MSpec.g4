@@ -30,6 +30,7 @@ complexTypeDefinition
 complexType
  : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
+ | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
  ;
 
 
@@ -105,6 +106,10 @@ virtualField
  : 'virtual' type=dataType name=idExpression valueExpression=expression
  ;
 
+enumValueDefinition
+ : LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
+ ;
+
 
 typeReference
  : complexTypeReference=IDENTIFIER
@@ -140,7 +145,8 @@ multipleExpressions
  ;
 
 innerExpression
- : HEX_LITERAL
+ : 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
+ | HEX_LITERAL
  | INTEGER_LITERAL
  | (IDENTIFIER | arrayType) ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
  | innerExpression '.' innerExpression // Field Reference or method call
@@ -200,6 +206,8 @@ BinaryOperator
  | '<'
  | '>='
  | '<='
+ | '&&'
+ | '||'
  | '%'
  ;
 

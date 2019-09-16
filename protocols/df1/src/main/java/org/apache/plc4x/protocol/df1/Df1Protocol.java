@@ -21,7 +21,7 @@ package org.apache.plc4x.protocol.df1;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 import java.io.InputStream;
@@ -35,7 +35,7 @@ public class Df1Protocol implements Protocol {
     }
 
     @Override
-    public Map<String, ComplexTypeDefinition> getTypeDefinitions() throws GenerationException {
+    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
         InputStream schemaInputStream = Df1Protocol.class.getResourceAsStream("/protocols/df1/df1.mspec");
         if(schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");

@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.language.java;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
@@ -40,9 +41,9 @@ import java.util.regex.Pattern;
 
 public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
 
-    private final Map<String, ComplexTypeDefinition> types;
+    private final Map<String, TypeDefinition> types;
 
-    public JavaLanguageTemplateHelper(Map<String, ComplexTypeDefinition> types) {
+    public JavaLanguageTemplateHelper(Map<String, TypeDefinition> types) {
         this.types = types;
     }
 
@@ -54,15 +55,23 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
 
     public String getLanguageTypeNameForField(TypedField field) {
         boolean optional = field instanceof OptionalField;
-        return getLanguageTypeNameForField(!optional, field);
+        return getLanguageTypeNameForField(field, !optional);
     }
 
     public String getNonPrimitiveLanguageTypeNameForField(TypedField field) {
-        return getLanguageTypeNameForField(false, field);
+        return getLanguageTypeNameForField(field, false);
     }
 
-    private String getLanguageTypeNameForField(boolean allowPrimitive, TypedField field) {
+    private String getLanguageTypeNameForField(TypedField field, boolean allowPrimitive) {
         TypeReference typeReference = field.getType();
+        return getLanguageTypeName(typeReference, allowPrimitive);
+    }
+
+    public String getLanguageTypeNameForSpecType(TypeReference typeReference) {
+        return getLanguageTypeName(typeReference, true);
+    }
+
+    public String getLanguageTypeName(TypeReference typeReference, boolean allowPrimitive) {
         if(typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
@@ -105,62 +114,6 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     }
                     if (simpleTypeReference.getSize() <= 64) {
                         return allowPrimitive ? "double" : "Double";
-                    }
-                    return "BigDecimal";
-                }
-                case STRING: {
-                    return "String";
-                }
-            }
-            return "Hurz";
-        } else {
-            return ((ComplexTypeReference) typeReference).getName();
-        }
-    }
-
-    public String getLanguageTypeNameForSpecType(TypeReference typeReference) {
-        if(typeReference instanceof SimpleTypeReference) {
-            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
-            switch (simpleTypeReference.getBaseType()) {
-                case BIT: {
-                    return "boolean";
-                }
-                case UINT: {
-                    if (simpleTypeReference.getSize() <= 4) {
-                        return "byte";
-                    }
-                    if (simpleTypeReference.getSize() <= 8) {
-                        return "short";
-                    }
-                    if (simpleTypeReference.getSize() <= 16) {
-                        return "int";
-                    }
-                    if (simpleTypeReference.getSize() <= 32) {
-                        return "long";
-                    }
-                    return "BigInteger";
-                }
-                case INT: {
-                    if (simpleTypeReference.getSize() <= 8) {
-                        return "byte";
-                    }
-                    if (simpleTypeReference.getSize() <= 16) {
-                        return "short";
-                    }
-                    if (simpleTypeReference.getSize() <= 32) {
-                        return "int";
-                    }
-                    if (simpleTypeReference.getSize() <= 64) {
-                        return "long";
-                    }
-                    return "BigInteger";
-                }
-                case FLOAT: {
-                    if (simpleTypeReference.getSize() <= 32) {
-                        return "float";
-                    }
-                    if (simpleTypeReference.getSize() <= 64) {
-                        return "double";
                     }
                     return "BigDecimal";
                 }
@@ -224,7 +177,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             if(!types.containsKey(complexTypeReference.getName())) {
                 throw new RuntimeException("Could not find definition of complex type " + complexTypeReference.getName());
             }
-            ComplexTypeDefinition complexTypeDefinition = types.get(complexTypeReference.getName());
+            TypeDefinition complexTypeDefinition = types.get(complexTypeReference.getName());
             if(complexTypeDefinition.getParserArguments().length <= index) {
                 throw new RuntimeException("Type " + complexTypeReference.getName() + " specifies too few parser arguments");
             }
@@ -639,6 +592,25 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
     private String toVariableExpressionRest(VariableLiteral vl) {
         return "get" + WordUtils.capitalize(vl.getName()) + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
             ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
+    }
+
+    public String escapeValue(TypeReference typeReference, String valueString) {
+        if(valueString == null) {
+            return null;
+        }
+        if(typeReference instanceof SimpleTypeReference) {
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            switch (simpleTypeReference.getBaseType()) {
+                case UINT:
+                case INT:
+                    // If it's a one character string and is numeric, output it as char.
+                    if(!NumberUtils.isParsable(valueString) && (valueString.length() == 1)) {
+                        return "'" + valueString + "'";
+                    }
+                    break;
+            }
+        }
+        return valueString;
     }
 
 }

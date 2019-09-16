@@ -28,10 +28,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannel;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelOption;
-import org.apache.plc4x.java.utils.pcapsockets.netty.TcpIpPacketHandler;
+import org.apache.plc4x.java.utils.pcapsockets.netty.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +39,13 @@ public class PcapChannelFactory implements ChannelFactory {
     private static final Logger logger = LoggerFactory.getLogger(PcapChannelFactory.class);
 
     private final File pcapFile;
+    private final float replaySpeedFactor;
+    private final PacketHandler packetHandler;
 
-    public PcapChannelFactory(File pcapFile) {
+    public PcapChannelFactory(File pcapFile, float replaySpeedFactor, PacketHandler packetHandler) {
         this.pcapFile = pcapFile;
+        this.replaySpeedFactor = replaySpeedFactor;
+        this.packetHandler = packetHandler;
     }
 
     @Override
@@ -56,8 +57,8 @@ public class PcapChannelFactory implements ChannelFactory {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(PcapSocketChannel.class);
-            bootstrap.option(PcapSocketChannelOption.PACKET_HANDLER, new TcpIpPacketHandler());
-            bootstrap.option(PcapSocketChannelOption.SPEED_FACTOR, 1.000f);
+            bootstrap.option(PcapSocketChannelOption.PACKET_HANDLER, packetHandler);
+            bootstrap.option(PcapSocketChannelOption.SPEED_FACTOR, replaySpeedFactor);
             bootstrap.handler(channelHandler);
 
             // Start the client.

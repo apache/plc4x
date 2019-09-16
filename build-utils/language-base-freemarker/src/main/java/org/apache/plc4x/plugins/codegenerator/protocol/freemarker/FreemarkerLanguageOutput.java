@@ -23,7 +23,8 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.core.ParseException;
 import freemarker.template.*;
 import org.apache.plc4x.plugins.codegenerator.language.LanguageOutput;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, ComplexTypeDefinition> types)
+    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types)
         throws GenerationException {
 
         try {
@@ -52,10 +52,11 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             freemarkerConfiguration.setTemplateLoader(classTemplateLoader);
 
             // Initialize all templates
-            List<Template> templateList = getTemplates(freemarkerConfiguration);
+            List<Template> complexTypesTemplateList = getComplexTypeTemplates(freemarkerConfiguration);
+            List<Template> enumTypesTemplateList = getEnumTypeTemplates(freemarkerConfiguration);
 
             // Iterate over the types and have content generated for each one
-            for (Map.Entry<String, ComplexTypeDefinition> typeEntry : types.entrySet()) {
+            for (Map.Entry<String, TypeDefinition> typeEntry : types.entrySet()) {
                 LOGGER.info("Generating type " + typeEntry.getKey());
 
                 // Prepare a new generation context
@@ -67,6 +68,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 typeContext.put("type", typeEntry.getValue());
                 typeContext.put("helper", getHelper(types));
 
+                List<Template> templateList = (typeEntry.getValue() instanceof EnumTypeDefinition) ?
+                    enumTypesTemplateList : complexTypesTemplateList;
                 for(Template template : templateList) {
                     // Create a variable size output location where the template can generate it's content to
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -118,8 +121,10 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
         return configuration;
     }
 
-    protected abstract List<Template> getTemplates(Configuration freemarkerConfiguration) throws IOException;
+    protected abstract List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException;
 
-    protected abstract FreemarkerLanguageTemplateHelper getHelper(Map<String, ComplexTypeDefinition> types);
+    protected abstract List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException;
+
+    protected abstract FreemarkerLanguageTemplateHelper getHelper(Map<String, TypeDefinition> types);
 
 }

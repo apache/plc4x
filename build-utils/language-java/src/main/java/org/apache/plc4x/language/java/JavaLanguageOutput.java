@@ -22,7 +22,7 @@ package org.apache.plc4x.language.java;
 import freemarker.template.*;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 
 import java.io.*;
 import java.util.*;
@@ -39,13 +39,18 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
         return Arrays.asList("read-write", "read-only", "passive");
     }
 
-    protected List<Template> getTemplates(Configuration freemarkerConfiguration) throws IOException {
+    protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
             freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"),
             freemarkerConfiguration.getTemplate("templates/java/io-template.ftlh"));
     }
 
-    protected FreemarkerLanguageTemplateHelper getHelper(Map<String, ComplexTypeDefinition> types) {
+    protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/java/enum-template.ftlh"));
+    }
+
+    protected FreemarkerLanguageTemplateHelper getHelper(Map<String, TypeDefinition> types) {
         return new JavaLanguageTemplateHelper(types);
     }
 

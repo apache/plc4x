@@ -191,6 +191,7 @@
 
   <modules>
     <module>ab-eth</module>
+    <module>bacnetip</module>
     <module>df1</module>
     <module>knxnetip</module>
     <module>s7</module>

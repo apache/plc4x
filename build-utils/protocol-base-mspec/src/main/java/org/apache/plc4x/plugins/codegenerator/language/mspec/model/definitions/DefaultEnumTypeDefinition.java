@@ -21,27 +21,49 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements EnumTypeDefinition {
 
-    private final TypeDefinition baseType;
-    private final List<EnumTypeDefinition.EnumValue> values;
+    private final TypeReference type;
+    private final EnumValue[] enumValues;
+    private final Map<String, TypeReference> constants;
 
-    public DefaultEnumTypeDefinition(String name, Argument[] parserArguments, String[] tags, TypeDefinition baseType, List<EnumValue> values) {
-        super(name, parserArguments, tags);
-        this.baseType = baseType;
-        this.values = values;
+    public DefaultEnumTypeDefinition(String name, TypeReference type, EnumValue[] enumValues,
+                                     Argument[] constants, String[] tags) {
+        super(name, constants, tags);
+        this.type = type;
+        this.enumValues = enumValues;
+        this.constants = new HashMap<>();
+        if(constants != null) {
+            for (Argument constant : constants) {
+                this.constants.put(constant.getName(), constant.getType());
+            }
+        }
     }
 
-    public TypeDefinition getBaseType() {
-        return baseType;
+    @Override
+    public TypeReference getType() {
+        return type;
     }
 
-    public List<EnumValue> getValues() {
-        return values;
+    @Override
+    public EnumValue[] getEnumValues() {
+        return enumValues;
+    }
+
+    @Override
+    public String[] getConstantNames() {
+        return constants.keySet().toArray(new String[0]);
+    }
+
+    @Override
+    public TypeReference getConstantType(String constantName) {
+        return constants.get(constantName);
     }
 
 }

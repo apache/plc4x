@@ -25,12 +25,15 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultDiscriminatedComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumValue;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultSimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
@@ -47,22 +50,30 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     private Deque<List<Field>> parserContexts;
 
-    private Map<String, ComplexTypeDefinition> complexTypes;
+    private Deque<List<EnumValue>> enumContexts;
 
-    public Map<String, ComplexTypeDefinition> getComplexTypes() {
-        return complexTypes;
+    private Map<String, TypeDefinition> types;
+
+    public Map<String, TypeDefinition> getTypes() {
+        return types;
     }
 
     @Override
     public void enterFile(MSpecParser.FileContext ctx) {
         parserContexts = new LinkedList<>();
-        complexTypes = new HashMap<>();
+        enumContexts = new LinkedList<>();
+        types = new HashMap<>();
     }
 
     @Override
     public void enterComplexType(MSpecParser.ComplexTypeContext ctx) {
-        List<Field> parserContext = new LinkedList<>();
-        parserContexts.push(parserContext);
+        if(ctx.enumValues != null) {
+            List<EnumValue> enumContext = new LinkedList<>();
+            enumContexts.push(enumContext);
+        } else {
+            List<Field> parserContext = new LinkedList<>();
+            parserContexts.push(parserContext);
+        }
     }
 
     @Override
@@ -73,23 +84,31 @@ public class MessageFormatListener extends MSpecBaseListener {
             parserArguments = getParserArguments(ctx.params.argument());
         }
 
-        // If the type has sub-types it's an abstract type.
-        SwitchField switchField = getSwitchField();
-        boolean abstractType = switchField != null;
-        DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(typeName, parserArguments, null,
-            abstractType, parserContexts.peek());
-        complexTypes.put(typeName, type);
+        if(ctx.enumValues != null) {
+            TypeReference type = getTypeReference(ctx.type);
+            EnumValue[] enumValues = getEnumValues();
+            DefaultEnumTypeDefinition enumType = new DefaultEnumTypeDefinition(typeName, type, enumValues,
+                parserArguments, null);
+            types.put(typeName, enumType);
+            enumContexts.pop();
+        } else {
+            // If the type has sub-types it's an abstract type.
+            SwitchField switchField = getSwitchField();
+            boolean abstractType = switchField != null;
+            DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(typeName, parserArguments, null,
+                abstractType, parserContexts.peek());
+            types.put(typeName, type);
 
-        // Set the parent type for all sub-types.
-        if(switchField != null) {
-            for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
-                if(subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
-                    ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
+            // Set the parent type for all sub-types.
+            if (switchField != null) {
+                for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
+                    if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
+                        ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
+                    }
                 }
             }
+            parserContexts.pop();
         }
-
-        parserContexts.pop();
     }
 
     @Override
@@ -302,7 +321,37 @@ public class MessageFormatListener extends MSpecBaseListener {
         switchField.addCase(type);
 
         // Add the type to the type list.
-        complexTypes.put(typeName, type);
+        types.put(typeName, type);
+    }
+
+    @Override
+    public void enterEnumValueDefinition(MSpecParser.EnumValueDefinitionContext ctx) {
+        String value = unquoteString(ctx.valueExpression.getText());
+        String name = ctx.name.getText();
+        Map<String, String> constants = null;
+        if(ctx.constantValueExpressions != null) {
+            MSpecParser.ComplexTypeContext parentCtx = (MSpecParser.ComplexTypeContext) ctx.parent;
+            int numConstantValues = parentCtx.params.argument().size();
+            int numExpressionValues = ctx.constantValueExpressions.expression().size();
+            // This only works if we provide exactly the same number of expressions as we defined constants
+            if(numConstantValues != numExpressionValues) {
+                throw new RuntimeException("Number of constant value expressions doesn't match the number of " +
+                    "defined constants. Expecting " + numConstantValues + " but got " + numExpressionValues);
+            }
+
+            // Build a map of the constant expressions (With the constant name as key)
+            constants = new HashMap<>();
+            for (int i = 0; i < numConstantValues; i++) {
+                MSpecParser.ArgumentContext argumentContext = parentCtx.params.argument(i);
+                String constantName = argumentContext.name.getText();
+                constantName = constantName.substring(1, constantName.length() - 1);
+                MSpecParser.ExpressionContext expression = ctx.constantValueExpressions.expression(i);
+                String constant = unquoteString(expression.getText());
+                constants.put(constantName, constant);
+            }
+        }
+        final DefaultEnumValue enumValue = new DefaultEnumValue(value, name, constants);
+        this.enumContexts.peek().add(enumValue);
     }
 
     private Term getExpressionTerm(String expressionString) {
@@ -338,12 +387,16 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     private DefaultSwitchField getSwitchField() {
-        for (Field field : parserContexts.peek()) {
+        for (Field field : Objects.requireNonNull(parserContexts.peek())) {
             if(field instanceof DefaultSwitchField) {
                 return (DefaultSwitchField) field;
             }
         }
         return null;
+    }
+
+    private EnumValue[] getEnumValues() {
+        return Objects.requireNonNull(enumContexts.peek()).toArray(new EnumValue[0]);
     }
 
     private Argument[] getParserArguments(List<MSpecParser.ArgumentContext> params) {
@@ -371,6 +424,13 @@ public class MessageFormatListener extends MSpecBaseListener {
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
         ExpressionStringParser parser = new ExpressionStringParser();
         return parser.parse(inputStream);
+    }
+
+    private String unquoteString(String quotedString) {
+        if(quotedString != null && quotedString.length() > 2) {
+            return quotedString.substring(1, quotedString.length() - 1);
+        }
+        return quotedString;
     }
 
 }

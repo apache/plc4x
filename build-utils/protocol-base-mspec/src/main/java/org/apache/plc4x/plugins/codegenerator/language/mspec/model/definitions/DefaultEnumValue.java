@@ -17,30 +17,37 @@
  under the License.
  */
 
-package org.apache.plc4x.protocol.s7;
+package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
-import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
-import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 
-import java.io.InputStream;
 import java.util.Map;
 
-public class S7Protocol implements Protocol {
+public class DefaultEnumValue implements EnumValue {
 
-    @Override
-    public String getName() {
-        return "s7";
+    private final String value;
+    private final String name;
+    private final Map<String, String> constants;
+
+    public DefaultEnumValue(String value, String name, Map<String, String> constants) {
+        this.value = value;
+        this.name = name;
+        this.constants = constants;
     }
 
     @Override
-    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
-        InputStream schemaInputStream = S7Protocol.class.getResourceAsStream("/protocols/s7/s7.mspec");
-        if(schemaInputStream == null) {
-            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
-        }
-        return new MessageFormatParser().parse(schemaInputStream);
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String getConstant(String name) {
+        return constants.get(name);
     }
 
 }

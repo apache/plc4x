@@ -25,15 +25,14 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecLexer;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
 public class MessageFormatParser {
 
-    public Map<String, ComplexTypeDefinition> parse(InputStream source) {
+    public Map<String, TypeDefinition> parse(InputStream source) {
         try {
             MSpecLexer lexer = new MSpecLexer(CharStreams.fromStream(source));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -42,7 +41,7 @@ public class MessageFormatParser {
             ParseTreeWalker walker = new ParseTreeWalker();
             MessageFormatListener listener = new MessageFormatListener();
             walker.walk(listener, tree);
-            return listener.getComplexTypes();
+            return listener.getTypes();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
