@@ -78,30 +78,29 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                     template.process(typeContext, new OutputStreamWriter(output));
 
                     // Create the means to read in the generated output back in again
-                    BufferedReader input = new BufferedReader(
-                        new InputStreamReader(new ByteArrayInputStream(output.toByteArray())));
+                    try(BufferedReader input = new BufferedReader(new InputStreamReader(
+                            new ByteArrayInputStream(output.toByteArray())))) {
 
-                    // Extract the output path from the first line of the generated content
-                    String outputFileName = input.readLine();
-                    File outputFile = new File(outputDir, outputFileName);
+                        // Extract the output path from the first line of the generated content
+                        String outputFileName = input.readLine();
+                        File outputFile = new File(outputDir, outputFileName);
 
-                    // Create any missing directories
-                    if(!outputFile.getParentFile().exists()) {
-                        if(!outputFile.getParentFile().mkdirs()) {
+                        // Create any missing directories
+                        if (!outputFile.getParentFile().exists() && !outputFile.getParentFile().mkdirs()) {
                             throw new GenerationException(
                                 "Unable to create output directory " + outputFile.getParent());
                         }
-                    }
 
-                    // Output the rest to that file
-                    BufferedWriter outputFileWriter = Files.newBufferedWriter(
-                        outputFile.toPath(), StandardCharsets.UTF_8);
-                    String line;
-                    while ((line = input.readLine()) != null) {
-                        outputFileWriter.write(line);
-                        outputFileWriter.newLine();
+                        // Output the rest to that file
+                        BufferedWriter outputFileWriter = Files.newBufferedWriter(
+                            outputFile.toPath(), StandardCharsets.UTF_8);
+                        String line;
+                        while ((line = input.readLine()) != null) {
+                            outputFileWriter.write(line);
+                            outputFileWriter.newLine();
+                        }
+                        outputFileWriter.flush();
                     }
-                    outputFileWriter.flush();
                 }
             }
         } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException | ParseException e) {
