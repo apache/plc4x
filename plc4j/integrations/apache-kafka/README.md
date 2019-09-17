@@ -38,7 +38,7 @@ In order to start a Kafka Connect system the following steps have to be performe
 
 1) Download the latest version of Apache Kafka binaries from here: https://kafka.apache.org/downloads
 2) Unpack the archive.
-3) Copy the target/apache-kafka-0.5.0-SNAPSHOT-jar-with-dependencies.jar to the Kafka "libs" directory.
+3) Copy the target/plc4j-apache-kafka-0.5.0-SNAPSHOT-uber-jar.jar to the Kafka "libs" directory.
 4) Copy the files in the "config" to Kafka's "configs" directory (maybe inside a "plc4x" subdirectory)
 
 ### Start a Kafka Broker
@@ -66,7 +66,7 @@ Ideal for testing.
 
 1) Start Kafka connect:
         
-        bin/connect-standalone.sh config/connect-standalone.properties config/plc4x/source.properties
+        bin/connect-standalone.sh config/connect-standalone.properties config/plc4x-source.properties
 
 Now watch the console window with the "kafka-console-consumer". 
 

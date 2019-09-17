@@ -21,21 +21,15 @@ package org.apache.plc4x.kafka.config;
 public class JobReference {
 
     private final String name;
-    private final boolean enabled;
     private final String topic;
 
-    public JobReference(String name, boolean enabled, String topic) {
+    public JobReference(String name, String topic) {
         this.name = name;
-        this.enabled = enabled;
         this.topic = topic;
     }
 
     public String getName() {
         return name;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 
     public String getTopic() {

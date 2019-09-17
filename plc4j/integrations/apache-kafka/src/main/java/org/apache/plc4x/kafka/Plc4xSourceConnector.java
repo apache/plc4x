@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
+import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
@@ -25,7 +26,6 @@ import org.apache.plc4x.kafka.config.Job;
 import org.apache.plc4x.kafka.config.JobReference;
 import org.apache.plc4x.kafka.config.Source;
 import org.apache.plc4x.kafka.config.SourceConfig;
-import org.apache.plc4x.kafka.exceptions.ConfigurationException;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,17 +36,29 @@ public class Plc4xSourceConnector extends SourceConnector {
 
     private static final Logger log = LoggerFactory.getLogger(Plc4xSourceConnector.class);
 
-    private static final ConfigDef CONFIG_DEF = new ConfigDef();
+    public static final String DEFAULT_TOPIC_CONFIG = "default-topic";
+    private static final String DEFAULT_TOPIC_DOC = "Default topic to be used, if not otherwise configured.";
+
+    public static final String SOURCES_CONFIG = "sources";
+    private static final String SOURCES_DOC = "List of source names that will be configured.";
+
+    public static final String JOBS_CONFIG = "jobs";
+    private static final String JOBS_DOC = "List of job names that will be configured.";
+
+    private final ConfigDef configDef;
 
     private SourceConfig sourceConfig;
 
+    public Plc4xSourceConnector() {
+        configDef = new ConfigDef()
+            .define(DEFAULT_TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.LOW, DEFAULT_TOPIC_DOC)
+            .define(SOURCES_CONFIG, ConfigDef.Type.LIST, ConfigDef.NO_DEFAULT_VALUE, (name, value) -> System.out.println("Hurz"), ConfigDef.Importance.HIGH, SOURCES_DOC)
+            .define(JOBS_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, JOBS_DOC);
+    }
+
     @Override
     public void start(Map<String, String> props) {
-        try {
-            sourceConfig = SourceConfig.fromPropertyMap(props);
-        } catch (ConfigurationException e) {
-            log.error("Error processing source configuration", e);
-        }
+        sourceConfig = SourceConfig.fromPropertyMap(props);
     }
 
     @Override
@@ -82,7 +94,7 @@ public class Plc4xSourceConnector extends SourceConnector {
                 Job job = sourceConfig.getJob(jobReference.getName());
                 if(job == null) {
                     log.warn(String.format("Couldn't find referenced job '%s'", jobReference.getName()));
-                } else if(jobReference.isEnabled()) {
+                } else {
                     query.append(",").append(jobReference.getName()).append("|").append(jobReference.getTopic());
                     query.append("|").append(job.getInterval());
                     for (Map.Entry<String, String> field : job.getFields().entrySet()) {
@@ -104,8 +116,13 @@ public class Plc4xSourceConnector extends SourceConnector {
     }
 
     @Override
+    public Config validate(Map<String, String> connectorConfigs) {
+        return super.validate(connectorConfigs);
+    }
+
+    @Override
     public ConfigDef config() {
-        return CONFIG_DEF;
+        return configDef;
     }
 
     @Override
