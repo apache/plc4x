@@ -1225,6 +1225,20 @@
             <transformers>
               <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
             </transformers>
+            <filters>
+              <filter>
+                <!--
+                  These files contain signatures for classes, omit them as in
+                  shaded archives this has cause quite some problems in the past.
+                -->
+                <artifact>*:*</artifact>
+                <excludes>
+                  <exclude>META-INF/*.SF</exclude>
+                  <exclude>META-INF/*.DSA</exclude>
+                  <exclude>META-INF/*.RSA</exclude>
+                </excludes>
+              </filter>
+            </filters>
             <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
           </configuration>
         </plugin>

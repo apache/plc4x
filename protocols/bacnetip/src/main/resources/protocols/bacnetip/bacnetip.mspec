@@ -86,7 +86,7 @@
             [simple   uint 6 'invokeId']
             [optional uint 8 'sequenceNumber' 'segmentedMessage']
             [optional uint 8 'proposedWindowSize' 'segmentedMessage']
-            [simple   BACnetUnconfirmedServiceRequest 'serviceRequest']
+            [simple   BACnetConfirmedServiceRequest 'serviceRequest']
         ]
         ['0x1' APDUUnconfirmedRequest
             [reserved uint 4 '0']
@@ -142,6 +142,11 @@
         ['0x00' BACnetConfirmedServiceRequestAcknowledgeAlarm
         ]
         ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification
+            subscriber-process-identifier (Unsigned32)
+            initiating-device-identifier (BACnetObjectIdentifier)
+            monitored-object-identifier (BACnetObjectIdentifier)
+            time-remaining (Unsigned)
+            list-of-values (SEQUENCE OF BACnetPropertyValue)
         ]
         ['0x1F' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
         ]
