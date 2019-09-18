@@ -53,6 +53,7 @@ public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
 
     public  OpcuaSubsriptionHandle(String fieldName, UInteger clientHandle){
         this.clientHandle = clientHandle;
+        this.fieldName = fieldName;
     }
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
