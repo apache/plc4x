@@ -203,7 +203,7 @@ public class Plc4xSourceTask extends SourceTask {
     @Override
     public void stop() {
         synchronized (this) {
-            // TODO: Correctly shutdown the scaper.
+            // TODO: Correctly shutdown the scraper.
             notifyAll(); // wake up thread waiting in awaitFetch
         }
     }

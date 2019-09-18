@@ -38,8 +38,8 @@ In order to start a Kafka Connect system the following steps have to be performe
 
 1) Download the latest version of Apache Kafka binaries from here: https://kafka.apache.org/downloads
 2) Unpack the archive.
-3) Copy the target/plc4j-apache-kafka-0.5.0-SNAPSHOT-uber-jar.jar to the Kafka "libs" directory.
-4) Copy the files in the "config" to Kafka's "configs" directory (maybe inside a "plc4x" subdirectory)
+3) Copy the `target/plc4j-apache-kafka-0.5.0-SNAPSHOT-uber-jar.jar` to the Kafka `libs` directory.
+4) Copy the files in the `config` to Kafka's `configs` directory.
 
 ### Start a Kafka Broker
 

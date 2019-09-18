@@ -37,28 +37,32 @@ public class SourceConfigTest {
             "\n" +
             "defaults.topic=some/default\n" +
             "\n" +
+            "sources=machineA,machineB,machineC\n" +
             "sources.machineA.connectionString=s7://1.2.3.4/1/1\n" +
-            "sources.machineA.jobReferences.s7-dashboard.enabled=true\n" +
-            "sources.machineA.jobReferences.s7-heartbeat.enabled=true\n" +
+            "sources.machineA.jobReferences=s7-dashboard,s7-heartbeat\n" +
             "sources.machineA.jobReferences.s7-heartbeat.topic=heartbeat\n" +
             "\n" +
             "sources.machineB.connectionString=s7://10.20.30.40/1/1\n" +
             "sources.machineB.topic=heartbeat\n" +
-            "sources.machineB.jobReferences.s7-heartbeat.enabled=true\n" +
+            "sources.machineB.jobReferences=s7-heartbeat\n" +
             "\n" +
             "sources.machineC.connectionString=ads://1.2.3.4.5.6\n" +
             "sources.machineC.topic=heartbeat\n" +
-            "sources.machineC.jobReferences.ads-heartbeat.enabled=true\n" +
+            "sources.machineC.jobReferences=ads-heartbeat\n" +
             "\n" +
+            "jobs=s7-dashboard,s7-heartbeat,ads-heartbeat\n" +
             "jobs.s7-dashboard.interval=500\n" +
+            "jobs.s7-dashboard.fields=inputPreasure,outputPreasure,temperature\n" +
             "jobs.s7-dashboard.fields.inputPreasure=%DB.DB1.4:INT\n" +
             "jobs.s7-dashboard.fields.outputPreasure=%Q1:BYT\n" +
             "jobs.s7-dashboard.fields.temperature=%I3:INT\n" +
             "\n" +
             "jobs.s7-heartbeat.interval=1000\n" +
+            "jobs.s7-heartbeat.fields=active\n" +
             "jobs.s7-heartbeat.fields.active=%I0.2:BOOL\n" +
             "\n" +
             "jobs.ads-heartbeat.interval=1000\n" +
+            "jobs.ads-heartbeat.fields=active\n" +
             "jobs.ads-heartbeat.fields.active=Main.running\n"));
         SourceConfig sourceConfig = SourceConfig.fromPropertyMap(toStringMap(properties));
 

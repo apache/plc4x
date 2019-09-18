@@ -18,8 +18,9 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
-import org.apache.kafka.common.config.Config;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigValue;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
 import org.apache.plc4x.kafka.config.Job;
@@ -45,16 +46,13 @@ public class Plc4xSourceConnector extends SourceConnector {
     public static final String JOBS_CONFIG = "jobs";
     private static final String JOBS_DOC = "List of job names that will be configured.";
 
-    private final ConfigDef configDef;
+    private static final String CONNECTION_STRING_CONFIG = "connectionString";
+    private static final String JOB_REFERENCES_CONFIG = "jobReferences";
+    private static final String TOPIC_CONFIG = "topic";
+    private static final String INTERVAL_CONFIG = "interval";
+    private static final String FIELDS_CONFIG = "fields";
 
     private SourceConfig sourceConfig;
-
-    public Plc4xSourceConnector() {
-        configDef = new ConfigDef()
-            .define(DEFAULT_TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.LOW, DEFAULT_TOPIC_DOC)
-            .define(SOURCES_CONFIG, ConfigDef.Type.LIST, ConfigDef.NO_DEFAULT_VALUE, (name, value) -> System.out.println("Hurz"), ConfigDef.Importance.HIGH, SOURCES_DOC)
-            .define(JOBS_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, JOBS_DOC);
-    }
 
     @Override
     public void start(Map<String, String> props) {
@@ -116,13 +114,92 @@ public class Plc4xSourceConnector extends SourceConnector {
     }
 
     @Override
-    public Config validate(Map<String, String> connectorConfigs) {
-        return super.validate(connectorConfigs);
-    }
-
-    @Override
     public ConfigDef config() {
-        return configDef;
+        return new ConfigDef() {
+            @Override
+            public Map<String, ConfigValue> validateAll(Map<String, String> props) {
+                // Make sure all basic config options are validated.
+                Map<String, ConfigValue> result = super.validateAll(props);
+
+                final String[] jobNames = props.getOrDefault(JOBS_CONFIG, "").split(",");
+                for (String jobName : jobNames) {
+                    String jobIntervalConfig = JOBS_CONFIG + "." + jobName + "." + INTERVAL_CONFIG;
+                    ConfigValue configValue = new ConfigValue(jobIntervalConfig);
+                    result.put(jobIntervalConfig, new ConfigValue(jobIntervalConfig));
+                    String jobIntervalString = props.get(jobIntervalConfig);
+                    if(jobIntervalString == null) {
+                        configValue.addErrorMessage(jobIntervalConfig + " is mandatory");
+                    } else if(NumberUtils.isParsable(jobIntervalString)) {
+                        int jobInterval = NumberUtils.toInt(jobIntervalString);
+                        if(jobInterval > 0) {
+                            configValue.value(jobInterval);
+                        } else {
+                            configValue.addErrorMessage(
+                                jobIntervalConfig + " must be greater than 0");
+                        }
+                    } else {
+                        configValue.addErrorMessage(jobIntervalConfig + " must be a numeric value greater than 0");
+                    }
+
+                    String jobFieldsConfig = JOBS_CONFIG + "." + jobName + "." + FIELDS_CONFIG;
+                    configValue = new ConfigValue(jobFieldsConfig);
+                    if(!props.containsKey(jobFieldsConfig)) {
+                        configValue.addErrorMessage(jobFieldsConfig + " is mandatory");
+                    } else {
+                        String[] jobFieldNames = props.getOrDefault(jobFieldsConfig, "").split(",");
+                        if (jobFieldNames.length == 0) {
+                            configValue.addErrorMessage(jobFieldsConfig + " at least has to contain one field name");
+                        } else {
+                            for (String jobFieldName : jobFieldNames) {
+                                String jobFieldAddressConfig =
+                                    JOBS_CONFIG + "." + jobName + "." + FIELDS_CONFIG + "." + jobFieldName;
+                                configValue = new ConfigValue(jobFieldAddressConfig);
+                                String jobFieldAddress = props.get(jobFieldAddressConfig);
+                                if((jobFieldAddress == null) || jobFieldAddress.isEmpty()) {
+                                    configValue.addErrorMessage(jobFieldAddressConfig + " is mandatory");
+                                } else {
+                                    configValue.value(jobFieldAddress);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                final String[] sourceNames = props.getOrDefault(SOURCES_CONFIG, "").split(",");
+                for (String sourceName : sourceNames) {
+                    String connectionStringConfig = SOURCES_CONFIG + "." + sourceName + "." + CONNECTION_STRING_CONFIG;
+                    ConfigValue configValue = new ConfigValue(connectionStringConfig);
+                    if(!props.containsKey(connectionStringConfig)) {
+                        configValue.addErrorMessage(connectionStringConfig + " is mandatory");
+                    } else {
+                        String connectionString = props.get(connectionStringConfig);
+                        // TODO: Check if the connection string is valid.
+                        result.put(connectionStringConfig, new ConfigValue(connectionStringConfig));
+                        result.get(connectionStringConfig).addErrorMessage("");
+
+                        String connectionTopicConfig = SOURCES_CONFIG + "." + sourceName + "." + TOPIC_CONFIG;
+                        String connectionTopic = props.get(connectionTopicConfig);
+
+                        String jobReferenceNamesConfig = SOURCES_CONFIG + "." + sourceName + "." + JOB_REFERENCES_CONFIG;
+                        String[] jobReferenceNames = props.getOrDefault(jobReferenceNamesConfig, "").split(",");
+                        // TODO: Check at least one reference is provided
+                        for (String jobReferenceName : jobReferenceNames) {
+                        }
+                        // TODO: Check that for all of these a job with the given name is provided
+                        result.put(jobReferenceNamesConfig, new ConfigValue(jobReferenceNamesConfig));
+                        result.get(jobReferenceNamesConfig).addErrorMessage("");
+                    }
+                }
+
+                // TODO: Validate each combination of source and job to check if the addresses are valid for the given driver type.
+
+                return result;
+            }
+
+        }
+            .define(DEFAULT_TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.LOW, DEFAULT_TOPIC_DOC)
+            .define(SOURCES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, SOURCES_DOC)
+            .define(JOBS_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, JOBS_DOC);
     }
 
     @Override
