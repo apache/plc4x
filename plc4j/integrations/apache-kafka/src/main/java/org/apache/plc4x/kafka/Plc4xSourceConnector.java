@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.kafka;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigValue;
 import org.apache.kafka.connect.connector.Task;
@@ -114,89 +115,154 @@ public class Plc4xSourceConnector extends SourceConnector {
     }
 
     @Override
-    public ConfigDef config() {
-        return new ConfigDef() {
-            @Override
-            public Map<String, ConfigValue> validateAll(Map<String, String> props) {
-                // Make sure all basic config options are validated.
-                Map<String, ConfigValue> result = super.validateAll(props);
+    @SuppressWarnings("unchecked")
+    public Config validate(Map<String, String> connectorConfigs) {
+        ////////////////////////////////////////////////////
+        // Get the static part of the config
+        Config config = super.validate(connectorConfigs);
 
-                final String[] jobNames = props.getOrDefault(JOBS_CONFIG, "").split(",");
-                for (String jobName : jobNames) {
-                    String jobIntervalConfig = JOBS_CONFIG + "." + jobName + "." + INTERVAL_CONFIG;
-                    ConfigValue configValue = new ConfigValue(jobIntervalConfig);
-                    result.put(jobIntervalConfig, new ConfigValue(jobIntervalConfig));
-                    String jobIntervalString = props.get(jobIntervalConfig);
-                    if(jobIntervalString == null) {
-                        configValue.addErrorMessage(jobIntervalConfig + " is mandatory");
-                    } else if(NumberUtils.isParsable(jobIntervalString)) {
-                        int jobInterval = NumberUtils.toInt(jobIntervalString);
-                        if(jobInterval > 0) {
-                            configValue.value(jobInterval);
-                        } else {
-                            configValue.addErrorMessage(
-                                jobIntervalConfig + " must be greater than 0");
-                        }
+        ////////////////////////////////////////////////////
+        // Add the dynamic parts of the config
+
+        // Find the important config elements
+        String defaultTopic = null;
+        ConfigValue sources = null;
+        ConfigValue jobs = null;
+        for (ConfigValue configValue : config.configValues()) {
+            switch (configValue.name()) {
+                case DEFAULT_TOPIC_CONFIG:
+                    defaultTopic = (String) configValue.value();
+                    break;
+                case JOBS_CONFIG:
+                    jobs = configValue;
+                    break;
+                case SOURCES_CONFIG:
+                    sources = configValue;
+                    break;
+                default:
+                    // Just ignore the others.
+            }
+        }
+
+        // Configure the jobs first (As we reference them from the sources)
+        List<Object> foundJobs = new LinkedList<>();
+        if(jobs != null) {
+            final List<String> jobNames = (List<String>) jobs.value();
+            for (String jobName : jobNames) {
+                String jobIntervalConfig = JOBS_CONFIG + "." + jobName + "." + INTERVAL_CONFIG;
+                ConfigValue jobIntervalConfigValue = new ConfigValue(jobIntervalConfig);
+                config.configValues().add(jobIntervalConfigValue);
+                String jobIntervalString = connectorConfigs.get(jobIntervalConfig);
+                if (jobIntervalString == null) {
+                    jobIntervalConfigValue.value(null);
+                    jobIntervalConfigValue.addErrorMessage(jobIntervalConfig + " is mandatory");
+                } else if (NumberUtils.isParsable(jobIntervalString)) {
+                    int jobInterval = NumberUtils.toInt(jobIntervalString);
+                    if (jobInterval > 0) {
+                        jobIntervalConfigValue.value(jobInterval);
                     } else {
-                        configValue.addErrorMessage(jobIntervalConfig + " must be a numeric value greater than 0");
+                        jobIntervalConfigValue.value(null);
+                        jobIntervalConfigValue.addErrorMessage(jobIntervalConfig + " must be greater than 0");
                     }
+                } else {
+                    jobIntervalConfigValue.value(null);
+                    jobIntervalConfigValue.addErrorMessage(jobIntervalConfig + " must be a numeric value greater than 0");
+                }
 
-                    String jobFieldsConfig = JOBS_CONFIG + "." + jobName + "." + FIELDS_CONFIG;
-                    configValue = new ConfigValue(jobFieldsConfig);
-                    if(!props.containsKey(jobFieldsConfig)) {
-                        configValue.addErrorMessage(jobFieldsConfig + " is mandatory");
+                String jobFieldsConfig = JOBS_CONFIG + "." + jobName + "." + FIELDS_CONFIG;
+                final ConfigValue jobFieldsConfigValue = new ConfigValue(jobFieldsConfig);
+                if (!connectorConfigs.containsKey(jobFieldsConfig)) {
+                    jobFieldsConfigValue.value(null);
+                    jobFieldsConfigValue.addErrorMessage(jobFieldsConfig + " is mandatory");
+                } else {
+                    String[] jobFieldNames = connectorConfigs.getOrDefault(jobFieldsConfig, "").split(",");
+                    jobFieldsConfigValue.value(jobFieldNames);
+                    if (jobFieldNames.length == 0) {
+                        jobFieldsConfigValue.addErrorMessage(jobFieldsConfig + " at least has to contain one field name");
                     } else {
-                        String[] jobFieldNames = props.getOrDefault(jobFieldsConfig, "").split(",");
-                        if (jobFieldNames.length == 0) {
-                            configValue.addErrorMessage(jobFieldsConfig + " at least has to contain one field name");
-                        } else {
-                            for (String jobFieldName : jobFieldNames) {
-                                String jobFieldAddressConfig =
-                                    JOBS_CONFIG + "." + jobName + "." + FIELDS_CONFIG + "." + jobFieldName;
-                                configValue = new ConfigValue(jobFieldAddressConfig);
-                                String jobFieldAddress = props.get(jobFieldAddressConfig);
-                                if((jobFieldAddress == null) || jobFieldAddress.isEmpty()) {
-                                    configValue.addErrorMessage(jobFieldAddressConfig + " is mandatory");
-                                } else {
-                                    configValue.value(jobFieldAddress);
+                        for (String jobFieldName : jobFieldNames) {
+                            String jobFieldAddressConfig =
+                                JOBS_CONFIG + "." + jobName + "." + FIELDS_CONFIG + "." + jobFieldName;
+                            final ConfigValue jobFieldAddressConfigValue = new ConfigValue(jobFieldAddressConfig);
+                            String jobFieldAddress = connectorConfigs.get(jobFieldAddressConfig);
+                            jobFieldAddressConfigValue.value(jobFieldAddress);
+                            if ((jobFieldAddress == null) || jobFieldAddress.isEmpty()) {
+                                jobFieldAddressConfigValue.addErrorMessage(jobFieldAddressConfig + " is mandatory");
+                            }
+                            // TODO: Validate the address ...
+                        }
+                    }
+                }
+
+                foundJobs.add(jobName);
+            }
+        }
+
+        // Configure the sources
+        if(sources != null) {
+            final List<String> sourceNames = (List<String>) sources.value();
+            for (String sourceName : sourceNames) {
+                String connectionStringConfig = SOURCES_CONFIG + "." + sourceName + "." + CONNECTION_STRING_CONFIG;
+                final ConfigValue sourceConnectionStringConfigValue = new ConfigValue(connectionStringConfig);
+                config.configValues().add(sourceConnectionStringConfigValue);
+                String connectionString = connectorConfigs.get(connectionStringConfig);
+                sourceConnectionStringConfigValue.value();
+                if (connectionString == null) {
+                    sourceConnectionStringConfigValue.addErrorMessage(connectionStringConfig + " is mandatory");
+                } else {
+                    // TODO: Check if the connection string is valid.
+
+                    String sourceTopicConfig = SOURCES_CONFIG + "." + sourceName + "." + TOPIC_CONFIG;
+                    final ConfigValue sourceTopicConfigValue = new ConfigValue(sourceTopicConfig);
+                    config.configValues().add(sourceTopicConfigValue);
+                    String sourceTopic = connectorConfigs.get(sourceTopicConfig);
+                    sourceTopicConfigValue.value(sourceTopic);
+
+                    String jobReferenceNamesConfig = SOURCES_CONFIG + "." + sourceName + "." + JOB_REFERENCES_CONFIG;
+                    final ConfigValue jobReferenceNamesConfigValue = new ConfigValue(jobReferenceNamesConfig);
+                    jobReferenceNamesConfigValue.recommendedValues(foundJobs);
+                    config.configValues().add(jobReferenceNamesConfigValue);
+                    if(!connectorConfigs.containsKey(jobReferenceNamesConfig)) {
+                        jobReferenceNamesConfigValue.value(null);
+                        jobReferenceNamesConfigValue.addErrorMessage(jobReferenceNamesConfig + " is mandatory");
+                    } else {
+                        String[] jobReferenceNames = connectorConfigs.getOrDefault(jobReferenceNamesConfig, "").split(",");
+                        jobReferenceNamesConfigValue.value(jobReferenceNames);
+                        // Check at least one job is referenced
+                        if (jobReferenceNames.length == 0) {
+                            jobReferenceNamesConfigValue.addErrorMessage(jobReferenceNamesConfig + " is mandatory");
+                        }
+                        for (String jobReferenceName : jobReferenceNames) {
+                            // Check the references reference configured jobs
+                            if (!foundJobs.contains(jobReferenceName)) {
+                                jobReferenceNamesConfigValue.addErrorMessage(jobReferenceNamesConfig +
+                                    " references non-existent job " + jobReferenceName);
+                            }
+                            // Check if a topic is specified at some level
+                            else {
+                                String jobReferenceTopicNameConfig = SOURCES_CONFIG + "." + sourceName + "." +
+                                    JOB_REFERENCES_CONFIG + "." + jobReferenceName + TOPIC_CONFIG;
+                                final ConfigValue jobReferenceTopicNameConfigValue = new ConfigValue(jobReferenceTopicNameConfig);
+                                config.configValues().add(jobReferenceTopicNameConfigValue);
+                                String jobReferenceTopic = connectorConfigs.get(jobReferenceTopicNameConfig);
+                                jobReferenceTopicNameConfigValue.value(jobReferenceTopic);
+                                if ((jobReferenceTopic == null) && (sourceTopic == null) && (defaultTopic == null)) {
+                                    jobReferenceTopicNameConfigValue.addErrorMessage(
+                                        "No topic definition found at any level for " + jobReferenceTopicNameConfig);
                                 }
                             }
                         }
                     }
                 }
-
-                final String[] sourceNames = props.getOrDefault(SOURCES_CONFIG, "").split(",");
-                for (String sourceName : sourceNames) {
-                    String connectionStringConfig = SOURCES_CONFIG + "." + sourceName + "." + CONNECTION_STRING_CONFIG;
-                    ConfigValue configValue = new ConfigValue(connectionStringConfig);
-                    if(!props.containsKey(connectionStringConfig)) {
-                        configValue.addErrorMessage(connectionStringConfig + " is mandatory");
-                    } else {
-                        String connectionString = props.get(connectionStringConfig);
-                        // TODO: Check if the connection string is valid.
-                        result.put(connectionStringConfig, new ConfigValue(connectionStringConfig));
-                        result.get(connectionStringConfig).addErrorMessage("");
-
-                        String connectionTopicConfig = SOURCES_CONFIG + "." + sourceName + "." + TOPIC_CONFIG;
-                        String connectionTopic = props.get(connectionTopicConfig);
-
-                        String jobReferenceNamesConfig = SOURCES_CONFIG + "." + sourceName + "." + JOB_REFERENCES_CONFIG;
-                        String[] jobReferenceNames = props.getOrDefault(jobReferenceNamesConfig, "").split(",");
-                        // TODO: Check at least one reference is provided
-                        for (String jobReferenceName : jobReferenceNames) {
-                        }
-                        // TODO: Check that for all of these a job with the given name is provided
-                        result.put(jobReferenceNamesConfig, new ConfigValue(jobReferenceNamesConfig));
-                        result.get(jobReferenceNamesConfig).addErrorMessage("");
-                    }
-                }
-
-                // TODO: Validate each combination of source and job to check if the addresses are valid for the given driver type.
-
-                return result;
             }
-
         }
+
+        return config;
+    }
+
+    @Override
+    public ConfigDef config() {
+        return new ConfigDef()
             .define(DEFAULT_TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.LOW, DEFAULT_TOPIC_DOC)
             .define(SOURCES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, SOURCES_DOC)
             .define(JOBS_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, JOBS_DOC);
