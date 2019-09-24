@@ -260,7 +260,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         }
         Term a = terms.get(0);
         Term b = terms.get(1);
-        Term c = terms.get(1);
+        Term c = terms.get(2);
         return new TernaryTerm(a, b, c, op);
     }
 
