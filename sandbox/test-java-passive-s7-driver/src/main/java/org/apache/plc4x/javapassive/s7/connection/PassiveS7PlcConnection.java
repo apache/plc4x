@@ -31,6 +31,7 @@ import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.base.messages.PlcReader;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
+import org.apache.plc4x.java.utils.rawsockets.netty.TcpIpPacketHandler;
 import org.apache.plc4x.javapassive.s7.protocol.HelloWorldProtocol;
 import org.apache.plc4x.javapassive.s7.protocol.PassiveS7Protocol;
 
@@ -40,7 +41,7 @@ public class PassiveS7PlcConnection extends NettyPlcConnection implements PlcRea
 
     public PassiveS7PlcConnection(RawSocketIpAddress address, String params) {
         this(new RawSocketChannelFactory(address.getDeviceName(), null,
-            102, -1), params);
+            address.getPort(), -1, new TcpIpPacketHandler()), params);
     }
 
     public PassiveS7PlcConnection(ChannelFactory channelFactory, String param) {

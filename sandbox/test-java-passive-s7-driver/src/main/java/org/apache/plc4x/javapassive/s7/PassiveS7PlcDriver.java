@@ -24,12 +24,13 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.spi.PlcDriver;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 import org.apache.plc4x.javapassive.s7.connection.PassiveS7PlcConnection;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress.ALL_PROTOCOLS;
 
 /**
  * Implementation of the S7 protocol, based on:
@@ -67,7 +68,7 @@ public class PassiveS7PlcDriver implements PlcDriver {
 
         try {
             RawSocketIpAddress rawSocketAddress = new RawSocketIpAddress(
-                networkDevice, RawSocketIpAddress.ALL_PROTOCOLS, null, ISO_ON_TCP_PORT);
+                networkDevice, ALL_PROTOCOLS, null, ISO_ON_TCP_PORT);
             return new PassiveS7PlcConnection(rawSocketAddress, params);
         } catch (Exception e) {
             throw new PlcConnectionException("Error connecting to host", e);

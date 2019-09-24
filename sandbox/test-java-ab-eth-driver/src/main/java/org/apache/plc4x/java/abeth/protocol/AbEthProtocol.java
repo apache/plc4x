@@ -18,14 +18,39 @@ under the License.
 */
 package org.apache.plc4x.java.abeth.protocol;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
 import org.apache.plc4x.java.abeth.readwrite.io.CIPEncapsulationPacketIO;
 import org.apache.plc4x.java.base.GeneratedDriverByteToMessageCodec;
+import org.apache.plc4x.java.utils.MessageIO;
+import org.apache.plc4x.java.utils.ParseException;
+import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.utils.WriteBuffer;
 
 public class AbEthProtocol extends GeneratedDriverByteToMessageCodec<CIPEncapsulationPacket> {
 
     public AbEthProtocol() {
-        super(new CIPEncapsulationPacketIO());
+        super(new MessageIO<CIPEncapsulationPacket, CIPEncapsulationPacket>() {
+            @Override
+            public CIPEncapsulationPacket parse(ReadBuffer io) throws ParseException {
+                return CIPEncapsulationPacketIO.parse(io);
+            }
+
+            @Override
+            public void serialize(WriteBuffer io, CIPEncapsulationPacket value) throws ParseException {
+                CIPEncapsulationPacketIO.serialize(io, value);
+            }
+        });
+    }
+
+    @Override
+    protected int getPacketSize(ByteBuf byteBuf) {
+        return byteBuf.readableBytes();
+    }
+
+    @Override
+    protected void removeRestOfCorruptPackage(ByteBuf byteBuf) {
+        // Nothing to do here ...
     }
 
 }

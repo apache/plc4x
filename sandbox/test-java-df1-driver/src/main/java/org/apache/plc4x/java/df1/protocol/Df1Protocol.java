@@ -138,7 +138,7 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
             in.readBytes(data);
             ReadBuffer readBuffer = new ReadBuffer(data, false);
 
-            resp = df1SymbolIO.parse(readBuffer, size);
+            resp = df1SymbolIO.parse(readBuffer);
 
 //        } while (readWasSucessfull);
 //        // TODO if unableto read
