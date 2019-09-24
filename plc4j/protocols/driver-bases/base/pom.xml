@@ -64,6 +64,10 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>

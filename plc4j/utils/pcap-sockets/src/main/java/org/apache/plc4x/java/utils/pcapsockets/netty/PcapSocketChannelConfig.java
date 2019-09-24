@@ -29,6 +29,7 @@ import java.util.Map;
 public class PcapSocketChannelConfig extends DefaultChannelConfig implements ChannelConfig {
 
     private PacketHandler packetHandler;
+    private float speedFactor;
 
     public PcapSocketChannelConfig(Channel channel) {
         super(channel);
@@ -42,7 +43,8 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
 
     @Override
     public Map<ChannelOption<?>, Object> getOptions() {
-        return getOptions(super.getOptions(), PcapSocketChannelOption.PACKET_HANDLER);
+        return getOptions(super.getOptions(),
+            PcapSocketChannelOption.PACKET_HANDLER, PcapSocketChannelOption.SPEED_FACTOR);
     }
 
     @Override
@@ -51,6 +53,14 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
             if(value instanceof PacketHandler) {
                 packetHandler = (PacketHandler) value;
                 return true;
+            }
+            return false;
+        } else if(option == PcapSocketChannelOption.SPEED_FACTOR) {
+            if(value instanceof Float) {
+                speedFactor = (float) value;
+                if(speedFactor > 0) {
+                    return true;
+                }
             }
             return false;
         } else {
@@ -64,6 +74,14 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
 
     public PacketHandler getPacketHandler() {
         return packetHandler;
+    }
+
+    public float getSpeedFactor() {
+        return speedFactor;
+    }
+
+    public void setSpeedFactor(float speedFactor) {
+        this.speedFactor = speedFactor;
     }
 
 }

@@ -83,7 +83,6 @@ public class PcapSocketChannel extends OioByteStreamChannel {
         this.localAddress = localAddress;
         remoteRawSocketAddress = (PcapSocketAddress) remoteAddress;
 
-
         // Get a handle to the network-device and open it.
         File pcapFile = remoteRawSocketAddress.getPcapFile();
         if(!pcapFile.exists()) {
@@ -95,8 +94,15 @@ public class PcapSocketChannel extends OioByteStreamChannel {
         if(logger.isDebugEnabled()) {
             logger.debug(String.format("Opening PCAP capture file at: %s", pcapFile.getAbsolutePath()));
         }
+
         handle = Pcaps.openOffline(remoteRawSocketAddress.getPcapFile().getAbsolutePath(),
             PcapHandle.TimestampPrecision.NANO);
+
+        // If the address allows fine tuning which packets to process, set a filter to reduce the load.
+        String filter = getFilter(remoteRawSocketAddress);
+        if(filter.length() > 0) {
+            handle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
+        }
 
         // Create a buffer where the raw socket worker can send data to.
         ByteBuf buffer = Unpooled.buffer();
@@ -114,7 +120,8 @@ public class PcapSocketChannel extends OioByteStreamChannel {
 
                         // If last-time is not null, wait for the given number of nano-seconds.
                         if(lastPacketTime != null) {
-                            int numMicrosecondsSleep = curPacketTime.getNanos() - lastPacketTime.getNanos();
+                            int numMicrosecondsSleep = (int)
+                                ((curPacketTime.getNanos() - lastPacketTime.getNanos()) / config.getSpeedFactor());
                             nanoSecondSleep(numMicrosecondsSleep);
                         }
 
@@ -207,6 +214,24 @@ public class PcapSocketChannel extends OioByteStreamChannel {
             // Do Nothing ...
         }
     }
+
+    private String getFilter(PcapSocketAddress pcapSocketAddress) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(ether proto \\ip)");
+        // Add a filter for source or target address.
+        if(pcapSocketAddress.getAddress() != null) {
+            sb.append(" and (host ").append(pcapSocketAddress.getAddress().getHostAddress()).append(")");
+        }
+        // Add a filter for TCP or UDP port.
+        if(pcapSocketAddress.getPort() != PcapSocketAddress.ALL_PORTS) {
+            sb.append(" and (port ").append(pcapSocketAddress.getPort()).append(")");
+        }
+        if(pcapSocketAddress.getProtocolId() != PcapSocketAddress.ALL_PROTOCOLS) {
+            sb.append("(ether proto ").append(pcapSocketAddress.getProtocolId()).append(")");
+        }
+        return sb.toString();
+    }
+
 
     /**
      * This output stream simply discards anything it should send.

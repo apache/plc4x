@@ -18,28 +18,24 @@ under the License.
 */
 package org.apache.plc4x.java.utils.rawsockets.netty;
 
-import java.net.SocketAddress;
+import org.pcap4j.packet.*;
 
-public class RawSocketAddress extends SocketAddress {
-    private static final long serialVersionUID = 1L;
+/**
+ * Little helper to automatically unwrap TCP packets to only
+ * pass along the payload and not the raw Ethernet packet.
+ */
+public class UdpIpPacketHandler implements PacketHandler {
 
-    public static final int ALL_PROTOCOLS = -1;
-
-    private final String deviceName;
-
-    private final int protocolId;
-
-    public RawSocketAddress(String deviceName, int protocolId) {
-        this.deviceName = deviceName;
-        this.protocolId = protocolId;
-    }
-
-    public String getDeviceName() {
-        return deviceName;
-    }
-
-    public int getProtocolId() {
-        return protocolId;
+    @Override
+    public byte[] getData(Packet packet) {
+        EthernetPacket ethernetPacket = (EthernetPacket) packet;
+        IpV4Packet ipv4Packet = (IpV4Packet) ethernetPacket.getPayload();
+        UdpPacket udpPacket = (UdpPacket) ipv4Packet.getPayload();
+        if(udpPacket.getPayload() instanceof UnknownPacket) {
+            UnknownPacket unknownPacket = (UnknownPacket) udpPacket.getPayload();
+            return unknownPacket.getRawData();
+        }
+        return new byte[0];
     }
 
 }

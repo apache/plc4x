@@ -25,10 +25,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannelOption;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
-import org.apache.plc4x.java.utils.rawsockets.netty.TcpIpPacketHandler;
+import org.apache.plc4x.java.utils.rawsockets.netty.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +41,14 @@ public class RawSocketChannelFactory implements ChannelFactory {
     private final InetAddress address;
     private final int port;
     private final int protocolId;
+    private final PacketHandler packetHandler;
 
-    public RawSocketChannelFactory(String deviceName, InetAddress address, int port, int protocolId) {
+    public RawSocketChannelFactory(String deviceName, InetAddress address, int port, int protocolId, PacketHandler packetHandler) {
         this.deviceName = deviceName;
         this.address = address;
         this.port = port;
         this.protocolId = protocolId;
+        this.packetHandler = packetHandler;
     }
 
     @Override
@@ -61,7 +60,7 @@ public class RawSocketChannelFactory implements ChannelFactory {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(RawSocketChannel.class);
-            bootstrap.option(RawSocketChannelOption.PACKET_HANDLER, new TcpIpPacketHandler());
+            bootstrap.option(RawSocketChannelOption.PACKET_HANDLER, packetHandler);
             // TODO we should use an explicit (configurable?) timeout here
             // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
             bootstrap.handler(channelHandler);

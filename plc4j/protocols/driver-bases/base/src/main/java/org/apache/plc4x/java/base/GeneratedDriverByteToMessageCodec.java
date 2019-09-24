@@ -20,6 +20,7 @@ package org.apache.plc4x.java.base;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.utils.Message;
 import org.apache.plc4x.java.utils.MessageIO;
 import org.apache.plc4x.java.utils.ReadBuffer;
@@ -48,17 +49,31 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
-        byte[] bytes = new byte[byteBuf.readableBytes()];
+        // Check if enough data is present to process the entire package.
+        int packetSize = getPacketSize(byteBuf);
+        if(packetSize == -1 || packetSize > byteBuf.readableBytes()) {
+            return;
+        }
+
+        byte[] bytes = new byte[packetSize];
         byteBuf.readBytes(bytes);
+
         ReadBuffer readBuffer = new ReadBuffer(bytes);
         while (readBuffer.getPos() < bytes.length) {
             try {
                 T packet = io.parse(readBuffer);
                 out.add(packet);
             } catch (Exception e) {
-                logger.warn("Error decoding package: " + e.getMessage());
+                logger.warn("Error decoding package with content [" + Hex.encodeHexString(bytes) + "]: "
+                    + e.getMessage(), e);
+                // Just remove any trailing junk ... if there is any.
+                removeRestOfCorruptPackage(byteBuf);
             }
         }
     }
+
+    abstract protected int getPacketSize(ByteBuf byteBuf);
+
+    abstract protected void removeRestOfCorruptPackage(ByteBuf byteBuf);
 
 }
