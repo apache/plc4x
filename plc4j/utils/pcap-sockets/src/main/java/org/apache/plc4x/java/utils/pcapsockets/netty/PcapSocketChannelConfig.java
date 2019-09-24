@@ -57,7 +57,7 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
             return false;
         } else if(option == PcapSocketChannelOption.SPEED_FACTOR) {
             if(value instanceof Float) {
-                speedFactor = (float) value;
+                speedFactor = (Float) value;
                 if(speedFactor > 0) {
                     return true;
                 }
