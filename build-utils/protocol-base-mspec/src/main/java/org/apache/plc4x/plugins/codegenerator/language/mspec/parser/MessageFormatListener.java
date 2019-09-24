@@ -304,10 +304,15 @@ public class MessageFormatListener extends MSpecBaseListener {
             parserArguments.addAll(Arrays.asList(getParserArguments(ctx.argumentList().argument())));
         }
 
-        List<MSpecParser.ExpressionContext> expressions = ctx.discriminatorValues.expression();
-        String[] discriminatorValues = new String[expressions.size()];
-        for (int i = 0; i < expressions.size(); i++) {
-            discriminatorValues[i] = expressions.get(i).expr.getText();
+        String[] discriminatorValues;
+        if(ctx.discriminatorValues != null) {
+            List<MSpecParser.ExpressionContext> expressions = ctx.discriminatorValues.expression();
+            discriminatorValues = new String[expressions.size()];
+            for (int i = 0; i < expressions.size(); i++) {
+                discriminatorValues[i] = expressions.get(i).expr.getText();
+            }
+        } else {
+            discriminatorValues = new String[0];
         }
         DefaultDiscriminatedComplexTypeDefinition type =
             new DefaultDiscriminatedComplexTypeDefinition(typeName, parserArguments.toArray(new Argument[0]), null,

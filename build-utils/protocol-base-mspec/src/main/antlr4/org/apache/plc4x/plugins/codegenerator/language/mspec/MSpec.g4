@@ -117,7 +117,7 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET discriminatorValues=multipleExpressions name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
+ : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
  ;
 
 dataType
@@ -152,8 +152,10 @@ innerExpression
  | innerExpression '.' innerExpression // Field Reference or method call
  | innerExpression '[' + INTEGER_LITERAL + ']' // Array index
  | innerExpression BinaryOperator innerExpression  // Addition
+ | innerExpression '?' innerExpression ':' innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
+ | '!' innerExpression
  ;
 
 COMMENT
