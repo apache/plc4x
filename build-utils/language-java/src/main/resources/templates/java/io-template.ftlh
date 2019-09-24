@@ -48,29 +48,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInput<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>><#else>MessageIO<${typeName}<#if helper.isDiscriminatedType(type)>IO.${typeName}Builder</#if>, ${typeName}></#if> {
+public class ${typeName}IO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
-<#if helper.getComplexTypes(type)?has_content>
-    // IO Helpers.
-<#list helper.getComplexTypes(type) as complexType>
-    private final ${complexType.name}IO ${complexType.name?uncap_first}IO;
-</#list>
-
-    public ${typeName}IO() {
-<#list helper.getComplexTypes(type) as complexType>
-        ${complexType.name?uncap_first}IO = new ${complexType.name}IO();
-</#list>
-   }
-
-</#if>
-    public ${typeName}<#if helper.isDiscriminatedType(type)>Builder</#if> parse(ReadBuffer io, Object... args) throws ParseException {
-<#if type.parserArguments?has_content>
-<#list type.parserArguments as parserArgument>
-        ${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name} = (${helper.getLanguageTypeNameForSpecType(parserArgument.type)}) args[${parserArgument?index}];
-</#list>
-</#if>
+    public static ${typeName}<#if helper.isDiscriminatedType(type)>Builder</#if> parse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
         int curPos;
 <#list type.fields as field>
@@ -85,21 +67,21 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
         <#-- If this is a count array, we can directly initialize an array with the given size -->
         <#if helper.isCountArray(field)>
         // Count array
-        int _${field.name}Count = ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)};
+        int _${field.name}Count = ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc};
         ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}Count];
         for(int i = 0; i < _${field.name}Count; i++) {
-            ${field.name}[i] = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
+            ${field.name}[i] = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${parserArgument}<#sep>, </#sep></#list></#if>)</#if>;
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
         <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
             <#if helper.isLengthArray(field)>
         // Length array
-        int _${field.name}Length = ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)};
+        int _${field.name}Length = ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
         int ${field.name}EndPos = io.getPos() + _${field.name}Length;
         while(io.getPos() < ${field.name}EndPos) {
-            _${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+            _${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if field.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
@@ -109,8 +91,8 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
             <#elseif helper.isTerminatedArray(field)>
         // Terminated array
         List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
-        while(!((boolean) (${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)}))) {
-            _${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+        while(!((boolean) (${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc}))) {
+            _${field.name}List.add(<#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if field.loopExpression.contains("curPos")>
@@ -226,9 +208,12 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
     <#case "optional">
 
         // Optional Field (${field.name}) (Can be skipped, if a given expression evaluates to false)
+        <#if field.conditionExpression.contains("curPos")>
+        curPos = io.getPos() - startPos;
+        </#if>
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = null;
         if(${helper.toDeserializationExpression(field.conditionExpression, type.parserArguments)?no_esc}) {
-            ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io);</#if>;
+            ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
         }
         <#break>
     <#case "padding">
@@ -253,15 +238,15 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
     <#case "simple">
 
         // Simple Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name?uncap_first}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>io.${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
         <#break>
     <#case "switch">
 
         // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         ${typeName}Builder builder = null;
         <#list field.cases as case>
-        if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) {
-            builder = ${case.name?uncap_first}IO.parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+        <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{
+            builder = ${case.name}IO.parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
         if (builder == null) {
@@ -282,12 +267,7 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
     }
 
 <#if outputFlavor != "passive">
-    public void serialize(WriteBuffer io, ${typeName} value, Object... args) throws ParseException {
-<#if type.parserArguments?has_content>
-<#list type.parserArguments as parserArgument>
-        ${helper.getLanguageTypeNameForSpecType(parserArgument.type)} ${parserArgument.name} = (${helper.getLanguageTypeNameForSpecType(parserArgument.type)}) args[${parserArgument?index}];
-</#list>
-</#if>
+    public static void serialize(WriteBuffer io, ${typeName} value) throws ParseException {
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -298,7 +278,7 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
                 <#if helper.isSimpleType(field.type)>
                 io.${helper.getWriteBufferReadMethodCall(field.type, "element")};
                 <#else>
-                ${field.type.name?uncap_first}IO.serialize(io, element);
+                ${field.type.name}IO.serialize(io, element);
                 </#if>
             }
         }
@@ -350,7 +330,7 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
             <#if helper.isSimpleType(field.type)>
             io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
             <#else>
-            ${field.type.name?uncap_first}IO.serialize(io, ${field.name});
+            ${field.type.name}IO.serialize(io, ${field.name});
             </#if>
         }
         <#break>
@@ -375,7 +355,7 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
         <#if helper.isSimpleType(field.type)>
         io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
         <#else>
-        ${field.type.name?uncap_first}IO.serialize(io, ${field.name}<#if field.params?has_content>, <#list field.params as term>(${helper.getArgumentType(field.type, term?index)}) (${helper.toDeserializationExpression(term, type.parserArguments)})<#sep>, </#sep></#list></#if>);
+        ${field.type.name}IO.serialize(io, ${field.name});
         </#if>
         <#break>
     <#case "switch">
@@ -383,7 +363,7 @@ public class ${typeName}IO implements <#if outputFlavor == "passive">MessageInpu
         // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
         <#list field.cases as case>
         if(value instanceof ${case.name}) {
-            ${case.name?uncap_first}IO.serialize(io, (${case.name}) value<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+            ${case.name}IO.serialize(io, (${case.name}) value);
         }<#sep> else </#sep>
         </#list>
         <#break>
