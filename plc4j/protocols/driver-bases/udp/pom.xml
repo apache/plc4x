@@ -23,24 +23,40 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-protocols</artifactId>
+    <artifactId>plc4j-protocols-driver-bases</artifactId>
     <version>0.5.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-protocols-driver-bases</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4j-protocol-driver-base-udp</artifactId>
+  <name>PLC4J: Protocol: Driver-Base: UDP</name>
+  <description>Base classes needed to implement plc4x drivers based on UDP connections.</description>
 
-  <name>PLC4J: Protocols: Driver-Bases</name>
-  <description>Collection of base-types for implementing different types of drivers.</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-protocol-driver-base</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+    </dependency>
 
-  <modules>
-    <module>base</module>
-    <module>pcap-socket</module>
-    <module>raw-socket</module>
-    <module>serial</module>
-    <module>tcp</module>
-    <module>udp</module>
-    <module>test</module>
-  </modules>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>
