@@ -39,6 +39,7 @@ import org.xmlunit.diff.Diff;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class ProtocolTestsuiteRunner {
@@ -139,18 +140,34 @@ public class ProtocolTestsuiteRunner {
 
     private MessageIO getMessageIOForTestcase(Testcase testcase) throws ProtocolTestsuiteException {
         String className = testcase.getXml().elements().get(0).attributeValue(new QName("className"));
+        String ioRootClassName = className.substring(0, className.lastIndexOf('.') + 1) + testcase.getRootType();
         String ioClassName = className.substring(0, className.lastIndexOf('.') + 1) + "io." +
             testcase.getRootType() + "IO";
         try {
+            Class<?> ioRootClass = Class.forName(ioRootClassName);
             Class<?> ioClass = Class.forName(ioClassName);
-            Object inst = ioClass.getDeclaredConstructor().newInstance();
-            if(inst instanceof MessageIO) {
-                return (MessageIO) inst;
-            } else {
-                throw new ProtocolTestsuiteException("Found IO component class is not of type MessageIO");
-            }
-        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException |
-            ClassNotFoundException e) {
+            final Method parseMethod = ioClass.getMethod("parse", ReadBuffer.class);
+            final Method serializeMethod = ioClass.getMethod("serialize", WriteBuffer.class, ioRootClass);
+            return new MessageIO() {
+                @Override
+                public Object parse(ReadBuffer io) throws ParseException {
+                    try {
+                        return parseMethod.invoke(null, io);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new ParseException("error parsing", e);
+                    }
+                }
+
+                @Override
+                public void serialize(WriteBuffer io, Object value) throws ParseException {
+                    try {
+                        serializeMethod.invoke(null, io, value);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new ParseException("error serializing", e);
+                    }
+                }
+            };
+        } catch (NoSuchMethodException | ClassNotFoundException e) {
             throw new ProtocolTestsuiteException("Unable to instantiate IO component", e);
         }
     }

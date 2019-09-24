@@ -20,6 +20,6 @@ package org.apache.plc4x.java.utils;
 
 public interface MessageOutput<SERIALIZER_TYPE> {
 
-    void serialize(WriteBuffer io, SERIALIZER_TYPE value, Object... args) throws ParseException;
+    void serialize(WriteBuffer io, SERIALIZER_TYPE value) throws ParseException;
 
 }

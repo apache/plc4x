@@ -20,6 +20,6 @@ package org.apache.plc4x.java.utils;
 
 public interface MessageInput<PARSER_TYPE> {
 
-    PARSER_TYPE parse(ReadBuffer io, Object... args) throws ParseException;
+    PARSER_TYPE parse(ReadBuffer io) throws ParseException;
 
 }
