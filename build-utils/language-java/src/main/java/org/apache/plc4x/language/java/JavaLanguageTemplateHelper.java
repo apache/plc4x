@@ -208,30 +208,30 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
             case INT: {
                 if (simpleTypeReference.getSize() <= 8) {
-                    return "readByte" + simpleTypeReference.getSize() + ")";
+                    return "readByte(" + simpleTypeReference.getSize() + ")";
                 }
                 if (simpleTypeReference.getSize() <= 16) {
-                    return "readShort" + simpleTypeReference.getSize() + ")";
+                    return "readShort(" + simpleTypeReference.getSize() + ")";
                 }
                 if (simpleTypeReference.getSize() <= 32) {
-                    return "readInt" + simpleTypeReference.getSize() + ")";
+                    return "readInt(" + simpleTypeReference.getSize() + ")";
                 }
                 if (simpleTypeReference.getSize() <= 64) {
-                    return "readLong" + simpleTypeReference.getSize() + ")";
+                    return "readLong(" + simpleTypeReference.getSize() + ")";
                 }
-                return "readBigInteger" + simpleTypeReference.getSize() + ")";
+                return "readBigInteger(" + simpleTypeReference.getSize() + ")";
             }
             case FLOAT: {
                 if (simpleTypeReference.getSize() <= 32) {
-                    return "readFloat" + simpleTypeReference.getSize() + ")";
+                    return "readFloat(" + simpleTypeReference.getSize() + ")";
                 }
                 if (simpleTypeReference.getSize() <= 64) {
-                    return "readDouble" + simpleTypeReference.getSize() + ")";
+                    return "readDouble(" + simpleTypeReference.getSize() + ")";
                 }
-                return "readBigDecimal" + simpleTypeReference.getSize() + ")";
+                return "readBigDecimal(" + simpleTypeReference.getSize() + ")";
             }
             case STRING: {
-                return "readString" + simpleTypeReference.getSize() + ")";
+                return "readString(" + simpleTypeReference.getSize() + ")";
             }
         }
         return "Hurz";
@@ -259,30 +259,30 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
             case INT: {
                 if (simpleTypeReference.getSize() <= 8) {
-                    return "writeByte" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").byteValue())";
+                    return "writeByte(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").byteValue())";
                 }
                 if (simpleTypeReference.getSize() <= 16) {
-                    return "writeShort" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").shortValue())";
+                    return "writeShort(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").shortValue())";
                 }
                 if (simpleTypeReference.getSize() <= 32) {
-                    return "writeInt" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").intValue())";
+                    return "writeInt(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").intValue())";
                 }
                 if (simpleTypeReference.getSize() <= 64) {
-                    return "writeLong" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
+                    return "writeLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
-                return "writeBigInteger" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
+                return "writeBigInteger(" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
             }
             case FLOAT: {
                 if (simpleTypeReference.getSize() <= 32) {
-                    return "writeFloat" + simpleTypeReference.getSize() + ", (float) " + fieldName + ")";
+                    return "writeFloat(" + simpleTypeReference.getSize() + ", (float) " + fieldName + ")";
                 }
                 if (simpleTypeReference.getSize() <= 64) {
-                    return "writeDouble" + simpleTypeReference.getSize() + ", (double) " + fieldName + ")";
+                    return "writeDouble(" + simpleTypeReference.getSize() + ", (double) " + fieldName + ")";
                 }
-                return "writeBigDecimal" + simpleTypeReference.getSize() + ", (BigDecimal) " + fieldName + ")";
+                return "writeBigDecimal(" + simpleTypeReference.getSize() + ", (BigDecimal) " + fieldName + ")";
             }
             case STRING: {
-                return "writeString" + simpleTypeReference.getSize() + ", (String) " + fieldName + ")";
+                return "writeString(" + simpleTypeReference.getSize() + ", (String) " + fieldName + ")";
             }
         }
         return "Hurz";
