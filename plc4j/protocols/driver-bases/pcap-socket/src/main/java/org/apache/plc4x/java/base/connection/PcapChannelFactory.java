@@ -33,17 +33,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.net.InetAddress;
 
 public class PcapChannelFactory implements ChannelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(PcapChannelFactory.class);
 
     private final File pcapFile;
+    private final InetAddress address;
+    private final int port;
+    private final int protocolId;
     private final float replaySpeedFactor;
     private final PacketHandler packetHandler;
 
-    public PcapChannelFactory(File pcapFile, float replaySpeedFactor, PacketHandler packetHandler) {
+    public PcapChannelFactory(File pcapFile, InetAddress address, int port, int protocolId, float replaySpeedFactor, PacketHandler packetHandler) {
         this.pcapFile = pcapFile;
+        this.address = address;
+        this.port = port;
+        this.protocolId = protocolId;
         this.replaySpeedFactor = replaySpeedFactor;
         this.packetHandler = packetHandler;
     }
@@ -62,7 +69,7 @@ public class PcapChannelFactory implements ChannelFactory {
             bootstrap.handler(channelHandler);
 
             // Start the client.
-            ChannelFuture f = bootstrap.connect(new PcapSocketAddress(pcapFile)).sync();
+            ChannelFuture f = bootstrap.connect(new PcapSocketAddress(pcapFile, address, port, protocolId)).sync();
             f.addListener(new GenericFutureListener<Future<? super Void>>() {
                 @Override public void operationComplete(Future<? super Void> future) throws Exception {
                     if (!future.isSuccess()) {
