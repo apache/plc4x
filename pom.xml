@@ -116,14 +116,14 @@
     <cmake-version>3.14.5</cmake-version>
     <commons-codec.version>1.12</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
-    <commons-configuration2.version>2.2</commons-configuration2.version>
+    <commons-configuration2.version>2.6</commons-configuration2.version>
     <commons-io.version>2.6</commons-io.version>
     <commons-lang.version>2.6</commons-lang.version>
     <commons-lang3.version>3.7</commons-lang3.version>
     <commons-logging.version>1.2</commons-logging.version>
     <commons-math3.version>3.5</commons-math3.version>
     <commons-pool2.version>2.6.0</commons-pool2.version>
-    <commons-text.version>1.6</commons-text.version>
+    <commons-text.version>1.8</commons-text.version>
     <crc.version>1.0.1</crc.version>
     <elasticsearch.version>7.2.0</elasticsearch.version>
     <equalsverifier.version>3.0.2</equalsverifier.version>
@@ -135,7 +135,7 @@
     <hamcrest.version>1.3</hamcrest.version>
     <jackson.version>2.9.9</jackson.version>
     <jmh.version>1.21</jmh.version>
-    <jna.version>4.5.1</jna.version>
+    <jna.version>5.3.1</jna.version>
     <joda-time.version>2.10</joda-time.version>
     <jopt-simple.version>5.0.2</jopt-simple.version>
     <jserialcom.version>2.5.1</jserialcom.version>
