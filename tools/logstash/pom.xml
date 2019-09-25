@@ -69,7 +69,7 @@
             <configuration>
               <executable>${gradlew.executable}</executable>
               <arguments>
-                <argument>:logstash-core:assemble</argument>
+                <argument>:logstash-core:jar</argument>
               </arguments>
               <workingDirectory>${project.build.directory}/logstash-${logstash.version}</workingDirectory>
             </configuration>
