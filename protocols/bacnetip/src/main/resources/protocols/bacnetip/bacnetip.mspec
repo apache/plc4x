@@ -546,7 +546,7 @@
     ]
 ]
 
-[enum uint 4 'ApplicationTags'
+[enum int 4 'ApplicationTag'
     ['0x0' NULL]
     ['0x1' BOOLEAN]
     ['0x2' UNSIGNED_INTEGER]

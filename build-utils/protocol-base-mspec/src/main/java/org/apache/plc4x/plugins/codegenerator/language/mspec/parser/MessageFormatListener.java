@@ -38,6 +38,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
+import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
@@ -159,6 +160,17 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     @Override
+    public void enterEnumField(MSpecParser.EnumFieldContext ctx) {
+        ComplexTypeReference type = new DefaultComplexTypeReference(ctx.type.complexTypeReference.getText());
+        String name = ctx.name.id.getText();
+        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
+        Field field = new DefaultEnumField(null, type, name, params);
+        if(parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
     public void enterImplicitField(MSpecParser.ImplicitFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = ctx.name.id.getText();
@@ -274,7 +286,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterVirtualField(MSpecParser.VirtualFieldContext ctx) {
-        SimpleTypeReference type = getSimpleTypeReference(ctx.type);
+        TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
         String valueExpressionString = ctx.valueExpression.expr.getText();
         Term valueExpression = getExpressionTerm(valueExpressionString);

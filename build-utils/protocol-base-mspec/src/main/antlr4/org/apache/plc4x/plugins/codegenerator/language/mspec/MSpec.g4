@@ -43,6 +43,7 @@ field
  | checksumField
  | constField
  | discriminatorField
+ | enumField
  | implicitField
  | manualArrayField
  | manualField
@@ -68,6 +69,10 @@ constField
 
 discriminatorField
  : 'discriminator' type=dataType name=idExpression
+ ;
+
+enumField
+ : 'enum' type=typeReference name=idExpression
  ;
 
 implicitField
@@ -103,7 +108,7 @@ typeSwitchField
  ;
 
 virtualField
- : 'virtual' type=dataType name=idExpression valueExpression=expression
+ : 'virtual' type=typeReference name=idExpression valueExpression=expression
  ;
 
 enumValueDefinition

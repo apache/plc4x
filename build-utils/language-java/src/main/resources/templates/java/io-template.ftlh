@@ -40,6 +40,7 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
 
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
+<#if helper.getEnumTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;</#if>
 import org.apache.plc4x.java.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,11 +133,16 @@ public class ${typeName}IO {
             throw new ParseException("Expected constant value " + ${typeName}.${field.name?upper_case} + " but got " + ${field.name});
         }
         <#break>
+    <#case "enum">
+
+        // Enum field (${field.name})
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(io.${helper.getReadMethodName(helper.getEnumBaseType(field.type))}(${helper.getEnumBaseType(field.type).size}));
+        <#break>
     <#case "discriminator">
 
         // Discriminator Field (${field.name}) (Used as input to a switch field)
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
-    <#break>
+        <#break>
     <#case "implicit">
 
         // Implicit Field (${field.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -299,6 +305,12 @@ public class ${typeName}IO {
         // Discriminator Field (${field.name}) (Used as input to a switch field)
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.getDiscriminatorValues()[0];
         io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
+        <#break>
+    <#case "enum">
+
+        // Enum field (${field.name})
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) value.get${field.name?cap_first}();
+        io.${helper.getWriteBufferReadMethodCall(helper.getEnumBaseType(field.type), "(" + field.name + ".getValue())")};
         <#break>
     <#case "implicit">
 

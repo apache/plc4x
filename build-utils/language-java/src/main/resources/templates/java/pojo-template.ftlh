@@ -38,6 +38,8 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 
 package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
+<#if helper.getEnumTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;</#if>
+
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.utils.Message;
 

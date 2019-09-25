@@ -22,10 +22,7 @@ package org.apache.plc4x.language.java;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
@@ -323,6 +320,20 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return types.values();
     }
 
+    public Collection<ComplexTypeReference> getEnumTypes(ComplexTypeDefinition complexTypeDefinition) {
+        Map<String, ComplexTypeReference> types = new HashMap<>();
+        for (Field field : complexTypeDefinition.getFields()) {
+            if(field instanceof EnumField) {
+                EnumField enumField = (EnumField) field;
+                if(enumField.getType() instanceof ComplexTypeReference) {
+                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) enumField.getType();
+                    types.put(complexTypeReference.getName(),  complexTypeReference);
+                }
+            }
+        }
+        return types.values();
+    }
+
     public boolean isSimpleType(TypeReference typeReference) {
         return typeReference instanceof SimpleTypeReference;
     }
@@ -611,6 +622,15 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
         }
         return valueString;
+    }
+
+    public SimpleTypeReference getEnumBaseType(TypeReference enumType) {
+        if(!(enumType instanceof ComplexTypeReference)) {
+            throw new RuntimeException("type reference for enum types must be of type complex type");
+        }
+        ComplexTypeReference complexType = (ComplexTypeReference) enumType;
+        EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) types.get(complexType.getName());
+        return (SimpleTypeReference) enumTypeDefinition.getType();
     }
 
 }
