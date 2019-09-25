@@ -118,11 +118,14 @@ public class PcapSocketChannel extends OioByteStreamChannel {
                     public void gotPacket(Packet packet) {
                         Timestamp curPacketTime = handle.getTimestamp();
 
-                        // If last-time is not null, wait for the given number of nano-seconds.
-                        if(lastPacketTime != null) {
-                            int numMicrosecondsSleep = (int)
-                                ((curPacketTime.getNanos() - lastPacketTime.getNanos()) / config.getSpeedFactor());
-                            nanoSecondSleep(numMicrosecondsSleep);
+                        // Only enable the throttling if it is not disabled.
+                        if(config.getSpeedFactor() != PcapSocketChannelConfig.NO_THROTTLING) {
+                            // If last-time is not null, wait for the given number of nano-seconds.
+                            if (lastPacketTime != null) {
+                                int numMicrosecondsSleep = (int)
+                                    ((curPacketTime.getNanos() - lastPacketTime.getNanos()) / config.getSpeedFactor());
+                                nanoSecondSleep(numMicrosecondsSleep);
+                            }
                         }
 
                         // Send the bytes to the netty pipeline.

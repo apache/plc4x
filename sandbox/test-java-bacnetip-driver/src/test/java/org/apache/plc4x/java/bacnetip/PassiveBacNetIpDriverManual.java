@@ -22,6 +22,7 @@ import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.PcapChannelFactory;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
+import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
 import org.apache.plc4x.java.utils.pcapsockets.netty.UdpIpPacketHandler;
 
 import java.io.File;
@@ -32,7 +33,8 @@ public class PassiveBacNetIpDriverManual {
         NettyPlcConnection connection = new PassiveBacNetIpPlcConnection(new PcapChannelFactory(
             //new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnetWhoIsRouterToNetwork.pcapng"), null,
             new File("/Users/christofer.dutz/Downloads/20190906_udp.pcapng"), null,
-            PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS, 1.5f, new UdpIpPacketHandler()), "");
+            PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
+            PcapSocketChannelConfig.NO_THROTTLING, new UdpIpPacketHandler()), "");
         connection.connect();
     }
 

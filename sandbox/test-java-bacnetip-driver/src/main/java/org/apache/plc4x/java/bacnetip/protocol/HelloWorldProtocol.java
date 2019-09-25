@@ -27,6 +27,9 @@ import java.util.List;
 
 public class HelloWorldProtocol extends PlcMessageToMessageCodec<BVLC, PlcRequestContainer> {
 
+    private int packetCount = 0;
+    private long startTime = -1;
+
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, PlcRequestContainer plcRequestContainer, List<Object> list) throws Exception {
         System.out.println(plcRequestContainer);
@@ -34,7 +37,15 @@ public class HelloWorldProtocol extends PlcMessageToMessageCodec<BVLC, PlcReques
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, BVLC packet, List<Object> list) throws Exception {
-        if(packet instanceof BVLCOriginalUnicastNPDU) {
+        if(startTime == -1) {
+            startTime = System.currentTimeMillis();
+        }
+        packetCount++;
+        if(packetCount % 10000 == 0) {
+            long curTime = System.currentTimeMillis();
+            System.out.println("Read " + packetCount + " packets in " + (curTime - startTime) + "ms");
+        }
+/*        if(packet instanceof BVLCOriginalUnicastNPDU) {
             final NPDU npdu = ((BVLCOriginalUnicastNPDU) packet).getNpdu();
             final APDU apdu = npdu.getApdu();
             if(apdu instanceof APDUSimpleAck) {
@@ -55,7 +66,7 @@ public class HelloWorldProtocol extends PlcMessageToMessageCodec<BVLC, PlcReques
             }
         } else {
             System.out.println("Other");
-        }
+        }*/
     }
 
 }
