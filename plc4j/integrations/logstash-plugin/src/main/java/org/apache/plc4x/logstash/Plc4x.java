@@ -113,7 +113,12 @@ public class Plc4x implements Input {
             plcDriverManager = new PooledPlcDriverManager();
             triggerCollector = new TriggerCollectorImpl(plcDriverManager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
+                HashMap<String, Object> resultMap = new HashMap<String, Object>();
+                resultMap.put("jobName", jobName);
+                resultMap.put("sourceName", sourceName);
+                resultMap.put("values", results);
 
+                //TODO: add guard for debug mode, so only in debug mode its run
                 for (Map.Entry<String, Object> result : results.entrySet()) {
                     // Get field-name and -value from the results.
                     String fieldName = result.getKey();
@@ -121,7 +126,7 @@ public class Plc4x implements Input {
                     logger.finest("fieldName: " + fieldName);
                     logger.finest("fieldValue: " + fieldValue);
                 }
-                consumer.accept(results);
+                consumer.accept(resultMap);
             }, triggerCollector);
             scraper.start();
             triggerCollector.start();
