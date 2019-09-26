@@ -103,7 +103,8 @@
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
 
-    <plc4x-code-generation.version>1.0.0</plc4x-code-generation.version>
+    <!--plc4x-code-generation.version>1.0.0</plc4x-code-generation.version-->
+    <plc4x-code-generation.version>1.0.0-SNAPSHOT</plc4x-code-generation.version>
 
     <antlr.version>4.7.2</antlr.version>
     <asm.version>5.0.4</asm.version>
