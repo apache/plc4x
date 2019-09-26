@@ -18,76 +18,20 @@ include::{pom-adoc}[]
 :imagesdir: ../images/
 :icons: font
 
-== Releasing PLC4X
+== Releasing PLC4X Build-Tools
 
-=== Preparing your system for being able to release
+In contrast to the main project, the `plc4x-build-tools` repository contains a loose collection of sub-projects.
 
-As part of the release process, Maven will upload maven release artifacts to a so-called staging repository.
+The main `pom.xml` in the root directory is mainly for allowing to import all modules into an IDE and shouldn't be used for releases.
 
-This can be thought of as an ad-hoc Maven repository that contains only the artifacts for one release.
-This helps reviewers to see what's in the convenience maven package and to release that to the public repos with one click.
+If you want to release a part of the build-tools, please execute the following release steps in the parts sub-directory.
 
-But in order to be allowed to upload artifacts, your account has to be enabled for this and you have to tell Maven about your credentials.
+In general the preparation steps for releasing a build-tool is equal to those of the main project.
+So please check link:release.html[here] (Chapters: `Preparing your system for being able to release` and `Preparing the codebase for a release`)
 
-:current-full-version:
+The rest of the steps are a lot simpler than those of the main project as there aren't any profiles involved.
 
-In order to do this, you should provide these credentials via `.m2/settings.xml`.
-
-So if you don't already have one, you should create a `.m2` directory in your user home and inside that create a `settings.xml` file with at least this content:
-
-   <?xml version="1.0" encoding="UTF-8"?>
-   <settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-     <servers>
-       <!-- Apache Repo Settings -->
-       <server>
-           <id>apache.snapshots.https</id>
-           <username>{user-id}</username>
-           <password>{user-pass}</password>
-       </server>
-       <server>
-           <id>apache.releases.https</id>
-           <username>{user-id}</username>
-           <password>{user-pass}</password>
-       </server>
-     </servers>
-   </settings>
-
-This tells maven to use above credentials as soon as a repository with the id `apache.snapshots.https` or `apache.releases.https` is being used.
-For a release all you need is the `releases` repo, but it is good to have the other in place as it enables you to also deploy SNAPSHOTs from your system.
-There repos are defined in the `apache` parent pom and is identical for all Apache projects.
-
-Additionally all artifacts are automatically signed by the release build. In order to be able to do this you need to setup GPG.
-
-The key being used to sign the artifacts will have to be linked to your Apache E-Mail ({apache-id}@apache.org) and verified by at least one fellow Apache committer (Ideally more) that have trusted keys themselves.
-Usually for this you have to get in touch - in real life - with any Apache committer with a trusted key.
-Attending an `ApacheCon` is usually a great way to do this as usually every ApacheCon has a `Key Signing event` in it's schedule.
-He can then sign your key and hereby enable you to sign Apache release artifacts.
-
-There's a detailed description https://github.com/apache/incubator-pulsar/wiki/Create-GPG-keys-to-sign-release-artifacts[here].
-
-If you happen to have multiple keys, adding the following profile to your `settings.xml` should help:
-
-    <profile>
-      <id>apache-release</id>
-      <properties>
-        <gpg.keyname>5C60D6B9</gpg.keyname><!-- Your GPG Keyname here -->
-        <!-- Use an agent: Prevents being asked for the password during the build -->
-        <gpg.useagent>true</gpg.useagent>
-        <gpg.passphrase>topsecret-password</gpg.passphrase>
-      </properties>
-    </profile>
-
-=== Preparing the codebase for a release
-
-Usually you will have to update the RELEASE_NOTES document to the new version.
-I would suggest doing this prior to the branch as otherwise you will definitely have to port it back to `develop`.
-So remove the `SNAPSHOT` and `(Unreleased)` markers from the file and add missing parts.
-
-Also if you are doing the first release in a new year, it is advisable to search for the old year and check if any occurrences are ok the way they are.
-Usually the `NOTICE` file has to be adjusted.
-
-=== Creating a release branch
+=== Creating a release branch (For the code-generation module)
 
 According to SemVer, we have: Major, Minor and Bugfix releases.
 
@@ -105,28 +49,28 @@ This is the version the `develop` branch will be changed to.
 The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
 Otherwise we would have to define the working copy version for each module.
 
-   mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
+   mvn release:branch -DbranchName=rel/code-generation/{minor-version} -DautoVersionSubmodules=true
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
-So in case of preparing the release branch for `0.5.0-SNAPSHOT` the command would be the following:
+So in case of preparing the release branch for `{project.version}` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/{current-short-version} -DautoVersionSubmodules=true
+   mvn release:branch -DbranchName=rel/code-generation/{current-short-version} -DautoVersionSubmodules=true
 ----
 
 The plugin will then aks for the version:
 
 [subs="verbatim,attributes"]
 ----
-   What is the new working copy version for "PLC4X"? (org.apache.plc4x:plc4x-parent) {current-next-incremental-version}-SNAPSHOT: : {current-next-minor-version}-SNAPSHOT
+   What is the new working copy version for "PLC4X Build Tools: Code Generation"? (org.apache.plc4x.plugins:plc4x-code-generaton) {current-next-incremental-version}-SNAPSHOT: : {current-next-minor-version}-SNAPSHOT
 ----
 
 Where the suggested default is manually overridden.
 
 This step now should perform quite quickly as no build and no tests are involved.
 
-However in the end the versions of the `develop` branch are updated and a new `rel/{current-short-version}` branch is created.
+However in the end the versions of the `develop` branch are updated and a new `rel/code-generation/{current-short-version}` branch is created.
 
 === Preparing `develop` for the next iteration
 
@@ -167,28 +111,25 @@ Changes should either be re applied in `develop` or `cherry-picked`, however mer
 
 === Preparing a release
 
+Before you start preparing the release it is important to manually make the `RELEASE_NOTES` reflect the version we are planning on releasing.
+
+So be sure to remove the `(Unreleased)` and `SNAPSHOT` from the version.
+
 As especially when switching a lot between different branches, it is recommended to do a clean checkout of the repository.
 Otherwise a lot of directories can be left over, which would be included in the source-release zip.
 In order to prepare a release-candidate, the first step is switching to the corresponding release-branch.
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DautoVersionSubmodules=true
+   mvn release:prepare -DautoVersionSubmodules=true
 
-(The `-P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
-2. The name of the tag the release commit will be tagged with in the SCM (Name it `release/{release-version}` (`release/{current-full-version}` in our case)
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `release/code-generation/{release-version}` (`release/code-generation/{current-full-version}` in our case)
 3. The next development version (The version present in the pom after the release) (`{current-next-minor-version}` in our case)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
-
-We currently have a dependency to a SNAPSHOT dependency in the sandbox module.
-The release plugin will complain about this and we will not be able to release this way.
-As this in the sandbox module, we can force the plugin to continue by appending:
-
-   -DignoreSnapshots=true
 
 However it is important to check that nowhere else SNAPSHOT versions are referenced.
 
@@ -197,7 +138,7 @@ What the plugin now does, is automatically execute the following operations:
 1. Check we aren't referencing any `SNAPSHOT` dependencies.
 2. Update all pom versions to the release version.
 3. Run a build with all tests
-4. Commit the changes (commit message: `[maven-release-plugin] prepare release release/{current-full-version}`)
+4. Commit the changes (commit message: `[maven-release-plugin] prepare release release/code-generation/{current-full-version}`)
 5. Push the commit
 6. Tag the commit
 7. Update all poms to the next development version.
@@ -206,12 +147,12 @@ What the plugin now does, is automatically execute the following operations:
 
 However this just prepared the git repository for the release, we have to perform the release to produce and stage the release artifacts.
 
-Please verify the git repository at: https://gitbox.apache.org/repos/asf?p=plc4x.git
+Please verify the git repository at: https://gitbox.apache.org/repos/asf?p=plc4x-build-tools.git
 is in the correct state. Please select the release branch and verify the commit log looks similar to this
 
 image::release-git-history.png[]
 
-It is important that the commit with the message "[maven-release-plugin] prepare release release/{current-full-version}" is tagged with the release tag (in this case release/0.3.0)
+It is important that the commit with the message "[maven-release-plugin] prepare release release/code-generation/{current-full-version}" is tagged with the release tag (in this case release/code-generation/{current-full-version})
 
 If you check the commit itself, it should mainly consist of version updates like this:
 
@@ -223,7 +164,7 @@ After that should come a second commit:
 
 image::release-git-diff-next-development-iteration.png[]
 
-This now updates the versions again, but this time from the release version to the one we selected for the next development iteration (in this case 0.3.1-SNAPSHOT)
+This now updates the versions again, but this time from the release version to the one we selected for the next development iteration (in this case `{current-next-minor-version}-SNAPSHOT`)
 
 NOTE: If the commit history doesn't look like this, something went wrong.
 
@@ -241,18 +182,16 @@ However it will not delete the tag in GIT (locally and remotely). So you have to
 
 This is done by executing another goal of the `maven-release-plugin`:
 
-   mvn release:perform -DreleaseProfiles=apache-release,with-java,with-proxies
+   mvn release:perform
 
 This executes automatically as all information it requires is located in the `release.properties` file the `prepare` goal prepared.
 
 The first step is that the `perform` goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
-   mvn clean deploy -P apache-release,with-java,with-proxies
+   mvn clean deploy -P apache-release
 
-As the `apache-release` profile is also activated, this builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
-
-We are intentionally not adding the other profiles, as these either produce binary artifacts that usually only work on the system they were compiled on (C++, .Net) or we haven't found a good way to distribute them via Maven yet (Python) or deployment is disabled anyway (sandbox).
+As the `apache-release` profile is activated, this builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
 
 As this time the build is building with release versions, Maven will automatically choose the release url for deploying artifacts.
 
@@ -287,13 +226,13 @@ The directory structure of this directory is as follows:
 [subs="verbatim,attributes"]
 ----
    ./KEYS
-   ./{current-full-version}/
-   ./{current-full-version}/rc1
-   ./{current-full-version}/rc1/README
-   ./{current-full-version}/rc1/RELEASE_NOTES
-   ./{current-full-version}/rc1/apache-plc4x-{current-full-version}-source-release.zip
-   ./{current-full-version}/rc1/apache-plc4x-{current-full-version}-source-release.zip.asc
-   ./{current-full-version}/rc1/apache-plc4x-{current-full-version}-source-release.zip.sha512
+   ./{current-full-version}/build-tools/code-generation
+   ./{current-full-version}/build-tools/code-generation/rc1
+   ./{current-full-version}/build-tools/code-generation/rc1/README
+   ./{current-full-version}/build-tools/code-generation/rc1/RELEASE_NOTES
+   ./{current-full-version}/build-tools/code-generation/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip
+   ./{current-full-version}/build-tools/code-generation/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip.asc
+   ./{current-full-version}/build-tools/code-generation/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip.sha512
 ----
 
 The `KEYS` file contains the PGP public key which belongs to the private key used to sign the release artifacts.
@@ -319,17 +258,19 @@ The following would be the one used to do our first TLP release:
 [subs="verbatim,attributes"]
 ----
    E-Mail Topic:
-   [VOTE] Apache PLC4X {current-full-version} RC1
+   [VOTE] Apache PLC4X Build-Tools Code-Generation {current-full-version RC1
 
    Message:
-   Apache PLC4X {current-full-version} has been staged under [2] and it’s time to vote
-   on accepting it for release. All Maven artifacts are available under [1].
-   Voting will be open for 72hr.
+   Apache PLC4X Build-Tools Code-Generation {current-full-version} has been staged under [2]
+   and it’s time to vote on accepting it for release.
+
+   All Maven artifacts are available under [1]. Voting will be open for 72hr.
 
    A minimum of 3 binding +1 votes and more binding +1 than binding -1
    are required to pass.
 
-   Release tag: release/{current-full-version}
+   Repository: https://gitbox.apache.org/repos/asf/plc4x-build-tools.git
+   Release tag: release/code-generation/{current-full-version}
    Hash for the release tag: {replacethiswiththerealgitcommittag}
 
    Per [3] "Before voting +1 PMC members are required to download
@@ -345,7 +286,7 @@ The following would be the one used to do our first TLP release:
 
 
    [1] https://repository.apache.org/content/repositories/orgapacheplc4x-{somefourdigitnumber}
-   [2] https://dist.apache.org/repos/dist/dev/plc4x/{current-full-version}/rc1
+   [2] https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{current-full-version}/rc1/
    [3] https://www.apache.org/dev/release.html#approving-a-release
    [4] https://cwiki.apache.org/confluence/display/PLC4X/Validating+a+staged+Release
 ----
