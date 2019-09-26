@@ -122,26 +122,21 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Create a fat-jar containing all the dependencies -->
+      <!-- Build a fat jar containing all dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
+        <artifactId>maven-shade-plugin</artifactId>
         <executions>
           <execution>
-            <id>build-data-fragment</id>
-            <phase>prepare-package</phase>
+            <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>shade</goal>
             </goals>
             <configuration>
-              <descriptors>src/assembly/assembly.xml</descriptors>
-              <!-- Redirect the output to where gem will find it -->
-              <outputDirectory>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${current-full-version}</outputDirectory>
               <!-- Ignore the error ... this variable is calculated in the "validate" phase -->
-              <finalName>logstash-input-plc4x-${current-full-version}</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
+              <outputFile>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${current-full-version}/logstash-input-plc4x-${current-full-version}.jar</outputFile>
               <!-- The output is just an intermediate file, so make sure it's not installed or deployed -->
-              <attach>false</attach>
+              <shadedArtifactAttached>false</shadedArtifactAttached>
             </configuration>
           </execution>
         </executions>
@@ -168,20 +163,6 @@
               </arguments>
               <workingDirectory>${project.build.directory}/gem</workingDirectory>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- JRuby and Gem will produce the output artifact, so lets skip the default exscution -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <phase>none</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
