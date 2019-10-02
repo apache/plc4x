@@ -199,7 +199,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 if (((data[3]>> 7) & 1) == 0)  {
                                     fieldItem = new DefaultIntegerFieldItem((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
                                 } else {
-                                    fieldItem = new DefaultIntegerFieldItem((((~data[3] & 0b01111111) << 24) + (~(data[2]-1) & 0b11111111) + (~(data[1]-1) & 0b11111111) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    fieldItem = new DefaultIntegerFieldItem((((~data[3] & 0b01111111) << 24) + ((~(data[2]-1) & 0b11111111) << 16)+ ((~(data[1]-1) & 0b11111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
