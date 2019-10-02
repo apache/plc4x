@@ -32,6 +32,7 @@ import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // class name must match plugin name
@@ -113,15 +114,21 @@ public class Plc4x implements Input {
             plcDriverManager = new PooledPlcDriverManager();
             triggerCollector = new TriggerCollectorImpl(plcDriverManager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
+                HashMap<String, Object> resultMap = new HashMap<String, Object>();
+                resultMap.put("jobName", jobName);
+                resultMap.put("sourceName", sourceName);
+                resultMap.put("values", results);
 
-                for (Map.Entry<String, Object> result : results.entrySet()) {
-                    // Get field-name and -value from the results.
-                    String fieldName = result.getKey();
-                    Object fieldValue = result.getValue();
-                    logger.finest("fieldName: " + fieldName);
-                    logger.finest("fieldValue: " + fieldValue);
+                if (logger.getLevel().equals(Level.FINEST)) {
+                    for (Map.Entry<String, Object> result : results.entrySet()) {
+                        // Get field-name and -value from the results.
+                        String fieldName = result.getKey();
+                        Object fieldValue = result.getValue();
+                        logger.finest("fieldName: " + fieldName);
+                        logger.finest("fieldValue: " + fieldValue);
+                    }
                 }
-                consumer.accept(results);
+                consumer.accept(resultMap);
             }, triggerCollector);
             scraper.start();
             triggerCollector.start();
