@@ -35,7 +35,7 @@
   <description>Integration module for integrating PLC4X into Apache Karaf.</description>
 
   <properties>
-    <karaf.version>4.2.2</karaf.version>
+    <karaf.version>4.2.7</karaf.version>
     <karaf-maven-plugin.version>${karaf.version}</karaf-maven-plugin.version>
   </properties>
 
