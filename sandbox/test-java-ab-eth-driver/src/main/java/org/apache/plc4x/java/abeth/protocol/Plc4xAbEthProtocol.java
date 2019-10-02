@@ -38,6 +38,7 @@ import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
 import org.apache.plc4x.java.base.messages.items.DefaultShortFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,12 +181,34 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 fieldItem = new DefaultShortFieldItem(convData);
                             }
                             break;
+                        case WORD:
+                            if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
+                                DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
+                                short[] data = df1PTLR.getData();
+                                if (((data[1]>> 7) & 1) == 0)  {
+                                    fieldItem = new DefaultIntegerFieldItem((data[1] << 8) + data[0]);  // positive number
+                                } else {
+                                    fieldItem = new DefaultIntegerFieldItem((((~data[1] & 0b01111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                }
+                            }
+                            break;
+                        case DWORD:
+                            if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
+                                DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
+                                short[] data = df1PTLR.getData();
+                                if (((data[3]>> 7) & 1) == 0)  {
+                                    fieldItem = new DefaultIntegerFieldItem((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
+                                } else {
+                                    fieldItem = new DefaultIntegerFieldItem((((~data[3] & 0b01111111) << 24) + (~(data[2]-1) & 0b11111111) + (~(data[1]-1) & 0b11111111) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                }
+                            }
+                            break;
                         case SINGLEBIT:
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (field.getBitNumber() < 8) {
-                                    fieldItem = new DefaultBooleanFieldItem((data[0] & (1 <<  field.getBitNumber())) != 0);          // read from first byte
+                                    fieldItem = new DefaultBooleanFieldItem((data[0] & (1 <<  field.getBitNumber())) != 0);         // read from first byte
                                 } else {
                                     fieldItem = new DefaultBooleanFieldItem((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
                                 }
