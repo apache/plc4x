@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
+import org.apache.plc4x.java.bacnetip.protocol.HelloWorldProtocol;
 import org.apache.plc4x.java.spi.PlcDriver;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 
@@ -61,7 +62,7 @@ public class PassiveBacNetIpDriver implements PlcDriver {
         try {
             RawSocketIpAddress rawSocketAddress = new RawSocketIpAddress(
                 networkDevice, ALL_PROTOCOLS, null, BACNET_IP_PORT);
-            return new PassiveBacNetIpPlcConnection(rawSocketAddress, params);
+            return new PassiveBacNetIpPlcConnection(rawSocketAddress, params, new HelloWorldProtocol());
         } catch (Exception e) {
             throw new PlcConnectionException("Error connecting to host", e);
         }
