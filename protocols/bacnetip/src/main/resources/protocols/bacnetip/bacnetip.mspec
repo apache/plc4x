@@ -514,25 +514,27 @@
         ['0','0x1' BACnetTagApplicationBoolean
         ]
         ['0','0x2' BACnetTagApplicationUnsignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
-            [array uint 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
         ['0','0x3' BACnetTagApplicationSignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
-            [array uint 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
         ['0','0x4' BACnetTagApplicationReal [uint 3 'lengthValueType', uint 8 'extLength']
-            [array uint 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
-        ['0','0x5' BACnetTagApplicationDouble
+        ['0','0x5' BACnetTagApplicationDouble [uint 3 'lengthValueType', uint 8 'extLength']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
         ['0','0x6' BACnetTagApplicationOctetString
         ]
         ['0','0x7' BACnetTagApplicationCharacterString
         ]
         ['0','0x8' BACnetTagApplicationBitString [uint 3 'lengthValueType', uint 8 'extLength']
-            [array uint 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+            [simple uint 8 'unusedBits']
+            [array int 8 'data' length '(lengthValueType == 5) ? (extLength - 1) : (lengthValueType - 1)']
         ]
         ['0','0x9' BACnetTagApplicationEnumerated [uint 3 'lengthValueType', uint 8 'extLength']
-            [array uint 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
         ['0','0xA' BACnetTagApplicationDate
         ]
@@ -541,7 +543,7 @@
         ['0','0xC' BACnetTagApplicationObjectIdentifier
         ]
         ['1' BACnetTagContext [uint 4 'typeOrTagNumber', uint 8 'extTagNumber', uint 3 'lengthValueType', uint 8 'extLength']
-            [array uint 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
     ]
 ]

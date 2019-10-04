@@ -58,8 +58,8 @@ public class PassiveBacNetIpPlcConnection extends NettyPlcConnection implements 
 
     @Override
     protected void sendChannelCreatedEvent() {
-        // Send an event to the pipeline telling the Protocol filters what's going on.
-        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+        // As this type of protocol doesn't require any form of connection, we just send the connected event.
+        channel.pipeline().fireUserEventTriggered(new ConnectedEvent());
     }
 
     @Override

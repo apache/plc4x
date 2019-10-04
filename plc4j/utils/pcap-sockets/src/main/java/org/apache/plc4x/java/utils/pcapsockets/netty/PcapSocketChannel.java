@@ -41,8 +41,6 @@ import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 
 /**
- * TODO write comment
- *
  * @author julian
  * Created by julian on 2019-08-16
  */
@@ -119,7 +117,7 @@ public class PcapSocketChannel extends OioByteStreamChannel {
                         Timestamp curPacketTime = handle.getTimestamp();
 
                         // Only enable the throttling if it is not disabled.
-                        if(config.getSpeedFactor() != PcapSocketChannelConfig.NO_THROTTLING) {
+                        if(config.getSpeedFactor() != PcapSocketChannelConfig.SPEED_FAST_FULL) {
                             // If last-time is not null, wait for the given number of nano-seconds.
                             if (lastPacketTime != null) {
                                 int numMicrosecondsSleep = (int)

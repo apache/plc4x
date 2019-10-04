@@ -35,7 +35,7 @@ public class PassiveBacNetIpDriverManual {
             //new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnetWhoIsRouterToNetwork.pcapng"), null,
             new File("/Users/christofer.dutz/Downloads/20190906_udp.pcapng"), null,
             PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
-            PcapSocketChannelConfig.NO_THROTTLING, new UdpIpPacketHandler()), "", new HelloWorldProtocol());
+            PcapSocketChannelConfig.SPEED_FAST_DOUBLE, new UdpIpPacketHandler()), "", new HelloWorldProtocol());
         connection.connect();
     }
 

@@ -49,30 +49,23 @@ import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
 import org.streampipes.sdk.utils.Datatypes;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.ByteBuffer;
+import java.util.*;
 
 public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     public static final String ID = "http://plc4x.apache.org/streampipes/adapter/bacnetip";
+
     private static final Logger logger = LoggerFactory.getLogger(BacNetIpAdapter.class);
 
     private NettyPlcConnection connection;
 
-    private Map<String, Object> event;
-    private int numberProperties;
-
     public BacNetIpAdapter() {
-        event = new HashMap<>();
-        numberProperties = 0;
+        super();
     }
 
     public BacNetIpAdapter(SpecificAdapterStreamDescription adapterDescription) {
         super(adapterDescription);
-        event = new HashMap<>();
-        numberProperties = 0;
     }
 
     @Override
@@ -92,24 +85,58 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.String, "sourceId")
-                .label("Source Id")
-                .description("")
+                .create(Datatypes.Long, "time")
+                .label("Time")
+                .description("The time the event was processed in the BACnet adapter")
                 .build());
 
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.String, "propertyId")
-                .label("Property Id")
-                .description("")
+                .create(Datatypes.Integer, "objectType")
+                .label("Object type")
+                .description("Type of BACnet object emitting the event (usually 'device')")
                 .build());
 
-        // We need to define the type of the value, I choose a numerical value
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.Float, "value")
+                .create(Datatypes.Integer, "objectId")
+                .label("Object id")
+                .description("Id of the BACnet object emitting the event (usually 'device id')")
+                .build());
+
+        allProperties.add(
+            PrimitivePropertyBuilder
+                .create(Datatypes.Integer, "notificationType")
+                .label("Notification type")
+                .description("The type of notification this event resembles (usually some type of input)")
+                .build());
+
+        allProperties.add(
+            PrimitivePropertyBuilder
+                .create(Datatypes.Integer, "notificationInstanceNumber")
+                .label("Notification instance number")
+                .description("The instance number of the component emitting the event (usually the id of the property changed on a device)")
+                .build());
+
+        allProperties.add(
+            PrimitivePropertyBuilder
+                .create(Datatypes.Integer, "valueType")
+                .label("Value type")
+                .description("The type the value has (real, uint, int, bit-string, ...)")
+                .build());
+
+        allProperties.add(
+            PrimitivePropertyBuilder
+                .create(Datatypes.String, "value")
                 .label("Value")
-                .description("")
+                .description("This is the actual payload of the event.")
+                .build());
+
+        allProperties.add(
+            PrimitivePropertyBuilder
+                .create(Datatypes.Sequence, "status")
+                .label("Status")
+                .description("Some times an array of status bits are passed along.")
                 .build());
 
         eventSchema.setEventProperties(allProperties);
@@ -128,12 +155,21 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                 //new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnetWhoIsRouterToNetwork.pcapng"), null,
                 new File("/Users/christofer.dutz/Downloads/20190906_udp.pcapng"), null,
                 PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
-                PcapSocketChannelConfig.NO_THROTTLING, new UdpIpPacketHandler()), "",
+                PcapSocketChannelConfig.SPEED_REALTIME, new UdpIpPacketHandler()), "",
                 new PlcMessageToMessageCodec<BVLC, PlcRequestContainer>() {
 
                 @Override
                 protected void decode(ChannelHandlerContext channelHandlerContext, BVLC packet, List<Object> list) throws Exception {
-                    final NPDU npdu = ((BVLCOriginalUnicastNPDU) packet).getNpdu();
+                    NPDU npdu = null;
+                    if(packet instanceof BVLCOriginalUnicastNPDU) {
+                        npdu = ((BVLCOriginalUnicastNPDU) packet).getNpdu();
+                    } else if(packet instanceof BVLCForwardedNPDU) {
+                        npdu = ((BVLCForwardedNPDU) packet).getNpdu();
+                    } else if(packet instanceof BVLCOriginalBroadcastNPDU) {
+                        npdu = ((BVLCOriginalBroadcastNPDU) packet).getNpdu();
+                    } else {
+                        throw new RuntimeException("Unexpected type of packet");
+                    }
                     final APDU apdu = npdu.getApdu();
                     if(apdu instanceof APDUConfirmedRequest) {
                         APDUConfirmedRequest request = (APDUConfirmedRequest) apdu;
@@ -142,16 +178,110 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                             BACnetConfirmedServiceRequestConfirmedCOVNotification covNotification = (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
                             final BACnetTagWithContent[] notifications = covNotification.getNotifications();
 
-                            // TODO: Get the information from the decoded packet.
-                            String key = ""; // Node-id + property-id
-                            Float value = 1.0f; // Value
+                            String objectType = Integer.toString(covNotification.getMonitoredObjectType());
+                            String objectId = Long.toString(covNotification.getMonitoredObjectInstanceNumber());
 
-                            event.put(key, value);
-                            if (event.keySet().size() >= numberProperties) {
-                                adapterPipeline.process(event);
+                            String notificationType = Integer.toString(covNotification.getIssueConfirmedNotificationsType());
+                            String notificationInstanceNumber = Long.toString(covNotification.getMonitoredObjectInstanceNumber());
+
+                            String type = null;
+                            Object value = null;
+                            boolean[] status = null;
+                            for (BACnetTagWithContent notification : notifications) {
+                                // Id of the property that changed
+                                short propertyId = notification.getPropertyIdentifier()[0];
+
+                                // Present-Value has the property id 85
+                                // (This is the actual value to which a given property has changed)
+                                if(propertyId == 85) {
+                                    // Depending on the type of object, parse the data accordingly.
+                                    if (notification.getVal() instanceof BACnetTagApplicationBoolean) {
+                                        type = "boolean";
+                                        final BACnetTagApplicationBoolean val = (BACnetTagApplicationBoolean) notification.getVal();
+
+                                    } else if (notification.getVal() instanceof BACnetTagApplicationUnsignedInteger) {
+                                        type = "uint";
+                                        final BACnetTagApplicationUnsignedInteger val = (BACnetTagApplicationUnsignedInteger) notification.getVal();
+                                        // Convert any number of bytes into an unsigned integer.
+                                        switch (val.getData().length) {
+                                            case 1:
+                                                value = Byte.toString(val.getData()[0]);
+                                                break;
+                                            case 2:
+                                                value = Short.toString(ByteBuffer.wrap(val.getData()).getShort());
+                                                break;
+                                            case 3:
+                                                byte[] extValues = new byte[4];
+                                                extValues[0] = 0x00;
+                                                for(int i = 0; i < 3; i++) {
+                                                    extValues[i+1] = val.getData()[i];
+                                                }
+                                                value = ByteBuffer.wrap(extValues).getInt();
+                                                break;
+                                            default:
+                                                value = "Hurz";
+                                                break;
+                                        }
+                                    } else if (notification.getVal() instanceof BACnetTagApplicationSignedInteger) {
+                                        type = "int";
+                                        final BACnetTagApplicationSignedInteger val = (BACnetTagApplicationSignedInteger) notification.getVal();
+
+                                    } else if (notification.getVal() instanceof BACnetTagApplicationReal) {
+                                        type = "real";
+                                        final BACnetTagApplicationReal val = (BACnetTagApplicationReal) notification.getVal();
+                                        value = Float.intBitsToFloat(ByteBuffer.wrap(val.getData()).getInt());
+                                    } else if (notification.getVal() instanceof BACnetTagApplicationDouble) {
+                                        type = "double";
+                                        final BACnetTagApplicationDouble val = (BACnetTagApplicationDouble) notification.getVal();
+
+                                    } else if (notification.getVal() instanceof BACnetTagApplicationBitString) {
+                                        type = "bit-string";
+                                        final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getVal();
+                                        int numBits = (val.getData().length * 8) - val.getUnusedBits();
+                                        BitSet bitSet = BitSet.valueOf(val.getData());
+                                        boolean[] bits = new boolean[numBits];
+                                        for (int i = 0; i < numBits; i++) {
+                                            bits[i] = bitSet.get(i);
+                                        }
+                                        value = bits;
+                                    } else if (notification.getVal() instanceof BACnetTagApplicationEnumerated) {
+                                        type = "enumeration";
+                                        final BACnetTagApplicationEnumerated val = (BACnetTagApplicationEnumerated) notification.getVal();
+
+                                    }
+                                }
+
+                                // Status-Flags have the property id 111
+                                // (This is some additional information passed along)
+                                else if(propertyId == 111) {
+                                    final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getVal();
+                                    int numBits = (val.getData().length * 8) - val.getUnusedBits();
+                                    BitSet bitSet = BitSet.valueOf(val.getData());
+                                    boolean[] bits = new boolean[numBits];
+                                    for (int i = 0; i < numBits; i++) {
+                                        bits[i] = bitSet.get(i);
+                                    }
+                                    status = bits;
+                                }
                             }
 
-                            System.out.println("Simple-ACK(" + request.getInvokeId() + "): Confirmed COV Notification [" + notifications.length + "]");
+                            if(value != null) {
+                                // Create the event object.
+                                Map<String, Object> event = new HashMap<>();
+                                event.put("time", System.currentTimeMillis());
+
+                                event.put("objectType", objectType);
+                                event.put("objectId", objectId);
+                                event.put("notificationType", notificationType);
+                                event.put("notificationInstanceNumber", notificationInstanceNumber);
+
+                                event.put("valueType", type);
+                                event.put("value", value);
+                                event.put("status", status);
+
+                                // Send it to StreamPipes
+                                adapterPipeline.process(event);
+                            }
                         }
                     }
                 }
@@ -182,7 +312,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public Adapter getInstance(SpecificAdapterStreamDescription specificAdapterStreamDescription) {
-        return new BacNetIpAdapter(adapterDescription);
+        return new BacNetIpAdapter(specificAdapterStreamDescription);
     }
 
     @Override

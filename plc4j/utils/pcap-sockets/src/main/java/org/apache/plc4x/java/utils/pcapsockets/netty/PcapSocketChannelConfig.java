@@ -28,7 +28,10 @@ import java.util.Map;
 
 public class PcapSocketChannelConfig extends DefaultChannelConfig implements ChannelConfig {
 
-    public static float NO_THROTTLING = -1;
+    public static float SPEED_SLOW_HALF = 2f;
+    public static float SPEED_REALTIME = -1f;
+    public static float SPEED_FAST_DOUBLE = 0.5f;
+    public static float SPEED_FAST_FULL = 0f;
 
     private PacketHandler packetHandler;
     private float speedFactor;
