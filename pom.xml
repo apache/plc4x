@@ -743,6 +743,7 @@
 
   <build>
     <plugins>
+            
       <!-- Make some additional properties available to simplify keeping some content up to date -->
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
@@ -1147,7 +1148,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>4.1.0</version>
+          <version>4.2.1</version>
         </plugin>
 
         <plugin>
