@@ -1,39 +1,97 @@
-Apache PLC4X
-============
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+[![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)
+[![License](https://img.shields.io/github/license/apache/plc4x.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)]()
+[![Twitter](https://img.shields.io/twitter/follow/ApachePLC4X.svg?label=Follow&style=social)](https://twitter.com/ApachePLC4X)
+
+
+<h1 align="center">
+  <br>
+   <img src="https://plc4x.apache.org/images/apache_plc4x_logo.png" 
+   alt="Apache PLC4X Logo" title="Apache PLC4X Logo"/>
+  <br>
+</h1>
+<h3 align="center">The Industrial IoT adapter</h3>
+<h4 align="center">The ultimate goal of PLC4X is to create a set of libraries, that allow unified access to any type of
+ PLC</h4>
+
+***
+
+# Table of contents
+
+  * [About PLC4X](#about-apache-plc4x)
+  * [Getting Started](#getting-started)
+  * [Developers](#developers)
+  * [Community](#community)
+  * [Contributing](#contributing)
+  * [Licensing](#licensing)
+
+***
+
+## About Apache PLC4X
 
 Apache PLC4X is an effort to create a set of libraries for communicating with industrial grade programmable logic controllers (PLCs) in a uniform way.
 We are planning on shipping libraries for usage in:
 
-1) Java
-2) Scala
-3) C/C++
-4) C# (.Net)
-5) Python
+1. Java
+2. Scala
+3. C/C++
+4. C# (.Net)
+5. Python
 
-As well as provide direct integration into other Apache projects, such as:
+PLC4X also integrates with other Apache projects, such as:
 
-1) Apache Calcite
-2) Apache Camel
-3) Apache Edgent
-4) Apache Kafka-Connect
-5) Apache Karaf
-6) Apache NiFi
+* [Apache Calcite](https://calcite.apache.org/)
+* [Apache Camel](https://camel.apache.org/)
+* [Apache Edgent](https://edgent.apache.org/)
+* [Apache Kafka-Connect](https://kafka.apache.org)
+* [Apache Karaf](https://karaf.apache.org/)
+* [Apache NiFi](https://nifi.apache.org/)
 
-Environment
------------
+## Getting started
+
+Depending on the programming language, the usage will differ, therefore please go to the 
+[Getting Started](https://plc4x.apache.org/users/gettingstarted.html) on the PLC4X website to look up 
+the language of choice.
+
+### Java
+
+See the PLC4J user guide on the website to start using PLC4X in your Java application:
+[https://plc4x.apache.org/plc4j/users/gettingstarted.html](https://plc4x.apache.org/plc4j/users/gettingstarted.html)
+
+## Developers
+
+### Environment
 
 Currently the project is configured to require the following software:
 
-1) Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to point to that.
-2) libpcap/WinPcap for raw socket tests in Java
-3) (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
-4) Git (even when working on the source distribution)
+1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to
+ point to that.
+2. libpcap/WinPcap for raw socket tests in Java
+3. (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
+4. Git (even when working on the source distribution)
 
 With this setup you will be able to build the Java part of PLC4X excluding the "proxy" drivers and servers.
 For a full build of PLC4X with all options the following has to be provided:
 
-Linux
------
+#### Linux
 
 On a clean Ubuntu 18.04 the following software needs to be installed:
 
@@ -47,8 +105,7 @@ In order to build the .Net version, please install the .Net package according to
 
 https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-1804-7lp
 
-Mac
----
+#### Mac
 
 Make sure `Homebrew` ist installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
 
@@ -69,21 +126,20 @@ Be sure to re-open the command window or the changes will not apply.
 If you're going to build the `with-dotnet` profile you also need to install DotNet.
 Please download it from: https://dotnet.microsoft.com/download and run the installer.
 
-Windows
--------
+#### Windows
 
 Some tools need to be installed before being able to build on Windows:
 
-- WinBuilds (for `with-cpp`, `with-proxies` profiles)
-- Bison (for `with-cpp` profiles)
-- Flex (for `with-cpp` profiles)
-- Python 2.7 (for `with-python`, `with-proxies` profiles)
-- Dotnet (for `with-dotnet` profiles)
+* WinBuilds (for `with-cpp`, `with-proxies` profiles)
+* Bison (for `with-cpp` profiles)
+* Flex (for `with-cpp` profiles)
+* Python 2.7 (for `with-python`, `with-proxies` profiles)
+* Dotnet (for `with-dotnet` profiles)
 
 He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
 When running the installer, make sure to select the options:
-- Native Windows
-- x86_64
+* Native Windows
+* x86_64
 Not quite sure which elements are really needed, better just install all of them.
 
 WARNING: If you don't use the installer version of the distribution. The build will probably fail and it will be pretty
@@ -104,8 +160,7 @@ Make sure the `bin` directories of containing the executables `mingw32-make.exe`
 If you're building a source-distribution and haven't installed git yet, be sure to do so.
 
 
-Getting Started
----------------
+### Getting Started
 
 You must have Java 8 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). Maven will be automatically
@@ -113,7 +168,9 @@ downloaded and installed by the maven wrapper `mvnw`.
 
 Build PLC4X Java jars and install them in your local maven repository
 
-$ ./mvnw install -P with-java  # add -DskipTests to omit running the tests
+```
+./mvnw install -P with-java  # add -DskipTests to omit running the tests
+```
 
 You can now construct Java applications that use PLC4X. The PLC4X samples
 are a good place to start and are available inside the `examples`
@@ -123,7 +180,9 @@ If you want to also build the C++ libraries, this has to be enabled by activatin
 
 the `with-cpp` profile
 
-$ ./mvnw -P with-cpp install  # add -DskipTests to omit running the tests
+```
+./mvnw -P with-cpp install  # add -DskipTests to omit running the tests
+```
 
 Same applies for the C# .Net implementation with `with-dotnet` profiles.
 
@@ -135,10 +194,11 @@ However both of these are in a pretty experimental state.
 
 In order to build everything the following command should work:
 
-& ./mvnw -P with-java,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox install
+```
+./mvnw -P with-java,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox install
+```
 
-Installing libpcap/WinPcap
---------------------------
+### Installing libpcap/WinPcap
 
 Some parts of PLC4X, especially the raw socket support, require installed versions
 of libpcap/WinPcap.
@@ -152,17 +212,16 @@ Same applies for Python with the `with-python` and the C# .Net imeplemtation wit
 However both of these are in a pretty experimental state.
 
 
-Building the C++ libraries
---------------------------
+### Building the C++ libraries
 
 When building the C++ libraries we require an installed `gcc` compiler.
 On Mac and Linux this is usually the case.
 On a minimal Ubuntu Linux system the following modules needed to be installed
 manually:
 
-- gcc
-- g++
-- make
+* gcc
+* g++
+* make
 
 On Windows the required compiler is generally not available per default.
 The build is optimized for using a gcc-port called MinGW, available from
@@ -170,14 +229,48 @@ http://win-builds.org/doku.php/download_and_installation_from_windows
 Make sure the `bin` directory containing the executable `mingw32-make.exe`
 is on your systems `PATH`.
 
-Building with Docker
--------------------------------
+### Building with Docker
 
+```
    docker build -t plc4x .
 
    docker run -p 9200:9200 -p 9300:9300 --name plc4x plc4x
+```
 
-Licensing
----------
+## Community
+
+Join the PLC4X community by using one of the following channels. We'll be glad to help!
+
+### Mailing Lists
+
+Subscribe to the following mailing lists: 
+* Apache PLC4X Developer List: [dev-subscribe@plc4x.apache.org](mailto:dev-subscribe@plc4x.apache.org)
+* Apache PLC4X Commits List: [commit-subscribe@plc4x.apache.org](mailto:commit-subscribe@plc4x.apache.org)
+* Apache PLC4X Jira Notification List: [issues-subscribe@plc4x.apache.org](mailto:issues-subscribe@plc4x.apache.org)
+
+See also: [https://plc4x.apache.org/mailing-lists.html](https://plc4x.apache.org/mailing-lists.html)
+
+### Twitter
+
+Get the latest PLC4X news on Twitter: [https://twitter.com/ApachePlc4x](https://twitter.com/ApachePlc4x)
+
+## Contributing
+
+There are multiple forms in which you can become involved with the PLC4X project.
+
+These usually are, but are not limited to:
+
+* Submitting Pull Requests
+* Filing Bug-Reports
+* Active communication on our mailing lists
+* Promoting the project (articles, blog posts, talks at conferences)
+* Documentation
+
+We are a very friendly bunch and don’t be afraid to step forward.
+If you'd like to contribute to PLC4X, have a look at our 
+[contribution guide](https://plc4x.apache.org/developers/contributing.html)!
+
+
+## Licensing
 
 Apache PLC4X is released under the Apache License Version 2.0.
