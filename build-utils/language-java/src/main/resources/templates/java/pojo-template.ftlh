@@ -118,8 +118,10 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         <#if helper.isSimpleType(field.type)>
         lengthInBits += ${field.type.size} * ${field.name}.length;
         <#else>
-        for(Message element : ${field.name}) {
-            lengthInBits += element.getLengthInBytes() * 8;
+        if(${field.name} != null) {
+            for(Message element : ${field.name}) {
+                lengthInBits += element.getLengthInBytes() * 8;
+            }
         }
         </#if>
         <#break>
@@ -137,6 +139,11 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Discriminator Field (${field.name})
         lengthInBits += ${field.type.size};
+        <#break>
+    <#case "enum">
+
+        // Enum Field (${field.name})
+        lengthInBits += ${helper.getEnumBaseType(field.type).size};
         <#break>
     <#case "implicit">
 
