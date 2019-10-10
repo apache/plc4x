@@ -50,7 +50,7 @@ public class WaterTankSimulationModule implements SimulationModule {
         // TODO: Do something sensible ;-)
         try {
             // Just increase the level by 1 (Whatever this means ...
-            context.put(PROP_WATER_LEVEL, ((Integer) context.get(context)) + 1);
+            context.put(PROP_WATER_LEVEL, ((Integer) context.get(PROP_WATER_LEVEL)) + 1);
             TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
