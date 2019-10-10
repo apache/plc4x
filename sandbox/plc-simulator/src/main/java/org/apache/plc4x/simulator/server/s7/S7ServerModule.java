@@ -22,6 +22,12 @@ import org.apache.plc4x.simulator.server.ServerModule;
 
 public class S7ServerModule implements ServerModule {
 
+    private S7Server server;
+
+    public S7ServerModule() {
+        this.server = new S7Server();
+    }
+
     @Override
     public String getName() {
         return "S7-STEP7";
@@ -30,11 +36,20 @@ public class S7ServerModule implements ServerModule {
     @Override
     public void start() {
 
+        try {
+            server.start();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void stop() {
-
+        try {
+            server.stop();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

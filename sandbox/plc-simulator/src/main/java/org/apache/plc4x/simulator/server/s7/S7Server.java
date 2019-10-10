@@ -30,32 +30,40 @@ public class S7Server {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
-    public void run() throws Exception {
-        EventLoopGroup loopGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-        try {
-            ServerBootstrap bootstrap = new ServerBootstrap();
-            bootstrap.group(loopGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    public void initChannel(SocketChannel channel) {
-                        ChannelPipeline pipeline = channel.pipeline();
-                        pipeline.addLast(new S7Step7Protocol());
-                        pipeline.addLast(new S7Step7ServerProtocol());
-                    }
-                }).option(ChannelOption.SO_BACKLOG, 128)
-                .childOption(ChannelOption.SO_KEEPALIVE, true);
+    private EventLoopGroup loopGroup;
+    private EventLoopGroup workerGroup;
 
-            ChannelFuture future = bootstrap.bind(ISO_ON_TCP_PORT).sync();
-
-            // Wait till it ends ...
-            // TODO: Remove this ...
-            future.channel().closeFuture().sync();
-        } finally {
-            workerGroup.shutdownGracefully();
-            loopGroup.shutdownGracefully();
+    public void start() throws Exception {
+        if(loopGroup != null) {
+            return;
         }
+
+        loopGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup();
+
+        ServerBootstrap bootstrap = new ServerBootstrap();
+        bootstrap.group(loopGroup, workerGroup)
+            .channel(NioServerSocketChannel.class)
+            .childHandler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                public void initChannel(SocketChannel channel) {
+                    ChannelPipeline pipeline = channel.pipeline();
+                    pipeline.addLast(new S7Step7Protocol());
+                    pipeline.addLast(new S7Step7ServerProtocol());
+                }
+            }).option(ChannelOption.SO_BACKLOG, 128)
+            .childOption(ChannelOption.SO_KEEPALIVE, true);
+
+        bootstrap.bind(ISO_ON_TCP_PORT).sync();
+    }
+
+    public void stop() {
+        if(workerGroup == null) {
+            return;
+        }
+
+        workerGroup.shutdownGracefully();
+        loopGroup.shutdownGracefully();
     }
 
 }
