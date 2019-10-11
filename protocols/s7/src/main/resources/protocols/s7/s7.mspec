@@ -190,18 +190,15 @@
     ]
 ]
 
-// This part is actually specified: http://www.kleissler-online.de/Siemens/SFCs.pdf
-// http://www.efesotomasyon.com/html/siemens/OP-Liste_en.pdf
-// https://cache.industry.siemens.com/dl/files/697/101906697/att_118286/v1/net_s7-300_s7-400_di_do_drahtbruch_en.pdf
 [type 'SzlId'
-    [enum SzlModuleTypeClass 'typeClass']
-    [simple uint 4           'sublistExtract']
-    [enum SzlSublist         'sublistList']
+    [enum   SzlModuleTypeClass 'typeClass']
+    [simple uint 4             'sublistExtract']
+    [enum   SzlSublist         'sublistList']
 ]
 
 [type 'SzlDataTreeItem'
     [simple uint 16 'itemIndex']
-    [array  int 8 'mlfb' count '20']
+    [array  int 8   'mlfb' count '20']
     [simple uint 16 'moduleTypeId']
     [simple uint 16 'ausbg']
     [simple uint 16 'ausbe']
@@ -224,7 +221,7 @@
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
         ['0x00','0x07' S7PayloadUserData
-            [array S7PayloadUserDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)']
+            [array S7PayloadUserDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)' ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
         ]
     ]
 ]
@@ -242,16 +239,16 @@
     [simple uint 8 'returnCode']
 ]
 
-[discriminatedType 'S7PayloadUserDataItem'
+[discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType']
     [simple   uint 8 'returnCode']
     [simple   uint 8 'transportSize']
     [implicit uint 16 'dataLength' 'lengthInBytes - 4']
     [simple   SzlId   'szlId']
     [simple   uint 16 'szlIndex']
-    [typeSwitch ''
-        ['' S7PayloadUserDataItemCpuFunctionReadSzlRequest
+    [typeSwitch 'cpuFunctionType'
+        ['0x04' S7PayloadUserDataItemCpuFunctionReadSzlRequest
         ]
-        ['' S7PayloadUserDataItemCpuFunctionReadSzlResponse
+        ['0x08' S7PayloadUserDataItemCpuFunctionReadSzlResponse
             [const    uint 16 'szlItemLength' '28']
             [implicit uint 16 'szlItemCount'  'COUNT(items)']
             [array SzlDataTreeItem 'items' count 'szlItemCount']
