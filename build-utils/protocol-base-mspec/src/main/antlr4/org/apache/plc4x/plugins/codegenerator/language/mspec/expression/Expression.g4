@@ -31,7 +31,19 @@ expression
  ;
 
 identifierSegment
- : name=Identifier args=arguments? index=indexes? ('.' rest=identifierSegment)?
+ : name=Identifier args=identifierSegmentArguments? index=identifierSegmentIndexes? ('.' rest=identifierSegmentRest)?
+ ;
+
+identifierSegmentArguments
+ : arguments
+ ;
+
+identifierSegmentIndexes
+ : indexes
+ ;
+
+identifierSegmentRest
+ : identifierSegment
  ;
 
 arguments

@@ -374,7 +374,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     private Term getExpressionTerm(String expressionString) {
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
         ExpressionStringParser parser = new ExpressionStringParser();
-        return  parser.parse(inputStream);
+        try {
+            return parser.parse(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException("Error parsing expression: '" + expressionString + "'", e);
+        }
     }
 
     private TypeReference getTypeReference(MSpecParser.TypeReferenceContext ctx) {
@@ -440,7 +444,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     private Term parseExpression(String expressionString) {
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
         ExpressionStringParser parser = new ExpressionStringParser();
-        return parser.parse(inputStream);
+        try {
+            return parser.parse(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException("Error parsing expression: '" + expressionString + "'", e);
+        }
     }
 
     private String unquoteString(String quotedString) {
@@ -448,6 +456,14 @@ public class MessageFormatListener extends MSpecBaseListener {
             return quotedString.substring(1, quotedString.length() - 1);
         }
         return quotedString;
+    }
+
+    public static void main(String[] args) {
+        //Term term = new ExpressionStringParser().parse(IOUtils.toInputStream("CAST(CAST(parameter,S7ParameterUserData).items(hurz)[0],S7ParameterUserDataItemCPUFunctions).cpuFunctionType", Charset.defaultCharset()));
+        //Term term = new ExpressionStringParser().parse(IOUtils.toInputStream("CAST(parameter,S7ParameterUserData).items(hurz)[0]", Charset.defaultCharset()));
+        Term term = new ExpressionStringParser().parse(IOUtils.toInputStream("payload.lengthInBytes+4", Charset.defaultCharset()));
+
+        System.out.println(term);
     }
 
 }

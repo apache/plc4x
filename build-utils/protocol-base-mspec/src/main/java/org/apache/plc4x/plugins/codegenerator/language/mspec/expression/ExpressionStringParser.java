@@ -30,7 +30,6 @@ import java.io.InputStream;
 
 public class ExpressionStringParser {
 
-
     public Term parse(InputStream source) {
         try {
             ExpressionLexer lexer = new ExpressionLexer(CharStreams.fromStream(source));

@@ -21,6 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -83,14 +84,70 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     @Override
-    public void enterIdentifierExpression(ExpressionParser.IdentifierExpressionContext ctx) {
+    public void enterIdentifierSegment(ExpressionParser.IdentifierSegmentContext ctx) {
         parserContexts.push(new LinkedList<>());
     }
 
     @Override
-    public void exitIdentifierExpression(ExpressionParser.IdentifierExpressionContext ctx) {
+    public void exitIdentifierSegment(ExpressionParser.IdentifierSegmentContext ctx) {
         List<Term> args = parserContexts.pop();
-        parserContexts.peek().add(getVariableLiteral(ctx.identifierSegment(), args));
+        ArgsContext argsContext = null;
+        IndexContext indexContext = null;
+        RestContext restContext = null;
+        for (Term arg : args) {
+            if(arg instanceof ArgsContext) {
+                argsContext = (ArgsContext) arg;
+            } else if(arg instanceof IndexContext) {
+                indexContext = (IndexContext) arg;
+            } else if(arg instanceof RestContext) {
+                restContext = (RestContext) arg;
+            }
+        }
+
+        String name = ctx.name.getText();
+
+        int index = VariableLiteral.NO_INDEX;
+        if(indexContext != null) {
+            index = indexContext.getFirst().getNumber().intValue();
+        }
+        VariableLiteral rest = null;
+        if(restContext != null) {
+            rest = restContext.getFirst();
+        }
+        parserContexts.peek().add(new VariableLiteral(name, argsContext, index, rest));
+    }
+
+    @Override
+    public void enterIdentifierSegmentArguments(ExpressionParser.IdentifierSegmentArgumentsContext ctx) {
+        parserContexts.push(new LinkedList<>());
+    }
+
+    @Override
+    public void exitIdentifierSegmentArguments(ExpressionParser.IdentifierSegmentArgumentsContext ctx) {
+        List<Term> args = parserContexts.pop();
+        parserContexts.peek().add(new ArgsContext(args));
+    }
+
+    @Override
+    public void enterIdentifierSegmentIndexes(ExpressionParser.IdentifierSegmentIndexesContext ctx) {
+        parserContexts.push(new LinkedList<>());
+    }
+
+    @Override
+    public void exitIdentifierSegmentIndexes(ExpressionParser.IdentifierSegmentIndexesContext ctx) {
+        List<Term> args = parserContexts.pop();
+        parserContexts.peek().add(new IndexContext(args));
+    }
+
+    @Override
+    public void enterIdentifierSegmentRest(ExpressionParser.IdentifierSegmentRestContext ctx) {
+        parserContexts.push(new LinkedList<>());
+    }
+
+    @Override
+    public void exitIdentifierSegmentRest(ExpressionParser.IdentifierSegmentRestContext ctx) {
+        List<Term> args = parserContexts.pop();
+        parserContexts.peek().add(new RestContext(args));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -230,13 +287,6 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     // Helpers
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    private VariableLiteral getVariableLiteral(ExpressionParser.IdentifierSegmentContext ctx, List<Term> args) {
-        String name = ctx.name.getText();
-        int index = (ctx.index != null) ? Integer.valueOf(ctx.index.getText().substring(1, ctx.index.getText().length() - 1)) : VariableLiteral.NO_INDEX;
-        VariableLiteral child = (ctx.rest != null) ? getVariableLiteral(ctx.rest, args) : null;
-        return new VariableLiteral(name, args, index, child);
-    }
-
     private UnaryTerm getUnaryTerm(String op, List<Term> terms) {
         if(terms.size() != 1) {
             throw new RuntimeException(op + " should be a unary operation");
@@ -262,6 +312,37 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         Term b = terms.get(1);
         Term c = terms.get(2);
         return new TernaryTerm(a, b, c, op);
+    }
+
+    static class ArgsContext extends LinkedList<Term> implements Term {
+        public ArgsContext(Collection c) {
+            super(c);
+        }
+
+        @Override
+        public boolean contains(String str) {
+            return false;
+        }
+    }
+    static class IndexContext extends LinkedList<NumericLiteral> implements Term {
+        public IndexContext(Collection c) {
+            super(c);
+        }
+
+        @Override
+        public boolean contains(String str) {
+            return false;
+        }
+    }
+    static class RestContext extends LinkedList<VariableLiteral> implements Term {
+        public RestContext(Collection c) {
+            super(c);
+        }
+
+        @Override
+        public boolean contains(String str) {
+            return false;
+        }
     }
 
 }
