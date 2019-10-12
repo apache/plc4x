@@ -531,6 +531,10 @@ public class S7Protocol extends ChannelDuplexHandler {
                     for (S7Payload s7Payload : s7Payloads) {
                         if(s7Payload instanceof CpuServicesPayload) {
                             CpuServicesPayload cpuServicesPayload = (CpuServicesPayload) s7Payload;
+
+                            // Remove the current response from the list of unconfirmed messages.
+                            sentButUnacknowledgedTpdus.remove(tpduReference);
+
                             handleIdentifyRemote(ctx, cpuServicesPayload);
                         }
                     }
@@ -596,7 +600,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             logger.debug("-  pdu size: {}", pduSize);
         }
         if(logger.isInfoEnabled()) {
-            logger.info("Successfully connected to S7: {} wit PDU {}", controllerType.name(),pduSize);
+            logger.info("Successfully connected to S7: {} wit PDU {}", controllerType.name(), pduSize);
         }
 
         // Send an event that connection setup is complete.
