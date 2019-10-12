@@ -22,6 +22,8 @@ import io.netty.channel.*;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
+import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
+import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,39 +150,61 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                         final int s7TpduReference = s7MessageUserData.getTpduReference();
                         final S7Parameter s7Parameter = s7MessageUserData.getParameter();
                         if(s7Parameter instanceof S7ParameterUserData) {
-                            S7ParameterUserData userData = (S7ParameterUserData) s7Parameter;
-                            for (S7ParameterUserDataItem item : userData.getItems()) {
+                            S7ParameterUserData userDataParameter = (S7ParameterUserData) s7Parameter;
+                            for (S7ParameterUserDataItem item : userDataParameter.getItems()) {
                                 if(item instanceof S7ParameterUserDataItemCPUFunctions) {
-                                    S7ParameterUserDataItemCPUFunctions function = (S7ParameterUserDataItemCPUFunctions) item;
-                                    /*s7MessageUserData.getParameter()
-                                    final S7ParameterUserDataItemCpuFunctionsItem cpuFunction = function.getCpuFunction();
-                                    if(cpuFunction instanceof S7ParameterUserDataItemCpuFunctionReadSzlRequest) {
-                                        S7ParameterUserDataItemCpuFunctionReadSzlRequest readSzlRequest =
-                                            (S7ParameterUserDataItemCpuFunctionReadSzlRequest) cpuFunction;
-                                        final SzlId szlId = readSzlRequest.getSzlId();
-                                        // This is a request to list the type of device
-                                        if((szlId.getTypeClass() == SzlModuleTypeClass.CPU) &&
-                                            (szlId.getSublistList() == SzlSublist.MODULE_IDENTIFICATION)) {
+                                    S7ParameterUserDataItemCPUFunctions function =
+                                        (S7ParameterUserDataItemCPUFunctions) item;
+                                    final S7PayloadUserData userDataPayload =
+                                        (S7PayloadUserData) s7MessageUserData.getPayload();
 
-                                            SzlDataTreeItem[] items = new SzlDataTreeItem[1];
-                                            items[0] = new SzlDataTreeItem((short) 0x0001, new byte[20],
-                                                0x2020, 0x0001, 0x2020);
-                                            S7ParameterUserDataItemCpuFunctionReadSzlResponse readSzlResponse =
-                                                new S7ParameterUserDataItemCpuFunctionReadSzlResponse(
-                                                    readSzlRequest.getCpuFunctionType(), readSzlRequest.getCpuFunctionGroup(),
-                                                    readSzlRequest.getCpuSubfunction(), (short) 1, (short) 0, (short) 0,
-                                                    (short) 0, (short) 0xFF, (short) 0x09, readSzlRequest.getSzlId(),
-                                                    readSzlRequest.getSzlIndex(), items);
-                                            S7ParameterUserDataItem[] responseItems = new S7ParameterUserDataItem[1];
-                                            responseItems[0] = new S7ParameterUserDataItemCPUFunctions((short) 0x12, readSzlResponse);
-                                            S7ParameterUserData responseUserData = new S7ParameterUserData(responseItems);
-                                            S7Message s7ResponseMessage = new S7MessageResponse(s7TpduReference, responseUserData, new S7PayloadUserData());
-                                            ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, responseUserData, true, cotpTpduRef)));
-                                        } else {
-                                            LOGGER.error("Not able to respond to the given request Read SZL with SZL type class " +
-                                                szlId.getTypeClass().name() + " and SZL sublise " + szlId.getSublistList().name());
+                                    for (S7PayloadUserDataItem userDataPayloadItem : userDataPayload.getItems()) {
+                                        if(userDataPayloadItem instanceof S7PayloadUserDataItemCpuFunctionReadSzlRequest) {
+                                            S7PayloadUserDataItemCpuFunctionReadSzlRequest readSzlRequestPayload =
+                                                (S7PayloadUserDataItemCpuFunctionReadSzlRequest) userDataPayloadItem;
+
+                                            final SzlId szlId = readSzlRequestPayload.getSzlId();
+                                            // This is a request to list the type of device
+                                            if((szlId.getTypeClass() == SzlModuleTypeClass.CPU) &&
+                                                (szlId.getSublistList() == SzlSublist.MODULE_IDENTIFICATION)) {
+
+                                                S7ParameterUserDataItemCPUFunctions readSzlResponseParameter =
+                                                    new S7ParameterUserDataItemCPUFunctions((short) 0x12,
+                                                        (byte) 0x08, function.getCpuFunctionGroup(),
+                                                        function.getCpuSubfunction(), (short) 1,
+                                                        (short) 0, (short) 0, 0);
+
+                                                SzlDataTreeItem[] items = new SzlDataTreeItem[1];
+                                                items[0] = new SzlDataTreeItem((short) 0x0001,
+                                                    "6ES7 212-1BD30-0XB0 ".getBytes(), 0x2020, 0x0001, 0x2020);
+
+                                                S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponsePayload =
+                                                    new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
+                                                        (short) 0xFF, (short) 0x09, szlId,
+                                                        readSzlRequestPayload.getSzlIndex(), items);
+
+                                                S7ParameterUserDataItem[] responseParameterItems =
+                                                    new S7ParameterUserDataItem[1];
+                                                responseParameterItems[0] = readSzlResponseParameter;
+                                                S7ParameterUserData responseParameterUserData =
+                                                    new S7ParameterUserData(responseParameterItems);
+
+                                                S7PayloadUserDataItem[] responsePayloadItems =
+                                                    new S7PayloadUserDataItem[1];
+                                                responsePayloadItems[0] = readSzlResponsePayload;
+                                                S7PayloadUserData responsePayloadUserData =
+                                                    new S7PayloadUserData(responsePayloadItems);
+
+                                                S7Message s7ResponseMessage = new S7MessageUserData(s7TpduReference,
+                                                    responseParameterUserData, responsePayloadUserData);
+                                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7ResponseMessage, true, cotpTpduRef)));
+                                            } else {
+                                                LOGGER.error("Not able to respond to the given request Read SZL with SZL type class " +
+                                                    szlId.getTypeClass().name() + " and SZL sublise " + szlId.getSublistList().name());
+                                            }
+
                                         }
-                                    }*/
+                                    }
                                 }
                             }
                         } else {
