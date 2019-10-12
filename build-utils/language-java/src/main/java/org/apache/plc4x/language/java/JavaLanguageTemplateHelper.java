@@ -622,6 +622,8 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                         return "'" + valueString + "'";
                     }
                     break;
+                case STRING:
+                    return "\"" + valueString + "\"";
             }
         }
         return valueString;

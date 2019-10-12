@@ -89,12 +89,12 @@ public enum TransportSize {
     // Time of day
     // -----------------------------------------
     // Time (hh:mm:ss.S)
-    TIME_OF_DAY(0x02, "X", 4, null, DataTransportSize.BYTE_WORD_DWORD,S7ControllerType.ANY),
+    TIME_OF_DAY(0x02, "X", 4, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
 
     // -----------------------------------------
     // Date and time of day
     // -----------------------------------------
-    DATE_AND_TIME(0x02, "X", 8,null, null, S7ControllerType.S7_1500, S7ControllerType.S7_300, S7ControllerType.S7_400),
+    DATE_AND_TIME(0x02, "X", 8, null, null, S7ControllerType.S7_1500, S7ControllerType.S7_300, S7ControllerType.S7_400),
 
     // -----------------------------------------
     // ASCII Strings

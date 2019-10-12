@@ -20,10 +20,7 @@ package org.apache.plc4x.simulator.server.s7.protocol;
 
 import io.netty.channel.*;
 import org.apache.plc4x.java.s7.readwrite.*;
-import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
-import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
-import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
-import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
+import org.apache.plc4x.java.s7.readwrite.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,7 +177,7 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
 
                                                 S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponsePayload =
                                                     new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
-                                                        (short) 0xFF, (short) 0x09, szlId,
+                                                        (short) 0xFF, DataTransportSize.OCTET_STRING, szlId,
                                                         readSzlRequestPayload.getSzlIndex(), items);
 
                                                 S7ParameterUserDataItem[] responseParameterItems =
