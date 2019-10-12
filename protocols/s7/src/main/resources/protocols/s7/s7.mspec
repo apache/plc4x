@@ -162,13 +162,13 @@
     [discriminator uint 8 'addressType']
     [typeSwitch 'addressType'
         ['0x10' S7AddressAny
-            [simple   uint 8  'transportSize']
-            [simple   uint 16 'numberOfElements']
-            [simple   uint 16 'dbNumber']
-            [simple   uint 8  'area']
-            [reserved uint 5  '0x00']
-            [simple   uint 16 'byteAddress']
-            [simple   uint 3  'bitAddress']
+            [enum     TransportSize 'transportSize']
+            [simple   uint 16       'numberOfElements']
+            [simple   uint 16       'dbNumber']
+            [enum     MemoryArea    'area']
+            [reserved uint 5        '0x00']
+            [simple   uint 16       'byteAddress']
+            [simple   uint 3        'bitAddress']
         ]
     ]
 ]
@@ -228,11 +228,11 @@
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
 [type 'S7VarPayloadDataItem'
-    [simple  uint 8  'returnCode']
-    [simple  uint 8  'transportSize']
-    [simple  uint 16 'dataLength']
-    [array   uint 8  'data' count 'dataLength / 8']
-    [padding uint 8  'pad' '0x00' '(dataLength / 8) % 2 == 1']
+    [simple  uint 8             'returnCode']
+    [enum    DataTransportSize  'transportSize']
+    [simple  uint 16            'dataLength']
+    [array   uint 8             'data' count 'dataLength / 8']
+    [padding uint 8             'pad' '0x00' '(dataLength / 8) % 2 == 1']
 ]
 
 [type 'S7VarPayloadStatusItem'
@@ -240,11 +240,11 @@
 ]
 
 [discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType']
-    [simple   uint 8 'returnCode']
-    [simple   uint 8 'transportSize']
-    [implicit uint 16 'dataLength' 'lengthInBytes - 4']
-    [simple   SzlId   'szlId']
-    [simple   uint 16 'szlIndex']
+    [simple   uint 8            'returnCode']
+    [enum     DataTransportSize 'transportSize']
+    [implicit uint 16           'dataLength' 'lengthInBytes - 4']
+    [simple   SzlId             'szlId']
+    [simple   uint 16           'szlIndex']
     [typeSwitch 'cpuFunctionType'
         ['0x04' S7PayloadUserDataItemCpuFunctionReadSzlRequest
         ]
@@ -257,7 +257,7 @@
 ]
 
 
-[enum uint 8 'COTPTpduSize' [uint 8 'sizeInBytes']
+[enum int 8 'COTPTpduSize' [uint 8 'sizeInBytes']
     ['0x07' SIZE_128 ['128']]
     ['0x08' SIZE_256 ['256']]
     ['0x09' SIZE_512 ['512']]
@@ -267,7 +267,7 @@
     ['0x0d' SIZE_8192 ['8192']]
 ]
 
-[enum uint 8 'COTPProtocolClass'
+[enum int 8 'COTPProtocolClass'
     ['0x00' CLASS_0]
     ['0x10' CLASS_1]
     ['0x20' CLASS_2]
@@ -275,7 +275,7 @@
     ['0x40' CLASS_4]
 ]
 
-[enum uint 8 'DataTransportSize' [bit 'sizeInBits']
+[enum int 8 'DataTransportSize' [bit 'sizeInBits']
     ['0x00' NULL            ['false']]
     ['0x03' BIT             ['true']]
     ['0x04' BYTE_WORD_DWORD ['true']]
@@ -285,7 +285,7 @@
     ['0x09' OCTET_STRING    ['false']]
 ]
 
-[enum uint 8 'TransportSize' [uint 8 'sizeCode', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize']
+[enum int 8 'TransportSize'  [uint 8 'sizeCode', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize']
     ['0x01' BOOL             ['X'              , '1'                 , 'null'                  , 'DataTransportSize.BIT']]
     ['0x02' BYTE             ['B'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD']]
     ['0x04' WORD             ['W'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD']]
@@ -312,14 +312,36 @@
     ['0x00' WSTRING          ['X'              , '1'                 , 'null'                  , 'null']]
 ]
 
-[enum uint 4 'SzlModuleTypeClass'
+[enum int 8 'MemoryArea'             [string 'shortName']
+    ['0x1C' COUNTERS                 ['C']]
+    ['0x1D' TIMERS                   ['T']]
+    ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]
+    ['0x81' INPUTS                   ['I']]
+    ['0x82' OUTPUTS                  ['Q']]
+    ['0x83' FLAGS_MARKERS            ['M']]
+    ['0x84' DATA_BLOCKS              ['DB']]
+    ['0x85' INSTANCE_DATA_BLOCKS     ['DBI']]
+    ['0x86' LOCAL_DATA               ['LD']]
+]
+
+[enum int 8 'DataTransportSize' [bit 'sizeInBits']
+    ['0x00' NULL                ['false']]
+    ['0x03' BIT                 ['true']]
+    ['0x04' BYTE_WORD_DWORD     ['true']]
+    ['0x05' INTEGER             ['true']]
+    ['0x06' DINTEGER            ['false']]
+    ['0x07' REAL                ['false']]
+    ['0x09' OCTET_STRING        ['false']]
+]
+
+[enum int 4 'SzlModuleTypeClass'
     ['0x0' CPU]
     ['0x4' IM]
     ['0x8' FM]
     ['0xC' CP]
 ]
 
-[enum uint 8 'SzlSublist'
+[enum int 8 'SzlSublist'
     ['0x11' MODULE_IDENTIFICATION]
     ['0x12' CPU_FEATURES]
     ['0x13' USER_MEMORY_AREA]
