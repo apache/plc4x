@@ -23,7 +23,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
-import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -21,7 +21,7 @@ package org.apache.plc4x.java.modbus.connection;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
-import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
