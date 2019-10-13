@@ -331,6 +331,15 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 }
             }
         }
+        for (Field field : complexTypeDefinition.getParentPropertyFields()) {
+            if(field instanceof EnumField) {
+                EnumField enumField = (EnumField) field;
+                if(enumField.getType() instanceof ComplexTypeReference) {
+                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) enumField.getType();
+                    types.put(complexTypeReference.getName(),  complexTypeReference);
+                }
+            }
+        }
         return types.values();
     }
 

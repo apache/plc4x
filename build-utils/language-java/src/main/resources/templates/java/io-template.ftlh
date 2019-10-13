@@ -40,7 +40,7 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
 
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
-import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
+<#if helper.getEnumTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;</#if>
 import org.apache.plc4x.java.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -25,7 +25,7 @@ public enum HeaderErrorClass {
     NO_ERROR((byte) 0x00),
     APPLICATION_RELATIONSHIP_ERROR((byte) 0x81),
     OBJECT_DEFINITION_ERROR((byte) 0x82),
-    NO_RESSOURCES_AVAILABLE_ERROR((byte) 0x83),
+    NO_RESOURCES_AVAILABLE_ERROR((byte) 0x83),
     ERROR_ON_SERVICE_PROCESSING((byte) 0x84),
     ERROR_ON_SUPPLIES((byte) 0x85),
     ACCESS_ERROR((byte) 0x87);
