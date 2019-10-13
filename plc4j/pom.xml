@@ -41,6 +41,7 @@
 
     <module>examples</module>
     <module>integrations</module>
+    <module>karaf-features</module>
   </modules>
 
   <build>
@@ -180,6 +181,7 @@
           </execution>
         </executions>
         <configuration>
+            <exportScr>true</exportScr>
             <instructions>
               <_include>-bnd.bnd</_include>
             </instructions>
