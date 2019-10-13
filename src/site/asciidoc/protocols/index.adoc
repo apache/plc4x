@@ -17,6 +17,7 @@
 
 == Protocols
 
+- link:ab-eth/index.html[AB-Ethernet]
 - link:ads/index.html[DeltaV]
 - link:delta-v/index.html[DeltaV]
 - link:ethernet-ip/index.html[EtherNet/IP]
