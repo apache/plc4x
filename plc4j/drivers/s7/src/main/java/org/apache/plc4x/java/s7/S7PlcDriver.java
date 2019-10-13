@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * - ISO on TCP (https://tools.ietf.org/html/rfc1006)
  * - TCP
  */
-@Component
+@Component(service = PlcDriver.class, immediate = true)
 public class S7PlcDriver implements PlcDriver {
 
     private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7://(?<host>.*)/(?<rack>\\d{1,4})/(?<slot>\\d{1,4})(?<params>\\?.*)?");
