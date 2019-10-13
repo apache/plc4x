@@ -1262,6 +1262,21 @@
             <locales>en</locales>
             <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
             <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
+            <!--
+              IntelliJ can't find the asciidoc config option in the site plugin, which is correct.
+              However this config section is used by the asciidoctor site plugin extension. So plead
+              ignore this error, it's actually ok.
+            -->
+            <asciidoc>
+              <attributes>
+                <source-highlighter>prettify</source-highlighter>
+                <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
+                <pom-adoc>${project.build.directory}/pom.adoc</pom-adoc>
+              </attributes>
+              <requires>
+                <require>asciidoctor-diagram</require>
+              </requires>
+            </asciidoc>
           </configuration>
           <dependencies>
             <!-- All dependencies needed by the reflow skin -->
