@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.java.base.util;
+package org.apache.plc4x.java.mock.util;
 
 import org.apache.commons.io.HexDump;
 import org.apache.commons.lang3.ArrayUtils;

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.serial.connection.connection;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;

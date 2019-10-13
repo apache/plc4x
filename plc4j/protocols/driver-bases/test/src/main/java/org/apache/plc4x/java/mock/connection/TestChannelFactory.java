@@ -16,11 +16,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.mock.connection;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
+import org.apache.plc4x.java.base.connection.ChannelFactory;
 
 public class TestChannelFactory implements ChannelFactory {
 

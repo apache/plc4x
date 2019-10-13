@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.serial.connection.connection;
 
 import java.net.SocketAddress;
 import java.util.Objects;

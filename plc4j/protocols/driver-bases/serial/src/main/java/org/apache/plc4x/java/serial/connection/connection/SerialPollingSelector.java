@@ -17,9 +17,8 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.serial.connection.connection;
 
-import io.netty.channel.VoidChannelPromise;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultPromise;
 import org.apache.commons.lang3.NotImplementedException;
@@ -30,12 +29,10 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
-import java.nio.channels.spi.AbstractSelectionKey;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

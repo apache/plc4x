@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.serial.connection.connection;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -26,6 +26,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.base.connection.ChannelFactory;
 
 import java.net.SocketAddress;
 import java.util.concurrent.Executor;

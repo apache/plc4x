@@ -17,9 +17,8 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.serial.connection.connection;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

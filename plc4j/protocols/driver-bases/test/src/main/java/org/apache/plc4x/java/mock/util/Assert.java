@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.base.util;
+package org.apache.plc4x.java.mock.util;
 
 import org.apache.commons.io.HexDump;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;

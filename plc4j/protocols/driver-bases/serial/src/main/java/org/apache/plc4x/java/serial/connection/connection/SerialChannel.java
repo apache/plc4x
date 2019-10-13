@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.serial.connection.connection;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -39,7 +39,6 @@ import java.lang.reflect.Method;
 import java.net.SocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
-import java.nio.channels.SocketChannel;
 import java.util.concurrent.RejectedExecutionException;
 
 /**

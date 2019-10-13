@@ -16,9 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.base.connection;
+package org.apache.plc4x.java.mock.connection;
 
 import io.netty.channel.ChannelHandler;
+import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 
 import java.util.concurrent.CompletableFuture;
 
