@@ -49,6 +49,15 @@
     <module>karaf-demo-server</module>
   </modules>
 
+  <dependencies>
+    <!-- This is just a way of removing this dependency -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <!-- With OSGI there's a lot of stuff with duplicate classes in different versions -->
